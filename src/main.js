@@ -53,9 +53,13 @@ import {
 } from "./utils/dom.js"
 
 let bookmarksLoaded = false
-window.addEventListener("bookmarksReady", () => {
-  bookmarksLoaded = true
-}, { once: true })
+window.addEventListener(
+  "bookmarksReady",
+  () => {
+    bookmarksLoaded = true
+  },
+  { once: true },
+)
 
 function syncUninstallSurveyLanguage(language) {
   try {
@@ -67,7 +71,10 @@ function syncUninstallSurveyLanguage(language) {
       () => {
         const error = window.chrome?.runtime?.lastError
         if (error) {
-          console.warn("Could not sync uninstall survey language:", error.message)
+          console.warn(
+            "Could not sync uninstall survey language:",
+            error.message,
+          )
         }
       },
     )
@@ -168,24 +175,22 @@ function needsSettingsAtBoot(settings) {
 
   return Boolean(
     (settings.effect && settings.effect !== "none") ||
-      settings.gradientV2Active ||
-      settings.svgWaveActive ||
-      settings.silkActive ||
-      settings.lightPillarActive ||
-      settings.liquidEtherActive ||
-      settings.splashCursorActive ||
-      settings.m3AutoAccentFromBg ||
-      isVideo ||
-      isCustomBg
+    settings.gradientV2Active ||
+    settings.svgWaveActive ||
+    settings.silkActive ||
+    settings.lightPillarActive ||
+    settings.liquidEtherActive ||
+    settings.splashCursorActive ||
+    settings.m3AutoAccentFromBg ||
+    isVideo ||
+    isCustomBg,
   )
 }
 
 function ensureSettingsInitialized(reason = "idle") {
   if (settingsInitialized) return Promise.resolve()
   if (!settingsInitPromise) {
-    settingsInitPromise = Promise.resolve(
-      window.startpageSettingsPartialsReady,
-    )
+    settingsInitPromise = Promise.resolve(window.startpageSettingsPartialsReady)
       .then(() => {
         refreshDOMReferences()
         return import("./components/settings.js")
@@ -207,32 +212,50 @@ function ensureSettingsInitialized(reason = "idle") {
   }
   return settingsInitPromise
 }
-window.ensureSettingsInitialized = ensureSettingsInitialized;
+window.ensureSettingsInitialized = ensureSettingsInitialized
 
 const SYSTEM_FONTS = new Set([
-  "sans-serif", "serif", "monospace", "cursive", "fantasy",
-  "system-ui", "arial", "helvetica", "segoe ui", "times new roman",
-  "courier new", "georgia", "verdana", "trebuchet ms", "impact",
+  "sans-serif",
+  "serif",
+  "monospace",
+  "cursive",
+  "fantasy",
+  "system-ui",
+  "arial",
+  "helvetica",
+  "segoe ui",
+  "times new roman",
+  "courier new",
+  "georgia",
+  "verdana",
+  "trebuchet ms",
+  "impact",
 ])
 
 function loadFontOnBoot(fontValue) {
   if (!fontValue) return
   const fontName = fontValue.replace(/['"]/g, "").split(",")[0].trim()
   if (SYSTEM_FONTS.has(fontName.toLowerCase())) return
-  
+
   const settings = getSettings()
   const savedFonts = settings.userSavedFonts || []
   const savedFontObj = savedFonts.find(
     (f) => (typeof f === "string" ? f : f.label) === fontName,
   )
-  if (savedFontObj && typeof savedFontObj === "object" && savedFontObj.isLocal) {
+  if (
+    savedFontObj &&
+    typeof savedFontObj === "object" &&
+    savedFontObj.isLocal
+  ) {
     return
   }
 
   const formattedFontName = fontName.replace(/\s+/g, "+")
   const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
-  
-  const existingLink = document.querySelector(`link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`)
+
+  const existingLink = document.querySelector(
+    `link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`,
+  )
   if (!existingLink) {
     const link = document.createElement("link")
     link.rel = "stylesheet"
@@ -246,7 +269,10 @@ function applyAccentTokens(settings) {
   if ((settings.accentColorMode || "m3") === "default") {
     return applyDefaultAccentTokens(color)
   }
-  return applyMaterialAccentTokens(color, settings.m3PaletteStyle || "tonalSpot")
+  return applyMaterialAccentTokens(
+    color,
+    settings.m3PaletteStyle || "tonalSpot",
+  )
 }
 
 function applyDefaultAccentTokens(seedColor) {
@@ -300,11 +326,13 @@ function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
   }
 
   // Batch all token writes into a single CSS injection to minimize style recalcs
-  const tokenCss = Object.entries(tokenMap).map(([k, v]) => `${k}:${v}`).join(';')
-  const batchId = 'm3-accent-tokens'
+  const tokenCss = Object.entries(tokenMap)
+    .map(([k, v]) => `${k}:${v}`)
+    .join(";")
+  const batchId = "m3-accent-tokens"
   let batchEl = document.getElementById(batchId)
   if (!batchEl) {
-    batchEl = document.createElement('style')
+    batchEl = document.createElement("style")
     batchEl.id = batchId
     document.head.appendChild(batchEl)
   }
@@ -347,7 +375,7 @@ function applyBootVisualPreview(settings) {
 
 function applyBasicStyles(settings) {
   const root = document.documentElement
-  
+
   root.style.setProperty(
     "--bg-pos-x",
     `${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%`,
@@ -356,7 +384,7 @@ function applyBasicStyles(settings) {
     "--bg-pos-y",
     `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
   )
-  
+
   const filters = [
     `blur(${settings.bgBlur ?? 0}px)`,
     `brightness(${settings.bgBrightness ?? 100}%)`,
@@ -373,15 +401,20 @@ function applyBasicStyles(settings) {
   root.style.setProperty("--bg-brightness", `${settings.bgBrightness ?? 100}%`)
   root.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
   root.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
-  
-  root.style.setProperty("--clock-font-size", `${settings.clockFontSize ?? 11}rem`)
+
+  root.style.setProperty(
+    "--clock-font-size",
+    `${settings.clockFontSize ?? 11}rem`,
+  )
   root.style.setProperty("--date-font-size", `${settings.dateFontSize ?? 2}rem`)
 
   if (settings.panelBg) root.style.setProperty("--panel-bg", settings.panelBg)
   if (settings.glassBg) root.style.setProperty("--glass-bg", settings.glassBg)
-  if (settings.glassBorder) root.style.setProperty("--glass-border", settings.glassBorder)
-  if (settings.glassEdge) root.style.setProperty("--glass-edge", settings.glassEdge)
-  
+  if (settings.glassBorder)
+    root.style.setProperty("--glass-border", settings.glassBorder)
+  if (settings.glassEdge)
+    root.style.setProperty("--glass-edge", settings.glassEdge)
+
   if (settings.accentColor) {
     const accentScheme = applyAccentTokens(settings)
     const forceLightSidebar = settings.showQuickAccessBg === true
@@ -395,29 +428,43 @@ function applyBasicStyles(settings) {
       document.body.classList.remove("sidebar-light")
     }
   }
-  
+
   const primaryFont = settings.font || "'Outfit', sans-serif"
-  const clockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
+  const clockFont =
+    settings.clockFont || settings.font || "'Outfit', sans-serif"
   root.style.setProperty("--font-primary", primaryFont)
-  
+
   const dateClockStyle = settings.dateClockStyle || "default"
   const clockFontTarget = settings.clockFontTarget || "both"
-  const clockUsesDisplayFont = clockFontTarget === "both" || clockFontTarget === "clock"
-  const dateUsesDisplayFont = clockFontTarget === "both" || clockFontTarget === "date" || clockFontTarget === "weekday"
-  
+  const clockUsesDisplayFont =
+    clockFontTarget === "both" || clockFontTarget === "clock"
+  const dateUsesDisplayFont =
+    clockFontTarget === "both" ||
+    clockFontTarget === "date" ||
+    clockFontTarget === "weekday"
+
   const applyFontToTargets = (targets, font) => {
     targets.forEach((t) => {
       root.style.setProperty(`--font-${t}`, font)
     })
   }
-  
-  applyFontToTargets(["clock", "date", "weekday", "gregorian-date", "lunar-date"], primaryFont)
-  
+
+  applyFontToTargets(
+    ["clock", "date", "weekday", "gregorian-date", "lunar-date"],
+    primaryFont,
+  )
+
   if (clockFontTarget === "both") {
     applyFontToTargets(
       [
-        "clock", "date", "weekday", "gregorian-date", "lunar-date",
-        "clock-date", "jp-time", "jp-date"
+        "clock",
+        "date",
+        "weekday",
+        "gregorian-date",
+        "lunar-date",
+        "clock-date",
+        "jp-time",
+        "jp-date",
       ],
       clockFont,
     )
@@ -426,7 +473,7 @@ function applyBasicStyles(settings) {
   } else if (clockFontTarget === "date") {
     applyFontToTargets(["date", "jp-date"], clockFont)
   }
-  
+
   const baseClockSize = Number(settings.clockSize) || 6
   const rawDateSize = Number(settings.dateSize)
   const baseDateSize = Number.isFinite(rawDateSize)
@@ -436,66 +483,103 @@ function applyBasicStyles(settings) {
   const displayMode = settings.clockDisplayMode || "all"
   let computedClockSize = baseClockSize
   let computedDateSize = baseDateSize
-  
+
   const getFontName = (f) => String(f || "")
   const getClockFontProfile = (font) => {
     const name = getFontName(font).toLowerCase()
     if (name === "e1234") {
-      return { clockScale: 0.68, dateScale: 0.86, letterSpacing: "0px", maxWidthFactor: 5.8 }
+      return {
+        clockScale: 0.68,
+        dateScale: 0.86,
+        letterSpacing: "0px",
+        maxWidthFactor: 5.8,
+      }
     }
     if (name === "electroharmonix" || name === "anurati") {
-      return { clockScale: 0.78, dateScale: 0.9, letterSpacing: "0.02em", maxWidthFactor: 6.1 }
+      return {
+        clockScale: 0.78,
+        dateScale: 0.9,
+        letterSpacing: "0.02em",
+        maxWidthFactor: 6.1,
+      }
     }
     if (name === "saiba-45") {
-      return { clockScale: 0.86, dateScale: 0.94, letterSpacing: "0.01em", maxWidthFactor: 6.4 }
+      return {
+        clockScale: 0.86,
+        dateScale: 0.94,
+        letterSpacing: "0.01em",
+        maxWidthFactor: 6.4,
+      }
     }
-    return { clockScale: 1, dateScale: 1, letterSpacing: "2px", maxWidthFactor: 7 }
+    return {
+      clockScale: 1,
+      dateScale: 1,
+      letterSpacing: "2px",
+      maxWidthFactor: 7,
+    }
   }
   const getStyleClockScale = (style) => {
     const styleScales = {
-      "cyber-pulse": 0.94, "neon-grid": 0.9, "holo-ring": 0.9,
-      "lunar-orbit": 0.9, fliqlo: 0.92, sidebar: 0.94
+      "cyber-pulse": 0.94,
+      "neon-grid": 0.9,
+      "holo-ring": 0.9,
+      "lunar-orbit": 0.9,
+      fliqlo: 0.92,
+      sidebar: 0.94,
     }
     return styleScales[style] || 1
   }
-  
+
   const fontProfile = getClockFontProfile(clockFont)
   if (priority === "date" || displayMode === "weekday") {
     computedClockSize = baseDateSize
     computedDateSize = baseClockSize
   }
-  
+
   if (clockUsesDisplayFont) {
-    computedClockSize *= fontProfile.clockScale * getStyleClockScale(dateClockStyle)
+    computedClockSize *=
+      fontProfile.clockScale * getStyleClockScale(dateClockStyle)
   }
   if (dateUsesDisplayFont) {
     computedDateSize *= fontProfile.dateScale
   }
-  
+
   computedClockSize = Math.min(10, Math.max(0.8, computedClockSize))
   computedDateSize = Math.min(10, Math.max(0.8, computedDateSize))
-  
+
   root.style.setProperty("--clock-size", `${computedClockSize}rem`)
   root.style.setProperty("--date-size", `${computedDateSize}rem`)
-  root.style.setProperty("--clock-letter-spacing", clockUsesDisplayFont ? fontProfile.letterSpacing : "2px")
-  root.style.setProperty("--clock-max-width-factor", String(fontProfile.maxWidthFactor))
-  
-  root.style.setProperty("--bookmark-font-size", `${settings.bookmarkFontSize ?? 10}px`)
-  root.style.setProperty("--bookmark-group-font-size", `${settings.bookmarkGroupFontSize ?? 10}px`)
+  root.style.setProperty(
+    "--clock-letter-spacing",
+    clockUsesDisplayFont ? fontProfile.letterSpacing : "2px",
+  )
+  root.style.setProperty(
+    "--clock-max-width-factor",
+    String(fontProfile.maxWidthFactor),
+  )
+
+  root.style.setProperty(
+    "--bookmark-font-size",
+    `${settings.bookmarkFontSize ?? 10}px`,
+  )
+  root.style.setProperty(
+    "--bookmark-group-font-size",
+    `${settings.bookmarkGroupFontSize ?? 10}px`,
+  )
 }
 
-let bookmarksInitialized = false;
+let bookmarksInitialized = false
 function ensureBookmarksInitialized() {
-  if (bookmarksInitialized) return;
-  initBookmarks();
-  bookmarksInitialized = true;
+  if (bookmarksInitialized) return
+  initBookmarks()
+  bookmarksInitialized = true
 }
 
-let searchInitialized = false;
+let searchInitialized = false
 function ensureSearchInitialized() {
-  if (searchInitialized) return;
-  initSearch();
-  searchInitialized = true;
+  if (searchInitialized) return
+  initSearch()
+  searchInitialized = true
 }
 
 // --- Initialization ---
@@ -550,7 +634,6 @@ async function bootstrap() {
     })
   }
   fastRevealSkipStartup()
-
 
   const settingsToggle = document.getElementById("settings-toggle")
   const settingsSidebar = document.getElementById("settings-sidebar")
@@ -683,8 +766,7 @@ async function bootstrap() {
       "--bookmark-layout-text-color",
       "#1e293b",
     )
-  }
-  else if (bgStyle === "m3-accent")
+  } else if (bgStyle === "m3-accent")
     document.body.classList.add("bookmark-layout-bg-m3-accent")
   else if (bgStyle === "colored") {
     document.body.classList.add("bookmark-layout-bg-colored")
@@ -793,8 +875,11 @@ async function bootstrap() {
   }, 3200)
 
   initClock()
-  
-  if (currentSettings.showBookmarks !== false || currentSettings.showBookmarkGroups !== false) {
+
+  if (
+    currentSettings.showBookmarks !== false ||
+    currentSettings.showBookmarkGroups !== false
+  ) {
     ensureBookmarksInitialized()
   }
   if (currentSettings.showSearchBar !== false) {
@@ -873,15 +958,12 @@ async function bootstrap() {
 
     event.preventDefault()
     event.stopPropagation()
-    
+
     showContextMenu(event.clientX, event.clientY, -1, "widget", match[1])
   })
 
   if (skipStartupLoader) {
-    setTimeout(
-      () => promptFirstRunBookmarkImport(renderBookmarks),
-      500,
-    )
+    setTimeout(() => promptFirstRunBookmarkImport(renderBookmarks), 500)
   }
 
   const widgets = {
@@ -905,7 +987,8 @@ async function bootstrap() {
     weather: () => import("./components/weather.js").then((m) => m.Weather),
     notepad: () => import("./components/notepad.js").then((m) => m.Notepad),
     rss: () => import("./components/rss.js").then((m) => m.RssReader),
-    habitTracker: () => import("./components/habitTracker.js").then((m) => m.HabitTracker),
+    habitTracker: () =>
+      import("./components/habitTracker.js").then((m) => m.HabitTracker),
   }
   const widgetClassPromises = {}
 
@@ -976,7 +1059,9 @@ async function bootstrap() {
         return widgets.rss
       case "habitTracker":
         const HabitTracker = await loadWidgetClass("habitTracker")
-        widgets.habitTracker = new HabitTracker(document.getElementById("habit-tracker-container"))
+        widgets.habitTracker = new HabitTracker(
+          document.getElementById("habit-tracker-container"),
+        )
         makeDraggable(widgets.habitTracker.container, "habitTracker")
         return widgets.habitTracker
     }
@@ -1003,7 +1088,10 @@ async function bootstrap() {
     if (settings.showHabits === true) void initWidget("habitTracker")
     if (settings.showFullCalendar === true) void initWidget("calendar")
     if (settings.musicPlayerEnabled === true) void initWidget("music")
-    if (settings.showRss === true) void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
+    if (settings.showRss === true)
+      void initWidget("rss").then((w) => {
+        if (w) w.container.style.display = "flex"
+      })
   }
 
   runWhenIdle(initVisibleWidgets, 2200)
@@ -1034,9 +1122,11 @@ async function bootstrap() {
         break
       case "showRss":
         if (e.detail.value) {
-          void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
+          void initWidget("rss").then((w) => {
+            if (w) w.container.style.display = "flex"
+          })
         } else {
-          if (widgets.rss) widgets.rss.container.style.display = 'none';
+          if (widgets.rss) widgets.rss.container.style.display = "none"
         }
         break
     }
@@ -1058,6 +1148,7 @@ async function bootstrap() {
 
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
   makeDraggable(document.getElementById("search-container"), "searchBar")
+  makeDraggable(document.getElementById("bookmark-widget"), "bookmarkWidget")
 
   // Helper to sync quick buttons
   const quickBtns = document.querySelectorAll(".quick-btn")
@@ -1288,7 +1379,8 @@ async function bootstrap() {
         const img = new Image()
         img.src = url
         if (typeof img.decode === "function") {
-          img.decode()
+          img
+            .decode()
             .then(() => {
               bgReady = true
               checkAllReady()
@@ -1388,7 +1480,9 @@ async function bootstrap() {
         if (typeof window.appApplySettings === "function") {
           resolve()
         } else {
-          window.addEventListener("startpage:settingsReady", resolve, { once: true })
+          window.addEventListener("startpage:settingsReady", resolve, {
+            once: true,
+          })
           // Safety timeout in case settings never fires
           setTimeout(resolve, 2000)
         }
@@ -1434,9 +1528,13 @@ async function bootstrap() {
       promptFirstRunBookmarkImport(renderBookmarks)
     }
     if (document.body.classList.contains("loading-state")) {
-      window.addEventListener("startpage:appRevealed", startFirstRunOnboarding, {
-        once: true,
-      })
+      window.addEventListener(
+        "startpage:appRevealed",
+        startFirstRunOnboarding,
+        {
+          once: true,
+        },
+      )
       setTimeout(startFirstRunOnboarding, 3200)
     } else {
       setTimeout(startFirstRunOnboarding, 300)
@@ -1560,7 +1658,10 @@ async function bootstrap() {
     }
     const { activeBgUid, background } = getSettings()
     // Chỉ preload ảnh đang active ngay lập tức; các ảnh còn lại lazy-load
-    await preloadImages(getSettings().userBackgrounds, activeBgUid || background || null)
+    await preloadImages(
+      getSettings().userBackgrounds,
+      activeBgUid || background || null,
+    )
 
     // Check and trigger Unsplash background auto-randomization if scheduled
     const settings = getSettings()
@@ -1595,9 +1696,8 @@ async function bootstrap() {
       if (shouldFetch) {
         try {
           await ensureSettingsInitialized("auto-randomize")
-          const { setUnsplashRandomBackground } = await import(
-            "./components/settings/unsplashFetcher.js"
-          )
+          const { setUnsplashRandomBackground } =
+            await import("./components/settings/unsplashFetcher.js")
           await setUnsplashRandomBackground(
             null,
             null,
@@ -1628,7 +1728,8 @@ async function bootstrap() {
       } else if (settings.localAutoRandomMode === "daily") {
         const lastDate = new Date(lastLocalFetch).toDateString()
         const nowDate = new Date(now).toDateString()
-        shouldPickLocal = now - lastLocalFetch >= 86400000 || lastDate !== nowDate
+        shouldPickLocal =
+          now - lastLocalFetch >= 86400000 || lastDate !== nowDate
       }
 
       if (shouldPickLocal) {
@@ -1883,101 +1984,117 @@ async function bootstrap() {
 
     // Drag and Drop for Quick Access Icons
     const setupQaDragAndDrop = () => {
-      if (!quickAccessBar) return;
-      const toggleBtns = Array.from(quickAccessBar.querySelectorAll('.quick-btn[data-toggle]'));
-      const allowReorder = getSettings().qaAllowReorder === true;
+      if (!quickAccessBar) return
+      const toggleBtns = Array.from(
+        quickAccessBar.querySelectorAll(".quick-btn[data-toggle]"),
+      )
+      const allowReorder = getSettings().qaAllowReorder === true
 
-      toggleBtns.forEach(btn => {
-        btn.draggable = allowReorder;
-        btn.style.cursor = allowReorder ? 'grab' : 'pointer';
+      toggleBtns.forEach((btn) => {
+        btn.draggable = allowReorder
+        btn.style.cursor = allowReorder ? "grab" : "pointer"
 
         if (!btn._dragInitialized) {
-          btn._dragInitialized = true;
-          btn.addEventListener('dragstart', (e) => {
+          btn._dragInitialized = true
+          btn.addEventListener("dragstart", (e) => {
             if (!getSettings().qaAllowReorder) {
-              e.preventDefault();
-              return;
+              e.preventDefault()
+              return
             }
-            window._draggedQaIcon = btn;
-            btn.style.opacity = '0.5';
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', ''); // Required for Firefox
-          });
+            window._draggedQaIcon = btn
+            btn.style.opacity = "0.5"
+            e.dataTransfer.effectAllowed = "move"
+            e.dataTransfer.setData("text/plain", "") // Required for Firefox
+          })
 
-          btn.addEventListener('dragend', () => {
-            window._draggedQaIcon = null;
-            btn.style.opacity = '1';
-            saveQaOrder();
-          });
+          btn.addEventListener("dragend", () => {
+            window._draggedQaIcon = null
+            btn.style.opacity = "1"
+            saveQaOrder()
+          })
 
-          btn.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const draggedIcon = window._draggedQaIcon;
-            if (!draggedIcon || !getSettings().qaAllowReorder) return;
-            
-            const layoutControlsBtn = document.getElementById("layout-controls-btn");
-            const anchor = layoutControlsBtn || quickAccessBar.querySelector('.quick-access-divider');
-            
-            const draggableElements = [...quickAccessBar.querySelectorAll('.quick-btn[data-toggle]')]
-              .filter(el => el !== draggedIcon);
+          btn.addEventListener("dragover", (e) => {
+            e.preventDefault()
+            e.dataTransfer.dropEffect = "move"
+            const draggedIcon = window._draggedQaIcon
+            if (!draggedIcon || !getSettings().qaAllowReorder) return
 
-            const nextElement = draggableElements.reduce((closest, child) => {
-              const box = child.getBoundingClientRect();
-              const offset = e.clientY - box.top - box.height / 2;
-              if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-              } else {
-                return closest;
-              }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            const layoutControlsBtn = document.getElementById(
+              "layout-controls-btn",
+            )
+            const anchor =
+              layoutControlsBtn ||
+              quickAccessBar.querySelector(".quick-access-divider")
+
+            const draggableElements = [
+              ...quickAccessBar.querySelectorAll(".quick-btn[data-toggle]"),
+            ].filter((el) => el !== draggedIcon)
+
+            const nextElement = draggableElements.reduce(
+              (closest, child) => {
+                const box = child.getBoundingClientRect()
+                const offset = e.clientY - box.top - box.height / 2
+                if (offset < 0 && offset > closest.offset) {
+                  return { offset: offset, element: child }
+                } else {
+                  return closest
+                }
+              },
+              { offset: Number.NEGATIVE_INFINITY },
+            ).element
 
             if (nextElement) {
-              quickAccessBar.insertBefore(draggedIcon, nextElement);
+              quickAccessBar.insertBefore(draggedIcon, nextElement)
             } else if (anchor) {
-              quickAccessBar.insertBefore(draggedIcon, anchor);
+              quickAccessBar.insertBefore(draggedIcon, anchor)
             }
-          });
+          })
         }
-      });
-    };
+      })
+    }
 
     const saveQaOrder = () => {
-      if (!quickAccessBar) return;
-      const order = [];
-      quickAccessBar.querySelectorAll('.quick-btn[data-toggle]').forEach(btn => {
-        order.push(btn.getAttribute('data-toggle'));
-      });
-      updateSetting('qaOrder', order);
-      saveSettings();
-    };
+      if (!quickAccessBar) return
+      const order = []
+      quickAccessBar
+        .querySelectorAll(".quick-btn[data-toggle]")
+        .forEach((btn) => {
+          order.push(btn.getAttribute("data-toggle"))
+        })
+      updateSetting("qaOrder", order)
+      saveSettings()
+    }
 
     const applyQaOrder = () => {
-      if (!quickAccessBar) return;
-      const order = getSettings().qaOrder;
+      if (!quickAccessBar) return
+      const order = getSettings().qaOrder
       if (order && Array.isArray(order)) {
-        const layoutControlsBtn = document.getElementById("layout-controls-btn");
-        const anchor = layoutControlsBtn || quickAccessBar.querySelector('.quick-access-divider');
+        const layoutControlsBtn = document.getElementById("layout-controls-btn")
+        const anchor =
+          layoutControlsBtn ||
+          quickAccessBar.querySelector(".quick-access-divider")
         if (anchor) {
-          order.forEach(toggle => {
-            const btn = quickAccessBar.querySelector(`.quick-btn[data-toggle="${toggle}"]`);
+          order.forEach((toggle) => {
+            const btn = quickAccessBar.querySelector(
+              `.quick-btn[data-toggle="${toggle}"]`,
+            )
             if (btn) {
-              quickAccessBar.insertBefore(btn, anchor);
+              quickAccessBar.insertBefore(btn, anchor)
             }
-          });
+          })
         }
       }
-    };
+    }
 
     if (quickAccessBar) {
-      applyQaOrder();
-      setupQaDragAndDrop();
+      applyQaOrder()
+      setupQaDragAndDrop()
 
       window.addEventListener("layoutUpdated", (e) => {
         if (e.detail.key === "qaAllowReorder") {
-          setupQaDragAndDrop();
+          setupQaDragAndDrop()
         }
-      });
+      })
     }
 
     // Update Notification Check
@@ -2172,9 +2289,16 @@ async function bootstrap() {
                   showUpdateModal()
                 }
               })
-              obs.observe(document.body, { attributes: true, attributeFilter: ["class"], subtree: false })
+              obs.observe(document.body, {
+                attributes: true,
+                attributeFilter: ["class"],
+                subtree: false,
+              })
               // Safety timeout
-              setTimeout(() => { obs.disconnect(); if (!isDialogActive()) showUpdateModal() }, 5000)
+              setTimeout(() => {
+                obs.disconnect()
+                if (!isDialogActive()) showUpdateModal()
+              }, 5000)
             }
             tryShowModal()
           }
@@ -2222,13 +2346,13 @@ setTimeout(() => {
 
 setTimeout(() => {
   if (navigator.deviceMemory && navigator.deviceMemory <= 8) {
-    if (!localStorage.getItem('perfWarningShown')) {
+    if (!localStorage.getItem("perfWarningShown")) {
       showAlert(
-        geti18n().perf_warning || 
-        "System Check: Your device has 8GB RAM or less.\n\nStartpage has heavy glassmorphism effects. If you experience lag, consider turning off some heavy features.\n\n" +
-        "Tip: Press the backtick (`) key to open the Terminal and type 'perf' or press 'Ctrl+Alt+P' to toggle the Performance HUD to monitor system resources."
-      );
-      localStorage.setItem('perfWarningShown', 'true');
+        geti18n().perf_warning ||
+          "System Check: Your device has 8GB RAM or less.\n\nStartpage has heavy glassmorphism effects. If you experience lag, consider turning off some heavy features.\n\n" +
+            "Tip: Press the backtick (`) key to open the Terminal and type 'perf' or press 'Ctrl+Alt+P' to toggle the Performance HUD to monitor system resources.",
+      )
+      localStorage.setItem("perfWarningShown", "true")
     }
   }
-}, 3000);
+}, 3000)

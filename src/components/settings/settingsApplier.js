@@ -5399,6 +5399,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (weatherUnitSelect) {
       weatherUnitSelect.value = settings.weatherUnit || "celsius"
     }
+    const habitColorModeSelect = document.getElementById("habit-color-mode-select")
+    if (habitColorModeSelect) {
+      habitColorModeSelect.value = settings.habitColorMode || "custom"
+    }
     if (weatherApiModeSelect) {
       weatherApiModeSelect.value = settings.weatherApiMode || "extension"
     }
