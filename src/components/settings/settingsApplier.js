@@ -2629,6 +2629,8 @@ function createApplySettings(effectInstances) {
       "lunar-orbit",
       "space-concentric",
       "audio-wave",
+      "satellite",
+      "pixel-hud",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -3653,6 +3655,8 @@ function createUpdateSettingsInputs(effectInstances) {
       "space-concentric",
       "audio-wave",
       "glass-float",
+      "satellite",
+      "pixel-hud",
     ]
 
     // Show style-specific container if current style has special settings
@@ -3728,6 +3732,27 @@ function createUpdateSettingsInputs(effectInstances) {
     if (coolStyleSettings) {
       coolStyleSettings.style.display = style === "cool" ? "block" : "none"
     }
+    const pixelHudSettings = document.getElementById("pixel-hud-settings")
+    if (pixelHudSettings) {
+      pixelHudSettings.style.display = settings.dateClockStyle === "pixel-hud" ? "block" : "none"
+    }
+
+    const hudColor1Input = document.getElementById("hud-color-1")
+    if (hudColor1Input) {
+        hudColor1Input.value = settings.hudColor1 || "#ffaa00"
+        document.documentElement.style.setProperty("--hud-color-1", settings.hudColor1 || "#ffaa00")
+    }
+    const hudColor2Input = document.getElementById("hud-color-2")
+    if (hudColor2Input) {
+        hudColor2Input.value = settings.hudColor2 || "#3cf0f0"
+        document.documentElement.style.setProperty("--hud-color-2", settings.hudColor2 || "#3cf0f0")
+    }
+    const hudColor3Input = document.getElementById("hud-color-3")
+    if (hudColor3Input) {
+        hudColor3Input.value = settings.hudColor3 || "#a4de6c"
+        document.documentElement.style.setProperty("--hud-color-3", settings.hudColor3 || "#a4de6c")
+    }
+
     const audioWaveSettings = document.getElementById("audio-wave-settings")
     if (audioWaveSettings) {
       document.getElementById("audio-wave-settings").style.display = settings.dateClockStyle === "audio-wave" ? "block" : "none"
@@ -3736,6 +3761,30 @@ function createUpdateSettingsInputs(effectInstances) {
     const glassFloatSettings = document.getElementById("glass-float-settings")
     if (glassFloatSettings) {
       glassFloatSettings.style.display = settings.dateClockStyle === "glass-float" ? "block" : "none"
+    }
+
+    const satelliteSettings = document.getElementById("satellite-settings")
+    if (satelliteSettings) {
+      satelliteSettings.style.display = settings.dateClockStyle === "satellite" ? "block" : "none"
+    }
+    const satAnimColorInput = document.getElementById("satellite-anim-color")
+    if (satAnimColorInput) {
+        satAnimColorInput.value = settings.satelliteAnimColor || "#3caac8"
+        document.documentElement.style.setProperty("--sat-color", settings.satelliteAnimColor || "#3caac8")
+    }
+    const satSecColorInput = document.getElementById("satellite-sec-color")
+    if (satSecColorInput) {
+        satSecColorInput.value = settings.satelliteSecColor || "#7ced7a"
+        document.documentElement.style.setProperty("--sat-sec-color", settings.satelliteSecColor || "#7ced7a")
+    }
+    const satTerColorInput = document.getElementById("satellite-ter-color")
+    if (satTerColorInput) {
+        satTerColorInput.value = settings.satelliteTerColor || "#b57aed"
+        document.documentElement.style.setProperty("--sat-ter-color", settings.satelliteTerColor || "#b57aed")
+    }
+    const satAnimStyleInput = document.getElementById("satellite-anim-style")
+    if (satAnimStyleInput) {
+        satAnimStyleInput.value = settings.satelliteAnimStyle || "classic"
     }
 
     const gfAnimationSelect = document.getElementById("gf-animation-select")

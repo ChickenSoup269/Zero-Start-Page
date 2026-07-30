@@ -367,6 +367,16 @@
                                     <span class="clock-style-name" data-i18n="settings_clock_date_style_glass_float">Glass Float</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="satellite">
+                                    <i class="fa-solid fa-satellite"></i>
+                                    <span class="clock-style-name">Satellite</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="pixel-hud">
+                                    <i class="fa-solid fa-gamepad"></i>
+                                    <span class="clock-style-name">Pixel HUD</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                                 <div class="clock-style-card" data-value="custom-angle">
                                     <i class="fa-solid fa-compass-drafting"></i>
                                     <span class="clock-style-name">Custom Angle</span>
@@ -405,6 +415,7 @@
                             <option value="cartoon">Cartoon</option>
                             <option value="audio-wave" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</option>
                             <option value="glass-float" data-i18n="settings_clock_date_style_glass_float">Glass Float</option>
+                            <option value="satellite">Satellite</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -450,6 +461,43 @@
                                 <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
                                     Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
+                            </div>
+                        </div>
+
+                        <div id="satellite-settings" class="setting-item no-margin-top" style="display: none;">
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="satellite-anim-color">Radar & Text Color</label>
+                                <input type="color" id="satellite-anim-color" value="#3caac8" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="satellite-sec-color">Battery & Seconds Color</label>
+                                <input type="color" id="satellite-sec-color" value="#7ced7a" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="satellite-ter-color">Humidity Color</label>
+                                <input type="color" id="satellite-ter-color" value="#b57aed" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px;">
+                                <label for="satellite-anim-style">Animation Style</label>
+                                <select id="satellite-anim-style">
+                                    <option value="classic">Classic Radar</option>
+                                    <option value="galaxy">Pixel Galaxy</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="pixel-hud-settings" class="setting-item no-margin-top" style="display: none;">
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="hud-color-1">Top Bar & Battery Color</label>
+                                <input type="color" id="hud-color-1" value="#ffaa00" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="hud-color-2">Time & Weather Color</label>
+                                <input type="color" id="hud-color-2" value="#3cf0f0" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="hud-color-3">Date Panel Color</label>
+                                <input type="color" id="hud-color-3" value="#a4de6c" style="padding: 0; width: 30px; height: 30px; border: none; border-radius: 4px; cursor: pointer;">
                             </div>
                         </div>
 

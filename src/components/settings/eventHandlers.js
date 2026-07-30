@@ -4877,6 +4877,48 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockStyleCustomBgColor", color)
   })
 
+  document.getElementById("satellite-anim-color")?.addEventListener("input", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("satelliteAnimColor", color)
+    document.documentElement.style.setProperty("--sat-color", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "satelliteAnimColor", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("satellite-sec-color")?.addEventListener("input", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("satelliteSecColor", color)
+    document.documentElement.style.setProperty("--sat-sec-color", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "satelliteSecColor", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("satellite-ter-color")?.addEventListener("input", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("satelliteTerColor", color)
+    document.documentElement.style.setProperty("--sat-ter-color", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "satelliteTerColor", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("satellite-anim-style")?.addEventListener("change", (e) => {
+    handleSettingUpdate("satelliteAnimStyle", e.target.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "satelliteAnimStyle", value: e.target.value },
+      }),
+    )
+  })
+
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()
     const style = settings.dateClockStyle || "default"
