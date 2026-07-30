@@ -13807,6 +13807,7 @@ body.gf-anim-none .gf-char { animation: none; }
     color: #fff;
     text-shadow: 0 4px 20px rgba(255, 255, 255, 0.4);
     letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
 }
 .gf-date {
     font-size: 20px;

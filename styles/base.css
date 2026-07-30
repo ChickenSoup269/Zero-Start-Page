@@ -6164,3 +6164,647 @@ body.show-snap-grid::after {
     linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
 }
+
+/* Satellite Clock Background Styles Sync */
+body.clock-style-bg-accent.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-custom.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-light.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-dark.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-accent.date-clock-style-pixel-hud .pixel-hud-container,
+body.clock-style-bg-custom.date-clock-style-pixel-hud .pixel-hud-container,
+body.clock-style-bg-light.date-clock-style-pixel-hud .pixel-hud-container,
+body.clock-style-bg-dark.date-clock-style-pixel-hud .pixel-hud-container {
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+body.clock-style-bg-accent.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-accent.date-clock-style-pixel-hud .pixel-hud-container {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)),
+    rgba(8, 10, 18, 0.54) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.34),
+    0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-custom.date-clock-style-pixel-hud .pixel-hud-container {
+  background: var(--clock-style-custom-bg-color, rgba(31, 41, 55, 0.7)) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(var(--clock-bg-blur, 10px)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--clock-bg-blur, 10px)) saturate(140%) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-light.date-clock-style-pixel-hud .pixel-hud-container {
+  background:
+    linear-gradient(125deg, rgba(255, 255, 255, 0.64) 0%, rgba(255, 255, 255, 0.32) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.16),
+    0 4px 14px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  color: #1a1a1a !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-satellite .satellite-container,
+body.clock-style-bg-dark.date-clock-style-pixel-hud .pixel-hud-container {
+  background:
+    linear-gradient(135deg, rgba(16, 18, 24, 0.82) 0%, rgba(8, 10, 14, 0.94) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, 0.48),
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(16px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-satellite .satellite-container,
+body.clock-style-transparent-bg.date-clock-style-pixel-hud .pixel-hud-container {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* --- Satellite Clock --- */
+body.date-clock-style-satellite #clock-date-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--font-clock, 'Courier New', Courier, monospace);
+}
+body.date-clock-style-satellite #date-fade-wrap {
+  display: none !important;
+}
+
+.satellite-container {
+  font-size: min(calc(var(--clock-size, 6rem) * 0.17), 4vw); /* Scale basis, capped by screen width */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1em;
+  background: rgba(42, 42, 42, 0.85); /* Default fallback */
+  border: 2px solid var(--sat-color, #3caac8);
+  padding: 0.9em 1.5em;
+  border-radius: 0.75em;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
+  color: var(--sat-color, #3caac8);
+  overflow: hidden;
+  min-width: 20em;
+  width: fit-content;
+  max-width: 94vw;
+  margin: 0 auto;
+}
+
+.sat-left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em;
+  z-index: 2;
+}
+
+.sat-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.85em;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sat-slashes {
+  letter-spacing: 0.125em;
+  font-style: italic;
+  color: #e0e0e0;
+}
+
+.sat-seconds {
+  color: var(--sat-sec-color, #7ced7a);
+  font-variant-numeric: tabular-nums;
+}
+
+.sat-battery {
+  width: 10em;
+  height: 1em;
+  border: 0.06em solid var(--sat-sec-color, #7ced7a);
+  padding: 0.125em;
+  border-radius: 0.125em;
+  position: relative;
+}
+
+.sat-battery-fill {
+  height: 100%;
+  background-color: var(--sat-sec-color, #7ced7a);
+  width: 87%;
+  transition: width 1s linear;
+}
+
+.sat-battery-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  mix-blend-mode: difference;
+  font-size: 0.7em;
+  font-weight: 900;
+  text-shadow: none;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.sat-time {
+  font-size: 4em;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 0 0.15em var(--sat-color, #3caac8);
+  margin: 0.3em 0 0.1em;
+}
+
+.sat-date {
+  font-size: 0.9em;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+  color: #e0e0e0;
+  margin-bottom: 0.9em;
+}
+
+.sat-weather {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  width: 100%;
+}
+
+.sat-weather-item {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.sat-weather-item.tem {
+  color: var(--sat-sec-color, #7ced7a);
+}
+.sat-weather-item.hum {
+  color: var(--sat-ter-color, #b57aed);
+}
+
+.sat-w-label {
+  width: 2.5em;
+}
+
+.sat-w-line-box {
+  width: 2.5em;
+  height: 1.25em;
+  margin: 0 0.3em;
+  display: flex;
+  align-items: center;
+}
+
+.sat-w-line {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sat-w-value {
+  border: 1px solid currentColor;
+  padding: 0.1em 0.3em;
+  border-radius: 0.125em;
+  min-width: 2.5em;
+  text-align: center;
+  background: rgba(0,0,0,0.2);
+}
+
+.sat-right-panel {
+  position: relative;
+  width: 8em;
+  height: 8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.sat-radar {
+  position: absolute;
+  bottom: -0.3em;
+  right: -0.3em;
+  width: 8.75em;
+  height: 8.75em;
+}
+
+.sat-radar-ring {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 100% 0 0 0;
+  border-top: 0.125em dotted var(--sat-color, #3caac8);
+  border-left: 0.125em dotted var(--sat-color, #3caac8);
+  opacity: 0.6;
+}
+
+.sat-radar-ring.r1 { width: 0.875em; height: 0.875em; }
+.sat-radar-ring.r2 { width: 1.75em; height: 1.75em; }
+.sat-radar-ring.r3 { width: 2.625em; height: 2.625em; }
+.sat-radar-ring.r4 { width: 3.5em; height: 3.5em; }
+.sat-radar-ring.r5 { width: 4.375em; height: 4.375em; }
+.sat-radar-ring.r6 { width: 5.25em; height: 5.25em; }
+.sat-radar-ring.r7 { width: 6.125em; height: 6.125em; }
+.sat-radar-ring.r8 { width: 7em; height: 7em; }
+.sat-radar-ring.r9 { width: 7.875em; height: 7.875em; }
+.sat-radar-ring.r10 { width: 8.75em; height: 8.75em; }
+
+.sat-radar-sweep {
+  position: absolute;
+  bottom: -8.75em;
+  right: -8.75em;
+  width: 17.5em;
+  height: 17.5em;
+  border-radius: 50%;
+  background: conic-gradient(
+    transparent 0deg, 
+    var(--sat-color, rgba(60,170,200,0.1)) 50deg, 
+    var(--sat-color, rgba(60,170,200,0.6)) 88deg, 
+    rgba(255,255,255,1) 90deg,
+    transparent 91deg
+  );
+  transform-origin: 50% 50%;
+  animation: satRadarSweep 6s linear infinite;
+  pointer-events: none;
+}
+
+.sat-radar-sweep::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 0.15em;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 0 0.5em #fff, 0 0 1em var(--sat-color, #3caac8);
+  transform: translateY(-50%);
+  transform-origin: 0 50%;
+  animation: radarBlinkLine 2s infinite alternate;
+}
+
+@keyframes radarBlinkLine {
+  from { opacity: 0.2; }
+  to { opacity: 1; }
+}
+
+@keyframes satRadarSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sat-radar-blip {
+  position: absolute;
+  bottom: 4em;
+  right: 3.5em;
+  width: 0.4em;
+  height: 0.4em;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0.5em #fff, 0 0 1em var(--sat-color, #3caac8);
+  opacity: 0;
+  animation: radarBlip 6s infinite;
+  animation-delay: 4s; /* Sync roughly with the sweep passing over */
+}
+
+@keyframes radarBlip {
+  0%, 15% { opacity: 0; transform: scale(0.5); }
+  18% { opacity: 1; transform: scale(1.5); }
+  35%, 100% { opacity: 0; transform: scale(0.5); }
+}
+
+.satellite-container.anim-style-classic .sat-galaxy {
+  display: none;
+}
+.satellite-container.anim-style-galaxy .sat-radar {
+  display: none;
+}
+
+.sat-galaxy {
+  position: absolute;
+  bottom: -0.3em;
+  right: -0.3em;
+  width: 8.75em;
+  height: 8.75em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sat-galaxy-planet {
+  width: 1.75em;
+  height: 1.75em;
+  background: var(--sat-color, #3caac8);
+  border-radius: 50%;
+  box-shadow: 
+    inset -0.25em -0.25em rgba(0,0,0,0.4),
+    inset 0.125em 0.125em rgba(255,255,255,0.4),
+    0 0 0.75em var(--sat-color, #3caac8);
+  z-index: 5;
+}
+
+.sat-galaxy-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 0.125em dotted var(--sat-color, #3caac8);
+  opacity: 0.4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sat-galaxy-orbit.o1 { width: 3.75em; height: 3.75em; }
+.sat-galaxy-orbit.o2 { width: 6.25em; height: 6.25em; border-width: 0.06em; }
+
+.sat-galaxy-moon-container {
+  position: absolute;
+  width: 6.25em;
+  height: 6.25em;
+  animation: satOrbitRotate 10s linear infinite;
+  z-index: 6;
+}
+
+/* Pixel Satellite Station */
+.sat-galaxy-moon {
+  position: absolute;
+  top: -0.6em; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1em;
+  height: 1em;
+  background: 
+    linear-gradient(var(--sat-color, #3caac8), var(--sat-color, #3caac8)) 0% 50% / 0.25em 0.75em no-repeat,
+    linear-gradient(var(--sat-color, #3caac8), var(--sat-color, #3caac8)) 100% 50% / 0.25em 0.75em no-repeat,
+    linear-gradient(#fff, #fff) 50% 50% / 0.35em 0.35em no-repeat,
+    linear-gradient(#ccc, #ccc) 50% 50% / 1em 0.125em no-repeat;
+  filter: drop-shadow(0 0 0.25em rgba(255,255,255,0.6));
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@keyframes satOrbitRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sat-galaxy-stars {
+  position: absolute;
+  width: 8.75em;
+  height: 8.75em;
+  border-radius: 50%;
+  background-image: 
+    radial-gradient(0.06em 0.06em at 1.25em 1.875em, #fff, rgba(0,0,0,0)),
+    radial-gradient(0.1em 0.1em at 6.875em 2.5em, #fff, rgba(0,0,0,0)),
+    radial-gradient(0.06em 0.06em at 2.5em 6.875em, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+    radial-gradient(0.1em 0.1em at 5.625em 6.25em, rgba(255,255,255,0.6), rgba(0,0,0,0));
+  background-repeat: no-repeat;
+  animation: satTwinkle 4s infinite alternate ease-in-out;
+}
+
+@keyframes satTwinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes satRadarSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(90deg); }
+}
+
+/* --- Pixel HUD Clock (Satellite V2) --- */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+body.date-clock-style-pixel-hud #clock-date-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+body.date-clock-style-pixel-hud #date-fade-wrap {
+  display: none !important;
+}
+
+.pixel-hud-container {
+  font-family: var(--font-clock, 'VT323', 'Courier New', monospace);
+  font-size: min(calc(var(--clock-size, 6rem) * 0.13), 3.2vw); /* Scale basis, capped by screen width */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  min-width: 20em;
+  width: fit-content;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 auto;
+  padding: 1em 1.25em;
+  border-radius: 0.75em;
+  max-width: 94vw;
+  border: 2px solid transparent; /* Allows border-color from background styles to apply gracefully */
+}
+
+.hud-top {
+  display: flex;
+  align-items: center;
+  border: 0.125em solid var(--hud-color-1, #ffaa00);
+  border-radius: 0.25em 1em 0.25em 0.25em; /* Slight HUD shaping */
+  padding: 0.4em 0.6em;
+}
+
+.hud-off {
+  color: #fff;
+  font-size: 1.25em;
+  margin-right: 1em;
+  letter-spacing: 0.05em;
+}
+
+.hud-battery {
+  display: flex;
+  gap: 0.25em;
+  flex: 1;
+}
+
+.hud-bat-segment {
+  height: 0.9em;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hud-bat-segment.active {
+  background-color: var(--hud-color-1, #ffaa00);
+  box-shadow: 0 0 0.3em var(--hud-color-1, #ffaa00);
+}
+
+.hud-middle {
+  text-align: right;
+  margin: 0.6em 0;
+  position: relative;
+}
+
+.hud-loc.sat-w-icon {
+  font-size: 1.5em;
+  color: var(--sat-sec-color, #7ced7a);
+}
+.hud-location {
+  font-size: 1.25em;
+  color: #fff;
+  letter-spacing: 0.1em;
+  margin-right: 0.3em;
+  margin-bottom: -0.3em;
+}
+
+.hud-time {
+  font-size: 6.8em;
+  color: var(--hud-color-2, #3cf0f0);
+  line-height: 0.8;
+  text-shadow: 0 0 0.15em rgba(60, 240, 240, 0.4);
+}
+
+.hud-date-block {
+  display: flex;
+  border: 0.125em solid var(--hud-color-3, #a4de6c);
+  border-radius: 0.75em 0.25em 0.25em 0.75em;
+  padding: 0.25em;
+  align-items: stretch;
+  gap: 0.75em;
+  position: relative;
+}
+
+.hud-date-left {
+  background-color: var(--hud-color-3, #a4de6c);
+  color: #000;
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5em 0.1em 0.1em 0.5em;
+}
+
+.hud-date-day {
+  font-size: 3.5em;
+  line-height: 1;
+  text-shadow: none;
+}
+
+.hud-date-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  flex: 1;
+  gap: 0.1em;
+  padding-right: 2em; /* Ensure space for absolute icon */
+}
+
+.hud-date-my {
+  display: flex;
+  gap: 0.6em;
+  color: var(--hud-color-3, #a4de6c);
+  font-size: 2em;
+  line-height: 1;
+}
+
+.hud-date-weekday {
+  color: #fff;
+  font-size: 1.4em;
+  line-height: 1;
+}
+
+.hud-station {
+  position: absolute;
+  bottom: -0.2em;
+  right: -0.2em;
+  width: 2.8em;
+  height: 2.8em;
+  background: 
+    linear-gradient(#fff, #fff) 50% 50% / 0.7em 0.7em no-repeat,
+    linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)) 50% 50% / 0.3em 0.3em no-repeat;
+  filter: drop-shadow(0 0 0.25em rgba(255, 255, 255, 0.6));
+  z-index: 10;
+}
+
+.hud-station-wings {
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(var(--hud-color-3, #a4de6c), var(--hud-color-3, #a4de6c)) 0% 50% / 0.6em 2.2em no-repeat,
+    linear-gradient(var(--hud-color-3, #a4de6c), var(--hud-color-3, #a4de6c)) 100% 50% / 0.6em 2.2em no-repeat,
+    linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)) 0% 50% / 0.6em 0.2em no-repeat,
+    linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)) 100% 50% / 0.6em 0.2em no-repeat,
+    linear-gradient(#ccc, #ccc) 50% 50% / 100% 0.2em no-repeat;
+  animation: hudStationSpin 12s linear infinite;
+}
+
+@keyframes hudStationSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hud-weather-block1 {
+  display: flex;
+  border: 0.125em solid var(--hud-color-2, #3cf0f0);
+  border-radius: 0.25em 0.75em 0.25em 0.75em;
+  padding: 0.4em 1em;
+  align-items: center;
+  font-size: 1.75em;
+  width: fit-content;
+  align-self: flex-start;
+  min-width: 60%;
+}
+
+.hud-w-temp { color: var(--hud-color-1, #ffaa00); }
+.hud-w-slash { color: #fff; margin: 0 0.8em; font-style: italic; }
+.hud-w-hum { color: var(--hud-color-2, #3cf0f0); }
+
+.hud-weather-block2 {
+  border: 0.125em solid var(--hud-color-2, #3cf0f0);
+  border-radius: 0.75em 0.25em 0.75em 0.25em;
+  padding: 0.6em 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.hud-w2-title {
+  color: #fff;
+  font-size: 1.25em;
+}
+
+.hud-w2-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.5em;
+  color: #fff;
+  flex-wrap: wrap; /* Prevent overflow on small screens */
+}
+
+.hud-w2-cond-text {
+  margin-left: auto;
+  font-size: 1.75em;
+  color: #fff;
+}

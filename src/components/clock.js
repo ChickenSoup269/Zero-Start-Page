@@ -2098,53 +2098,295 @@ export function updateTime() {
         </div>
       `;
     }
+    const updateGfSpans = (el, textStr, startIdx) => {
+      if (!textStr) {
+        if (el.innerHTML !== "") el.innerHTML = "";
+        return startIdx;
+      }
+      let spans = el.querySelectorAll('.gf-char');
+      if (spans.length !== textStr.length) {
+        const html = textStr.split('').map((c, i) => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${startIdx + i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+        el.innerHTML = html;
+      } else {
+        for (let i = 0; i < textStr.length; i++) {
+          const char = textStr[i] === ' ' ? '\u00A0' : textStr[i];
+          const dataChar = textStr[i] === ' ' ? '&nbsp;' : textStr[i];
+          if (spans[i].textContent !== char) {
+            spans[i].textContent = char;
+            spans[i].setAttribute('data-char', dataChar);
+          }
+        }
+      }
+      return startIdx + textStr.length;
+    };
+
     const customText = settings.gfCustomText === "" ? "" : (settings.gfCustomText || "Floating Clock");
     const gfTextEl = clockElement.querySelector('.gf-text');
     let animIdx = 0;
 
-    if (!customText) {
+    if (customText) {
+       gfTextEl.style.display = 'block';
+       animIdx = updateGfSpans(gfTextEl, customText, animIdx);
+    } else {
        gfTextEl.style.display = 'none';
        gfTextEl.innerHTML = "";
-    } else {
-       gfTextEl.style.display = 'block';
-       const textHtml = customText.split('').map(c => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-       if (gfTextEl.getAttribute("data-raw-html") !== textHtml) { gfTextEl.innerHTML = textHtml; gfTextEl.setAttribute("data-raw-html", textHtml); };
     }
     
-    const hourHtml = hh.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
-    const colonHtml = `<span class="gf-char" data-char=":" style="--anim-index: ${animIdx++}">:</span>`;
-    const minuteHtml = mm.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
-    
-    let secondsHtml = '';
-    if (ss) {
-      secondsHtml = `<span class="gf-char" data-char=":" style="--anim-index: ${animIdx++}">:</span>` + ss.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
-    }
-    
-    let ampmHtml = '';
-    if (ampm) {
-      ampmHtml = `<span class="gf-char" data-char="&nbsp;" style="--anim-index: ${animIdx++}">&nbsp;</span>` + ampm.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
-    }
-    
-    const hEl = clockElement.querySelector('.gf-hour');
-    if (hEl.getAttribute("data-raw-html") !== hourHtml) { hEl.innerHTML = hourHtml; hEl.setAttribute("data-raw-html", hourHtml); };
-    
-    const cEl = clockElement.querySelector('.gf-colon');
-    if (cEl.getAttribute("data-raw-html") !== colonHtml) { cEl.innerHTML = colonHtml; cEl.setAttribute("data-raw-html", colonHtml); };
-    
-    const mEl = clockElement.querySelector('.gf-minute');
-    if (mEl.getAttribute("data-raw-html") !== minuteHtml) { mEl.innerHTML = minuteHtml; mEl.setAttribute("data-raw-html", minuteHtml); };
+    animIdx = updateGfSpans(clockElement.querySelector('.gf-hour'), hh, animIdx);
+    animIdx = updateGfSpans(clockElement.querySelector('.gf-colon'), ":", animIdx);
+    animIdx = updateGfSpans(clockElement.querySelector('.gf-minute'), mm, animIdx);
     
     const sEl = clockElement.querySelector('.gf-seconds');
-    if (sEl.getAttribute("data-raw-html") !== secondsHtml) { sEl.innerHTML = secondsHtml; sEl.setAttribute("data-raw-html", secondsHtml); };
+    if (ss) {
+       animIdx = updateGfSpans(sEl, ":" + ss, animIdx);
+    } else {
+       sEl.innerHTML = "";
+    }
     
     const aEl = clockElement.querySelector('.gf-ampm');
-    if (aEl.getAttribute("data-raw-html") !== ampmHtml) { aEl.innerHTML = ampmHtml; aEl.setAttribute("data-raw-html", ampmHtml); };
+    if (ampm) {
+       animIdx = updateGfSpans(aEl, " " + ampm, animIdx);
+    } else {
+       aEl.innerHTML = "";
+    }
     
     const dateStr = getCustomDateString(now, langCode, tz, settings);
-    const dateText = dateStr.replace(/<[^>]*>?/gm, '') || "";
-    const dateHtml = dateText.split('').map(c => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-    const dEl = clockElement.querySelector('.gf-date');
-    if (dEl.getAttribute("data-raw-html") !== dateHtml) { dEl.innerHTML = dateHtml; dEl.setAttribute("data-raw-html", dateHtml); };
+    const dateText = dateStr.replace(/<[^>]*>?/gm, '').trim();
+    animIdx = updateGfSpans(clockElement.querySelector('.gf-date'), dateText, animIdx);
+  } else if (dateClockStyle === "satellite") {
+    if (!clockElement.querySelector('.satellite-container')) {
+      clockElement.innerHTML = `
+        <div class="clock-container satellite-container">
+          <div class="sat-left-panel">
+            <div class="sat-top-bar">
+              <div class="sat-slashes">//////////////</div>
+              <div class="sat-seconds"></div>
+              <div class="sat-battery">
+                <div class="sat-battery-fill"></div>
+                <div class="sat-battery-text">87%</div>
+              </div>
+            </div>
+            <div class="sat-time"></div>
+            <div class="sat-date"></div>
+            <div class="sat-weather">
+              <div class="sat-weather-item tem">
+                <div class="sat-w-label">TEM</div>
+                <div class="sat-w-line-box">
+                  <svg class="sat-w-line" viewBox="0 0 40 20" preserveAspectRatio="none">
+                    <polyline points="0,18 20,18 30,2 40,2" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="sat-w-value" id="sat-tem-val">--</div>
+              </div>
+              <div class="sat-weather-item hum">
+                <div class="sat-w-label">HUM</div>
+                <div class="sat-w-line-box">
+                  <svg class="sat-w-line" viewBox="0 0 40 20" preserveAspectRatio="none">
+                    <polyline points="0,2 20,2 30,18 40,18" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="sat-w-value" id="sat-hum-val">--</div>
+              </div>
+            </div>
+          </div>
+          <div class="sat-right-panel">
+            <div class="sat-radar">
+              <div class="sat-radar-ring r1"></div>
+              <div class="sat-radar-ring r2"></div>
+              <div class="sat-radar-ring r3"></div>
+              <div class="sat-radar-ring r4"></div>
+              <div class="sat-radar-ring r5"></div>
+              <div class="sat-radar-ring r6"></div>
+              <div class="sat-radar-ring r7"></div>
+              <div class="sat-radar-ring r8"></div>
+              <div class="sat-radar-ring r9"></div>
+              <div class="sat-radar-ring r10"></div>
+              <div class="sat-radar-sweep"></div>
+              <div class="sat-radar-blip"></div>
+            </div>
+            <div class="sat-galaxy">
+              <div class="sat-galaxy-stars"></div>
+              <div class="sat-galaxy-orbit o1"></div>
+              <div class="sat-galaxy-orbit o2"></div>
+              <div class="sat-galaxy-planet"></div>
+              <div class="sat-galaxy-moon-container">
+                <div class="sat-galaxy-moon"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    clockElement.querySelector('.sat-time').textContent = `${hh}:${mm}${ampm ? ' ' + ampm : ''}`;
+    clockElement.querySelector('.sat-seconds').textContent = `${ss || '00'}s`;
+    
+    const dateStr = getCustomDateString(now, langCode, tz, settings).replace(/<[^>]*>?/gm, '').trim();
+    clockElement.querySelector('.sat-date').textContent = dateStr;
+    
+    const satContainer = clockElement.querySelector('.satellite-container');
+    const animStyle = settings.satelliteAnimStyle || 'classic';
+    if (animStyle === 'galaxy') {
+      satContainer.classList.add('anim-style-galaxy');
+      satContainer.classList.remove('anim-style-classic');
+    } else {
+      satContainer.classList.add('anim-style-classic');
+      satContainer.classList.remove('anim-style-galaxy');
+    }
+    
+    // Calculate hour progress (0% to 100%) for battery
+    const currentMin = now.getMinutes();
+    const currentSec = now.getSeconds();
+    const hourProgress = ((currentMin * 60 + currentSec) / 3600) * 100;
+    clockElement.querySelector('.sat-battery-fill').style.width = `${hourProgress}%`;
+
+    // Fetch weather data from cache
+    if (!window._satWeatherLastUpdate || (now.getTime() - window._satWeatherLastUpdate > 60000)) {
+        try {
+            const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
+            if (cache && cache.data && cache.data.current) {
+                const temp = cache.data.current.temperature_2m;
+                const tempUnit = cache.data.current_units?.temperature_2m || "C";
+                const hum = cache.data.current.relative_humidity_2m;
+                
+                if (temp !== undefined) {
+                    clockElement.querySelector('#sat-tem-val').textContent = `${(temp).toFixed(1)}°${tempUnit.replace('°', '')}`;
+                }
+                if (hum !== undefined) {
+                    clockElement.querySelector('#sat-hum-val').textContent = `${Math.round(hum)}%`;
+                }
+            }
+        } catch(e) {}
+        window._satWeatherLastUpdate = now.getTime();
+    }
+
+  } else if (dateClockStyle === "pixel-hud") {
+    if (!clockElement.querySelector('.pixel-hud-container')) {
+      clockElement.innerHTML = `
+        <div class="clock-container pixel-hud-container">
+          <div class="hud-top">
+            <div class="hud-off">0%</div>
+            <div class="hud-battery">
+              ${Array(12).fill(0).map(() => '<div class="hud-bat-segment"></div>').join('')}
+            </div>
+          </div>
+          <div class="hud-middle">
+            <div class="hud-location" id="hud-loc-val">--</div>
+            <div class="hud-time"></div>
+          </div>
+          <div class="hud-date-block">
+            <div class="hud-date-left">
+              <div class="hud-date-day"></div>
+            </div>
+            <div class="hud-date-right">
+              <div class="hud-date-my">
+                <span class="hud-date-month"></span>
+                <span class="hud-date-year"></span>
+              </div>
+              <div class="hud-date-weekday"></div>
+              <div class="hud-station"><div class="hud-station-wings"></div></div>
+            </div>
+          </div>
+          <div class="hud-weather-block1">
+            <div class="hud-w-temp"></div>
+            <div class="hud-w-slash">/</div>
+            <div class="hud-w-hum"></div>
+          </div>
+          <div class="hud-weather-block2">
+            <div class="hud-w2-title">OutDoor:</div>
+            <div class="hud-w2-info">
+              <i class="fa-solid fa-temperature-half" style="color: #fca311;"></i>
+              <span class="hud-w2-temp"></span>
+              <i class="fa-solid fa-droplet" style="color: #3caac8;"></i>
+              <span class="hud-w2-hum"></span>
+              <span class="hud-w2-cond-icon"></span>
+              <span class="hud-w2-cond-text"></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    clockElement.querySelector('.hud-time').textContent = `${hh}:${mm}`;
+    
+    clockElement.querySelector('.hud-date-day').textContent = String(now.getDate()).padStart(2, '0');
+    clockElement.querySelector('.hud-date-month').textContent = now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase();
+    clockElement.querySelector('.hud-date-year').textContent = now.getFullYear();
+    clockElement.querySelector('.hud-date-weekday').textContent = now.toLocaleDateString(langCode, { weekday: 'long' }).toLowerCase();
+    
+    const currentMinHUD = now.getMinutes();
+    const currentSecHUD = now.getSeconds();
+    const hourProgressHUD = (currentMinHUD * 60 + currentSecHUD) / 3600;
+    
+    clockElement.querySelector('.hud-off').textContent = `${Math.floor(hourProgressHUD * 100)}%`;
+    
+    const activeSegments = Math.round(hourProgressHUD * 12);
+    const segments = clockElement.querySelectorAll('.hud-bat-segment');
+    segments.forEach((seg, idx) => {
+      if (idx < activeSegments) seg.classList.add('active');
+      else seg.classList.remove('active');
+    });
+
+    try {
+        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
+        if (cache && cache.data && cache.data.current) {
+                const temp = cache.data.current.temperature_2m;
+                const tempUnit = cache.data.current_units?.temperature_2m || "C";
+                const hum = cache.data.current.relative_humidity_2m;
+                
+                let loc = settings.weatherLocationName || "Unknown";
+                if (loc.length > 10) loc = loc.split(',')[0];
+                clockElement.querySelector('#hud-loc-val').textContent = loc;
+                
+                if (temp !== undefined) {
+                    const tempStr = `${Math.round(temp)}${tempUnit.replace('°', '')}`;
+                    clockElement.querySelector('.hud-w-temp').textContent = tempStr;
+                    clockElement.querySelector('.hud-w2-temp').textContent = tempStr;
+                }
+                if (hum !== undefined) {
+                    const humStr = `${Math.round(hum)}%`;
+                    clockElement.querySelector('.hud-w-hum').textContent = humStr;
+                    clockElement.querySelector('.hud-w2-hum').textContent = humStr;
+                }
+                
+                const WEATHER_CODES = {
+                  0: ["sun", "CLEAR", "Trời quang"],
+                  1: ["cloud-sun", "CLEAR", "Ít mây"],
+                  2: ["cloud-sun", "CLOUDY", "Có mây"],
+                  3: ["cloud", "CLOUDY", "Nhiều mây"],
+                  45: ["smog", "FOG", "Sương mù"],
+                  48: ["smog", "FOG", "Sương mù đóng băng"],
+                  51: ["cloud-rain", "RAIN", "Mưa phùn nhẹ"],
+                  53: ["cloud-rain", "RAIN", "Mưa phùn"],
+                  55: ["cloud-rain", "RAIN", "Mưa phùn dày"],
+                  61: ["cloud-showers-heavy", "RAIN", "Mưa nhẹ"],
+                  63: ["cloud-showers-heavy", "RAIN", "Mưa"],
+                  65: ["cloud-showers-heavy", "RAIN", "Mưa lớn"],
+                  71: ["snowflake", "SNOW", "Tuyết nhẹ"],
+                  73: ["snowflake", "SNOW", "Tuyết"],
+                  75: ["snowflake", "SNOW", "Tuyết lớn"],
+                  80: ["cloud-sun-rain", "RAIN", "Mưa rào nhẹ"],
+                  81: ["cloud-sun-rain", "RAIN", "Mưa rào"],
+                  82: ["cloud-showers-heavy", "RAIN", "Mưa rào lớn"],
+                  95: ["cloud-bolt", "STORM", "Dông"],
+                  96: ["cloud-bolt", "STORM", "Dông kèm mưa đá"],
+                  99: ["cloud-bolt", "STORM", "Dông mạnh kèm mưa đá"],
+                }
+
+                let condText = "CLEAR";
+                let condIcon = '<i class="fa-solid fa-sun"></i>';
+                const code = cache.data.current.weather_code;
+                if (code !== undefined) {
+                   const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0];
+                   const langIdx = langCode.startsWith('vi') ? 2 : 1;
+                   condText = item[langIdx].toUpperCase();
+                   condIcon = `<i class="fa-solid fa-${item[0]}"></i>`;
+                }
+                clockElement.querySelector('.hud-w2-cond-text').textContent = condText;
+                clockElement.querySelector('.hud-w2-cond-icon').innerHTML = condIcon;
+            }
+        } catch(e) {}
+        
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
@@ -2267,6 +2509,7 @@ export function updateTime() {
     "space-concentric",
     "audio-wave",
     "glass-float",
+    "satellite"
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
