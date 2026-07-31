@@ -230,6 +230,7 @@ export function makeDraggable(
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
     if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar) return
+    if (componentId === "bookmarkWidget") return
     e.preventDefault()
     e.stopPropagation()
     showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)

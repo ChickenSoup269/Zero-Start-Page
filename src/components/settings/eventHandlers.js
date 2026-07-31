@@ -6491,6 +6491,23 @@ export function setupGeneralEventHandlers(
       )
     })
   }
+  if (DOM.searchBarRadiusSlider) {
+    DOM.searchBarRadiusSlider.addEventListener("input", (e) => {
+      const radius = e.target.value
+      if (DOM.searchBarRadiusVal)
+        DOM.searchBarRadiusVal.textContent = `${radius}px`
+      document.documentElement.style.setProperty("--search-bar-radius", `${radius}px`)
+    })
+    DOM.searchBarRadiusSlider.addEventListener("change", (e) => {
+      const radius = e.target.value
+      handleSettingUpdate("searchBarRadius", parseInt(radius, 10))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarRadius", value: radius },
+        }),
+      )
+    })
+  }
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
   // Quick Access White Mode logic
   const handleWhiteModeChange = (checked) => {
