@@ -6629,34 +6629,94 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
 
 .hud-top {
   display: flex;
-  align-items: center;
-  border: 0.125em solid var(--hud-color-1, #ffaa00);
-  border-radius: 0.25em 1em 0.25em 0.25em; /* Slight HUD shaping */
-  padding: 0.4em 0.6em;
+  align-items: flex-start;
+  position: relative;
+  padding: 0;
+  border: none;
+  background: none;
+  clip-path: none;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hud-top::before {
+  display: none;
 }
 
 .hud-off {
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 14px 0 16px;
+  border: 2px solid var(--hud-color-1, #ffaa00);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: 2px;
   color: #fff;
-  font-size: 1.25em;
-  margin-right: 1em;
-  letter-spacing: 0.05em;
+  background: rgba(10, 15, 20, 0.7);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.hud-slope {
+  width: 14px;
+  height: 38px;
+  position: relative;
+  border-top: 2px solid var(--hud-color-1, #ffaa00);
+  box-sizing: border-box;
+}
+
+.hud-slope::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 15, 20, 0.7);
+  clip-path: polygon(0 0, 100% 0, 100% 22px, 0 36px);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+.hud-slope::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 16px;
+  background: var(--hud-color-1, #ffaa00);
+  clip-path: polygon(0 100%, 100% 2px, 100% 0, 0 calc(100% - 2px));
+  z-index: 2;
 }
 
 .hud-battery {
+  box-sizing: border-box;
+  height: 24px;
+  border: 2px solid var(--hud-color-1, #ffaa00);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  padding: 0 10px 0 4px;
   display: flex;
-  gap: 0.25em;
+  align-items: center;
+  gap: 3px;
+  background: rgba(10, 15, 20, 0.7);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
   flex: 1;
 }
 
 .hud-bat-segment {
-  height: 0.9em;
   flex: 1;
-  background-color: rgba(255, 255, 255, 0.15);
+  height: 12px;
+  background: #2a3a3c;
+  border-radius: 1px;
 }
 
 .hud-bat-segment.active {
-  background-color: var(--hud-color-1, #ffaa00);
-  box-shadow: 0 0 0.3em var(--hud-color-1, #ffaa00);
+  background: var(--hud-color-1, #ffaa00);
+  box-shadow: 0 0 4px var(--hud-color-1, #ffaa00);
 }
 
 .hud-middle {
