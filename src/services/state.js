@@ -776,48 +776,25 @@ export const applyPresetLayout = (presetId) => {
   const currentSettings = getSettings()
   if (!currentSettings.componentPositions) currentSettings.componentPositions = {}
   
-  // Save the current preset so CSS can react to it (e.g. aligning bookmark grids)
+  // Save the current preset so CSS can react to it (e.g. changing align-items on .main-container)
   currentSettings.layoutPreset = presetId
 
-  // Enable free move so the manual coordinates take effect visually without CSS override issues
-  currentSettings.freeMoveClock = true
-  currentSettings.freeMoveSearchBar = true
-  currentSettings.freeMoveCustomTitle = true
-
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-
+  // Remove fixed positions so CSS flexbox takes over naturally
   const positions = currentSettings.componentPositions
+  delete positions.clock
+  delete positions.searchBar
+  delete positions.bookmarkWidget
+  delete positions.customTitle
 
-  if (presetId === "default") {
-    delete positions.clock
-    delete positions.searchBar
-    delete positions.bookmarkWidget
-    delete positions.customTitle
-    currentSettings.freeMoveClock = false
-    currentSettings.freeMoveSearchBar = false
-    currentSettings.freeMoveCustomTitle = false
-  } 
-  else if (presetId === "left") {
-    // Everything to the left, right side empty
-    positions.clock = { left: "40px", top: "100px", right: "auto", transform: "none" }
-    positions.searchBar = { left: "40px", top: "250px", right: "auto", transform: "none" }
-    positions.bookmarkWidget = { left: "40px", top: "330px", right: "auto", transform: "none" }
-    positions.customTitle = { left: "40px", top: "35px", right: "auto", transform: "none" }
-  } 
-  else if (presetId === "right") {
-    // Everything to the right
-    positions.clock = { left: "auto", right: "40px", top: "100px", transform: "none" }
-    positions.searchBar = { left: "auto", right: "40px", top: "250px", transform: "none" }
-    positions.bookmarkWidget = { left: "auto", right: "40px", top: "330px", transform: "none" }
-    positions.customTitle = { left: "auto", right: "40px", top: "35px", transform: "none" }
-  }
+  currentSettings.freeMoveClock = false
+  currentSettings.freeMoveSearchBar = false
+  currentSettings.freeMoveCustomTitle = false
 
   updateSetting("componentPositions", positions)
   updateSetting("layoutPreset", currentSettings.layoutPreset)
-  updateSetting("freeMoveClock", currentSettings.freeMoveClock)
-  updateSetting("freeMoveSearchBar", currentSettings.freeMoveSearchBar)
-  updateSetting("freeMoveCustomTitle", currentSettings.freeMoveCustomTitle)
+  updateSetting("freeMoveClock", false)
+  updateSetting("freeMoveSearchBar", false)
+  updateSetting("freeMoveCustomTitle", false)
 
   saveSettings(true)
 }

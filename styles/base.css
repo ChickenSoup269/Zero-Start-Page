@@ -6868,3 +6868,28 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   font-size: 1.75em;
   color: #fff;
 }
+
+/* Layout Presets (CSS Flexbox approach) */
+body[data-layout-preset="left"] .main-container {
+  align-items: flex-start;
+  padding-left: max(40px, 5vw);
+}
+
+body[data-layout-preset="left"] #clock-date-wrap,
+body[data-layout-preset="left"] #search-container,
+body[data-layout-preset="left"] .custom-title-display {
+  align-items: flex-start;
+  text-align: left;
+}
+
+body[data-layout-preset="right"] .main-container {
+  align-items: flex-end;
+  padding-right: max(40px, 5vw);
+}
+
+body[data-layout-preset="right"] #clock-date-wrap,
+body[data-layout-preset="right"] #search-container,
+body[data-layout-preset="right"] .custom-title-display {
+  align-items: flex-end;
+  text-align: right;
+}
