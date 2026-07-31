@@ -9596,6 +9596,38 @@ body.hide-bookmark-bg.bookmark-taskbar-left-mode
   box-shadow: 0 10px 20px rgba(var(--accent-color-rgb, 143, 181, 255), 0.26) !important;
 }
 
+/* High Contrast Quick Access Skin */
+body.quick-access-contrast #settings-toggle,
+body.quick-access-contrast .quick-access-bar {
+  background: #000 !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
+}
+
+body.quick-access-contrast .quick-access-bar .quick-btn,
+body.quick-access-contrast #settings-toggle {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+body.quick-access-contrast .quick-access-bar .quick-btn:hover,
+body.quick-access-contrast #settings-toggle:hover {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+}
+
+body.quick-access-contrast .quick-access-bar .quick-btn.active {
+  background: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+}
+
+body.quick-access-contrast .quick-access-bar .quick-access-divider {
+  background: #fff !important;
+  opacity: 1 !important;
+}
+
 /* Quick Access skins */
 body.quick-access-m3-accent #settings-toggle,
 body.quick-access-m3-accent .quick-access-bar {

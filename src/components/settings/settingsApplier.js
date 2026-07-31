@@ -903,6 +903,10 @@ function createApplySettings(effectInstances) {
       settings.quickAccessSkin === "light",
     )
     document.body.classList.toggle(
+      "quick-access-contrast",
+      settings.quickAccessSkin === "contrast",
+    )
+    document.body.classList.toggle(
       "quick-access-transparent",
       false,
     )
@@ -4204,6 +4208,7 @@ function createUpdateSettingsInputs(effectInstances) {
           "light",
           "m3-accent",
           "light-transparent",
+          "contrast",
         ].includes(settings.quickAccessSkin)
           ? settings.quickAccessSkin
           : "default"
