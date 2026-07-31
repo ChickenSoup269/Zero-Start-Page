@@ -101,6 +101,10 @@
         body.classList.add("hide-search-bar")
       if (settings.freeMoveSearchBar === true)
         body.classList.add("free-move-search-bar")
+      if (settings.freeMoveClock === true)
+        body.classList.add("free-move-clock")
+      if (settings.freeMoveCustomTitle === true)
+        body.classList.add("free-move-custom-title")
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")

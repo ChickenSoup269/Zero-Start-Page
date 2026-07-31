@@ -353,7 +353,15 @@ export function makeDraggable(
     const vw = document.documentElement.clientWidth
     if (rect.left + rect.width / 2 > vw / 2 && window.getComputedStyle(element).position === "fixed") {
       const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
-      const rightPx = (vw - rect.right) / zoom
+      
+      // Temporarily set to right: 0 to measure magic offset (handles transform scales and origins)
+      const originalLeft = element.style.left
+      element.style.left = "auto"
+      element.style.right = "0px"
+      const zeroRight = element.getBoundingClientRect().right
+      const magicOffsetRight = vw - zeroRight
+      
+      const rightPx = (vw - rect.right - magicOffsetRight) / zoom
       element.style.right = `${rightPx}px`
       element.style.left = "auto"
     }

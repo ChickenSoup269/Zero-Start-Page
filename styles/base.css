@@ -118,22 +118,6 @@ i {
   transform: translateZ(0);
 }
 
-.main-container {
-  text-align: center;
-  align-items: center;
-  width: 100%;
-  max-width: 1200px;
-  position: relative;
-  margin: 0 auto;
-  padding: var(--space-3);
-  visibility: hidden;
-  opacity: 0;
-}
-
-.main-container.ready {
-  visibility: visible;
-  opacity: 1;
-}
 
 .clock-date-wrap {
   width: 100%;
@@ -178,16 +162,18 @@ body.date-clock-style-round .clock-date-wrap.timer-running-hidden {
   align-items: center;
   width: 100%;
   max-width: 1200px;
+  position: relative;
   margin: 0 auto;
   padding: var(--space-3);
+  /* Visibility/opacity controlled by inline style & .ready class from JS */
   visibility: hidden;
   opacity: 0;
 }
 
+/* .ready is added by JS after boot completes — transition is defined in index.html inline style */
 .main-container.ready {
   visibility: visible;
   opacity: 1;
-  animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 
 .clock-date-wrap {

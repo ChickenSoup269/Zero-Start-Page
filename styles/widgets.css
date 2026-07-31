@@ -8426,7 +8426,7 @@ body.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1;
 }
 
-/* Initial Load Fix (FOUC & CLS) */
+/* Initial Load Fix (FOUC & CLS) — exclude startup-overlay so it can still fade-in/out on reset */
 body.is-booting *:not(#startup-overlay):not(#startup-overlay *),
 body.loading-state *:not(#startup-overlay):not(#startup-overlay *),
 body .bookmark-widget.no-transition,

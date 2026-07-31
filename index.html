@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="styles/dialog.css">
     <link rel="stylesheet" href="styles/rss.css">
     <style>
+        /* ── Boot: prevent FOUC ─────────────────────────────── */
         body.loading-state {
             background-color: #050505 !important;
             background-image: none !important;
@@ -46,8 +47,22 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s;
+            /* Use both opacity AND visibility for proper GPU-composited fade */
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                        visibility 0.4s step-end;
             backdrop-filter: blur(2px);
+            /* GPU-acceleration to avoid compositor jank */
+            will-change: opacity;
+            transform: translateZ(0);
+        }
+
+        /* Hidden state — keeps overlay in DOM for reset reuse */
+        #startup-overlay.overlay-hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         .ambient-glow {
@@ -199,8 +214,12 @@
         }
 
         .main-container {
-            transition: opacity 0.4s ease-out !important;
+            /* Hidden until boot is done — no visible opacity flash */
+            visibility: hidden;
             opacity: 0;
+            /* Smooth reveal via CSS transition (not animation) to avoid FOUC */
+            transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
         }
 
         body.skip-startup-loader #startup-overlay {
@@ -235,8 +254,10 @@
             transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
         }
 
+        /* Reveal state: visibility flips immediately, opacity fades in */
         .main-container.ready {
             opacity: 1 !important;
+            visibility: visible !important;
             animation: none !important;
         }
     </style>

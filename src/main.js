@@ -618,11 +618,10 @@ async function bootstrap() {
   syncUninstallSurveyLanguage(currentSettings.language)
   const fastRevealSkipStartup = () => {
     if (!skipStartupLoader) return
-    document.querySelector(".main-container")?.classList.add("ready")
     const overlay = document.getElementById("startup-overlay")
     if (overlay) {
       overlay.style.opacity = "0"
-      setTimeout(() => overlay.remove(), 450)
+      setTimeout(() => overlay.classList.add("overlay-hidden"), 450)
     }
     try {
       localStorage.setItem("startpageHasOpened", "1")
@@ -631,6 +630,8 @@ async function bootstrap() {
     document.body.classList.remove("loading-state")
     requestAnimationFrame(() => {
       document.body.classList.remove("is-booting")
+      // Add .ready after is-booting removed — no transition in skip-loader mode (CSS overrides it)
+      document.querySelector(".main-container")?.classList.add("ready")
     })
   }
   fastRevealSkipStartup()
@@ -1318,8 +1319,13 @@ async function bootstrap() {
         localStorage.removeItem("startpageShowStartupLoader")
         document.body.classList.remove("loading-state")
         window.setTimeout(() => {
-          if (overlay) overlay.remove()
+          if (overlay) overlay.classList.add("overlay-hidden")
           document.body.classList.remove("is-booting")
+          // Add .ready AFTER is-booting is removed so the opacity transition
+          // is no longer suppressed and animates smoothly 0→1
+          requestAnimationFrame(() => {
+            if (mainContainer) mainContainer.classList.add("ready")
+          })
           window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
         }, 430)
       }
@@ -1332,7 +1338,6 @@ async function bootstrap() {
 
     const checkAllReady = () => {
       if (bookmarksReady && bgReady) {
-        if (mainContainer) mainContainer.classList.add("ready")
         hideOverlay()
       }
     }
@@ -1462,7 +1467,6 @@ async function bootstrap() {
         if (onBookmarksReady) {
           window.removeEventListener("bookmarksReady", onBookmarksReady)
         }
-        if (mainContainer) mainContainer.classList.add("ready")
         hideOverlay()
       }
     }, 1500)
@@ -1836,11 +1840,27 @@ async function bootstrap() {
         if (!hasSelection) return
 
         document.body.classList.remove("skip-startup-loader")
-        document.body.classList.add("loading-state")
+        document.body.classList.add("loading-state", "is-booting")
         const overlay = document.getElementById("startup-overlay")
+        const mainContainer = document.querySelector(".main-container")
+        // Instantly hide the main UI so it doesn't show during reload
+        if (mainContainer) {
+          mainContainer.classList.remove("ready")
+          mainContainer.style.opacity = "0"
+          mainContainer.style.visibility = "hidden"
+        }
         if (overlay) {
-          overlay.style.visibility = "visible"
-          overlay.style.opacity = "1"
+          overlay.classList.remove("overlay-hidden")
+          // Clear any leftover inline styles from previous hide
+          overlay.style.removeProperty("opacity")
+          overlay.style.removeProperty("visibility")
+          overlay.style.removeProperty("transition")
+          // Force reflow, then let the CSS transition handle fade-in from opacity:0
+          overlay.style.opacity = "0"
+          void overlay.offsetHeight
+          requestAnimationFrame(() => {
+            overlay.style.opacity = "1"
+          })
         }
         localStorage.setItem("startpageShowStartupLoader", "1")
 
