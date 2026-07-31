@@ -5497,6 +5497,16 @@ body.sidebar-light .sidebar-footer {
   background: rgba(0, 0, 0, 0.02);
 }
 
+body.sidebar-light .sidebar-footer-toggle span {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.sidebar-light .sidebar-footer-toggle:hover span {
+  background: rgba(0, 0, 0, 0.15) !important;
+}
+
 body.sidebar-light .sidebar-footer-toggle {
   color: #000;
   opacity: 0.6;
@@ -5504,13 +5514,12 @@ body.sidebar-light .sidebar-footer-toggle {
 
 body.sidebar-light .sidebar-footer-toggle:hover {
   opacity: 1;
-  background: rgba(0, 0, 0, 0.08);
 }
 
 body.sidebar-light .footer-btn {
-  background: rgba(0, 0, 0, 0.05);
-  color: #000;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
   font-weight: 600;
 }
 
@@ -5519,10 +5528,14 @@ body.sidebar-light .footer-btn:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-body.sidebar-light .sidebar-copyright,
 body.sidebar-light .sidebar-footer-hint,
 body.sidebar-light small {
   color: #000 !important;
+  opacity: 0.7 !important;
+}
+
+body.sidebar-light .sidebar-copyright {
+  color: #fff !important;
   opacity: 0.7 !important;
 }
 
@@ -5718,8 +5731,15 @@ body.sidebar-light .clock-style-card.active i {
 body.sidebar-light .settings-sidebar .secondary-btn,
 body.sidebar-light .settings-sidebar .btn-group button,
 body.sidebar-light .settings-sidebar .full-width-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
   color: #000 !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.sidebar-light .settings-sidebar .secondary-btn:hover,
+body.sidebar-light .settings-sidebar .btn-group button:hover,
+body.sidebar-light .settings-sidebar .full-width-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
 }
 
 body.sidebar-light .settings-sidebar .secondary-btn i {
@@ -8394,4 +8414,8 @@ body.sidebar-light .weather-api-connection-state {
 .setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }
 
 #accent-m3-group, #accent-m3-group .setting-item-row, #accent-m3-group.expanded > .group-body, #accent-m3-group .primary-btn, #accent-m3-group .secondary-btn { animation: none !important; transform: none !important; }
-
+/* Make about-project secondary buttons text white in light mode */
+body.sidebar-light .settings-section[data-section-id="about-project"] .secondary-btn,
+body.sidebar-light .settings-section[data-section-id="about-project"] .secondary-btn * {
+  color: #fff !important;
+}
