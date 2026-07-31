@@ -21,6 +21,10 @@ const C4_BOMB_PASSCODE = "7355608"
 const C4_BOMB_FUSE_MS = 11500
 const C4_BOMB_BEEP_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/beep.mp3"
+let globalBatteryManager = null;
+if (navigator.getBattery) {
+  navigator.getBattery().then(bm => { globalBatteryManager = bm; }).catch(() => {});
+}
 const C4_BOMB_WRONG_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3"
 const C4_BOMB_PLANT_URL =
@@ -2239,6 +2243,7 @@ export function updateTime() {
     const currentSec = now.getSeconds();
     const hourProgress = ((currentMin * 60 + currentSec) / 3600) * 100;
     clockElement.querySelector('.sat-battery-fill').style.width = `${hourProgress}%`;
+    clockElement.querySelector('.sat-battery-text').textContent = `${Math.round(hourProgress)}%`;
 
     // Fetch weather data from cache
     if (!window._satWeatherLastUpdate || (now.getTime() - window._satWeatherLastUpdate > 60000)) {
@@ -2265,9 +2270,10 @@ export function updateTime() {
       clockElement.innerHTML = `
         <div class="clock-container pixel-hud-container">
           <div class="hud-top">
-            <div class="hud-off">0%</div>
+            <div class="hud-off">OFF</div>
+            <div class="hud-slope"></div>
             <div class="hud-battery">
-              ${Array(12).fill(0).map(() => '<div class="hud-bat-segment"></div>').join('')}
+              ${Array(14).fill(0).map(() => '<div class="hud-bat-segment"></div>').join('')}
             </div>
           </div>
           <div class="hud-middle">
@@ -2314,13 +2320,18 @@ export function updateTime() {
     clockElement.querySelector('.hud-date-year').textContent = now.getFullYear();
     clockElement.querySelector('.hud-date-weekday').textContent = now.toLocaleDateString(langCode, { weekday: 'long' }).toLowerCase();
     
-    const currentMinHUD = now.getMinutes();
-    const currentSecHUD = now.getSeconds();
-    const hourProgressHUD = (currentMinHUD * 60 + currentSecHUD) / 3600;
+    let progressPct = 0;
+    if (globalBatteryManager) {
+      progressPct = globalBatteryManager.level;
+    } else {
+      const currentMinHUD = now.getMinutes();
+      const currentSecHUD = now.getSeconds();
+      progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600;
+    }
     
-    clockElement.querySelector('.hud-off').textContent = `${Math.floor(hourProgressHUD * 100)}%`;
+    clockElement.querySelector('.hud-off').textContent = `${Math.floor(progressPct * 100)}%`;
     
-    const activeSegments = Math.round(hourProgressHUD * 12);
+    const activeSegments = Math.round(progressPct * 14);
     const segments = clockElement.querySelectorAll('.hud-bat-segment');
     segments.forEach((seg, idx) => {
       if (idx < activeSegments) seg.classList.add('active');
