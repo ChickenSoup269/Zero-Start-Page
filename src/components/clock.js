@@ -2320,14 +2320,9 @@ export function updateTime() {
     clockElement.querySelector('.hud-date-year').textContent = now.getFullYear();
     clockElement.querySelector('.hud-date-weekday').textContent = now.toLocaleDateString(langCode, { weekday: 'long' }).toLowerCase();
     
-    let progressPct = 0;
-    if (globalBatteryManager) {
-      progressPct = globalBatteryManager.level;
-    } else {
-      const currentMinHUD = now.getMinutes();
-      const currentSecHUD = now.getSeconds();
-      progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600;
-    }
+    const currentMinHUD = now.getMinutes();
+    const currentSecHUD = now.getSeconds();
+    const progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600;
     
     clockElement.querySelector('.hud-off').textContent = `${Math.floor(progressPct * 100)}%`;
     
