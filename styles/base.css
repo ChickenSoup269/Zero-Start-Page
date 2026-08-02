@@ -308,7 +308,7 @@ body.date-clock-style-default .clock-date-wrap {
 }
 
 body.date-clock-style-default .clock-date-wrap:hover {
-  transform: translateY(-2px) scale(1.02);
+  /* removed transform scale based on user feedback */
 }
 
 body.date-clock-style-default #clock {
@@ -6598,7 +6598,7 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
 
 .pixel-hud-container {
   font-family: var(--font-clock, 'VT323', 'Courier New', monospace);
-  font-size: min(calc(var(--clock-size, 6rem) * 0.13), 3.2vw); /* Scale basis, capped by screen width */
+  font-size: calc(var(--clock-size, 6rem) * 0.13); /* Scale basis based on custom size */
   display: flex;
   flex-direction: column;
   gap: 0.5em;
