@@ -4076,8 +4076,8 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  DOM.gradientStartPicker.addEventListener("input", updateCurrentGradient)
-  DOM.gradientEndPicker.addEventListener("input", updateCurrentGradient)
+  DOM.gradientStartPicker.addEventListener("change", updateCurrentGradient)
+  DOM.gradientEndPicker.addEventListener("change", updateCurrentGradient)
   DOM.gradientTypeSelect?.addEventListener("change", updateCurrentGradient)
   DOM.gradientPositionSelect?.addEventListener("change", updateCurrentGradient)
   DOM.gradientRadialShapeSelect?.addEventListener(
@@ -4877,7 +4877,7 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockStyleCustomBgColor", color)
   })
 
-  document.getElementById("satellite-anim-color")?.addEventListener("input", (e) => {
+  document.getElementById("satellite-anim-color")?.addEventListener("change", (e) => {
     const color = e.target.value
     handleSettingUpdate("satelliteAnimColor", color)
     document.documentElement.style.setProperty("--sat-color", color)
@@ -4888,7 +4888,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  document.getElementById("satellite-sec-color")?.addEventListener("input", (e) => {
+  document.getElementById("satellite-sec-color")?.addEventListener("change", (e) => {
     const color = e.target.value
     handleSettingUpdate("satelliteSecColor", color)
     document.documentElement.style.setProperty("--sat-sec-color", color)
@@ -4899,13 +4899,46 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  document.getElementById("satellite-ter-color")?.addEventListener("input", (e) => {
+  document.getElementById("satellite-ter-color")?.addEventListener("change", (e) => {
     const color = e.target.value
     handleSettingUpdate("satelliteTerColor", color)
     document.documentElement.style.setProperty("--sat-ter-color", color)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: { key: "satelliteTerColor", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("hud-color-1")?.addEventListener("change", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("hudColor1", color)
+    document.documentElement.style.setProperty("--hud-color-1", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "hudColor1", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("hud-color-2")?.addEventListener("change", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("hudColor2", color)
+    document.documentElement.style.setProperty("--hud-color-2", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "hudColor2", value: color },
+      }),
+    )
+  })
+
+  document.getElementById("hud-color-3")?.addEventListener("change", (e) => {
+    const color = e.target.value
+    handleSettingUpdate("hudColor3", color)
+    document.documentElement.style.setProperty("--hud-color-3", color)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "hudColor3", value: color },
       }),
     )
   })
@@ -5221,7 +5254,7 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfCustomText", value: e.target.value } }))
   })
   
-  document.getElementById("gf-glow-color")?.addEventListener("input", (e) => {
+  document.getElementById("gf-glow-color")?.addEventListener("change", (e) => {
     handleSettingUpdate("gfGlowColor", e.target.value)
     applySettings()
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowColor", value: e.target.value } }))
