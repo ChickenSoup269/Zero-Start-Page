@@ -20,6 +20,22 @@ const SEARCH_ENGINES = {
     placeholderKey: "search_placeholder_google_incognito",
     incognito: true,
   },
+  "google-image": {
+    name: "Google Images",
+    shortName: "Images",
+    domain: "images.google.com",
+    iconClass: "fa-solid fa-camera",
+    url: (q) =>
+      `https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=isch`,
+    placeholderKey: "search_placeholder_images",
+  },
+  "google-lens": {
+    name: "Google Lens",
+    domain: "lens.google.com",
+    url: (q) =>
+      `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_lens",
+  },
   bing: {
     name: "Bing",
     domain: "bing.com",
@@ -106,21 +122,7 @@ const SEARCH_ENGINES = {
     url: (q) => `https://github.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_github",
   },
-  "google-image": {
-    name: "Google Images",
-    shortName: "Images",
-    domain: "images.google.com",
-    url: (q) =>
-      `https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=isch`,
-    placeholderKey: "search_placeholder_images",
-  },
-  "google-lens": {
-    name: "Google Lens",
-    domain: "lens.google.com",
-    url: (q) =>
-      `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
-    placeholderKey: "search_placeholder_lens",
-  },
+
   kagi: {
     name: "Kagi",
     domain: "kagi.com",
@@ -243,6 +245,9 @@ function getEngineIconUrl(engine) {
 }
 
 function createEngineIcon(engine) {
+  if (engine.iconClass) {
+    return `<i class="${engine.iconClass} search-engine-icon" style="display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"></i>`
+  }
   return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="eager" decoding="async">`
 }
 
