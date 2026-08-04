@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero Extensions - Privacy Policy</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --border-color: #e5e7eb;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-main);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: var(--card-bg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-bottom: 1px solid var(--border-color);
+    }
+    h1 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 2.2rem;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .app-section {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+    }
+    .app-header {
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .app-header h2 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 1.8rem;
+    }
+    .app-header p {
+      margin: 0.5rem 0 0 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+    h3 {
+      color: var(--secondary-color);
+      font-size: 1.3rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-number {
+      background-color: #eff6ff;
+      color: var(--primary-color);
+      font-size: 0.9rem;
+      font-weight: bold;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .permission-item {
+      margin-bottom: 1.2rem;
+      padding-left: 1rem;
+      border-left: 3px solid #bfdbfe;
+    }
+    .permission-name {
+      font-weight: 600;
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 1.05rem;
+    }
+    .permission-desc {
+      color: var(--text-muted);
+      margin: 0;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    ul {
+      padding-left: 1.5rem;
+      margin-top: 0;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+    .contact-email {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      background-color: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      margin-top: 4rem;
+    }
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Privacy Policy & Permissions</h1>
+    <div class="subtitle">Details for the Zero Extensions Suite</div>
+  </header>
+
+  <main>
+    <!-- ZERO BOOKMARK MANAGER SECTION -->
+    <section class="app-section" id="zero-bookmark-manager">
+      <div class="app-header">
+        <h2>Zero Bookmark Manager</h2>
+        <p>The sole purpose of this extension is to provide users with an easy interface to manage bookmarks (view, organize, search, and edit).</p>
+      </div>
+
+      <h3><span class="section-number">1</span> 01. Access & Permissions</h3>
+      
+      <div class="permission-item">
+        <span class="permission-name">Bookmarks</span>
+        <p class="permission-desc">Required to access the user's bookmarks in order to display them, organize folders, search by title or URL, edit bookmark details, and detect and remove duplicate bookmarks automatically.</p>
+      </div>
+      
+      <div class="permission-item">
+        <span class="permission-name">Local Storage</span>
+        <p class="permission-desc">Used to save user preferences, such as the preferred quick-open behavior (popup, side panel, or web view), so the extension can remember and apply these settings across sessions.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Side Panel</span>
+        <p class="permission-desc">Required to open the bookmark manager interface inside Chrome's side panel, allowing users to view and manage their bookmarks without leaving or interrupting the current browsing page.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Tabs Management</span>
+        <p class="permission-desc">Used to detect whether the bookmark manager page is already open, activate and focus an existing tab if found, or create a new tab when necessary to prevent duplicate pages.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Identity</span>
+        <p class="permission-desc">Required to authenticate users securely with their Google Account using OAuth2. It is exclusively used to obtain an access token to interact with the Google Drive API for backing up and syncing user settings. We do not use this permission to collect personal information.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">System Display</span>
+        <p class="permission-desc">Used to obtain screen and work area dimensions in order to correctly position the extension's popup window on the user's screen.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Web Navigation</span>
+        <p class="permission-desc">Required to track user interactions with bookmarks. It allows the extension to monitor when users navigate to bookmarked URLs, ensuring accurate tracking of bookmark usage.</p>
+      </div>
+
+      <h3><span class="section-number">2</span> 02. Data Usage</h3>
+      <ul>
+        <li><strong>No Data Sharing:</strong> Zero Bookmark Manager does not collect, sell, or transfer user data to third parties.</li>
+        <li><strong>Local Processing:</strong> Bookmark data is accessed only for the purpose of displaying, organizing, searching, editing, and removing duplicate bookmarks. All processing is performed locally.</li>
+        <li><strong>Storage:</strong> User preferences and extension settings are stored locally using Chrome's storage API and remain on the user's device.</li>
+        <li><strong>Chatbot:</strong> The chatbot is now a command-based system and does not utilize AI or third-party APIs. This ensures complete privacy and local processing.</li>
+      </ul>
+
+      <h3><span class="section-number">3</span> 03. Additional Info</h3>
+      <ul>
+        <li><strong>Source Code:</strong> The extension is open-source. You can review the code and releases on GitHub (<a href="https://github.com/ChickenSoup269/Zero-Bookmark-Manager" target="_blank">ChickenSoup269/Zero-Bookmark-Manager</a>).</li>
+        <li><strong>Known Issues:</strong> Minor UI refresh issues after moving items. Fix: Refresh page (F5).</li>
+        <li><strong>Contact:</strong> If you have any questions or concerns, please contact at: <a href="mailto:thientran01345@icloud.com" class="contact-email">thientran01345@icloud.com</a></li>
+      </ul>
+    </section>
+
+    <!-- ZERO STARTPAGE SECTION -->
+    <section class="app-section" id="zero-startpage">
+      <div class="app-header">
+        <h2>Zero Startpage</h2>
+        <p>To facilitate compliance with Chrome Web Store Developer Program Policies, the following declarations describe the extension's single purpose and permission usage.</p>
+      </div>
+
+      <h3><span class="section-number">1</span> Single Purpose Description</h3>
+      <p><strong>Overview:</strong> Startpage replaces Chrome's new tab page with a customizable personal dashboard. It provides local bookmark management, clock/calendar widgets, search shortcuts, optional background and visual effects, and optional media controls/visualization for active audio tabs. Its single purpose is to give users a personalized and productivity-focused new tab experience.</p>
+
+      <h3><span class="section-number">2</span> Permission Justification</h3>
+      
+      <div class="permission-item">
+        <span class="permission-name">Bookmarks</span>
+        <p class="permission-desc">Used only when the user chooses to import bookmarks into Startpage. The extension reads the bookmark tree via Chrome Bookmarks API so users can select and import items into their local Startpage view. No data is sold or shared.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Scripting</span>
+        <p class="permission-desc">Used to execute short in-page scripts in the currently detected media tab to read playback metadata and to perform user-requested media controls. Scripts are packaged with the extension and are not remotely loaded.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Tabs</span>
+        <p class="permission-desc">Used to locate audible/media tabs and read tab URL/title context needed to identify supported media pages (e.g. YouTube) and show current playback information. Not used for advertising or profiling.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Storage</span>
+        <p class="permission-desc">Required to synchronize user settings (theme, layouts) across different devices via <code>chrome.storage.sync</code>. It also tracks extension version updates and persists user-generated content like todo lists and notes.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Identity</span>
+        <p class="permission-desc">Required to authenticate users securely with their Google Account using OAuth2. It is exclusively used to obtain an access token to interact with the Google Drive API for backing up and syncing user settings.</p>
+      </div>
+
+      <div class="permission-item">
+        <span class="permission-name">Host Permissions</span>
+        <p class="permission-desc">Required for: requesting search suggestions from Google, reading media state/controls on supported sites, and supporting optional media detection. All access is feature-scoped and initiated by extension functionality.</p>
+      </div>
+
+      <h3><span class="section-number">3</span> Google API Services Usage Disclosure</h3>
+      <p><strong>Google Drive API:</strong> Zero Startpage uses Google Drive API to backup and sync your settings. The extension only creates, reads, and modifies files created by the extension itself in your Google Drive. We do not have access to your personal files, and we do not store, share, or transmit your Google Drive data to any third-party servers. Your data stays between your browser and your Google account.</p>
+
+      <h3><span class="section-number">4</span> Source Code & Contact</h3>
+      <ul>
+        <li><strong>Source Code:</strong> The extension source is public for transparency. You can review implementation details and release history on GitHub (<a href="https://github.com/ChickenSoup269/Zero-Start-Page" target="_blank">ChickenSoup269/Zero-Start-Page</a>).</li>
+        <li><strong>Contact Email:</strong> For compliance or privacy questions, contact: <a href="mailto:thientran01345@icloud.com" class="contact-email">thientran01345@icloud.com</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Zero Extensions. All rights reserved.</p>
+    <p>
+      <a href="home.html">App Homepage</a> | 
+      <a href="terms-of-service.html">Terms of Service</a>
+    </p>
+  </footer>
+
+</body>
+</html>

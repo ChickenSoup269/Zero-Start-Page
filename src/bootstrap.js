@@ -29,9 +29,10 @@ function afterFirstPaint(callback) {
 
 function runWhenIdle(callback) {
   if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(callback, { timeout: 1200 })
+    // Reduced from 1200ms → 600ms: settings partials should init faster
+    window.requestIdleCallback(callback, { timeout: 600 })
   } else {
-    setTimeout(callback, 150)
+    setTimeout(callback, 100)
   }
 }
 
@@ -96,10 +97,13 @@ const hydrateSettingsPartialsWhenVisible = () => {
   if (needsSettingsAtBoot()) {
     afterFirstPaint(hydrate)
   } else {
+    // Non-critical path: defer hydration until truly idle (max 600ms)
     afterFirstPaint(() => runWhenIdle(hydrate))
   }
 }
 
-const mainModulePromise = import("./main.js?v=perf-lazy-v17")
+// Start both in parallel — main.js will bootstrap while partials hydrate
+// Version bumped to boot-split-v1 to invalidate old module cache after refactor
+const mainModulePromise = import("./main.js?v=boot-split-v1")
 hydrateSettingsPartialsWhenVisible()
 await mainModulePromise
