@@ -88,7 +88,13 @@ export function revealApp({
   }
 
   const checkAllReady = () => {
-    if (bookmarksReady && bgReady) hideOverlay()
+    if (bookmarksReady && bgReady) {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => requestAnimationFrame(hideOverlay))
+      } else {
+        requestAnimationFrame(hideOverlay)
+      }
+    }
   }
 
   // Fast path: no startup loader
@@ -207,18 +213,34 @@ export function revealApp({
  */
 export function fastRevealSkipStartup(skipStartupLoader) {
   if (!skipStartupLoader) return
-  const overlay = document.getElementById("startup-overlay")
-  if (overlay) {
-    overlay.style.opacity = "0"
-    setTimeout(() => overlay.classList.add("overlay-hidden"), 450)
+
+  const doReveal = () => {
+    const overlay = document.getElementById("startup-overlay")
+    if (overlay) {
+      overlay.style.opacity = "0"
+      setTimeout(() => overlay.classList.add("overlay-hidden"), 450)
+    }
+    try {
+      localStorage.setItem("startpageHasOpened", "1")
+      localStorage.removeItem("startpageShowStartupLoader")
+    } catch {}
+    document.body.classList.remove("loading-state")
+    requestAnimationFrame(() => {
+      document.body.classList.remove("is-booting")
+      document.querySelector(".main-container")?.classList.add("ready")
+    })
   }
-  try {
-    localStorage.setItem("startpageHasOpened", "1")
-    localStorage.removeItem("startpageShowStartupLoader")
-  } catch {}
-  document.body.classList.remove("loading-state")
-  requestAnimationFrame(() => {
-    document.body.classList.remove("is-booting")
-    document.querySelector(".main-container")?.classList.add("ready")
-  })
+
+  if (document.fonts && document.fonts.ready) {
+    let revealed = false
+    const trigger = () => {
+      if (revealed) return
+      revealed = true
+      doReveal()
+    }
+    document.fonts.ready.then(trigger)
+    setTimeout(trigger, 400) // Fallback timeout if fonts stall
+  } else {
+    doReveal()
+  }
 }
