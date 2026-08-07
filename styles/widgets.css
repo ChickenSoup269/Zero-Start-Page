@@ -10159,29 +10159,26 @@ body.hide-bookmark-text
   display: none !important;
 }
 
-/* Hide fallback text in the mini-popup by default, but allow it for MacOS Hover */
-#hidden-bookmarks-popup .bookmark span:not(.bookmark-icon-fallback) {
-  display: none !important;
-}
-
-body.bookmark-macos-hover
-  #hidden-bookmarks-popup
-  .bookmark
-  span:not(.bookmark-icon-fallback) {
-  display: block !important; /* Re-enable for MacOS Hover logic */
-}
-
 /* Tooltip positioning for Hidden Bookmarks Popup */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark > span {
+  position: absolute !important;
+  white-space: nowrap !important;
+  z-index: 100000 !important;
   top: 50% !important;
   left: auto !important;
   right: calc(100% + var(--space-2)) !important;
   transform: translateY(-50%) !important;
   margin-top: 0;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease, right 0.2s ease, left 0.2s ease !important;
 }
 
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark:hover > span {
   right: calc(100% + var(--space-3)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Flip Layout for Sidebar Popup Tooltip */
@@ -10198,17 +10195,28 @@ body.flip-layout
   .bookmark:hover
   > span {
   left: calc(100% + var(--space-3)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Taskbar Popup Tooltip (Always on top) */
 #hidden-bookmarks-popup.hidden-bookmarks-taskbar .bookmark > span {
+  position: absolute !important;
+  white-space: nowrap !important;
+  z-index: 100000 !important;
   top: -2.2rem !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease, top 0.2s ease !important;
 }
 
 #hidden-bookmarks-popup.hidden-bookmarks-taskbar .bookmark:hover > span {
   top: -2.8rem !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Ensure no clipping */
