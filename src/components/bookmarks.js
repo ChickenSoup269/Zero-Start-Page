@@ -1972,6 +1972,7 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   const isDefault = mode === "default"
   const isSidebar = mode === "sidebar"
   const isTaskbarTop = mode === "taskbar-top"
+  const isTaskbarLeft = mode === "taskbar-left"
   const isTaskbarRight = mode === "taskbar-right"
 
   if (!skipEarlyOverflowMutation) {
@@ -1999,24 +2000,36 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   } else if (overflowItems.length > 0) {
     const firstItem = overflowItems[0]
     if (isSidebar) {
+      if (overflowItems.length > 10) {
+        requiredHiddenCount = overflowItems.length - 10
+      }
       const overflowAmt = container.scrollHeight - container.clientHeight
       if (overflowAmt > 2) {
         const itemH = firstItem.offsetHeight + 12 // estimate gap
-        requiredHiddenCount = Math.ceil((overflowAmt + itemH) / itemH)
+        const overflowHiddenCount = Math.ceil((overflowAmt + itemH) / itemH)
+        requiredHiddenCount = Math.max(requiredHiddenCount, overflowHiddenCount)
       }
     } else {
-      const overflowAmt = container.scrollWidth - container.clientWidth
-      if (overflowAmt > 2 || (isTaskbarRight && container.getBoundingClientRect().left > firstItem.getBoundingClientRect().left)) {
-        // Taskbar right uses flex-end, sometimes scrollWidth doesn't trigger accurately, so we also check BoundingRect
-        const itemW = firstItem.offsetWidth + 12
+      let limit = 12
+      if (isTaskbarLeft || isTaskbarRight) {
+        limit = 9
+      }
+      if (overflowItems.length > limit) {
+        requiredHiddenCount = overflowItems.length - limit
+      }
+      // Taskbars are forced to vertical layout via CSS override, so we must check vertical overflow (scrollHeight)
+      const overflowAmt = container.scrollHeight - container.clientHeight
+      if (overflowAmt > 2 || (isTaskbarRight && container.getBoundingClientRect().top > firstItem.getBoundingClientRect().top)) {
+        const itemH = firstItem.offsetHeight + 12
         let actualOverflow = overflowAmt
         if (isTaskbarRight) {
           const cRect = container.getBoundingClientRect()
           const fRect = firstItem.getBoundingClientRect()
-          if (fRect.left < cRect.left) actualOverflow = Math.max(overflowAmt, cRect.left - fRect.left)
+          if (fRect.top < cRect.top) actualOverflow = Math.max(overflowAmt, cRect.top - fRect.top)
         }
         if (actualOverflow > 2) {
-          requiredHiddenCount = Math.ceil((actualOverflow + itemW) / itemW)
+          const overflowHiddenCount = Math.ceil((actualOverflow + itemH) / itemH)
+          requiredHiddenCount = Math.max(requiredHiddenCount, overflowHiddenCount)
         }
       }
     }
@@ -2050,8 +2063,12 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   fallback.style.display = "flex"
   fallback.style.justifyContent = "center"
   fallback.style.alignItems = "center"
-  fallback.style.fontSize = "1rem"
+  fallback.style.fontSize = "1.05rem"
   fallback.style.fontWeight = "bold"
+  fallback.style.background = "rgba(255, 255, 255, 0.12)"
+  fallback.style.border = "1px solid rgba(255, 255, 255, 0.2)"
+  fallback.style.backdropFilter = "blur(16px) saturate(155%)"
+  fallback.style.boxShadow = "inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.16)"
   indicator.appendChild(fallback)
 
   if (isSidebar || isTaskbarRight) {
