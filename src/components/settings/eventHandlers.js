@@ -6378,9 +6378,18 @@ export function setupGeneralEventHandlers(
     DOM.freeMoveClockCheckbox.addEventListener("change", (e) => {
       if (!e.target.checked) {
         const settings = getSettings()
+        let changed = false
         if (settings.componentPositions && settings.componentPositions.clock) {
           delete settings.componentPositions.clock
+          changed = true
+        }
+        if (settings.lockedWidgets && settings.lockedWidgets.clock) {
+          delete settings.lockedWidgets.clock
+          changed = true
+        }
+        if (changed) {
           updateSetting("componentPositions", settings.componentPositions)
+          updateSetting("lockedWidgets", settings.lockedWidgets)
           saveSettings()
         }
       }
@@ -6391,9 +6400,18 @@ export function setupGeneralEventHandlers(
     DOM.freeMoveSearchBarCheckbox.addEventListener("change", (e) => {
       if (!e.target.checked) {
         const settings = getSettings()
+        let changed = false
         if (settings.componentPositions && settings.componentPositions.searchBar) {
           delete settings.componentPositions.searchBar
+          changed = true
+        }
+        if (settings.lockedWidgets && settings.lockedWidgets.searchBar) {
+          delete settings.lockedWidgets.searchBar
+          changed = true
+        }
+        if (changed) {
           updateSetting("componentPositions", settings.componentPositions)
+          updateSetting("lockedWidgets", settings.lockedWidgets)
           saveSettings()
         }
       }
@@ -7879,9 +7897,18 @@ export function setupGeneralEventHandlers(
       handleSettingUpdate("freeMoveCustomTitle", e.target.checked)
       if (!e.target.checked) {
         const settings = getSettings()
+        let changed = false
         if (settings.componentPositions && settings.componentPositions.customTitle) {
           delete settings.componentPositions.customTitle
+          changed = true
+        }
+        if (settings.lockedWidgets && settings.lockedWidgets.customTitle) {
+          delete settings.lockedWidgets.customTitle
+          changed = true
+        }
+        if (changed) {
           updateSetting("componentPositions", settings.componentPositions)
+          updateSetting("lockedWidgets", settings.lockedWidgets)
           saveSettings()
         }
       }
