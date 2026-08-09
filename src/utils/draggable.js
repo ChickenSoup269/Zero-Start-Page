@@ -233,7 +233,12 @@ export function makeDraggable(
     if (componentId === "bookmarkWidget") return
     e.preventDefault()
     e.stopPropagation()
-    showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
+    // searchBar uses the "search" context menu type so lock/unlock logic works correctly
+    if (componentId === "searchBar") {
+      showContextMenu(e.clientX, e.clientY, -1, "search")
+    } else {
+      showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
+    }
   }
   handle.removeEventListener("contextmenu", handle._draggableContextMenu)
   handle._draggableContextMenu = onContextMenu
@@ -241,7 +246,7 @@ export function makeDraggable(
 
   function dragMouseDown(e) {
     const currentSettings = getSettings()
-    if (currentSettings.lockedWidgets?.[componentId]) return
+    if (currentSettings.lockedWidgets?.[componentId] || element.classList.contains("is-locked")) return
     if (componentId === "todo" && element.classList.contains("todo-fullscreen")) return
     if (
       componentId === "todo" &&

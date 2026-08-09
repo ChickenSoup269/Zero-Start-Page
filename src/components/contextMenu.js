@@ -958,6 +958,8 @@ export function showContextMenu(
     let isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
     if (id === "custom-title" || id === "customTitle") {
       isLocked = settings.lockedWidgets && settings.lockedWidgets["customTitle"]
+    } else if (id === "search") {
+      isLocked = settings.lockedWidgets && settings.lockedWidgets["searchBar"]
     }
 
     const lockText = menuLock.querySelector("span")
