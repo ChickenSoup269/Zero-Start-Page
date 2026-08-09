@@ -915,9 +915,26 @@ export function showContextMenu(
   if (type === "search") {
     menuEdit.style.display = "none"
     menuDelete.style.display = "none"
-    menuLock.style.display = "none"
     menuFavorite.style.display = "none"
     menuSelect.style.display = "none"
+    
+    const settings = getSettings()
+    if (settings.freeMoveSearchBar === true) {
+      menuLock.style.display = "flex"
+      let isLocked = settings.lockedWidgets && settings.lockedWidgets["searchBar"]
+      const lockText = menuLock.querySelector("span")
+      const lockIcon = menuLock.querySelector("i")
+      if (isLocked) {
+        lockIcon.className = "fa-solid fa-unlock"
+        lockText.textContent = i18n.menu_unlock || "Unlock Position"
+      } else {
+        lockIcon.className = "fa-solid fa-lock"
+        lockText.textContent = i18n.menu_lock || "Lock Position"
+      }
+    } else {
+      menuLock.style.display = "none"
+    }
+
     addOpenWidgetSettingsItem("search", i18n, false)
   } else if (type === "widget") {
     menuEdit.style.display = "none"
@@ -928,7 +945,7 @@ export function showContextMenu(
     let isFreeMoveEnabled = true;
     if (id === "clock") {
       isFreeMoveEnabled = settings.freeMoveClock === true;
-    } else if (id === "custom-title") {
+    } else if (id === "custom-title" || id === "customTitle") {
       isFreeMoveEnabled = settings.freeMoveCustomTitle === true;
     }
 
@@ -939,7 +956,7 @@ export function showContextMenu(
     }
 
     let isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
-    if (id === "custom-title") {
+    if (id === "custom-title" || id === "customTitle") {
       isLocked = settings.lockedWidgets && settings.lockedWidgets["customTitle"]
     }
 
@@ -2730,29 +2747,59 @@ async function handleDelete() {
 }
 
 function handleLock() {
-  if (contextMenuTargetType === "widget" && contextMenuTargetId) {
-    const settings = getSettings()
+  const settings = getSettings()
+
+  if (contextMenuTargetType === "search") {
+    const lockedWidgets = { ...(settings.lockedWidgets || {}) }
+    const isLocked = lockedWidgets["searchBar"]
+    lockedWidgets["searchBar"] = !isLocked
     
-    if (contextMenuTargetId === "custom-title") {
-      const lockedWidgets = settings.lockedWidgets || {}
-      const isLocked = lockedWidgets["customTitle"]
-      lockedWidgets["customTitle"] = !isLocked
+    if (window.appHandleSettingUpdate) {
+      window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
+    } else {
       updateSetting("lockedWidgets", lockedWidgets)
       saveSettings()
+    }
+
+    const widget = document.getElementById("search-container")
+    if (widget) {
+      if (!isLocked) {
+        widget.classList.add("is-locked")
+      } else {
+        widget.classList.remove("is-locked")
+      }
+    }
+    hideContextMenu()
+    return
+  }
+
+  if (contextMenuTargetType === "widget" && contextMenuTargetId) {
+    if (contextMenuTargetId === "custom-title" || contextMenuTargetId === "customTitle") {
+      const lockedWidgets = { ...(settings.lockedWidgets || {}) }
+      const isLocked = lockedWidgets["customTitle"]
+      lockedWidgets["customTitle"] = !isLocked
+      
+      if (window.appHandleSettingUpdate) {
+        window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
+      } else {
+        updateSetting("lockedWidgets", lockedWidgets)
+        saveSettings()
+      }
       hideContextMenu()
       return
     }
 
-    const lockedWidgets = settings.lockedWidgets || {}
+    const lockedWidgets = { ...(settings.lockedWidgets || {}) }
     const isLocked = lockedWidgets[contextMenuTargetId]
 
     lockedWidgets[contextMenuTargetId] = !isLocked
-    
-    if ("customTitle" in lockedWidgets) delete lockedWidgets["customTitle"]
-    if ("searchBar" in lockedWidgets) delete lockedWidgets["searchBar"]
 
-    updateSetting("lockedWidgets", lockedWidgets)
-    saveSettings()
+    if (window.appHandleSettingUpdate) {
+      window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
+    } else {
+      updateSetting("lockedWidgets", lockedWidgets)
+      saveSettings()
+    }
 
     // Optionally update UI for visual feedback
     const widgetIdMap = {
@@ -2766,6 +2813,8 @@ function handleLock() {
       "daily-quotes": "daily-quotes",
       rss: "rss-container",
       habitTracker: "habit-tracker-container",
+      searchBar: "search-container",
+      customTitle: "custom-title-display",
     }
 
     const widgetId = widgetIdMap[contextMenuTargetId] || contextMenuTargetId
