@@ -266,7 +266,7 @@ class MusicVisualizer {
       canvas.width = targetW
       canvas.height = targetH
     }
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, W, H)
 
@@ -415,7 +415,7 @@ class MusicVisualizer {
       canvas.width = W * 2
       canvas.height = H * 2
     }
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.scale(2, 2)
@@ -593,7 +593,7 @@ class MusicVisualizer {
       canvas.width = W * 2
       canvas.height = H * 2
     }
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.scale(2, 2)
@@ -792,7 +792,7 @@ class MusicVisualizer {
       canvas.height = H * 2
     }
 
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     ctx.save()
@@ -972,7 +972,7 @@ class MusicVisualizer {
     const H = this.cachedH
     if (canvas.width !== W) canvas.width = W
     if (canvas.height !== H) canvas.height = H
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, W, H)
     
     const isWhiteBlur = this.isWhiteBlurCached
@@ -1113,7 +1113,7 @@ class MusicVisualizer {
       canvas.height = CH * 3
     }
 
-    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
+    const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     const isWhiteBlur = this.isWhiteBlurCached
