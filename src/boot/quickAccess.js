@@ -300,7 +300,7 @@ export function setupLayoutUpdatedHandlers({
     }
     if (e.detail.key === "showSearchAIIcon") {
       const el = document.getElementById("search-ai-btn")
-      if (el) fadeToggle(el, e.detail.value, "")
+      if (el) fadeToggle(el, e.detail.value, "flex")
     }
     if (e.detail.key === "searchBarWidth")
       document.documentElement.style.setProperty("--search-bar-width", `${e.detail.value}px`)

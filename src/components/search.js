@@ -728,14 +728,14 @@ function updateSearchUI() {
   }
 
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
-  cameraBtn.style.display = currentEngine === "google-image" ? "block" : "none"
+  cameraBtn.style.display = currentEngine === "google-image" ? "flex" : "none"
   if (lensBtn) {
-    lensBtn.style.display = currentEngine === "google-lens" ? "block" : "none"
+    lensBtn.style.display = currentEngine === "google-lens" ? "flex" : "none"
   }
   if (aiBtn) {
     aiBtn.style.display =
       currentEngine === "google" || currentEngine === "google-image"
-        ? "block"
+        ? "flex"
         : "none"
   }
   const i18n = geti18n()

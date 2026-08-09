@@ -34,6 +34,10 @@ body.free-move-search-bar #search-container.dragging {
   cursor: grabbing;
 }
 
+body.free-move-search-bar #search-container.is-locked {
+  cursor: default !important;
+}
+
 .search-container form {
   display: flex;
   flex: 1;
@@ -74,7 +78,32 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   font-size: 1.2rem;
 }
 
-.clear-btn {
+.clear-btn,
+.camera-btn,
+.lens-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 1rem;
+  cursor: pointer;
+  /* Hidden by default; shown via JS */
+  display: none;
+  width: 36px;
+  height: 36px;
+  line-height: 36px; /* perfectly centers inline font icon vertically */
+  text-align: center; /* perfectly centers horizontally */
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  transition:
+    opacity 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+.ai-btn {
   background: none;
   border: none;
   color: var(--text-color);
@@ -82,32 +111,19 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   font-size: 1rem;
   cursor: pointer;
   display: none;
-  padding: var(--space-1);
-  transition: color 0.3s;
-}
-
-.clear-btn:hover {
-  color: #fff;
-}
-
-.camera-btn,
-.lens-btn,
-.ai-btn {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  opacity: 0.6;
-  font-size: 1.05rem;
-  cursor: pointer;
-  display: none;
-  padding: var(--space-0-5) var(--space-1);
-  margin-left: 2px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
   transition:
     opacity 0.2s,
     color 0.2s,
     transform 0.2s;
-  flex-shrink: 0;
-  text-decoration: none;
 }
 
 .camera-btn:hover,
@@ -118,14 +134,20 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   transform: scale(1.1);
 }
 
+.clear-btn:hover {
+  opacity: 1;
+  color: #fff;
+}
+
 .ai-btn {
-  /* color: #464646; */
   opacity: 0.8;
 }
 
 .ai-btn:hover {
   color: #c2adff;
 }
+
+
 
 .search-divider {
   display: none;
@@ -135,6 +157,7 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   opacity: 0.3;
   margin: 0 var(--space-0-5);
   flex-shrink: 0;
+  align-self: center;
 }
 
 /* Top Right Controls */
@@ -917,13 +940,17 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   opacity: 0.65;
   font-size: 1rem;
   cursor: pointer;
-  padding: var(--space-1) var(--space-1);
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
   transition:
     opacity 0.2s,
     color 0.2s;
-  flex-shrink: 0;
 }
 
 .search-submit-btn:hover {

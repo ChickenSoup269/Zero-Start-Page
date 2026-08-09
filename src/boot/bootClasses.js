@@ -98,7 +98,7 @@ export function applyBootBodyClasses(settings) {
   }
   const searchAiBtn = document.getElementById("search-ai-btn")
   if (searchAiBtn) {
-    searchAiBtn.style.display = settings.showSearchAIIcon !== false ? "" : "none"
+    searchAiBtn.style.display = settings.showSearchAIIcon !== false ? "flex" : "none"
   }
   root.style.setProperty("--search-bar-width", `${settings.searchBarWidth || 600}px`)
   root.style.setProperty("--search-bar-blur", `${settings.searchBarBlur ?? 20}px`)
