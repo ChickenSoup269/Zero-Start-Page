@@ -772,33 +772,6 @@ settingsState.userBackgrounds = settingsState.userBackgrounds || []
 let calendarEventsState =
   JSON.parse(localStorage.getItem("calendarEvents")) || []
 
-export const applyPresetLayout = (presetId) => {
-  const currentSettings = getSettings()
-  if (!currentSettings.componentPositions) currentSettings.componentPositions = {}
-  
-  // Save the current preset so CSS can react to it (e.g. changing align-items on .main-container)
-  currentSettings.layoutPreset = presetId
-
-  // Remove fixed positions so CSS flexbox takes over naturally
-  const positions = currentSettings.componentPositions
-  delete positions.clock
-  delete positions.searchBar
-  delete positions.bookmarkWidget
-  delete positions.customTitle
-
-  currentSettings.freeMoveClock = false
-  currentSettings.freeMoveSearchBar = false
-  currentSettings.freeMoveCustomTitle = false
-
-  updateSetting("componentPositions", positions)
-  updateSetting("layoutPreset", currentSettings.layoutPreset)
-  updateSetting("freeMoveClock", false)
-  updateSetting("freeMoveSearchBar", false)
-  updateSetting("freeMoveCustomTitle", false)
-
-  saveSettings(true)
-}
-
 // --- Exports ---
 export const localBackgrounds = []
 

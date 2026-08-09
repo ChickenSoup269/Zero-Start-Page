@@ -13,7 +13,6 @@ import {
   clearCloudBackup,
   restoreFromCloud,
   defaultSettings,
-  applyPresetLayout,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -8231,19 +8230,4 @@ export function setupGeneralEventHandlers(
       DOM.lcpBookmarkLayout.value = value
   })
 
-  // Preset Layouts Listeners
-  const presetBtns = document.querySelectorAll(".preset-btn")
-  presetBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const presetId = btn.getAttribute("data-preset")
-      if (presetId) {
-        showConfirm("Áp dụng Theme Bố cục?", "Xác nhận áp dụng theme này? Vị trí các widget của bạn sẽ bị thay đổi.").then(confirmed => {
-          if (confirmed) {
-            applyPresetLayout(presetId)
-            window.location.reload()
-          }
-        })
-      }
-    })
-  })
 }
