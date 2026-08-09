@@ -1827,16 +1827,15 @@ export function setupGeneralEventHandlers(
   })
 
   // Unsplash
-  let lastUnsplashPhoto = null
   const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
 
   DOM.unsplashRandomBtn.addEventListener("click", async () => {
-    lastUnsplashPhoto = await setUnsplashRandomBackground(
+    const photo = await setUnsplashRandomBackground(
       DOM.unsplashRandomBtn,
       DOM.unsplashCategorySelect,
       handleSettingUpdate,
     )
-    if (lastUnsplashPhoto && unsplashSaveBtn) {
+    if (photo && unsplashSaveBtn) {
       unsplashSaveBtn.disabled = false
     }
   })
@@ -1844,12 +1843,12 @@ export function setupGeneralEventHandlers(
   DOM.unsplashRandomBtn.addEventListener("keydown", async (e) => {
     if (e.code === "Space") {
       e.preventDefault()
-      lastUnsplashPhoto = await setUnsplashRandomBackground(
+      const photo = await setUnsplashRandomBackground(
         DOM.unsplashRandomBtn,
         DOM.unsplashCategorySelect,
         handleSettingUpdate,
       )
-      if (lastUnsplashPhoto && unsplashSaveBtn) {
+      if (photo && unsplashSaveBtn) {
         unsplashSaveBtn.disabled = false
       }
     }
@@ -1904,7 +1903,6 @@ export function setupGeneralEventHandlers(
       }
 
       const authorName =
-        lastUnsplashPhoto?.user?.name ||
         settings.unsplashLastCredit?.authorName ||
         "Unsplash"
       const newBg = {
@@ -1914,11 +1912,9 @@ export function setupGeneralEventHandlers(
         type: "image",
         date: new Date().toISOString(),
         photoUrl:
-          lastUnsplashPhoto?.links?.html ||
           settings.unsplashLastCredit?.photoUrl ||
           "",
         authorUrl:
-          lastUnsplashPhoto?.user?.links?.html ||
           settings.unsplashLastCredit?.authorUrl ||
           "",
         settings: getBackgroundSnapshot(settings),
