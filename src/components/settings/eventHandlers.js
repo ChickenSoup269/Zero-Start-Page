@@ -1589,6 +1589,9 @@ export function setupGeneralEventHandlers(
           if (isSubItem) {
             item.classList.add("sub-item")
           }
+          if (section.dataset.sectionId === "about-project") {
+            item.classList.add("toc-highlight-glow")
+          }
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {
             // 1) Expand parent section if collapsed
@@ -1665,6 +1668,23 @@ export function setupGeneralEventHandlers(
   }
 
   initSidebarToC()
+
+  const fetchGithubStars = async () => {
+    try {
+      const response = await fetch("https://api.github.com/repos/ChickenSoup269/Zero-Start-Page")
+      if (response.ok) {
+        const data = await response.json()
+        const countSpan = document.getElementById("github-star-count")
+        if (countSpan) {
+          countSpan.textContent = data.stargazers_count
+          countSpan.style.display = "inline-block"
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to fetch Github stars", e)
+    }
+  }
+  fetchGithubStars()
 
   // Section collapse/expand state
   const SECTION_STATE_KEY = "settingsSectionStates"

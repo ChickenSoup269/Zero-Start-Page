@@ -849,6 +849,49 @@ body.sidebar-m3-accent .settings-sidebar {
   transition: transform 0.2s;
 }
 
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spinGlowBeam {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+.toc-highlight-glow {
+  position: relative;
+  background: transparent;
+}
+
+.toc-highlight-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0deg,
+    transparent 90deg,
+    var(--accent-color) 180deg,
+    transparent 180deg,
+    transparent 270deg,
+    var(--accent-color) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spinGlowBeam 2s linear infinite;
+  pointer-events: none;
+}
+
+.toc-highlight-glow i {
+  color: var(--accent-color) !important;
+}
+
 .toc-item:hover i {
   transform: scale(1.1);
 }
