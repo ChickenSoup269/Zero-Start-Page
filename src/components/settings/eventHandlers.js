@@ -1591,8 +1591,16 @@ export function setupGeneralEventHandlers(
           }
           if (section.dataset.sectionId === "about-project") {
             item.classList.add("toc-highlight-glow")
+            item.innerHTML = `
+              <div class="toc-glow-mask">
+                <div class="toc-glow-beam-1"></div>
+                <div class="toc-glow-beam-2"></div>
+              </div>
+              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>
+            `
+          } else {
+            item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           }
-          item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {
             // 1) Expand parent section if collapsed
             const parentSection = section.closest(".settings-section")
