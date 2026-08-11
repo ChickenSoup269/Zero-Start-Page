@@ -530,13 +530,13 @@ settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
 
 // Migration for RSS hiding
 if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
-  settingsState.showRss = false;
-  settingsState.qaShowRss = false;
-  settingsState.qaShowHabits = false;
-  settingsState.rssHiddenMigrated = true;
-  localStorage.setItem("pageSettings", JSON.stringify(settingsState));
+  settingsState.showRss = false
+  settingsState.qaShowRss = false
+  settingsState.qaShowHabits = false
+  settingsState.rssHiddenMigrated = true
+  localStorage.setItem("pageSettings", JSON.stringify(settingsState))
 } else if (!storedSettingsRaw) {
-  settingsState.rssHiddenMigrated = true;
+  settingsState.rssHiddenMigrated = true
 }
 
 const MODULE_RESET_KEYS = {

@@ -20,22 +20,55 @@
             try {
               const s = settings || {}
               const dateClockStyle = s.dateClockStyle || "default"
-              if (dateClockStyle !== "cartoon" && dateClockStyle !== "c4-bomb" && dateClockStyle !== "fliqlo") {
+              if (
+                dateClockStyle !== "cartoon" &&
+                dateClockStyle !== "c4-bomb" &&
+                dateClockStyle !== "fliqlo"
+              ) {
                 const now = new Date()
                 const use12Hour = s.timeFormat === "12h"
                 const hideSeconds = s.hideSeconds
-                const langCode = s.language === "vi" ? "vi-VN" : s.language === "zh" ? "zh-CN" : "en-US"
-                const tz = s.timezone && s.timezone !== "local" ? s.timezone : undefined
-                
+                const langCode =
+                  s.language === "vi"
+                    ? "vi-VN"
+                    : s.language === "zh"
+                      ? "zh-CN"
+                      : "en-US"
+                const tz =
+                  s.timezone && s.timezone !== "local" ? s.timezone : undefined
+
                 const timeOptions = hideSeconds
-                  ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
-                  : { hour12: use12Hour, hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: tz }
-                
-                clock.textContent = now.toLocaleTimeString(langCode, timeOptions)
-                
+                  ? {
+                      hour12: use12Hour,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: tz,
+                    }
+                  : {
+                      hour12: use12Hour,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      timeZone: tz,
+                    }
+
+                clock.textContent = now.toLocaleTimeString(
+                  langCode,
+                  timeOptions,
+                )
+
                 if (s.showDate !== false && s.showGregorian !== false) {
-                  const dateOptions = { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: tz }
-                  date.textContent = now.toLocaleDateString(langCode, dateOptions)
+                  const dateOptions = {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    timeZone: tz,
+                  }
+                  date.textContent = now.toLocaleDateString(
+                    langCode,
+                    dateOptions,
+                  )
                 }
               }
             } catch (e) {
@@ -43,7 +76,10 @@
             }
           }
         })
-        observer.observe(document.documentElement, { childList: true, subtree: true })
+        observer.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+        })
       } catch (e) {
         console.warn("Could not register early clock observer:", e)
       }
@@ -53,7 +89,11 @@
     let settings = null
     const raw = localStorage.getItem("pageSettings")
     if (raw) {
-      try { settings = JSON.parse(raw) } catch { settings = null }
+      try {
+        settings = JSON.parse(raw)
+      } catch {
+        settings = null
+      }
     }
 
     if (settings) {
@@ -101,8 +141,7 @@
         body.classList.add("hide-search-bar")
       if (settings.freeMoveSearchBar === true)
         body.classList.add("free-move-search-bar")
-      if (settings.freeMoveClock === true)
-        body.classList.add("free-move-clock")
+      if (settings.freeMoveClock === true) body.classList.add("free-move-clock")
       if (settings.freeMoveCustomTitle === true)
         body.classList.add("free-move-custom-title")
 
@@ -276,12 +315,12 @@
         }
         return `${repeating}linear-gradient(${angle}deg, ${stops})`
       }
-      const isVideoBackground = (value) => 
-        typeof value === "string" && 
-        (value.startsWith("data:video") || 
-         value.startsWith("idb-video-") || 
-         /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) || 
-         value.includes("googlevideo"))
+      const isVideoBackground = (value) =>
+        typeof value === "string" &&
+        (value.startsWith("data:video") ||
+          value.startsWith("idb-video-") ||
+          /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) ||
+          value.includes("googlevideo"))
 
       const isImageLikeBackground = (value) =>
         typeof value === "string" &&
@@ -297,7 +336,9 @@
         const bg = settings.background
         const isIndexedDbImage =
           typeof bg === "string" &&
-          (bg.startsWith("idb-img-") || bg.startsWith("idb-image-") || bg.startsWith("idb-gif-"))
+          (bg.startsWith("idb-img-") ||
+            bg.startsWith("idb-image-") ||
+            bg.startsWith("idb-gif-"))
 
         // Only reuse a persistent preview for the same image-like background.
         // This includes IndexedDB media: the tiny data URL preview is available
@@ -310,10 +351,7 @@
           const preview = settings.lastUserBackgroundPreview
           // NOTE: blob: URLs are session-scoped and become invalid on page reload.
           // Only use data: or https: previews which are persistent across sessions.
-          if (
-            preview.startsWith("data:") ||
-            /^https?:\/\//i.test(preview)
-          ) {
+          if (preview.startsWith("data:") || /^https?:\/\//i.test(preview)) {
             return cssUrl(preview)
           }
         }
@@ -325,8 +363,13 @@
         if (settings.splashCursorActive && settings.splashCursorDarkBg === true)
           return "#000000"
         if (settings.effect === "auroraWave") return "#02040f"
-        if (settings.effect === "crtScanlines") return settings.crtBackgroundColor || "#0a140f"
-        if (settings.effect === "pixelBlast" && settings.pixelBlastTransparent === false) return settings.pixelBlastBgColor || "#0a0a0a"
+        if (settings.effect === "crtScanlines")
+          return settings.crtBackgroundColor || "#0a140f"
+        if (
+          settings.effect === "pixelBlast" &&
+          settings.pixelBlastTransparent === false
+        )
+          return settings.pixelBlastBgColor || "#0a0a0a"
         if (settings.svgWaveActive) {
           const start = `hsl(${settings.svgWaveStartHue ?? 200}, ${settings.svgWaveStartSaturation ?? 70}%, ${settings.svgWaveStartLightness ?? 40}%)`
           const end = `hsl(${settings.svgWaveEndHue ?? 280}, ${settings.svgWaveEndSaturation ?? 70}%, ${settings.svgWaveEndLightness ?? 30}%)`
@@ -439,24 +482,34 @@
       if (hasPersistentBgPreview) body.classList.add("preload-bg-preview")
       // Early Font and Clock Calculations
       const primaryFont = settings.font || "'Outfit', sans-serif"
-      const clockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
+      const clockFont =
+        settings.clockFont || settings.font || "'Outfit', sans-serif"
       const clockFontTarget = settings.clockFontTarget || "both"
-      
+
       let fontVars = {}
       fontVars["--font-primary"] = primaryFont
-      
+
       const applyFontToTargets = (targets, font) => {
         targets.forEach((t) => {
           fontVars[`--font-${t}`] = font
         })
       }
-      
-      applyFontToTargets(["clock", "date", "weekday", "gregorian-date", "lunar-date"], primaryFont)
+
+      applyFontToTargets(
+        ["clock", "date", "weekday", "gregorian-date", "lunar-date"],
+        primaryFont,
+      )
       if (clockFontTarget === "both") {
         applyFontToTargets(
           [
-            "clock", "date", "weekday", "gregorian-date", "lunar-date",
-            "clock-date", "jp-time", "jp-date"
+            "clock",
+            "date",
+            "weekday",
+            "gregorian-date",
+            "lunar-date",
+            "clock-date",
+            "jp-time",
+            "jp-date",
           ],
           clockFont,
         )
@@ -469,22 +522,43 @@
       // Early Clock Sizing
       const baseClockSize = Number(settings.clockSize) || 6
       let computedClockSize = baseClockSize
-      const clockUsesDisplayFont = clockFontTarget === "both" || clockFontTarget === "clock"
-      
+      const clockUsesDisplayFont =
+        clockFontTarget === "both" || clockFontTarget === "clock"
+
       const getClockFontProfile = (font) => {
         const fontName = String(font || "").toLowerCase()
         if (fontName.includes("outfit")) {
-          return { clockScale: 0.68, dateScale: 0.86, letterSpacing: "0px", maxWidthFactor: 5.8 }
+          return {
+            clockScale: 0.68,
+            dateScale: 0.86,
+            letterSpacing: "0px",
+            maxWidthFactor: 5.8,
+          }
         }
         if (fontName.includes("silkscreen")) {
-          return { clockScale: 0.78, dateScale: 0.9, letterSpacing: "0.02em", maxWidthFactor: 6.1 }
+          return {
+            clockScale: 0.78,
+            dateScale: 0.9,
+            letterSpacing: "0.02em",
+            maxWidthFactor: 6.1,
+          }
         }
         if (fontName.includes("pixelify")) {
-          return { clockScale: 0.86, dateScale: 0.94, letterSpacing: "0.01em", maxWidthFactor: 6.4 }
+          return {
+            clockScale: 0.86,
+            dateScale: 0.94,
+            letterSpacing: "0.01em",
+            maxWidthFactor: 6.4,
+          }
         }
-        return { clockScale: 1, dateScale: 1, letterSpacing: "2px", maxWidthFactor: 7 }
+        return {
+          clockScale: 1,
+          dateScale: 1,
+          letterSpacing: "2px",
+          maxWidthFactor: 7,
+        }
       }
-      
+
       const getStyleClockScale = (style) => {
         if (style === "cartoon") return 1.3
         if (style === "fliqlo") return 0.95
@@ -494,28 +568,51 @@
 
       const fontProfile = getClockFontProfile(clockFont)
       if (clockUsesDisplayFont) {
-        computedClockSize *= fontProfile.clockScale * getStyleClockScale(dateClockStyle)
+        computedClockSize *=
+          fontProfile.clockScale * getStyleClockScale(dateClockStyle)
       }
 
       // Synchronously load custom Google Fonts early in the head
       const loadFontEarly = (fontValue) => {
         if (!fontValue) return
         const fontName = fontValue.replace(/['"]/g, "").split(",")[0].trim()
-        const systemFonts = ["sans-serif", "serif", "monospace", "cursive", "fantasy", "system-ui", "arial", "helvetica", "segoe ui", "times new roman", "courier new", "georgia", "verdana", "trebuchet ms", "impact"]
+        const systemFonts = [
+          "sans-serif",
+          "serif",
+          "monospace",
+          "cursive",
+          "fantasy",
+          "system-ui",
+          "arial",
+          "helvetica",
+          "segoe ui",
+          "times new roman",
+          "courier new",
+          "georgia",
+          "verdana",
+          "trebuchet ms",
+          "impact",
+        ]
         if (systemFonts.includes(fontName.toLowerCase())) return
-        
+
         const savedFonts = settings.userSavedFonts || []
         const savedFontObj = savedFonts.find(
           (f) => (typeof f === "string" ? f : f.label) === fontName,
         )
-        if (savedFontObj && typeof savedFontObj === "object" && savedFontObj.isLocal) {
+        if (
+          savedFontObj &&
+          typeof savedFontObj === "object" &&
+          savedFontObj.isLocal
+        ) {
           return
         }
 
         const formattedFontName = fontName.replace(/\s+/g, "+")
         const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
-        
-        const existingLink = document.querySelector(`link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`)
+
+        const existingLink = document.querySelector(
+          `link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`,
+        )
         if (!existingLink) {
           const link = document.createElement("link")
           link.rel = "stylesheet"
@@ -553,7 +650,9 @@
         --clock-size: ${computedClockSize}rem;
         --clock-letter-spacing: ${clockUsesDisplayFont ? fontProfile.letterSpacing : "2px"};
         --clock-max-width-factor: ${fontProfile.maxWidthFactor};
-        ${Object.entries(fontVars).map(([name, val]) => `${name}: ${val};`).join("\n        ")}
+        ${Object.entries(fontVars)
+          .map(([name, val]) => `${name}: ${val};`)
+          .join("\n        ")}
       }\n`
       css += `body.preload-bg-ready { animation: none !important; }\n`
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`

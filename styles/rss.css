@@ -1,251 +1,252 @@
 .rss-container {
-    width: 380px;
-    max-height: 500px;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    gap: 10px;
-    overflow: hidden;
-    transition: width 0.3s, max-height 0.3s;
-    position: fixed;
-    top: 100px;
-    left: 100px;
-    z-index: 8995 !important;
+  width: 380px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 10px;
+  overflow: hidden;
+  transition:
+    width 0.3s,
+    max-height 0.3s;
+  position: fixed;
+  top: 100px;
+  left: 100px;
+  z-index: 8995 !important;
 }
 
 .rss-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1em;
-    font-weight: 600;
-    flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 .rss-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 2px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-    flex-shrink: 0;
-    flex-wrap: nowrap;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 .rss-tabs::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
+  display: none; /* Safari and Chrome */
 }
 
 .rss-tab {
-    padding: 4px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    font-size: 0.85em;
-    cursor: pointer;
-    white-space: nowrap;
-    opacity: 0.7;
-    transition: all 0.2s;
-    user-select: none;
-    flex-shrink: 0;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 0.85em;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0.7;
+  transition: all 0.2s;
+  user-select: none;
+  flex-shrink: 0;
 }
 
 .rss-tab:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .rss-tab.active {
-    opacity: 1;
-    background: var(--accent-color, #4facfe);
-    color: #fff;
-    font-weight: 600;
+  opacity: 1;
+  background: var(--accent-color, #4facfe);
+  color: #fff;
+  font-weight: 600;
 }
 
-
 .rss-actions button {
-    background: transparent;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 0.9em;
-    opacity: 0.7;
-    transition: opacity 0.2s;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.9em;
+  opacity: 0.7;
+  transition: opacity 0.2s;
 }
 
 .rss-actions button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .rss-content {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-right: 5px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 5px;
 }
 
 .rss-content::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 .rss-content::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .rss-content::-webkit-scrollbar-thumb {
-    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
-    border-radius: var(--radius-sm, 4px);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  border-radius: var(--radius-sm, 4px);
 }
 
 .rss-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
 }
 
 .rss-item {
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text-color);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.9em;
-    line-height: 1.4;
-    display: flex;
-    gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9em;
+  line-height: 1.4;
+  display: flex;
+  gap: 12px;
 }
 
 .rss-btn-save:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .rss-container.rss-mini {
-    width: 240px;
-    max-height: 280px;
+  width: 240px;
+  max-height: 280px;
 }
 .rss-container.rss-mini .rss-item img {
-    display: none;
+  display: none;
 }
 .rss-container.rss-mini .rss-item-title {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 .rss-container.rss-expanded {
-    width: 550px;
-    max-height: 750px;
+  width: 550px;
+  max-height: 750px;
 }
 .rss-container.rss-expanded .rss-item img {
-    width: 80px !important;
-    height: 80px !important;
+  width: 80px !important;
+  height: 80px !important;
 }
 
 .rss-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .rss-item.highlight {
-    border-left: 3px solid var(--accent-color, #4facfe);
-    background: rgba(79, 172, 254, 0.1);
+  border-left: 3px solid var(--accent-color, #4facfe);
+  background: rgba(79, 172, 254, 0.1);
 }
 
 .rss-item-title {
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text-color);
-    word-break: break-word;
-    transition: color 0.2s;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-color);
+  word-break: break-word;
+  transition: color 0.2s;
 }
 
 .rss-item:hover .rss-item-title {
-    color: var(--accent-color, #4facfe);
+  color: var(--accent-color, #4facfe);
 }
 
 .rss-item-desc {
-    font-size: 0.85em;
-    opacity: 0.7;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-    line-height: 1.4;
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 .rss-item-source {
-    font-size: 0.75em;
-    opacity: 0.5;
-    margin-top: auto;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  font-size: 0.75em;
+  opacity: 0.5;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .rss-settings {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 0.9em;
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 5px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.9em;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
 .rss-settings::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 .rss-settings::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .rss-settings::-webkit-scrollbar-thumb {
-    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
-    border-radius: var(--radius-sm, 4px);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  border-radius: var(--radius-sm, 4px);
 }
 
 .rss-settings::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
 }
 
 .rss-settings.active {
-    display: flex;
+  display: flex;
 }
 
 .rss-settings-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .rss-settings-group label {
-    font-size: 0.85em;
-    opacity: 0.8;
+  font-size: 0.85em;
+  opacity: 0.8;
 }
 
 .rss-input {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-    padding: 8px;
-    border-radius: 6px;
-    font-family: inherit;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  padding: 8px;
+  border-radius: 6px;
+  font-family: inherit;
 }
 
 .rss-save-btn {
-    background: var(--accent-color, #4facfe);
-    color: #fff;
-    border: none;
-    padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
+  background: var(--accent-color, #4facfe);
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 /* RSS SKINS */
@@ -278,12 +279,21 @@ body.widgets-m3-accent .rss-container,
 .rss-container.skin-m3-accent {
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--m3-primary-container, var(--safe-accent)) 76%, transparent),
+    color-mix(
+      in srgb,
+      var(--m3-primary-container, var(--safe-accent)) 76%,
+      transparent
+    ),
     color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 68%, transparent)
   ) !important;
   color: var(--m3-on-primary-container, #ffffff) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 40%, transparent) !important;
-  box-shadow: 0 8px 32px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 40%,
+    transparent
+  ) !important;
+  box-shadow: 0 8px 32px
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
 }
 
 .rss-container.skin-transparent {
@@ -300,46 +310,49 @@ body.widgets-m3-accent .rss-container,
 }
 
 .rss-source-link {
-    font-size: 0.75em;
-    padding: 3px 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.2s;
+  font-size: 0.75em;
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
 }
 
 .rss-source-link:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .rss-scroll-top-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--accent-color, rgba(0, 0, 0, 0.7));
-    color: white;
-    border: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s, transform 0.2s, background 0.2s;
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-color, rgba(0, 0, 0, 0.7));
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s,
+    transform 0.2s,
+    background 0.2s;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .rss-scroll-top-btn.visible {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .rss-scroll-top-btn:hover {
-    transform: scale(1.1);
-    background: var(--accent-color, rgba(0, 0, 0, 0.9));
+  transform: scale(1.1);
+  background: var(--accent-color, rgba(0, 0, 0, 0.9));
 }

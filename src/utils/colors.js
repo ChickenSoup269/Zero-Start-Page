@@ -506,7 +506,10 @@ const M3_PALETTE_STYLES = {
 const resolveM3PaletteStyle = (style) =>
   M3_PALETTE_STYLES[style] || M3_PALETTE_STYLES.tonalSpot
 
-export function buildMaterial3Scheme(seedHex = "#6750a4", paletteStyle = "tonalSpot") {
+export function buildMaterial3Scheme(
+  seedHex = "#6750a4",
+  paletteStyle = "tonalSpot",
+) {
   const seedRgb = hexToRgb(seedHex)
   const seed = rgbToHsl(seedRgb)
   const style = resolveM3PaletteStyle(paletteStyle)

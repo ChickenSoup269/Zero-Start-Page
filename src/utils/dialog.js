@@ -271,31 +271,38 @@ export function showChecklistConfirm(options, title = null, message = null) {
     container.classList.add("active")
 
     // Automatically check settings option if localMedia is checked
-    container.querySelectorAll(".dialog-checklist input[type='checkbox']").forEach((input) => {
-      const handleDependency = (target) => {
-        const key = target.dataset.key
-        if (key === "localMedia") {
-          const settingsInput = container.querySelector("input[data-key='settings']")
-          if (settingsInput) {
-            if (target.checked) {
-              if (settingsInput.dataset.origDisabled === undefined) {
-                settingsInput.dataset.origDisabled = settingsInput.disabled ? "true" : "false"
+    container
+      .querySelectorAll(".dialog-checklist input[type='checkbox']")
+      .forEach((input) => {
+        const handleDependency = (target) => {
+          const key = target.dataset.key
+          if (key === "localMedia") {
+            const settingsInput = container.querySelector(
+              "input[data-key='settings']",
+            )
+            if (settingsInput) {
+              if (target.checked) {
+                if (settingsInput.dataset.origDisabled === undefined) {
+                  settingsInput.dataset.origDisabled = settingsInput.disabled
+                    ? "true"
+                    : "false"
+                }
+                settingsInput.checked = true
+                settingsInput.disabled = true
+              } else {
+                const origDisabled =
+                  settingsInput.dataset.origDisabled === "true"
+                settingsInput.disabled = origDisabled
               }
-              settingsInput.checked = true
-              settingsInput.disabled = true
-            } else {
-              const origDisabled = settingsInput.dataset.origDisabled === "true"
-              settingsInput.disabled = origDisabled
             }
           }
         }
-      }
 
-      input.addEventListener("change", (e) => handleDependency(e.target))
-      if (input.checked) {
-        handleDependency(input)
-      }
-    })
+        input.addEventListener("change", (e) => handleDependency(e.target))
+        if (input.checked) {
+          handleDependency(input)
+        }
+      })
 
     const okBtn = container.querySelector("#checklist-ok")
     const cancelBtn = container.querySelector("#checklist-cancel")
@@ -375,13 +382,15 @@ export function showChoiceConfirm(options, title = null, message = null) {
 
     container.classList.add("active")
 
-    container.querySelectorAll(".dialog-choice-item[data-key]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const value = btn.dataset.key
-        closeDialog()
-        resolve(value)
+    container
+      .querySelectorAll(".dialog-choice-item[data-key]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const value = btn.dataset.key
+          closeDialog()
+          resolve(value)
+        })
       })
-    })
 
     const cancelBtn = container.querySelector("#choice-cancel")
     cancelBtn.addEventListener("click", () => {
@@ -414,7 +423,9 @@ export function showBookmarkHideInstructions() {
   const i18n = geti18n()
 
   // Simple OS detection
-  const platform = (navigator.userAgentData?.platform || navigator.platform).toLowerCase()
+  const platform = (
+    navigator.userAgentData?.platform || navigator.platform
+  ).toLowerCase()
   let os = "win"
   if (platform.includes("mac")) os = "mac"
   else if (platform.includes("linux")) os = "linux"
@@ -424,8 +435,11 @@ export function showBookmarkHideInstructions() {
   const step2 = i18n.hide_bookmark_step2 || "2. Copy and run the command below:"
   const copyText = i18n.hide_bookmark_copy || "Copy Command"
   const copiedText = i18n.hide_bookmark_copied || "Command Copied!"
-  const policyLink = i18n.hide_bookmark_policy_link || "View status at chrome://policy/"
-  const linkHint = i18n.hide_bookmark_link_hint || "(Copy and paste the link if it doesn't open)"
+  const policyLink =
+    i18n.hide_bookmark_policy_link || "View status at chrome://policy/"
+  const linkHint =
+    i18n.hide_bookmark_link_hint ||
+    "(Copy and paste the link if it doesn't open)"
   const tip = i18n[`hide_bookmark_tip_${os}`] || i18n.hide_bookmark_tip
   const note = i18n.hide_bookmark_note || ""
 
@@ -545,15 +559,19 @@ async function copyTextToClipboard(text) {
 export function showChoice(message, title, choices) {
   return new Promise((resolve) => {
     const container = createDialogContainer()
-    const buttonsHtml = choices.map((c, i) => `
-      <button class="dialog-btn ${c.primary ? 'dialog-btn-primary' : 'dialog-btn-secondary'} ${c.danger ? 'danger' : ''}" id="choice-btn-${i}" style="width: 100%; justify-content: center; margin-top: 8px; padding: 10px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-        ${c.icon ? `<i class="${c.icon}"></i>` : ''}<span>${c.label}</span>
+    const buttonsHtml = choices
+      .map(
+        (c, i) => `
+      <button class="dialog-btn ${c.primary ? "dialog-btn-primary" : "dialog-btn-secondary"} ${c.danger ? "danger" : ""}" id="choice-btn-${i}" style="width: 100%; justify-content: center; margin-top: 8px; padding: 10px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+        ${c.icon ? `<i class="${c.icon}"></i>` : ""}<span>${c.label}</span>
       </button>
-    `).join('')
+    `,
+      )
+      .join("")
 
     container.innerHTML = `
       <div class="custom-dialog custom-confirm">
-        ${title ? `<div class="dialog-header">${title}</div>` : ''}
+        ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-cloud dialog-icon" style="color: var(--accent-color);"></i>
           <div class="dialog-message">${message}</div>
@@ -563,16 +581,18 @@ export function showChoice(message, title, choices) {
         </div>
       </div>
     `
-    container.classList.add('active')
+    container.classList.add("active")
 
     choices.forEach((c, i) => {
-      container.querySelector(`#choice-btn-${i}`).addEventListener('click', () => {
-        closeDialog()
-        resolve(c.value)
-      })
+      container
+        .querySelector(`#choice-btn-${i}`)
+        .addEventListener("click", () => {
+          closeDialog()
+          resolve(c.value)
+        })
     })
 
-    container.addEventListener('click', (e) => {
+    container.addEventListener("click", (e) => {
       if (e.target === container) {
         closeDialog()
         resolve(null)
@@ -580,13 +600,13 @@ export function showChoice(message, title, choices) {
     })
 
     const escHandler = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeDialog()
         resolve(null)
-        document.removeEventListener('keydown', escHandler)
+        document.removeEventListener("keydown", escHandler)
       }
     }
-    document.addEventListener('keydown', escHandler)
+    document.addEventListener("keydown", escHandler)
   })
 }
 
@@ -595,7 +615,9 @@ export function showFileSelector(title, files, defaultValue) {
     const container = createDialogContainer()
     const i18n = geti18n()
 
-    let optionsHtml = files.map(f => `
+    let optionsHtml = files
+      .map(
+        (f) => `
       <div class="dialog-file-option" data-name="${f.name}" style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: rgba(255,255,255,0.02);">
         <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
           <i class="fa-solid fa-file-code" style="color: var(--accent-color, #818cf8); font-size: 1.1rem;"></i>
@@ -605,7 +627,9 @@ export function showFileSelector(title, files, defaultValue) {
           <span style="font-size: 0.75rem; opacity: 0.6; margin-top: 2px;">${i18n.sync_modified || "Modified"}: ${new Date(f.modifiedTime).toLocaleString()}</span>
         </div>
       </div>
-    `).join("")
+    `,
+      )
+      .join("")
 
     if (files.length === 0) {
       optionsHtml = `<div style="text-align: center; opacity: 0.5; padding: 16px; font-size: 0.9rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">${i18n.sync_no_files || "No existing JSON files found on Drive."}</div>`
@@ -664,12 +688,12 @@ export function showFileSelector(title, files, defaultValue) {
     const cancelBtn = container.querySelector("#prompt-cancel")
     const optionEls = container.querySelectorAll(".dialog-file-option")
 
-    optionEls.forEach(el => {
+    optionEls.forEach((el) => {
       el.addEventListener("click", () => {
         input.value = el.dataset.name
-        
+
         // Visual feedback
-        optionEls.forEach(o => o.classList.remove("selected"))
+        optionEls.forEach((o) => o.classList.remove("selected"))
         el.classList.add("selected")
       })
     })
@@ -678,7 +702,7 @@ export function showFileSelector(title, files, defaultValue) {
     if (filterInput) {
       filterInput.addEventListener("input", (e) => {
         const term = e.target.value.toLowerCase()
-        optionEls.forEach(el => {
+        optionEls.forEach((el) => {
           if (el.dataset.name.toLowerCase().includes(term)) {
             el.style.display = "flex"
           } else {

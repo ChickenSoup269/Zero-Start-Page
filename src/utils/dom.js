@@ -64,11 +64,19 @@ export let confirmSaveStyleBtn = document.getElementById(
 
 export let bgPositionSetting = document.getElementById("bg-position-setting")
 export let bgBlurInput = document.getElementById("bg-blur-input")
-export let bgBlurDirectionSelect = document.getElementById("bg-blur-direction-select")
+export let bgBlurDirectionSelect = document.getElementById(
+  "bg-blur-direction-select",
+)
 export let bgBlurColorInput = document.getElementById("bg-blur-color-input")
-export let bgBlurColorOpacityInput = document.getElementById("bg-blur-color-opacity-input")
-export let bgBlurColorOpacityValue = document.getElementById("bg-blur-color-opacity-value")
-export let bgDirectionalBlurOverlay = document.getElementById("bg-directional-blur-overlay")
+export let bgBlurColorOpacityInput = document.getElementById(
+  "bg-blur-color-opacity-input",
+)
+export let bgBlurColorOpacityValue = document.getElementById(
+  "bg-blur-color-opacity-value",
+)
+export let bgDirectionalBlurOverlay = document.getElementById(
+  "bg-directional-blur-overlay",
+)
 export let bgBlurValue = document.getElementById("bg-blur-value")
 export let bgBrightnessInput = document.getElementById("bg-brightness-input")
 export let bgBrightnessValue = document.getElementById("bg-brightness-value")
@@ -102,9 +110,7 @@ export let accentColorToggleLabel = document.getElementById(
 export let accentColorSettingsBody = document.getElementById(
   "accent-color-settings-body",
 )
-export let accentColorModeM3 = document.getElementById(
-  "accent-color-mode-m3",
-)
+export let accentColorModeM3 = document.getElementById("accent-color-mode-m3")
 export let accentColorModeDefault = document.getElementById(
   "accent-color-mode-default",
 )
@@ -116,9 +122,7 @@ export let m3PaletteStyleSelect = document.getElementById(
   "m3-palette-style-select",
 )
 export let m3AutoBgToggle = document.getElementById("m3-auto-bg-toggle")
-export let saveAccentColorBtn = document.getElementById(
-  "save-accent-color-btn",
-)
+export let saveAccentColorBtn = document.getElementById("save-accent-color-btn")
 export let userAccentColorsGallery = document.getElementById(
   "user-accent-colors-gallery",
 )
@@ -131,12 +135,16 @@ export let fontSelectModeBtn = document.getElementById("font-select-mode-btn")
 export let fontSelectToolbar = document.getElementById("font-select-toolbar")
 export let fontSelectCount = document.getElementById("font-select-count")
 export let fontSelectAllBtn = document.getElementById("font-select-all-btn")
-export let fontFavoriteSelectedBtn = document.getElementById("font-favorite-selected-btn")
-export let fontDeleteSelectedBtn = document.getElementById("font-delete-selected-btn")
-export let fontSelectCancelBtn = document.getElementById("font-select-cancel-btn")
-export let fontTargetGeneralBtn = document.getElementById(
-  "font-target-general",
+export let fontFavoriteSelectedBtn = document.getElementById(
+  "font-favorite-selected-btn",
 )
+export let fontDeleteSelectedBtn = document.getElementById(
+  "font-delete-selected-btn",
+)
+export let fontSelectCancelBtn = document.getElementById(
+  "font-select-cancel-btn",
+)
+export let fontTargetGeneralBtn = document.getElementById("font-target-general")
 export let fontTargetClockBtn = document.getElementById("font-target-clock")
 export let customFontInput = document.getElementById("custom-font-input")
 export let loadCustomFontBtn = document.getElementById("load-custom-font-btn")
@@ -149,9 +157,7 @@ export let languageSelect = document.getElementById("language-select")
 export let languageToolsToggleBtn = document.getElementById(
   "language-tools-toggle-btn",
 )
-export let languageToolsPanel = document.getElementById(
-  "language-tools-panel",
-)
+export let languageToolsPanel = document.getElementById("language-tools-panel")
 export let languageHelpBtn = document.getElementById("language-help-btn")
 export let deleteCustomLanguageBtn = document.getElementById(
   "delete-custom-language-btn",
@@ -190,15 +196,9 @@ export let gradientStartPicker = document.getElementById(
   "gradient-start-picker",
 )
 export let gradientEndPicker = document.getElementById("gradient-end-picker")
-export let gradientAngleInput = document.getElementById(
-  "gradient-angle-input",
-)
-export let gradientAngleValue = document.getElementById(
-  "gradient-angle-value",
-)
-export let gradientTypeSelect = document.getElementById(
-  "gradient-type-select",
-)
+export let gradientAngleInput = document.getElementById("gradient-angle-input")
+export let gradientAngleValue = document.getElementById("gradient-angle-value")
+export let gradientTypeSelect = document.getElementById("gradient-type-select")
 export let gradientPositionGroup = document.getElementById(
   "gradient-position-group",
 )
@@ -211,9 +211,7 @@ export let gradientRadialShapeGroup = document.getElementById(
 export let gradientRadialShapeSelect = document.getElementById(
   "gradient-radial-shape-select",
 )
-export let gradientAngleGroup = document.getElementById(
-  "gradient-angle-group",
-)
+export let gradientAngleGroup = document.getElementById("gradient-angle-group")
 export let gradientToggleBtn = document.getElementById("gradient-toggle-btn")
 export let gradientToggleLabel = document.getElementById(
   "gradient-toggle-label",
@@ -299,9 +297,7 @@ export let multiGradientAngleValue = document.getElementById(
 export let multiGradientPreview = document.getElementById(
   "multi-gradient-preview",
 )
-export let applyMultiColorBtn = document.getElementById(
-  "apply-multi-color-btn",
-)
+export let applyMultiColorBtn = document.getElementById("apply-multi-color-btn")
 export let randomMultiColorHueBtn = document.getElementById(
   "random-multi-color-hue-btn",
 )
@@ -369,21 +365,15 @@ export let meteorFullColorToggle = document.getElementById(
 )
 export let meteorAngleInput = document.getElementById("meteor-angle-input")
 export let meteorAngleValue = document.getElementById("meteor-angle-value")
-export let meteorColorSetting = document.getElementById(
-  "meteor-color-setting",
-)
+export let meteorColorSetting = document.getElementById("meteor-color-setting")
 
-export let networkColorPicker = document.getElementById(
-  "network-color-picker",
-)
+export let networkColorPicker = document.getElementById("network-color-picker")
 export let networkColorSetting = document.getElementById(
   "network-color-setting",
 )
 
 export let matrixColorPicker = document.getElementById("matrix-color-picker")
-export let matrixColorSetting = document.getElementById(
-  "matrix-color-setting",
-)
+export let matrixColorSetting = document.getElementById("matrix-color-setting")
 
 export let auraColorPicker = document.getElementById("aura-color-picker")
 export let auraColorSetting = document.getElementById("aura-color-setting")
@@ -405,9 +395,7 @@ export let northernLightsBrightnessVal = document.getElementById(
 )
 
 export let hackerColorPicker = document.getElementById("hacker-color-picker")
-export let hackerColorSetting = document.getElementById(
-  "hacker-color-setting",
-)
+export let hackerColorSetting = document.getElementById("hacker-color-setting")
 export let pixelCubesColorPicker = document.getElementById(
   "pixel-cubes-color-picker",
 )
@@ -429,14 +417,14 @@ export let jellyfishColorSetting = document.getElementById(
   "jellyfish-color-setting",
 )
 export let sakuraColorPicker = document.getElementById("sakura-color-picker")
-export let sakuraColorSetting = document.getElementById(
-  "sakura-color-setting",
-)
+export let sakuraColorSetting = document.getElementById("sakura-color-setting")
 // DVD Effect
 export let dvdSettingsWrapper = document.getElementById("dvd-settings-wrapper")
 export let dvdTitleSetting = document.getElementById("dvd-title-setting")
 export let dvdTitleInput = document.getElementById("dvd-title-input")
-export let dvdColorModeSetting = document.getElementById("dvd-color-mode-setting")
+export let dvdColorModeSetting = document.getElementById(
+  "dvd-color-mode-setting",
+)
 export let dvdColorModeSelect = document.getElementById("dvd-color-mode-select")
 export let dvdSpeedSetting = document.getElementById("dvd-speed-setting")
 export let dvdSpeedSlider = document.getElementById("dvd-speed-slider")
@@ -471,9 +459,7 @@ export let auroraWaveBrightnessSetting = document.getElementById(
 export let auroraWaveSpeedSlider = document.getElementById(
   "aurora-wave-speed-slider",
 )
-export let auroraWaveSpeedVal = document.getElementById(
-  "aurora-wave-speed-val",
-)
+export let auroraWaveSpeedVal = document.getElementById("aurora-wave-speed-val")
 export let auroraWaveSpeedSetting = document.getElementById(
   "aurora-wave-speed-setting",
 )
@@ -535,25 +521,61 @@ export let pixelBlastColorSetting = document.getElementById(
 )
 export let pixelBlastSettings = document.getElementById("pixel-blast-settings")
 export let neonGridSettings = document.getElementById("neon-grid-settings")
-export let synthwaveGridColorPicker = document.getElementById("synthwave-grid-color-picker")
-export let synthwaveSunColorPicker = document.getElementById("synthwave-sun-color-picker")
-export let frostedOrbsSettings = document.getElementById("frosted-orbs-settings")
-export let frostedOrbsColor1Picker = document.getElementById("frosted-orbs-color-1-picker")
-export let frostedOrbsColor2Picker = document.getElementById("frosted-orbs-color-2-picker")
-export let frostedOrbsDarkBgCheckbox = document.getElementById("frosted-orbs-dark-bg")
+export let synthwaveGridColorPicker = document.getElementById(
+  "synthwave-grid-color-picker",
+)
+export let synthwaveSunColorPicker = document.getElementById(
+  "synthwave-sun-color-picker",
+)
+export let frostedOrbsSettings = document.getElementById(
+  "frosted-orbs-settings",
+)
+export let frostedOrbsColor1Picker = document.getElementById(
+  "frosted-orbs-color-1-picker",
+)
+export let frostedOrbsColor2Picker = document.getElementById(
+  "frosted-orbs-color-2-picker",
+)
+export let frostedOrbsDarkBgCheckbox = document.getElementById(
+  "frosted-orbs-dark-bg",
+)
 export let blackHoleSettings = document.getElementById("black-hole-settings")
-export let blackHoleAccretionColorPicker = document.getElementById("black-hole-accretion-color-picker")
-export let blackHoleStarColorPicker = document.getElementById("black-hole-star-color-picker")
-export let interactiveFluidSettings = document.getElementById("interactive-fluid-settings")
-export let interactiveFluidColor1Picker = document.getElementById("interactive-fluid-color-1-picker")
-export let interactiveFluidColor2Picker = document.getElementById("interactive-fluid-color-2-picker")
-export let cinematicBokehSettings = document.getElementById("cinematic-bokeh-settings")
-export let cinematicBokehColor1Picker = document.getElementById("cinematic-bokeh-color-1-picker")
-export let cinematicBokehColor2Picker = document.getElementById("cinematic-bokeh-color-2-picker")
-export let cinematicBokehDarkBgCheckbox = document.getElementById("cinematic-bokeh-dark-bg")
-export let synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
-export let pixelBlastBgSetting = document.getElementById("pixel-blast-bg-setting")
-export let pixelBlastTransparentCheckbox = document.getElementById("pixel-blast-transparent")
+export let blackHoleAccretionColorPicker = document.getElementById(
+  "black-hole-accretion-color-picker",
+)
+export let blackHoleStarColorPicker = document.getElementById(
+  "black-hole-star-color-picker",
+)
+export let interactiveFluidSettings = document.getElementById(
+  "interactive-fluid-settings",
+)
+export let interactiveFluidColor1Picker = document.getElementById(
+  "interactive-fluid-color-1-picker",
+)
+export let interactiveFluidColor2Picker = document.getElementById(
+  "interactive-fluid-color-2-picker",
+)
+export let cinematicBokehSettings = document.getElementById(
+  "cinematic-bokeh-settings",
+)
+export let cinematicBokehColor1Picker = document.getElementById(
+  "cinematic-bokeh-color-1-picker",
+)
+export let cinematicBokehColor2Picker = document.getElementById(
+  "cinematic-bokeh-color-2-picker",
+)
+export let cinematicBokehDarkBgCheckbox = document.getElementById(
+  "cinematic-bokeh-dark-bg",
+)
+export let synthwaveFullScreenCheckbox = document.getElementById(
+  "synthwave-full-screen",
+)
+export let pixelBlastBgSetting = document.getElementById(
+  "pixel-blast-bg-setting",
+)
+export let pixelBlastTransparentCheckbox = document.getElementById(
+  "pixel-blast-transparent",
+)
 export let pixelBlastBgColorContainer = document.getElementById(
   "pixel-blast-bg-color-container",
 )
@@ -590,27 +612,19 @@ export let pixelBlastInteractiveSetting = document.getElementById(
   "pixel-blast-interactive-setting",
 )
 
-export let sunbeamColorPicker = document.getElementById(
-  "sunbeam-color-picker",
-)
+export let sunbeamColorPicker = document.getElementById("sunbeam-color-picker")
 export let sunbeamColorSetting = document.getElementById(
   "sunbeam-color-setting",
 )
-export let sunbeamModeSetting = document.getElementById(
-  "sunbeam-mode-setting",
-)
-export let sunbeamModeSelect = document.getElementById(
-  "sunbeam-mode-select",
-)
+export let sunbeamModeSetting = document.getElementById("sunbeam-mode-setting")
+export let sunbeamModeSelect = document.getElementById("sunbeam-mode-select")
 export let sunbeamAngleInput = document.getElementById("sunbeam-angle-input")
 export let sunbeamAngleValue = document.getElementById("sunbeam-angle-value")
 export let sunbeamAngleSetting = document.getElementById(
   "sunbeam-angle-setting",
 )
 
-export let bubblesColorPicker = document.getElementById(
-  "bubbles-color-picker",
-)
+export let bubblesColorPicker = document.getElementById("bubbles-color-picker")
 export let bubblesColorSetting = document.getElementById(
   "bubbles-color-setting",
 )
@@ -698,9 +712,7 @@ export let floatingLinesAngleSetting = document.getElementById(
   "floating-lines-angle-setting",
 )
 export let rainHDColorPicker = document.getElementById("rain-hd-color-picker")
-export let rainHDColorSetting = document.getElementById(
-  "rain-hd-color-setting",
-)
+export let rainHDColorSetting = document.getElementById("rain-hd-color-setting")
 export let musicBarsColorPicker = document.getElementById(
   "music-bars-color-picker",
 )
@@ -727,7 +739,9 @@ export let oceanWavePosBottomBtn = document.getElementById(
 )
 export let oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
 export let oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
-export let oceanWavePosRightBtn = document.getElementById("ocean-wave-pos-right")
+export let oceanWavePosRightBtn = document.getElementById(
+  "ocean-wave-pos-right",
+)
 export let cloudDriftColorPicker = document.getElementById(
   "cloud-drift-color-picker",
 )
@@ -789,9 +803,7 @@ export let pixelWeatherDensityVal = document.getElementById(
 export let skyLanternsTypeSelect = document.getElementById(
   "sky-lanterns-type-select",
 )
-export let skyLanternsSetting = document.getElementById(
-  "sky-lanterns-setting",
-)
+export let skyLanternsSetting = document.getElementById("sky-lanterns-setting")
 
 export let pixelRunColorPicker = document.getElementById(
   "pixel-run-color-picker",
@@ -806,9 +818,7 @@ export let nintendoPixelColorPicker = document.getElementById(
 export let nintendoPixelColorSetting = document.getElementById(
   "nintendo-pixel-color-setting",
 )
-export let crtScanColorPicker = document.getElementById(
-  "crt-scan-color-picker",
-)
+export let crtScanColorPicker = document.getElementById("crt-scan-color-picker")
 export let crtScanColorSetting = document.getElementById(
   "crt-scan-color-setting",
 )
@@ -966,9 +976,7 @@ export let framedClockThemeSelect = document.getElementById(
 export let clockStyleBgSetting = document.getElementById(
   "clock-style-bg-setting",
 )
-export let clockStyleBgSelect = document.getElementById(
-  "clock-style-bg-select",
-)
+export let clockStyleBgSelect = document.getElementById("clock-style-bg-select")
 export let clockStyleCustomBgSetting = document.getElementById(
   "clock-style-custom-bg-setting",
 )
@@ -1011,9 +1019,7 @@ export let mediaOrbImageUrlInput = document.getElementById(
 export let mediaOrbImageUpload = document.getElementById(
   "media-orb-image-upload",
 )
-export let mediaOrbUploadBtn = document.getElementById(
-  "media-orb-upload-btn",
-)
+export let mediaOrbUploadBtn = document.getElementById("media-orb-upload-btn")
 export let mediaOrbClearBtn = document.getElementById("media-orb-clear-btn")
 export let mediaOrbOverflowBorderCheckbox = document.getElementById(
   "media-orb-overflow-border-checkbox",
@@ -1021,9 +1027,7 @@ export let mediaOrbOverflowBorderCheckbox = document.getElementById(
 export let mediaOrbLayoutSelect = document.getElementById(
   "media-orb-layout-select",
 )
-export let fliqloThemeSetting = document.getElementById(
-  "fliqlo-theme-setting",
-)
+export let fliqloThemeSetting = document.getElementById("fliqlo-theme-setting")
 export let fliqloThemeSelect = document.getElementById("fliqlo-theme-select")
 export let fliqloZenCheckbox = document.getElementById("fliqlo-zen-checkbox")
 export let fliqloTransparentCheckbox = document.getElementById(
@@ -1039,7 +1043,9 @@ export let tabIconUploadBtn = document.getElementById("tab-icon-upload-btn")
 export let tabIconFaBtn = document.getElementById("tab-icon-fa-btn")
 export let tabIconClearBtn = document.getElementById("tab-icon-clear-btn")
 export let tabIconPreview = document.getElementById("tab-icon-preview")
-export let tabIconTransparentBgCheckbox = document.getElementById("tab-icon-transparent-bg")
+export let tabIconTransparentBgCheckbox = document.getElementById(
+  "tab-icon-transparent-bg",
+)
 export let pageTitleColorInput = document.getElementById("page-title-color")
 export let tabIconBgColorInput = document.getElementById("tab-icon-bg-color")
 export let tabIconTextColorInput = document.getElementById(
@@ -1090,9 +1096,7 @@ export let clockShadowColorPicker = document.getElementById(
   "clock-shadow-color-picker",
 )
 export let clockColorPicker = document.getElementById("clock-color-picker")
-export let resetClockColorBtn = document.getElementById(
-  "reset-clock-color-btn",
-)
+export let resetClockColorBtn = document.getElementById("reset-clock-color-btn")
 export let dateColorPicker = document.getElementById("date-color-picker")
 export let resetDateColorBtn = document.getElementById("reset-date-color-btn")
 
@@ -1158,9 +1162,7 @@ export let bookmarkIconSizeInput = document.getElementById(
 export let bookmarkIconSizeValue = document.getElementById(
   "bookmark-icon-size-value",
 )
-export let bookmarkFaviconRes = document.getElementById(
-  "bookmark-favicon-res",
-)
+export let bookmarkFaviconRes = document.getElementById("bookmark-favicon-res")
 export let bookmarkGroupTextWidthInput = document.getElementById(
   "bookmark-group-text-width-input",
 )
@@ -1181,9 +1183,7 @@ export let bookmarkBgColorPicker = document.getElementById(
 export let bookmarkBgOpacityInput = document.getElementById(
   "bookmark-bg-opacity-input",
 )
-export let resetBookmarkBgBtn = document.getElementById(
-  "reset-bookmark-bg-btn",
-)
+export let resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
 export let bookmarkShadowColorPicker = document.getElementById(
   "bookmark-shadow-color-picker",
 )
@@ -1250,9 +1250,7 @@ export let bookmarkLayoutShowGroups = document.getElementById(
   "bookmark-layout-show-groups",
 )
 
-export let enableBookmarkDrag = document.getElementById(
-  "enable-bookmark-drag",
-)
+export let enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
 export let bookmarkKeepNestedFolders = document.getElementById(
   "bookmark-keep-nested-folders",
 )
@@ -1267,15 +1265,23 @@ export let hideBookmarkText = document.getElementById("hide-bookmark-text")
 export let bookmarkLongText = document.getElementById("bookmark-long-text")
 export let bookmarkFullText = document.getElementById("bookmark-full-text")
 export let hideBookmarkBg = document.getElementById("hide-bookmark-bg")
-export let bookmarkMacosHover = document.getElementById(
-  "bookmark-macos-hover",
+export let bookmarkMacosHover = document.getElementById("bookmark-macos-hover")
+export let bookmarkLayout = document.getElementById("bookmark-layout")
+export let bookmarkSidebarWidthInput = document.getElementById(
+  "bookmark-sidebar-width-input",
 )
-export let bookmarkLayout = document.getElementById('bookmark-layout')
-export let bookmarkSidebarWidthInput = document.getElementById('bookmark-sidebar-width-input')
-export let bookmarkSidebarWidthValue = document.getElementById('bookmark-sidebar-width-value')
-export let bookmarkSidebarWidthContainer = document.getElementById('bookmark-sidebar-width-container')
-export let settingsSidebarWidthInput = document.getElementById('settings-sidebar-width-input')
-export let settingsSidebarWidthValue = document.getElementById('settings-sidebar-width-value')
+export let bookmarkSidebarWidthValue = document.getElementById(
+  "bookmark-sidebar-width-value",
+)
+export let bookmarkSidebarWidthContainer = document.getElementById(
+  "bookmark-sidebar-width-container",
+)
+export let settingsSidebarWidthInput = document.getElementById(
+  "settings-sidebar-width-input",
+)
+export let settingsSidebarWidthValue = document.getElementById(
+  "settings-sidebar-width-value",
+)
 export let bookmarkLayoutBgStyle = document.getElementById(
   "bookmark-layout-bg-style",
 )
@@ -1318,9 +1324,7 @@ export let timerAlarmCustomName = document.getElementById(
 export let showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )
-export let showQuotesCheckbox = document.getElementById(
-  "show-quotes-checkbox",
-)
+export let showQuotesCheckbox = document.getElementById("show-quotes-checkbox")
 export let quotesUpdateFreqSelect = document.getElementById(
   "quotes-update-freq-select",
 )
@@ -1331,9 +1335,7 @@ export let showMusicCheckbox = document.getElementById("show-music-checkbox")
 export let freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",
 )
-export let clockDisplaySelect = document.getElementById(
-  "clock-display-select",
-)
+export let clockDisplaySelect = document.getElementById("clock-display-select")
 export let showFullCalendarCheckbox = document.getElementById(
   "show-full-calendar-checkbox",
 )
@@ -1355,9 +1357,7 @@ export let showTopRightControlsCheckbox = document.getElementById(
 export let allowTextSelectionCheckbox = document.getElementById(
   "allow-text-selection-checkbox",
 )
-export let flipLayoutCheckbox = document.getElementById(
-  "flip-layout-checkbox",
-)
+export let flipLayoutCheckbox = document.getElementById("flip-layout-checkbox")
 export let extensionActionBehaviorSelect = document.getElementById(
   "extension-action-behavior-select",
 )
@@ -1379,9 +1379,7 @@ export let freeMoveSearchBarCheckbox = document.getElementById(
 export let showSearchAiIconCheckbox = document.getElementById(
   "show-search-ai-icon-checkbox",
 )
-export let searchEngineSelect = document.getElementById(
-  "search-engine-select",
-)
+export let searchEngineSelect = document.getElementById("search-engine-select")
 export let searchBarWidthSlider = document.getElementById(
   "search-bar-width-slider",
 )
@@ -1439,7 +1437,9 @@ export let lcpContextMenuBg = document.getElementById("lcp-context-menu-bg")
 export let lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export let lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
 export let lcpQuickAccessBg = document.getElementById("lcp-quick-access-bg")
-export let lcpQuickAccessHorizontal = document.getElementById("lcp-quick-access-horizontal")
+export let lcpQuickAccessHorizontal = document.getElementById(
+  "lcp-quick-access-horizontal",
+)
 export let lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export let lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
@@ -1460,9 +1460,7 @@ export let lcpQuickAccessBarRadius = document.getElementById(
 export let lcpQuickAccessToggleRadius = document.getElementById(
   "lcp-quick-access-toggle-radius",
 )
-export let lcpQuickAccessSkin = document.getElementById(
-  "lcp-quick-access-skin",
-)
+export let lcpQuickAccessSkin = document.getElementById("lcp-quick-access-skin")
 export let lcpQuickAccessBorderVisible = document.getElementById(
   "lcp-quick-access-border-visible",
 )
@@ -1483,9 +1481,7 @@ export let m3SidebarToggle = document.getElementById("m3-sidebar-toggle")
 
 // SVG Wave Generator Controls
 export let svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
-export let svgWaveToggleLabel = document.getElementById(
-  "svg-wave-toggle-label",
-)
+export let svgWaveToggleLabel = document.getElementById("svg-wave-toggle-label")
 export let svgWaveSettings = document.getElementById("svg-wave-settings")
 export let svgWaveLines = document.getElementById("svg-wave-lines")
 export let svgWaveLinesValue = document.getElementById("svg-wave-lines-value")
@@ -1567,9 +1563,7 @@ export let gradientV2ToggleBtn = document.getElementById(
 export let gradientV2ToggleLabel = document.getElementById(
   "gradient-v2-toggle-label",
 )
-export let gradientV2Settings = document.getElementById(
-  "gradient-v2-settings",
-)
+export let gradientV2Settings = document.getElementById("gradient-v2-settings")
 export let gradientV2Color1 = document.getElementById("gradient-v2-color1")
 export let gradientV2Color2 = document.getElementById("gradient-v2-color2")
 export let gradientV2Color3 = document.getElementById("gradient-v2-color3")
@@ -1648,9 +1642,7 @@ export let gradientV2GrainScaleValue = document.getElementById(
 export let gradientV2GrainAnimated = document.getElementById(
   "gradient-v2-grain-animated",
 )
-export let gradientV2Contrast = document.getElementById(
-  "gradient-v2-contrast",
-)
+export let gradientV2Contrast = document.getElementById("gradient-v2-contrast")
 export let gradientV2ContrastValue = document.getElementById(
   "gradient-v2-contrast-value",
 )
@@ -1760,9 +1752,7 @@ export let pixelSnowHQGammaVal = document.getElementById(
 
 // Soft Aurora
 export let softAuroraCanvas = document.getElementById("soft-aurora-canvas")
-export let softAuroraSettings = document.getElementById(
-  "soft-aurora-settings",
-)
+export let softAuroraSettings = document.getElementById("soft-aurora-settings")
 export let softAuroraColor1Picker = document.getElementById(
   "soft-aurora-color1-picker",
 )
@@ -1775,9 +1765,7 @@ export let softAuroraRandomColorsBtn = document.getElementById(
 export let softAuroraSpeedSlider = document.getElementById(
   "soft-aurora-speed-slider",
 )
-export let softAuroraSpeedVal = document.getElementById(
-  "soft-aurora-speed-val",
-)
+export let softAuroraSpeedVal = document.getElementById("soft-aurora-speed-val")
 
 // Silk Effect Controls
 export let silkToggleBtn = document.getElementById("silk-toggle-btn")
@@ -1854,9 +1842,7 @@ export let lightPillarRotation = document.getElementById(
 export let lightPillarRotationValue = document.getElementById(
   "light-pillar-rotation-value",
 )
-export let lightPillarSaveBtn = document.getElementById(
-  "light-pillar-save-btn",
-)
+export let lightPillarSaveBtn = document.getElementById("light-pillar-save-btn")
 export let userLightPillarsGallery = document.getElementById(
   "user-light-pillars-gallery",
 )
@@ -1887,9 +1873,7 @@ export let liquidEtherGlowWidth = document.getElementById(
 export let liquidEtherGlowWidthValue = document.getElementById(
   "liquid-ether-glow-width-value",
 )
-export let liquidEtherSaveBtn = document.getElementById(
-  "liquid-ether-save-btn",
-)
+export let liquidEtherSaveBtn = document.getElementById("liquid-ether-save-btn")
 export let userLiquidEthersGallery = document.getElementById(
   "user-liquid-ethers-gallery",
 )
@@ -1907,12 +1891,8 @@ export let splashCursorToggleLabel = document.getElementById(
 export let splashCursorSettings = document.getElementById(
   "splash-cursor-settings",
 )
-export let splashCursorActive = document.getElementById(
-  "splash-cursor-active",
-)
-export let splashCursorDarkBg = document.getElementById(
-  "splash-cursor-dark-bg",
-)
+export let splashCursorActive = document.getElementById("splash-cursor-active")
+export let splashCursorDarkBg = document.getElementById("splash-cursor-dark-bg")
 export let splashCursorDarkBgBtn = document.getElementById(
   "splash-cursor-dark-bg-btn",
 )
@@ -1960,9 +1940,7 @@ export let splashCursorColorSpeed = document.getElementById(
 export let splashCursorColorSpeedValue = document.getElementById(
   "splash-cursor-color-speed-value",
 )
-export let splashCursorDyeRes = document.getElementById(
-  "splash-cursor-dye-res",
-)
+export let splashCursorDyeRes = document.getElementById("splash-cursor-dye-res")
 export let splashCursorDyeResValue = document.getElementById(
   "splash-cursor-dye-res-value",
 )
@@ -1970,9 +1948,7 @@ export let splashCursorDyeResValue = document.getElementById(
 export let softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",
 )
-export let softAuroraScaleVal = document.getElementById(
-  "soft-aurora-scale-val",
-)
+export let softAuroraScaleVal = document.getElementById("soft-aurora-scale-val")
 export let softAuroraBrightnessSlider = document.getElementById(
   "soft-aurora-brightness-slider",
 )
@@ -2072,9 +2048,7 @@ export let showDonateButtonCheckbox = document.getElementById(
 )
 export let donateSection = document.querySelector(".donate-section")
 
-export let customTitleDisplay = document.getElementById(
-  "custom-title-display",
-)
+export let customTitleDisplay = document.getElementById("custom-title-display")
 export let customTitleText = document.getElementById("custom-title-text")
 export let customTitleMulticolor = document.getElementById(
   "custom-title-multicolor",
@@ -2089,9 +2063,7 @@ export let customTitleLetterSpacing = document.getElementById(
 export let customTitleShadowBlur = document.getElementById(
   "custom-title-shadow-blur",
 )
-export let customTitleShadowY = document.getElementById(
-  "custom-title-shadow-y",
-)
+export let customTitleShadowY = document.getElementById("custom-title-shadow-y")
 export let customTitleShadowColor = document.getElementById(
   "custom-title-shadow-color",
 )
@@ -2158,9 +2130,7 @@ export let svgWaveSelectModeBtn = document.getElementById(
 export let svgWaveSelectToolbar = document.getElementById(
   "svg-wave-select-toolbar",
 )
-export let svgWaveSelectCount = document.getElementById(
-  "svg-wave-select-count",
-)
+export let svgWaveSelectCount = document.getElementById("svg-wave-select-count")
 export let svgWaveSelectAllBtn = document.getElementById(
   "svg-wave-select-all-btn",
 )
@@ -2171,18 +2141,32 @@ export let svgWaveSelectCancelBtn = document.getElementById(
   "svg-wave-select-cancel-btn",
 )
 
-export let googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
-export let driveSyncOptionsWrapper = document.getElementById("drive-sync-options-wrapper")
-export let driveAutoBackupInterval = document.getElementById("drive-auto-backup-interval")
+export let googleDriveSyncCheckbox = document.getElementById(
+  "google-drive-sync-checkbox",
+)
+export let driveSyncOptionsWrapper = document.getElementById(
+  "drive-sync-options-wrapper",
+)
+export let driveAutoBackupInterval = document.getElementById(
+  "drive-auto-backup-interval",
+)
 export let forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
-export let forceDriveDownloadBtn = document.getElementById("force-drive-download-btn")
+export let forceDriveDownloadBtn = document.getElementById(
+  "force-drive-download-btn",
+)
 
 export function refreshDOMReferences() {
-  googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
+  googleDriveSyncCheckbox = document.getElementById(
+    "google-drive-sync-checkbox",
+  )
   forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
   forceDriveDownloadBtn = document.getElementById("force-drive-download-btn")
-  driveSyncOptionsWrapper = document.getElementById("drive-sync-options-wrapper")
-  driveAutoBackupInterval = document.getElementById("drive-auto-backup-interval")
+  driveSyncOptionsWrapper = document.getElementById(
+    "drive-sync-options-wrapper",
+  )
+  driveAutoBackupInterval = document.getElementById(
+    "drive-auto-backup-interval",
+  )
   settingsToggle = document.getElementById("settings-toggle")
   settingsSidebar = document.getElementById("settings-sidebar")
   settingsVersion = document.getElementById("settings-version")
@@ -2195,15 +2179,11 @@ export function refreshDOMReferences() {
   bgVideo = document.getElementById("bg-video")
   bgInput = document.getElementById("bg-input")
   bgColorPicker = document.getElementById("bg-color-picker")
-  unsplashCategorySelect = document.getElementById(
-    "unsplash-category-select",
-  )
+  unsplashCategorySelect = document.getElementById("unsplash-category-select")
   unsplashAutoRandomSelect = document.getElementById(
     "unsplash-auto-random-select",
   )
-  unsplashAccessKeyInput = document.getElementById(
-  "unsplash-access-key-input",
-)
+  unsplashAccessKeyInput = document.getElementById("unsplash-access-key-input")
   unsplashRandomBtn = document.getElementById("unsplash-random-btn")
   unsplashCredit = document.getElementById("unsplash-credit")
   saveColorBtn = document.getElementById("save-color-btn")
@@ -2212,42 +2192,32 @@ export function refreshDOMReferences() {
   bugConfigData = document.getElementById("bug-config-data")
   copyBugConfigBtn = document.getElementById("copy-bug-config-btn")
   themesGrid = document.getElementById("themes-grid")
-  saveCurrentThemeBtn = document.getElementById(
-  "save-current-theme-btn",
-)
-  saveCurrentStyleBtn = document.getElementById(
-  "save-current-style-btn",
-)
+  saveCurrentThemeBtn = document.getElementById("save-current-theme-btn")
+  saveCurrentStyleBtn = document.getElementById("save-current-style-btn")
   saveThemeModal = document.getElementById("save-theme-modal")
-  closeSaveThemeModalBtn = document.getElementById(
-  "close-save-theme-modal-btn",
-)
-  customThemeNameInput = document.getElementById(
-  "custom-theme-name-input",
-)
+  closeSaveThemeModalBtn = document.getElementById("close-save-theme-modal-btn")
+  customThemeNameInput = document.getElementById("custom-theme-name-input")
   themeIconGrid = document.getElementById("theme-icon-grid")
-  confirmSaveThemeBtn = document.getElementById(
-    "confirm-save-theme-btn",
-  )
+  confirmSaveThemeBtn = document.getElementById("confirm-save-theme-btn")
   stylePresetGrid = document.querySelector(".style-preset-grid")
   saveStyleModal = document.getElementById("save-style-modal")
-  closeSaveStyleModalBtn = document.getElementById(
-    "close-save-style-modal-btn",
-  )
-  customStyleNameInput = document.getElementById(
-    "custom-style-name-input",
-  )
+  closeSaveStyleModalBtn = document.getElementById("close-save-style-modal-btn")
+  customStyleNameInput = document.getElementById("custom-style-name-input")
   styleIconGrid = document.getElementById("style-icon-grid")
-  confirmSaveStyleBtn = document.getElementById(
-    "confirm-save-style-btn",
-  )
+  confirmSaveStyleBtn = document.getElementById("confirm-save-style-btn")
   bgPositionSetting = document.getElementById("bg-position-setting")
   bgBlurInput = document.getElementById("bg-blur-input")
   bgBlurDirectionSelect = document.getElementById("bg-blur-direction-select")
   bgBlurColorInput = document.getElementById("bg-blur-color-input")
-  bgBlurColorOpacityInput = document.getElementById("bg-blur-color-opacity-input")
-  bgBlurColorOpacityValue = document.getElementById("bg-blur-color-opacity-value")
-  bgDirectionalBlurOverlay = document.getElementById("bg-directional-blur-overlay")
+  bgBlurColorOpacityInput = document.getElementById(
+    "bg-blur-color-opacity-input",
+  )
+  bgBlurColorOpacityValue = document.getElementById(
+    "bg-blur-color-opacity-value",
+  )
+  bgDirectionalBlurOverlay = document.getElementById(
+    "bg-directional-blur-overlay",
+  )
   bgBlurValue = document.getElementById("bg-blur-value")
   bgBrightnessInput = document.getElementById("bg-brightness-input")
   bgBrightnessValue = document.getElementById("bg-brightness-value")
@@ -2257,8 +2227,8 @@ export function refreshDOMReferences() {
   bgSaturationValue = document.getElementById("bg-saturation-value")
 
   backgroundMediaQualitySelect = document.getElementById(
-  "background-media-quality-select",
-)
+    "background-media-quality-select",
+  )
   bgSizeSelect = document.getElementById("bg-size-select")
   bgImageScaleRow = document.getElementById("bg-image-scale-row")
   bgImageScaleInput = document.getElementById("bg-image-scale-input")
@@ -2268,38 +2238,22 @@ export function refreshDOMReferences() {
   bgPosYInput = document.getElementById("bg-pos-y-input")
   bgPosYValue = document.getElementById("bg-pos-y-value")
   accentColorPicker = document.getElementById("accent-color-picker")
-  accentColorHexInput = document.getElementById(
-  "accent-color-hex-input",
-)
-  accentColorToggleBtn = document.getElementById(
-  "accent-color-toggle-btn",
-)
-  accentColorToggleLabel = document.getElementById(
-  "accent-color-toggle-label",
-)
+  accentColorHexInput = document.getElementById("accent-color-hex-input")
+  accentColorToggleBtn = document.getElementById("accent-color-toggle-btn")
+  accentColorToggleLabel = document.getElementById("accent-color-toggle-label")
   accentColorSettingsBody = document.getElementById(
-  "accent-color-settings-body",
-)
-  accentColorModeM3 = document.getElementById(
-  "accent-color-mode-m3",
-)
-  accentColorModeDefault = document.getElementById(
-  "accent-color-mode-default",
-)
-  randomAccentColorBtn = document.getElementById(
-  "random-accent-color-btn",
-)
+    "accent-color-settings-body",
+  )
+  accentColorModeM3 = document.getElementById("accent-color-mode-m3")
+  accentColorModeDefault = document.getElementById("accent-color-mode-default")
+  randomAccentColorBtn = document.getElementById("random-accent-color-btn")
   m3DynamicColorBtn = document.getElementById("m3-dynamic-color-btn")
-  m3PaletteStyleSelect = document.getElementById(
-  "m3-palette-style-select",
-)
+  m3PaletteStyleSelect = document.getElementById("m3-palette-style-select")
   m3AutoBgToggle = document.getElementById("m3-auto-bg-toggle")
-  saveAccentColorBtn = document.getElementById(
-  "save-accent-color-btn",
-)
+  saveAccentColorBtn = document.getElementById("save-accent-color-btn")
   userAccentColorsGallery = document.getElementById(
-  "user-accent-colors-gallery",
-)
+    "user-accent-colors-gallery",
+  )
   fontGrid = document.getElementById("font-grid")
   clockFontGrid = document.getElementById("clock-font-grid")
 
@@ -2307,272 +2261,184 @@ export function refreshDOMReferences() {
   fontSelectToolbar = document.getElementById("font-select-toolbar")
   fontSelectCount = document.getElementById("font-select-count")
   fontSelectAllBtn = document.getElementById("font-select-all-btn")
-  fontFavoriteSelectedBtn = document.getElementById("font-favorite-selected-btn")
+  fontFavoriteSelectedBtn = document.getElementById(
+    "font-favorite-selected-btn",
+  )
   fontDeleteSelectedBtn = document.getElementById("font-delete-selected-btn")
   fontSelectCancelBtn = document.getElementById("font-select-cancel-btn")
-  fontTargetGeneralBtn = document.getElementById(
-  "font-target-general",
-)
+  fontTargetGeneralBtn = document.getElementById("font-target-general")
   fontTargetClockBtn = document.getElementById("font-target-clock")
   fontSearchInput = document.getElementById("font-search-input")
   customFontInput = document.getElementById("custom-font-input")
   loadCustomFontBtn = document.getElementById("load-custom-font-btn")
   saveFontBtn = document.getElementById("save-font-btn")
-  savedFontsContainer = document.getElementById(
-  "saved-fonts-container",
-)
+  savedFontsContainer = document.getElementById("saved-fonts-container")
   savedFontsList = document.getElementById("saved-fonts-list")
   languageSelect = document.getElementById("language-select")
-  languageToolsToggleBtn = document.getElementById(
-  "language-tools-toggle-btn",
-)
-  languageToolsPanel = document.getElementById(
-  "language-tools-panel",
-)
+  languageToolsToggleBtn = document.getElementById("language-tools-toggle-btn")
+  languageToolsPanel = document.getElementById("language-tools-panel")
   languageHelpBtn = document.getElementById("language-help-btn")
   deleteCustomLanguageBtn = document.getElementById(
-  "delete-custom-language-btn",
-)
+    "delete-custom-language-btn",
+  )
   languageModal = document.getElementById("language-modal")
-  closeLanguageModalBtn = document.getElementById(
-  "close-language-modal-btn",
-)
+  closeLanguageModalBtn = document.getElementById("close-language-modal-btn")
   languageGuideTargetSelect = document.getElementById(
-  "language-guide-target-select",
-)
+    "language-guide-target-select",
+  )
   languageCodeInput = document.getElementById("language-code-input")
   languageNameInput = document.getElementById("language-name-input")
   languageJsonInput = document.getElementById("language-json-input")
-  installLanguageJsonBtn = document.getElementById(
-  "install-language-json-btn",
-)
-  copyLanguagePromptBtn = document.getElementById(
-  "copy-language-prompt-btn",
-)
+  installLanguageJsonBtn = document.getElementById("install-language-json-btn")
+  copyLanguagePromptBtn = document.getElementById("copy-language-prompt-btn")
   effectGrid = document.getElementById("effect-grid")
   effectSearch = document.getElementById("effect-search")
   activeEffectSettingsContainer = document.getElementById(
-  "active-effect-settings-container",
-)
-  performanceModeBtns = document.querySelectorAll(
-  ".performance-mode-btn",
-)
-  rainbowDirectionSetting = document.getElementById(
-  "rainbow-direction-setting",
-)
+    "active-effect-settings-container",
+  )
+  performanceModeBtns = document.querySelectorAll(".performance-mode-btn")
+  rainbowDirectionSetting = document.getElementById("rainbow-direction-setting")
   rainbowDirLeftBtn = document.getElementById("rainbow-dir-left")
   rainbowDirRightBtn = document.getElementById("rainbow-dir-right")
-  gradientStartPicker = document.getElementById(
-  "gradient-start-picker",
-)
+  gradientStartPicker = document.getElementById("gradient-start-picker")
   gradientEndPicker = document.getElementById("gradient-end-picker")
-  gradientAngleInput = document.getElementById(
-  "gradient-angle-input",
-)
-  gradientAngleValue = document.getElementById(
-  "gradient-angle-value",
-)
-  gradientTypeSelect = document.getElementById(
-  "gradient-type-select",
-)
-  gradientPositionGroup = document.getElementById(
-  "gradient-position-group",
-)
-  gradientPositionSelect = document.getElementById(
-  "gradient-position-select",
-)
+  gradientAngleInput = document.getElementById("gradient-angle-input")
+  gradientAngleValue = document.getElementById("gradient-angle-value")
+  gradientTypeSelect = document.getElementById("gradient-type-select")
+  gradientPositionGroup = document.getElementById("gradient-position-group")
+  gradientPositionSelect = document.getElementById("gradient-position-select")
   gradientRadialShapeGroup = document.getElementById(
-  "gradient-radial-shape-group",
-)
+    "gradient-radial-shape-group",
+  )
   gradientRadialShapeSelect = document.getElementById(
-  "gradient-radial-shape-select",
-)
-  gradientAngleGroup = document.getElementById(
-  "gradient-angle-group",
-)
+    "gradient-radial-shape-select",
+  )
+  gradientAngleGroup = document.getElementById("gradient-angle-group")
   gradientToggleBtn = document.getElementById("gradient-toggle-btn")
-  gradientToggleLabel = document.getElementById(
-  "gradient-toggle-label",
-)
-  gradientSettingsBody = document.getElementById(
-  "gradient-settings-body",
-)
-  gradientRepeatingToggle = document.getElementById(
-  "gradient-repeating-toggle",
-)
+  gradientToggleLabel = document.getElementById("gradient-toggle-label")
+  gradientSettingsBody = document.getElementById("gradient-settings-body")
+  gradientRepeatingToggle = document.getElementById("gradient-repeating-toggle")
   gradientExtraColorCount = document.getElementById(
-  "gradient-extra-color-count",
-)
-  gradientCustomColors = document.getElementById(
-  "gradient-custom-colors",
-)
+    "gradient-extra-color-count",
+  )
+  gradientCustomColors = document.getElementById("gradient-custom-colors")
   gradientExtraColorPickers = document.getElementById(
-  "gradient-extra-color-pickers",
-)
+    "gradient-extra-color-pickers",
+  )
   visualPresetCopyCodeBtn = document.getElementById(
-  "visual-preset-copy-code-btn",
-)
+    "visual-preset-copy-code-btn",
+  )
   visualPresetApplyCodeBtn = document.getElementById(
-  "visual-preset-apply-code-btn",
-)
-  visualPresetCodeInput = document.getElementById(
-  "visual-preset-code-input",
-)
+    "visual-preset-apply-code-btn",
+  )
+  visualPresetCodeInput = document.getElementById("visual-preset-code-input")
   randomGradientColorsBtn = document.getElementById(
-  "random-gradient-colors-btn",
-)
+    "random-gradient-colors-btn",
+  )
   generateModernGradientBtn = document.getElementById(
-  "generate-modern-gradient-btn",
-)
+    "generate-modern-gradient-btn",
+  )
   saveGradientBtn = document.getElementById("save-gradient-btn")
-  gradientCopyCodeBtn = document.getElementById(
-  "gradient-copy-code-btn",
-)
-  gradientApplyCodeBtn = document.getElementById(
-  "gradient-apply-code-btn",
-)
+  gradientCopyCodeBtn = document.getElementById("gradient-copy-code-btn")
+  gradientApplyCodeBtn = document.getElementById("gradient-apply-code-btn")
   gradientPresetCodeInput = document.getElementById(
-  "gradient-preset-code-input",
-)
-  userGradientsGallery = document.getElementById(
-  "user-gradients-gallery",
-)
-  multiColorCountSelect = document.getElementById(
-  "multi-color-count-select",
-)
-  multiColorTypeSelect = document.getElementById(
-  "multi-color-type-select",
-)
+    "gradient-preset-code-input",
+  )
+  userGradientsGallery = document.getElementById("user-gradients-gallery")
+  multiColorCountSelect = document.getElementById("multi-color-count-select")
+  multiColorTypeSelect = document.getElementById("multi-color-type-select")
   multiColorRepeatingToggle = document.getElementById(
-  "multi-color-repeating-toggle",
-)
+    "multi-color-repeating-toggle",
+  )
   multiColorPositionSelect = document.getElementById(
-  "multi-color-position-select",
-)
+    "multi-color-position-select",
+  )
   multiColorRadialShapeSelect = document.getElementById(
-  "multi-color-radial-shape-select",
-)
+    "multi-color-radial-shape-select",
+  )
   multiColorRadialShapeGroup = document.getElementById(
-  "multi-color-radial-shape-group",
-)
+    "multi-color-radial-shape-group",
+  )
   multiColorRadialConicControls = document.getElementById(
-  "multi-color-radial-conic-controls",
-)
+    "multi-color-radial-conic-controls",
+  )
   multiColorRepeatingGroup = document.getElementById(
-  "multi-color-repeating-group",
-)
+    "multi-color-repeating-group",
+  )
   multiColorPickersContainer = document.getElementById(
-  "multi-color-pickers-container",
-)
+    "multi-color-pickers-container",
+  )
   multiGradientAngleInput = document.getElementById(
-  "multi-gradient-angle-input",
-)
+    "multi-gradient-angle-input",
+  )
   multiGradientAngleValue = document.getElementById(
-  "multi-gradient-angle-value",
-)
-  multiGradientPreview = document.getElementById(
-  "multi-gradient-preview",
-)
-  applyMultiColorBtn = document.getElementById(
-  "apply-multi-color-btn",
-)
-  randomMultiColorHueBtn = document.getElementById(
-  "random-multi-color-hue-btn",
-)
+    "multi-gradient-angle-value",
+  )
+  multiGradientPreview = document.getElementById("multi-gradient-preview")
+  applyMultiColorBtn = document.getElementById("apply-multi-color-btn")
+  randomMultiColorHueBtn = document.getElementById("random-multi-color-hue-btn")
   randomMultiColorCrazyBtn = document.getElementById(
-  "random-multi-color-crazy-btn",
-)
-  randomMultiColorBtn = document.getElementById(
-  "random-multi-color-hue-btn",
-)
+    "random-multi-color-crazy-btn",
+  )
+  randomMultiColorBtn = document.getElementById("random-multi-color-hue-btn")
   saveMultiColorBtn = document.getElementById("save-multi-color-btn")
-  multiColorCopyCodeBtn = document.getElementById(
-  "multi-color-copy-code-btn",
-)
-  multiColorApplyCodeBtn = document.getElementById(
-  "multi-color-apply-code-btn",
-)
+  multiColorCopyCodeBtn = document.getElementById("multi-color-copy-code-btn")
+  multiColorApplyCodeBtn = document.getElementById("multi-color-apply-code-btn")
   multiColorPresetCodeInput = document.getElementById(
-  "multi-color-preset-code-input",
-)
-  multiColorToggleBtn = document.getElementById(
-  "multi-color-toggle-btn",
-)
-  multiColorToggleLabel = document.getElementById(
-  "multi-color-toggle-label",
-)
-  multiColorSettingsBody = document.getElementById(
-  "multi-color-settings-body",
-)
+    "multi-color-preset-code-input",
+  )
+  multiColorToggleBtn = document.getElementById("multi-color-toggle-btn")
+  multiColorToggleLabel = document.getElementById("multi-color-toggle-label")
+  multiColorSettingsBody = document.getElementById("multi-color-settings-body")
   multiColorDividersToggle = document.getElementById(
-  "multi-color-dividers-toggle",
-)
+    "multi-color-dividers-toggle",
+  )
   multiColorDividerSettings = document.getElementById(
-  "multi-color-divider-settings",
-)
-  multiColorLineColor = document.getElementById(
-  "multi-color-line-color",
-)
-  multiColorLineWidth = document.getElementById(
-  "multi-color-line-width",
-)
+    "multi-color-divider-settings",
+  )
+  multiColorLineColor = document.getElementById("multi-color-line-color")
+  multiColorLineWidth = document.getElementById("multi-color-line-width")
   multiColorLineWidthValue = document.getElementById(
-  "multi-color-line-width-value",
-)
+    "multi-color-line-width-value",
+  )
   multiColorFreeLineAngles = document.getElementById(
-  "multi-color-free-line-angles",
-)
+    "multi-color-free-line-angles",
+  )
   multiColorLineAnglesContainer = document.getElementById(
-  "multi-color-line-angles-container",
-)
-  savedMultiColorPresets = document.getElementById(
-  "saved-multi-color-presets",
-)
-  multiColorModeBtns = document.querySelectorAll(
-  ".multi-color-mode-btn",
-)
+    "multi-color-line-angles-container",
+  )
+  savedMultiColorPresets = document.getElementById("saved-multi-color-presets")
+  multiColorModeBtns = document.querySelectorAll(".multi-color-mode-btn")
   starColorPicker = document.getElementById("star-color-picker")
   starColorSetting = document.getElementById("star-color-setting")
   meteorColorPicker = document.getElementById("meteor-color-picker")
-  meteorFullColorToggle = document.getElementById(
-  "meteor-full-color-toggle",
-)
+  meteorFullColorToggle = document.getElementById("meteor-full-color-toggle")
   meteorAngleInput = document.getElementById("meteor-angle-input")
   meteorAngleValue = document.getElementById("meteor-angle-value")
-  meteorColorSetting = document.getElementById(
-  "meteor-color-setting",
-)
-  networkColorPicker = document.getElementById(
-  "network-color-picker",
-)
-  networkColorSetting = document.getElementById(
-  "network-color-setting",
-)
+  meteorColorSetting = document.getElementById("meteor-color-setting")
+  networkColorPicker = document.getElementById("network-color-picker")
+  networkColorSetting = document.getElementById("network-color-setting")
   matrixColorPicker = document.getElementById("matrix-color-picker")
-  matrixColorSetting = document.getElementById(
-  "matrix-color-setting",
-)
+  matrixColorSetting = document.getElementById("matrix-color-setting")
   auraColorPicker = document.getElementById("aura-color-picker")
   auraColorSetting = document.getElementById("aura-color-setting")
   northernLightsColorPicker = document.getElementById(
-  "northern-lights-color-picker",
-)
+    "northern-lights-color-picker",
+  )
   northernLightsColorSetting = document.getElementById(
-  "northern-lights-color-setting",
-)
+    "northern-lights-color-setting",
+  )
   northernLightsStyleSelect = document.getElementById(
-  "northern-lights-style-select",
-)
+    "northern-lights-style-select",
+  )
   northernLightsBrightnessSlider = document.getElementById(
-  "northern-lights-brightness-slider",
-)
+    "northern-lights-brightness-slider",
+  )
   northernLightsBrightnessVal = document.getElementById(
-  "northern-lights-brightness-val",
-)
+    "northern-lights-brightness-val",
+  )
   hackerColorPicker = document.getElementById("hacker-color-picker")
-  hackerColorSetting = document.getElementById(
-  "hacker-color-setting",
-)
+  hackerColorSetting = document.getElementById("hacker-color-setting")
 
   // DVD Effect
   dvdSettingsWrapper = document.getElementById("dvd-settings-wrapper")
@@ -2591,553 +2457,387 @@ export function refreshDOMReferences() {
   dvdGlitchSetting = document.getElementById("dvd-glitch-setting")
   dvdGlitchCheckbox = document.getElementById("dvd-glitch-checkbox")
 
-  pixelCubesColorPicker = document.getElementById(
-  "pixel-cubes-color-picker",
-)
-  pixelCubesShapeSelect = document.getElementById(
-  "pixel-cubes-shape-select",
-)
-  pixelCubesColorSetting = document.getElementById(
-  "pixel-cubes-color-setting",
-)
+  pixelCubesColorPicker = document.getElementById("pixel-cubes-color-picker")
+  pixelCubesShapeSelect = document.getElementById("pixel-cubes-shape-select")
+  pixelCubesColorSetting = document.getElementById("pixel-cubes-color-setting")
   windModeSelect = document.getElementById("wind-mode-select")
   windModeSetting = document.getElementById("wind-mode-setting")
-  jellyfishColorPicker = document.getElementById(
-  "jellyfish-color-picker",
-)
-  jellyfishTypeSelect = document.getElementById(
-  "jellyfish-type-select",
-)
-  jellyfishColorSetting = document.getElementById(
-  "jellyfish-color-setting",
-)
+  jellyfishColorPicker = document.getElementById("jellyfish-color-picker")
+  jellyfishTypeSelect = document.getElementById("jellyfish-type-select")
+  jellyfishColorSetting = document.getElementById("jellyfish-color-setting")
   sakuraColorPicker = document.getElementById("sakura-color-picker")
-  sakuraColorSetting = document.getElementById(
-  "sakura-color-setting",
-)
-  auroraWaveColorPicker = document.getElementById(
-  "aurora-wave-color-picker",
-)
-  auroraWaveColorSetting = document.getElementById(
-  "aurora-wave-color-setting",
-)
-  auroraWaveTitleSetting = document.getElementById(
-  "aurora-wave-title-setting",
-)
+  sakuraColorSetting = document.getElementById("sakura-color-setting")
+  auroraWaveColorPicker = document.getElementById("aurora-wave-color-picker")
+  auroraWaveColorSetting = document.getElementById("aurora-wave-color-setting")
+  auroraWaveTitleSetting = document.getElementById("aurora-wave-title-setting")
   auroraWaveBrightnessSlider = document.getElementById(
-  "aurora-wave-brightness-slider",
-)
+    "aurora-wave-brightness-slider",
+  )
   auroraWaveBrightnessVal = document.getElementById(
-  "aurora-wave-brightness-val",
-)
+    "aurora-wave-brightness-val",
+  )
   auroraWaveBrightnessSetting = document.getElementById(
-  "aurora-wave-brightness-setting",
-)
-  auroraWaveSpeedSlider = document.getElementById(
-  "aurora-wave-speed-slider",
-)
-  auroraWaveSpeedVal = document.getElementById(
-  "aurora-wave-speed-val",
-)
-  auroraWaveSpeedSetting = document.getElementById(
-  "aurora-wave-speed-setting",
-)
+    "aurora-wave-brightness-setting",
+  )
+  auroraWaveSpeedSlider = document.getElementById("aurora-wave-speed-slider")
+  auroraWaveSpeedVal = document.getElementById("aurora-wave-speed-val")
+  auroraWaveSpeedSetting = document.getElementById("aurora-wave-speed-setting")
   auroraWaveAmplitudeSlider = document.getElementById(
-  "aurora-wave-amplitude-slider",
-)
-  auroraWaveAmplitudeVal = document.getElementById(
-  "aurora-wave-amplitude-val",
-)
+    "aurora-wave-amplitude-slider",
+  )
+  auroraWaveAmplitudeVal = document.getElementById("aurora-wave-amplitude-val")
   auroraWaveAmplitudeSetting = document.getElementById(
-  "aurora-wave-amplitude-setting",
-)
+    "aurora-wave-amplitude-setting",
+  )
   auroraWaveTransparentCheckbox = document.getElementById(
-  "aurora-wave-transparent",
-)
+    "aurora-wave-transparent",
+  )
   auroraWaveBgColorPicker = document.getElementById(
-  "aurora-wave-bg-color-picker",
-)
+    "aurora-wave-bg-color-picker",
+  )
   auroraWaveBgColorContainer = document.getElementById(
-  "aurora-wave-bg-color-container",
-)
+    "aurora-wave-bg-color-container",
+  )
   auroraWaveBgOpacitySlider = document.getElementById(
-  "aurora-wave-bg-opacity-slider",
-)
-  auroraWaveBgOpacityVal = document.getElementById(
-  "aurora-wave-bg-opacity-val",
-)
-  auroraWaveBgSetting = document.getElementById(
-  "aurora-wave-bg-setting",
-)
-  snowfallColorPicker = document.getElementById(
-  "snowfall-color-picker",
-)
-  snowfallColorSetting = document.getElementById(
-  "snowfall-color-setting",
-)
+    "aurora-wave-bg-opacity-slider",
+  )
+  auroraWaveBgOpacityVal = document.getElementById("aurora-wave-bg-opacity-val")
+  auroraWaveBgSetting = document.getElementById("aurora-wave-bg-setting")
+  snowfallColorPicker = document.getElementById("snowfall-color-picker")
+  snowfallColorSetting = document.getElementById("snowfall-color-setting")
   fallingLeavesSettledSkinSelect = document.getElementById(
-  "falling-leaves-settled-skin",
-)
+    "falling-leaves-settled-skin",
+  )
   fallingLeavesSettledSkinSetting = document.getElementById(
-  "falling-leaves-settled-skin-setting",
-)
-  pixelBlastColorPicker = document.getElementById(
-  "pixel-blast-color-picker",
-)
+    "falling-leaves-settled-skin-setting",
+  )
+  pixelBlastColorPicker = document.getElementById("pixel-blast-color-picker")
   pixelBlastVariantSelect = document.getElementById(
-  "pixel-blast-variant-select",
-)
-  pixelBlastSizeSlider = document.getElementById(
-  "pixel-blast-size-slider",
-)
+    "pixel-blast-variant-select",
+  )
+  pixelBlastSizeSlider = document.getElementById("pixel-blast-size-slider")
   pixelBlastSizeVal = document.getElementById("pixel-blast-size-val")
-  pixelBlastColorSetting = document.getElementById(
-  "pixel-blast-color-setting",
-)
+  pixelBlastColorSetting = document.getElementById("pixel-blast-color-setting")
   pixelBlastSettings = document.getElementById("pixel-blast-settings")
   neonGridSettings = document.getElementById("neon-grid-settings")
-  synthwaveGridColorPicker = document.getElementById("synthwave-grid-color-picker")
-  synthwaveSunColorPicker = document.getElementById("synthwave-sun-color-picker")
+  synthwaveGridColorPicker = document.getElementById(
+    "synthwave-grid-color-picker",
+  )
+  synthwaveSunColorPicker = document.getElementById(
+    "synthwave-sun-color-picker",
+  )
   frostedOrbsSettings = document.getElementById("frosted-orbs-settings")
-  frostedOrbsColor1Picker = document.getElementById("frosted-orbs-color-1-picker")
-  frostedOrbsColor2Picker = document.getElementById("frosted-orbs-color-2-picker")
+  frostedOrbsColor1Picker = document.getElementById(
+    "frosted-orbs-color-1-picker",
+  )
+  frostedOrbsColor2Picker = document.getElementById(
+    "frosted-orbs-color-2-picker",
+  )
   frostedOrbsDarkBgCheckbox = document.getElementById("frosted-orbs-dark-bg")
   blackHoleSettings = document.getElementById("black-hole-settings")
-  blackHoleAccretionColorPicker = document.getElementById("black-hole-accretion-color-picker")
-  blackHoleStarColorPicker = document.getElementById("black-hole-star-color-picker")
-  interactiveFluidSettings = document.getElementById("interactive-fluid-settings")
-  interactiveFluidColor1Picker = document.getElementById("interactive-fluid-color-1-picker")
-  interactiveFluidColor2Picker = document.getElementById("interactive-fluid-color-2-picker")
+  blackHoleAccretionColorPicker = document.getElementById(
+    "black-hole-accretion-color-picker",
+  )
+  blackHoleStarColorPicker = document.getElementById(
+    "black-hole-star-color-picker",
+  )
+  interactiveFluidSettings = document.getElementById(
+    "interactive-fluid-settings",
+  )
+  interactiveFluidColor1Picker = document.getElementById(
+    "interactive-fluid-color-1-picker",
+  )
+  interactiveFluidColor2Picker = document.getElementById(
+    "interactive-fluid-color-2-picker",
+  )
   cinematicBokehSettings = document.getElementById("cinematic-bokeh-settings")
-  cinematicBokehColor1Picker = document.getElementById("cinematic-bokeh-color-1-picker")
-  cinematicBokehColor2Picker = document.getElementById("cinematic-bokeh-color-2-picker")
-  cinematicBokehDarkBgCheckbox = document.getElementById("cinematic-bokeh-dark-bg")
+  cinematicBokehColor1Picker = document.getElementById(
+    "cinematic-bokeh-color-1-picker",
+  )
+  cinematicBokehColor2Picker = document.getElementById(
+    "cinematic-bokeh-color-2-picker",
+  )
+  cinematicBokehDarkBgCheckbox = document.getElementById(
+    "cinematic-bokeh-dark-bg",
+  )
   synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
-  pixelBlastBgSetting = document.getElementById(
-  "pixel-blast-bg-setting",
-)
+  pixelBlastBgSetting = document.getElementById("pixel-blast-bg-setting")
   pixelBlastTransparentCheckbox = document.getElementById(
-  "pixel-blast-transparent",
-)
+    "pixel-blast-transparent",
+  )
   pixelBlastBgColorContainer = document.getElementById(
-  "pixel-blast-bg-color-container",
-)
+    "pixel-blast-bg-color-container",
+  )
   pixelBlastBgColorPicker = document.getElementById(
-  "pixel-blast-bg-color-picker",
-)
+    "pixel-blast-bg-color-picker",
+  )
   pixelBlastVariantSetting = document.getElementById(
-  "pixel-blast-variant-setting",
-)
-  pixelBlastSizeSetting = document.getElementById(
-  "pixel-blast-size-setting",
-)
+    "pixel-blast-variant-setting",
+  )
+  pixelBlastSizeSetting = document.getElementById("pixel-blast-size-setting")
   pixelBlastLiquidCheckbox = document.getElementById("pixel-blast-liquid")
   pixelBlastLiquidStrengthSlider = document.getElementById(
-  "pixel-blast-liquid-strength-slider",
-)
+    "pixel-blast-liquid-strength-slider",
+  )
   pixelBlastLiquidStrengthVal = document.getElementById(
-  "pixel-blast-liquid-strength-val",
-)
+    "pixel-blast-liquid-strength-val",
+  )
   pixelBlastLiquidSetting = document.getElementById(
-  "pixel-blast-liquid-setting",
-)
+    "pixel-blast-liquid-setting",
+  )
   pixelBlastCursorRadiusSlider = document.getElementById(
-  "pixel-blast-cursor-radius-slider",
-)
+    "pixel-blast-cursor-radius-slider",
+  )
   pixelBlastCursorRadiusVal = document.getElementById(
-  "pixel-blast-cursor-radius-val",
-)
-  pixelBlastRippleCheckbox = document.getElementById(
-  "pixel-blast-ripples",
-)
+    "pixel-blast-cursor-radius-val",
+  )
+  pixelBlastRippleCheckbox = document.getElementById("pixel-blast-ripples")
   pixelBlastInteractiveSetting = document.getElementById(
-  "pixel-blast-interactive-setting",
-)
-  sunbeamColorPicker = document.getElementById(
-  "sunbeam-color-picker",
-)
-  sunbeamColorSetting = document.getElementById(
-    "sunbeam-color-setting",
+    "pixel-blast-interactive-setting",
   )
-  sunbeamModeSetting = document.getElementById(
-    "sunbeam-mode-setting",
-  )
-  sunbeamModeSelect = document.getElementById(
-    "sunbeam-mode-select",
-  )
+  sunbeamColorPicker = document.getElementById("sunbeam-color-picker")
+  sunbeamColorSetting = document.getElementById("sunbeam-color-setting")
+  sunbeamModeSetting = document.getElementById("sunbeam-mode-setting")
+  sunbeamModeSelect = document.getElementById("sunbeam-mode-select")
   sunbeamAngleInput = document.getElementById("sunbeam-angle-input")
   sunbeamAngleValue = document.getElementById("sunbeam-angle-value")
-  sunbeamAngleSetting = document.getElementById(
-  "sunbeam-angle-setting",
-)
-  bubblesColorPicker = document.getElementById(
-  "bubbles-color-picker",
-)
-  bubblesColorSetting = document.getElementById(
-  "bubbles-color-setting",
-)
-  cursorTrailColorPicker = document.getElementById(
-  "cursor-trail-color-picker",
-)
+  sunbeamAngleSetting = document.getElementById("sunbeam-angle-setting")
+  bubblesColorPicker = document.getElementById("bubbles-color-picker")
+  bubblesColorSetting = document.getElementById("bubbles-color-setting")
+  cursorTrailColorPicker = document.getElementById("cursor-trail-color-picker")
   cursorTrailColorSetting = document.getElementById(
-  "cursor-trail-color-setting",
-)
-  gridScanColorPicker = document.getElementById(
-  "grid-scan-color-picker",
-)
-  gridScanColorSetting = document.getElementById(
-  "grid-scan-color-setting",
-)
-  cursorTrailStyleSelect = document.getElementById(
-  "cursor-trail-style-select",
-)
+    "cursor-trail-color-setting",
+  )
+  gridScanColorPicker = document.getElementById("grid-scan-color-picker")
+  gridScanColorSetting = document.getElementById("grid-scan-color-setting")
+  cursorTrailStyleSelect = document.getElementById("cursor-trail-style-select")
   cursorTrailStyleSetting = document.getElementById(
-  "cursor-trail-style-setting",
-)
+    "cursor-trail-style-setting",
+  )
   cursorTrailClickCheckbox = document.getElementById(
-  "cursor-trail-click-checkbox",
-)
+    "cursor-trail-click-checkbox",
+  )
   cursorTrailClickSetting = document.getElementById(
-  "cursor-trail-click-setting",
-)
+    "cursor-trail-click-setting",
+  )
   cursorTrailRandomCheckbox = document.getElementById(
-  "cursor-trail-random-checkbox",
-)
+    "cursor-trail-random-checkbox",
+  )
   cursorTrailRandomSetting = document.getElementById(
-  "cursor-trail-random-setting",
-)
-  flashlightColorSetting = document.getElementById(
-  "flashlight-color-setting",
-)
-  flashlightColorPicker = document.getElementById(
-  "flashlight-color-picker",
-)
-  flashlightSizeSetting = document.getElementById(
-  "flashlight-size-setting",
-)
-  flashlightSizeSlider = document.getElementById(
-  "flashlight-size-slider",
-)
+    "cursor-trail-random-setting",
+  )
+  flashlightColorSetting = document.getElementById("flashlight-color-setting")
+  flashlightColorPicker = document.getElementById("flashlight-color-picker")
+  flashlightSizeSetting = document.getElementById("flashlight-size-setting")
+  flashlightSizeSlider = document.getElementById("flashlight-size-slider")
   flashlightSizeVal = document.getElementById("flashlight-size-val")
   flashlightOpacitySetting = document.getElementById(
-  "flashlight-opacity-setting",
-)
-  flashlightOpacitySlider = document.getElementById(
-  "flashlight-opacity-slider",
-)
-  flashlightOpacityVal = document.getElementById(
-  "flashlight-opacity-val",
-)
-  plantGrowthColorPicker = document.getElementById(
-  "plant-growth-color-picker",
-)
+    "flashlight-opacity-setting",
+  )
+  flashlightOpacitySlider = document.getElementById("flashlight-opacity-slider")
+  flashlightOpacityVal = document.getElementById("flashlight-opacity-val")
+  plantGrowthColorPicker = document.getElementById("plant-growth-color-picker")
   plantGrowthColorSetting = document.getElementById(
-  "plant-growth-color-setting",
-)
-  oceanFishColorPicker = document.getElementById(
-  "ocean-fish-color-picker",
-)
-  oceanFishColorSetting = document.getElementById(
-  "ocean-fish-color-setting",
-)
+    "plant-growth-color-setting",
+  )
+  oceanFishColorPicker = document.getElementById("ocean-fish-color-picker")
+  oceanFishColorSetting = document.getElementById("ocean-fish-color-setting")
   floatingLinesColorPicker = document.getElementById(
-  "floating-lines-color-picker",
-)
+    "floating-lines-color-picker",
+  )
   floatingLinesColorSetting = document.getElementById(
-  "floating-lines-color-setting",
-)
+    "floating-lines-color-setting",
+  )
   floatingLinesAngleInput = document.getElementById(
-  "floating-lines-angle-input",
-)
+    "floating-lines-angle-input",
+  )
   floatingLinesAngleValue = document.getElementById(
-  "floating-lines-angle-value",
-)
+    "floating-lines-angle-value",
+  )
   floatingLinesAngleSetting = document.getElementById(
-  "floating-lines-angle-setting",
-)
+    "floating-lines-angle-setting",
+  )
   rainHDColorPicker = document.getElementById("rain-hd-color-picker")
-  rainHDColorSetting = document.getElementById(
-  "rain-hd-color-setting",
-)
-  musicBarsColorPicker = document.getElementById(
-  "music-bars-color-picker",
-)
-  musicBarsColorSetting = document.getElementById(
-  "music-bars-color-setting",
-)
-  wavyLinesColorPicker = document.getElementById(
-  "wavy-lines-color-picker",
-)
-  wavyLinesColorSetting = document.getElementById(
-  "wavy-lines-color-setting",
-)
-  oceanWaveColorPicker = document.getElementById(
-  "ocean-wave-color-picker",
-)
-  oceanWaveColorSetting = document.getElementById(
-  "ocean-wave-color-setting",
-)
+  rainHDColorSetting = document.getElementById("rain-hd-color-setting")
+  musicBarsColorPicker = document.getElementById("music-bars-color-picker")
+  musicBarsColorSetting = document.getElementById("music-bars-color-setting")
+  wavyLinesColorPicker = document.getElementById("wavy-lines-color-picker")
+  wavyLinesColorSetting = document.getElementById("wavy-lines-color-setting")
+  oceanWaveColorPicker = document.getElementById("ocean-wave-color-picker")
+  oceanWaveColorSetting = document.getElementById("ocean-wave-color-setting")
   oceanWavePositionSetting = document.getElementById(
     "ocean-wave-position-setting",
   )
-  oceanWavePosBottomBtn = document.getElementById(
-    "ocean-wave-pos-bottom",
-  )
+  oceanWavePosBottomBtn = document.getElementById("ocean-wave-pos-bottom")
   oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
   oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
   oceanWavePosRightBtn = document.getElementById("ocean-wave-pos-right")
-  cloudDriftColorPicker = document.getElementById(
-  "cloud-drift-color-picker",
-)
-  cloudDriftColorSetting = document.getElementById(
-  "cloud-drift-color-setting",
-)
-  cloudDriftMoodSelect = document.getElementById(
-  "cloud-drift-mood-select",
-)
-  cloudDriftMoodSetting = document.getElementById(
-  "cloud-drift-mood-setting",
-)
+  cloudDriftColorPicker = document.getElementById("cloud-drift-color-picker")
+  cloudDriftColorSetting = document.getElementById("cloud-drift-color-setting")
+  cloudDriftMoodSelect = document.getElementById("cloud-drift-mood-select")
+  cloudDriftMoodSetting = document.getElementById("cloud-drift-mood-setting")
   shinyColorPicker = document.getElementById("shiny-color-picker")
   shinyColorSetting = document.getElementById("shiny-color-setting")
-  lineShinyColorPicker = document.getElementById(
-    "line-shiny-color-picker",
-  )
-  lineShinyColorSetting = document.getElementById(
-    "line-shiny-color-setting",
-  )
-  lineShinyModeSelect = document.getElementById(
-    "line-shiny-mode-select",
-  )
-  lineShinyModeSetting = document.getElementById(
-    "line-shiny-mode-setting",
-  )
+  lineShinyColorPicker = document.getElementById("line-shiny-color-picker")
+  lineShinyColorSetting = document.getElementById("line-shiny-color-setting")
+  lineShinyModeSelect = document.getElementById("line-shiny-mode-select")
+  lineShinyModeSetting = document.getElementById("line-shiny-mode-setting")
   pixelWeatherStyleSection = document.getElementById(
-  "pixel-weather-style-section",
-)
+    "pixel-weather-style-section",
+  )
   pixelWeatherStyleSelect = document.getElementById(
-  "pixel-weather-style-select",
-)
+    "pixel-weather-style-select",
+  )
   pixelWeatherResolutionSlider = document.getElementById(
-  "pixel-weather-resolution-slider",
-)
+    "pixel-weather-resolution-slider",
+  )
   pixelWeatherResolutionVal = document.getElementById(
-  "pixel-weather-resolution-val",
-)
+    "pixel-weather-resolution-val",
+  )
   pixelWeatherSpeedSlider = document.getElementById(
-  "pixel-weather-speed-slider",
-)
-  pixelWeatherSpeedVal = document.getElementById(
-  "pixel-weather-speed-val",
-)
-  pixelWeatherSizeSlider = document.getElementById(
-  "pixel-weather-size-slider",
-)
-  pixelWeatherSizeVal = document.getElementById(
-  "pixel-weather-size-val",
-)
+    "pixel-weather-speed-slider",
+  )
+  pixelWeatherSpeedVal = document.getElementById("pixel-weather-speed-val")
+  pixelWeatherSizeSlider = document.getElementById("pixel-weather-size-slider")
+  pixelWeatherSizeVal = document.getElementById("pixel-weather-size-val")
   pixelWeatherDensitySlider = document.getElementById(
-  "pixel-weather-density-slider",
-)
-  pixelWeatherDensityVal = document.getElementById(
-  "pixel-weather-density-val",
-)
-  skyLanternsTypeSelect = document.getElementById(
-  "sky-lanterns-type-select",
-)
-  skyLanternsSetting = document.getElementById(
-  "sky-lanterns-setting",
-)
-  pixelRunColorPicker = document.getElementById(
-  "pixel-run-color-picker",
-)
-  pixelRunColorSetting = document.getElementById(
-  "pixel-run-color-setting",
-)
+    "pixel-weather-density-slider",
+  )
+  pixelWeatherDensityVal = document.getElementById("pixel-weather-density-val")
+  skyLanternsTypeSelect = document.getElementById("sky-lanterns-type-select")
+  skyLanternsSetting = document.getElementById("sky-lanterns-setting")
+  pixelRunColorPicker = document.getElementById("pixel-run-color-picker")
+  pixelRunColorSetting = document.getElementById("pixel-run-color-setting")
   nintendoPixelColorPicker = document.getElementById(
-  "nintendo-pixel-color-picker",
-)
+    "nintendo-pixel-color-picker",
+  )
   nintendoPixelColorSetting = document.getElementById(
-  "nintendo-pixel-color-setting",
-)
-  crtScanColorPicker = document.getElementById(
-  "crt-scan-color-picker",
-)
-  crtScanColorSetting = document.getElementById(
-  "crt-scan-color-setting",
-)
-  crtScanFrequencyInput = document.getElementById(
-  "crt-scan-frequency-input",
-)
-  crtScanFrequencyValue = document.getElementById(
-  "crt-scan-frequency-value",
-)
+    "nintendo-pixel-color-setting",
+  )
+  crtScanColorPicker = document.getElementById("crt-scan-color-picker")
+  crtScanColorSetting = document.getElementById("crt-scan-color-setting")
+  crtScanFrequencyInput = document.getElementById("crt-scan-frequency-input")
+  crtScanFrequencyValue = document.getElementById("crt-scan-frequency-value")
   crtScanFrequencySetting = document.getElementById(
-  "crt-scan-frequency-setting",
-)
+    "crt-scan-frequency-setting",
+  )
   crtScanAngleInput = document.getElementById("crt-scan-angle-input")
   crtScanAngleValue = document.getElementById("crt-scan-angle-value")
-  crtScanAngleSetting = document.getElementById(
-  "crt-scan-angle-setting",
-)
-  crtScanDensityInput = document.getElementById(
-  "crt-scan-density-input",
-)
-  crtScanDensityValue = document.getElementById(
-  "crt-scan-density-value",
-)
-  crtScanDensitySetting = document.getElementById(
-  "crt-scan-density-setting",
-)
+  crtScanAngleSetting = document.getElementById("crt-scan-angle-setting")
+  crtScanDensityInput = document.getElementById("crt-scan-density-input")
+  crtScanDensityValue = document.getElementById("crt-scan-density-value")
+  crtScanDensitySetting = document.getElementById("crt-scan-density-setting")
   crtGammaInput = document.getElementById("crt-gamma-input")
   crtGammaValue = document.getElementById("crt-gamma-value")
   crtGammaSetting = document.getElementById("crt-gamma-setting")
   crtBackgroundColorPicker = document.getElementById(
-  "crt-background-color-picker",
-)
+    "crt-background-color-picker",
+  )
   crtBackgroundColorSetting = document.getElementById(
-  "crt-background-color-setting",
-)
-  retroGameTypeSelect = document.getElementById(
-  "retro-game-type-select",
-)
-  retroGameTypeSetting = document.getElementById(
-  "retro-game-type-setting",
-)
-  retroGameColorPicker = document.getElementById(
-  "retro-game-color-picker",
-)
-  retroGameColorSetting = document.getElementById(
-  "retro-game-color-setting",
-)
+    "crt-background-color-setting",
+  )
+  retroGameTypeSelect = document.getElementById("retro-game-type-select")
+  retroGameTypeSetting = document.getElementById("retro-game-type-setting")
+  retroGameColorPicker = document.getElementById("retro-game-color-picker")
+  retroGameColorSetting = document.getElementById("retro-game-color-setting")
   wavyPatternColor1Picker = document.getElementById(
-  "wavy-pattern-color1-picker",
-)
+    "wavy-pattern-color1-picker",
+  )
   wavyPatternColor1Setting = document.getElementById(
-  "wavy-pattern-color1-setting",
-)
+    "wavy-pattern-color1-setting",
+  )
   wavyPatternColor2Picker = document.getElementById(
-  "wavy-pattern-color2-picker",
-)
+    "wavy-pattern-color2-picker",
+  )
   wavyPatternColor2Setting = document.getElementById(
-  "wavy-pattern-color2-setting",
-)
+    "wavy-pattern-color2-setting",
+  )
   angledPatternColor1Picker = document.getElementById(
-  "angled-pattern-color1-picker",
-)
+    "angled-pattern-color1-picker",
+  )
   angledPatternColor1Setting = document.getElementById(
-  "angled-pattern-color1-setting",
-)
+    "angled-pattern-color1-setting",
+  )
   angledPatternColor2Picker = document.getElementById(
-  "angled-pattern-color2-picker",
-)
+    "angled-pattern-color2-picker",
+  )
   angledPatternColor2Setting = document.getElementById(
-  "angled-pattern-color2-setting",
-)
+    "angled-pattern-color2-setting",
+  )
   resetSettingsBtn = document.getElementById("reset-settings")
   exportSettingsBtn = document.getElementById("export-settings-btn")
-  copySettingsJsonBtn = document.getElementById(
-  "copy-settings-json-btn",
-)
+  copySettingsJsonBtn = document.getElementById("copy-settings-json-btn")
   importSettingsBtn = document.getElementById("import-settings-btn")
-  pasteSettingsJsonBtn = document.getElementById(
-  "paste-settings-json-btn",
-)
-  importSettingsInput = document.getElementById(
-  "import-settings-input",
-)
+  pasteSettingsJsonBtn = document.getElementById("paste-settings-json-btn")
+  importSettingsInput = document.getElementById("import-settings-input")
   dateFormatSelect = document.getElementById("date-format-select")
   clockDateLanguageSelect = document.getElementById(
-  "clock-date-language-select",
-)
-  shortWeekdayCheckbox = document.getElementById(
-  "short-weekday-checkbox",
-)
+    "clock-date-language-select",
+  )
+  shortWeekdayCheckbox = document.getElementById("short-weekday-checkbox")
   timeFormatSelect = document.getElementById("time-format-select")
   timezoneSelect = document.getElementById("timezone-select")
-  hideSecondsCheckbox = document.getElementById(
-  "hide-seconds-checkbox",
-)
+  hideSecondsCheckbox = document.getElementById("hide-seconds-checkbox")
   clockDatePrioritySelect = document.getElementById(
-  "clock-date-priority-select",
-)
-  clockDateStyleSelect = document.getElementById(
-  "clock-date-style-select",
-)
+    "clock-date-priority-select",
+  )
+  clockDateStyleSelect = document.getElementById("clock-date-style-select")
   styleSpecificCustomization = document.getElementById(
-  "style-specific-customization",
-)
+    "style-specific-customization",
+  )
   hueTextModeSelect = document.getElementById("hue-text-mode-select")
-  jpStyleLanguageSetting = document.getElementById(
-  "jp-style-language-setting",
-)
-  jpStyleLanguageSelect = document.getElementById(
-  "jp-style-language-select",
-)
+  jpStyleLanguageSetting = document.getElementById("jp-style-language-setting")
+  jpStyleLanguageSelect = document.getElementById("jp-style-language-select")
   analogMarkerModeSetting = document.getElementById(
-  "analog-marker-mode-setting",
-)
-  analogMarkerModeSelect = document.getElementById(
-  "analog-marker-mode-select",
-)
-  analogBlurBgSetting = document.getElementById(
-  "analog-blur-bg-setting",
-)
-  analogBlurBgCheckbox = document.getElementById(
-  "analog-blur-bg-checkbox",
-)
-  sidestyleAlignSetting = document.getElementById(
-  "sidestyle-align-setting",
-)
+    "analog-marker-mode-setting",
+  )
+  analogMarkerModeSelect = document.getElementById("analog-marker-mode-select")
+  analogBlurBgSetting = document.getElementById("analog-blur-bg-setting")
+  analogBlurBgCheckbox = document.getElementById("analog-blur-bg-checkbox")
+  sidestyleAlignSetting = document.getElementById("sidestyle-align-setting")
   sidestyleAlignSelect = document.getElementById("sidestyle-align-select")
   clockFadeBottomSetting = document.getElementById("clock-fade-bottom-setting")
   clockFadeBottomSelect = document.getElementById("clock-fade-bottom-select")
-  clockFadeDirectionSelect = document.getElementById("clock-fade-direction-select")
+  clockFadeDirectionSelect = document.getElementById(
+    "clock-fade-direction-select",
+  )
   sidestyleNoBorderCheckbox = document.getElementById(
-  "sidestyle-no-border-checkbox",
-)
+    "sidestyle-no-border-checkbox",
+  )
   sidebarClockFlipSetting = document.getElementById(
-  "sidebar-clock-flip-setting",
-)
+    "sidebar-clock-flip-setting",
+  )
   sidebarClockFlipCheckbox = document.getElementById(
-  "sidebar-clock-flip-checkbox",
-)
+    "sidebar-clock-flip-checkbox",
+  )
   framedClockThemeSetting = document.getElementById(
-  "framed-clock-theme-setting",
-)
-  framedClockThemeSelect = document.getElementById(
-  "framed-clock-theme-select",
-)
-  clockStyleBgSetting = document.getElementById(
-  "clock-style-bg-setting",
-)
-  clockStyleBgSelect = document.getElementById(
-  "clock-style-bg-select",
-)
+    "framed-clock-theme-setting",
+  )
+  framedClockThemeSelect = document.getElementById("framed-clock-theme-select")
+  clockStyleBgSetting = document.getElementById("clock-style-bg-setting")
+  clockStyleBgSelect = document.getElementById("clock-style-bg-select")
   clockStyleCustomBgSetting = document.getElementById(
-  "clock-style-custom-bg-setting",
-)
+    "clock-style-custom-bg-setting",
+  )
   clockStyleCustomBgColor = document.getElementById(
-  "clock-style-custom-bg-color",
-)
+    "clock-style-custom-bg-color",
+  )
   clockStyleUseM3AccentSetting = document.getElementById(
-  "clock-style-use-m3-accent-setting",
-)
+    "clock-style-use-m3-accent-setting",
+  )
   clockStyleUseM3AccentCheckbox = document.getElementById(
-  "clock-style-use-m3-accent-checkbox",
-)
+    "clock-style-use-m3-accent-checkbox",
+  )
   clockStyleAccentColorSetting = document.getElementById(
-  "clock-style-accent-color-setting",
-)
-  clockStyleAccentColor = document.getElementById(
-  "clock-style-accent-color",
-)
+    "clock-style-accent-color-setting",
+  )
+  clockStyleAccentColor = document.getElementById("clock-style-accent-color")
   clockStyleAccentResetBtn = document.getElementById(
-  "clock-style-accent-reset-btn",
-)
+    "clock-style-accent-reset-btn",
+  )
   cartoonClockAnimationSetting = document.getElementById(
-  "cartoon-clock-animation-setting",
-)
+    "cartoon-clock-animation-setting",
+  )
   cartoonClockAnimationCheckbox = document.getElementById(
     "cartoon-clock-animation-checkbox",
   )
@@ -3147,34 +2847,22 @@ export function refreshDOMReferences() {
   terminalClockVariantSelect = document.getElementById(
     "terminal-clock-variant-select",
   )
-  mediaOrbImageSetting = document.getElementById(
-  "media-orb-image-setting",
-)
-  mediaOrbImageUrlInput = document.getElementById(
-  "media-orb-image-url",
-)
-  mediaOrbImageUpload = document.getElementById(
-  "media-orb-image-upload",
-)
-  mediaOrbUploadBtn = document.getElementById(
-  "media-orb-upload-btn",
-)
+  mediaOrbImageSetting = document.getElementById("media-orb-image-setting")
+  mediaOrbImageUrlInput = document.getElementById("media-orb-image-url")
+  mediaOrbImageUpload = document.getElementById("media-orb-image-upload")
+  mediaOrbUploadBtn = document.getElementById("media-orb-upload-btn")
   mediaOrbClearBtn = document.getElementById("media-orb-clear-btn")
   mediaOrbOverflowBorderCheckbox = document.getElementById(
     "media-orb-overflow-border-checkbox",
   )
   mediaOrbLayoutSelect = document.getElementById("media-orb-layout-select")
-  fliqloThemeSetting = document.getElementById(
-  "fliqlo-theme-setting",
-)
+  fliqloThemeSetting = document.getElementById("fliqlo-theme-setting")
   fliqloThemeSelect = document.getElementById("fliqlo-theme-select")
   fliqloZenCheckbox = document.getElementById("fliqlo-zen-checkbox")
   fliqloTransparentCheckbox = document.getElementById(
-  "fliqlo-transparent-checkbox",
-)
-  clockFontTargetSelect = document.getElementById(
-  "clock-font-target-select",
-)
+    "fliqlo-transparent-checkbox",
+  )
+  clockFontTargetSelect = document.getElementById("clock-font-target-select")
   pageTitleInput = document.getElementById("page-title-input")
   tabIconInput = document.getElementById("tab-icon-input")
   tabIconFileInput = document.getElementById("tab-icon-file-input")
@@ -3182,12 +2870,12 @@ export function refreshDOMReferences() {
   tabIconFaBtn = document.getElementById("tab-icon-fa-btn")
   tabIconClearBtn = document.getElementById("tab-icon-clear-btn")
   tabIconPreview = document.getElementById("tab-icon-preview")
-  tabIconTransparentBgCheckbox = document.getElementById("tab-icon-transparent-bg")
+  tabIconTransparentBgCheckbox = document.getElementById(
+    "tab-icon-transparent-bg",
+  )
   pageTitleColorInput = document.getElementById("page-title-color")
   tabIconBgColorInput = document.getElementById("tab-icon-bg-color")
-  tabIconTextColorInput = document.getElementById(
-  "tab-icon-text-color",
-)
+  tabIconTextColorInput = document.getElementById("tab-icon-text-color")
   faPickerModal = document.getElementById("fa-icon-picker-modal")
   faPickerSearch = document.getElementById("fa-picker-search")
   faPickerCategory = document.getElementById("fa-picker-category")
@@ -3200,55 +2888,43 @@ export function refreshDOMReferences() {
   dateSizeInput = document.getElementById("date-size-input")
   dateSizeValue = document.getElementById("date-size-value")
   clockDateStrokeWidthInput = document.getElementById(
-  "clock-date-stroke-width-input",
-)
+    "clock-date-stroke-width-input",
+  )
   clockDateStrokeWidthValue = document.getElementById(
-  "clock-date-stroke-width-value",
-)
+    "clock-date-stroke-width-value",
+  )
   clockDateStrokeTargetSelect = document.getElementById(
-  "clock-date-stroke-target-select",
-)
+    "clock-date-stroke-target-select",
+  )
   clockDateStrokeColorPicker = document.getElementById(
-  "clock-date-stroke-color-picker",
-)
+    "clock-date-stroke-color-picker",
+  )
   clockAutoContrastCheckbox = document.getElementById(
-  "clock-auto-contrast-checkbox",
-)
-  clockUseAccentCheckbox = document.getElementById(
-  "clock-use-accent-checkbox",
-)
+    "clock-auto-contrast-checkbox",
+  )
+  clockUseAccentCheckbox = document.getElementById("clock-use-accent-checkbox")
   clockAccentTargetSelect = document.getElementById(
-  "clock-accent-target-select",
-)
+    "clock-accent-target-select",
+  )
   clockShadowTargetSelect = document.getElementById(
-  "clock-shadow-target-select",
-)
+    "clock-shadow-target-select",
+  )
   clockShadowStrengthInput = document.getElementById(
-  "clock-shadow-strength-input",
-)
+    "clock-shadow-strength-input",
+  )
   clockShadowStrengthValue = document.getElementById(
-  "clock-shadow-strength-value",
-)
-  clockShadowColorPicker = document.getElementById(
-  "clock-shadow-color-picker",
-)
+    "clock-shadow-strength-value",
+  )
+  clockShadowColorPicker = document.getElementById("clock-shadow-color-picker")
   clockColorPicker = document.getElementById("clock-color-picker")
-  resetClockColorBtn = document.getElementById(
-  "reset-clock-color-btn",
-)
+  resetClockColorBtn = document.getElementById("reset-clock-color-btn")
   dateColorPicker = document.getElementById("date-color-picker")
   resetDateColorBtn = document.getElementById("reset-date-color-btn")
-  localBackgroundGallery = document.getElementById(
-  "local-background-gallery",
-)
+  localBackgroundGallery = document.getElementById("local-background-gallery")
   localImageUpload = document.getElementById("local-image-upload")
-  uploadLocalImageBtn = document.getElementById(
-  "upload-local-image-btn",
-)
+  uploadLocalImageBtn = document.getElementById("upload-local-image-btn")
   localVideoUpload = document.getElementById("local-video-upload")
-  uploadLocalVideoBtn = document.getElementById(
-  "upload-local-video-btn",
-)
+  uploadLocalVideoBtn = document.getElementById("upload-local-video-btn")
   searchInput = document.getElementById("search-input")
   clearBtn = document.getElementById("clear-btn")
   clockElement = document.getElementById("clock")
@@ -3265,9 +2941,7 @@ export function refreshDOMReferences() {
   showImportBtn = document.getElementById("show-import-btn")
   backToManualBtn = document.getElementById("back-to-manual")
   confirmImportBtn = document.getElementById("confirm-import-btn")
-  browserBookmarksList = document.getElementById(
-  "browser-bookmarks-list",
-)
+  browserBookmarksList = document.getElementById("browser-bookmarks-list")
   contextMenu = document.getElementById("context-menu")
   menuFavorite = document.getElementById("menu-favorite")
   menuSelect = document.getElementById("menu-select")
@@ -3276,27 +2950,13 @@ export function refreshDOMReferences() {
   menuLock = document.getElementById("menu-lock")
   menuMove = document.getElementById("menu-move")
   bookmarksContainer = document.getElementById("bookmarks-container")
-  bookmarkGroupsContainer = document.getElementById(
-  "bookmark-groups-container",
-)
-  bookmarkGroupsToggle = document.getElementById(
-  "bookmark-groups-toggle",
-)
-  bookmarkFontSizeInput = document.getElementById(
-  "bookmark-font-size-input",
-)
-  bookmarkFontSizeValue = document.getElementById(
-  "bookmark-font-size-value",
-)
-  bookmarkIconSizeInput = document.getElementById(
-    "bookmark-icon-size-input",
-  )
-  bookmarkIconSizeValue = document.getElementById(
-    "bookmark-icon-size-value",
-  )
-  bookmarkFaviconRes = document.getElementById(
-    "bookmark-favicon-res",
-  )
+  bookmarkGroupsContainer = document.getElementById("bookmark-groups-container")
+  bookmarkGroupsToggle = document.getElementById("bookmark-groups-toggle")
+  bookmarkFontSizeInput = document.getElementById("bookmark-font-size-input")
+  bookmarkFontSizeValue = document.getElementById("bookmark-font-size-value")
+  bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
+  bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")
+  bookmarkFaviconRes = document.getElementById("bookmark-favicon-res")
   bookmarkGroupTextWidthInput = document.getElementById(
     "bookmark-group-text-width-input",
   )
@@ -3306,293 +2966,231 @@ export function refreshDOMReferences() {
   bookmarkGapInput = document.getElementById("bookmark-gap-input")
   bookmarkGapValue = document.getElementById("bookmark-gap-value")
   bookmarkTextColorPicker = document.getElementById(
-  "bookmark-text-color-picker",
-)
+    "bookmark-text-color-picker",
+  )
   resetBookmarkTextColorBtn = document.getElementById(
-  "reset-bookmark-text-color-btn",
-)
-  bookmarkBgColorPicker = document.getElementById(
-  "bookmark-bg-color-picker",
-)
-  bookmarkBgOpacityInput = document.getElementById(
-  "bookmark-bg-opacity-input",
-)
-  resetBookmarkBgBtn = document.getElementById(
-  "reset-bookmark-bg-btn",
-)
+    "reset-bookmark-text-color-btn",
+  )
+  bookmarkBgColorPicker = document.getElementById("bookmark-bg-color-picker")
+  bookmarkBgOpacityInput = document.getElementById("bookmark-bg-opacity-input")
+  resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
   bookmarkShadowColorPicker = document.getElementById(
-  "bookmark-shadow-color-picker",
-)
+    "bookmark-shadow-color-picker",
+  )
   bookmarkShadowOpacityInput = document.getElementById(
-  "bookmark-shadow-opacity-input",
-)
+    "bookmark-shadow-opacity-input",
+  )
   bookmarkShadowBlurInput = document.getElementById(
-  "bookmark-shadow-blur-input",
-)
+    "bookmark-shadow-blur-input",
+  )
   bookmarkShadowBlurValue = document.getElementById(
-  "bookmark-shadow-blur-value",
-)
+    "bookmark-shadow-blur-value",
+  )
   bookmarkGroupBgColorPicker = document.getElementById(
-  "bookmark-group-bg-color-picker",
-)
+    "bookmark-group-bg-color-picker",
+  )
   bookmarkGroupBgOpacityInput = document.getElementById(
-  "bookmark-group-bg-opacity-input",
-)
+    "bookmark-group-bg-opacity-input",
+  )
   resetBookmarkGroupBgBtn = document.getElementById(
-  "reset-bookmark-group-bg-btn",
-)
+    "reset-bookmark-group-bg-btn",
+  )
   bookmarkGroupTextColorPicker = document.getElementById(
-  "bookmark-group-text-color-picker",
-)
+    "bookmark-group-text-color-picker",
+  )
   resetBookmarkGroupTextColorBtn = document.getElementById(
-  "reset-bookmark-group-text-color-btn",
-)
+    "reset-bookmark-group-text-color-btn",
+  )
   bookmarkGroupAutoTextContrast = document.getElementById(
-  "bookmark-group-auto-text-contrast",
-)
+    "bookmark-group-auto-text-contrast",
+  )
   bookmarkGroupFontSizeInput = document.getElementById(
-  "bookmark-group-font-size-input",
-)
+    "bookmark-group-font-size-input",
+  )
   bookmarkGroupFontSizeValue = document.getElementById(
-  "bookmark-group-font-size-value",
-)
+    "bookmark-group-font-size-value",
+  )
   bookmarkGroupBorderRadiusInput = document.getElementById(
-  "bookmark-group-border-radius-input",
-)
+    "bookmark-group-border-radius-input",
+  )
   bookmarkGroupBorderRadiusValue = document.getElementById(
     "bookmark-group-border-radius-value",
   )
-  bookmarkGroupShowCount = document.getElementById(
-    "bookmark-group-show-count",
-  )
+  bookmarkGroupShowCount = document.getElementById("bookmark-group-show-count")
   bookmarkHideScrollbarCheckbox = document.getElementById(
     "bookmark-hide-scrollbar",
   )
-  bookmarkGroupUseAccent = document.getElementById(
-    "bookmark-group-use-accent",
-  )
+  bookmarkGroupUseAccent = document.getElementById("bookmark-group-use-accent")
   bookmarkGroupKeepBgOnInteraction = document.getElementById(
     "bookmark-group-keep-bg-on-interaction",
   )
   bookmarkGroupContainerBgHidden = document.getElementById(
-  "bookmark-group-container-bg-hidden",
-)
-  bookmarkGroupBorderHidden = document.getElementById(
-  "bookmark-group-border-hidden",
-)
-  bookmarkLayoutShowGroups = document.getElementById(
-  "bookmark-layout-show-groups",
-)
-  enableBookmarkDrag = document.getElementById(
-    "enable-bookmark-drag",
+    "bookmark-group-container-bg-hidden",
   )
+  bookmarkGroupBorderHidden = document.getElementById(
+    "bookmark-group-border-hidden",
+  )
+  bookmarkLayoutShowGroups = document.getElementById(
+    "bookmark-layout-show-groups",
+  )
+  enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
   bookmarkKeepNestedFolders = document.getElementById(
     "bookmark-keep-nested-folders",
   )
-  bookmarkOpenInNewTab = document.getElementById(
-  "bookmark-open-new-tab",
-)
+  bookmarkOpenInNewTab = document.getElementById("bookmark-open-new-tab")
   bookmarkLimit20 = document.getElementById("bookmark-limit-20")
-  showAddBookmarkButton = document.getElementById(
-  "show-add-bookmark-button",
-)
+  showAddBookmarkButton = document.getElementById("show-add-bookmark-button")
   hideBookmarkText = document.getElementById("hide-bookmark-text")
   bookmarkLongText = document.getElementById("bookmark-long-text")
   bookmarkFullText = document.getElementById("bookmark-full-text")
   hideBookmarkBg = document.getElementById("hide-bookmark-bg")
-  bookmarkMacosHover = document.getElementById(
-  "bookmark-macos-hover",
-)
-  bookmarkLayout = document.getElementById('bookmark-layout')
-  bookmarkSidebarWidthInput = document.getElementById('bookmark-sidebar-width-input')
-  bookmarkSidebarWidthValue = document.getElementById('bookmark-sidebar-width-value')
-  bookmarkSidebarWidthContainer = document.getElementById('bookmark-sidebar-width-container')
-  settingsSidebarWidthInput = document.getElementById('settings-sidebar-width-input')
-  settingsSidebarWidthValue = document.getElementById('settings-sidebar-width-value')
-  bookmarkLayoutBgStyle = document.getElementById(
-  "bookmark-layout-bg-style",
-)
+  bookmarkMacosHover = document.getElementById("bookmark-macos-hover")
+  bookmarkLayout = document.getElementById("bookmark-layout")
+  bookmarkSidebarWidthInput = document.getElementById(
+    "bookmark-sidebar-width-input",
+  )
+  bookmarkSidebarWidthValue = document.getElementById(
+    "bookmark-sidebar-width-value",
+  )
+  bookmarkSidebarWidthContainer = document.getElementById(
+    "bookmark-sidebar-width-container",
+  )
+  settingsSidebarWidthInput = document.getElementById(
+    "settings-sidebar-width-input",
+  )
+  settingsSidebarWidthValue = document.getElementById(
+    "settings-sidebar-width-value",
+  )
+  bookmarkLayoutBgStyle = document.getElementById("bookmark-layout-bg-style")
   bookmarkLayoutBgStyleRow = document.getElementById(
-  "bookmark-layout-bg-style-row",
-)
-  bookmarkLayoutBgColor = document.getElementById(
-  "bookmark-layout-bg-color",
-)
+    "bookmark-layout-bg-style-row",
+  )
+  bookmarkLayoutBgColor = document.getElementById("bookmark-layout-bg-color")
   bookmarkLayoutBgColorRow = document.getElementById(
-  "bookmark-layout-bg-color-row",
-)
+    "bookmark-layout-bg-color-row",
+  )
   bookmarkItemStyle = document.getElementById("bookmark-item-style")
   showTodoCheckbox = document.getElementById("show-todo-checkbox")
-  todoShowCheckboxesToggle = document.getElementById(
-  "todo-show-checkboxes",
-)
+  todoShowCheckboxesToggle = document.getElementById("todo-show-checkboxes")
   showHabitsCheckbox = document.getElementById("show-habits-checkbox")
   showTimerCheckbox = document.getElementById("show-timer-checkbox")
   hideTimerAlarmDropdownCheckbox = document.getElementById(
-  "hide-timer-alarm-dropdown-checkbox",
-)
-  timerAlarmSoundSelect = document.getElementById(
-  "timer-alarm-sound-select",
-)
-  timerAlarmSoundUpload = document.getElementById(
-  "timer-alarm-sound-upload",
-)
+    "hide-timer-alarm-dropdown-checkbox",
+  )
+  timerAlarmSoundSelect = document.getElementById("timer-alarm-sound-select")
+  timerAlarmSoundUpload = document.getElementById("timer-alarm-sound-upload")
   timerAlarmSoundUploadBtn = document.getElementById(
-  "timer-alarm-sound-upload-btn",
-)
+    "timer-alarm-sound-upload-btn",
+  )
   timerAlarmSoundRemoveBtn = document.getElementById(
-  "timer-alarm-sound-remove-btn",
-)
-  timerAlarmCustomName = document.getElementById(
-  "timer-alarm-custom-name",
-)
-  showGregorianCheckbox = document.getElementById(
-  "show-gregorian-checkbox",
-)
-  showQuotesCheckbox = document.getElementById(
-    "show-quotes-checkbox",
+    "timer-alarm-sound-remove-btn",
   )
-  quotesUpdateFreqSelect = document.getElementById(
-    "quotes-update-freq-select",
-  )
-  showWeatherCheckbox = document.getElementById(
-  "show-weather-checkbox",
-)
+  timerAlarmCustomName = document.getElementById("timer-alarm-custom-name")
+  showGregorianCheckbox = document.getElementById("show-gregorian-checkbox")
+  showQuotesCheckbox = document.getElementById("show-quotes-checkbox")
+  quotesUpdateFreqSelect = document.getElementById("quotes-update-freq-select")
+  showWeatherCheckbox = document.getElementById("show-weather-checkbox")
   showMusicCheckbox = document.getElementById("show-music-checkbox")
-  freeMoveClockCheckbox = document.getElementById(
-  "free-move-clock-checkbox",
-)
-  clockDisplaySelect = document.getElementById(
-  "clock-display-select",
-)
+  freeMoveClockCheckbox = document.getElementById("free-move-clock-checkbox")
+  clockDisplaySelect = document.getElementById("clock-display-select")
   showFullCalendarCheckbox = document.getElementById(
-  "show-full-calendar-checkbox",
-)
-  showLunarCalendarCheckbox = document.getElementById(
-  "show-lunar-calendar-checkbox",
-)
-  calendarDisplayModeSelect = document.getElementById(
-  "calendar-display-mode-select",
-)
-  showLunarCalendarClockCheckbox = document.getElementById(
-  "show-lunar-calendar-checkbox-clock",
-)
-  clockLunarModeSelect = document.getElementById(
-  "clock-lunar-mode-select",
-)
-  showTopRightControlsCheckbox = document.getElementById(
-  "show-top-right-controls-checkbox",
-)
-  allowTextSelectionCheckbox = document.getElementById(
-  "allow-text-selection-checkbox",
-)
-  flipLayoutCheckbox = document.getElementById(
-  "flip-layout-checkbox",
-)
-  extensionActionBehaviorSelect = document.getElementById(
-  "extension-action-behavior-select",
-)
-  ghostControlsCheckbox = document.getElementById(
-  "ghost-controls-checkbox",
-)
-  showNotepadCheckbox = document.getElementById(
-  "show-notepad-checkbox",
-)
-  showSearchBarCheckbox = document.getElementById(
-    "show-search-bar-checkbox",
+    "show-full-calendar-checkbox",
   )
+  showLunarCalendarCheckbox = document.getElementById(
+    "show-lunar-calendar-checkbox",
+  )
+  calendarDisplayModeSelect = document.getElementById(
+    "calendar-display-mode-select",
+  )
+  showLunarCalendarClockCheckbox = document.getElementById(
+    "show-lunar-calendar-checkbox-clock",
+  )
+  clockLunarModeSelect = document.getElementById("clock-lunar-mode-select")
+  showTopRightControlsCheckbox = document.getElementById(
+    "show-top-right-controls-checkbox",
+  )
+  allowTextSelectionCheckbox = document.getElementById(
+    "allow-text-selection-checkbox",
+  )
+  flipLayoutCheckbox = document.getElementById("flip-layout-checkbox")
+  extensionActionBehaviorSelect = document.getElementById(
+    "extension-action-behavior-select",
+  )
+  ghostControlsCheckbox = document.getElementById("ghost-controls-checkbox")
+  showNotepadCheckbox = document.getElementById("show-notepad-checkbox")
+  showSearchBarCheckbox = document.getElementById("show-search-bar-checkbox")
   searchBarHoverScaleCheckbox = document.getElementById(
     "search-bar-hover-scale-checkbox",
   )
   freeMoveSearchBarCheckbox = document.getElementById(
-  "free-move-search-bar-checkbox",
-)
+    "free-move-search-bar-checkbox",
+  )
   showSearchAiIconCheckbox = document.getElementById(
-  "show-search-ai-icon-checkbox",
-)
-  searchEngineSelect = document.getElementById(
-  "search-engine-select",
-)
-  searchBarWidthSlider = document.getElementById(
-  "search-bar-width-slider",
-)
+    "show-search-ai-icon-checkbox",
+  )
+  searchEngineSelect = document.getElementById("search-engine-select")
+  searchBarWidthSlider = document.getElementById("search-bar-width-slider")
   searchBarWidthVal = document.getElementById("search-bar-width-val")
-  searchBarBlurSlider = document.getElementById(
-  "search-bar-blur-slider",
-)
+  searchBarBlurSlider = document.getElementById("search-bar-blur-slider")
   searchBarBlurVal = document.getElementById("search-bar-blur-val")
   searchBarRadiusSlider = document.getElementById("search-bar-radius-slider")
   searchBarRadiusVal = document.getElementById("search-bar-radius-val")
   searchAiBtn = document.getElementById("search-ai-btn")
   searchContainer = document.getElementById("search-container")
-  showBookmarksCheckbox = document.getElementById(
-  "show-bookmarks-checkbox",
-)
+  showBookmarksCheckbox = document.getElementById("show-bookmarks-checkbox")
   showQuickAccessBgCheckbox = document.getElementById(
-  "show-quick-access-bg-checkbox",
-)
-  contextMenuStyleSelect = document.getElementById(
-  "context-menu-style-select",
-)
-  lcpContextMenuStyle = document.getElementById(
-  "lcp-context-menu-style",
-)
+    "show-quick-access-bg-checkbox",
+  )
+  contextMenuStyleSelect = document.getElementById("context-menu-style-select")
+  lcpContextMenuStyle = document.getElementById("lcp-context-menu-style")
   showBookmarkGroupsCheckbox = document.getElementById(
-  "show-bookmark-groups-checkbox",
-)
+    "show-bookmark-groups-checkbox",
+  )
   musicStyleSelect = document.getElementById("music-style-select")
   musicPlayerUseDefaultColorMode = document.getElementById(
-  "music-player-use-default-color-mode",
-)
+    "music-player-use-default-color-mode",
+  )
   musicSourceIconColorModeSelect = document.getElementById(
-  "music-source-icon-color-mode",
-)
+    "music-source-icon-color-mode",
+  )
   musicVisualizerStyleSelect = document.getElementById(
-  "music-visualizer-style-select",
-)
+    "music-visualizer-style-select",
+  )
   layoutControlsBtn = document.getElementById("layout-controls-btn")
-  layoutControlsPopup = document.getElementById(
-  "layout-controls-popup",
-)
+  layoutControlsPopup = document.getElementById("layout-controls-popup")
   lcpTabs = document.querySelectorAll("[data-lcp-tab]")
   lcpTabPanels = document.querySelectorAll("[data-lcp-panel]")
   lcpSearchBar = document.getElementById("lcp-search-bar")
   lcpSearchBarWidth = document.getElementById("lcp-search-bar-width")
-  lcpSearchBarWidthVal = document.getElementById(
-  "lcp-search-bar-width-val",
-)
+  lcpSearchBarWidthVal = document.getElementById("lcp-search-bar-width-val")
   lcpBookmarks = document.getElementById("lcp-bookmarks")
   lcpContextMenuBg = document.getElementById("lcp-context-menu-bg")
   lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
   lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
   lcpQuickAccessBg = document.getElementById("lcp-quick-access-bg")
-  lcpQuickAccessHorizontal = document.getElementById("lcp-quick-access-horizontal")
+  lcpQuickAccessHorizontal = document.getElementById(
+    "lcp-quick-access-horizontal",
+  )
   lcpFlipLayout = document.getElementById("lcp-flip-layout")
-  lcpTopRightControls = document.getElementById(
-  "lcp-top-right-controls",
-)
+  lcpTopRightControls = document.getElementById("lcp-top-right-controls")
   lcpHideChromeBookmarksRow = document.getElementById(
-  "lcp-hide-chrome-bookmarks-row",
-)
+    "lcp-hide-chrome-bookmarks-row",
+  )
   lcpGhostControls = document.getElementById("lcp-ghost-controls")
-  lcpMusicStyleSelect = document.getElementById(
-  "lcp-music-style-select",
-)
+  lcpMusicStyleSelect = document.getElementById("lcp-music-style-select")
   lcpQuickAccessButtonRadius = document.getElementById(
-  "lcp-quick-access-button-radius",
-)
+    "lcp-quick-access-button-radius",
+  )
   lcpQuickAccessBarRadius = document.getElementById(
-  "lcp-quick-access-bar-radius",
-)
+    "lcp-quick-access-bar-radius",
+  )
   lcpQuickAccessToggleRadius = document.getElementById(
-  "lcp-quick-access-toggle-radius",
-)
-  lcpQuickAccessSkin = document.getElementById(
-  "lcp-quick-access-skin",
-)
+    "lcp-quick-access-toggle-radius",
+  )
+  lcpQuickAccessSkin = document.getElementById("lcp-quick-access-skin")
   lcpQuickAccessBorderVisible = document.getElementById(
-  "lcp-quick-access-border-visible",
-)
+    "lcp-quick-access-border-visible",
+  )
   lcpQaShowTodo = document.getElementById("lcp-qa-show-todo")
   lcpQaShowNotepad = document.getElementById("lcp-qa-show-notepad")
   lcpQaShowTimer = document.getElementById("lcp-qa-show-timer")
@@ -3608,9 +3206,7 @@ export function refreshDOMReferences() {
   m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
   m3SidebarToggle = document.getElementById("m3-sidebar-toggle")
   svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
-  svgWaveToggleLabel = document.getElementById(
-  "svg-wave-toggle-label",
-)
+  svgWaveToggleLabel = document.getElementById("svg-wave-toggle-label")
   svgWaveSettings = document.getElementById("svg-wave-settings")
   svgWaveLines = document.getElementById("svg-wave-lines")
   svgWaveLinesValue = document.getElementById("svg-wave-lines-value")
@@ -3619,284 +3215,190 @@ export function refreshDOMReferences() {
   svgWaveAmpY = document.getElementById("svg-wave-amp-y")
   svgWaveAmpYValue = document.getElementById("svg-wave-amp-y-value")
   svgWaveOffsetX = document.getElementById("svg-wave-offset-x")
-  svgWaveOffsetXValue = document.getElementById(
-  "svg-wave-offset-x-value",
-)
+  svgWaveOffsetXValue = document.getElementById("svg-wave-offset-x-value")
   svgWaveAngle = document.getElementById("svg-wave-angle")
   svgWaveAngleValue = document.getElementById("svg-wave-angle-value")
-  svgWaveAnglePresetBtns = document.querySelectorAll(
-  ".wave-angle-preset-btn",
-)
+  svgWaveAnglePresetBtns = document.querySelectorAll(".wave-angle-preset-btn")
   svgWaveSmoothness = document.getElementById("svg-wave-smoothness")
-  svgWaveSmoothnessValue = document.getElementById(
-  "svg-wave-smoothness-value",
-)
+  svgWaveSmoothnessValue = document.getElementById("svg-wave-smoothness-value")
   svgWaveCraziness = document.getElementById("svg-wave-craziness")
-  svgWaveCrazinessValue = document.getElementById(
-  "svg-wave-craziness-value",
-)
+  svgWaveCrazinessValue = document.getElementById("svg-wave-craziness-value")
   svgWaveFill = document.getElementById("svg-wave-fill")
   svgWaveStartHue = document.getElementById("svg-wave-start-hue")
-  svgWaveStartHueValue = document.getElementById(
-  "svg-wave-start-hue-value",
-)
+  svgWaveStartHueValue = document.getElementById("svg-wave-start-hue-value")
   svgWaveStartSat = document.getElementById("svg-wave-start-sat")
-  svgWaveStartSatValue = document.getElementById(
-  "svg-wave-start-sat-value",
-)
+  svgWaveStartSatValue = document.getElementById("svg-wave-start-sat-value")
   svgWaveStartLight = document.getElementById("svg-wave-start-light")
-  svgWaveStartLightValue = document.getElementById(
-  "svg-wave-start-light-value",
-)
-  svgWaveStartPreview = document.getElementById(
-  "svg-wave-start-preview",
-)
+  svgWaveStartLightValue = document.getElementById("svg-wave-start-light-value")
+  svgWaveStartPreview = document.getElementById("svg-wave-start-preview")
   svgWaveEndHue = document.getElementById("svg-wave-end-hue")
-  svgWaveEndHueValue = document.getElementById(
-  "svg-wave-end-hue-value",
-)
+  svgWaveEndHueValue = document.getElementById("svg-wave-end-hue-value")
   svgWaveEndSat = document.getElementById("svg-wave-end-sat")
-  svgWaveEndSatValue = document.getElementById(
-  "svg-wave-end-sat-value",
-)
+  svgWaveEndSatValue = document.getElementById("svg-wave-end-sat-value")
   svgWaveEndLight = document.getElementById("svg-wave-end-light")
-  svgWaveEndLightValue = document.getElementById(
-  "svg-wave-end-light-value",
-)
+  svgWaveEndLightValue = document.getElementById("svg-wave-end-light-value")
   svgWaveEndPreview = document.getElementById("svg-wave-end-preview")
-  svgWaveRandomizeBtn = document.getElementById(
-  "svg-wave-randomize-btn",
-)
+  svgWaveRandomizeBtn = document.getElementById("svg-wave-randomize-btn")
   svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
   svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
-  svgWaveCopyCodeBtn = document.getElementById(
-  "svg-wave-copy-code-btn",
-)
-  svgWaveApplyCodeBtn = document.getElementById(
-  "svg-wave-apply-code-btn",
-)
-  svgWavePresetCodeInput = document.getElementById(
-  "svg-wave-preset-code-input",
-)
+  svgWaveCopyCodeBtn = document.getElementById("svg-wave-copy-code-btn")
+  svgWaveApplyCodeBtn = document.getElementById("svg-wave-apply-code-btn")
+  svgWavePresetCodeInput = document.getElementById("svg-wave-preset-code-input")
   svgWaveCrazyBtn = document.getElementById("svg-wave-crazy-btn")
   svgWaveActive = document.getElementById("svg-wave-active")
-  userSvgWavesGallery = document.getElementById(
-  "user-svg-waves-gallery",
-)
+  userSvgWavesGallery = document.getElementById("user-svg-waves-gallery")
   gradientV2Active = document.getElementById("gradient-v2-active")
-  gradientV2ToggleBtn = document.getElementById(
-  "gradient-v2-toggle-btn",
-)
-  gradientV2ToggleLabel = document.getElementById(
-  "gradient-v2-toggle-label",
-)
-  gradientV2Settings = document.getElementById(
-  "gradient-v2-settings",
-)
+  gradientV2ToggleBtn = document.getElementById("gradient-v2-toggle-btn")
+  gradientV2ToggleLabel = document.getElementById("gradient-v2-toggle-label")
+  gradientV2Settings = document.getElementById("gradient-v2-settings")
   gradientV2Color1 = document.getElementById("gradient-v2-color1")
   gradientV2Color2 = document.getElementById("gradient-v2-color2")
   gradientV2Color3 = document.getElementById("gradient-v2-color3")
-  gradientV2TimeSpeed = document.getElementById(
-  "gradient-v2-time-speed",
-)
+  gradientV2TimeSpeed = document.getElementById("gradient-v2-time-speed")
   gradientV2TimeSpeedValue = document.getElementById(
-  "gradient-v2-time-speed-value",
-)
-  gradientV2ColorBalance = document.getElementById(
-  "gradient-v2-color-balance",
-)
+    "gradient-v2-time-speed-value",
+  )
+  gradientV2ColorBalance = document.getElementById("gradient-v2-color-balance")
   gradientV2ColorBalanceValue = document.getElementById(
-  "gradient-v2-color-balance-value",
-)
-  gradientV2WarpStrength = document.getElementById(
-  "gradient-v2-warp-strength",
-)
+    "gradient-v2-color-balance-value",
+  )
+  gradientV2WarpStrength = document.getElementById("gradient-v2-warp-strength")
   gradientV2WarpStrengthValue = document.getElementById(
-  "gradient-v2-warp-strength-value",
-)
+    "gradient-v2-warp-strength-value",
+  )
   gradientV2WarpFrequency = document.getElementById(
-  "gradient-v2-warp-frequency",
-)
+    "gradient-v2-warp-frequency",
+  )
   gradientV2WarpFrequencyValue = document.getElementById(
-  "gradient-v2-warp-frequency-value",
-)
-  gradientV2WarpSpeed = document.getElementById(
-  "gradient-v2-warp-speed",
-)
+    "gradient-v2-warp-frequency-value",
+  )
+  gradientV2WarpSpeed = document.getElementById("gradient-v2-warp-speed")
   gradientV2WarpSpeedValue = document.getElementById(
-  "gradient-v2-warp-speed-value",
-)
+    "gradient-v2-warp-speed-value",
+  )
   gradientV2WarpAmplitude = document.getElementById(
-  "gradient-v2-warp-amplitude",
-)
+    "gradient-v2-warp-amplitude",
+  )
   gradientV2WarpAmplitudeValue = document.getElementById(
-  "gradient-v2-warp-amplitude-value",
-)
-  gradientV2BlendAngle = document.getElementById(
-  "gradient-v2-blend-angle",
-)
+    "gradient-v2-warp-amplitude-value",
+  )
+  gradientV2BlendAngle = document.getElementById("gradient-v2-blend-angle")
   gradientV2BlendAngleValue = document.getElementById(
-  "gradient-v2-blend-angle-value",
-)
+    "gradient-v2-blend-angle-value",
+  )
   gradientV2BlendSoftness = document.getElementById(
-  "gradient-v2-blend-softness",
-)
+    "gradient-v2-blend-softness",
+  )
   gradientV2BlendSoftnessValue = document.getElementById(
-  "gradient-v2-blend-softness-value",
-)
+    "gradient-v2-blend-softness-value",
+  )
   gradientV2RotationAmount = document.getElementById(
-  "gradient-v2-rotation-amount",
-)
+    "gradient-v2-rotation-amount",
+  )
   gradientV2RotationAmountValue = document.getElementById(
-  "gradient-v2-rotation-amount-value",
-)
-  gradientV2NoiseScale = document.getElementById(
-  "gradient-v2-noise-scale",
-)
+    "gradient-v2-rotation-amount-value",
+  )
+  gradientV2NoiseScale = document.getElementById("gradient-v2-noise-scale")
   gradientV2NoiseScaleValue = document.getElementById(
-  "gradient-v2-noise-scale-value",
-)
-  gradientV2GrainAmount = document.getElementById(
-  "gradient-v2-grain-amount",
-)
+    "gradient-v2-noise-scale-value",
+  )
+  gradientV2GrainAmount = document.getElementById("gradient-v2-grain-amount")
   gradientV2GrainAmountValue = document.getElementById(
-  "gradient-v2-grain-amount-value",
-)
-  gradientV2GrainScale = document.getElementById(
-  "gradient-v2-grain-scale",
-)
+    "gradient-v2-grain-amount-value",
+  )
+  gradientV2GrainScale = document.getElementById("gradient-v2-grain-scale")
   gradientV2GrainScaleValue = document.getElementById(
-  "gradient-v2-grain-scale-value",
-)
+    "gradient-v2-grain-scale-value",
+  )
   gradientV2GrainAnimated = document.getElementById(
-  "gradient-v2-grain-animated",
-)
-  gradientV2Contrast = document.getElementById(
-  "gradient-v2-contrast",
-)
+    "gradient-v2-grain-animated",
+  )
+  gradientV2Contrast = document.getElementById("gradient-v2-contrast")
   gradientV2ContrastValue = document.getElementById(
-  "gradient-v2-contrast-value",
-)
+    "gradient-v2-contrast-value",
+  )
   gradientV2Gamma = document.getElementById("gradient-v2-gamma")
-  gradientV2GammaValue = document.getElementById(
-  "gradient-v2-gamma-value",
-)
-  gradientV2Saturation = document.getElementById(
-  "gradient-v2-saturation",
-)
+  gradientV2GammaValue = document.getElementById("gradient-v2-gamma-value")
+  gradientV2Saturation = document.getElementById("gradient-v2-saturation")
   gradientV2SaturationValue = document.getElementById(
-  "gradient-v2-saturation-value",
-)
+    "gradient-v2-saturation-value",
+  )
   gradientV2CenterX = document.getElementById("gradient-v2-center-x")
-  gradientV2CenterXValue = document.getElementById(
-  "gradient-v2-center-x-value",
-)
+  gradientV2CenterXValue = document.getElementById("gradient-v2-center-x-value")
   gradientV2CenterY = document.getElementById("gradient-v2-center-y")
-  gradientV2CenterYValue = document.getElementById(
-  "gradient-v2-center-y-value",
-)
+  gradientV2CenterYValue = document.getElementById("gradient-v2-center-y-value")
   gradientV2Zoom = document.getElementById("gradient-v2-zoom")
-  gradientV2ZoomValue = document.getElementById(
-  "gradient-v2-zoom-value",
-)
-  gradientV2RandomizeBtn = document.getElementById(
-  "gradient-v2-randomize-btn",
-)
+  gradientV2ZoomValue = document.getElementById("gradient-v2-zoom-value")
+  gradientV2RandomizeBtn = document.getElementById("gradient-v2-randomize-btn")
   gradientV2SaveBtn = document.getElementById("gradient-v2-save-btn")
-  userGradientV2sGallery = document.getElementById(
-  "user-gradient-v2s-gallery",
-)
+  userGradientV2sGallery = document.getElementById("user-gradient-v2s-gallery")
   gradientV2GalleryWrap = document.getElementById(
-  "user-gradient-v2s-gallery-wrap",
-)
-  pixelSnowHQSettings = document.getElementById(
-  "pixel-snow-hq-settings",
-)
-  pixelSnowHQColorPicker = document.getElementById(
-  "pixel-snow-hq-color-picker",
-)
+    "user-gradient-v2s-gallery-wrap",
+  )
+  pixelSnowHQSettings = document.getElementById("pixel-snow-hq-settings")
+  pixelSnowHQColorPicker = document.getElementById("pixel-snow-hq-color-picker")
   pixelSnowHQVariantSelect = document.getElementById(
-  "pixel-snow-hq-variant-select",
-)
+    "pixel-snow-hq-variant-select",
+  )
   pixelSnowHQDensitySlider = document.getElementById(
-  "pixel-snow-hq-density-slider",
-)
-  pixelSnowHQDensityVal = document.getElementById(
-  "pixel-snow-hq-density-val",
-)
-  pixelSnowHQSpeedSlider = document.getElementById(
-  "pixel-snow-hq-speed-slider",
-)
-  pixelSnowHQSpeedVal = document.getElementById(
-  "pixel-snow-hq-speed-val",
-)
+    "pixel-snow-hq-density-slider",
+  )
+  pixelSnowHQDensityVal = document.getElementById("pixel-snow-hq-density-val")
+  pixelSnowHQSpeedSlider = document.getElementById("pixel-snow-hq-speed-slider")
+  pixelSnowHQSpeedVal = document.getElementById("pixel-snow-hq-speed-val")
   pixelSnowHQDirectionSlider = document.getElementById(
-  "pixel-snow-hq-direction-slider",
-)
+    "pixel-snow-hq-direction-slider",
+  )
   pixelSnowHQDirectionVal = document.getElementById(
-  "pixel-snow-hq-direction-val",
-)
+    "pixel-snow-hq-direction-val",
+  )
   pixelSnowHQPixelResSlider = document.getElementById(
-  "pixel-snow-hq-pixel-res-slider",
-)
+    "pixel-snow-hq-pixel-res-slider",
+  )
   pixelSnowHQPixelResVal = document.getElementById(
-  "pixel-snow-hq-pixel-res-val",
-)
+    "pixel-snow-hq-pixel-res-val",
+  )
   pixelSnowHQFlakeSizeSlider = document.getElementById(
-  "pixel-snow-hq-flake-size-slider",
-)
+    "pixel-snow-hq-flake-size-slider",
+  )
   pixelSnowHQFlakeSizeVal = document.getElementById(
-  "pixel-snow-hq-flake-size-val",
-)
+    "pixel-snow-hq-flake-size-val",
+  )
   pixelSnowHQMinFlakeSizeSlider = document.getElementById(
-  "pixel-snow-hq-min-flake-size-slider",
-)
+    "pixel-snow-hq-min-flake-size-slider",
+  )
   pixelSnowHQMinFlakeSizeVal = document.getElementById(
-  "pixel-snow-hq-min-flake-size-val",
-)
+    "pixel-snow-hq-min-flake-size-val",
+  )
   pixelSnowHQDepthFadeSlider = document.getElementById(
-  "pixel-snow-hq-depth-fade-slider",
-)
+    "pixel-snow-hq-depth-fade-slider",
+  )
   pixelSnowHQDepthFadeVal = document.getElementById(
-  "pixel-snow-hq-depth-fade-val",
-)
+    "pixel-snow-hq-depth-fade-val",
+  )
   pixelSnowHQFarPlaneSlider = document.getElementById(
-  "pixel-snow-hq-far-plane-slider",
-)
+    "pixel-snow-hq-far-plane-slider",
+  )
   pixelSnowHQFarPlaneVal = document.getElementById(
-  "pixel-snow-hq-far-plane-val",
-)
+    "pixel-snow-hq-far-plane-val",
+  )
   pixelSnowHQBrightnessSlider = document.getElementById(
-  "pixel-snow-hq-brightness-slider",
-)
+    "pixel-snow-hq-brightness-slider",
+  )
   pixelSnowHQBrightnessVal = document.getElementById(
-  "pixel-snow-hq-brightness-val",
-)
-  pixelSnowHQGammaSlider = document.getElementById(
-  "pixel-snow-hq-gamma-slider",
-)
-  pixelSnowHQGammaVal = document.getElementById(
-  "pixel-snow-hq-gamma-val",
-)
+    "pixel-snow-hq-brightness-val",
+  )
+  pixelSnowHQGammaSlider = document.getElementById("pixel-snow-hq-gamma-slider")
+  pixelSnowHQGammaVal = document.getElementById("pixel-snow-hq-gamma-val")
   softAuroraCanvas = document.getElementById("soft-aurora-canvas")
-  softAuroraSettings = document.getElementById(
-  "soft-aurora-settings",
-)
-  softAuroraColor1Picker = document.getElementById(
-  "soft-aurora-color1-picker",
-)
-  softAuroraColor2Picker = document.getElementById(
-  "soft-aurora-color2-picker",
-)
+  softAuroraSettings = document.getElementById("soft-aurora-settings")
+  softAuroraColor1Picker = document.getElementById("soft-aurora-color1-picker")
+  softAuroraColor2Picker = document.getElementById("soft-aurora-color2-picker")
   softAuroraRandomColorsBtn = document.getElementById(
-  "soft-aurora-random-colors-btn",
-)
-  softAuroraSpeedSlider = document.getElementById(
-  "soft-aurora-speed-slider",
-)
-  softAuroraSpeedVal = document.getElementById(
-  "soft-aurora-speed-val",
-)
+    "soft-aurora-random-colors-btn",
+  )
+  softAuroraSpeedSlider = document.getElementById("soft-aurora-speed-slider")
+  softAuroraSpeedVal = document.getElementById("soft-aurora-speed-val")
   silkToggleBtn = document.getElementById("silk-toggle-btn")
   silkToggleLabel = document.getElementById("silk-toggle-label")
   silkSettings = document.getElementById("silk-settings")
@@ -3913,359 +3415,239 @@ export function refreshDOMReferences() {
   silkRandomBtn = document.getElementById("silk-random-btn")
   silkSaveBtn = document.getElementById("silk-save-btn")
   userSilksGallery = document.getElementById("user-silks-gallery")
-  userSilksGalleryWrap = document.getElementById(
-  "user-silks-gallery-wrap",
-)
-  lightPillarToggleBtn = document.getElementById(
-  "light-pillar-toggle-btn",
-)
-  lightPillarToggleLabel = document.getElementById(
-  "light-pillar-toggle-label",
-)
-  lightPillarSettings = document.getElementById(
-  "light-pillar-settings",
-)
+  userSilksGalleryWrap = document.getElementById("user-silks-gallery-wrap")
+  lightPillarToggleBtn = document.getElementById("light-pillar-toggle-btn")
+  lightPillarToggleLabel = document.getElementById("light-pillar-toggle-label")
+  lightPillarSettings = document.getElementById("light-pillar-settings")
   lightPillarActive = document.getElementById("light-pillar-active")
-  lightPillarRandomBtn = document.getElementById(
-  "light-pillar-random-btn",
-)
-  lightPillarTopColor = document.getElementById(
-  "light-pillar-top-color",
-)
-  lightPillarBottomColor = document.getElementById(
-  "light-pillar-bottom-color",
-)
-  lightPillarIntensity = document.getElementById(
-  "light-pillar-intensity",
-)
+  lightPillarRandomBtn = document.getElementById("light-pillar-random-btn")
+  lightPillarTopColor = document.getElementById("light-pillar-top-color")
+  lightPillarBottomColor = document.getElementById("light-pillar-bottom-color")
+  lightPillarIntensity = document.getElementById("light-pillar-intensity")
   lightPillarIntensityValue = document.getElementById(
-  "light-pillar-intensity-value",
-)
+    "light-pillar-intensity-value",
+  )
   lightPillarRotationSpeed = document.getElementById(
-  "light-pillar-rotation-speed",
-)
+    "light-pillar-rotation-speed",
+  )
   lightPillarRotationSpeedValue = document.getElementById(
-  "light-pillar-rotation-speed-value",
-)
+    "light-pillar-rotation-speed-value",
+  )
   lightPillarGlow = document.getElementById("light-pillar-glow")
-  lightPillarGlowValue = document.getElementById(
-  "light-pillar-glow-value",
-)
+  lightPillarGlowValue = document.getElementById("light-pillar-glow-value")
   lightPillarWidth = document.getElementById("light-pillar-width")
-  lightPillarWidthValue = document.getElementById(
-  "light-pillar-width-value",
-)
+  lightPillarWidthValue = document.getElementById("light-pillar-width-value")
   lightPillarHeight = document.getElementById("light-pillar-height")
-  lightPillarHeightValue = document.getElementById(
-  "light-pillar-height-value",
-)
+  lightPillarHeightValue = document.getElementById("light-pillar-height-value")
   lightPillarNoise = document.getElementById("light-pillar-noise")
-  lightPillarNoiseValue = document.getElementById(
-  "light-pillar-noise-value",
-)
-  lightPillarRotation = document.getElementById(
-  "light-pillar-rotation",
-)
+  lightPillarNoiseValue = document.getElementById("light-pillar-noise-value")
+  lightPillarRotation = document.getElementById("light-pillar-rotation")
   lightPillarRotationValue = document.getElementById(
-  "light-pillar-rotation-value",
-)
-  lightPillarSaveBtn = document.getElementById(
-  "light-pillar-save-btn",
-)
+    "light-pillar-rotation-value",
+  )
+  lightPillarSaveBtn = document.getElementById("light-pillar-save-btn")
   userLightPillarsGallery = document.getElementById(
-  "user-light-pillars-gallery",
-)
+    "user-light-pillars-gallery",
+  )
   userLightPillarsGalleryWrap = document.getElementById(
-  "user-light-pillars-gallery-wrap",
-)
-  liquidEtherToggleBtn = document.getElementById(
-  "liquid-ether-toggle-btn",
-)
-  liquidEtherToggleLabel = document.getElementById(
-  "liquid-ether-toggle-label",
-)
-  liquidEtherSettings = document.getElementById(
-  "liquid-ether-settings",
-)
+    "user-light-pillars-gallery-wrap",
+  )
+  liquidEtherToggleBtn = document.getElementById("liquid-ether-toggle-btn")
+  liquidEtherToggleLabel = document.getElementById("liquid-ether-toggle-label")
+  liquidEtherSettings = document.getElementById("liquid-ether-settings")
   liquidEtherActive = document.getElementById("liquid-ether-active")
-  liquidEtherRandomBtn = document.getElementById(
-  "liquid-ether-random-btn",
-)
+  liquidEtherRandomBtn = document.getElementById("liquid-ether-random-btn")
   liquidEtherColor1 = document.getElementById("liquid-ether-color1")
   liquidEtherColor2 = document.getElementById("liquid-ether-color2")
   liquidEtherColor3 = document.getElementById("liquid-ether-color3")
-  liquidEtherGlowWidth = document.getElementById(
-  "liquid-ether-glow-width",
-)
+  liquidEtherGlowWidth = document.getElementById("liquid-ether-glow-width")
   liquidEtherGlowWidthValue = document.getElementById(
-  "liquid-ether-glow-width-value",
-)
-  liquidEtherSaveBtn = document.getElementById(
-  "liquid-ether-save-btn",
-)
+    "liquid-ether-glow-width-value",
+  )
+  liquidEtherSaveBtn = document.getElementById("liquid-ether-save-btn")
   userLiquidEthersGallery = document.getElementById(
-  "user-liquid-ethers-gallery",
-)
+    "user-liquid-ethers-gallery",
+  )
   userLiquidEthersGalleryWrap = document.getElementById(
-  "user-liquid-ethers-gallery-wrap",
-)
-  splashCursorToggleBtn = document.getElementById(
-  "splash-cursor-toggle-btn",
-)
+    "user-liquid-ethers-gallery-wrap",
+  )
+  splashCursorToggleBtn = document.getElementById("splash-cursor-toggle-btn")
   splashCursorToggleLabel = document.getElementById(
-  "splash-cursor-toggle-label",
-)
-  splashCursorSettings = document.getElementById(
-  "splash-cursor-settings",
-)
-  splashCursorActive = document.getElementById(
-  "splash-cursor-active",
-)
-  splashCursorDarkBg = document.getElementById(
-  "splash-cursor-dark-bg",
-)
-  splashCursorDarkBgBtn = document.getElementById(
-  "splash-cursor-dark-bg-btn",
-)
-  splashCursorRainbow = document.getElementById(
-  "splash-cursor-rainbow",
-)
-  splashCursorColorWrap = document.getElementById(
-  "splash-cursor-color-wrap",
-)
+    "splash-cursor-toggle-label",
+  )
+  splashCursorSettings = document.getElementById("splash-cursor-settings")
+  splashCursorActive = document.getElementById("splash-cursor-active")
+  splashCursorDarkBg = document.getElementById("splash-cursor-dark-bg")
+  splashCursorDarkBgBtn = document.getElementById("splash-cursor-dark-bg-btn")
+  splashCursorRainbow = document.getElementById("splash-cursor-rainbow")
+  splashCursorColorWrap = document.getElementById("splash-cursor-color-wrap")
   splashCursorColor = document.getElementById("splash-cursor-color")
-  splashCursorShading = document.getElementById(
-  "splash-cursor-shading",
-)
+  splashCursorShading = document.getElementById("splash-cursor-shading")
   splashCursorSplatRadius = document.getElementById(
-  "splash-cursor-splat-radius",
-)
+    "splash-cursor-splat-radius",
+  )
   splashCursorSplatRadiusValue = document.getElementById(
-  "splash-cursor-splat-radius-value",
-)
-  splashCursorSplatForce = document.getElementById(
-  "splash-cursor-splat-force",
-)
+    "splash-cursor-splat-radius-value",
+  )
+  splashCursorSplatForce = document.getElementById("splash-cursor-splat-force")
   splashCursorSplatForceValue = document.getElementById(
-  "splash-cursor-splat-force-value",
-)
+    "splash-cursor-splat-force-value",
+  )
   splashCursorCurl = document.getElementById("splash-cursor-curl")
-  splashCursorCurlValue = document.getElementById(
-  "splash-cursor-curl-value",
-)
-  splashCursorDensity = document.getElementById(
-  "splash-cursor-density",
-)
+  splashCursorCurlValue = document.getElementById("splash-cursor-curl-value")
+  splashCursorDensity = document.getElementById("splash-cursor-density")
   splashCursorDensityValue = document.getElementById(
-  "splash-cursor-density-value",
-)
-  splashCursorVelocity = document.getElementById(
-  "splash-cursor-velocity",
-)
+    "splash-cursor-density-value",
+  )
+  splashCursorVelocity = document.getElementById("splash-cursor-velocity")
   splashCursorVelocityValue = document.getElementById(
-  "splash-cursor-velocity-value",
-)
-  splashCursorColorSpeed = document.getElementById(
-  "splash-cursor-color-speed",
-)
+    "splash-cursor-velocity-value",
+  )
+  splashCursorColorSpeed = document.getElementById("splash-cursor-color-speed")
   splashCursorColorSpeedValue = document.getElementById(
-  "splash-cursor-color-speed-value",
-)
-  splashCursorDyeRes = document.getElementById(
-  "splash-cursor-dye-res",
-)
+    "splash-cursor-color-speed-value",
+  )
+  splashCursorDyeRes = document.getElementById("splash-cursor-dye-res")
   splashCursorDyeResValue = document.getElementById(
-  "splash-cursor-dye-res-value",
-)
-  softAuroraScaleSlider = document.getElementById(
-  "soft-aurora-scale-slider",
-)
-  softAuroraScaleVal = document.getElementById(
-  "soft-aurora-scale-val",
-)
+    "splash-cursor-dye-res-value",
+  )
+  softAuroraScaleSlider = document.getElementById("soft-aurora-scale-slider")
+  softAuroraScaleVal = document.getElementById("soft-aurora-scale-val")
   softAuroraBrightnessSlider = document.getElementById(
-  "soft-aurora-brightness-slider",
-)
+    "soft-aurora-brightness-slider",
+  )
   softAuroraBrightnessVal = document.getElementById(
-  "soft-aurora-brightness-val",
-)
+    "soft-aurora-brightness-val",
+  )
   softAuroraNoiseFreqSlider = document.getElementById(
-  "soft-aurora-noise-freq-slider",
-)
-  softAuroraNoiseFreqVal = document.getElementById(
-  "soft-aurora-noise-freq-val",
-)
+    "soft-aurora-noise-freq-slider",
+  )
+  softAuroraNoiseFreqVal = document.getElementById("soft-aurora-noise-freq-val")
   softAuroraBandHeightSlider = document.getElementById(
-  "soft-aurora-band-height-slider",
-)
+    "soft-aurora-band-height-slider",
+  )
   softAuroraBandHeightVal = document.getElementById(
-  "soft-aurora-band-height-val",
-)
+    "soft-aurora-band-height-val",
+  )
   softAuroraBandSpreadSlider = document.getElementById(
-  "soft-aurora-band-spread-slider",
-)
+    "soft-aurora-band-spread-slider",
+  )
   softAuroraBandSpreadVal = document.getElementById(
-  "soft-aurora-band-spread-val",
-)
+    "soft-aurora-band-spread-val",
+  )
   softAuroraNoiseAmpSlider = document.getElementById(
-  "soft-aurora-noise-amp-slider",
-)
-  softAuroraNoiseAmpVal = document.getElementById(
-  "soft-aurora-noise-amp-val",
-)
+    "soft-aurora-noise-amp-slider",
+  )
+  softAuroraNoiseAmpVal = document.getElementById("soft-aurora-noise-amp-val")
   softAuroraOctaveDecaySlider = document.getElementById(
-  "soft-aurora-octave-decay-slider",
-)
+    "soft-aurora-octave-decay-slider",
+  )
   softAuroraOctaveDecayVal = document.getElementById(
-  "soft-aurora-octave-decay-val",
-)
+    "soft-aurora-octave-decay-val",
+  )
   softAuroraLayerOffsetSlider = document.getElementById(
-  "soft-aurora-layer-offset-slider",
-)
+    "soft-aurora-layer-offset-slider",
+  )
   softAuroraLayerOffsetVal = document.getElementById(
-  "soft-aurora-layer-offset-val",
-)
+    "soft-aurora-layer-offset-val",
+  )
   softAuroraColorSpeedSlider = document.getElementById(
-  "soft-aurora-color-speed-slider",
-)
+    "soft-aurora-color-speed-slider",
+  )
   softAuroraColorSpeedVal = document.getElementById(
-  "soft-aurora-color-speed-val",
-)
+    "soft-aurora-color-speed-val",
+  )
   softAuroraMouseInfluenceSlider = document.getElementById(
-  "soft-aurora-mouse-influence-slider",
-)
+    "soft-aurora-mouse-influence-slider",
+  )
   softAuroraMouseInfluenceVal = document.getElementById(
-  "soft-aurora-mouse-influence-val",
-)
+    "soft-aurora-mouse-influence-val",
+  )
   softAuroraMouseCheckbox = document.getElementById(
-  "soft-aurora-mouse-checkbox",
-)
+    "soft-aurora-mouse-checkbox",
+  )
   softAuroraTransparentCheckbox = document.getElementById(
-  "soft-aurora-transparent-checkbox",
-)
+    "soft-aurora-transparent-checkbox",
+  )
   softAuroraBgColorContainer = document.getElementById(
-  "soft-aurora-bg-color-container",
-)
+    "soft-aurora-bg-color-container",
+  )
   softAuroraBgColorPicker = document.getElementById(
-  "soft-aurora-bg-color-picker",
-)
+    "soft-aurora-bg-color-picker",
+  )
   gradientV2SelectModeBtn = document.getElementById(
-  "gradient-v2-select-mode-btn",
-)
+    "gradient-v2-select-mode-btn",
+  )
   gradientV2SelectToolbar = document.getElementById(
-  "gradient-v2-select-toolbar",
-)
-  gradientV2SelectCount = document.getElementById(
-  "gradient-v2-select-count",
-)
-  gradientV2SelectAllBtn = document.getElementById(
-  "gradient-v2-select-all-btn",
-)
+    "gradient-v2-select-toolbar",
+  )
+  gradientV2SelectCount = document.getElementById("gradient-v2-select-count")
+  gradientV2SelectAllBtn = document.getElementById("gradient-v2-select-all-btn")
   gradientV2DeleteSelectedBtn = document.getElementById(
-  "gradient-v2-delete-selected-btn",
-)
+    "gradient-v2-delete-selected-btn",
+  )
   gradientV2SelectCancelBtn = document.getElementById(
-  "gradient-v2-select-cancel-btn",
-)
+    "gradient-v2-select-cancel-btn",
+  )
   donateTriggerBtn = document.getElementById("donate-trigger-btn")
   donateModal = document.getElementById("donate-modal")
   closeDonateModalBtn = document.getElementById("close-donate-modal")
   showMomoQrBtn = document.getElementById("show-momo-qr-btn")
   momoQrContainer = document.getElementById("momo-qr-container")
-  showDonateButtonCheckbox = document.getElementById(
-  "show-donate-btn-checkbox",
-)
+  showDonateButtonCheckbox = document.getElementById("show-donate-btn-checkbox")
   donateSection = document.querySelector(".donate-section")
-  customTitleDisplay = document.getElementById(
-  "custom-title-display",
-)
+  customTitleDisplay = document.getElementById("custom-title-display")
   customTitleText = document.getElementById("custom-title-text")
-  customTitleMulticolor = document.getElementById(
-  "custom-title-multicolor",
-)
+  customTitleMulticolor = document.getElementById("custom-title-multicolor")
   customTitleColor = document.getElementById("custom-title-color")
-  customTitleFontSize = document.getElementById(
-  "custom-title-font-size",
-)
+  customTitleFontSize = document.getElementById("custom-title-font-size")
   customTitleLetterSpacing = document.getElementById(
-  "custom-title-letter-spacing",
-)
-  customTitleShadowBlur = document.getElementById(
-  "custom-title-shadow-blur",
-)
-  customTitleShadowY = document.getElementById(
-  "custom-title-shadow-y",
-)
-  customTitleShadowColor = document.getElementById(
-  "custom-title-shadow-color",
-)
-  customTitleBorderSize = document.getElementById(
-  "custom-title-border-size",
-)
-  customTitleBorderColor = document.getElementById(
-  "custom-title-border-color",
-)
+    "custom-title-letter-spacing",
+  )
+  customTitleShadowBlur = document.getElementById("custom-title-shadow-blur")
+  customTitleShadowY = document.getElementById("custom-title-shadow-y")
+  customTitleShadowColor = document.getElementById("custom-title-shadow-color")
+  customTitleBorderSize = document.getElementById("custom-title-border-size")
+  customTitleBorderColor = document.getElementById("custom-title-border-color")
   showCustomTitleCheckbox = document.getElementById(
-  "show-custom-title-checkbox",
-)
+    "show-custom-title-checkbox",
+  )
   freeMoveCustomTitleCheckbox = document.getElementById(
-  "free-move-custom-title-checkbox",
-)
+    "free-move-custom-title-checkbox",
+  )
   lcpBookmarkLayout = document.getElementById("lcp-bookmark-layout")
-  gradientSelectModeBtn = document.getElementById(
-  "gradient-select-mode-btn",
-)
-  gradientSelectToolbar = document.getElementById(
-  "gradient-select-toolbar",
-)
-  gradientSelectCount = document.getElementById(
-  "gradient-select-count",
-)
-  gradientSelectAllBtn = document.getElementById(
-  "gradient-select-all-btn",
-)
+  gradientSelectModeBtn = document.getElementById("gradient-select-mode-btn")
+  gradientSelectToolbar = document.getElementById("gradient-select-toolbar")
+  gradientSelectCount = document.getElementById("gradient-select-count")
+  gradientSelectAllBtn = document.getElementById("gradient-select-all-btn")
   gradientDeleteSelectedBtn = document.getElementById(
-  "gradient-delete-selected-btn",
-)
+    "gradient-delete-selected-btn",
+  )
   gradientSelectCancelBtn = document.getElementById(
-  "gradient-select-cancel-btn",
-)
+    "gradient-select-cancel-btn",
+  )
   multiColorSelectModeBtn = document.getElementById(
-  "multi-color-select-mode-btn",
-)
+    "multi-color-select-mode-btn",
+  )
   multiColorSelectToolbar = document.getElementById(
-  "multi-color-select-toolbar",
-)
-  multiColorSelectCount = document.getElementById(
-  "multi-color-select-count",
-)
-  multiColorSelectAllBtn = document.getElementById(
-  "multi-color-select-all-btn",
-)
+    "multi-color-select-toolbar",
+  )
+  multiColorSelectCount = document.getElementById("multi-color-select-count")
+  multiColorSelectAllBtn = document.getElementById("multi-color-select-all-btn")
   multiColorDeleteSelectedBtn = document.getElementById(
-  "multi-color-delete-selected-btn",
-)
+    "multi-color-delete-selected-btn",
+  )
   multiColorSelectCancelBtn = document.getElementById(
-  "multi-color-select-cancel-btn",
-)
-  svgWaveSelectModeBtn = document.getElementById(
-  "svg-wave-select-mode-btn",
-)
-  svgWaveSelectToolbar = document.getElementById(
-  "svg-wave-select-toolbar",
-)
-  svgWaveSelectCount = document.getElementById(
-  "svg-wave-select-count",
-)
-  svgWaveSelectAllBtn = document.getElementById(
-  "svg-wave-select-all-btn",
-)
+    "multi-color-select-cancel-btn",
+  )
+  svgWaveSelectModeBtn = document.getElementById("svg-wave-select-mode-btn")
+  svgWaveSelectToolbar = document.getElementById("svg-wave-select-toolbar")
+  svgWaveSelectCount = document.getElementById("svg-wave-select-count")
+  svgWaveSelectAllBtn = document.getElementById("svg-wave-select-all-btn")
   svgWaveDeleteSelectedBtn = document.getElementById(
-  "svg-wave-delete-selected-btn",
-)
-  svgWaveSelectCancelBtn = document.getElementById(
-  "svg-wave-select-cancel-btn",
-)
+    "svg-wave-delete-selected-btn",
+  )
+  svgWaveSelectCancelBtn = document.getElementById("svg-wave-select-cancel-btn")
 }
 
 export function fadeToggle(el, show, displayStyle = "flex") {

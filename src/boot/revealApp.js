@@ -58,7 +58,8 @@ export function revealApp({
   const mainContainer = document.querySelector(".main-container")
   let bookmarksReady =
     bookmarksLoaded ||
-    (currentSettings.showBookmarks === false && currentSettings.showBookmarkGroups === false)
+    (currentSettings.showBookmarks === false &&
+      currentSettings.showBookmarkGroups === false)
   let bgReady = false
   let isRevealed = false
 
@@ -139,7 +140,10 @@ export function revealApp({
     const decodeBgImage = (url) => {
       const img = new Image()
       img.src = url
-      const onDone = () => { bgReady = true; checkAllReady() }
+      const onDone = () => {
+        bgReady = true
+        checkAllReady()
+      }
       if (typeof img.decode === "function") {
         img.decode().then(onDone).catch(onDone)
       } else {
@@ -151,7 +155,10 @@ export function revealApp({
     if (background.startsWith("idb-")) {
       activeBackgroundLoad.then((url) => {
         if (url) decodeBgImage(url)
-        else { bgReady = true; checkAllReady() }
+        else {
+          bgReady = true
+          checkAllReady()
+        }
       })
     } else {
       decodeBgImage(background)
@@ -164,7 +171,9 @@ export function revealApp({
       if (isRevealed) return
       const vid = document.getElementById("bg-video")
       if (
-        (vid && vid.style.display === "block" && (vid.readyState >= 3 || vid.currentTime > 0)) ||
+        (vid &&
+          vid.style.display === "block" &&
+          (vid.readyState >= 3 || vid.currentTime > 0)) ||
         videoCheckCount++ >= maxVideoChecks
       ) {
         bgReady = true
@@ -175,7 +184,10 @@ export function revealApp({
     }
     setTimeout(checkVideoStatus, 30)
   } else if (needsSettingsAtBoot(currentSettings)) {
-    const markBgReady = () => { bgReady = true; checkAllReady() }
+    const markBgReady = () => {
+      bgReady = true
+      checkAllReady()
+    }
     const waitForVisualPaint = () => {
       if (currentSettings.svgWaveActive) {
         requestAnimationFrame(() => requestAnimationFrame(markBgReady))
@@ -201,7 +213,8 @@ export function revealApp({
   // The goal is for most users to see the page within ~650ms total boot time.
   setTimeout(() => {
     if (!isRevealed) {
-      if (onBookmarksReady) window.removeEventListener("bookmarksReady", onBookmarksReady)
+      if (onBookmarksReady)
+        window.removeEventListener("bookmarksReady", onBookmarksReady)
       hideOverlay()
     }
   }, 800)

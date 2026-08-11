@@ -5,7 +5,7 @@ export class PerfHUD {
     this.el = document.createElement("div")
     this.el.id = "perf-hud"
     this.el.className = "perf-hud-container"
-    
+
     if (!document.getElementById("perf-hud-styles")) {
       const style = document.createElement("style")
       style.id = "perf-hud-styles"
@@ -105,7 +105,7 @@ export class PerfHUD {
     this.header = document.createElement("div")
     this.header.className = "perf-hud-header"
     this.el.appendChild(this.header)
-    
+
     this.body = document.createElement("div")
     this.body.className = "perf-hud-body"
     this.el.appendChild(this.body)
@@ -171,7 +171,7 @@ export class PerfHUD {
     if (mem < 250) return "val-warn"
     return "val-danger"
   }
-  
+
   getNodeClass(nodes) {
     if (nodes < 1500) return ""
     if (nodes < 2500) return "val-warn"
@@ -188,22 +188,22 @@ export class PerfHUD {
     `
 
     const makeRow = (label) => {
-      const row = document.createElement('div')
-      row.className = 'perf-hud-row'
-      const lbl = document.createElement('span')
-      lbl.className = 'perf-hud-label'
+      const row = document.createElement("div")
+      row.className = "perf-hud-row"
+      const lbl = document.createElement("span")
+      lbl.className = "perf-hud-label"
       lbl.textContent = label
-      const val = document.createElement('span')
-      val.className = 'perf-hud-value'
+      const val = document.createElement("span")
+      val.className = "perf-hud-value"
       row.appendChild(lbl)
       row.appendChild(val)
       this.body.appendChild(row)
       return val
     }
 
-    this._fpsValue  = makeRow('FPS')
-    this._memValue  = makeRow('JS Heap')
-    this._nodeValue = makeRow('DOM Nodes')
+    this._fpsValue = makeRow("FPS")
+    this._memValue = makeRow("JS Heap")
+    this._nodeValue = makeRow("DOM Nodes")
   }
 
   updateUI() {
@@ -212,23 +212,23 @@ export class PerfHUD {
     this._buildDOM()
 
     let memValue = 0
-    let memDisplay = 'N/A'
+    let memDisplay = "N/A"
 
     if (performance.memory) {
       memValue = performance.memory.usedJSHeapSize / 1048576
-      memDisplay = memValue.toFixed(1) + ' MB'
+      memDisplay = memValue.toFixed(1) + " MB"
     }
 
-    const nodes = document.getElementsByTagName('*').length
+    const nodes = document.getElementsByTagName("*").length
 
-    const isPaused = document.hidden ? ' ⏸' : ''
+    const isPaused = document.hidden ? " ⏸" : ""
 
-    this._fpsValue.textContent  = this.fps + isPaused
-    this._fpsValue.className    = `perf-hud-value ${this.getFpsClass(this.fps)}`
-    this._memValue.textContent  = memDisplay
-    this._memValue.className    = `perf-hud-value ${this.getMemoryClass(memValue)}`
+    this._fpsValue.textContent = this.fps + isPaused
+    this._fpsValue.className = `perf-hud-value ${this.getFpsClass(this.fps)}`
+    this._memValue.textContent = memDisplay
+    this._memValue.className = `perf-hud-value ${this.getMemoryClass(memValue)}`
     this._nodeValue.textContent = nodes
-    this._nodeValue.className   = `perf-hud-value ${this.getNodeClass(nodes)}`
+    this._nodeValue.className = `perf-hud-value ${this.getNodeClass(nodes)}`
   }
 }
 

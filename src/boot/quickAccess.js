@@ -3,11 +3,7 @@
  * Quick Access Bar: toggle buttons, collapse, drag-and-drop reordering,
  * and layout-updated reactive updates.
  */
-import {
-  getSettings,
-  updateSetting,
-  saveSettings,
-} from "../services/state.js"
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import {
   showTodoCheckbox,
   showTimerCheckbox,
@@ -35,17 +31,39 @@ export function syncQuickButtons() {
     if (!type) return
     let isActive = false
     switch (type) {
-      case "todo":        isActive = settings.showTodoList !== false; break
-      case "notepad":     isActive = settings.showNotepad !== false; break
-      case "timer":       isActive = settings.showTimer === true; break
-      case "calendar":    isActive = settings.showFullCalendar === true; break
-      case "music":       isActive = settings.musicPlayerEnabled === true; break
-      case "clock":       isActive = settings.clockDisplayMode !== "hide"; break
-      case "gregorian":   isActive = settings.showGregorian !== false; break
-      case "quotes":      isActive = settings.showQuotes !== false; break
-      case "weather":     isActive = settings.showWeather === true; break
-      case "rss":         isActive = settings.showRss === true; break
-      case "habitTracker":isActive = settings.showHabits === true; break
+      case "todo":
+        isActive = settings.showTodoList !== false
+        break
+      case "notepad":
+        isActive = settings.showNotepad !== false
+        break
+      case "timer":
+        isActive = settings.showTimer === true
+        break
+      case "calendar":
+        isActive = settings.showFullCalendar === true
+        break
+      case "music":
+        isActive = settings.musicPlayerEnabled === true
+        break
+      case "clock":
+        isActive = settings.clockDisplayMode !== "hide"
+        break
+      case "gregorian":
+        isActive = settings.showGregorian !== false
+        break
+      case "quotes":
+        isActive = settings.showQuotes !== false
+        break
+      case "weather":
+        isActive = settings.showWeather === true
+        break
+      case "rss":
+        isActive = settings.showRss === true
+        break
+      case "habitTracker":
+        isActive = settings.showHabits === true
+        break
     }
     btn.classList.toggle("active", isActive)
   })
@@ -60,23 +78,49 @@ export function setupQuickAccessClickHandlers() {
     btn.addEventListener("click", async () => {
       let key, checkbox
       switch (type) {
-        case "todo":     key = "showTodoList"; checkbox = showTodoCheckbox; break
-        case "notepad":  key = "showNotepad";  checkbox = showNotepadCheckbox; break
-        case "timer":    key = "showTimer";    checkbox = showTimerCheckbox; break
-        case "calendar": key = "showFullCalendar"; checkbox = showFullCalendarCheckbox; break
-        case "music":    key = "musicPlayerEnabled"; checkbox = showMusicCheckbox; break
-        case "gregorian":key = "showGregorian"; checkbox = showGregorianCheckbox; break
-        case "weather":  key = "showWeather"; checkbox = showWeatherCheckbox; break
-        case "habitTracker": key = "showHabits"; checkbox = showHabitsCheckbox; break
+        case "todo":
+          key = "showTodoList"
+          checkbox = showTodoCheckbox
+          break
+        case "notepad":
+          key = "showNotepad"
+          checkbox = showNotepadCheckbox
+          break
+        case "timer":
+          key = "showTimer"
+          checkbox = showTimerCheckbox
+          break
+        case "calendar":
+          key = "showFullCalendar"
+          checkbox = showFullCalendarCheckbox
+          break
+        case "music":
+          key = "musicPlayerEnabled"
+          checkbox = showMusicCheckbox
+          break
+        case "gregorian":
+          key = "showGregorian"
+          checkbox = showGregorianCheckbox
+          break
+        case "weather":
+          key = "showWeather"
+          checkbox = showWeatherCheckbox
+          break
+        case "habitTracker":
+          key = "showHabits"
+          checkbox = showHabitsCheckbox
+          break
 
         case "clock": {
           const currentMode = getSettings().clockDisplayMode || "all"
           const nextMode = currentMode === "hide" ? "all" : "hide"
           updateSetting("clockDisplayMode", nextMode)
           if (clockDisplaySelect) clockDisplaySelect.value = nextMode
-          window.dispatchEvent(new CustomEvent("layoutUpdated", {
-            detail: { key: "clockDisplayMode", value: nextMode },
-          }))
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "clockDisplayMode", value: nextMode },
+            }),
+          )
           break
         }
         case "quotes": {
@@ -84,18 +128,22 @@ export function setupQuickAccessClickHandlers() {
           updateSetting("showQuotes", nextQuotes)
           saveSettings()
           if (showQuotesCheckbox) showQuotesCheckbox.checked = nextQuotes
-          window.dispatchEvent(new CustomEvent("layoutUpdated", {
-            detail: { key: "showQuotes", value: nextQuotes },
-          }))
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "showQuotes", value: nextQuotes },
+            }),
+          )
           break
         }
         case "rss": {
           const nextRss = !(getSettings().showRss === true)
           updateSetting("showRss", nextRss)
           saveSettings()
-          window.dispatchEvent(new CustomEvent("layoutUpdated", {
-            detail: { key: "showRss", value: nextRss },
-          }))
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "showRss", value: nextRss },
+            }),
+          )
           btn.classList.toggle("active", nextRss)
           break
         }
@@ -106,8 +154,12 @@ export function setupQuickAccessClickHandlers() {
           await ensureSettingsInitialized("quick-access")
         }
         if (
-          (type === "todo" || type === "notepad" || type === "timer" ||
-           type === "calendar" || type === "weather" || type === "habitTracker") &&
+          (type === "todo" ||
+            type === "notepad" ||
+            type === "timer" ||
+            type === "calendar" ||
+            type === "weather" ||
+            type === "habitTracker") &&
           !getSettings()[key]
         ) {
           await initWidget(type)
@@ -154,11 +206,20 @@ export function setupQuickAccessCollapse() {
 
   window.addEventListener("layoutUpdated", (e) => {
     if (e.detail.key === "quickAccessBorderRadius")
-      document.documentElement.style.setProperty("--quick-access-btn-radius", normalizeRadius(e.detail.value, "5px"))
+      document.documentElement.style.setProperty(
+        "--quick-access-btn-radius",
+        normalizeRadius(e.detail.value, "5px"),
+      )
     if (e.detail.key === "quickAccessBarRadius")
-      document.documentElement.style.setProperty("--quick-access-bar-radius", normalizeRadius(e.detail.value, "14px"))
+      document.documentElement.style.setProperty(
+        "--quick-access-bar-radius",
+        normalizeRadius(e.detail.value, "14px"),
+      )
     if (e.detail.key === "quickAccessToggleRadius")
-      document.documentElement.style.setProperty("--quick-access-toggle-radius", normalizeRadius(e.detail.value, "20px"))
+      document.documentElement.style.setProperty(
+        "--quick-access-toggle-radius",
+        normalizeRadius(e.detail.value, "20px"),
+      )
     if (e.detail.key === "quickAccessBorderVisible")
       toggleBorderVisibility(!!e.detail.value)
   })
@@ -168,26 +229,38 @@ export function setupQuickAccessCollapse() {
   collapseBtn.addEventListener("click", () => {
     const isCollapsed = quickAccessBar.classList.toggle("collapsed")
     collapseBtn.title = isCollapsed
-      ? (settings.language === "vi" ? "Mở rộng" : "Expand")
-      : (settings.language === "vi" ? "Thu gọn" : "Collapse")
+      ? settings.language === "vi"
+        ? "Mở rộng"
+        : "Expand"
+      : settings.language === "vi"
+        ? "Thu gọn"
+        : "Collapse"
     updateSetting("quickAccessCollapsed", isCollapsed)
     saveSettings()
   })
   collapseBtn.title = settings.quickAccessCollapsed
-    ? (settings.language === "vi" ? "Mở rộng" : "Expand")
-    : (settings.language === "vi" ? "Thu gọn" : "Collapse")
+    ? settings.language === "vi"
+      ? "Mở rộng"
+      : "Expand"
+    : settings.language === "vi"
+      ? "Thu gọn"
+      : "Collapse"
 }
 
 // ── Drag & Drop reorder ──────────────────────────────────────────────────────
 function getAnchor(quickAccessBar) {
   const layoutControlsBtn = document.getElementById("layout-controls-btn")
-  return layoutControlsBtn || quickAccessBar.querySelector(".quick-access-divider")
+  return (
+    layoutControlsBtn || quickAccessBar.querySelector(".quick-access-divider")
+  )
 }
 
 function setupQaDragAndDrop() {
   const quickAccessBar = document.querySelector(".quick-access-bar")
   if (!quickAccessBar) return
-  const toggleBtns = Array.from(quickAccessBar.querySelectorAll(".quick-btn[data-toggle]"))
+  const toggleBtns = Array.from(
+    quickAccessBar.querySelectorAll(".quick-btn[data-toggle]"),
+  )
   const allowReorder = getSettings().qaAllowReorder === true
 
   toggleBtns.forEach((btn) => {
@@ -197,7 +270,10 @@ function setupQaDragAndDrop() {
     if (!btn._dragInitialized) {
       btn._dragInitialized = true
       btn.addEventListener("dragstart", (e) => {
-        if (!getSettings().qaAllowReorder) { e.preventDefault(); return }
+        if (!getSettings().qaAllowReorder) {
+          e.preventDefault()
+          return
+        }
         window._draggedQaIcon = btn
         btn.style.opacity = "0.5"
         e.dataTransfer.effectAllowed = "move"
@@ -219,14 +295,17 @@ function setupQaDragAndDrop() {
           ...quickAccessBar.querySelectorAll(".quick-btn[data-toggle]"),
         ].filter((el) => el !== draggedIcon)
 
-        const nextElement = draggableElements.reduce((closest, child) => {
-          const box = child.getBoundingClientRect()
-          const offset = e.clientY - box.top - box.height / 2
-          if (offset < 0 && offset > closest.offset) {
-            return { offset, element: child }
-          }
-          return closest
-        }, { offset: Number.NEGATIVE_INFINITY }).element
+        const nextElement = draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect()
+            const offset = e.clientY - box.top - box.height / 2
+            if (offset < 0 && offset > closest.offset) {
+              return { offset, element: child }
+            }
+            return closest
+          },
+          { offset: Number.NEGATIVE_INFINITY },
+        ).element
 
         if (nextElement) quickAccessBar.insertBefore(draggedIcon, nextElement)
         else if (anchor) quickAccessBar.insertBefore(draggedIcon, anchor)
@@ -254,7 +333,9 @@ function applyQaOrder() {
   const anchor = getAnchor(quickAccessBar)
   if (anchor) {
     order.forEach((toggle) => {
-      const btn = quickAccessBar.querySelector(`.quick-btn[data-toggle="${toggle}"]`)
+      const btn = quickAccessBar.querySelector(
+        `.quick-btn[data-toggle="${toggle}"]`,
+      )
       if (btn) quickAccessBar.insertBefore(btn, anchor)
     })
   }
@@ -303,11 +384,20 @@ export function setupLayoutUpdatedHandlers({
       if (el) fadeToggle(el, e.detail.value, "flex")
     }
     if (e.detail.key === "searchBarWidth")
-      document.documentElement.style.setProperty("--search-bar-width", `${e.detail.value}px`)
+      document.documentElement.style.setProperty(
+        "--search-bar-width",
+        `${e.detail.value}px`,
+      )
     if (e.detail.key === "searchBarBlur")
-      document.documentElement.style.setProperty("--search-bar-blur", `${e.detail.value}px`)
+      document.documentElement.style.setProperty(
+        "--search-bar-blur",
+        `${e.detail.value}px`,
+      )
     if (e.detail.key === "searchBarRadius")
-      document.documentElement.style.setProperty("--search-bar-radius", `${e.detail.value}px`)
+      document.documentElement.style.setProperty(
+        "--search-bar-radius",
+        `${e.detail.value}px`,
+      )
     if (e.detail.key === "showBookmarks") {
       if (e.detail.value) ensureBookmarksInitialized()
       const el = document.getElementById("bookmarks-container")
@@ -321,9 +411,32 @@ export function setupLayoutUpdatedHandlers({
 
     // Free-move handlers
     const freeMoveItems = [
-      { key: "freeMoveCustomTitle", cls: "free-move-custom-title", id: "custom-title-display", defaultPos: { top: "45%", left: "50%", transform: "translate(-50%, 0)" } },
-      { key: "freeMoveClock",       cls: "free-move-clock",         id: "clock-date-wrap",     defaultPos: { top: "35%", left: "50%", transform: "translate(-50%, -50%)" } },
-      { key: "freeMoveSearchBar",   cls: "free-move-search-bar",    id: "search-container",    defaultPos: null },
+      {
+        key: "freeMoveCustomTitle",
+        cls: "free-move-custom-title",
+        id: "custom-title-display",
+        defaultPos: {
+          top: "45%",
+          left: "50%",
+          transform: "translate(-50%, 0)",
+        },
+      },
+      {
+        key: "freeMoveClock",
+        cls: "free-move-clock",
+        id: "clock-date-wrap",
+        defaultPos: {
+          top: "35%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        },
+      },
+      {
+        key: "freeMoveSearchBar",
+        cls: "free-move-search-bar",
+        id: "search-container",
+        defaultPos: null,
+      },
     ]
     for (const item of freeMoveItems) {
       if (e.detail.key !== item.key) continue

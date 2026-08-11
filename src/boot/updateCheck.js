@@ -34,17 +34,19 @@ function escapeHtml(value) {
 async function renderUpdateNotes() {
   const { getUpdateNotes } = await import("../data/updateNotes.js")
   const updateNotes = getUpdateNotes(getSettings().language)
-  const changesTitle     = document.getElementById("update-changes-title")
-  const contributorsTitle= document.getElementById("update-contributors-title")
-  const changesList      = document.getElementById("update-change-list")
-  const contributorList  = document.getElementById("update-contributor-list")
+  const changesTitle = document.getElementById("update-changes-title")
+  const contributorsTitle = document.getElementById("update-contributors-title")
+  const changesList = document.getElementById("update-change-list")
+  const contributorList = document.getElementById("update-contributor-list")
 
   if (changesTitle)
     changesTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${escapeHtml(updateNotes.changesTitle)}`
   if (contributorsTitle)
     contributorsTitle.innerHTML = `<i class="fa-solid fa-handshake"></i> ${escapeHtml(updateNotes.contributorsTitle)}`
   if (changesList)
-    changesList.innerHTML = updateNotes.changes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")
+    changesList.innerHTML = updateNotes.changes
+      .map((item) => `<li>${escapeHtml(item)}</li>`)
+      .join("")
   if (contributorList)
     contributorList.innerHTML = updateNotes.contributors
       .map((item) => {
@@ -66,12 +68,13 @@ async function renderUpdateNotes() {
 }
 
 function showUpdateUI(currentVersion, showModal, showArrow) {
-  const popup      = document.getElementById("update-notification-popup")
-  const verLabel   = document.getElementById("update-version-label")
-  const sidebarLink= document.getElementById("sidebar-update-link")
+  const popup = document.getElementById("update-notification-popup")
+  const verLabel = document.getElementById("update-version-label")
+  const sidebarLink = document.getElementById("sidebar-update-link")
 
   const storage = window.chrome?.storage?.local || {
-    set: (obj) => Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k])),
+    set: (obj) =>
+      Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k])),
   }
 
   const acknowledgeUpdate = () => {
@@ -85,8 +88,12 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
     verLabel.textContent = `v${currentVersion}`
     await renderUpdateNotes()
     fadeToggle(popup, true, "block")
-    document.getElementById("close-update-popup")?.addEventListener("click", acknowledgeUpdate)
-    document.getElementById("github-update-link")?.addEventListener("click", acknowledgeUpdate)
+    document
+      .getElementById("close-update-popup")
+      ?.addEventListener("click", acknowledgeUpdate)
+    document
+      .getElementById("github-update-link")
+      ?.addEventListener("click", acknowledgeUpdate)
   }
 
   if (showModal && popup && verLabel) {
@@ -106,8 +113,15 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
           showUpdateModal()
         }
       })
-      obs.observe(document.body, { attributes: true, attributeFilter: ["class"], subtree: false })
-      setTimeout(() => { obs.disconnect(); if (!isDialogActive()) showUpdateModal() }, 5000)
+      obs.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"],
+        subtree: false,
+      })
+      setTimeout(() => {
+        obs.disconnect()
+        if (!isDialogActive()) showUpdateModal()
+      }, 5000)
     }
     tryShowModal()
   }
@@ -123,7 +137,10 @@ export function runUpdateCheck() {
   setTimeout(() => {
     try {
       const manifest = window.chrome?.runtime?.getManifest?.()
-      if (!manifest?.version) { setUpdateNoticePending(false); return }
+      if (!manifest?.version) {
+        setUpdateNoticePending(false)
+        return
+      }
 
       const currentVersion = manifest.version
       const storage = window.chrome?.storage?.local || {
@@ -135,47 +152,62 @@ export function runUpdateCheck() {
           })
           cb(res)
         },
-        set: (obj) => Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k])),
+        set: (obj) =>
+          Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k])),
       }
 
-      storage.get(["lastVersion", "updateModalAcknowledged", "updateArrowTimestamp"], (result) => {
-        let { lastVersion, updateModalAcknowledged, updateArrowTimestamp } = result
-        if (typeof updateArrowTimestamp === "string")
-          updateArrowTimestamp = parseInt(updateArrowTimestamp)
+      storage.get(
+        ["lastVersion", "updateModalAcknowledged", "updateArrowTimestamp"],
+        (result) => {
+          let { lastVersion, updateModalAcknowledged, updateArrowTimestamp } =
+            result
+          if (typeof updateArrowTimestamp === "string")
+            updateArrowTimestamp = parseInt(updateArrowTimestamp)
 
-        const isFreshInstall =
-          !lastVersion &&
-          !localStorage.getItem("pageSettings") &&
-          !localStorage.getItem("bookmarks")
+          const isFreshInstall =
+            !lastVersion &&
+            !localStorage.getItem("pageSettings") &&
+            !localStorage.getItem("bookmarks")
 
-        if (isFreshInstall) {
-          storage.set({ lastVersion: currentVersion, updateModalAcknowledged: true, updateArrowTimestamp: 0 })
-          setUpdateNoticePending(false)
-          return
-        }
+          if (isFreshInstall) {
+            storage.set({
+              lastVersion: currentVersion,
+              updateModalAcknowledged: true,
+              updateArrowTimestamp: 0,
+            })
+            setUpdateNoticePending(false)
+            return
+          }
 
-        if (!lastVersion || lastVersion !== currentVersion) {
-          updateModalAcknowledged = false
-          updateArrowTimestamp = Date.now()
-          storage.set({ lastVersion: currentVersion, updateModalAcknowledged, updateArrowTimestamp })
-        }
+          if (!lastVersion || lastVersion !== currentVersion) {
+            updateModalAcknowledged = false
+            updateArrowTimestamp = Date.now()
+            storage.set({
+              lastVersion: currentVersion,
+              updateModalAcknowledged,
+              updateArrowTimestamp,
+            })
+          }
 
-        const showModal = updateModalAcknowledged !== true
-        const now = Date.now()
-        const hour = 3600000
-        const showArrow = updateArrowTimestamp && now - updateArrowTimestamp < hour
+          const showModal = updateModalAcknowledged !== true
+          const now = Date.now()
+          const hour = 3600000
+          const showArrow =
+            updateArrowTimestamp && now - updateArrowTimestamp < hour
 
-        if (showModal || showArrow) showUpdateUI(currentVersion, showModal, showArrow)
-        if (!showModal) setUpdateNoticePending(false)
+          if (showModal || showArrow)
+            showUpdateUI(currentVersion, showModal, showArrow)
+          if (!showModal) setUpdateNoticePending(false)
 
-        if (showArrow) {
-          const timeLeft = hour - (now - updateArrowTimestamp)
-          setTimeout(() => {
-            const sidebarLink = document.getElementById("sidebar-update-link")
-            if (sidebarLink) fadeToggle(sidebarLink, false, "flex")
-          }, timeLeft)
-        }
-      })
+          if (showArrow) {
+            const timeLeft = hour - (now - updateArrowTimestamp)
+            setTimeout(() => {
+              const sidebarLink = document.getElementById("sidebar-update-link")
+              if (sidebarLink) fadeToggle(sidebarLink, false, "flex")
+            }, timeLeft)
+          }
+        },
+      )
     } catch (e) {
       console.warn("Update check failed:", e)
       setUpdateNoticePending(false)

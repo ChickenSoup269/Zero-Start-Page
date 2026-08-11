@@ -78,7 +78,7 @@ export async function saveThumbnail(id, blob) {
 export async function getThumbnailUrl(id) {
   if (!id) return null
   if (_thumbCache.has(id)) return _thumbCache.get(id)
-  
+
   const db = await openDb()
   const blob = await new Promise((resolve) => {
     try {
@@ -86,9 +86,11 @@ export async function getThumbnailUrl(id) {
       const req = tx.objectStore(THUMB_STORE_NAME).get(id)
       req.onsuccess = (e) => resolve(e.target.result)
       req.onerror = () => resolve(null)
-    } catch { resolve(null) }
+    } catch {
+      resolve(null)
+    }
   })
-  
+
   if (!blob) return null
   const url = URL.createObjectURL(blob)
   _thumbCacheSet(id, url)
@@ -151,7 +153,7 @@ export async function deleteImage(id) {
     URL.revokeObjectURL(_thumbCache.get(id))
     _thumbCache.delete(id)
   }
-  
+
   const db = await openDb()
   const tx = db.transaction([STORE_NAME, THUMB_STORE_NAME], "readwrite")
   tx.objectStore(STORE_NAME).delete(id)
@@ -176,8 +178,10 @@ export async function clearAllMedia() {
     req.onerror = () => reject(new Error("Failed to delete media database"))
     req.onblocked = () => {
       // If blocked, we might need to reload or tell user to close tabs
-      console.warn("Database deletion blocked. Please close other tabs of this extension.")
-      resolve() 
+      console.warn(
+        "Database deletion blocked. Please close other tabs of this extension.",
+      )
+      resolve()
     }
   })
 }
@@ -262,14 +266,19 @@ export async function preloadImages(ids, activeId) {
   const activeMediaId = (() => {
     if (!activeId) return null
     const found = ids.find((bg) => {
-      if (typeof bg === "object" && bg) return bg.uid === activeId || bg.id === activeId
+      if (typeof bg === "object" && bg)
+        return bg.uid === activeId || bg.id === activeId
       return bg === activeId
     })
     if (!found) return null
     return typeof found === "object" ? found.id : found
   })()
 
-  if (activeMediaId && isIdbMedia(activeMediaId) && !_urlCache.has(activeMediaId)) {
+  if (
+    activeMediaId &&
+    isIdbMedia(activeMediaId) &&
+    !_urlCache.has(activeMediaId)
+  ) {
     await getImageUrl(activeMediaId).catch(() => {})
   }
 }

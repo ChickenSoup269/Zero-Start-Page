@@ -11,16 +11,16 @@
  */
 
 // ── Imports: Services & Utils ─────────────────────────────────────────────────
-import { initI18n, geti18n }   from "./services/i18n.js"
-import { initClock }           from "./components/clock.js"
+import { initI18n, geti18n } from "./services/i18n.js"
+import { initClock } from "./components/clock.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
-import { initModal }           from "./components/modal.js"
+import { initModal } from "./components/modal.js"
 import {
   initContextMenu,
   showContextMenu,
   hideContextMenu,
 } from "./components/contextMenu.js"
-import { initSearch }          from "./components/search.js"
+import { initSearch } from "./components/search.js"
 import {
   preloadImages,
   migrateDataUrls,
@@ -32,9 +32,9 @@ import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
-import { initPerfHud }         from "./utils/perfHud.js"
-import { DriveSync }           from "./services/googleDriveSync.js"
-import { makeDraggable }       from "./utils/draggable.js"
+import { initPerfHud } from "./utils/perfHud.js"
+import { DriveSync } from "./services/googleDriveSync.js"
+import { makeDraggable } from "./utils/draggable.js"
 import {
   resetComponentPositions,
   resetSettingsModules,
@@ -45,8 +45,12 @@ import {
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 
 // ── Imports: Boot Modules ─────────────────────────────────────────────────────
-import { applyBasicStyles, applyBootVisualPreview, loadFontOnBoot } from "./boot/styles.js"
-import { applyBootBodyClasses }  from "./boot/bootClasses.js"
+import {
+  applyBasicStyles,
+  applyBootVisualPreview,
+  loadFontOnBoot,
+} from "./boot/styles.js"
+import { applyBootBodyClasses } from "./boot/bootClasses.js"
 import {
   ensureSettingsInitialized,
   ensureGoogleAppsInitialized,
@@ -77,10 +81,17 @@ import { runUpdateCheck } from "./boot/updateCheck.js"
 function syncUninstallSurveyLanguage(language) {
   try {
     window.chrome?.runtime?.sendMessage?.(
-      { action: "updateUninstallLanguage", language: language === "vi" ? "vi" : "en" },
+      {
+        action: "updateUninstallLanguage",
+        language: language === "vi" ? "vi" : "en",
+      },
       () => {
         const error = window.chrome?.runtime?.lastError
-        if (error) console.warn("Could not sync uninstall survey language:", error.message)
+        if (error)
+          console.warn(
+            "Could not sync uninstall survey language:",
+            error.message,
+          )
       },
     )
   } catch (error) {
@@ -113,14 +124,22 @@ function ensureSearchInitialized() {
 
 // Track when bookmarks have rendered so revealApp can gate on them
 let bookmarksLoaded = false
-window.addEventListener("bookmarksReady", () => { bookmarksLoaded = true }, { once: true })
+window.addEventListener(
+  "bookmarksReady",
+  () => {
+    bookmarksLoaded = true
+  },
+  { once: true },
+)
 
 // ── Expose ensureSettingsInitialized globally (used by other modules) ─────────
 window.ensureSettingsInitialized = ensureSettingsInitialized
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function bootstrap() {
-  const skipStartupLoader = document.body.classList.contains("skip-startup-loader")
+  const skipStartupLoader = document.body.classList.contains(
+    "skip-startup-loader",
+  )
   const bootStartedAt = performance.now()
   if (!skipStartupLoader) document.body.classList.add("is-booting")
 
@@ -190,7 +209,10 @@ async function bootstrap() {
   initPerfHud()
   initClock()
 
-  if (currentSettings.showBookmarks !== false || currentSettings.showBookmarkGroups !== false) {
+  if (
+    currentSettings.showBookmarks !== false ||
+    currentSettings.showBookmarkGroups !== false
+  ) {
     ensureBookmarksInitialized()
   }
   if (currentSettings.showSearchBar !== false) {
@@ -208,13 +230,28 @@ async function bootstrap() {
 
   // ── 12. Context menus ─────────────────────────────────────────────────────
   const backgroundContextExclusions = [
-    "#context-menu", "#settings-sidebar", "#settings-toggle",
-    "#top-right-controls", "#quick-access-bar", "#layout-controls-popup",
-    "#search-container", "#clock-date-wrap", "#custom-title-display",
-    "#todo-container", "#timer-component", "#music-player-container",
-    "#full-calendar-container", "#notepad-container", "#daily-quotes",
-    "#weather-container", "#rss-container", ".modal", ".custom-dialog-overlay",
-    ".first-run-tour-overlay", "#startup-overlay", ".startup-overlay",
+    "#context-menu",
+    "#settings-sidebar",
+    "#settings-toggle",
+    "#top-right-controls",
+    "#quick-access-bar",
+    "#layout-controls-popup",
+    "#search-container",
+    "#clock-date-wrap",
+    "#custom-title-display",
+    "#todo-container",
+    "#timer-component",
+    "#music-player-container",
+    "#full-calendar-container",
+    "#notepad-container",
+    "#daily-quotes",
+    "#weather-container",
+    "#rss-container",
+    ".modal",
+    ".custom-dialog-overlay",
+    ".first-run-tour-overlay",
+    "#startup-overlay",
+    ".startup-overlay",
   ].join(", ")
 
   document.addEventListener("contextmenu", (event) => {
@@ -249,7 +286,9 @@ async function bootstrap() {
   ]
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return
-    const match = widgetContextTargets.find(([sel]) => event.target.closest?.(sel))
+    const match = widgetContextTargets.find(([sel]) =>
+      event.target.closest?.(sel),
+    )
     if (!match) return
     if (document.body.classList.contains("bookmark-manager-open")) return
     event.preventDefault()
@@ -264,7 +303,10 @@ async function bootstrap() {
   setupQuickAccessContextMenu()
   setupQuickAccessDragAndDrop()
   setupWidgetLayoutListeners()
-  setupLayoutUpdatedHandlers({ ensureSearchInitialized, ensureBookmarksInitialized })
+  setupLayoutUpdatedHandlers({
+    ensureSearchInitialized,
+    ensureBookmarksInitialized,
+  })
 
   // ── 14. First-run bookmark import prompt ──────────────────────────────────
   if (skipStartupLoader) {
@@ -279,13 +321,16 @@ async function bootstrap() {
         if (typeof window.appApplySettings === "function") {
           resolve()
         } else {
-          window.addEventListener("startpage:settingsReady", resolve, { once: true })
+          window.addEventListener("startpage:settingsReady", resolve, {
+            once: true,
+          })
           setTimeout(resolve, 2000)
         }
       }),
     ]).then(() => {
       if (getSettings().background !== currentSettings.background) return
-      if (typeof window.appApplySettings === "function") window.appApplySettings()
+      if (typeof window.appApplySettings === "function")
+        window.appApplySettings()
     })
   } else if (currentSettings.background?.match(/^https?:\/\//)) {
     const bgLayer = document.getElementById("bg-layer")
@@ -327,7 +372,11 @@ async function bootstrap() {
       promptFirstRunBookmarkImport(renderBookmarks)
     }
     if (document.body.classList.contains("loading-state")) {
-      window.addEventListener("startpage:appRevealed", startFirstRunOnboarding, { once: true })
+      window.addEventListener(
+        "startpage:appRevealed",
+        startFirstRunOnboarding,
+        { once: true },
+      )
       setTimeout(startFirstRunOnboarding, 3200)
     } else {
       setTimeout(startFirstRunOnboarding, 300)
@@ -337,13 +386,18 @@ async function bootstrap() {
   // ── 17. Deferred heavy tasks (post-reveal) ────────────────────────────────
   setTimeout(async () => {
     // Migrate & preload background images from old data-URL format to IDB
-    const { migrated, changed } = await migrateDataUrls(getSettings().userBackgrounds)
+    const { migrated, changed } = await migrateDataUrls(
+      getSettings().userBackgrounds,
+    )
     if (changed) {
       updateSetting("userBackgrounds", migrated)
       saveSettings()
     }
     const { activeBgUid, background } = getSettings()
-    await preloadImages(getSettings().userBackgrounds, activeBgUid || background || null)
+    await preloadImages(
+      getSettings().userBackgrounds,
+      activeBgUid || background || null,
+    )
 
     // Unsplash auto-randomize
     const settings = getSettings()
@@ -351,19 +405,32 @@ async function bootstrap() {
       typeof settings.background === "string" &&
       (settings.background.startsWith("idb-img-unsplash-") ||
         settings.background.includes("images.unsplash.com"))
-    if (settings.unsplashAutoRandomMode && settings.unsplashAutoRandomMode !== "off" && isUnsplashBg) {
+    if (
+      settings.unsplashAutoRandomMode &&
+      settings.unsplashAutoRandomMode !== "off" &&
+      isUnsplashBg
+    ) {
       const now = Date.now()
       const lastFetch = settings.unsplashLastFetchTime || 0
       let shouldFetch =
         settings.unsplashAutoRandomMode === "every_tab" ||
-        (settings.unsplashAutoRandomMode === "hourly" && now - lastFetch >= 3600000) ||
+        (settings.unsplashAutoRandomMode === "hourly" &&
+          now - lastFetch >= 3600000) ||
         (settings.unsplashAutoRandomMode === "daily" &&
-          (now - lastFetch >= 86400000 || new Date(lastFetch).toDateString() !== new Date(now).toDateString()))
+          (now - lastFetch >= 86400000 ||
+            new Date(lastFetch).toDateString() !==
+              new Date(now).toDateString()))
       if (shouldFetch) {
         try {
           await ensureSettingsInitialized("auto-randomize")
-          const { setUnsplashRandomBackground } = await import("./components/settings/unsplashFetcher.js")
-          await setUnsplashRandomBackground(null, null, window.appHandleSettingUpdate, true)
+          const { setUnsplashRandomBackground } =
+            await import("./components/settings/unsplashFetcher.js")
+          await setUnsplashRandomBackground(
+            null,
+            null,
+            window.appHandleSettingUpdate,
+            true,
+          )
         } catch (err) {
           console.error("Auto Unsplash background randomization failed:", err)
         }
@@ -381,10 +448,12 @@ async function bootstrap() {
       const lastLocalFetch = settings.localAutoRandomLastTime || 0
       let shouldPickLocal =
         settings.localAutoRandomMode === "every_tab" ||
-        (settings.localAutoRandomMode === "hourly" && now - lastLocalFetch >= 3600000) ||
+        (settings.localAutoRandomMode === "hourly" &&
+          now - lastLocalFetch >= 3600000) ||
         (settings.localAutoRandomMode === "daily" &&
           (now - lastLocalFetch >= 86400000 ||
-            new Date(lastLocalFetch).toDateString() !== new Date(now).toDateString()))
+            new Date(lastLocalFetch).toDateString() !==
+              new Date(now).toDateString()))
       if (shouldPickLocal) {
         try {
           const fresh = settings.userBackgrounds.filter((bg) => {
@@ -411,18 +480,66 @@ async function bootstrap() {
     const handleReset = async () => {
       const i18n = geti18n ? geti18n() : {}
       const options = [
-        { type: "section", icon: "fa-solid fa-sliders", label: i18n.reset_section_general || "General" },
-        { key: "all",              label: i18n.reset_opt_all || "Entire Settings",    checked: false },
-        { key: "positions",        label: i18n.reset_opt_positions || "Layout Positions", checked: false },
-        { key: "effectColors",     label: i18n.reset_opt_effects || "Effect Colors",  checked: false },
-        { key: "styles",           label: i18n.reset_opt_styles || "Custom Styles",   checked: false },
-        { type: "section", icon: "fa-solid fa-layer-group", label: i18n.reset_section_modules || "Modules" },
-        { key: "module_background",label: i18n.reset_module_background || "Background", checked: false },
-        { key: "module_effects",   label: i18n.reset_module_effects || "Effects",     checked: false },
-        { key: "module_widgets",   label: i18n.reset_module_widgets || "Widgets",     checked: false },
-        { key: "module_bookmarks", label: i18n.reset_module_bookmarks || "Bookmarks", checked: false },
-        { key: "module_timer",     label: i18n.reset_module_timer || "Timer",         checked: false },
-        { key: "module_layout",    label: i18n.reset_module_layout || "Layout",       checked: false },
+        {
+          type: "section",
+          icon: "fa-solid fa-sliders",
+          label: i18n.reset_section_general || "General",
+        },
+        {
+          key: "all",
+          label: i18n.reset_opt_all || "Entire Settings",
+          checked: false,
+        },
+        {
+          key: "positions",
+          label: i18n.reset_opt_positions || "Layout Positions",
+          checked: false,
+        },
+        {
+          key: "effectColors",
+          label: i18n.reset_opt_effects || "Effect Colors",
+          checked: false,
+        },
+        {
+          key: "styles",
+          label: i18n.reset_opt_styles || "Custom Styles",
+          checked: false,
+        },
+        {
+          type: "section",
+          icon: "fa-solid fa-layer-group",
+          label: i18n.reset_section_modules || "Modules",
+        },
+        {
+          key: "module_background",
+          label: i18n.reset_module_background || "Background",
+          checked: false,
+        },
+        {
+          key: "module_effects",
+          label: i18n.reset_module_effects || "Effects",
+          checked: false,
+        },
+        {
+          key: "module_widgets",
+          label: i18n.reset_module_widgets || "Widgets",
+          checked: false,
+        },
+        {
+          key: "module_bookmarks",
+          label: i18n.reset_module_bookmarks || "Bookmarks",
+          checked: false,
+        },
+        {
+          key: "module_timer",
+          label: i18n.reset_module_timer || "Timer",
+          checked: false,
+        },
+        {
+          key: "module_layout",
+          label: i18n.reset_module_layout || "Layout",
+          checked: false,
+        },
       ]
 
       const selection = await showChecklistConfirm(
@@ -450,25 +567,32 @@ async function bootstrap() {
         overlay.style.removeProperty("transition")
         overlay.style.opacity = "0"
         void overlay.offsetHeight
-        requestAnimationFrame(() => { overlay.style.opacity = "1" })
+        requestAnimationFrame(() => {
+          overlay.style.opacity = "1"
+        })
       }
       localStorage.setItem("startpageShowStartupLoader", "1")
 
       setTimeout(() => {
         const selectedModules = [
           ["module_background", "background"],
-          ["module_effects",    "effects"],
-          ["module_widgets",    "widgets"],
-          ["module_bookmarks",  "bookmarks"],
-          ["module_timer",      "timer"],
-          ["module_layout",     "layout"],
+          ["module_effects", "effects"],
+          ["module_widgets", "widgets"],
+          ["module_bookmarks", "bookmarks"],
+          ["module_timer", "timer"],
+          ["module_layout", "layout"],
         ]
           .filter(([key]) => selection[key] === true)
           .map(([, name]) => name)
 
         if (selectedModules.length) resetSettingsModules(selectedModules)
 
-        if (selection.all || selection.positions || selection.effectColors || selection.styles) {
+        if (
+          selection.all ||
+          selection.positions ||
+          selection.effectColors ||
+          selection.styles
+        ) {
           resetComponentPositions(selection)
         } else {
           window.location.reload()
@@ -476,8 +600,12 @@ async function bootstrap() {
       }, 1000)
     }
 
-    document.getElementById("reset-layout")?.addEventListener("click", handleReset)
-    document.getElementById("reset-layout-quick")?.addEventListener("click", handleReset)
+    document
+      .getElementById("reset-layout")
+      ?.addEventListener("click", handleReset)
+    document
+      .getElementById("reset-layout-quick")
+      ?.addEventListener("click", handleReset)
 
     // ── Update notification check (deferred) ─────────────────────────────
     runUpdateCheck()
@@ -493,7 +621,9 @@ async function bootstrap() {
   // ── 19. Preload Google Apps icons (not critical, 2s delay) ───────────────
   setTimeout(() => {
     import("./components/googleApps.js")
-      .then(({ preloadIcons }) => { if (typeof preloadIcons === "function") preloadIcons() })
+      .then(({ preloadIcons }) => {
+        if (typeof preloadIcons === "function") preloadIcons()
+      })
       .catch(() => {})
   }, 2000)
 }
@@ -520,7 +650,7 @@ setTimeout(() => {
       showAlert(
         geti18n().perf_warning ||
           "System Check: Your device has 8GB RAM or less.\n\nStartpage has heavy glassmorphism effects. If you experience lag, consider turning off some heavy features.\n\n" +
-          "Tip: Press the backtick (`) key to open the Terminal and type 'perf' or press 'Ctrl+Alt+P' to toggle the Performance HUD.",
+            "Tip: Press the backtick (`) key to open the Terminal and type 'perf' or press 'Ctrl+Alt+P' to toggle the Performance HUD.",
       )
       localStorage.setItem("perfWarningShown", "true")
     }

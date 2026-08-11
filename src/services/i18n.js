@@ -78,7 +78,9 @@ export async function validateCustomLanguagePayload(payload) {
   const missingKeys = englishKeys.filter((key) => !(key in translations))
   const extraKeys = translatedKeys.filter((key) => !(key in english))
 
-  if (translatedKeys.length < Math.max(20, Math.floor(englishKeys.length * 0.25))) {
+  if (
+    translatedKeys.length < Math.max(20, Math.floor(englishKeys.length * 0.25))
+  ) {
     throw new Error("Language JSON has too few valid translation keys.")
   }
 

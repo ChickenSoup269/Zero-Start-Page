@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,7 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link id="custom-google-font" rel="stylesheet" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -51,7 +52,7 @@
             opacity: 1;
             visibility: visible;
             transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-                        visibility 0.4s step-end;
+                visibility 0.4s step-end;
             backdrop-filter: blur(2px);
             /* GPU-acceleration to avoid compositor jank */
             will-change: opacity;
@@ -219,7 +220,7 @@
             opacity: 0;
             /* Smooth reveal via CSS transition (not animation) to avoid FOUC */
             transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                        visibility 0s linear 0s;
+                visibility 0s linear 0s;
         }
 
         body.skip-startup-loader #startup-overlay {
@@ -340,8 +341,8 @@
                 title="Toggle Quotes"><i class="fa-solid fa-quote-left"></i></button>
             <button class="quick-btn" data-toggle="rss" data-i18n-title="quick_access_rss" title="Toggle RSS Reader"><i
                     class="fa-solid fa-rss"></i></button>
-            <button class="quick-btn" data-toggle="habitTracker" data-i18n-title="quick_access_habits" title="Toggle Habit Tracker"><i
-                    class="fa-solid fa-bars-progress"></i></button>
+            <button class="quick-btn" data-toggle="habitTracker" data-i18n-title="quick_access_habits"
+                title="Toggle Habit Tracker"><i class="fa-solid fa-bars-progress"></i></button>
             <button class="quick-btn" data-toggle="weather" data-i18n-title="quick_access_weather"
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
@@ -727,7 +728,8 @@
                     <option value="en">English</option>
                     <option value="vi">Tiếng Việt</option>
                 </select>
-                <div id="language-button-group" class="clock-style-grid" style="margin-bottom: 12px; margin-top: 8px;"></div>
+                <div id="language-button-group" class="clock-style-grid" style="margin-bottom: 12px; margin-top: 8px;">
+                </div>
                 <button type="button" id="language-tools-toggle-btn"
                     class="secondary-btn full-width language-tools-toggle" aria-expanded="false">
                     <i class="fa-solid fa-chevron-right"></i>
@@ -1236,15 +1238,20 @@
             <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html">
             </div>
             <div class="settings-section" data-section-id="font">
-                <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span id="font-count-display" class="section-count"></span></h3>
+                <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span
+                        id="font-count-display" class="section-count"></span></h3>
                 <div class="section-content">
                     <div class="setting-group">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <div class="font-target-toggles" style="display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
-                                <button id="font-target-general-btn" class="font-target-btn active" data-i18n="general_font">General Font</button>
-                                <button id="font-target-clock-btn" class="font-target-btn" data-i18n="clock_font">Clock Font</button>
-                                <button id="font-target-both-btn" class="font-target-btn" data-i18n="both_fonts">Both</button>
+                            <div class="font-target-toggles"
+                                style="display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                                <button id="font-target-general-btn" class="font-target-btn active"
+                                    data-i18n="general_font">General Font</button>
+                                <button id="font-target-clock-btn" class="font-target-btn" data-i18n="clock_font">Clock
+                                    Font</button>
+                                <button id="font-target-both-btn" class="font-target-btn"
+                                    data-i18n="both_fonts">Both</button>
                                 <select id="font-target-select" style="display: none;">
                                     <option value="general">General</option>
                                     <option value="clock">Clock</option>
@@ -1268,14 +1275,16 @@
                             </div>
                         </div>
                         <div style="margin-bottom: 0.75rem;">
-                            <input type="text" id="font-search-input" data-i18n-placeholder="search" placeholder="Search fonts..." 
+                            <input type="text" id="font-search-input" data-i18n-placeholder="search"
+                                placeholder="Search fonts..."
                                 style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
                         </div>
                         <div id="font-grid" class="font-grid"></div>
                         <small
                             style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;"
                             data-i18n="settings_font_restriction_note">
-                            <i class="fa-solid fa-circle-info"></i> Note: Some custom fonts (Electroharmonix, Anurati, Reiko, Aquire, Blanka, etc.) only apply to Clock & Date.
+                            <i class="fa-solid fa-circle-info"></i> Note: Some custom fonts (Electroharmonix, Anurati,
+                            Reiko, Aquire, Blanka, etc.) only apply to Clock & Date.
                         </small>
                     </div>
 
@@ -1344,59 +1353,61 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
-                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px;">
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-font-size-input"
-                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-text-height"></i> <span
-                                            data-i18n="settings_bookmark_font_size">Font Size</span></span>
-                                    <span id="bookmark-font-size-value"
-                                        style="opacity: 0.7; font-family: monospace;">10px</span>
-                                </label>
-                                <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10"
-                                    style="width: 100%;">
-                            </div>
+                            <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
+                                style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                                = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px;">
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-font-size-input"
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                        <span><i class="fa-solid fa-text-height"></i> <span
+                                                data-i18n="settings_bookmark_font_size">Font Size</span></span>
+                                        <span id="bookmark-font-size-value"
+                                            style="opacity: 0.7; font-family: monospace;">10px</span>
+                                    </label>
+                                    <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1"
+                                        value="10" style="width: 100%;">
+                                </div>
 
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-icon-size-input"
-                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-image"></i> <span
-                                            data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
-                                    <span id="bookmark-icon-size-value"
-                                        style="opacity: 0.7; font-family: monospace;">42px</span>
-                                </label>
-                                <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42"
-                                    style="width: 100%;">
-                            </div>
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-icon-size-input"
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                        <span><i class="fa-solid fa-image"></i> <span
+                                                data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
+                                        <span id="bookmark-icon-size-value"
+                                            style="opacity: 0.7; font-family: monospace;">42px</span>
+                                    </label>
+                                    <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1"
+                                        value="42" style="width: 100%;">
+                                </div>
 
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fa-solid fa-compress"></i> <span data-i18n="settings_bookmark_favicon_res">Favicon Resolution</span></span>
-                                <select id="bookmark-favicon-res" class="lcp-select" style="width: 100px; padding: 4px;">
-                                    <option value="16">16px</option>
-                                    <option value="32" selected>32px</option>
-                                    <option value="64">64px</option>
-                                    <option value="128">128px</option>
-                                </select>
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
+                                    <span><i class="fa-solid fa-compress"></i> <span
+                                            data-i18n="settings_bookmark_favicon_res">Favicon Resolution</span></span>
+                                    <select id="bookmark-favicon-res" class="lcp-select"
+                                        style="width: 100px; padding: 4px;">
+                                        <option value="16">16px</option>
+                                        <option value="32" selected>32px</option>
+                                        <option value="64">64px</option>
+                                        <option value="128">128px</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-gap-input"
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                        <span><i class="fa-solid fa-arrows-left-right"></i> <span
+                                                data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
+                                        <span id="bookmark-gap-value"
+                                            style="opacity: 0.7; font-family: monospace;">8px</span>
+                                    </label>
+                                    <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8"
+                                        style="width: 100%;">
+                                </div>
                             </div>
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-gap-input"
-                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-arrows-left-right"></i> <span
-                                            data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
-                                    <span id="bookmark-gap-value"
-                                        style="opacity: 0.7; font-family: monospace;">8px</span>
-                                </label>
-                                <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8"
-                                    style="width: 100%;">
-                            </div>
-                        </div>
                         </div>
                     </div>
                     <div class="setting-group collapsible-group" id="bookmark-appearance-group">
@@ -1406,82 +1417,83 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"
-                                    for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span
-                                        data-i18n="settings_bookmark_text_color">Text Color</span></label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group"
-                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-text-color-picker" value="#ffffff"
-                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
-                                    <button id="reset-bookmark-text-color-btn" class="secondary-btn"
-                                        title="Reset Default" data-i18n-title="settings_reset_default"
-                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
-                                            class="fa-solid fa-rotate-left"></i></button>
-                                </div>
-                            </div>
-
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
-                                        class="fa-solid fa-fill"></i> <span
-                                        data-i18n="settings_bookmark_bg_color">Background</span></label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group"
-                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-bg-color-picker" value="#ffffff"
-                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
-                                    <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default"
-                                        data-i18n-title="settings_reset_default"
-                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
-                                            class="fa-solid fa-rotate-left"></i></button>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
-                                    <span style="font-size: 0.8rem; opacity: 0.7;"
-                                        data-i18n="settings_opacity">Opacity</span>
-                                    <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1"
-                                        value="100" style="flex: 1;">
-                                </div>
-                            </div>
-
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
-                                        class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop
-                                        Shadow</span></label>
-                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"
+                                        for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span
+                                            data-i18n="settings_bookmark_text_color">Text Color</span></label>
                                     <div style="display: flex; align-items: center; gap: 8px;">
                                         <div class="custom-color-input-group"
-                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
-                                            <input type="color" id="bookmark-shadow-color-picker" value="#000000"
-                                                style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                            <input type="color" id="bookmark-text-color-picker" value="#ffffff"
+                                                style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                         </div>
-                                    </div>
-                                    <div
-                                        style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-                                        <div
-                                            style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
-                                            <span data-i18n="settings_opacity">Opacity</span>
-                                        </div>
-                                        <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100"
-                                            step="1" value="24" style="width: 100%;">
+                                        <button id="reset-bookmark-text-color-btn" class="secondary-btn"
+                                            title="Reset Default" data-i18n-title="settings_reset_default"
+                                            style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                                class="fa-solid fa-rotate-left"></i></button>
                                     </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
-                                    <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;"
-                                        data-i18n="settings_bookmark_shadow_blur">Blur:</span>
-                                    <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1"
-                                        value="8" style="flex: 1;">
-                                    <span id="bookmark-shadow-blur-value"
-                                        style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
+
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                            class="fa-solid fa-fill"></i> <span
+                                            data-i18n="settings_bookmark_bg_color">Background</span></label>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div class="custom-color-input-group"
+                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                            <input type="color" id="bookmark-bg-color-picker" value="#ffffff"
+                                                style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                        </div>
+                                        <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default"
+                                            data-i18n-title="settings_reset_default"
+                                            style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                                class="fa-solid fa-rotate-left"></i></button>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                                        <span style="font-size: 0.8rem; opacity: 0.7;"
+                                            data-i18n="settings_opacity">Opacity</span>
+                                        <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1"
+                                            value="100" style="flex: 1;">
+                                    </div>
+                                </div>
+
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                            class="fa-solid fa-moon"></i> <span
+                                            data-i18n="settings_bookmark_shadow">Drop
+                                            Shadow</span></label>
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div class="custom-color-input-group"
+                                                style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
+                                                <input type="color" id="bookmark-shadow-color-picker" value="#000000"
+                                                    style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                            </div>
+                                        </div>
+                                        <div
+                                            style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                                <span data-i18n="settings_opacity">Opacity</span>
+                                            </div>
+                                            <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100"
+                                                step="1" value="24" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                                        <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;"
+                                            data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                                        <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1"
+                                            value="8" style="flex: 1;">
+                                        <span id="bookmark-shadow-blur-value"
+                                            style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <div class="setting-group collapsible-group" id="bookmark-tabs-group" style="margin-top: 15px;">
@@ -1491,143 +1503,146 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
-                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
-                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
-                                        data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
-                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                                    <div class="custom-color-input-group"
-                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff"
-                                            style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                            <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
+                                style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                                = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
+                            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
+                                            data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
+                                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                                        <div class="custom-color-input-group"
+                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                            <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff"
+                                                style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                        </div>
+                                        <button id="reset-bookmark-group-bg-btn" class="secondary-btn"
+                                            title="Reset Default" data-i18n-title="settings_reset_default"
+                                            style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
+                                                class="fa-solid fa-rotate-left"></i></button>
                                     </div>
-                                    <button id="reset-bookmark-group-bg-btn" class="secondary-btn" title="Reset Default"
-                                        data-i18n-title="settings_reset_default"
-                                        style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
-                                            class="fa-solid fa-rotate-left"></i></button>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 0.75rem; opacity: 0.7;"
+                                            data-i18n="settings_opacity">Opacity</span>
+                                        <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100"
+                                            step="1" value="0" style="flex: 1;">
+                                    </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <span style="font-size: 0.75rem; opacity: 0.7;"
-                                        data-i18n="settings_opacity">Opacity</span>
-                                    <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1"
-                                        value="0" style="flex: 1;">
-                                </div>
-                            </div>
 
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
-                                        data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <div class="custom-color-input-group"
-                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-group-text-color-picker" value="#ffffff"
-                                            style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
+                                            data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <div class="custom-color-input-group"
+                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                            <input type="color" id="bookmark-group-text-color-picker" value="#ffffff"
+                                                style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                        </div>
+                                        <button id="reset-bookmark-group-text-color-btn" class="secondary-btn"
+                                            title="Reset Default" data-i18n-title="settings_reset_default"
+                                            style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
+                                                class="fa-solid fa-rotate-left"></i></button>
                                     </div>
-                                    <button id="reset-bookmark-group-text-color-btn" class="secondary-btn"
-                                        title="Reset Default" data-i18n-title="settings_reset_default"
-                                        style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
-                                            class="fa-solid fa-rotate-left"></i></button>
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 12px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-auto-text-contrast"
-                                        data-i18n="settings_bookmark_group_auto_text_contrast"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Auto text
-                                        contrast</label>
-                                    <input type="checkbox" id="bookmark-group-auto-text-contrast"
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div
-                                    style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
-                                    <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
-                                            data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
-                                    <span id="bookmark-group-font-size-value"
-                                        style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">14px</span>
-                                </div>
-                                <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
-                                    value="14" style="width: 100%; margin-top: 4px;">
-                                <div
-                                    style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
-                                    <label for="bookmark-group-text-width-input"
-                                        style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
-                                            data-i18n="settings_bookmark_group_text_width">Folder Name
-                                            Width</span></label>
-                                    <span id="bookmark-group-text-width-value"
-                                        style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">120px</span>
-                                </div>
-                                <input type="range" id="bookmark-group-text-width-input" min="60" max="250" step="5"
-                                    value="120" style="width: 100%; margin-top: 4px;">
-                                <div
-                                    style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
-                                    <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
-                                            data-i18n="settings_bookmark_group_border_radius">Border
-                                            Radius</span></label>
-                                    <span id="bookmark-group-border-radius-value"
-                                        style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">8px</span>
-                                </div>
-                                <input type="range" id="bookmark-group-border-radius-input" min="0" max="30" step="1"
-                                    value="8" style="width: 100%; margin-top: 4px;">
-                                <div class="setting-item-row"
-                                    style="margin: 12px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-show-count"
-                                        data-i18n="settings_bookmark_group_show_count"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show bookmark
-                                        count</label>
-                                    <input type="checkbox" id="bookmark-group-show-count" checked
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-use-accent"
-                                        data-i18n="settings_bookmark_group_use_accent"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Use accent
-                                        color
-                                        on default grid</label>
-                                    <input type="checkbox" id="bookmark-group-use-accent"
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-keep-bg-on-interaction"
-                                        data-i18n="settings_bookmark_group_keep_bg_on_interaction"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Keep tab
-                                        background while interacting</label>
-                                    <input type="checkbox" id="bookmark-group-keep-bg-on-interaction" checked
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-container-bg-hidden"
-                                        data-i18n="settings_bookmark_group_hide_container_bg"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide folder bar
-                                        background</label>
-                                    <input type="checkbox" id="bookmark-group-container-bg-hidden"
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-border-hidden"
-                                        data-i18n="settings_bookmark_group_hide_border"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide folder
-                                        border</label>
-                                    <input type="checkbox" id="bookmark-group-border-hidden"
-                                        style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
-                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-hide-scrollbar" data-i18n="settings_bookmark_hide_scrollbar"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide
-                                        scrollbar</label>
-                                    <input type="checkbox" id="bookmark-hide-scrollbar"
-                                        style="transform: scale(1.1); margin: 0;">
+                                    <div class="setting-item-row"
+                                        style="margin: 12px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-auto-text-contrast"
+                                            data-i18n="settings_bookmark_group_auto_text_contrast"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Auto text
+                                            contrast</label>
+                                        <input type="checkbox" id="bookmark-group-auto-text-contrast"
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div
+                                        style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                        <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
+                                                data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
+                                        <span id="bookmark-group-font-size-value"
+                                            style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">14px</span>
+                                    </div>
+                                    <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
+                                        value="14" style="width: 100%; margin-top: 4px;">
+                                    <div
+                                        style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                        <label for="bookmark-group-text-width-input"
+                                            style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
+                                                data-i18n="settings_bookmark_group_text_width">Folder Name
+                                                Width</span></label>
+                                        <span id="bookmark-group-text-width-value"
+                                            style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">120px</span>
+                                    </div>
+                                    <input type="range" id="bookmark-group-text-width-input" min="60" max="250" step="5"
+                                        value="120" style="width: 100%; margin-top: 4px;">
+                                    <div
+                                        style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                        <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
+                                                data-i18n="settings_bookmark_group_border_radius">Border
+                                                Radius</span></label>
+                                        <span id="bookmark-group-border-radius-value"
+                                            style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">8px</span>
+                                    </div>
+                                    <input type="range" id="bookmark-group-border-radius-input" min="0" max="30"
+                                        step="1" value="8" style="width: 100%; margin-top: 4px;">
+                                    <div class="setting-item-row"
+                                        style="margin: 12px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-show-count"
+                                            data-i18n="settings_bookmark_group_show_count"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show
+                                            bookmark
+                                            count</label>
+                                        <input type="checkbox" id="bookmark-group-show-count" checked
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div class="setting-item-row"
+                                        style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-use-accent"
+                                            data-i18n="settings_bookmark_group_use_accent"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Use accent
+                                            color
+                                            on default grid</label>
+                                        <input type="checkbox" id="bookmark-group-use-accent"
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div class="setting-item-row"
+                                        style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-keep-bg-on-interaction"
+                                            data-i18n="settings_bookmark_group_keep_bg_on_interaction"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Keep tab
+                                            background while interacting</label>
+                                        <input type="checkbox" id="bookmark-group-keep-bg-on-interaction" checked
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div class="setting-item-row"
+                                        style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-container-bg-hidden"
+                                            data-i18n="settings_bookmark_group_hide_container_bg"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide folder
+                                            bar
+                                            background</label>
+                                        <input type="checkbox" id="bookmark-group-container-bg-hidden"
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div class="setting-item-row"
+                                        style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-group-border-hidden"
+                                            data-i18n="settings_bookmark_group_hide_border"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide folder
+                                            border</label>
+                                        <input type="checkbox" id="bookmark-group-border-hidden"
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
+                                    <div class="setting-item-row"
+                                        style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                        <label for="bookmark-hide-scrollbar"
+                                            data-i18n="settings_bookmark_hide_scrollbar"
+                                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide
+                                            scrollbar</label>
+                                        <input type="checkbox" id="bookmark-hide-scrollbar"
+                                            style="transform: scale(1.1); margin: 0;">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                     </div>
 
@@ -1639,168 +1654,179 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-layout-show-groups"
-                                    data-i18n="settings_bookmark_layout_show_groups"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show bookmark
-                                    folders</label>
-                                <input type="checkbox" id="bookmark-layout-show-groups" checked
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide Title</label>
-                                <input type="checkbox" id="hide-bookmark-text"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-long-text" data-i18n="settings_bookmark_long_text"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Long
-                                    Text</label>
-                                <input type="checkbox" id="bookmark-long-text"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-full-text" data-i18n="settings_bookmark_full_text"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Full Text</label>
-                                <input type="checkbox" id="bookmark-full-text"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide Bg</label>
-                                <input type="checkbox" id="hide-bookmark-bg" style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Enable MacOS Hover
-                                    Effect</label>
-                                <input type="checkbox" id="bookmark-macos-hover"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-limit-20" data-i18n="settings_bookmark_limit_20"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Limit to 20
-                                    bookmarks per group</label>
-                                <input type="checkbox" id="bookmark-limit-20" checked
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="show-add-bookmark-button" data-i18n="settings_show_add_bookmark_button"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show add bookmark
-                                    button</label>
-                                <input type="checkbox" id="show-add-bookmark-button" checked
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Drag & Drop
-                                    Reorder</label>
-                                <input type="checkbox" id="enable-bookmark-drag" checked
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-keep-nested-folders" data-i18n="settings_bookmark_keep_nested"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Keep nested
-                                    folders when dropping folder into folder</label>
-                                <input type="checkbox" id="bookmark-keep-nested-folders"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-open-new-tab" data-i18n="settings_bookmark_open_new_tab"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Open bookmarks in
-                                    new tab</label>
-                                <input type="checkbox" id="bookmark-open-new-tab"
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                        </div>
-                        <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
-                            data-i18n="settings_drag_note">
-                            (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
-                        </p>
-
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
-                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Bookmark
-                                    Layout</label>
-                                <select id="bookmark-layout" class="settings-select" style="width: 100%;">
-                                    <option value="default" data-i18n="layout_default">Default Grid</option>
-                                    <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
-                                    <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
-                                    <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)
-                                    </option>
-                                    <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
-                                    </option>
-                                    <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom
-                                        Right)
-                                    </option>
-                                </select>
-                                <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 15px;">
-                                    <label
-                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">
-                                        <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
-                                        <span id="bookmark-sidebar-width-value"
-                                            style="font-family: monospace;">300px</span>
-                                    </label>
-                                    <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10"
-                                        value="300" style="width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-layout-show-groups"
+                                        data-i18n="settings_bookmark_layout_show_groups"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show bookmark
+                                        folders</label>
+                                    <input type="checkbox" id="bookmark-layout-show-groups" checked
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide
+                                        Title</label>
+                                    <input type="checkbox" id="hide-bookmark-text"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-long-text" data-i18n="settings_bookmark_long_text"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Long
+                                        Text</label>
+                                    <input type="checkbox" id="bookmark-long-text"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-full-text" data-i18n="settings_bookmark_full_text"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Full
+                                        Text</label>
+                                    <input type="checkbox" id="bookmark-full-text"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide
+                                        Bg</label>
+                                    <input type="checkbox" id="hide-bookmark-bg"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Enable MacOS
+                                        Hover
+                                        Effect</label>
+                                    <input type="checkbox" id="bookmark-macos-hover"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-limit-20" data-i18n="settings_bookmark_limit_20"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Limit to 20
+                                        bookmarks per group</label>
+                                    <input type="checkbox" id="bookmark-limit-20" checked
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="show-add-bookmark-button" data-i18n="settings_show_add_bookmark_button"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show add
+                                        bookmark
+                                        button</label>
+                                    <input type="checkbox" id="show-add-bookmark-button" checked
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Drag & Drop
+                                        Reorder</label>
+                                    <input type="checkbox" id="enable-bookmark-drag" checked
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-keep-nested-folders" data-i18n="settings_bookmark_keep_nested"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Keep nested
+                                        folders when dropping folder into folder</label>
+                                    <input type="checkbox" id="bookmark-keep-nested-folders"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
+                                <div class="setting-item-row"
+                                    style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-open-new-tab" data-i18n="settings_bookmark_open_new_tab"
+                                        style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Open bookmarks
+                                        in
+                                        new tab</label>
+                                    <input type="checkbox" id="bookmark-open-new-tab"
+                                        style="transform: scale(1.1); margin: 0;">
                                 </div>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-item-style-row"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
-                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item
-                                    Style</label>
-                                <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
-                                    <option value="default" data-i18n="item_style_default">Default</option>
-                                    <option value="card" data-i18n="item_style_card">Card</option>
-                                    <option value="glass" data-i18n="item_style_glass">Glass</option>
-                                    <option value="neon" data-i18n="item_style_neon">Neon</option>
-                                    <option value="neumorphism" data-i18n="item_style_neumorphism">Neumorphism</option>
-                                </select>
-                            </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row"
-                                style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg"
-                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
-                                    Background</label>
-                                <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%;">
-                                    <option value="default" data-i18n="layout_bg_default">Default</option>
-                                    <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
-                                    <option value="white" data-i18n="layout_bg_white">White</option>
-                                    <option value="m3-accent" data-i18n="layout_bg_m3_accent">M3 Accent</option>
-                                    <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
-                                </select>
-                            </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row"
-                                style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color"
-                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
-                                    Color</label>
-                                <div class="custom-color-input-group"
-                                    style="display: flex; align-items: center; height: 38px;">
-                                    <input type="color" id="bookmark-layout-bg-color"
-                                        style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                            <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
+                                data-i18n="settings_drag_note">
+                                (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
+                            </p>
+
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <div class="setting-item no-margin-top"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
+                                        style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Bookmark
+                                        Layout</label>
+                                    <select id="bookmark-layout" class="settings-select" style="width: 100%;">
+                                        <option value="default" data-i18n="layout_default">Default Grid</option>
+                                        <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                                        <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)
+                                        </option>
+                                        <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)
+                                        </option>
+                                        <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom
+                                            Left)
+                                        </option>
+                                        <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom
+                                            Right)
+                                        </option>
+                                    </select>
+                                    <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 15px;">
+                                        <label
+                                            style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">
+                                            <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
+                                            <span id="bookmark-sidebar-width-value"
+                                                style="font-family: monospace;">300px</span>
+                                        </label>
+                                        <input type="range" id="bookmark-sidebar-width-input" min="200" max="600"
+                                            step="10" value="300" style="width: 100%;">
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top" id="bookmark-item-style-row"
+                                    style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
+                                        style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item
+                                        Style</label>
+                                    <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
+                                        <option value="default" data-i18n="item_style_default">Default</option>
+                                        <option value="card" data-i18n="item_style_card">Card</option>
+                                        <option value="glass" data-i18n="item_style_glass">Glass</option>
+                                        <option value="neon" data-i18n="item_style_neon">Neon</option>
+                                        <option value="neumorphism" data-i18n="item_style_neumorphism">Neumorphism
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row"
+                                    style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg"
+                                        style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
+                                        Background</label>
+                                    <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%;">
+                                        <option value="default" data-i18n="layout_bg_default">Default</option>
+                                        <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent
+                                        </option>
+                                        <option value="white" data-i18n="layout_bg_white">White</option>
+                                        <option value="m3-accent" data-i18n="layout_bg_m3_accent">M3 Accent</option>
+                                        <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row"
+                                    style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color"
+                                        style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
+                                        Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; height: 38px;">
+                                        <input type="color" id="bookmark-layout-bg-color"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
             <div class="settings-section" data-section-id="custom-title">
                 <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
@@ -1883,7 +1909,8 @@
                                     </div>
                                 </div>
 
-                                <div class="custom-title-line-block" style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                <div class="custom-title-line-block"
+                                    style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
                                     <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;"
                                         data-i18n="settings_custom_title_line_2">Dòng 2</label>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
@@ -1936,8 +1963,7 @@
                                     </div>
                                 </div>
 
-                                <div id="custom-title-line-3-container"
-                                    class="custom-title-line-block">
+                                <div id="custom-title-line-3-container" class="custom-title-line-block">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                         <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
@@ -1996,8 +2022,8 @@
                                     </div>
                                 </div>
 
-                                <div id="custom-title-line-4-container"
-                                    class="custom-title-line-block" style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                <div id="custom-title-line-4-container" class="custom-title-line-block"
+                                    style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                         <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
@@ -2143,8 +2169,10 @@
                                                 lắc (Shake)</option>
                                             <option value="float" data-i18n="settings_custom_title_animation_float">Lơ
                                                 lửng (Float)</option>
-                                            <option value="neon" data-i18n="settings_custom_title_animation_neon">Neon (Neon)</option>
-                                            <option value="focus" data-i18n="settings_custom_title_animation_focus">Lấy nét (Focus)</option>
+                                            <option value="neon" data-i18n="settings_custom_title_animation_neon">Neon
+                                                (Neon)</option>
+                                            <option value="focus" data-i18n="settings_custom_title_animation_focus">Lấy
+                                                nét (Focus)</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -2186,8 +2214,8 @@
                                 </div>
                             </div>
                             <div class="setting-item-row">
-                                <label for="custom-title-multicolor"><i
-                                        class="fa-solid fa-rainbow"></i> <span data-i18n="settings_custom_title_multicolor">Rainbow Effect</span></label>
+                                <label for="custom-title-multicolor"><i class="fa-solid fa-rainbow"></i> <span
+                                        data-i18n="settings_custom_title_multicolor">Rainbow Effect</span></label>
                                 <input type="checkbox" id="custom-title-multicolor">
                             </div>
                         </div>
@@ -2201,7 +2229,8 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                            <h4 class="setting-sub-header"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
+                            <h4 class="setting-sub-header"><i class="fa-solid fa-moon"></i> <span
+                                    data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
                             <p class="setting-hint custom-title-effect-hint"
                                 data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical
                                 offset
@@ -2239,7 +2268,9 @@
                                 </div>
                             </div>
 
-                            <h4 class="setting-sub-header" style="margin-top: 20px;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <h4 class="setting-sub-header" style="margin-top: 20px;"><i
+                                    class="fa-solid fa-border-style"></i> <span
+                                    data-i18n="settings_custom_title_border">Text Border</span></h4>
                             <p class="setting-hint custom-title-effect-hint"
                                 data-i18n="settings_custom_title_border_hint">Keep the outline thin so accents and long
                                 words stay readable.</p>
@@ -2271,7 +2302,8 @@
             </div>
 
             <div class="settings-section" data-section-id="layout">
-                <h3 class="section-toggle"><i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_layout">Layout & Features</span></h3>
+                <h3 class="section-toggle"><i class="fa-solid fa-layer-group"></i> <span
+                        data-i18n="settings_layout">Layout & Features</span></h3>
                 <div class="section-content">
 
                     <!-- Interface & General -->
@@ -2283,76 +2315,89 @@
                         </div>
                         <div class="group-body">
 
-                        <div style="margin-bottom: 10px;">
-                            <button type="button" id="replay-settings-guide-btn" class="secondary-btn full-width-btn">
-                                <i class="fa-solid fa-route"></i> <span data-i18n="settings_replay_guide">Replay Settings Guide</span>
-                            </button>
-                        </div>
+                            <div style="margin-bottom: 10px;">
+                                <button type="button" id="replay-settings-guide-btn"
+                                    class="secondary-btn full-width-btn">
+                                    <i class="fa-solid fa-route"></i> <span data-i18n="settings_replay_guide">Replay
+                                        Settings Guide</span>
+                                </button>
+                            </div>
 
-                        <div class="setting-item-row">
-                            <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
-                                Layout</label>
-                            <input type="checkbox" id="flip-layout-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings
-                                Sidebar Width</label>
-                            <select id="settings-sidebar-width-input" class="settings-select">
-                                <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)</option>
-                                <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)</option>
-                                <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)</option>
-                                <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
-                                <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)
-                                </option>
-                            </select>
-                        </div>
+                            <div class="setting-item-row">
+                                <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
+                                    Layout</label>
+                                <input type="checkbox" id="flip-layout-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings
+                                    Sidebar Width</label>
+                                <select id="settings-sidebar-width-input" class="settings-select">
+                                    <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)
+                                    </option>
+                                    <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)
+                                    </option>
+                                    <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)
+                                    </option>
+                                    <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
+                                    <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)
+                                    </option>
+                                </select>
+                            </div>
 
-                        <div class="setting-item-row">
-                            <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
-                                controls</label>
-                            <input type="checkbox" id="ghost-controls-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth Scrolling</label>
-                            <input type="checkbox" id="smooth-scroll-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row" style="margin-top:15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
-                            <label for="snap-to-grid-checkbox" style="font-weight: 500;" data-i18n="settings_snap_to_grid"><i class="fa-solid fa-border-all"></i> Snap to Grid (Drag & Drop)</label>
-                            <input type="checkbox" id="snap-to-grid-checkbox">
-                        </div>
-                        <div class="setting-item-row" id="snap-grid-size-row" style="display: none; padding-left: 20px;">
-                            <label for="snap-grid-size-input" style="opacity: 0.8; font-size: 0.9em;" data-i18n="settings_snap_grid_size">Grid Size (px)</label>
-                            <select id="snap-grid-size-input" class="settings-select" style="max-width: 120px;">
-                                <option value="20">20px (Fine)</option>
-                                <option value="30">30px</option>
-                                <option value="40">40px</option>
-                                <option value="50">50px (Medium)</option>
-                                <option value="60">60px</option>
-                                <option value="80">80px</option>
-                                <option value="100">100px (Large)</option>
-                            </select>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
-                                Google Apps & Avatar</label>
-                            <input type="checkbox" id="show-top-right-controls-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="allow-text-selection-checkbox" data-i18n="settings_allow_text_selection">Allow
-                                Text Selection</label>
-                            <input type="checkbox" id="allow-text-selection-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="context-menu-style-select" data-i18n="settings_context_menu_style">Context Menu
-                                Style</label>
-                            <select id="context-menu-style-select" class="settings-select">
-                                <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
-                                <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
-                                <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
-                                <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
-                                <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
-                            </select>
-                        </div>
+                            <div class="setting-item-row">
+                                <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
+                                    controls</label>
+                                <input type="checkbox" id="ghost-controls-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth
+                                    Scrolling</label>
+                                <input type="checkbox" id="smooth-scroll-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin-top:15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                                <label for="snap-to-grid-checkbox" style="font-weight: 500;"
+                                    data-i18n="settings_snap_to_grid"><i class="fa-solid fa-border-all"></i> Snap to
+                                    Grid (Drag & Drop)</label>
+                                <input type="checkbox" id="snap-to-grid-checkbox">
+                            </div>
+                            <div class="setting-item-row" id="snap-grid-size-row"
+                                style="display: none; padding-left: 20px;">
+                                <label for="snap-grid-size-input" style="opacity: 0.8; font-size: 0.9em;"
+                                    data-i18n="settings_snap_grid_size">Grid Size (px)</label>
+                                <select id="snap-grid-size-input" class="settings-select" style="max-width: 120px;">
+                                    <option value="20">20px (Fine)</option>
+                                    <option value="30">30px</option>
+                                    <option value="40">40px</option>
+                                    <option value="50">50px (Medium)</option>
+                                    <option value="60">60px</option>
+                                    <option value="80">80px</option>
+                                    <option value="100">100px (Large)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
+                                    Google Apps & Avatar</label>
+                                <input type="checkbox" id="show-top-right-controls-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="allow-text-selection-checkbox"
+                                    data-i18n="settings_allow_text_selection">Allow
+                                    Text Selection</label>
+                                <input type="checkbox" id="allow-text-selection-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="context-menu-style-select" data-i18n="settings_context_menu_style">Context
+                                    Menu
+                                    Style</label>
+                                <select id="context-menu-style-select" class="settings-select">
+                                    <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
+                                    <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
+                                    <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
+                                    <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -2364,81 +2409,87 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div class="setting-item-row">
-                            <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
-                                Bar</label>
-                            <input type="checkbox" id="show-search-bar-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="free-move-search-bar-checkbox" data-i18n="settings_free_move_search_bar">Free
-                                move search bar</label>
-                            <input type="checkbox" id="free-move-search-bar-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="search-bar-hover-scale-checkbox" data-i18n="settings_search_bar_hover_scale">Search bar hover scale</label>
-                            <input type="checkbox" id="search-bar-hover-scale-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show
-                                Google AI Icon</label>
-                            <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
-                        </div>
-                        <div class="setting-item">
-                            <label for="search-engine-select" data-i18n="settings_search_engine">Search Engine</label>
-                            <select id="search-engine-select">
-                                <option value="google">Google</option>
-                                <option value="google-image">Google Images</option>
-                                <option value="google-lens">Google Lens</option>
-                                <option value="bing">Bing</option>
-                                <option value="yahoo">Yahoo</option>
-                                <option value="duckduckgo">DuckDuckGo</option>
-                                <option value="ecosia">Ecosia</option>
-                                <option value="brave">Brave</option>
-                                <option value="startpage">Startpage</option>
-                                <option value="perplexity">Perplexity</option>
-                                <option value="gemini">Google Gemini</option>
-                                <option value="gemini-image">Gemini Image</option>
-                                <option value="youtube">YouTube</option>
-                                <option value="github">GitHub</option>
+                            <div class="setting-item-row">
+                                <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
+                                    Bar</label>
+                                <input type="checkbox" id="show-search-bar-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="free-move-search-bar-checkbox"
+                                    data-i18n="settings_free_move_search_bar">Free
+                                    move search bar</label>
+                                <input type="checkbox" id="free-move-search-bar-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="search-bar-hover-scale-checkbox"
+                                    data-i18n="settings_search_bar_hover_scale">Search bar hover scale</label>
+                                <input type="checkbox" id="search-bar-hover-scale-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show
+                                    Google AI Icon</label>
+                                <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="search-engine-select" data-i18n="settings_search_engine">Search
+                                    Engine</label>
+                                <select id="search-engine-select">
+                                    <option value="google">Google</option>
+                                    <option value="google-image">Google Images</option>
+                                    <option value="google-lens">Google Lens</option>
+                                    <option value="bing">Bing</option>
+                                    <option value="yahoo">Yahoo</option>
+                                    <option value="duckduckgo">DuckDuckGo</option>
+                                    <option value="ecosia">Ecosia</option>
+                                    <option value="brave">Brave</option>
+                                    <option value="startpage">Startpage</option>
+                                    <option value="perplexity">Perplexity</option>
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="gemini-image">Gemini Image</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="github">GitHub</option>
 
-                                <option value="kagi">Kagi</option>
-                                <option value="qwant">Qwant</option>
-                                <option value="mojeek">Mojeek</option>
-                                <option value="yep">Yep</option>
-                                <option value="yandex">Yandex</option>
-                                <option value="baidu">Baidu</option>
-                                <option value="wikipedia">Wikipedia</option>
-                                <option value="reddit">Reddit</option>
-                                <option value="stackoverflow">Stack Overflow</option>
-                                <option value="mdn">MDN</option>
-                                <option value="npm">npm</option>
-                                <option value="scholar">Google Scholar</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
-                                Width</label>
-                            <div class="range-wrapper">
-                                <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10"
-                                    value="600">
-                                <span class="range-val" id="search-bar-width-val">600px</span>
+                                    <option value="kagi">Kagi</option>
+                                    <option value="qwant">Qwant</option>
+                                    <option value="mojeek">Mojeek</option>
+                                    <option value="yep">Yep</option>
+                                    <option value="yandex">Yandex</option>
+                                    <option value="baidu">Baidu</option>
+                                    <option value="wikipedia">Wikipedia</option>
+                                    <option value="reddit">Reddit</option>
+                                    <option value="stackoverflow">Stack Overflow</option>
+                                    <option value="mdn">MDN</option>
+                                    <option value="npm">npm</option>
+                                    <option value="scholar">Google Scholar</option>
+                                </select>
                             </div>
-                        </div>
-                        <div class="setting-item">
-                            <label for="search-bar-blur-slider" data-i18n="settings_search_bar_blur">Search Bar
-                                Blur</label>
-                            <div class="range-wrapper">
-                                <input type="range" id="search-bar-blur-slider" min="0" max="80" step="1" value="20">
-                                <span class="range-val" id="search-bar-blur-val">20px</span>
+                            <div class="setting-item">
+                                <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
+                                    Width</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10"
+                                        value="600">
+                                    <span class="range-val" id="search-bar-width-val">600px</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="setting-item">
-                            <label for="search-bar-radius-slider" data-i18n="settings_search_bar_radius">Search Bar Radius</label>
-                            <div class="range-wrapper">
-                                <input type="range" id="search-bar-radius-slider" min="0" max="100" step="1" value="20">
-                                <span class="range-val" id="search-bar-radius-val">20px</span>
+                            <div class="setting-item">
+                                <label for="search-bar-blur-slider" data-i18n="settings_search_bar_blur">Search Bar
+                                    Blur</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-blur-slider" min="0" max="80" step="1"
+                                        value="20">
+                                    <span class="range-val" id="search-bar-blur-val">20px</span>
+                                </div>
                             </div>
-                        </div>
+                            <div class="setting-item">
+                                <label for="search-bar-radius-slider" data-i18n="settings_search_bar_radius">Search Bar
+                                    Radius</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-radius-slider" min="0" max="100" step="1"
+                                        value="20">
+                                    <span class="range-val" id="search-bar-radius-val">20px</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -2450,148 +2501,157 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div class="setting-item-row">
-                            <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
-                            <input type="checkbox" id="show-todo-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo
-                                Checkboxes</label>
-                            <input type="checkbox" id="todo-show-checkboxes" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show Notepad</label>
-                            <input type="checkbox" id="show-notepad-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-habits-checkbox" data-i18n="settings_show_habits">Show Habit Tracker</label>
-                            <input type="checkbox" id="show-habits-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="habit-color-mode-select" data-i18n="settings_habit_color_mode">Habit Color Mode</label>
-                            <select id="habit-color-mode-select">
-                                <option value="custom" data-i18n="habit_color_custom">Custom per habit</option>
-                                <option value="gradient" data-i18n="habit_color_gradient">Red to Green</option>
-                                <option value="m3" data-i18n="habit_color_m3">Accent (M3)</option>
-                            </select>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
-                            <input type="checkbox" id="show-timer-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-weather-checkbox" data-i18n="settings_show_weather">Show Weather</label>
-                            <input type="checkbox" id="show-weather-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="weather-unit-select" data-i18n="settings_weather_unit">Temperature Unit</label>
-                            <select id="weather-unit-select">
-                                <option value="celsius">Celsius (°C)</option>
-                                <option value="fahrenheit">Fahrenheit (°F)</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="weather-api-mode-select" data-i18n="settings_weather_api_mode">Weather API
-                                Source</label>
-                            <select id="weather-api-mode-select">
-                                <option value="extension" data-i18n="settings_weather_api_extension">Extension default
-                                </option>
-                                <option value="custom" data-i18n="settings_weather_api_custom">Custom endpoint</option>
-                            </select>
-                            <small class="setting-hint" data-i18n="settings_weather_api_hint">Default source limits
-                                manual refresh to 3 times per hour. Custom endpoints are not limited.</small>
-                        </div>
-                        <div class="setting-item" id="weather-custom-api-settings" style="display: none;">
-                            <div class="weather-api-presets" aria-label="Weather API presets">
-                                <button type="button" class="secondary-btn weather-api-preset-btn"
-                                    data-weather-api-preset="open-meteo">
-                                    <i class="fa-solid fa-cloud-sun"></i>
-                                    <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
-                                </button>
+                            <div class="setting-item-row">
+                                <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
+                                <input type="checkbox" id="show-todo-checkbox" checked>
                             </div>
-
-                            <div class="unsplash-links" style="margin-bottom: 15px;">
-                                <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item"
-                                    title="Trang chủ và Link API đúng của Open-Meteo">
-                                    <i class="fa-solid fa-link"></i> <span
-                                        data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
-                                </a>
-                                <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api"
-                                    target="_blank" class="unsplash-link-item"
-                                    title="Video hướng dẫn lấy API thời tiết">
-                                    <i class="fa-brands fa-youtube"></i> <span
-                                        data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
-                                </a>
+                            <div class="setting-item-row">
+                                <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo
+                                    Checkboxes</label>
+                                <input type="checkbox" id="todo-show-checkboxes" checked>
                             </div>
+                            <div class="setting-item-row">
+                                <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show
+                                    Notepad</label>
+                                <input type="checkbox" id="show-notepad-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-habits-checkbox" data-i18n="settings_show_habits">Show Habit
+                                    Tracker</label>
+                                <input type="checkbox" id="show-habits-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="habit-color-mode-select" data-i18n="settings_habit_color_mode">Habit Color
+                                    Mode</label>
+                                <select id="habit-color-mode-select">
+                                    <option value="custom" data-i18n="habit_color_custom">Custom per habit</option>
+                                    <option value="gradient" data-i18n="habit_color_gradient">Red to Green</option>
+                                    <option value="m3" data-i18n="habit_color_m3">Accent (M3)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
+                                <input type="checkbox" id="show-timer-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-weather-checkbox" data-i18n="settings_show_weather">Show
+                                    Weather</label>
+                                <input type="checkbox" id="show-weather-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="weather-unit-select" data-i18n="settings_weather_unit">Temperature
+                                    Unit</label>
+                                <select id="weather-unit-select">
+                                    <option value="celsius">Celsius (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="weather-api-mode-select" data-i18n="settings_weather_api_mode">Weather API
+                                    Source</label>
+                                <select id="weather-api-mode-select">
+                                    <option value="extension" data-i18n="settings_weather_api_extension">Extension
+                                        default
+                                    </option>
+                                    <option value="custom" data-i18n="settings_weather_api_custom">Custom endpoint
+                                    </option>
+                                </select>
+                                <small class="setting-hint" data-i18n="settings_weather_api_hint">Default source limits
+                                    manual refresh to 3 times per hour. Custom endpoints are not limited.</small>
+                            </div>
+                            <div class="setting-item" id="weather-custom-api-settings" style="display: none;">
+                                <div class="weather-api-presets" aria-label="Weather API presets">
+                                    <button type="button" class="secondary-btn weather-api-preset-btn"
+                                        data-weather-api-preset="open-meteo">
+                                        <i class="fa-solid fa-cloud-sun"></i>
+                                        <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
+                                    </button>
+                                </div>
 
-                            <label for="weather-forecast-endpoint-input"
-                                data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
-                            <input type="url" id="weather-forecast-endpoint-input"
-                                aria-describedby="weather-forecast-endpoint-status"
-                                placeholder="https://api.open-meteo.com/v1/forecast">
-                            <small class="weather-api-field-status" id="weather-forecast-endpoint-status"></small>
-                            <label for="weather-geocoding-endpoint-input"
-                                data-i18n="settings_weather_geocoding_endpoint">Geocoding endpoint</label>
-                            <input type="url" id="weather-geocoding-endpoint-input"
-                                aria-describedby="weather-geocoding-endpoint-status"
-                                placeholder="https://geocoding-api.open-meteo.com/v1/search">
-                            <small class="weather-api-field-status" id="weather-geocoding-endpoint-status"></small>
-                            <div class="weather-api-test-row">
-                                <button type="button" class="primary-btn" id="weather-api-test-btn">
-                                    <i class="fa-solid fa-plug-circle-check"></i>
-                                    <span data-i18n="settings_weather_test_connection">Test connection</span>
-                                </button>
-                                <div class="weather-api-connection-state" id="weather-api-connection-state"
-                                    role="status" aria-live="polite">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    <span data-i18n="settings_weather_test_idle">Not tested yet.</span>
+                                <div class="unsplash-links" style="margin-bottom: 15px;">
+                                    <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item"
+                                        title="Trang chủ và Link API đúng của Open-Meteo">
+                                        <i class="fa-solid fa-link"></i> <span
+                                            data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
+                                    </a>
+                                    <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api"
+                                        target="_blank" class="unsplash-link-item"
+                                        title="Video hướng dẫn lấy API thời tiết">
+                                        <i class="fa-brands fa-youtube"></i> <span
+                                            data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
+                                    </a>
+                                </div>
+
+                                <label for="weather-forecast-endpoint-input"
+                                    data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
+                                <input type="url" id="weather-forecast-endpoint-input"
+                                    aria-describedby="weather-forecast-endpoint-status"
+                                    placeholder="https://api.open-meteo.com/v1/forecast">
+                                <small class="weather-api-field-status" id="weather-forecast-endpoint-status"></small>
+                                <label for="weather-geocoding-endpoint-input"
+                                    data-i18n="settings_weather_geocoding_endpoint">Geocoding endpoint</label>
+                                <input type="url" id="weather-geocoding-endpoint-input"
+                                    aria-describedby="weather-geocoding-endpoint-status"
+                                    placeholder="https://geocoding-api.open-meteo.com/v1/search">
+                                <small class="weather-api-field-status" id="weather-geocoding-endpoint-status"></small>
+                                <div class="weather-api-test-row">
+                                    <button type="button" class="primary-btn" id="weather-api-test-btn">
+                                        <i class="fa-solid fa-plug-circle-check"></i>
+                                        <span data-i18n="settings_weather_test_connection">Test connection</span>
+                                    </button>
+                                    <div class="weather-api-connection-state" id="weather-api-connection-state"
+                                        role="status" aria-live="polite">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span data-i18n="settings_weather_test_idle">Not tested yet.</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="hide-timer-alarm-dropdown-checkbox"
-                                data-i18n="settings_hide_timer_alarm_dropdown">Hide alarm dropdown in Timer</label>
-                            <input type="checkbox" id="hide-timer-alarm-dropdown-checkbox">
-                        </div>
-                        <div class="setting-item">
-                            <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm
-                                Sound</label>
-                            <select id="timer-alarm-sound-select"></select>
-                            <div class="timer-alarm-upload-row">
-                                <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
-                                <button type="button" id="timer-alarm-sound-upload-btn" class="secondary-btn">
-                                    <i class="fa-solid fa-upload"></i>
-                                    <span data-i18n="timer_alarm_upload">Upload Sound</span>
-                                </button>
-                                <button type="button" id="timer-alarm-sound-remove-btn"
-                                    class="secondary-btn timer-alarm-remove-btn" disabled>
-                                    <i class="fa-solid fa-trash"></i>
-                                    <span data-i18n="timer_alarm_remove">Remove</span>
-                                </button>
+                            <div class="setting-item-row">
+                                <label for="hide-timer-alarm-dropdown-checkbox"
+                                    data-i18n="settings_hide_timer_alarm_dropdown">Hide alarm dropdown in Timer</label>
+                                <input type="checkbox" id="hide-timer-alarm-dropdown-checkbox">
                             </div>
-                            <small id="timer-alarm-custom-name" class="timer-alarm-custom-name"
-                                data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
-                            <small class="timer-alarm-source">
-                                <span data-i18n="settings_timer_alarm_source">Ringtone sounds source:</span>
-                                <a href="https://pixabay.com/users/universfield-28281460/" target="_blank"
-                                    rel="noopener noreferrer">Pixabay / universfield</a>
-                            </small>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-quick-access-bg-checkbox" data-i18n="settings_show_quick_access_bg">Quick
-                                Access Bar Background</label>
-                            <input type="checkbox" id="show-quick-access-bg-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show
-                                Bookmarks</label>
-                            <input type="checkbox" id="show-bookmarks-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show
-                                Bookmark Folders</label>
-                            <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
-                        </div>
+                            <div class="setting-item">
+                                <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm
+                                    Sound</label>
+                                <select id="timer-alarm-sound-select"></select>
+                                <div class="timer-alarm-upload-row">
+                                    <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
+                                    <button type="button" id="timer-alarm-sound-upload-btn" class="secondary-btn">
+                                        <i class="fa-solid fa-upload"></i>
+                                        <span data-i18n="timer_alarm_upload">Upload Sound</span>
+                                    </button>
+                                    <button type="button" id="timer-alarm-sound-remove-btn"
+                                        class="secondary-btn timer-alarm-remove-btn" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span data-i18n="timer_alarm_remove">Remove</span>
+                                    </button>
+                                </div>
+                                <small id="timer-alarm-custom-name" class="timer-alarm-custom-name"
+                                    data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
+                                <small class="timer-alarm-source">
+                                    <span data-i18n="settings_timer_alarm_source">Ringtone sounds source:</span>
+                                    <a href="https://pixabay.com/users/universfield-28281460/" target="_blank"
+                                        rel="noopener noreferrer">Pixabay / universfield</a>
+                                </small>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-quick-access-bg-checkbox"
+                                    data-i18n="settings_show_quick_access_bg">Quick
+                                    Access Bar Background</label>
+                                <input type="checkbox" id="show-quick-access-bg-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show
+                                    Bookmarks</label>
+                                <input type="checkbox" id="show-bookmarks-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-bookmark-groups-checkbox"
+                                    data-i18n="settings_show_bookmark_groups">Show
+                                    Bookmark Folders</label>
+                                <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
+                            </div>
                         </div>
                     </div>
 
@@ -2603,51 +2663,54 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div class="setting-item-row">
-                            <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
-                            <input type="checkbox" id="show-music-checkbox">
-                        </div>
-                        <div class="setting-item">
-                            <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
-                            <select id="music-style-select">
-                                <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-                                <option value="pixel" data-i18n="style_pixel">Pixel</option>
-                                <option value="spotify" data-i18n="style_spotify">Spotify</option>
-                                <option value="apple" data-i18n="style_apple">Apple Music</option>
-                                <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
-                                <option value="overlap" data-i18n="style_overlap">Overlap</option>
-                                <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
-                                <option value="cassette" data-i18n="style_cassette">Cassette</option>
-                                <option value="moon8" data-i18n="style_moon8">Infinity</option>
-                                <option value="beach" data-i18n="style_beach">Beach</option>
-                                <option value="forest" data-i18n="style_forest">Forest</option>
-                                <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
-                                <option value="terminal" data-i18n="style_terminal">Terminal</option>
-                                <option value="pill" data-i18n="style_pill">Pill Widget</option>
-                                <option value="square-thumb" data-i18n="style_square_thumb">Square Thumb</option>
-                                <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
-                                <option value="neon" data-i18n="style_neon">Neon</option>
-                                <option value="minimal" data-i18n="style_minimal">Minimal</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="music-player-use-default-color-mode"
-                                data-i18n="settings_music_use_default_color">Music Waves Color</label>
-                            <select id="music-player-use-default-color-mode">
-                                <option value="true" data-i18n="music_player_color_brand">Skin Default</option>
-                                <option value="false" data-i18n="music_player_color_global">Global Theme Color</option>
-                                <option value="thumbnail" data-i18n="music_player_color_thumb">Match Thumbnail Color</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="music-source-icon-color-mode"
-                                data-i18n="settings_music_source_icon_color">Source Icon Color</label>
-                            <select id="music-source-icon-color-mode">
-                                <option value="brand" data-i18n="music_source_icon_brand">Brand color</option>
-                                <option value="accent" data-i18n="music_source_icon_accent">Accent color</option>
-                                <option value="none" data-i18n="music_source_icon_none">No color</option>
-                            </select>
-                        </div>
+                            <div class="setting-item-row">
+                                <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music
+                                    Player</label>
+                                <input type="checkbox" id="show-music-checkbox">
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
+                                <select id="music-style-select">
+                                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                                    <option value="apple" data-i18n="style_apple">Apple Music</option>
+                                    <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                                    <option value="overlap" data-i18n="style_overlap">Overlap</option>
+                                    <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
+                                    <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                                    <option value="moon8" data-i18n="style_moon8">Infinity</option>
+                                    <option value="beach" data-i18n="style_beach">Beach</option>
+                                    <option value="forest" data-i18n="style_forest">Forest</option>
+                                    <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
+                                    <option value="terminal" data-i18n="style_terminal">Terminal</option>
+                                    <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                                    <option value="square-thumb" data-i18n="style_square_thumb">Square Thumb</option>
+                                    <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                                    <option value="neon" data-i18n="style_neon">Neon</option>
+                                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-player-use-default-color-mode"
+                                    data-i18n="settings_music_use_default_color">Music Waves Color</label>
+                                <select id="music-player-use-default-color-mode">
+                                    <option value="true" data-i18n="music_player_color_brand">Skin Default</option>
+                                    <option value="false" data-i18n="music_player_color_global">Global Theme Color
+                                    </option>
+                                    <option value="thumbnail" data-i18n="music_player_color_thumb">Match Thumbnail Color
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-source-icon-color-mode"
+                                    data-i18n="settings_music_source_icon_color">Source Icon Color</label>
+                                <select id="music-source-icon-color-mode">
+                                    <option value="brand" data-i18n="music_source_icon_brand">Brand color</option>
+                                    <option value="accent" data-i18n="music_source_icon_accent">Accent color</option>
+                                    <option value="none" data-i18n="music_source_icon_none">No color</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -2659,42 +2722,46 @@
                             <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
                         <div class="group-body">
-                        <div class="setting-item-row">
-                            <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
-                                Calendar</label>
-                            <input type="checkbox" id="show-gregorian-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-quotes-checkbox" data-i18n="settings_show_quotes">Show Daily Quotes</label>
-                            <input type="checkbox" id="show-quotes-checkbox" checked>
-                        </div>
-                        <div class="setting-item">
-                            <label for="quotes-update-freq-select" data-i18n="settings_quotes_update_freq">Quotes Update Frequency</label>
-                            <select id="quotes-update-freq-select">
-                                <option value="tab" data-i18n="settings_quotes_freq_tab">Every New Tab</option>
-                                <option value="hour" data-i18n="settings_quotes_freq_hour">Every Hour</option>
-                                <option value="day" data-i18n="settings_quotes_freq_day">Every Day</option>
-                            </select>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full
-                                Calendar</label>
-                            <input type="checkbox" id="show-full-calendar-checkbox">
-                        </div>
-                        <div class="setting-item">
-                            <label for="calendar-display-mode-select"
-                                data-i18n="settings_calendar_display_mode">Calendar Display</label>
-                            <select id="calendar-display-mode-select">
-                                <option value="solar" data-i18n="settings_calendar_display_solar">Gregorian only
-                                </option>
-                                <option value="lunar" data-i18n="settings_calendar_display_lunar">Lunar only</option>
-                                <option value="both" data-i18n="settings_calendar_display_both">Gregorian + Lunar
-                                </option>
-                            </select>
-                            <p class="setting-hint" data-i18n="settings_calendar_display_mode_hint"
-                                style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the month
-                                grid shows solar dates, lunar dates, or both.</p>
-                        </div>
+                            <div class="setting-item-row">
+                                <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
+                                    Calendar</label>
+                                <input type="checkbox" id="show-gregorian-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-quotes-checkbox" data-i18n="settings_show_quotes">Show Daily
+                                    Quotes</label>
+                                <input type="checkbox" id="show-quotes-checkbox" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="quotes-update-freq-select" data-i18n="settings_quotes_update_freq">Quotes
+                                    Update Frequency</label>
+                                <select id="quotes-update-freq-select">
+                                    <option value="tab" data-i18n="settings_quotes_freq_tab">Every New Tab</option>
+                                    <option value="hour" data-i18n="settings_quotes_freq_hour">Every Hour</option>
+                                    <option value="day" data-i18n="settings_quotes_freq_day">Every Day</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show
+                                    Full
+                                    Calendar</label>
+                                <input type="checkbox" id="show-full-calendar-checkbox">
+                            </div>
+                            <div class="setting-item">
+                                <label for="calendar-display-mode-select"
+                                    data-i18n="settings_calendar_display_mode">Calendar Display</label>
+                                <select id="calendar-display-mode-select">
+                                    <option value="solar" data-i18n="settings_calendar_display_solar">Gregorian only
+                                    </option>
+                                    <option value="lunar" data-i18n="settings_calendar_display_lunar">Lunar only
+                                    </option>
+                                    <option value="both" data-i18n="settings_calendar_display_both">Gregorian + Lunar
+                                    </option>
+                                </select>
+                                <p class="setting-hint" data-i18n="settings_calendar_display_mode_hint"
+                                    style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the month
+                                    grid shows solar dates, lunar dates, or both.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2706,19 +2773,24 @@
                 <div class="section-content">
                     <div class="setting-group">
                         <div class="setting-item-row">
-                            <label for="google-drive-sync-checkbox"><i
-                                    class="fa-brands fa-google-drive" style="color: #34A853; margin-right: 4px;"></i>
+                            <label for="google-drive-sync-checkbox"><i class="fa-brands fa-google-drive"
+                                    style="color: #34A853; margin-right: 4px;"></i>
                                 <span data-i18n="settings_google_drive_sync">Sync with Google Drive</span></label>
                             <input type="checkbox" id="google-drive-sync-checkbox">
                         </div>
                         <p class="setting-hint" data-i18n="settings_google_drive_sync_hint"
                             style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;">Auto backup and restore settings &
                             bookmarks via Google Drive.</p>
-                            
+
                         <!-- Google Drive Sync Test Notice -->
-                        <div class="google-sync-test-notice" style="margin-top: 8px; margin-bottom: 12px; font-size: 0.85rem; background: rgba(255, 193, 7, 0.1); color: #ffc107; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 193, 7, 0.3); display: flex; align-items: flex-start; gap: 8px;">
+                        <div class="google-sync-test-notice"
+                            style="margin-top: 8px; margin-bottom: 12px; font-size: 0.85rem; background: rgba(255, 193, 7, 0.1); color: #ffc107; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 193, 7, 0.3); display: flex; align-items: flex-start; gap: 8px;">
                             <i class="fa-solid fa-triangle-exclamation" style="margin-top: 2px;"></i>
-                            <span data-i18n-html="settings_google_sync_test_notice">Tính năng này đang trong quá trình thử nghiệm. Nếu bạn đăng nhập bị từ chối và muốn dùng thử, xin vui lòng điền thông tin vào <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0MVV6-Z7sxb-4Zpv5wRyBcKPsl8EbOqRAnntgrdBc_gOXpQ/viewform?usp=dialog" target="_blank">form đăng ký này</a>.</span>
+                            <span data-i18n-html="settings_google_sync_test_notice">Tính năng này đang trong quá trình
+                                thử nghiệm. Nếu bạn đăng nhập bị từ chối và muốn dùng thử, xin vui lòng điền thông tin
+                                vào <a
+                                    href="https://docs.google.com/forms/d/e/1FAIpQLSe0MVV6-Z7sxb-4Zpv5wRyBcKPsl8EbOqRAnntgrdBc_gOXpQ/viewform?usp=dialog"
+                                    target="_blank">form đăng ký này</a>.</span>
                         </div>
 
                         <div id="drive-sync-options-wrapper" style="display: none;">
@@ -2781,19 +2853,24 @@
             <!-- About Project Section -->
             <div class="settings-section" data-section-id="about-project">
                 <h3 class="section-toggle"><i class="fa-solid fa-circle-info"></i>
-                    <span data-i18n="settings_about_project">About Project</span></h3>
+                    <span data-i18n="settings_about_project">About Project</span>
+                </h3>
                 <div class="section-content">
                     <div class="setting-group" style="display: flex; flex-direction: column; gap: 10px;">
                         <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank"
                             class="secondary-btn"
                             style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-                            <i class="fa-brands fa-github"></i> <span data-i18n="settings_github_releases">GitHub Releases</span>
+                            <i class="fa-brands fa-github"></i> <span data-i18n="settings_github_releases">GitHub
+                                Releases</span>
                         </a>
 
-                        <a href="https://github.com/ChickenSoup269/Zero-Start-Page" target="_blank" class="secondary-btn" id="github-star-link"
+                        <a href="https://github.com/ChickenSoup269/Zero-Start-Page" target="_blank"
+                            class="secondary-btn" id="github-star-link"
                             style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
-                            <i class="fa-solid fa-star" style="color: #f1c40f;"></i> <span data-i18n="settings_star_github">Star on GitHub</span>
-                            <span id="github-star-count" style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; display: none;"></span>
+                            <i class="fa-solid fa-star" style="color: #f1c40f;"></i> <span
+                                data-i18n="settings_star_github">Star on GitHub</span>
+                            <span id="github-star-count"
+                                style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; display: none;"></span>
                         </a>
 
                         <button id="donate-trigger-btn" class="secondary-btn"
@@ -2801,61 +2878,100 @@
                             <i class="fa-solid fa-heart"></i> <span data-i18n="donate_button">Support Developer</span>
                         </button>
 
-                        <div class="update-frequency-table" style="margin-top: 5px; background: rgba(128, 128, 128, 0.1); padding: 10px; border-radius: 8px; font-size: 0.8rem; border: 1px solid rgba(128, 128, 128, 0.2);">
-                            <div style="font-weight: bold; margin-bottom: 8px; text-align: center;" data-i18n="update_frequency_title">Update Frequency Guide</div>
+                        <div class="update-frequency-table"
+                            style="margin-top: 5px; background: rgba(128, 128, 128, 0.1); padding: 10px; border-radius: 8px; font-size: 0.8rem; border: 1px solid rgba(128, 128, 128, 0.2);">
+                            <div style="font-weight: bold; margin-bottom: 8px; text-align: center;"
+                                data-i18n="update_frequency_title">Update Frequency Guide</div>
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tbody>
                                     <tr style="border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
                                         <td style="padding: 4px 0;">1-2 <span data-i18n="time_weeks">Weeks</span></td>
-                                        <td style="padding: 4px 0; text-align: right; color: #28a745;" data-i18n="update_active">Active Updates</td>
+                                        <td style="padding: 4px 0; text-align: right; color: #28a745;"
+                                            data-i18n="update_active">Active Updates</td>
                                     </tr>
                                     <tr style="border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
                                         <td style="padding: 4px 0;">1-2 <span data-i18n="time_months">Months</span></td>
-                                        <td style="padding: 4px 0; text-align: right; color: #ffc107;" data-i18n="update_maintained">Maintained</td>
+                                        <td style="padding: 4px 0; text-align: right; color: #ffc107;"
+                                            data-i18n="update_maintained">Maintained</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding: 4px 0;">&gt; 3 <span data-i18n="time_months">Months</span></td>
-                                        <td style="padding: 4px 0; text-align: right; color: #17a2b8;" data-i18n="update_stable">Stable Version</td>
+                                        <td style="padding: 4px 0;">&gt; 3 <span data-i18n="time_months">Months</span>
+                                        </td>
+                                        <td style="padding: 4px 0; text-align: right; color: #17a2b8;"
+                                            data-i18n="update_stable">Stable Version</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            
-                            <details style="margin-top: 10px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 8px;">
-                                <summary style="cursor: pointer; font-weight: bold; color: var(--theme-color-primary, #66b2ff); user-select: none;">
+
+                            <details
+                                style="margin-top: 10px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 8px;">
+                                <summary
+                                    style="cursor: pointer; font-weight: bold; color: var(--theme-color-primary, #66b2ff); user-select: none;">
                                     <span data-i18n="release_history">Release History</span>
                                 </summary>
-                                <div style="margin-top: 8px; max-height: 150px; overflow-y: auto; padding-right: 5px; opacity: 0.8;">
-                                    <ul style="list-style-type: none; padding: 0; margin: 0; font-family: monospace; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;"><span style="color: #3b82f6; font-weight: bold;">v1.9.0 (Latest)</span></li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.8.2</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.8.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.7.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.6.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.5.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.4.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.3.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.2.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.1.1</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.1.0</li>
-                                        <li style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">v1.0.0</li>
+                                <div
+                                    style="margin-top: 8px; max-height: 150px; overflow-y: auto; padding-right: 5px; opacity: 0.8;">
+                                    <ul
+                                        style="list-style-type: none; padding: 0; margin: 0; font-family: monospace; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            <span style="color: #3b82f6; font-weight: bold;">v1.9.0 (Latest)</span></li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.8.2</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.8.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.7.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.6.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.5.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.4.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.3.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.2.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.1.1</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.1.0</li>
+                                        <li
+                                            style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
+                                            v1.0.0</li>
                                     </ul>
                                 </div>
                             </details>
                         </div>
 
-                        <div style="margin-top: 15px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                        <div
+                            style="margin-top: 15px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
                             <span style="opacity: 0.8;" data-i18n="available_on">Available on</span>
                             <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0"
-                                target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(128,128,128,0.15); border-radius: 6px; font-weight: 500;">
+                                target="_blank"
+                                style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(128,128,128,0.15); border-radius: 6px; font-weight: 500;">
                                 <i class="fa-brands fa-chrome" style="color: #4285F4; font-size: 1.1em;"></i> Chrome
                             </a>
                             <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/"
-                                target="_blank" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(128,128,128,0.15); border-radius: 6px; font-weight: 500;">
-                                <i class="fa-brands fa-firefox-browser" style="color: #FF7139; font-size: 1.1em;"></i> Firefox
+                                target="_blank"
+                                style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(128,128,128,0.15); border-radius: 6px; font-weight: 500;">
+                                <i class="fa-brands fa-firefox-browser" style="color: #FF7139; font-size: 1.1em;"></i>
+                                Firefox
                             </a>
                         </div>
-                        
-                        <div style="font-size: 0.75rem; opacity: 0.8; color: #fff; text-align: center; margin-top: 15px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 10px;">
+
+                        <div
+                            style="font-size: 0.75rem; opacity: 0.8; color: #fff; text-align: center; margin-top: 15px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 10px;">
                             &copy; 2026 ChickenSoup269
                         </div>
                     </div>
@@ -2867,11 +2983,14 @@
             <div style="position: relative;">
 
                 <button id="sidebar-footer-toggle" class="sidebar-footer-toggle" title="Toggle panel">
-                    <span style="background: rgba(255, 255, 255, 0.15); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    <span
+                        style="background: rgba(255, 255, 255, 0.15); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-chevron-down"></i>
                     </span>
                 </button>
-                <div class="sidebar-copyright" style="position: absolute; left: 15px; top: 0; bottom: 0; display: flex; align-items: center; font-size: 0.65rem; opacity: 0.7; color: #fff; pointer-events: none; padding-bottom: 2px; font-weight: 500; letter-spacing: 0.5px; margin: 0; padding-top: 0; border: none;" data-i18n="footer_export_import">
+                <div class="sidebar-copyright"
+                    style="position: absolute; left: 15px; top: 0; bottom: 0; display: flex; align-items: center; font-size: 0.65rem; opacity: 0.7; color: #fff; pointer-events: none; padding-bottom: 2px; font-weight: 500; letter-spacing: 0.5px; margin: 0; padding-top: 0; border: none;"
+                    data-i18n="footer_export_import">
                     Export / Import
                 </div>
             </div>
@@ -3035,11 +3154,14 @@
                 <h2 data-i18n="smooth_scroll_prompt_title">Smooth Scrolling</h2>
             </div>
             <div class="modal-body" style="padding-top: 10px; font-size: 0.95rem; opacity: 0.85;">
-                <p data-i18n="smooth_scroll_prompt_desc">Would you like to enable smooth scrolling for the settings sidebar?</p>
+                <p data-i18n="smooth_scroll_prompt_desc">Would you like to enable smooth scrolling for the settings
+                    sidebar?</p>
             </div>
             <div class="modal-footer" style="justify-content: center; gap: 10px; border-top: none; padding-top: 0;">
-                <button id="btn-smooth-scroll-disable" class="secondary-btn" data-i18n="smooth_scroll_disable">Use Default</button>
-                <button id="btn-smooth-scroll-enable" class="primary-btn" data-i18n="smooth_scroll_enable">Enable</button>
+                <button id="btn-smooth-scroll-disable" class="secondary-btn" data-i18n="smooth_scroll_disable">Use
+                    Default</button>
+                <button id="btn-smooth-scroll-enable" class="primary-btn"
+                    data-i18n="smooth_scroll_enable">Enable</button>
             </div>
         </div>
     </div>
@@ -3083,14 +3205,20 @@
                 <h2 data-i18n="qr_code_title">QR Code</h2>
                 <span id="close-qr-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
-            <div class="modal-body" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px;">
+            <div class="modal-body"
+                style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px;">
                 <div style="position: relative; display: inline-block;">
-                    <img id="qr-code-img" src="" alt="QR Code" style="width: 250px; height: 250px; background: white; padding: 10px; border-radius: 10px;">
-                    <div id="qr-code-icon-wrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 6px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                        <img id="qr-code-icon" src="" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+                    <img id="qr-code-img" src="" alt="QR Code"
+                        style="width: 250px; height: 250px; background: white; padding: 10px; border-radius: 10px;">
+                    <div id="qr-code-icon-wrapper"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 6px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                        <img id="qr-code-icon" src=""
+                            style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
                     </div>
                 </div>
-                <p id="qr-code-url" style="font-size: 0.9rem; color: var(--text-color); opacity: 0.8; word-break: break-all; margin: 0; user-select: text;"></p>
+                <p id="qr-code-url"
+                    style="font-size: 0.9rem; color: var(--text-color); opacity: 0.8; word-break: break-all; margin: 0; user-select: text;">
+                </p>
             </div>
         </div>
     </div>
@@ -3113,7 +3241,7 @@
                 width: 320px;
                 animation: dialogSlideIn 0.3s ease;
             ">
-        <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/image.png?raw=true"
+        <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/momo_qr.png?raw=true"
             alt="MoMo QR" style="
                 width: 100%;
                 height: auto;
@@ -3329,7 +3457,8 @@
     <div id="timer-component" class="timer-container glass-panel drag-handle" style="display: none;"></div>
     <div id="todo-container" class="todo-container glass-panel drag-handle" style="display: none;"></div>
     <div id="rss-container" class="rss-container glass-panel drag-handle" style="display: none;"></div>
-    <div id="habit-tracker-container" class="habit-tracker-container glass-panel drag-handle" style="display: none;"></div>
+    <div id="habit-tracker-container" class="habit-tracker-container glass-panel drag-handle" style="display: none;">
+    </div>
 
     <script type="module" src="src/bootstrap.js?v=perf-lazy-v17"></script>
 

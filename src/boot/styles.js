@@ -2,13 +2,29 @@
  * boot/styles.js
  * Applies CSS variables and visual tokens at boot time (no layout shift).
  */
-import { buildMaterial3Scheme, getContrastYIQ, hexToRgb } from "../utils/colors.js"
+import {
+  buildMaterial3Scheme,
+  getContrastYIQ,
+  hexToRgb,
+} from "../utils/colors.js"
 import { getSettings } from "../services/state.js"
 
 const SYSTEM_FONTS = new Set([
-  "sans-serif", "serif", "monospace", "cursive", "fantasy",
-  "system-ui", "arial", "helvetica", "segoe ui", "times new roman",
-  "courier new", "georgia", "verdana", "trebuchet ms", "impact",
+  "sans-serif",
+  "serif",
+  "monospace",
+  "cursive",
+  "fantasy",
+  "system-ui",
+  "arial",
+  "helvetica",
+  "segoe ui",
+  "times new roman",
+  "courier new",
+  "georgia",
+  "verdana",
+  "trebuchet ms",
+  "impact",
 ])
 
 export function loadFontOnBoot(fontValue) {
@@ -21,7 +37,11 @@ export function loadFontOnBoot(fontValue) {
   const savedFontObj = savedFonts.find(
     (f) => (typeof f === "string" ? f : f.label) === fontName,
   )
-  if (savedFontObj && typeof savedFontObj === "object" && savedFontObj.isLocal) {
+  if (
+    savedFontObj &&
+    typeof savedFontObj === "object" &&
+    savedFontObj.isLocal
+  ) {
     return
   }
 
@@ -56,7 +76,10 @@ export function applyDefaultAccentTokens(seedColor) {
   }
 }
 
-export function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
+export function applyMaterialAccentTokens(
+  seedColor,
+  paletteStyle = "tonalSpot",
+) {
   const root = document.documentElement
   const scheme = buildMaterial3Scheme(seedColor, paletteStyle)
   const tokenMap = {
@@ -115,7 +138,10 @@ export function applyAccentTokens(settings) {
   if ((settings.accentColorMode || "m3") === "default") {
     return applyDefaultAccentTokens(color)
   }
-  return applyMaterialAccentTokens(color, settings.m3PaletteStyle || "tonalSpot")
+  return applyMaterialAccentTokens(
+    color,
+    settings.m3PaletteStyle || "tonalSpot",
+  )
 }
 
 function buildSvgWavePreviewGradient(settings) {
@@ -174,13 +200,18 @@ export function applyBasicStyles(settings) {
   root.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
   root.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
 
-  root.style.setProperty("--clock-font-size", `${settings.clockFontSize ?? 11}rem`)
+  root.style.setProperty(
+    "--clock-font-size",
+    `${settings.clockFontSize ?? 11}rem`,
+  )
   root.style.setProperty("--date-font-size", `${settings.dateFontSize ?? 2}rem`)
 
   if (settings.panelBg) root.style.setProperty("--panel-bg", settings.panelBg)
   if (settings.glassBg) root.style.setProperty("--glass-bg", settings.glassBg)
-  if (settings.glassBorder) root.style.setProperty("--glass-border", settings.glassBorder)
-  if (settings.glassEdge) root.style.setProperty("--glass-edge", settings.glassEdge)
+  if (settings.glassBorder)
+    root.style.setProperty("--glass-border", settings.glassBorder)
+  if (settings.glassEdge)
+    root.style.setProperty("--glass-edge", settings.glassEdge)
 
   if (settings.accentColor) {
     applyAccentTokens(settings)
@@ -189,30 +220,47 @@ export function applyBasicStyles(settings) {
       root.style.setProperty("--sidebar-bg", "rgba(240, 240, 245, 0.98)")
       document.body.classList.add("sidebar-light")
     } else {
-      if (settings.sidebarBg) root.style.setProperty("--sidebar-bg", settings.sidebarBg)
+      if (settings.sidebarBg)
+        root.style.setProperty("--sidebar-bg", settings.sidebarBg)
       document.body.classList.remove("sidebar-light")
     }
   }
 
   const primaryFont = settings.font || "'Outfit', sans-serif"
-  const clockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
+  const clockFont =
+    settings.clockFont || settings.font || "'Outfit', sans-serif"
   root.style.setProperty("--font-primary", primaryFont)
 
   const dateClockStyle = settings.dateClockStyle || "default"
   const clockFontTarget = settings.clockFontTarget || "both"
-  const clockUsesDisplayFont = clockFontTarget === "both" || clockFontTarget === "clock"
+  const clockUsesDisplayFont =
+    clockFontTarget === "both" || clockFontTarget === "clock"
   const dateUsesDisplayFont =
-    clockFontTarget === "both" || clockFontTarget === "date" || clockFontTarget === "weekday"
+    clockFontTarget === "both" ||
+    clockFontTarget === "date" ||
+    clockFontTarget === "weekday"
 
   const applyFontToTargets = (targets, font) => {
     targets.forEach((t) => root.style.setProperty(`--font-${t}`, font))
   }
 
-  applyFontToTargets(["clock", "date", "weekday", "gregorian-date", "lunar-date"], primaryFont)
+  applyFontToTargets(
+    ["clock", "date", "weekday", "gregorian-date", "lunar-date"],
+    primaryFont,
+  )
 
   if (clockFontTarget === "both") {
     applyFontToTargets(
-      ["clock", "date", "weekday", "gregorian-date", "lunar-date", "clock-date", "jp-time", "jp-date"],
+      [
+        "clock",
+        "date",
+        "weekday",
+        "gregorian-date",
+        "lunar-date",
+        "clock-date",
+        "jp-time",
+        "jp-date",
+      ],
       clockFont,
     )
   } else if (clockFontTarget === "clock") {
@@ -234,15 +282,42 @@ export function applyBasicStyles(settings) {
   const getFontName = (f) => String(f || "")
   const getClockFontProfile = (font) => {
     const name = getFontName(font).toLowerCase()
-    if (name === "e1234") return { clockScale: 0.68, dateScale: 0.86, letterSpacing: "0px", maxWidthFactor: 5.8 }
-    if (name === "electroharmonix" || name === "anurati") return { clockScale: 0.78, dateScale: 0.9, letterSpacing: "0.02em", maxWidthFactor: 6.1 }
-    if (name === "saiba-45") return { clockScale: 0.86, dateScale: 0.94, letterSpacing: "0.01em", maxWidthFactor: 6.4 }
-    return { clockScale: 1, dateScale: 1, letterSpacing: "2px", maxWidthFactor: 7 }
+    if (name === "e1234")
+      return {
+        clockScale: 0.68,
+        dateScale: 0.86,
+        letterSpacing: "0px",
+        maxWidthFactor: 5.8,
+      }
+    if (name === "electroharmonix" || name === "anurati")
+      return {
+        clockScale: 0.78,
+        dateScale: 0.9,
+        letterSpacing: "0.02em",
+        maxWidthFactor: 6.1,
+      }
+    if (name === "saiba-45")
+      return {
+        clockScale: 0.86,
+        dateScale: 0.94,
+        letterSpacing: "0.01em",
+        maxWidthFactor: 6.4,
+      }
+    return {
+      clockScale: 1,
+      dateScale: 1,
+      letterSpacing: "2px",
+      maxWidthFactor: 7,
+    }
   }
   const getStyleClockScale = (style) => {
     const styleScales = {
-      "cyber-pulse": 0.94, "neon-grid": 0.9, "holo-ring": 0.9,
-      "lunar-orbit": 0.9, fliqlo: 0.92, sidebar: 0.94,
+      "cyber-pulse": 0.94,
+      "neon-grid": 0.9,
+      "holo-ring": 0.9,
+      "lunar-orbit": 0.9,
+      fliqlo: 0.92,
+      sidebar: 0.94,
     }
     return styleScales[style] || 1
   }
@@ -254,7 +329,8 @@ export function applyBasicStyles(settings) {
   }
 
   if (clockUsesDisplayFont) {
-    computedClockSize *= fontProfile.clockScale * getStyleClockScale(dateClockStyle)
+    computedClockSize *=
+      fontProfile.clockScale * getStyleClockScale(dateClockStyle)
   }
   if (dateUsesDisplayFont) {
     computedDateSize *= fontProfile.dateScale
@@ -265,9 +341,21 @@ export function applyBasicStyles(settings) {
 
   root.style.setProperty("--clock-size", `${computedClockSize}rem`)
   root.style.setProperty("--date-size", `${computedDateSize}rem`)
-  root.style.setProperty("--clock-letter-spacing", clockUsesDisplayFont ? fontProfile.letterSpacing : "2px")
-  root.style.setProperty("--clock-max-width-factor", String(fontProfile.maxWidthFactor))
+  root.style.setProperty(
+    "--clock-letter-spacing",
+    clockUsesDisplayFont ? fontProfile.letterSpacing : "2px",
+  )
+  root.style.setProperty(
+    "--clock-max-width-factor",
+    String(fontProfile.maxWidthFactor),
+  )
 
-  root.style.setProperty("--bookmark-font-size", `${settings.bookmarkFontSize ?? 10}px`)
-  root.style.setProperty("--bookmark-group-font-size", `${settings.bookmarkGroupFontSize ?? 10}px`)
+  root.style.setProperty(
+    "--bookmark-font-size",
+    `${settings.bookmarkFontSize ?? 10}px`,
+  )
+  root.style.setProperty(
+    "--bookmark-group-font-size",
+    `${settings.bookmarkGroupFontSize ?? 10}px`,
+  )
 }

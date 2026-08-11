@@ -196,7 +196,10 @@ function waitForStartupOverlayHidden(timeout = 6000) {
     const overlay = document.getElementById("startup-overlay")
     if (!overlay) return true
     const style = window.getComputedStyle(overlay)
-    return style.visibility === "hidden" || Number.parseFloat(style.opacity || "1") <= 0.01
+    return (
+      style.visibility === "hidden" ||
+      Number.parseFloat(style.opacity || "1") <= 0.01
+    )
   }
 
   if (isHidden()) return Promise.resolve()
@@ -753,33 +756,41 @@ function getFirstRunSettingsGuideSteps(i18n) {
       virtualTarget: "center-screen",
       icon: "fa-solid fa-hand-wave",
       title: i18n.first_run_tour_welcome_title || "Welcome to Startpage! 🎉",
-      text: i18n.first_run_tour_welcome_desc || "Thank you for installing the extension. Let's take a quick look at the main features to get you started!",
+      text:
+        i18n.first_run_tour_welcome_desc ||
+        "Thank you for installing the extension. Let's take a quick look at the main features to get you started!",
       placement: "center",
-      skipSidebarScroll: true
+      skipSidebarScroll: true,
     },
     {
       selector: "#search-container",
       icon: "fa-solid fa-magnifying-glass",
       title: i18n.first_run_tour_search_title || "Smart Search",
-      text: i18n.first_run_tour_search_desc || "Type keywords or URLs to search. Press Tab or the Google icon to quickly switch between different search engines.",
+      text:
+        i18n.first_run_tour_search_desc ||
+        "Type keywords or URLs to search. Press Tab or the Google icon to quickly switch between different search engines.",
       placement: "bottom",
-      skipSidebarScroll: true
+      skipSidebarScroll: true,
     },
     {
       selector: "#settings-toggle",
       icon: "fa-solid fa-gear",
       title: i18n.first_run_tour_settings_title || "Unlimited Customization",
-      text: i18n.first_run_tour_settings_desc || "Click this Gear icon to open the Settings panel. Here you can change Wallpapers, Colors, Fonts, Effects, and much more!",
+      text:
+        i18n.first_run_tour_settings_desc ||
+        "Click this Gear icon to open the Settings panel. Here you can change Wallpapers, Colors, Fonts, Effects, and much more!",
       placement: "bottom",
-      skipSidebarScroll: true
+      skipSidebarScroll: true,
     },
     {
       selector: "#bookmarks-container",
       icon: "fa-solid fa-bookmark",
       title: i18n.first_run_tour_bookmarks_title || "Bookmark Management",
-      text: i18n.first_run_tour_bookmarks_desc || "Here you can create, drag to rearrange, and group your favorite website shortcuts. Right-click them for more options.",
+      text:
+        i18n.first_run_tour_bookmarks_desc ||
+        "Here you can create, drag to rearrange, and group your favorite website shortcuts. Right-click them for more options.",
       placement: "bottom",
-      skipSidebarScroll: true
+      skipSidebarScroll: true,
     },
     {
       selector: "#settings-sidebar .sidebar-header",
@@ -814,7 +825,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Start from a theme preset, save your current look, try style presets, or open Theme Web Beta to browse shared looks.",
     },
     {
-      selector: '[data-section-id="background"], [data-settings-partial="background"]',
+      selector:
+        '[data-section-id="background"], [data-settings-partial="background"]',
       icon: "fa-solid fa-image",
       title: i18n.settings_bg || "Background",
       text:
@@ -830,7 +842,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Pick the main accent color, extract it from the current background, or let widgets follow the same color system.",
     },
     {
-      selector: '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
+      selector:
+        '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
       icon: "fa-solid fa-fill-drip",
       title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
       text:
@@ -838,7 +851,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Build gradient, SVG wave, and multi-color backgrounds. The Visual Preset Hub can copy or apply a full shareable visual bundle.",
     },
     {
-      selector: '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
+      selector:
+        '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
       icon: "fa-solid fa-wand-magic-sparkles",
       title: i18n.settings_animated_backgrounds || "Animated backgrounds",
       text:
@@ -846,7 +860,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Use richer animated backgrounds such as gradient motion, silk, light pillars, liquid light, or splash cursor effects.",
     },
     {
-      selector: '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
+      selector:
+        '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
       icon: "fa-solid fa-star",
       title: i18n.settings_effect || "Effects",
       text:
@@ -862,7 +877,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Change the general font, clock font, or load and save a Google Font for later.",
     },
     {
-      selector: '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
+      selector:
+        '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
       icon: "fa-solid fa-clock",
       title: i18n.settings_date_format || "Date & Clock",
       text:
@@ -870,7 +886,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize time format, date format, clock style, colors, size, and display mode.",
     },
     {
-      selector: '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
+      selector:
+        '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
       icon: "fa-solid fa-bookmark",
       title: i18n.settings_custom_bookmark || "Bookmarks",
       text:
@@ -886,7 +903,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize bookmark group tabs with background and text colors, opacity, font size, counts, borders, and interaction behavior.",
     },
     {
-      selector: '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
+      selector:
+        '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
       icon: "fa-solid fa-heading",
       title: i18n.settings_custom_title || "Custom title",
       text:
@@ -927,7 +945,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
     },
     {
-      selector: '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
+      selector:
+        '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
       icon: "fa-solid fa-cloud",
       title: i18n.settings_data_sync || "Data & Sync",
       text:
@@ -935,7 +954,8 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Enable Google Drive sync to securely back up and restore your settings and bookmarks across devices. You can also configure auto-backup intervals.",
     },
     {
-      selector: '[data-section-id="about-project"], [data-settings-partial="about-project"]',
+      selector:
+        '[data-section-id="about-project"], [data-settings-partial="about-project"]',
       icon: "fa-solid fa-circle-info",
       title: i18n.first_run_guide_donate_title || "About Project & Support",
       text:
@@ -978,7 +998,7 @@ function getVirtualGuideRect(target) {
       width: 0,
       height: 0,
       bottom: window.innerHeight / 2,
-      right: window.innerWidth / 2
+      right: window.innerWidth / 2,
     }
   }
 
@@ -1058,7 +1078,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
   const i18n = geti18n()
   const steps = getFirstRunSettingsGuideSteps(i18n).filter((step) =>
-    step.virtualTarget ? getVirtualGuideRect(step.virtualTarget) : document.querySelector(step.selector),
+    step.virtualTarget
+      ? getVirtualGuideRect(step.virtualTarget)
+      : document.querySelector(step.selector),
   )
   if (!steps.length) {
     localStorage.setItem(FIRST_RUN_SETTINGS_GUIDE_KEY, "empty")
@@ -1147,7 +1169,10 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       if (step.placement === "bottom") {
         left = Math.min(
           viewportWidth - cardRect.width - gap,
-          Math.max(gap, targetRect.left + targetRect.width / 2 - cardRect.width / 2),
+          Math.max(
+            gap,
+            targetRect.left + targetRect.width / 2 - cardRect.width / 2,
+          ),
         )
         // Check if there's space below
         if (targetRect.bottom + cardRect.height + 22 < viewportHeight) {
@@ -1168,10 +1193,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
         )
       }
 
-      top = Math.min(
-        viewportHeight - cardRect.height - gap,
-        Math.max(gap, top),
-      )
+      top = Math.min(viewportHeight - cardRect.height - gap, Math.max(gap, top))
 
       card.style.left = `${left}px`
       card.style.top = `${top}px`
@@ -1187,7 +1209,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
         await waitForSettingsSidebarOpen(sidebar)
       }
       if (resolved || token !== renderToken) return
-      const section = step.selector ? document.querySelector(step.selector) : null
+      const section = step.selector
+        ? document.querySelector(step.selector)
+        : null
       if (section?.classList?.contains("settings-section")) {
         setSettingsSectionExpanded(section, true)
       }
@@ -1211,7 +1235,11 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
       await waitForAnimationFrames(2)
       if (resolved || token !== renderToken) return
-      const rect = virtualRect || (step.skipSidebarScroll ? target.getBoundingClientRect() : await scrollGuideTargetIntoView(sidebarContent, target))
+      const rect =
+        virtualRect ||
+        (step.skipSidebarScroll
+          ? target.getBoundingClientRect()
+          : await scrollGuideTargetIntoView(sidebarContent, target))
       if (resolved || token !== renderToken) return
       spotlight.style.left = `${rect.left - 8}px`
       spotlight.style.top = `${rect.top - 8}px`

@@ -14,14 +14,16 @@
 }
 
 /* Unified Modal Display System */
-.modal.open, .modal.show {
+.modal.open,
+.modal.show {
   display: flex !important;
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
 }
 
-.modal.open .modal-content, .modal.show .modal-content {
+.modal.open .modal-content,
+.modal.show .modal-content {
   transform: scale(1) translateY(0);
 }
 
@@ -236,11 +238,7 @@
   letter-spacing: 0.3px;
   line-height: 1.35;
   overflow-wrap: anywhere;
-  font-family:
-    Inter,
-    "Segoe UI",
-    Arial,
-    sans-serif;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
 
 .dialog-body {
@@ -372,7 +370,11 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.03)
+    ),
     rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.74);
   font-size: 0.78rem;
@@ -382,7 +384,11 @@
 .first-run-zoom-card.recommended {
   border-color: rgba(var(--accent-color-rgb), 0.55);
   background:
-    linear-gradient(180deg, rgba(var(--accent-color-rgb), 0.22), rgba(var(--accent-color-rgb), 0.08)),
+    linear-gradient(
+      180deg,
+      rgba(var(--accent-color-rgb), 0.22),
+      rgba(var(--accent-color-rgb), 0.08)
+    ),
     rgba(255, 255, 255, 0.05);
   color: #fff;
   box-shadow:
@@ -412,7 +418,11 @@
   border-bottom-color: rgba(0, 0, 0, 0.35);
   border-radius: 8px;
   padding: 5px 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.11),
+    rgba(255, 255, 255, 0.045)
+  );
   box-shadow:
     0 2px 0 rgba(0, 0, 0, 0.28),
     0 1px 0 rgba(255, 255, 255, 0.08) inset;
@@ -539,11 +549,7 @@
   line-height: 1.38;
   overflow-wrap: anywhere;
   text-wrap: balance;
-  font-family:
-    Inter,
-    "Segoe UI",
-    Arial,
-    sans-serif;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
 
 .first-run-tour-text {
@@ -599,7 +605,11 @@
   border-bottom-color: rgba(0, 0, 0, 0.42);
   border-radius: 6px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.045)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.045)
+    ),
     rgba(0, 0, 0, 0.22);
   box-shadow:
     0 2px 0 rgba(0, 0, 0, 0.34),
@@ -612,7 +622,10 @@
 
 .first-run-tour-actions {
   display: grid;
-  grid-template-columns: minmax(74px, 0.9fr) minmax(74px, 0.9fr) minmax(92px, 1.2fr);
+  grid-template-columns: minmax(74px, 0.9fr) minmax(74px, 0.9fr) minmax(
+      92px,
+      1.2fr
+    );
   gap: 8px;
 }
 
@@ -671,7 +684,8 @@
   overflow: auto;
   padding-right: 6px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-color-rgb), 0.46) rgba(255, 255, 255, 0.045);
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.46)
+    rgba(255, 255, 255, 0.045);
 }
 
 .dialog-checklist::-webkit-scrollbar {
@@ -688,8 +702,7 @@
   min-height: 42px;
   border: 2px solid transparent;
   border-radius: 999px;
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(var(--accent-color-rgb), 0.78),
       rgba(var(--accent-color-rgb), 0.34)
@@ -701,8 +714,7 @@
 }
 
 .dialog-checklist::-webkit-scrollbar-thumb:hover {
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(var(--accent-color-rgb), 0.95),
       rgba(var(--accent-color-rgb), 0.52)
@@ -751,7 +763,7 @@
   transform: translateX(4px);
 }
 
-.dialog-check-item input[type='checkbox'] {
+.dialog-check-item input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 20px;
@@ -766,15 +778,15 @@
   margin-top: 2px;
 }
 
-.dialog-check-item input[type='checkbox']:checked {
+.dialog-check-item input[type="checkbox"]:checked {
   background: var(--accent-color);
   border-color: var(--accent-color);
   box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4);
 }
 
-.dialog-check-item input[type='checkbox']:checked::after {
-  content: '\f00c';
-  font-family: 'Font Awesome 6 Free';
+.dialog-check-item input[type="checkbox"]:checked::after {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   color: var(--accent-contrast-color, #1a1a2e);
   font-size: 11px;
@@ -844,7 +856,10 @@
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
 }
 
 .dialog-choice-item:hover {
@@ -1081,7 +1096,9 @@
   background: rgba(255, 255, 255, 0.8) !important;
   color: #000 !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
 }
@@ -1130,12 +1147,17 @@
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
 }
 
-.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn *,
+.quick-access-white
+  .modal-content.import-mode
+  .primary-btn#confirm-import-btn
+  *,
 .quick-access-white .bug-modal-content .bug-primary-btn * {
   color: #000 !important;
 }
 
-.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn:hover,
+.quick-access-white
+  .modal-content.import-mode
+  .primary-btn#confirm-import-btn:hover,
 .quick-access-white .bug-modal-content .bug-primary-btn:hover {
   background: #e0e0e0 !important;
   transform: translateY(-2px);
@@ -1143,7 +1165,9 @@
 
 /* Ensure Bug Report remains dark */
 .quick-access-white .bug-modal-content,
-.quick-access-white .bug-modal-content *:not(.bug-primary-btn):not(.bug-primary-btn *) {
+.quick-access-white
+  .bug-modal-content
+  *:not(.bug-primary-btn):not(.bug-primary-btn *) {
   background: rgba(15, 15, 20, 0.95) !important;
   color: #fff !important;
 }
@@ -1207,17 +1231,17 @@
 }
 
 .quick-access-white .modal-input-icon {
-    color: rgba(0, 0, 0, 0.35) !important;
+  color: rgba(0, 0, 0, 0.35) !important;
 }
 
 .quick-access-white .modal-back-btn {
-    background: rgba(0, 0, 0, 0.08) !important;
-    border: 1px solid rgba(0, 0, 0, 0.12) !important;
-    color: #000 !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #000 !important;
 }
 
 .quick-access-white .modal-back-btn:hover {
-    background: rgba(0, 0, 0, 0.16) !important;
+  background: rgba(0, 0, 0, 0.16) !important;
 }
 
 /* White Mode for Custom Dialog (Prompt, Alert, Confirm) */
@@ -1325,16 +1349,16 @@
   border-color: #000 !important;
 }
 
-.quick-access-white .dialog-check-item input[type='checkbox'] {
+.quick-access-white .dialog-check-item input[type="checkbox"] {
   border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
-.quick-access-white .dialog-check-item input[type='checkbox']:checked {
+.quick-access-white .dialog-check-item input[type="checkbox"]:checked {
   background: #000 !important;
   border-color: #000 !important;
 }
 
-.quick-access-white .dialog-check-item input[type='checkbox']:checked::after {
+.quick-access-white .dialog-check-item input[type="checkbox"]:checked::after {
   color: #fff !important;
 }
 
@@ -1602,7 +1626,11 @@
 }
 
 /* Button Overrides in White Mode - Limited to Modals/Dialogs */
-.quick-access-white .modal-content:not(.import-mode) .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not([href*="ko-fi"]):not([style*="background"]):not([style*="background-color"]),
+.quick-access-white
+  .modal-content:not(.import-mode)
+  .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not(
+    [href*="ko-fi"]
+  ):not([style*="background"]):not([style*="background-color"]),
 .quick-access-white .custom-dialog .primary-btn {
   background: #000 !important;
   color: #fff !important;
@@ -1610,7 +1638,11 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
-.quick-access-white .modal-content:not(.import-mode) .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not([href*="ko-fi"]):not([style*="background"]):not([style*="background-color"]):hover,
+.quick-access-white
+  .modal-content:not(.import-mode)
+  .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not(
+    [href*="ko-fi"]
+  ):not([style*="background"]):not([style*="background-color"]):hover,
 .quick-access-white .custom-dialog .primary-btn:hover {
   background: #333 !important;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
@@ -1631,14 +1663,18 @@
   background: #333 !important;
 }
 
-.quick-access-white .modal-content:not(.import-mode) .secondary-btn:not(#close-update-popup):not(#close-donate-modal),
+.quick-access-white
+  .modal-content:not(.import-mode)
+  .secondary-btn:not(#close-update-popup):not(#close-donate-modal),
 .quick-access-white .custom-dialog .secondary-btn {
   background: rgba(0, 0, 0, 0.05) !important;
   color: #000 !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
-.quick-access-white .modal-content:not(.import-mode) .secondary-btn:not(#close-update-popup):hover,
+.quick-access-white
+  .modal-content:not(.import-mode)
+  .secondary-btn:not(#close-update-popup):hover,
 .quick-access-white .custom-dialog .secondary-btn:hover {
   background: rgba(0, 0, 0, 0.1) !important;
 }
@@ -1696,7 +1732,8 @@
   border: 1px solid transparent;
 }
 
-.cp-item:hover, .cp-item.active {
+.cp-item:hover,
+.cp-item.active {
   background: rgba(255, 255, 255, 0.1);
   border-color: var(--accent-color);
 }

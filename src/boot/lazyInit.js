@@ -85,7 +85,9 @@ export function ensureCommandPaletteInitialized(reason = "idle", options = {}) {
         commandPaletteOpenOnReady = false
         commandPaletteInitialized = true
         window.dispatchEvent(
-          new CustomEvent("startpage:commandPaletteReady", { detail: { reason } }),
+          new CustomEvent("startpage:commandPaletteReady", {
+            detail: { reason },
+          }),
         )
       })
       .catch((error) => {
@@ -155,7 +157,9 @@ export function setupLazyInitTriggers() {
       if (commandPaletteInitialized) return
       event.preventDefault()
       event.stopImmediatePropagation()
-      void ensureCommandPaletteInitialized("sidebar-button", { openOnInit: true })
+      void ensureCommandPaletteInitialized("sidebar-button", {
+        openOnInit: true,
+      })
     },
     { capture: true },
   )

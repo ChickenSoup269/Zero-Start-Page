@@ -1,24 +1,28 @@
 async function hydrateSettingsPartials() {
-  const placeholders = document.querySelectorAll("[data-settings-partial][data-src]")
-  await Promise.all([...placeholders].map(async (placeholder) => {
-    const src = placeholder.getAttribute("data-src")
-    if (!src) return
+  const placeholders = document.querySelectorAll(
+    "[data-settings-partial][data-src]",
+  )
+  await Promise.all(
+    [...placeholders].map(async (placeholder) => {
+      const src = placeholder.getAttribute("data-src")
+      if (!src) return
 
-    try {
-      const isExtension = typeof chrome !== "undefined" && chrome.runtime?.id
-      const fetchOpts = isExtension ? {} : { cache: "no-store" }
-      let response
       try {
-        response = await fetch(src, fetchOpts)
-      } catch (fetchErr) {
-        response = await fetch(src)
+        const isExtension = typeof chrome !== "undefined" && chrome.runtime?.id
+        const fetchOpts = isExtension ? {} : { cache: "no-store" }
+        let response
+        try {
+          response = await fetch(src, fetchOpts)
+        } catch (fetchErr) {
+          response = await fetch(src)
+        }
+        if (!response.ok) throw new Error(`Failed to load ${src}`)
+        placeholder.outerHTML = await response.text()
+      } catch (error) {
+        console.error("Could not hydrate settings partial:", error)
       }
-      if (!response.ok) throw new Error(`Failed to load ${src}`)
-      placeholder.outerHTML = await response.text()
-    } catch (error) {
-      console.error("Could not hydrate settings partial:", error)
-    }
-  }))
+    }),
+  )
 }
 
 function afterFirstPaint(callback) {
@@ -66,15 +70,15 @@ function needsSettingsAtBoot() {
 
     return Boolean(
       (settings.effect && settings.effect !== "none") ||
-        settings.gradientV2Active ||
-        settings.svgWaveActive ||
-        settings.silkActive ||
-        settings.lightPillarActive ||
-        settings.liquidEtherActive ||
-        settings.splashCursorActive ||
-        settings.m3AutoAccentFromBg ||
-        isVideo ||
-        isCustomBg
+      settings.gradientV2Active ||
+      settings.svgWaveActive ||
+      settings.silkActive ||
+      settings.lightPillarActive ||
+      settings.liquidEtherActive ||
+      settings.splashCursorActive ||
+      settings.m3AutoAccentFromBg ||
+      isVideo ||
+      isCustomBg,
     )
   } catch (e) {
     return false

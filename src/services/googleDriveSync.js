@@ -1,4 +1,9 @@
-import { getSettings, saveSettings, getBookmarks, saveBookmarks } from "./state.js"
+import {
+  getSettings,
+  saveSettings,
+  getBookmarks,
+  saveBookmarks,
+} from "./state.js"
 import { showToast } from "../utils/toast.js"
 import { showFileSelector, showChoice } from "../utils/dialog.js"
 
@@ -10,37 +15,40 @@ export const DriveSync = {
   isSyncing: false,
 
   getSyncFileName() {
-    const settings = getSettings();
-    return settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME;
+    const settings = getSettings()
+    return settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME
   },
 
   async init() {
     const settings = await getSettings()
     this.isEnabled = settings.googleDriveSync === true
 
-    window.addEventListener('googleProfileUpdated', (e) => {
+    window.addEventListener("googleProfileUpdated", (e) => {
       this.updateSyncStatusUI(e.detail)
     })
 
     try {
-      const cached = localStorage.getItem('googleUserProfile')
+      const cached = localStorage.getItem("googleUserProfile")
       if (cached && this.isEnabled) {
         this.updateSyncStatusUI(JSON.parse(cached))
       } else {
         this.updateSyncStatusUI(null)
       }
-    } catch(e) {}
+    } catch (e) {}
 
     if (this.isEnabled) {
-      const intervalStr = settings.driveAutoBackupInterval;
-      let shouldBackup = false;
+      const intervalStr = settings.driveAutoBackupInterval
+      let shouldBackup = false
       if (intervalStr && intervalStr !== "none") {
-        const lastBackup = settings.lastDriveBackupTime || 0;
-        const now = Date.now();
-        const DAY = 24 * 60 * 60 * 1000;
-        if (intervalStr === "daily" && now - lastBackup > DAY) shouldBackup = true;
-        if (intervalStr === "weekly" && now - lastBackup > 7 * DAY) shouldBackup = true;
-        if (intervalStr === "monthly" && now - lastBackup > 30 * DAY) shouldBackup = true;
+        const lastBackup = settings.lastDriveBackupTime || 0
+        const now = Date.now()
+        const DAY = 24 * 60 * 60 * 1000
+        if (intervalStr === "daily" && now - lastBackup > DAY)
+          shouldBackup = true
+        if (intervalStr === "weekly" && now - lastBackup > 7 * DAY)
+          shouldBackup = true
+        if (intervalStr === "monthly" && now - lastBackup > 30 * DAY)
+          shouldBackup = true
       }
 
       if (shouldBackup) {
@@ -48,7 +56,7 @@ export const DriveSync = {
           const currentSettings = getSettings()
           currentSettings.lastDriveBackupTime = Date.now()
           saveSettings(true)
-        });
+        })
       } else {
         this.syncFromDrive()
       }
@@ -64,18 +72,24 @@ export const DriveSync = {
           let defaultName = settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME
 
           const files = await this.getAllJsonFiles(token)
-          const fileName = await showFileSelector("sync_select_file", files, defaultName)
-          
+          const fileName = await showFileSelector(
+            "sync_select_file",
+            files,
+            defaultName,
+          )
+
           if (!fileName) {
             throw new Error("User cancelled sync setup")
           }
 
-          const finalFileName = fileName.trim().toLowerCase().endsWith(".json") ? fileName.trim() : `${fileName.trim()}.json`
+          const finalFileName = fileName.trim().toLowerCase().endsWith(".json")
+            ? fileName.trim()
+            : `${fileName.trim()}.json`
           settings.driveSyncFileName = finalFileName
-          
+
           this.isEnabled = true
           this.updateUserProfile(token)
-          
+
           const fileId = await this.getFileId(token)
 
           if (fileId) {
@@ -83,10 +97,20 @@ export const DriveSync = {
               `Backup file "${finalFileName}" already exists on Google Drive. Do you want to download settings from Drive, or overwrite it with your current settings?`,
               "Drive Backup Found",
               [
-                { label: "Download from Drive", value: "download", primary: true, icon: "fa-solid fa-cloud-arrow-down" },
-                { label: "Overwrite Drive", value: "upload", danger: true, icon: "fa-solid fa-cloud-arrow-up" },
-                { label: "Cancel", value: "cancel" }
-              ]
+                {
+                  label: "Download from Drive",
+                  value: "download",
+                  primary: true,
+                  icon: "fa-solid fa-cloud-arrow-down",
+                },
+                {
+                  label: "Overwrite Drive",
+                  value: "upload",
+                  danger: true,
+                  icon: "fa-solid fa-cloud-arrow-up",
+                },
+                { label: "Cancel", value: "cancel" },
+              ],
             )
 
             if (!choice || choice === "cancel") {
@@ -107,7 +131,7 @@ export const DriveSync = {
               await this.syncFromDrive(true)
             }
           } else {
-            let payload = null;
+            let payload = null
             if (buildPayloadFn) {
               payload = await buildPayloadFn()
               if (!payload) throw new Error("Cancelled sync payload")
@@ -139,8 +163,16 @@ export const DriveSync = {
 
   getAuthToken(interactive = false) {
     return new Promise((resolve, reject) => {
-      if (typeof chrome === 'undefined' || !chrome.identity || !chrome.identity.getAuthToken) {
-        return reject(new Error("chrome.identity API is not available. Please ensure the extension is loaded in Chrome and the 'identity' permission is set."));
+      if (
+        typeof chrome === "undefined" ||
+        !chrome.identity ||
+        !chrome.identity.getAuthToken
+      ) {
+        return reject(
+          new Error(
+            "chrome.identity API is not available. Please ensure the extension is loaded in Chrome and the 'identity' permission is set.",
+          ),
+        )
       }
       chrome.identity.getAuthToken({ interactive }, (token) => {
         if (chrome.runtime.lastError) {
@@ -153,27 +185,31 @@ export const DriveSync = {
   },
 
   async getAllJsonFiles(token) {
-    const query = encodeURIComponent(`mimeType='application/json' and trashed=false`)
+    const query = encodeURIComponent(
+      `mimeType='application/json' and trashed=false`,
+    )
     try {
       const response = await fetch(
         `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,modifiedTime)&orderBy=modifiedTime desc`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       if (!response.ok) return []
       const data = await response.json()
       return data.files || []
-    } catch(e) {
+    } catch (e) {
       return []
     }
   },
 
   async getFileId(token) {
-    const query = encodeURIComponent(`name='${this.getSyncFileName()}' and trashed=false`)
+    const query = encodeURIComponent(
+      `name='${this.getSyncFileName()}' and trashed=false`,
+    )
     const response = await fetch(
       `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id)`,
       {
         headers: { Authorization: `Bearer ${token}` },
-      }
+      },
     )
     if (!response.ok) throw new Error("Failed to search Drive")
     const data = await response.json()
@@ -191,7 +227,7 @@ export const DriveSync = {
       const token = await this.getAuthToken(false)
       const fileId = await this.getFileId(token)
 
-      let dataToSave = payload;
+      let dataToSave = payload
       if (!dataToSave) {
         const settings = await getSettings()
         const bookmarks = await getBookmarks()
@@ -200,7 +236,7 @@ export const DriveSync = {
         try {
           const response = await fetch(
             `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            { headers: { Authorization: `Bearer ${token}` } },
           )
           if (response.ok) {
             const existingData = await response.json()
@@ -218,10 +254,14 @@ export const DriveSync = {
       }
 
       const form = new FormData()
-      form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }))
+      form.append(
+        "metadata",
+        new Blob([JSON.stringify(metadata)], { type: "application/json" }),
+      )
       form.append("file", new Blob([fileContent], { type: "application/json" }))
 
-      let url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
+      let url =
+        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
       let method = "POST"
 
       if (fileId) {
@@ -237,10 +277,10 @@ export const DriveSync = {
 
       if (!response.ok) throw new Error("Failed to upload")
       console.log("Successfully synced to Google Drive")
-      
-      const currentSettings = await getSettings();
-      currentSettings.lastDriveBackupTime = Date.now();
-      await saveSettings(true);
+
+      const currentSettings = await getSettings()
+      currentSettings.lastDriveBackupTime = Date.now()
+      await saveSettings(true)
     } catch (error) {
       console.error("Drive Sync Upload Error:", error)
     } finally {
@@ -262,25 +302,39 @@ export const DriveSync = {
           `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         )
         if (!response.ok) throw new Error("Failed to download file")
         let data = await response.json()
-        
+
         // --- VALIDATION (Similar to importSettingsData) ---
         if (Array.isArray(data)) {
           data = { source: "zero-startpage", version: 2, bookmarks: data }
         } else if (typeof data === "object") {
-          const hasMainSection = data.settings || data.bookmarks || data.todos || data.notepad || data.calendarEvents || data.media
+          const hasMainSection =
+            data.settings ||
+            data.bookmarks ||
+            data.todos ||
+            data.notepad ||
+            data.calendarEvents ||
+            data.media
           if (!hasMainSection) {
             data = { source: "zero-startpage", version: 2, settings: data }
           }
         }
-        
-        const isStartpageFile = data && (data.source === "zero-startpage" || data.version !== undefined || data.settings || data.bookmarks || data.todos)
-        
+
+        const isStartpageFile =
+          data &&
+          (data.source === "zero-startpage" ||
+            data.version !== undefined ||
+            data.settings ||
+            data.bookmarks ||
+            data.todos)
+
         if (!isStartpageFile) {
-          throw new Error("Downloaded file is not a valid Startpage settings file.")
+          throw new Error(
+            "Downloaded file is not a valid Startpage settings file.",
+          )
         }
         // ------------------------------------------------
 
@@ -298,7 +352,7 @@ export const DriveSync = {
             await saveBookmarks(data.bookmarks)
           }
         }
-        
+
         console.log("Successfully synced from Google Drive")
       }
     } catch (error) {
@@ -313,13 +367,18 @@ export const DriveSync = {
 
   async updateUserProfile(token) {
     try {
-      const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const response = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       if (response.ok) {
         const userInfo = await response.json()
-        localStorage.setItem('googleUserProfile', JSON.stringify(userInfo))
-        window.dispatchEvent(new CustomEvent('googleProfileUpdated', { detail: userInfo }))
+        localStorage.setItem("googleUserProfile", JSON.stringify(userInfo))
+        window.dispatchEvent(
+          new CustomEvent("googleProfileUpdated", { detail: userInfo }),
+        )
       }
     } catch (e) {
       console.error("Failed to fetch user profile", e)
@@ -327,8 +386,10 @@ export const DriveSync = {
   },
 
   clearUserProfile() {
-    localStorage.removeItem('googleUserProfile')
-    window.dispatchEvent(new CustomEvent('googleProfileUpdated', { detail: null }))
+    localStorage.removeItem("googleUserProfile")
+    window.dispatchEvent(
+      new CustomEvent("googleProfileUpdated", { detail: null }),
+    )
   },
 
   updateSyncStatusUI(userInfo) {
@@ -342,5 +403,5 @@ export const DriveSync = {
     } else {
       if (statusDiv) statusDiv.style.display = "none"
     }
-  }
+  },
 }

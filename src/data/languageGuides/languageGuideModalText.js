@@ -45,8 +45,10 @@ const modalText = {
       "下のAIプロンプトをコピーし、英語JSONを目的の言語へ翻訳してもらってから、翻訳済みJSONをここに貼り付けてください。",
     stepsTitle: "AIで素早く翻訳する手順",
     aiHint: "このプロンプトの翻訳におすすめの無料AI:",
-    step1: "AIプロンプトをコピーします。英語JSONテンプレートはすでに含まれています。",
-    step2: "AIに送信し、JSONキーは変更せず、文字列の値だけを翻訳するよう依頼します。",
+    step1:
+      "AIプロンプトをコピーします。英語JSONテンプレートはすでに含まれています。",
+    step2:
+      "AIに送信し、JSONキーは変更せず、文字列の値だけを翻訳するよう依頼します。",
     step3: "結果を下に貼り付けて、言語をインストールします。",
     targetLabel: "ガイド言語",
     codeLabel: "言語コード",
@@ -54,7 +56,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "翻訳済みJSONをここに貼り付けます。対応形式: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} または raw {\"settings_title\":\"...\"}",
+      '翻訳済みJSONをここに貼り付けます。対応形式: {"code":"es","name":"Español","translations":{...}} または raw {"settings_title":"..."}',
     copyPrompt: "AIプロンプトをコピー",
     install: "言語をインストール",
   },
@@ -73,7 +75,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "在此粘贴翻译后的 JSON。支持: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} 或 raw {\"settings_title\":\"...\"}",
+      '在此粘贴翻译后的 JSON。支持: {"code":"es","name":"Español","translations":{...}} 或 raw {"settings_title":"..."}',
     copyPrompt: "复制 AI 提示词",
     install: "安装语言",
   },
@@ -83,8 +85,10 @@ const modalText = {
       "아래 AI 프롬프트를 복사해 영어 JSON을 원하는 언어로 번역하게 한 뒤, 번역된 JSON을 여기에 붙여넣으세요.",
     stepsTitle: "AI로 빠르게 번역하는 방법",
     aiHint: "이 프롬프트 번역에 추천하는 무료 장문 컨텍스트 AI:",
-    step1: "AI 프롬프트를 복사합니다. 영어 JSON 템플릿이 이미 포함되어 있습니다.",
-    step2: "AI에 보내고 JSON key는 그대로 두며 문자열 값만 번역하라고 요청합니다.",
+    step1:
+      "AI 프롬프트를 복사합니다. 영어 JSON 템플릿이 이미 포함되어 있습니다.",
+    step2:
+      "AI에 보내고 JSON key는 그대로 두며 문자열 값만 번역하라고 요청합니다.",
     step3: "결과를 아래에 붙여넣은 다음 언어를 설치합니다.",
     targetLabel: "가이드 언어",
     codeLabel: "언어 코드",
@@ -92,7 +96,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "번역된 JSON을 여기에 붙여넣으세요. 지원 형식: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} 또는 raw {\"settings_title\":\"...\"}",
+      '번역된 JSON을 여기에 붙여넣으세요. 지원 형식: {"code":"es","name":"Español","translations":{...}} 또는 raw {"settings_title":"..."}',
     copyPrompt: "AI 프롬프트 복사",
     install: "언어 설치",
   },
@@ -103,7 +107,8 @@ const modalText = {
     stepsTitle: "ขั้นตอนแปลอย่างรวดเร็วด้วย AI",
     aiHint: "AI ฟรีที่มี context ดีสำหรับแปลพรอมป์นี้:",
     step1: "คัดลอกพรอมป์ AI ซึ่งมีเทมเพลต JSON ภาษาอังกฤษอยู่แล้ว",
-    step2: "ส่งให้ AI และขอให้แปลเฉพาะค่า string โดยคง JSON key ทุกตัวไว้เหมือนเดิม",
+    step2:
+      "ส่งให้ AI และขอให้แปลเฉพาะค่า string โดยคง JSON key ทุกตัวไว้เหมือนเดิม",
     step3: "วางผลลัพธ์ด้านล่าง แล้วติดตั้งภาษา",
     targetLabel: "ภาษาคู่มือ",
     codeLabel: "รหัสภาษา",
@@ -111,7 +116,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "วาง JSON ที่แปลแล้วที่นี่ รองรับ: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} หรือ raw {\"settings_title\":\"...\"}",
+      'วาง JSON ที่แปลแล้วที่นี่ รองรับ: {"code":"es","name":"Español","translations":{...}} หรือ raw {"settings_title":"..."}',
     copyPrompt: "คัดลอกพรอมป์ AI",
     install: "ติดตั้งภาษา",
   },
@@ -122,7 +127,8 @@ const modalText = {
     stepsTitle: "Быстрый перевод с помощью AI",
     aiHint: "Бесплатные AI с хорошим контекстом для этого промпта:",
     step1: "Скопируйте AI-промпт; он уже содержит английский JSON-шаблон.",
-    step2: "Отправьте его AI и попросите переводить только строковые значения, не меняя JSON-ключи.",
+    step2:
+      "Отправьте его AI и попросите переводить только строковые значения, не меняя JSON-ключи.",
     step3: "Вставьте результат ниже и установите язык.",
     targetLabel: "Язык подсказки",
     codeLabel: "Код языка",
@@ -130,7 +136,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "Вставьте переведенный JSON здесь. Поддерживается: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} или raw {\"settings_title\":\"...\"}",
+      'Вставьте переведенный JSON здесь. Поддерживается: {"code":"es","name":"Español","translations":{...}} или raw {"settings_title":"..."}',
     copyPrompt: "Скопировать AI-промпт",
     install: "Установить язык",
   },
@@ -141,7 +147,8 @@ const modalText = {
     stepsTitle: "Pasos rápidos para traducir con IA",
     aiHint: "Opciones gratuitas de IA con buen contexto para este prompt:",
     step1: "Copia el prompt de IA; ya incluye la plantilla JSON en inglés.",
-    step2: "Envíalo a la IA y pide que traduzca solo los valores de texto, sin cambiar ninguna key JSON.",
+    step2:
+      "Envíalo a la IA y pide que traduzca solo los valores de texto, sin cambiar ninguna key JSON.",
     step3: "Pega el resultado abajo y luego instala el idioma.",
     targetLabel: "Idioma de la guía",
     codeLabel: "Código de idioma",
@@ -149,7 +156,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "Pega aquí el JSON traducido. Se acepta: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} o raw {\"settings_title\":\"...\"}",
+      'Pega aquí el JSON traducido. Se acepta: {"code":"es","name":"Español","translations":{...}} o raw {"settings_title":"..."}',
     copyPrompt: "Copiar prompt de IA",
     install: "Instalar idioma",
   },
@@ -160,7 +167,8 @@ const modalText = {
     stepsTitle: "Étapes rapides de traduction avec l'IA",
     aiHint: "Options IA gratuites avec un bon contexte pour ce prompt:",
     step1: "Copiez le prompt IA; il contient déjà le modèle JSON anglais.",
-    step2: "Envoyez-le à l'IA et demandez de traduire uniquement les valeurs texte, sans modifier les clés JSON.",
+    step2:
+      "Envoyez-le à l'IA et demandez de traduire uniquement les valeurs texte, sans modifier les clés JSON.",
     step3: "Collez le résultat ci-dessous, puis installez la langue.",
     targetLabel: "Langue du guide",
     codeLabel: "Code de langue",
@@ -168,7 +176,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "Collez ici le JSON traduit. Formats acceptés: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} ou raw {\"settings_title\":\"...\"}",
+      'Collez ici le JSON traduit. Formats acceptés: {"code":"es","name":"Español","translations":{...}} ou raw {"settings_title":"..."}',
     copyPrompt: "Copier le prompt IA",
     install: "Installer la langue",
   },
@@ -179,7 +187,8 @@ const modalText = {
     stepsTitle: "Langkah cepat menerjemahkan dengan AI",
     aiHint: "Pilihan AI gratis dengan konteks bagus untuk prompt ini:",
     step1: "Salin prompt AI; template JSON bahasa Inggris sudah disertakan.",
-    step2: "Kirim ke AI dan minta hanya value string yang diterjemahkan, semua key JSON tetap sama.",
+    step2:
+      "Kirim ke AI dan minta hanya value string yang diterjemahkan, semua key JSON tetap sama.",
     step3: "Tempel hasilnya di bawah, lalu instal bahasa.",
     targetLabel: "Bahasa panduan",
     codeLabel: "Kode bahasa",
@@ -187,7 +196,7 @@ const modalText = {
     codePlaceholder: "es, ja, fr, id...",
     namePlaceholder: "Español, 日本語...",
     jsonPlaceholder:
-      "Tempel JSON terjemahan di sini. Format yang didukung: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} atau raw {\"settings_title\":\"...\"}",
+      'Tempel JSON terjemahan di sini. Format yang didukung: {"code":"es","name":"Español","translations":{...}} atau raw {"settings_title":"..."}',
     copyPrompt: "Salin Prompt AI",
     install: "Instal Bahasa",
   },
