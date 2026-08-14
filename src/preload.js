@@ -134,6 +134,8 @@
         body.classList.add("bookmark-group-container-bg-hidden")
       if (settings.bookmarkGroupBorderHidden === true)
         body.classList.add("bookmark-group-border-hidden")
+      if (settings.bookmarkGroupsToggleAutoHide === true)
+        body.classList.add("auto-hide-groups-toggle")
       if (settings.showTopRightControls !== false)
         body.classList.add("has-top-right-controls")
       else body.classList.add("hide-top-right-controls")

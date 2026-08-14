@@ -2382,6 +2382,12 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove("hide-bookmark-bg")
     }
 
+    if (settings.bookmarkGroupsToggleAutoHide) {
+      document.body.classList.add("auto-hide-groups-toggle")
+    } else {
+      document.body.classList.remove("auto-hide-groups-toggle")
+    }
+
     if (settings.bookmarkHideScrollbar) {
       document.body.classList.add("bookmark-hide-scrollbar")
     } else {
@@ -4347,9 +4353,13 @@ function createUpdateSettingsInputs(effectInstances) {
           settings.bookmarkGroupBorderHidden === true
       }
       if (settings.settingsSidebarWidth) { document.documentElement.style.setProperty('--sidebar-width', settings.settingsSidebarWidth + 'px'); if (DOM.settingsSidebarWidthInput) DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth; if (DOM.settingsSidebarWidthValue) DOM.settingsSidebarWidthValue.textContent = settings.settingsSidebarWidth + 'px'; } if (settings.bookmarkSidebarWidth) { document.documentElement.style.setProperty('--bookmark-group-text-width', settings.bookmarkSidebarWidth + 'px'); if (DOM.bookmarkSidebarWidthInput) DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth; if (DOM.bookmarkSidebarWidthValue) DOM.bookmarkSidebarWidthValue.textContent = settings.bookmarkSidebarWidth + 'px'; } if (DOM.bookmarkLayout) { if (DOM.bookmarkSidebarWidthContainer) { DOM.bookmarkSidebarWidthContainer.style.display = settings.bookmarkLayout === 'sidebar' ? 'block' : 'none'; } }
-    if (DOM.bookmarkLayoutShowGroups) {
+      if (DOM.bookmarkLayoutShowGroups) {
         DOM.bookmarkLayoutShowGroups.checked =
           settings.showBookmarkGroups !== false
+      }
+      if (DOM.bookmarkGroupsToggleAutoHide) {
+        DOM.bookmarkGroupsToggleAutoHide.checked =
+          settings.bookmarkGroupsToggleAutoHide === true
       }
     }
 

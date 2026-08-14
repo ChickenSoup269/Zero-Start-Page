@@ -1249,6 +1249,9 @@ export let bookmarkGroupBorderHidden = document.getElementById(
 export let bookmarkLayoutShowGroups = document.getElementById(
   "bookmark-layout-show-groups",
 )
+export let bookmarkGroupsToggleAutoHide = document.getElementById(
+  "bookmark-groups-toggle-autohide",
+)
 
 export let enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
 export let bookmarkKeepNestedFolders = document.getElementById(
@@ -3032,6 +3035,9 @@ export function refreshDOMReferences() {
   )
   bookmarkLayoutShowGroups = document.getElementById(
     "bookmark-layout-show-groups",
+  )
+  bookmarkGroupsToggleAutoHide = document.getElementById(
+    "bookmark-groups-toggle-autohide",
   )
   enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
   bookmarkKeepNestedFolders = document.getElementById(

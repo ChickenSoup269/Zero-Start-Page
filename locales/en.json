@@ -1194,6 +1194,7 @@
   "settings_bookmark_macos_hover": "Enable MacOS Hover Effect",
   "settings_bookmark_layout": "Bookmark Layout",
   "settings_bookmark_layout_show_groups": "Show bookmark folders",
+  "settings_bookmark_groups_toggle_autohide": "Auto-hide Group Button (Show on Hover)",
   "settings_browser_zoom": "Browser Zoom",
   "settings_bookmark_layout_bg": "Layout Container Background",
   "layout_bg_default": "Default Background",

@@ -1194,6 +1194,7 @@
   "settings_bookmark_macos_hover": "Bật hiệu ứng MacOS Hover",
   "settings_bookmark_layout": "Bố cục dấu trang",
   "settings_bookmark_layout_show_groups": "Hiện thư mục dấu trang",
+  "settings_bookmark_groups_toggle_autohide": "Tự động ẩn nút Nhóm Thư mục (Hiện khi rê chuột)",
   "settings_browser_zoom": "Thu phóng trình duyệt",
   "settings_bookmark_layout_bg": "Màu nền thanh Dock",
   "layout_bg_default": "Mặc định",
