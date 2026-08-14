@@ -516,7 +516,11 @@ function createBookmarkStackIcon(stack) {
 
   if (stack.icon) {
     wrap.classList.add("has-custom-stack-icon")
-    wrap.appendChild(createStoredIconElement(stack.icon, getBookmarkLabel(stack)))
+    const iconEl = createStoredIconElement(stack.icon, getBookmarkLabel(stack))
+    if (stack.iconColor) {
+      iconEl.style.color = stack.iconColor
+    }
+    wrap.appendChild(iconEl)
 
     const badge = document.createElement("span")
     badge.className = "bookmark-stack-count"
@@ -598,6 +602,12 @@ function createStoredIconFallback(label = "Bookmark") {
 function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const existing = document.getElementById("bookmark-stack-popup")
   if (existing) existing.remove()
+  const existingBackdrop = document.getElementById("bookmark-stack-backdrop")
+  if (existingBackdrop) existingBackdrop.remove()
+
+  const backdrop = document.createElement("div")
+  backdrop.id = "bookmark-stack-backdrop"
+  document.body.appendChild(backdrop)
 
   const popup = document.createElement("div")
   popup.id = "bookmark-stack-popup"
@@ -611,21 +621,104 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const header = document.createElement("div")
   header.className = "bookmark-stack-popup-header"
+
+  const titleWrapper = document.createElement("div")
+  titleWrapper.className = "bookmark-stack-popup-title-wrapper"
+
+  const folderIcon = document.createElement("i")
+  folderIcon.className = "fa-solid fa-folder-open"
+  folderIcon.style.color = "var(--accent-color, #a8c0ff)"
+  folderIcon.style.fontSize = "1rem"
+
   const title = document.createElement("span")
+  title.className = "bookmark-stack-popup-title"
   title.textContent = getBookmarkLabel(stack)
+  title.title = "Click to rename"
+
+  // Inline rename on click
+  title.addEventListener("click", () => {
+    const currentName = getBookmarkLabel(stack)
+    const input = document.createElement("input")
+    input.type = "text"
+    input.value = currentName
+    input.className = "bookmark-stack-popup-title-input"
+    input.style.fontSize = "1rem"
+    input.style.fontWeight = "700"
+    input.style.color = "#fff"
+    input.style.background = "rgba(0,0,0,0.3)"
+    input.style.border = "1px solid var(--accent-color)"
+    input.style.borderRadius = "6px"
+    input.style.padding = "2px 6px"
+    input.style.outline = "none"
+
+    const finishRename = () => {
+      const newName = input.value.trim()
+      if (newName && newName !== currentName) {
+        stack.title = newName
+        title.textContent = newName
+        saveBookmarks()
+        renderBookmarks()
+      }
+      input.replaceWith(title)
+    }
+
+    input.addEventListener("blur", finishRename)
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        input.blur()
+      } else if (e.key === "Escape") {
+        input.value = currentName
+        input.blur()
+      }
+    })
+
+    title.replaceWith(input)
+    input.focus()
+    input.select()
+  })
+
   const count = document.createElement("small")
+  count.className = "bookmark-stack-popup-count"
   count.textContent = `${stack.items.length}`
-  header.appendChild(title)
-  header.appendChild(count)
+
+  titleWrapper.appendChild(folderIcon)
+  titleWrapper.appendChild(title)
+  titleWrapper.appendChild(count)
+  header.appendChild(titleWrapper)
+
+  const closeBtn = document.createElement("button")
+  closeBtn.type = "button"
+  closeBtn.className = "bookmark-stack-popup-close-btn"
+  closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
+  closeBtn.style.background = "rgba(255,255,255,0.08)"
+  closeBtn.style.border = "none"
+  closeBtn.style.borderRadius = "50%"
+  closeBtn.style.width = "28px"
+  closeBtn.style.height = "28px"
+  closeBtn.style.display = "inline-flex"
+  closeBtn.style.alignItems = "center"
+  closeBtn.style.justifyContent = "center"
+  closeBtn.style.color = "rgba(255,255,255,0.7)"
+  closeBtn.style.cursor = "pointer"
+  closeBtn.style.transition = "all 0.2s"
+  closeBtn.addEventListener("mouseenter", () => {
+    closeBtn.style.background = "rgba(255,255,255,0.18)"
+    closeBtn.style.color = "#fff"
+  })
+  closeBtn.addEventListener("mouseleave", () => {
+    closeBtn.style.background = "rgba(255,255,255,0.08)"
+    closeBtn.style.color = "rgba(255,255,255,0.7)"
+  })
+  header.appendChild(closeBtn)
   popup.appendChild(header)
 
   let searchInput = null
-  if (stack.items.length >= 15) {
+  if (stack.items.length >= 4) {
     const searchWrapper = document.createElement("div")
     searchWrapper.className = "bookmark-stack-popup-search"
     searchInput = document.createElement("input")
     searchInput.type = "text"
-    searchInput.placeholder = i18n.bookmark_stack_search || "Search bookmarks..."
+    searchInput.placeholder = i18n.bookmark_stack_search || "Search in folder..."
     searchInput.className = "bookmark-stack-popup-search-input"
     searchWrapper.appendChild(searchInput)
     popup.appendChild(searchWrapper)
@@ -766,107 +859,101 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       return false
     }
 
-    const snapshot = captureBookmarkSnapshot()
     const movedItems = movedIndices.map((itemIndex) => stack.items[itemIndex])
-
-    ;[...movedIndices]
-      .sort((a, b) => b - a)
-      .forEach((itemIndex) => stack.items.splice(itemIndex, 1))
-
-    let insertIndex = targetItemIndex
-    movedIndices.forEach((itemIndex) => {
-      if (itemIndex < targetItemIndex) insertIndex -= 1
-    })
-    if (intent === "after") insertIndex += 1
-    insertIndex = Math.max(0, Math.min(stack.items.length, insertIndex))
-
-    stack.items.splice(insertIndex, 0, ...movedItems)
-
-    const bookmarks = getBookmarks()
-    if (stackIndex == null) {
-      setBookmarks(bookmarks)
-      saveBookmarks()
-    } else if (isBookmarkStack(bookmarks[stackIndex])) {
-      bookmarks[stackIndex] = stack
-      setBookmarks(bookmarks)
-      saveBookmarks()
-    }
-
-    isStackSelectionMode = false
-    selectedStackIndices.clear()
-    draggedStackItems = []
-    renderStackItems()
-    syncStackSelectionUi()
-    showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+    const remainingItems = stack.items.filter(
+      (_, index) => !movedIndices.includes(index),
+    )
+    const targetItem = stack.items[targetItemIndex]
+    let baseIndex = remainingItems.indexOf(targetItem)
+    if (baseIndex === -1) baseIndex = remainingItems.length
+    const insertIndex = intent === "before" ? baseIndex : baseIndex + 1
+    remainingItems.splice(Math.max(0, insertIndex), 0, ...movedItems)
+    stack.items = remainingItems
+    saveBookmarks()
     return true
   }
 
-  const handleStackPopupDragOver = (event) => {
+  const handleStackPopupDragOver = function (event) {
     event.preventDefault()
-    event.stopPropagation()
     event.dataTransfer.dropEffect = "move"
-    const cachedRect = dragOverRectCache.get(event.currentTarget)
-    updateStackPopupDropIntent(event.currentTarget, event, cachedRect)
+    const cachedRect = dragOverRectCache.get(this)
+    updateStackPopupDropIntent(this, event, cachedRect)
     return false
   }
 
-  const handleStackPopupDragEnter = (event) => {
+  const handleStackPopupDragEnter = function (event) {
     event.preventDefault()
-    event.stopPropagation()
-    // Cache rect on dragenter so dragover doesn't force reflow
-    dragOverRectCache.set(event.currentTarget, event.currentTarget.getBoundingClientRect())
-    updateStackPopupDropIntent(event.currentTarget, event, dragOverRectCache.get(event.currentTarget))
+    dragOverRectCache.set(this, this.getBoundingClientRect())
+    updateStackPopupDropIntent(this, event, dragOverRectCache.get(this))
   }
 
-  const handleStackPopupDragLeave = (event) => {
-    clearBookmarkDropClasses(event.currentTarget)
+  const handleStackPopupDragLeave = function () {
+    clearBookmarkDropClasses(this)
   }
 
-  const handleStackPopupDrop = (event) => {
-    event.preventDefault()
+  const handleStackPopupDrop = function (event) {
     event.stopPropagation()
-    clearBookmarkDropClasses(event.currentTarget)
+    event.preventDefault()
+    clearBookmarkDropClasses(this)
+    const targetItemIndex = Number(this.dataset.stackIndex)
+    const intent = getStackPopupDropIntent(
+      this,
+      event,
+      dragOverRectCache.get(this),
+    )
 
-    const targetItemIndex = Number(event.currentTarget.dataset.stackIndex)
-    const cachedRect = dragOverRectCache.get(event.currentTarget)
-    const intent = getStackPopupDropIntent(event.currentTarget, event, cachedRect)
     if (moveDraggedStackItemsInsidePopup(targetItemIndex, intent)) {
-      ignoreNextStackPopupClick = true
-      setTimeout(() => {
-        ignoreNextStackPopupClick = false
-      }, 150)
+      selectedStackIndices.clear()
+      isStackSelectionMode = false
+      renderStackItems()
+      syncStackSelectionUi()
+      renderBookmarks()
+      showBookmarkUndo(
+        geti18n().bookmark_moved || "Bookmarks moved",
+        captureBookmarkSnapshot(),
+      )
     }
+
+    draggedStackItems = []
+    draggedBookmarkIndices = []
+    draggedGroupIndex = null
+    document.body.classList.remove("bookmark-dragging-active")
     return false
   }
 
   const renderStackItems = () => {
     grid.innerHTML = ""
-    const query = searchInput ? searchInput.value.toLowerCase() : ""
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
+    
     stack.items.forEach((item, itemIndex) => {
-      if (query && !(item.title || item.name || "").toLowerCase().includes(query)) {
-        return;
+      const labelText = getBookmarkLabel(item)
+      if (query && !labelText.toLowerCase().includes(query)) {
+        return
       }
-      const link = document.createElement("a")
-      link.className = "bookmark bookmark-stack-popup-item"
-      applyBookmarkLinkBehavior(link, item.url)
-      link.dataset.stackIndex = itemIndex
-      link.dataset.parentStackIndex = stackIndex
-      link.draggable = true
-      link.classList.toggle("selected", selectedStackIndices.has(itemIndex))
-      link.appendChild(createBookmarkIcon(item))
 
+      const link = document.createElement("a")
+      applyBookmarkLinkBehavior(link, item.url)
+      link.className = "bookmark bookmark-stack-popup-item"
+      link.dataset.stackIndex = itemIndex
+      link.draggable = getSettings().bookmarkEnableDrag === true
+      if (selectedStackIndices.has(itemIndex)) {
+        link.classList.add("selected")
+      }
+
+      link.appendChild(createBookmarkIcon(item))
       const label = document.createElement("span")
       label.className = "bookmark-stack-popup-label"
-      label.textContent = item.title
+      label.textContent = labelText
       link.appendChild(label)
 
       const check = document.createElement("span")
       check.className = "bookmark-stack-popup-check"
-      check.innerHTML = '<i class="fa-solid fa-check"></i>'
+      check.innerHTML = `<i class="fa-solid fa-check"></i>`
       link.appendChild(check)
 
       link.addEventListener("click", async (event) => {
         if (ignoreNextStackPopupClick) {
+          ignoreNextStackPopupClick = false
           event.preventDefault()
           event.stopPropagation()
           return
@@ -941,7 +1028,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
               const snapshot = captureBookmarkSnapshot()
               stack.items.splice(itemIndex, 1)
               normalizeStackAfterDelete()
-              popup.remove()
+              closePopup()
               renderBookmarks()
               showBookmarkUndo(
                 i18n.bookmark_deleted || "Bookmark deleted",
@@ -997,7 +1084,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       .sort((a, b) => b - a)
       .forEach((itemIndex) => stack.items.splice(itemIndex, 1))
     normalizeStackAfterDelete()
-    popup.remove()
+    closePopup()
     renderBookmarks()
     showBookmarkUndo(
       (i18n.bookmark_deleted_many || "Deleted {count} bookmarks").replace(
@@ -1019,33 +1106,58 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   document.body.appendChild(popup)
 
-  const rect = anchor.getBoundingClientRect()
+  // Position nicely near anchor or centered on smaller displays
+  const rect = anchor ? anchor.getBoundingClientRect() : null
   const popupRect = popup.getBoundingClientRect()
-  const left = Math.min(
-    Math.max(12, rect.left + rect.width / 2 - popupRect.width / 2),
-    window.innerWidth - popupRect.width - 12,
-  )
-  const below = rect.bottom + 12
-  const above = rect.top - popupRect.height - 12
-  popup.style.left = `${left}px`
-  popup.style.top =
-    below + popupRect.height < window.innerHeight - 12
-      ? `${below}px`
-      : `${Math.max(12, above)}px`
+  
+  if (rect && window.innerWidth > 600) {
+    const left = Math.min(
+      Math.max(16, rect.left + rect.width / 2 - popupRect.width / 2),
+      window.innerWidth - popupRect.width - 16,
+    )
+    const below = rect.bottom + 14
+    const above = rect.top - popupRect.height - 14
+    popup.style.left = `${left}px`
+    popup.style.top =
+      below + popupRect.height < window.innerHeight - 16
+        ? `${below}px`
+        : `${Math.max(16, above)}px`
+  } else {
+    popup.style.left = `calc(50% - ${popupRect.width / 2}px)`
+    popup.style.top = `calc(50% - ${popupRect.height / 2}px)`
+  }
 
-  const closePopup = (event) => {
+  const closePopup = () => {
+    popup.remove()
+    backdrop.remove()
+    document.removeEventListener("click", onDocumentClick)
+    document.removeEventListener("keydown", onKeyDown)
+    window.dispatchEvent(new CustomEvent("layoutUpdated"))
+  }
+
+  const onDocumentClick = (event) => {
     const contextMenu = document.getElementById("context-menu")
     if (
       !popup.contains(event.target) &&
-      !anchor.contains(event.target) &&
+      (!anchor || !anchor.contains(event.target)) &&
       !contextMenu?.contains(event.target)
     ) {
-      popup.remove()
-      document.removeEventListener("click", closePopup)
-      window.dispatchEvent(new CustomEvent("layoutUpdated"))
+      closePopup()
     }
   }
-  setTimeout(() => document.addEventListener("click", closePopup), 50)
+
+  const onKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closePopup()
+    }
+  }
+
+  closeBtn.addEventListener("click", closePopup)
+  backdrop.addEventListener("click", closePopup)
+  setTimeout(() => {
+    document.addEventListener("click", onDocumentClick)
+    document.addEventListener("keydown", onKeyDown)
+  }, 50)
   
   // Force macOS hover cache to update for the new popup items
   window.dispatchEvent(new CustomEvent("layoutUpdated"))
