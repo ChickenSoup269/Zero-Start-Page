@@ -45,6 +45,7 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
+import { switchSettingsTab, getElementTab } from "./sidebarNavigation.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -1602,6 +1603,12 @@ export function setupGeneralEventHandlers(
             item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           }
           item.addEventListener("click", () => {
+            // 0) Switch to the tab containing this section/item
+            const targetTab = getElementTab(section)
+            if (targetTab) {
+              switchSettingsTab(targetTab)
+            }
+
             // 1) Expand parent section if collapsed
             const parentSection = section.closest(".settings-section")
             if (
@@ -1639,11 +1646,14 @@ export function setupGeneralEventHandlers(
               requestAnimationFrame(() => {
                 const sidebarRect = sidebarContent.getBoundingClientRect()
                 const sectionRect = section.getBoundingClientRect()
-                const targetPixel =
+                const navContainer = document.querySelector(".settings-nav-container")
+                const navOffset = navContainer && !navContainer.classList.contains("nav-hidden") ? (navContainer.offsetHeight || 130) : 15
+                const targetPixel = Math.max(0,
                   sectionRect.top -
                   sidebarRect.top +
                   sidebarContent.scrollTop -
-                  10
+                  navOffset - 10
+                )
 
                 sidebarContent.scrollTo({
                   top: targetPixel,
@@ -1723,6 +1733,15 @@ export function setupGeneralEventHandlers(
       const card = title.closest(".bg-control-card, .gradient-v2-panel, .setting-group-collapsible")
       if (card) {
         card.classList.toggle("is-collapsed")
+      }
+    }
+
+    const advancedBtn = e.target.closest(".settings-advanced-toggle-btn")
+    if (advancedBtn) {
+      advancedBtn.classList.toggle("is-open")
+      const panel = advancedBtn.nextElementSibling || advancedBtn.parentElement.querySelector(".settings-advanced-panel")
+      if (panel) {
+        panel.classList.toggle("is-open")
       }
     }
   })

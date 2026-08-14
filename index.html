@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -715,13 +715,72 @@
                     <i class="fa-solid fa-circle-arrow-up"></i>
                 </a>
             </div>
-            <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
+            <div class="sidebar-header-actions">
+                <button type="button" id="settings-nav-toggle" class="sidebar-nav-toggle-btn"
+                    title="Toggle Search & Navigation" data-i18n-title="settings_nav_toggle">
+                    <i class="fa-solid fa-chevron-up"></i>
+                </button>
+                <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
+            </div>
         </div>
         <div id="sidebar-toc-menu" class="sidebar-toc-menu">
             <!-- Dynamically populated ToC items -->
         </div>
+        <!-- Settings Search & Tab Navigation -->
+        <div class="settings-nav-container">
+            <div class="settings-search-wrap">
+                <i class="fa-solid fa-magnifying-glass settings-search-icon"></i>
+                <input type="text" id="settings-search-input" class="settings-search-input"
+                    data-i18n-placeholder="settings_search_placeholder" placeholder="Search settings..."
+                    autocomplete="off" spellcheck="false" />
+                <button type="button" id="settings-search-clear" class="settings-search-clear-btn"
+                    data-i18n-title="settings_search_clear" title="Clear search" aria-label="Clear search" hidden>
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="settings-tab-nav" class="settings-tab-nav" role="tablist">
+                <button type="button" class="settings-tab-btn active" data-tab="appearance" role="tab"
+                    aria-selected="true">
+                    <i class="fa-solid fa-palette"></i>
+                    <span data-i18n="settings_tab_appearance">Appearance</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="background" role="tab"
+                    aria-selected="false">
+                    <i class="fa-solid fa-image"></i>
+                    <span data-i18n="settings_tab_background">Background</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="clock" role="tab"
+                    aria-selected="false">
+                    <i class="fa-solid fa-clock"></i>
+                    <span data-i18n="settings_tab_clock">Clock & Date</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="bookmarks" role="tab"
+                    aria-selected="false">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span data-i18n="settings_tab_bookmarks">Bookmarks</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="widgets" role="tab"
+                    aria-selected="false">
+                    <i class="fa-solid fa-cubes"></i>
+                    <span data-i18n="settings_tab_widgets">Widgets</span>
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="system" role="tab"
+                    aria-selected="false">
+                    <i class="fa-solid fa-gear"></i>
+                    <span data-i18n="settings_tab_system">System</span>
+                </button>
+            </div>
+        </div>
         <div class="sidebar-content">
-            <div class="setting-group language-setting-group">
+            <!-- Search empty state message -->
+            <div id="settings-search-empty" class="settings-search-empty" style="display: none;">
+                <i class="fa-solid fa-magnifying-glass settings-search-empty-icon"></i>
+                <p id="settings-search-empty-text" data-msg-template="No settings matching &quot;{query}&quot;" data-i18n="settings_search_no_results">No settings found</p>
+                <button type="button" id="settings-search-empty-reset" class="secondary-btn">
+                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_search_clear">Clear search</span>
+                </button>
+            </div>
+            <div class="setting-group language-setting-group" data-settings-tab="system">
                 <label data-i18n="settings_language" for="language-select"><i class="fa-solid fa-language"></i> Language
                     / Ngôn ngữ</label>
                 <select id="language-select" hidden>
@@ -754,7 +813,7 @@
                 </div>
             </div>
 
-            <div class="setting-group">
+            <div class="setting-group" data-settings-tab="appearance">
                 <label data-i18n="settings_page_title" for="page-title-input"><i class="fa-solid fa-heading"></i> Page
                     Title</label>
                 <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
@@ -812,7 +871,7 @@
 
             <!-- Theme Selector -->
 
-            <div class="settings-section" data-section-id="themes">
+            <div class="settings-section" data-section-id="themes" data-settings-tab="appearance">
                 <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
                 <div class="section-content">
                     <!-- Styles Subsection -->
@@ -1232,12 +1291,12 @@
                 </div>
             </div>
 
-            <div data-settings-partial="background" data-src="partials/settings/background.html"></div>
-            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html">
+            <div data-settings-partial="background" data-src="partials/settings/background.html" data-settings-tab="background"></div>
+            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html" data-settings-tab="background">
             </div>
-            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html">
+            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html" data-settings-tab="background">
             </div>
-            <div class="settings-section" data-section-id="font">
+            <div class="settings-section" data-section-id="font" data-settings-tab="appearance">
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span
                         id="font-count-display" class="section-count"></span></h3>
                 <div class="section-content">
@@ -1341,8 +1400,8 @@
             </div>
 
 
-            <div data-settings-partial="date-clock" data-src="partials/settings/date-clock.html"></div>
-            <div class="settings-section" data-section-id="bookmark-custom">
+            <div data-settings-partial="date-clock" data-src="partials/settings/date-clock.html" data-settings-tab="clock"></div>
+            <div class="settings-section" data-section-id="bookmark-custom" data-settings-tab="bookmarks">
                 <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
                     Custom Bookmark</h3>
                 <div class="section-content">
@@ -1828,7 +1887,7 @@
                     </div>
                 </div>
             </div>
-            <div class="settings-section" data-section-id="custom-title">
+            <div class="settings-section" data-section-id="custom-title" data-settings-tab="appearance">
                 <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
                         data-i18n="settings_custom_title">Custom Title</span></h3>
                 <div class="section-content">
@@ -2301,7 +2360,7 @@
                 </div>
             </div>
 
-            <div class="settings-section" data-section-id="layout">
+            <div class="settings-section" data-section-id="layout" data-settings-tab="widgets">
                 <h3 class="section-toggle"><i class="fa-solid fa-layer-group"></i> <span
                         data-i18n="settings_layout">Layout & Features</span></h3>
                 <div class="section-content">
@@ -2767,7 +2826,7 @@
                 </div>
             </div>
             <!-- Data & Sync Section -->
-            <div class="settings-section" data-section-id="data-sync">
+            <div class="settings-section" data-section-id="data-sync" data-settings-tab="system">
                 <h3 class="section-toggle" data-i18n="settings_data_sync"><i class="fa-solid fa-cloud"></i> Data & Sync
                 </h3>
                 <div class="section-content">
@@ -2851,7 +2910,7 @@
             </div>
 
             <!-- About Project Section -->
-            <div class="settings-section" data-section-id="about-project">
+            <div class="settings-section" data-section-id="about-project" data-settings-tab="system">
                 <h3 class="section-toggle"><i class="fa-solid fa-circle-info"></i>
                     <span data-i18n="settings_about_project">About Project</span>
                 </h3>

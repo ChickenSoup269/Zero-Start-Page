@@ -82,6 +82,7 @@ import {
   renderSavedMultiColors,
 } from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
+import { initSidebarNavigation } from "./sidebarNavigation.js"
 import { BACKGROUND_ANIMATION_KEYS } from "./visualPresetConfig.js"
 
 function hslToHex(h, s, l) {
@@ -1139,6 +1140,9 @@ export async function initSettings() {
     applySettings,
     updateSettingsInputs,
   )
+
+  // Initialize Sidebar Tabs Navigation & Live Search
+  initSidebarNavigation()
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
   
