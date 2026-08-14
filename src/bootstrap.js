@@ -101,8 +101,23 @@ const hydrateSettingsPartialsWhenVisible = () => {
   if (needsSettingsAtBoot()) {
     afterFirstPaint(hydrate)
   } else {
-    // Non-critical path: defer hydration until truly idle (max 600ms)
+    // Non-critical path: defer hydration until truly idle (max 400ms)
     afterFirstPaint(() => runWhenIdle(hydrate))
+
+    // If user clicks or hovers the settings button before idle fires, hydrate immediately!
+    const triggerHydrateEarly = () => {
+      hydrate()
+    }
+    const settingsBtn = document.getElementById("settings-btn")
+    if (settingsBtn) {
+      settingsBtn.addEventListener("mouseenter", triggerHydrateEarly, { once: true, passive: true })
+      settingsBtn.addEventListener("click", triggerHydrateEarly, { once: true, passive: true })
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "s" || e.key === "S") {
+        triggerHydrateEarly()
+      }
+    }, { once: true, passive: true })
   }
 }
 
