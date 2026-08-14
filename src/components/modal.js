@@ -72,54 +72,51 @@ const BOOKMARK_ICON_OPTIONS = [
 ]
 
 const BOOKMARK_FOLDER_ICON_OPTIONS = [
-  {
-    key: "auto",
-    icon: "fa-solid fa-border-all",
-    label: "Auto",
-    value: "",
-  },
-  {
-    key: "folder",
-    icon: "fa-solid fa-folder",
-    label: "Folder",
-    value: "fa:fa-solid fa-folder",
-  },
-  {
-    key: "folder-open",
-    icon: "fa-solid fa-folder-open",
-    label: "Open folder",
-    value: "fa:fa-solid fa-folder-open",
-  },
-  {
-    key: "layer",
-    icon: "fa-solid fa-layer-group",
-    label: "Stack",
-    value: "fa:fa-solid fa-layer-group",
-  },
-  {
-    key: "star",
-    icon: "fa-solid fa-star",
-    label: "Star",
-    value: "fa:fa-solid fa-star",
-  },
-  {
-    key: "briefcase",
-    icon: "fa-solid fa-briefcase",
-    label: "Work",
-    value: "fa:fa-solid fa-briefcase",
-  },
-  {
-    key: "code",
-    icon: "fa-solid fa-code",
-    label: "Code",
-    value: "fa:fa-solid fa-code",
-  },
-  {
-    key: "robot",
-    icon: "fa-solid fa-robot",
-    label: "AI",
-    value: "fa:fa-solid fa-robot",
-  },
+  // General & Essentials
+  { key: "auto", icon: "fa-solid fa-border-all", label: "Auto (Grid)", value: "", category: "all" },
+  { key: "folder", icon: "fa-solid fa-folder", label: "Folder", value: "fa:fa-solid fa-folder", category: "all" },
+  { key: "folder-open", icon: "fa-solid fa-folder-open", label: "Open Folder", value: "fa:fa-solid fa-folder-open", category: "all" },
+  { key: "layer", icon: "fa-solid fa-layer-group", label: "Stack", value: "fa:fa-solid fa-layer-group", category: "all" },
+  { key: "bookmark", icon: "fa-solid fa-bookmark", label: "Bookmark", value: "fa:fa-solid fa-bookmark", category: "all" },
+  { key: "star", icon: "fa-solid fa-star", label: "Star", value: "fa:fa-solid fa-star", category: "all" },
+  { key: "heart", icon: "fa-solid fa-heart", label: "Favorite", value: "fa:fa-solid fa-heart", category: "all" },
+  { key: "sparkles", icon: "fa-solid fa-wand-magic-sparkles", label: "Sparkles", value: "fa:fa-solid fa-wand-magic-sparkles", category: "all" },
+  { key: "fire", icon: "fa-solid fa-fire", label: "Trending", value: "fa:fa-solid fa-fire", category: "all" },
+  { key: "rocket", icon: "fa-solid fa-rocket", label: "Rocket", value: "fa:fa-solid fa-rocket", category: "all" },
+  
+  // Work & Productivity
+  { key: "briefcase", icon: "fa-solid fa-briefcase", label: "Work", value: "fa:fa-solid fa-briefcase", category: "work" },
+  { key: "chart", icon: "fa-solid fa-chart-line", label: "Analytics", value: "fa:fa-solid fa-chart-line", category: "work" },
+  { key: "calendar", icon: "fa-solid fa-calendar-days", label: "Calendar", value: "fa:fa-solid fa-calendar-days", category: "work" },
+  { key: "envelope", icon: "fa-solid fa-envelope", label: "Mail", value: "fa:fa-solid fa-envelope", category: "work" },
+  { key: "cloud", icon: "fa-solid fa-cloud", label: "Cloud", value: "fa:fa-solid fa-cloud", category: "work" },
+  { key: "file", icon: "fa-solid fa-file-lines", label: "Docs", value: "fa:fa-solid fa-file-lines", category: "work" },
+
+  // Dev & Tech
+  { key: "code", icon: "fa-solid fa-code", label: "Code", value: "fa:fa-solid fa-code", category: "dev" },
+  { key: "terminal", icon: "fa-solid fa-terminal", label: "Terminal", value: "fa:fa-solid fa-terminal", category: "dev" },
+  { key: "robot", icon: "fa-solid fa-robot", label: "AI & Bot", value: "fa:fa-solid fa-robot", category: "dev" },
+  { key: "database", icon: "fa-solid fa-database", label: "Database", value: "fa:fa-solid fa-database", category: "dev" },
+  { key: "gear", icon: "fa-solid fa-gear", label: "Settings", value: "fa:fa-solid fa-gear", category: "dev" },
+  { key: "shield", icon: "fa-solid fa-shield-halved", label: "Security", value: "fa:fa-solid fa-shield-halved", category: "dev" },
+  { key: "bug", icon: "fa-solid fa-bug", label: "Debug", value: "fa:fa-solid fa-bug", category: "dev" },
+
+  // Media & Design
+  { key: "image", icon: "fa-solid fa-image", label: "Photos", value: "fa:fa-solid fa-image", category: "media" },
+  { key: "camera", icon: "fa-solid fa-camera", label: "Camera", value: "fa:fa-solid fa-camera", category: "media" },
+  { key: "music", icon: "fa-solid fa-music", label: "Music", value: "fa:fa-solid fa-music", category: "media" },
+  { key: "video", icon: "fa-solid fa-film", label: "Video", value: "fa:fa-solid fa-film", category: "media" },
+  { key: "palette", icon: "fa-solid fa-palette", label: "Design", value: "fa:fa-solid fa-palette", category: "media" },
+  { key: "headphones", icon: "fa-solid fa-headphones", label: "Audio", value: "fa:fa-solid fa-headphones", category: "media" },
+
+  // Life, Study & Fun
+  { key: "book", icon: "fa-solid fa-book", label: "Study", value: "fa:fa-solid fa-book", category: "fun" },
+  { key: "graduation", icon: "fa-solid fa-graduation-cap", label: "Education", value: "fa:fa-solid fa-graduation-cap", category: "fun" },
+  { key: "gamepad", icon: "fa-solid fa-gamepad", label: "Gaming", value: "fa:fa-solid fa-gamepad", category: "fun" },
+  { key: "cart", icon: "fa-solid fa-cart-shopping", label: "Shopping", value: "fa:fa-solid fa-cart-shopping", category: "fun" },
+  { key: "globe", icon: "fa-solid fa-globe", label: "Web", value: "fa:fa-solid fa-globe", category: "fun" },
+  { key: "compass", icon: "fa-solid fa-compass", label: "Explore", value: "fa:fa-solid fa-compass", category: "fun" },
+  { key: "coffee", icon: "fa-solid fa-mug-hot", label: "Coffee", value: "fa:fa-solid fa-mug-hot", category: "fun" },
 ]
 
 function getBookmarkHostname(url) {
@@ -446,14 +443,101 @@ function createFolderIconEditor({
 
   let iconPreview = null
   let iconGrid = null
+  let iconInput = null
+  let iconColorInput = null
+  let iconColorDirty = false
+  let iconColorReset = false
+
+  const updatePreview = () => {
+    if (!allowIconEdit) return
+    applyFolderIconColor(
+      iconPreview,
+      iconColorReset ? "" : iconColorInput?.value || "",
+    )
+    renderFolderIconPreview(iconPreview, iconInput?.value || icon || "", nameInput?.value || "?")
+  }
+
+  const syncButtons = () => {
+    if (!allowIconEdit || !iconGrid) return
+    const current = (iconInput?.value || icon || "").trim()
+    iconGrid.querySelectorAll("button").forEach((button) => {
+      button.classList.toggle("active", (button.dataset.value || "") === current)
+    })
+  }
+
   if (allowIconEdit) {
     iconPreview = document.createElement("div")
     iconPreview.className = "bookmark-edit-icon-preview bookmark-folder-icon-preview"
     popover.appendChild(iconPreview)
 
+    let activeCategory = "all"
+    let searchQuery = ""
+
+    const searchInput = document.createElement("input")
+    searchInput.type = "text"
+    searchInput.className = "bookmark-folder-icon-search"
+    searchInput.placeholder = i18n.bookmark_folder_search_icons || "Search icon (code, game, star, work)..."
+    popover.appendChild(searchInput)
+
+    const categoryChips = document.createElement("div")
+    categoryChips.className = "bookmark-folder-category-chips"
+    const categories = [
+      { id: "all", label: "All" },
+      { id: "work", label: "Work" },
+      { id: "dev", label: "Dev" },
+      { id: "media", label: "Media" },
+      { id: "fun", label: "Life & Fun" },
+    ]
+    categories.forEach((cat) => {
+      const chip = document.createElement("button")
+      chip.type = "button"
+      chip.className = `bookmark-folder-chip ${cat.id === "all" ? "active" : ""}`
+      chip.textContent = cat.label
+      chip.addEventListener("click", () => {
+        activeCategory = cat.id
+        categoryChips.querySelectorAll(".bookmark-folder-chip").forEach((c) => c.classList.remove("active"))
+        chip.classList.add("active")
+        renderIconGrid()
+      })
+      categoryChips.appendChild(chip)
+    })
+    popover.appendChild(categoryChips)
+
     iconGrid = document.createElement("div")
     iconGrid.className = "bookmark-edit-icon-grid bookmark-folder-icon-grid"
     popover.appendChild(iconGrid)
+
+    const renderIconGrid = () => {
+      iconGrid.innerHTML = ""
+      const q = searchQuery.toLowerCase().trim()
+      const filtered = BOOKMARK_FOLDER_ICON_OPTIONS.filter((opt) => {
+        const matchesCat = activeCategory === "all" || opt.category === activeCategory || opt.category === "all"
+        const matchesQuery = !q || opt.label.toLowerCase().includes(q) || opt.icon.toLowerCase().includes(q) || opt.key.includes(q)
+        return matchesCat && matchesQuery
+      })
+
+      filtered.forEach((option) => {
+        const button = document.createElement("button")
+        button.type = "button"
+        button.dataset.value = option.value
+        button.title = option.label
+        button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
+        button.addEventListener("click", () => {
+          if (iconInput) iconInput.value = option.value
+          syncButtons()
+          updatePreview()
+        })
+        iconGrid.appendChild(button)
+      })
+      syncButtons()
+    }
+
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value
+      renderIconGrid()
+    })
+
+    renderIconGrid()
   }
 
   const fields = document.createElement("div")
@@ -468,22 +552,18 @@ function createFolderIconEditor({
   nameGroup.appendChild(nameInput)
   fields.appendChild(nameGroup)
 
-  let iconInput = null
   if (allowIconEdit) {
     const iconGroup = document.createElement("label")
     iconGroup.className = "bookmark-edit-field"
-    iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Folder icon"}</span>`
+    iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Custom Icon (FontAwesome class or URL)"}</span>`
     iconInput = document.createElement("input")
     iconInput.type = "text"
     iconInput.value = icon || ""
-    iconInput.placeholder = "fa:fa-solid fa-folder or https://..."
+    iconInput.placeholder = "e.g. fa:fa-solid fa-guitar or URL"
     iconGroup.appendChild(iconInput)
-    // fields.appendChild(iconGroup) // Hidden as per earlier request
+    fields.appendChild(iconGroup)
   }
 
-  let iconColorInput = null
-  let iconColorDirty = false
-  let iconColorReset = false
   if (showIconColor) {
     const iconColorGroup = document.createElement("label")
     iconColorGroup.className = "bookmark-edit-field bookmark-edit-color-field"
@@ -535,39 +615,6 @@ function createFolderIconEditor({
   fields.appendChild(actions)
   popover.appendChild(fields)
 
-  const updatePreview = () => {
-    if (!allowIconEdit) return
-    applyFolderIconColor(
-      iconPreview,
-      iconColorReset ? "" : iconColorInput?.value || "",
-    )
-    renderFolderIconPreview(iconPreview, iconInput?.value || icon || "", nameInput.value || "?")
-  }
-
-  const syncButtons = () => {
-    if (!allowIconEdit) return
-    const current = (iconInput?.value || "").trim()
-    iconGrid.querySelectorAll("button").forEach((button) => {
-      button.classList.toggle("active", (button.dataset.value || "") === current)
-    })
-  }
-
-  if (allowIconEdit) {
-    BOOKMARK_FOLDER_ICON_OPTIONS.forEach((option) => {
-      const button = document.createElement("button")
-      button.type = "button"
-      button.dataset.value = option.value
-      button.title = option.label
-      button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
-      button.addEventListener("click", () => {
-        if (iconInput) iconInput.value = option.value
-        syncButtons()
-        updatePreview()
-      })
-      iconGrid.appendChild(button)
-    })
-  }
-
   const saveFolder = () => {
     const nextName = nameInput.value.trim()
     if (!nextName) {
@@ -589,8 +636,8 @@ function createFolderIconEditor({
 
   saveBtn.addEventListener("click", saveFolder)
   const inputsToListen = [nameInput]
-  if (allowIconEdit) inputsToListen.push(iconInput)
-  if (showIconColor) inputsToListen.push(iconColorInput)
+  if (allowIconEdit && iconInput) inputsToListen.push(iconInput)
+  if (showIconColor && iconColorInput) inputsToListen.push(iconColorInput)
   
   inputsToListen.filter(Boolean).forEach((input) => {
     input.addEventListener("input", () => {
@@ -621,7 +668,7 @@ function createFolderIconEditor({
   }
   setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
 
-  const focusTarget = focus === "icon" ? iconInput : nameInput
+  const focusTarget = focus === "icon" ? (iconInput || nameInput) : nameInput
   focusTarget.focus()
   focusTarget.select?.()
 }
@@ -640,19 +687,22 @@ export function openBookmarkStackEditPopover(
     title: i18n.bookmark_stack_edit || "Edit bookmark folder",
     name: stack.title || i18n.bookmark_stack_default_name || "Bookmark Group",
     icon: stack.icon || "",
-    allowIconEdit: false,
+    iconColor: stack.iconColor || "",
+    allowIconEdit: true,
+    showIconColor: true,
     anchor,
     focus: options.focus,
-    onSave: ({ name, icon }) => {
+    onSave: ({ name, icon, iconColor }) => {
       const snapshot = captureBookmarkSnapshot()
       const current = getBookmarks()
       if (!current[stackIndex]?.items) return
       current[stackIndex].title = name
       current[stackIndex].icon = icon
+      if (iconColor !== undefined) current[stackIndex].iconColor = iconColor || ""
       setBookmarks(current)
       saveBookmarks()
       renderBookmarks()
-      showBookmarkUndo(i18n.bookmark_group_renamed || "Group updated", snapshot)
+      showBookmarkUndo(i18n.bookmark_group_renamed || "Folder updated", snapshot)
     },
   })
 }
