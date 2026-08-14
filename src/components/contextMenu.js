@@ -170,7 +170,30 @@ async function openSettingsSection(sectionId, targetSelector = null) {
   if (!sidebar || !section) return
 
   sidebar.classList.add("open")
+
+  // Ensure correct tab is activated in Tab Navigation
+  try {
+    const { switchSettingsTab, getElementTab } = await import("./settings/sidebarNavigation.js")
+    if (typeof getElementTab === "function" && typeof switchSettingsTab === "function") {
+      const tab = getElementTab(section)
+      if (tab) {
+        switchSettingsTab(tab)
+      }
+    }
+  } catch (err) {
+    console.warn("Could not switch settings tab:", err)
+  }
+
   section.classList.remove("collapsed")
+
+  // Expand target collapsible group if any
+  if (targetSelector) {
+    const targetElement = section.querySelector(targetSelector)
+    if (targetElement) {
+      const collGroup = targetElement.closest(".collapsible-group")
+      if (collGroup) collGroup.classList.remove("collapsed")
+    }
+  }
 
   const sectionStates = JSON.parse(
     localStorage.getItem("settingsSectionStates") || "{}",
@@ -178,7 +201,8 @@ async function openSettingsSection(sectionId, targetSelector = null) {
   sectionStates[sectionId] = false
   localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
 
-  requestAnimationFrame(() => {
+  // Allow DOM to settle for layout calculation
+  setTimeout(() => {
     const targetElement =
       (targetSelector ? section.querySelector(targetSelector) : null) ||
       section.querySelector(".section-toggle") ||
@@ -187,18 +211,15 @@ async function openSettingsSection(sectionId, targetSelector = null) {
       targetElement.closest?.(
         ".setting-item-row, .setting-item, .setting-group, .settings-section",
       ) || targetElement
-    const sidebarRect = sidebarContent?.getBoundingClientRect()
-    const targetRect = target.getBoundingClientRect()
-    if (!sidebarContent || !sidebarRect) return
-    sidebarContent.scrollTo({
-      top: targetRect.top - sidebarRect.top + sidebarContent.scrollTop - 12,
-      behavior: "smooth",
-    })
-    target.classList.add("settings-scroll-highlight")
-    window.setTimeout(() => {
-      target.classList.remove("settings-scroll-highlight")
-    }, 1300)
-  })
+    
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" })
+      target.classList.add("settings-scroll-highlight")
+      window.setTimeout(() => {
+        target.classList.remove("settings-scroll-highlight")
+      }, 1500)
+    }
+  }, 100)
 }
 
 function getWidgetSettingsTarget(id) {
