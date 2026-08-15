@@ -1124,99 +1124,136 @@ body.sidebar-light .settings-search-empty p {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
 }
 
-.sidebar-scroll-top-btn {
+/* === SIDEBAR FLOATING ACTION GROUP (Scroll-to-top, Hotkeys, Bug Report) === */
+.sidebar-quick-actions {
   position: absolute;
   right: var(--space-2);
-  bottom: calc(var(--space-5) + 88px);
-  width: 34px;
-  height: 34px;
+  bottom: 74px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.sidebar-quick-actions > * {
+  pointer-events: auto;
+}
+
+.sidebar-quick-actions-toggle {
+  width: 28px;
+  height: 28px;
   padding: 0;
   border-radius: 50%;
-  background: var(--accent-color);
-  color: var(--accent-contrast-color, #1a1a2e);
-  border: none;
+  background: rgba(20, 23, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.sidebar-quick-actions-toggle:hover {
+  background: rgba(35, 40, 55, 0.95);
+  border-color: var(--accent-color, rgba(255, 255, 255, 0.4));
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.sidebar-quick-actions-toggle i {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Collapsed state: arrow rotates to indicate opening upwards */
+.sidebar-quick-actions.collapsed .sidebar-quick-actions-toggle i {
+  transform: rotate(180deg);
+}
+
+.sidebar-quick-actions-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition:
+    opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    max-height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-height: 180px;
+  opacity: 1;
+  transform: translateY(0);
+  overflow: visible;
+}
+
+.sidebar-quick-actions.collapsed .sidebar-quick-actions-menu {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sidebar-scroll-top-btn,
+.sidebar-hotkeys-btn,
+.sidebar-bug-btn {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  cursor: pointer;
+  display: flex !important;
   justify-content: center;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.sidebar-scroll-top-btn {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #1a1a2e) !important;
+  border: none !important;
   opacity: 0;
-  transform: translateY(8px);
+  transform: scale(0.8);
   pointer-events: none;
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.2s ease;
-  z-index: 10;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  height: 0 !important;
+  margin: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, height 0.2s ease;
 }
 
 .sidebar-scroll-top-btn.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
   pointer-events: auto;
-}
-
-.sidebar-bug-btn {
-  position: absolute;
-  right: var(--space-2);
-  bottom: var(--space-5);
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
-  z-index: 10;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-}
-
-.sidebar-scroll-top-btn,
-.sidebar-hotkeys-btn {
-  box-sizing: border-box;
-}
-
-.sidebar-hotkeys-btn {
-  position: absolute;
-  right: var(--space-2);
-  bottom: calc(var(--space-5) + 44px);
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
-  z-index: 10;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  height: 34px !important;
 }
 
 .sidebar-bug-btn:hover,
 .sidebar-hotkeys-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.22) !important;
   transform: translateY(-2px);
-  color: var(--accent-color);
-  border-color: var(--accent-color);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  color: var(--accent-color, #ffffff) !important;
+  border-color: var(--accent-color, rgba(255, 255, 255, 0.4)) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
 }
 
 .sidebar-scroll-top-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
 }
 
 .sidebar-footer {
@@ -6582,9 +6619,33 @@ body.sidebar-light .settings-sidebar button i {
   opacity: 1 !important;
 }
 
-/* Bug report and Hotkeys buttons prominence in light mode */
+/* Floating Quick Actions buttons prominence in light mode */
+body.sidebar-light .sidebar-quick-actions-toggle,
+body.quick-access-white .sidebar-quick-actions-toggle {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.sidebar-light .sidebar-quick-actions-toggle:hover,
+body.quick-access-white .sidebar-quick-actions-toggle:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+body.sidebar-light .sidebar-quick-actions-toggle i,
+body.quick-access-white .sidebar-quick-actions-toggle i {
+  color: inherit !important;
+}
+
 body.sidebar-light .sidebar-bug-btn,
-body.sidebar-light .sidebar-hotkeys-btn {
+body.sidebar-light .sidebar-hotkeys-btn,
+body.sidebar-light .sidebar-scroll-top-btn,
+body.quick-access-white .sidebar-bug-btn,
+body.quick-access-white .sidebar-hotkeys-btn,
+body.quick-access-white .sidebar-scroll-top-btn {
   background: #000000 !important;
   color: #ffffff !important;
   border: 1px solid #000000 !important;
@@ -6592,7 +6653,11 @@ body.sidebar-light .sidebar-hotkeys-btn {
 }
 
 body.sidebar-light .sidebar-bug-btn i,
-body.sidebar-light .sidebar-hotkeys-btn i {
+body.sidebar-light .sidebar-hotkeys-btn i,
+body.sidebar-light .sidebar-scroll-top-btn i,
+body.quick-access-white .sidebar-bug-btn i,
+body.quick-access-white .sidebar-hotkeys-btn i,
+body.quick-access-white .sidebar-scroll-top-btn i {
   color: #ffffff !important;
 }
 
@@ -8176,27 +8241,6 @@ body.sidebar-light
   color: rgba(0, 0, 0, 0.68) !important;
 }
 
-/* Keep the floating sidebar action buttons on one clean vertical rail. */
-.sidebar-scroll-top-btn,
-.sidebar-hotkeys-btn,
-.sidebar-bug-btn {
-  right: var(--space-2) !important;
-  width: 34px !important;
-  height: 34px !important;
-  padding: 0 !important;
-}
-
-.sidebar-scroll-top-btn {
-  bottom: calc(var(--space-5) + 88px) !important;
-}
-
-.sidebar-hotkeys-btn {
-  bottom: calc(var(--space-5) + 44px) !important;
-}
-
-.sidebar-bug-btn {
-  bottom: var(--space-5) !important;
-}
 
 /* Keep sidebar toggle switches visually centered in rows with long or stacked labels. */
 .settings-sidebar .setting-item-row {

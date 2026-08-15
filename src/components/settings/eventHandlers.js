@@ -1293,12 +1293,30 @@ export function setupGeneralEventHandlers(
       sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
     }, 200)
     
-    sidebarScrollTopBtn.classList.toggle("visible", top > 200)
+    if (sidebarScrollTopBtn) {
+      sidebarScrollTopBtn.classList.toggle("visible", top > 200)
+    }
   })
 
-  sidebarScrollTopBtn.addEventListener("click", () => {
-    sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
-  })
+  if (sidebarScrollTopBtn) {
+    sidebarScrollTopBtn.addEventListener("click", () => {
+      sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
+    })
+  }
+
+  // Sidebar Floating Quick Actions Toggle
+  const quickActionsToggleBtn = document.getElementById("sidebar-quick-actions-toggle")
+  const quickActionsContainer = document.getElementById("sidebar-quick-actions")
+  if (quickActionsToggleBtn && quickActionsContainer) {
+    const STORAGE_KEY = "sidebarQuickActionsCollapsed"
+    const isCollapsed = localStorage.getItem(STORAGE_KEY) === "true"
+    quickActionsContainer.classList.toggle("collapsed", isCollapsed)
+
+    quickActionsToggleBtn.addEventListener("click", () => {
+      const collapsed = quickActionsContainer.classList.toggle("collapsed")
+      localStorage.setItem(STORAGE_KEY, collapsed)
+    })
+  }
 
   const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
   if (smoothScrollCheckbox) {
@@ -6241,7 +6259,7 @@ export function setupGeneralEventHandlers(
         current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
         daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         timezone: "auto",
-        forecast_days: "4",
+        forecast_days: "8",
       })
       const geocodingParams = new URLSearchParams({
         name: settings.weatherLocationName || "Ho Chi Minh City",

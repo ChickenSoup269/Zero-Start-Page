@@ -3093,15 +3093,23 @@
                 </div>
             </div>
         </div>
-        <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
-            <i class="fa-solid fa-arrow-up"></i>
-        </button>
-        <button id="sidebar-hotkeys-btn" class="sidebar-hotkeys-btn" title="Mở bảng phím tắt (Ctrl + K)">
-            <i class="fa-solid fa-keyboard"></i>
-        </button>
-        <button id="bug-report-btn" class="sidebar-bug-btn" title="Report Bug / Get Config">
-            <i class="fa-solid fa-bug"></i>
-        </button>
+        <div id="sidebar-quick-actions" class="sidebar-quick-actions">
+            <button type="button" id="sidebar-quick-actions-toggle" class="sidebar-quick-actions-toggle"
+                data-i18n-title="sidebar_quick_actions_toggle" title="Toggle Actions" aria-label="Toggle Actions">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="sidebar-quick-actions-menu">
+                <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button id="sidebar-hotkeys-btn" class="sidebar-hotkeys-btn" title="Mở bảng phím tắt (Ctrl + K)">
+                    <i class="fa-solid fa-keyboard"></i>
+                </button>
+                <button id="bug-report-btn" class="sidebar-bug-btn" title="Report Bug / Get Config">
+                    <i class="fa-solid fa-bug"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="main-container">
