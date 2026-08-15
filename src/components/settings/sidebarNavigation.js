@@ -140,7 +140,7 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
       targetElementToScrollTo.scrollIntoView({ behavior: "smooth", block: "start" })
     }, 50)
   } else {
-    sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
+    sidebarContent.scrollTo({ top: 0, behavior: "instant" })
   }
 }
 
@@ -462,10 +462,12 @@ export function initSidebarNavigation() {
         // User manually opens it
         isManuallyHidden = false
         navContainer.classList.remove("nav-hidden")
+        sidebar?.classList.remove("nav-collapsed")
       } else {
         // User manually hides it
         isManuallyHidden = true
         navContainer.classList.add("nav-hidden")
+        sidebar?.classList.add("nav-collapsed")
       }
     })
   }
@@ -474,6 +476,7 @@ export function initSidebarNavigation() {
     searchInput.addEventListener("focus", () => {
       isManuallyHidden = false
       navContainer.classList.remove("nav-hidden")
+      sidebar?.classList.remove("nav-collapsed")
     })
   }
 
