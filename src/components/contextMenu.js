@@ -173,8 +173,13 @@ async function openSettingsSection(sectionId, targetSelector = null) {
 
   // Ensure correct tab is activated in Tab Navigation
   try {
-    const { switchSettingsTab, getElementTab } = await import("./settings/sidebarNavigation.js")
-    if (typeof getElementTab === "function" && typeof switchSettingsTab === "function") {
+    const { switchSettingsTab, getElementTab } = await import(
+      "./settings/sidebarNavigation.js"
+    )
+    if (
+      typeof getElementTab === "function" &&
+      typeof switchSettingsTab === "function"
+    ) {
       const tab = getElementTab(section)
       if (tab) {
         switchSettingsTab(tab)
@@ -187,11 +192,17 @@ async function openSettingsSection(sectionId, targetSelector = null) {
   section.classList.remove("collapsed")
 
   // Expand target collapsible group if any
+  let targetElement = null
   if (targetSelector) {
-    const targetElement = section.querySelector(targetSelector)
+    targetElement =
+      section.querySelector(targetSelector) ||
+      document.querySelector(targetSelector)
     if (targetElement) {
       const collGroup = targetElement.closest(".collapsible-group")
-      if (collGroup) collGroup.classList.remove("collapsed")
+      if (collGroup) {
+        collGroup.classList.remove("collapsed")
+        collGroup.classList.add("expanded")
+      }
     }
   }
 
@@ -201,25 +212,46 @@ async function openSettingsSection(sectionId, targetSelector = null) {
   sectionStates[sectionId] = false
   localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
 
-  // Allow DOM to settle for layout calculation
+  // Allow DOM to settle for layout calculation and scroll to the top title of target
   setTimeout(() => {
-    const targetElement =
-      (targetSelector ? section.querySelector(targetSelector) : null) ||
-      section.querySelector(".section-toggle") ||
-      section
-    const target =
-      targetElement.closest?.(
-        ".setting-item-row, .setting-item, .setting-group, .settings-section",
-      ) || targetElement
-    
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" })
-      target.classList.add("settings-scroll-highlight")
-      window.setTimeout(() => {
-        target.classList.remove("settings-scroll-highlight")
-      }, 1500)
+    let scrollTarget = null
+    let highlightTarget = null
+
+    if (targetElement) {
+      // Find the most appropriate title / header element for this setting
+      const collGroup = targetElement.closest(".collapsible-group")
+      const settingGroup = targetElement.closest(".setting-group")
+      const itemRow = targetElement.closest(
+        ".setting-item-row, .setting-item, .bg-control-card, .theme-item",
+      )
+
+      const groupHeader =
+        collGroup?.querySelector(".group-header, .setting-group-title") ||
+        settingGroup?.querySelector(
+          ".group-header, .setting-group-title, h3, h4, .settings-subsection-title",
+        )
+
+      // Scroll directly to the title/header of the group or item row
+      scrollTarget = groupHeader || itemRow || targetElement
+      highlightTarget = itemRow || groupHeader || settingGroup || targetElement
+    } else {
+      // If no specific sub-target, scroll to the section header title
+      scrollTarget = section.querySelector(".section-toggle") || section
+      highlightTarget = section.querySelector(".section-toggle") || section
     }
-  }, 100)
+
+    if (scrollTarget) {
+      // Scroll exactly to the header title aligned at the top (with scroll-margin-top)
+      scrollTarget.scrollIntoView({ behavior: "smooth", block: "start" })
+
+      if (highlightTarget) {
+        highlightTarget.classList.add("settings-scroll-highlight")
+        window.setTimeout(() => {
+          highlightTarget.classList.remove("settings-scroll-highlight")
+        }, 1600)
+      }
+    }
+  }, 80)
 }
 
 function getWidgetSettingsTarget(id) {

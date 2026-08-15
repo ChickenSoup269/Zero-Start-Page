@@ -247,17 +247,22 @@
 }
 
 .settings-scroll-highlight {
-  animation: settings-scroll-highlight 1.3s ease;
+  animation: settings-scroll-highlight 1.6s ease;
+  border-radius: var(--radius-md, 10px);
 }
 
 @keyframes settings-scroll-highlight {
   0%,
   100% {
     box-shadow: none;
+    background-color: transparent;
   }
   20%,
-  70% {
-    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  75% {
+    box-shadow:
+      0 0 0 2px var(--accent-color, #4a80f0),
+      0 0 16px rgba(var(--accent-color-rgb, 74, 128, 240), 0.35);
+    background-color: rgba(var(--accent-color-rgb, 74, 128, 240), 0.08);
   }
 }
 
