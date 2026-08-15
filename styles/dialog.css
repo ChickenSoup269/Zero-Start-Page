@@ -1201,43 +1201,43 @@
 }
 
 .quick-access-white .close:not(#close-bug-modal-btn) {
-  color: rgba(0, 0, 0, 0.4) !important;
+  color: rgba(0, 0, 0, 0.65) !important;
 }
 
 .quick-access-white .close:not(#close-bug-modal-btn):hover {
-  color: #000 !important;
-  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
 }
 
 .quick-access-white .modal-content:not(.import-mode) input {
   background: rgba(0, 0, 0, 0.05) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .modal-content:not(.import-mode) input::placeholder {
-  color: rgba(0, 0, 0, 0.3) !important;
+  color: rgba(0, 0, 0, 0.52) !important;
 }
 
 .quick-access-white .modal-content input:focus {
   background: rgba(0, 0, 0, 0.08) !important;
-  border-color: #000 !important;
+  border-color: #000000 !important;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
   outline: none !important;
 }
 
 .quick-access-white .modal-input-group:focus-within .modal-input-icon {
-  color: #000 !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .modal-input-icon {
-  color: rgba(0, 0, 0, 0.35) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 
 .quick-access-white .modal-back-btn {
   background: rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .modal-back-btn:hover {
@@ -1246,62 +1246,63 @@
 
 /* White Mode for Custom Dialog (Prompt, Alert, Confirm) */
 .quick-access-white .custom-dialog {
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2) !important;
 }
 
 .quick-access-white .dialog-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #000 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .dialog-icon {
-  color: #000 !important;
+  color: #000000 !important;
   filter: none !important;
 }
 
 .quick-access-white .dialog-message {
-  color: #000 !important;
+  color: #111111 !important;
 }
 
 .quick-access-white .dialog-input {
   background: rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .dialog-input:focus {
   background: rgba(0, 0, 0, 0.08) !important;
-  border-color: #000 !important;
+  border-color: #000000 !important;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
 }
 
 .quick-access-white .dialog-footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .quick-access-white .dialog-btn-primary {
-  background: #000 !important;
-  color: #fff !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
 }
 
 .quick-access-white .dialog-btn-primary:hover {
-  background: #333 !important;
+  background: #222222 !important;
   transform: translateY(-2px);
 }
 
 .quick-access-white .dialog-btn-secondary {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
 }
 
 .quick-access-white .dialog-btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(0, 0, 0, 0.28) !important;
   transform: translateY(-2px);
 }
 

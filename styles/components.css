@@ -1666,32 +1666,32 @@ body.context-menu-none .context-menu-divider {
 }
 
 .quick-access-white .close {
-  color: rgba(0, 0, 0, 0.4) !important;
+  color: rgba(0, 0, 0, 0.65) !important;
 }
 
 .quick-access-white .close:hover {
-  color: #000 !important;
-  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
 }
 
 .quick-access-white .modal-content input {
   background: rgba(0, 0, 0, 0.05) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .modal-content input::placeholder {
-  color: rgba(0, 0, 0, 0.3) !important;
+  color: rgba(0, 0, 0, 0.52) !important;
 }
 
 .quick-access-white .modal-input-icon {
-  color: rgba(0, 0, 0, 0.35) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 
 .quick-access-white .modal-back-btn {
   background: rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #000000 !important;
 }
 
 .quick-access-white .modal-back-btn:hover {
