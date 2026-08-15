@@ -93,7 +93,7 @@ export class Timer {
                         <i class="fa-solid fa-circle-pause"></i>
                         <span>${i18n.timer_status_ready || "Ready"}</span>
                     </div>
-                    <div class="pomodoro-stats" id="pomodoro-stats" style="display: none; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 4px rgba(0,0,0,0.2); backdrop-filter: blur(4px); color: var(--text-color);" title="Pomodoros Today">🍅 0</div>
+                    <div class="pomodoro-stats" id="pomodoro-stats" style="display: none;" title="Pomodoros Today"><i class="fa-solid fa-stopwatch pomodoro-icon"></i> <span class="pomodoro-count">0</span></div>
                 </div>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
@@ -1193,8 +1193,8 @@ export class Timer {
       if (getSettings().hidePomodoroStats === true) {
         statEl.style.display = "none"
       } else {
-        statEl.style.display = "block"
-        statEl.innerHTML = `🍅 ${stats.count}`
+        statEl.style.display = "inline-flex"
+        statEl.innerHTML = `<i class="fa-solid fa-stopwatch pomodoro-icon"></i> <span class="pomodoro-count">${stats.count}</span>`
       }
     }
   }
