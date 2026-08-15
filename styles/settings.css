@@ -1061,49 +1061,56 @@ body.sidebar-light .settings-nav-container {
 }
 
 body.sidebar-light .settings-search-input {
-  background: rgba(0, 0, 0, 0.04) !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
-  color: #1a1a1a !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+  font-weight: 500;
 }
 
 body.sidebar-light .settings-search-input::placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #64748b !important;
+  opacity: 1 !important;
 }
 
 body.sidebar-light .settings-search-icon {
-  color: rgba(0, 0, 0, 0.4);
+  color: #475569 !important;
+  opacity: 1 !important;
 }
 
 body.sidebar-light .settings-search-clear-btn {
-  background: rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.08);
+  color: #334155;
 }
 
 body.sidebar-light .settings-search-clear-btn:hover {
-  background: rgba(0, 0, 0, 0.2);
-  color: #000;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+  color: var(--accent-color, #007aff);
 }
 
 body.sidebar-light .settings-tab-btn {
   background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.08);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155 !important;
+  font-weight: 600;
 }
 
 body.sidebar-light .settings-tab-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: #000;
-  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  color: var(--accent-color, #007aff) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
 }
 
 body.sidebar-light .settings-tab-btn.active {
-  background: var(--accent-color, #007aff);
-  color: #fff;
-  border-color: var(--accent-color, #007aff);
+  background: var(--accent-color, #007aff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #007aff) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
+  font-weight: 700;
 }
 
 body.sidebar-light .settings-search-empty p {
-  color: rgba(0, 0, 0, 0.75);
+  color: #334155 !important;
+  font-weight: 500;
 }
 
 
@@ -6064,22 +6071,23 @@ body.sidebar-light .footer-btn:hover {
 
 body.sidebar-light .sidebar-footer-hint,
 body.sidebar-light small {
-  color: #000 !important;
-  opacity: 0.7 !important;
+  color: #334155 !important;
+  opacity: 0.9 !important;
 }
 
 body.sidebar-light .sidebar-copyright {
-  color: #fff !important;
-  opacity: 0.7 !important;
+  color: #475569 !important;
+  opacity: 0.9 !important;
 }
 
 body.sidebar-light .sidebar-update-link {
-  color: #d35400;
+  color: var(--accent-color, #007aff) !important;
+  font-weight: 600;
 }
 
 body.sidebar-light .setting-group label i {
-  color: #000;
-  opacity: 0.8;
+  color: #0f172a;
+  opacity: 0.9;
 }
 
 /* Fix theme items in sidebar light */
@@ -6089,7 +6097,7 @@ body.sidebar-light .theme-item {
 }
 
 body.sidebar-light .theme-name {
-  color: #000;
+  color: #0f172a;
   font-weight: 600;
 }
 
@@ -6132,7 +6140,7 @@ body.sidebar-light .settings-sidebar select {
 
 /* Wallpaper & Gallery Sections */
 body.sidebar-light .gallery-subtitle {
-  color: #000 !important;
+  color: #0f172a !important;
   border-bottom-color: rgba(0, 0, 0, 0.1) !important;
   opacity: 1 !important;
 }
@@ -6173,45 +6181,48 @@ body.quick-access-white #effect-grid .effect-item {
   background: #ffffff !important;
   background-color: #ffffff !important;
   background-image: none !important;
-  box-shadow: none !important;
-  color: #000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 body.sidebar-light #effect-grid .effect-item i,
 body.quick-access-white #effect-grid .effect-item i,
 body.sidebar-light #effect-grid .effect-item span,
 body.quick-access-white #effect-grid .effect-item span {
-  color: #000000 !important;
+  color: #0f172a !important;
   opacity: 1 !important;
 }
 
 body.sidebar-light #effect-grid .effect-item.active,
 body.quick-access-white #effect-grid .effect-item.active {
-  background: #000000 !important;
-  background-color: #000000 !important;
+  background: var(--accent-color) !important;
+  background-color: var(--accent-color) !important;
   background-image: none !important;
-  border-color: #000000 !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
 }
 
 body.sidebar-light #effect-grid .effect-item.active i,
 body.quick-access-white #effect-grid .effect-item.active i,
 body.sidebar-light #effect-grid .effect-item.active span,
 body.quick-access-white #effect-grid .effect-item.active span {
-  color: #ffffff !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.sidebar-light #effect-grid .effect-item:hover:not(.active),
 body.quick-access-white #effect-grid .effect-item:hover:not(.active) {
-  background: #f0f0f0 !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+  color: var(--accent-color, #007aff) !important;
 }
 
 body.sidebar-light .effect-category-header,
 body.quick-access-white .effect-category-header {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #000000 !important;
-  border-left-color: #000000 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+  border-left-color: var(--accent-color) !important;
+  font-weight: 700 !important;
 }
 
 /* Force dark text on all spans, labels, and small text in light sidebar */
@@ -6497,29 +6508,55 @@ body.sidebar-light .settings-sidebar #save-accent-color-btn {
 
 /* ─── Final Arctic Theme Refinements ─── */
 
-/* 1. Global Sidebar Buttons: Black background, White text */
+/* 1. Global Sidebar Buttons: Clean Light Theme & Accent Colors */
+body.sidebar-light .settings-sidebar .primary-btn {
+  background: linear-gradient(
+    135deg,
+    var(--accent-color, #a8c0ff),
+    color-mix(in srgb, var(--accent-color, #a8c0ff) 80%, black)
+  ) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+}
+
+body.sidebar-light .settings-sidebar .primary-btn i,
+body.sidebar-light .settings-sidebar .primary-btn span {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.sidebar-light .settings-sidebar .primary-btn:hover {
+  filter: brightness(1.1) !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+}
+
 body.sidebar-light .settings-sidebar .secondary-btn,
-body.sidebar-light .settings-sidebar .primary-btn,
 body.sidebar-light
   .settings-sidebar
-  button:not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
+  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
     .btn-group-item
-  ) {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid #000000 !important;
-  opacity: 1 !important;
+  ):not(.settings-tab-btn) {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 body.sidebar-light .settings-sidebar .secondary-btn i,
-body.sidebar-light .settings-sidebar .primary-btn i {
-  color: #ffffff !important;
+body.sidebar-light .settings-sidebar .secondary-btn span {
+  color: inherit !important;
 }
 
 body.sidebar-light .settings-sidebar .secondary-btn:hover,
-body.sidebar-light .settings-sidebar .primary-btn:hover {
-  background: #333333 !important;
-  border-color: #333333 !important;
+body.sidebar-light
+  .settings-sidebar
+  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
+    .btn-group-item
+  ):not(.settings-tab-btn):hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+  transform: translateY(-1px);
 }
 
 .clock-style-color-controls {
@@ -6609,30 +6646,36 @@ body.sidebar-light .bg-delete-btn:hover i {
 /* Fix: Ensure spans inside black buttons in Arctic theme are white */
 body.sidebar-light .settings-sidebar .secondary-btn span,
 body.sidebar-light .settings-sidebar .primary-btn span,
-body.sidebar-light .settings-sidebar button span {
-  color: #ffffff !important;
+/* Button Text and Icon Contrast in Light Mode */
+body.sidebar-light .settings-sidebar .primary-btn span,
+body.sidebar-light .settings-sidebar .primary-btn i {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
-/* Fix: Invisible icons in black buttons and TOC refinement */
-body.sidebar-light .settings-sidebar button i {
-  color: #ffffff !important;
-  opacity: 1 !important;
+body.sidebar-light .settings-sidebar .secondary-btn span,
+body.sidebar-light .settings-sidebar .secondary-btn i {
+  color: #0f172a !important;
+}
+
+body.sidebar-light .settings-sidebar .secondary-btn:hover span,
+body.sidebar-light .settings-sidebar .secondary-btn:hover i {
+  color: var(--accent-color, #007aff) !important;
 }
 
 /* Floating Quick Actions buttons prominence in light mode */
 body.sidebar-light .sidebar-quick-actions-toggle,
 body.quick-access-white .sidebar-quick-actions-toggle {
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #000000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.16) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
 }
 
 body.sidebar-light .sidebar-quick-actions-toggle:hover,
 body.quick-access-white .sidebar-quick-actions-toggle:hover {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
+  background: var(--accent-color, #007aff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #007aff) !important;
 }
 
 body.sidebar-light .sidebar-quick-actions-toggle i,
@@ -6646,10 +6689,22 @@ body.sidebar-light .sidebar-scroll-top-btn,
 body.quick-access-white .sidebar-bug-btn,
 body.quick-access-white .sidebar-hotkeys-btn,
 body.quick-access-white .sidebar-scroll-top-btn {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border: 1px solid #000000 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light .sidebar-bug-btn:hover,
+body.sidebar-light .sidebar-hotkeys-btn:hover,
+body.sidebar-light .sidebar-scroll-top-btn:hover,
+body.quick-access-white .sidebar-bug-btn:hover,
+body.quick-access-white .sidebar-hotkeys-btn:hover,
+body.quick-access-white .sidebar-scroll-top-btn:hover {
+  background: var(--accent-color, #007aff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #007aff) !important;
+  box-shadow: 0 6px 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
 }
 
 body.sidebar-light .sidebar-bug-btn i,
@@ -6658,32 +6713,49 @@ body.sidebar-light .sidebar-scroll-top-btn i,
 body.quick-access-white .sidebar-bug-btn i,
 body.quick-access-white .sidebar-hotkeys-btn i,
 body.quick-access-white .sidebar-scroll-top-btn i {
-  color: #ffffff !important;
+  color: inherit !important;
 }
 
 /* TOC and Group Icon visibility */
 body.sidebar-light .settings-sidebar .group-icon,
 body.sidebar-light .settings-sidebar .setting-label i,
 body.sidebar-light .settings-sidebar .section-toggle i {
-  color: #000000 !important;
-  opacity: 0.8 !important;
+  color: #0f172a !important;
+  opacity: 0.9 !important;
 }
 
-/* Ensure the hide/show buttons are forced to black background */
+/* Section toggle buttons in sidebar light */
 body.sidebar-light #accent-color-toggle-btn,
 body.sidebar-light #gradient-toggle-btn,
 body.sidebar-light #multi-color-toggle-btn {
-  background: #000000 !important;
-  border-color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
 }
 
-/* 1. Unsplash External Links (Get Key / Video) - Black borders */
+body.sidebar-light #accent-color-toggle-btn:hover,
+body.sidebar-light #gradient-toggle-btn:hover,
+body.sidebar-light #multi-color-toggle-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+  color: var(--accent-color, #007aff) !important;
+}
+
+/* Unsplash External Links */
 body.sidebar-light .unsplash-links a.secondary-btn,
 body.sidebar-light .unsplash-external-link,
 body.sidebar-light a[href*="unsplash.com/oauth/applications"] {
-  border: 1px solid #000000 !important;
-  background: #ffffff !important;
-  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .unsplash-links a.secondary-btn:hover,
+body.sidebar-light .unsplash-external-link:hover,
+body.sidebar-light a[href*="unsplash.com/oauth/applications"]:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+  border-color: var(--accent-color, #007aff) !important;
+  color: var(--accent-color, #007aff) !important;
 }
 
 /* 2. Hover X button: Show ONLY on hover */
@@ -6701,53 +6773,17 @@ body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
   visibility: visible !important;
 }
 
-/* 3. Accent Color Presets: Black background, white text */
+/* 3. Accent Color Presets */
 body.sidebar-light .accent-presets {
-  background: #000000 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   padding: var(--space-2) !important;
   border-radius: var(--radius-md) !important;
 }
 
 body.sidebar-light .accent-presets label,
 body.sidebar-light .accent-presets span {
-  color: #ffffff !important;
-}
-
-/* 4. Section Buttons: Ensure white text */
-body.sidebar-light .settings-sidebar .primary-btn,
-body.sidebar-light .settings-sidebar .secondary-btn,
-body.sidebar-light #unsplash-settings-body .primary-btn,
-body.sidebar-light #accent-color-settings-body .primary-btn,
-body.sidebar-light #gradient-settings-body .primary-btn,
-body.sidebar-light #multi-color-settings-body .primary-btn,
-body.sidebar-light #svg-wave-settings-body .primary-btn,
-body.sidebar-light #donate-modal .primary-btn,
-body.sidebar-light #donate-modal .secondary-btn {
-  color: #ffffff !important;
-}
-
-body.sidebar-light #donate-modal .primary-btn span,
-body.sidebar-light #donate-modal .secondary-btn span {
-  color: #ffffff !important;
-}
-
-/* ─── ULTIMATE BUTTON TEXT COLOR FIX ─── */
-/* Force all text, spans, and icons inside buttons to be white */
-body.sidebar-light
-  .settings-sidebar
-  button:not(.accent-color-preset):not(.icon-btn),
-body.sidebar-light
-  .settings-sidebar
-  button:not(.accent-color-preset):not(.icon-btn)
-  *,
-body.sidebar-light .settings-sidebar .primary-btn,
-body.sidebar-light .settings-sidebar .primary-btn *,
-body.sidebar-light .settings-sidebar .secondary-btn,
-body.sidebar-light .settings-sidebar .secondary-btn *,
-body.sidebar-light .modal .primary-btn *,
-body.sidebar-light .modal .secondary-btn * {
-  color: #ffffff !important;
-  opacity: 1 !important;
+  color: #0f172a !important;
 }
 
 /* Ensure the hover X icon follows the same logic if needed */
