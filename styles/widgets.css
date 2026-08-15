@@ -1773,159 +1773,246 @@ body.ghost-controls .side-controls:hover {
 /* === LIGHT MODE (White Background) === */
 .side-controls.light-mode #settings-toggle,
 .side-controls.light-mode .quick-access-bar {
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+    0 20px 60px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Đổi màu đen cho các nút và icon */
 .side-controls.light-mode .quick-btn,
+.side-controls.light-mode #settings-toggle,
 .side-controls.light-mode #settings-toggle i,
-.side-controls.light-mode .collapse-btn i {
+.side-controls.light-mode .collapse-btn i,
+.side-controls.light-mode .quick-btn i {
   color: #000000 !important;
 }
 
-/* Đảm bảo nút Active cũng dùng màu accent color tương phản */
-.side-controls.light-mode .quick-btn.active {
-  color: white !important;
-  background: black !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3) !important;
+/* Đảm bảo nút Active có độ tương phản cao */
+.side-controls.light-mode .quick-btn.active,
+.side-controls.light-mode #settings-toggle.active,
+body.sidebar-open .side-controls.light-mode #settings-toggle {
+  color: #ffffff !important;
+  background: #000000 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28) !important;
   border-radius: var(--radius-md);
 }
 
-.side-controls.light-mode .quick-btn:hover:not(.active) {
-  color: white !important;
-  background: black !important;
+.side-controls.light-mode .quick-btn.active i,
+.side-controls.light-mode #settings-toggle.active i,
+body.sidebar-open .side-controls.light-mode #settings-toggle i {
+  color: #ffffff !important;
 }
 
-.side-controls.light-mode #settings-toggle:hover {
-  background: white;
-  color: var(--safe-accent) !important;
+.side-controls.light-mode .quick-btn:hover:not(.active),
+.side-controls.light-mode #settings-toggle:hover:not(.active) {
+  color: #ffffff !important;
+  background: #000000 !important;
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active) i,
+.side-controls.light-mode #settings-toggle:hover:not(.active) i,
+.side-controls.light-mode #quick-access-collapse:hover i {
+  color: #ffffff !important;
 }
 
 .side-controls.light-mode .quick-access-divider {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.16) !important;
 }
 
 /* Layout Controls Popup Light Mode */
-.side-controls.light-mode .layout-controls-popup {
-  background: rgba(255, 255, 255, 0.7) !important;
+.side-controls.light-mode .layout-controls-popup,
+body.quick-access-white .layout-controls-popup {
+  background: rgba(255, 255, 255, 0.94) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18) !important;
+  color: #111111 !important;
 }
 
-.side-controls.light-mode .lcp-title {
-  color: #000 !important;
-  opacity: 0.5;
-  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+.side-controls.light-mode .lcp-title,
+body.quick-access-white .lcp-title {
+  color: #111111 !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
-.side-controls.light-mode .lcp-tabs {
+.side-controls.light-mode .lcp-tabs,
+body.quick-access-white .lcp-tabs {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .lcp-tab,
+body.quick-access-white .lcp-tab {
+  color: rgba(0, 0, 0, 0.72) !important;
+  font-weight: 500 !important;
+}
+
+.side-controls.light-mode .lcp-tab:hover,
+body.quick-access-white .lcp-tab:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+}
+
+.side-controls.light-mode .lcp-tab.active,
+body.quick-access-white .lcp-tab.active {
+  background: #000000 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+}
+
+.side-controls.light-mode .lcp-tab.active i,
+.side-controls.light-mode .lcp-tab.active span,
+body.quick-access-white .lcp-tab.active i,
+body.quick-access-white .lcp-tab.active span {
+  color: #ffffff !important;
+}
+
+.side-controls.light-mode .lcp-row:hover,
+body.quick-access-white .lcp-row:hover {
   background: rgba(0, 0, 0, 0.05) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px;
 }
 
-.side-controls.light-mode .lcp-tab {
-  color: rgba(0, 0, 0, 0.6) !important;
+.side-controls.light-mode .lcp-icon,
+body.quick-access-white .lcp-icon {
+  color: #111111 !important;
 }
 
-.side-controls.light-mode .lcp-tab:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
-  color: #000 !important;
+.side-controls.light-mode .lcp-label,
+body.quick-access-white .lcp-label {
+  color: #111111 !important;
+  font-weight: 550 !important;
 }
 
-.side-controls.light-mode .lcp-tab.active {
-  background: #000 !important;
-  color: #fff !important;
+.side-controls.light-mode .lcp-divider,
+body.quick-access-white .lcp-divider {
+  background: rgba(0, 0, 0, 0.12) !important;
 }
 
-.side-controls.light-mode .lcp-row:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
+.side-controls.light-mode #lcp-hide-chrome-bookmarks-row,
+body.quick-access-white #lcp-hide-chrome-bookmarks-row {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px dashed rgba(0, 0, 0, 0.25) !important;
 }
 
-.side-controls.light-mode .lcp-icon {
-  color: #000 !important;
+.side-controls.light-mode #lcp-hide-chrome-bookmarks-row i,
+body.quick-access-white #lcp-hide-chrome-bookmarks-row i {
+  color: #111111 !important;
 }
 
-.side-controls.light-mode .lcp-label {
-  color: #000 !important;
+.side-controls.light-mode .range-val,
+body.quick-access-white .range-val {
+  color: #111111 !important;
+  opacity: 0.95 !important;
+  font-weight: 600 !important;
 }
 
-.side-controls.light-mode .lcp-select {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+.side-controls.light-mode .lcp-select,
+body.quick-access-white .lcp-select {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #111111 !important;
+  font-weight: 500 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 8px center !important;
   background-size: 12px !important;
 }
 
-.side-controls.light-mode .lcp-select:focus {
-  border-color: var(--accent-color) !important;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05) !important;
+.side-controls.light-mode .lcp-select:focus,
+body.quick-access-white .lcp-select:focus {
+  border-color: #000000 !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15) !important;
 }
 
-.side-controls.light-mode .lcp-select option {
-  background: #fff !important;
-  color: #000 !important;
+.side-controls.light-mode .lcp-select option,
+body.quick-access-white .lcp-select option {
+  background: #ffffff !important;
+  color: #000000 !important;
 }
 
-.side-controls.light-mode .lcp-slider-row input[type="range"] {
-  background: rgba(0, 0, 0, 0.1) !important;
-  accent-color: #000 !important;
+.side-controls.light-mode .lcp-slider-row input[type="range"],
+body.quick-access-white .lcp-slider-row input[type="range"] {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  accent-color: #000000 !important;
 }
 
-.side-controls.light-mode
-  .lcp-slider-row
-  input[type="range"]::-webkit-slider-thumb {
-  background: #000 !important;
+.side-controls.light-mode .lcp-slider-row input[type="range"]::-webkit-slider-thumb,
+body.quick-access-white .lcp-slider-row input[type="range"]::-webkit-slider-thumb {
+  background: #000000 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35) !important;
 }
 
-.side-controls.light-mode .lcp-slider {
-  background: rgba(0, 0, 0, 0.1) !important;
+.side-controls.light-mode .lcp-slider,
+body.quick-access-white .lcp-slider {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
-.side-controls.light-mode .lcp-switch input:checked + .lcp-slider {
-  background: #000 !important;
+.side-controls.light-mode .lcp-slider::before,
+body.quick-access-white .lcp-slider::before {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
 }
 
-.side-controls.light-mode .lcp-switch input:checked + .lcp-slider::before {
-  background: #fff !important;
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider,
+body.quick-access-white .lcp-switch input:checked + .lcp-slider {
+  background: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider::before,
+body.quick-access-white .lcp-switch input:checked + .lcp-slider::before {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Group Tabs White Mode Sync */
 body.quick-access-white .bookmark-group-tab {
-  background: rgba(255, 255, 255, 0.4) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  color: #000 !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #111111 !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
 
 body.quick-access-white .bookmark-group-tab:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
-  color: #000 !important;
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.35) !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
 }
 
 body.quick-access-white .bookmark-group-tab.active {
-  background: #000 !important;
-  color: #fff !important;
-  border-color: #000 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+  font-weight: 600 !important;
 }
 
 body.quick-access-white .bookmark-group-tab.add-group-tab {
   border-style: dashed !important;
-  background: rgba(0, 0, 0, 0.02) !important;
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #111111 !important;
+}
+
+body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.4) !important;
+  color: #000000 !important;
 }
 
 #image-preview-thumb {
@@ -3703,7 +3790,7 @@ body.todo-fullscreen-active::before {
   position: fixed;
   top: 20%;
   right: 28px;
-  width: 310px;
+  width: 340px;
   max-width: calc(100vw - 32px);
   padding: 16px;
   color: rgba(255, 255, 255, 0.94);
@@ -3981,31 +4068,66 @@ body.todo-fullscreen-active::before {
 
 .weather-forecast {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 6px;
 }
 
 .weather-day {
   min-width: 0;
+  display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 5px;
-  padding: 8px;
+  gap: 3px;
+  padding: 6px 2px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.68rem;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.weather-day span,
-.weather-day strong {
-  overflow: visible;
-  white-space: normal;
-  word-wrap: break-word;
+.weather-day:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.weather-day .day-name {
+  font-size: 0.62rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .weather-day i {
+  font-size: 0.82rem;
+  margin: 2px 0;
   color: var(--accent-color, #a8c0ff);
+}
+
+.weather-day .day-temps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1.1;
+}
+
+.weather-day .day-temp-high {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.weather-day .day-temp-low {
+  font-size: 0.62rem;
+  font-weight: 500;
+  opacity: 0.65;
 }
 
 .weather-source {
@@ -4069,7 +4191,7 @@ body.todo-fullscreen-active::before {
 }
 
 .weather-container.weather-expanded {
-  width: 430px;
+  width: 440px;
   padding: 20px;
 }
 
@@ -4152,77 +4274,346 @@ body.todo-fullscreen-active::before {
 }
 
 .weather-container.weather-expanded .weather-forecast {
-  gap: 10px;
+  gap: 6px;
 }
 
 .weather-container.weather-expanded .weather-day {
-  padding: 11px 10px;
-  font-size: 0.84rem;
+  padding: 8px 4px;
+  font-size: 0.78rem;
 }
 
-.weather-container.skin-white-blur .weather-search-row,
-.weather-container.skin-white-blur .weather-suggestions,
-.weather-container.skin-white-blur .weather-stats div,
-.weather-container.skin-white-blur .weather-day {
-  background: rgba(0, 0, 0, 0.045) !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
+.weather-container.weather-expanded .weather-day .day-name {
+  font-size: 0.7rem;
 }
 
-.weather-container.skin-white-blur .weather-suggestion-item:hover,
-.weather-container.skin-white-blur .weather-suggestion-item.active,
-.weather-container.skin-light-transparent .weather-suggestion-item:hover,
-.weather-container.skin-light-transparent .weather-suggestion-item.active {
-  background: rgba(0, 0, 0, 0.085);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12) inset;
+.weather-container.weather-expanded .weather-day i {
+  font-size: 0.95rem;
+}
+
+.weather-container.weather-expanded .weather-day .day-temp-high {
+  font-size: 0.76rem;
+}
+
+.weather-container.weather-expanded .weather-day .day-temp-low {
+  font-size: 0.68rem;
+}
+
+/* === WHITE BLUR SKIN FOR WEATHER === */
+.weather-container.skin-white-blur {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+}
+
+.weather-container.skin-white-blur .weather-header h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+}
+
+.weather-container.skin-white-blur .weather-location {
+  color: #475569 !important;
+  font-weight: 500 !important;
+  font-size: 0.76rem !important;
+}
+
+.weather-container.skin-white-blur .weather-actions .icon-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.weather-container.skin-white-blur .weather-actions .icon-btn i {
+  color: inherit !important;
+}
+
+.weather-container.skin-white-blur .weather-actions .icon-btn:hover {
+  background: #ffffff !important;
+  color: #0284c7 !important;
+  border-color: #7dd3fc !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
+  transform: scale(1.05);
+}
+
+.weather-container.skin-white-blur .weather-actions .icon-btn:hover i {
+  color: #0284c7 !important;
+}
+
+.weather-container.skin-white-blur .weather-search-row {
+  background: transparent !important;
+  border: 1px solid rgba(203, 213, 225, 0.9) !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+}
+
+.weather-container.skin-white-blur .weather-search-row:focus-within {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16) !important;
+}
+
+.weather-container.skin-white-blur .weather-search-row i {
+  color: #64748b !important;
+  opacity: 0.8 !important;
+}
+
+.weather-container.skin-white-blur .weather-search-row input,
+.weather-container.skin-white-blur #weather-location-input {
+  background: transparent !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  font-size: 0.82rem !important;
+}
+
+.weather-container.skin-white-blur .weather-search-row input::placeholder,
+.weather-container.skin-white-blur #weather-location-input::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 450 !important;
 }
 
 .weather-container.skin-white-blur .weather-search-btn {
-  background: rgba(0, 0, 0, 0.08);
-  color: #111111;
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25) !important;
+  border-radius: calc(var(--radius-sm) - 2px) !important;
+}
+
+.weather-container.skin-white-blur .weather-search-btn i {
+  color: #ffffff !important;
+}
+
+.weather-container.skin-white-blur .weather-search-btn:hover {
+  background: linear-gradient(135deg, #0369a1, #075985) !important;
+  transform: scale(1.04);
+}
+
+.weather-container.skin-white-blur .weather-suggestions {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-md) !important;
+}
+
+.weather-container.skin-white-blur .weather-suggestion-item {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+.weather-container.skin-white-blur .weather-suggestion-item i {
+  color: #64748b !important;
+}
+
+.weather-container.skin-white-blur .weather-suggestion-item small {
+  color: #64748b !important;
+  font-weight: 450 !important;
+}
+
+.weather-container.skin-white-blur .weather-suggestion-item:hover,
+.weather-container.skin-white-blur .weather-suggestion-item.active {
+  background: rgba(224, 242, 254, 0.8) !important;
+  color: #0284c7 !important;
+}
+
+.weather-container.skin-white-blur .weather-suggestion-item:hover i,
+.weather-container.skin-white-blur .weather-suggestion-item.active i {
+  color: #0284c7 !important;
 }
 
 .weather-container.skin-white-blur .weather-icon {
-  background: rgba(0, 0, 0, 0.06);
-  color: #111111;
+  background: linear-gradient(135deg, rgba(238, 246, 255, 0.95), rgba(224, 242, 254, 0.85)) !important;
+  border: 1px solid rgba(186, 230, 253, 0.8) !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.1) !important;
+  color: #0284c7 !important;
+  border-radius: var(--radius-md) !important;
 }
 
-.weather-container.skin-white-blur .weather-location,
-.weather-container.skin-white-blur .weather-condition,
-.weather-container.skin-white-blur .weather-stats span,
-.weather-container.skin-white-blur .weather-suggestion-item small,
-.weather-container.skin-white-blur .weather-source,
-.weather-container.skin-white-blur .weather-loading,
+.weather-container.skin-white-blur .weather-icon i {
+  color: #0284c7 !important;
+}
+
+.weather-container.skin-white-blur .weather-temp {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+.weather-container.skin-white-blur .weather-temp span {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+.weather-container.skin-white-blur .weather-condition {
+  color: #334155 !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+}
+
+.weather-container.skin-white-blur .weather-stats div {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.weather-container.skin-white-blur .weather-stats span {
+  color: #64748b !important;
+  font-weight: 600 !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+}
+
+.weather-container.skin-white-blur .weather-stats strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+}
+
+.weather-container.skin-white-blur .weather-day {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  border-radius: var(--radius-sm) !important;
+  color: #0f172a !important;
+}
+
+.weather-container.skin-white-blur .weather-day .day-name {
+  color: #64748b !important;
+  font-weight: 650 !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.2px !important;
+  text-transform: uppercase !important;
+}
+
+.weather-container.skin-white-blur .weather-day i {
+  color: #0284c7 !important;
+  font-size: 0.84rem !important;
+}
+
+.weather-container.skin-white-blur .weather-day .day-temp-high {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 0.68rem !important;
+}
+
+.weather-container.skin-white-blur .weather-day .day-temp-low {
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+  font-size: 0.62rem !important;
+}
+
+.weather-container.skin-white-blur .weather-day:hover {
+  background: #ffffff !important;
+  border-color: #7dd3fc !important;
+  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.12) !important;
+  transform: translateY(-2px);
+}
+
+.weather-container.skin-white-blur .weather-day:hover .day-name {
+  color: #0284c7 !important;
+}
+
+.weather-container.skin-white-blur .weather-day:hover .day-temp-high {
+  color: #0f172a !important;
+}
+
+.weather-container.skin-white-blur .weather-day:hover .day-temp-low {
+  color: #64748b !important;
+}
+
+.weather-container.skin-white-blur .weather-source {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  font-size: 0.66rem !important;
+}
+
+.weather-container.skin-white-blur .weather-loading {
+  color: #64748b !important;
+}
+
 .weather-container.skin-white-blur .weather-error {
-  color: rgba(0, 0, 0, 0.62) !important;
+  color: #ef4444 !important;
 }
 
-.weather-container.skin-transparent,
-.habit-tracker-container.skin-transparent,
-.todo-container.skin-transparent,
-.timer-container.skin-transparent {
+/* === TRANSPARENT SKINS FOR WEATHER === */
+.weather-container.skin-transparent {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  color: #ffffff !important;
 }
 
 .weather-container.skin-transparent .weather-search-row,
 .weather-container.skin-transparent .weather-stats div,
 .weather-container.skin-transparent .weather-day {
-  background: rgba(0, 0, 0, 0.18);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 18, 26, 0.48) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32) !important;
+}
+
+.weather-container.skin-transparent .weather-day:hover {
+  background: rgba(25, 30, 42, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .weather-container.skin-transparent .weather-icon {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  background: rgba(15, 18, 26, 0.48) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32);
+}
+
+.weather-container.skin-transparent .weather-header h3,
+.weather-container.skin-transparent .weather-temp,
+.weather-container.skin-transparent .weather-condition,
+.weather-container.skin-transparent .weather-stats strong,
+.weather-container.skin-transparent .weather-day .day-temp-high {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+}
+
+.weather-container.skin-transparent .weather-location,
+.weather-container.skin-transparent .weather-stats span,
+.weather-container.skin-transparent .weather-day .day-name,
+.weather-container.skin-transparent .weather-day .day-temp-low,
+.weather-container.skin-transparent .weather-source {
+  color: rgba(255, 255, 255, 0.82) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .weather-container.skin-light-transparent {
   color: var(--text-color);
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
+}
+
+.weather-container.skin-light-transparent .weather-search-row,
+.weather-container.skin-light-transparent .weather-stats div,
+.weather-container.skin-light-transparent .weather-day {
+  background: rgba(255, 255, 255, 0.065) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.weather-container.skin-light-transparent .weather-day:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 @media (max-width: 640px) {
@@ -9922,60 +10313,105 @@ body.quick-access-transparent .quick-access-popup .quick-access-radius-chip {
 body.quick-access-light #settings-toggle,
 body.quick-access-light .quick-access-bar,
 body.quick-access-light .layout-controls-popup.quick-access-popup,
-body.quick-access-light .quick-access-popup {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+body.quick-access-light .quick-access-popup,
+body.quick-access-white .quick-access-popup {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: #111111 !important;
 }
 
-body.quick-access-light .quick-access-bar .quick-access-divider {
-  background: rgba(0, 0, 0, 0.1) !important;
+body.quick-access-light .quick-access-bar .quick-access-divider,
+body.quick-access-white .quick-access-popup .quick-access-divider {
+  background: rgba(0, 0, 0, 0.15) !important;
 }
 
-body.quick-access-light .quick-btn {
+body.quick-access-light .quick-btn,
+body.quick-access-white .quick-access-popup .quick-btn {
   background: transparent !important;
   border-color: transparent !important;
-  color: #333 !important;
+  color: #111111 !important;
 }
 
 body.quick-access-light .quick-access-popup .quick-access-section-row,
 body.quick-access-light .quick-access-popup .quick-access-border-row,
-body.quick-access-light .quick-access-popup .quick-access-radius-chip {
-  background: rgba(0, 0, 0, 0.04) !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  color: #333 !important;
+body.quick-access-light .quick-access-popup .quick-access-radius-chip,
+body.quick-access-white .quick-access-popup .quick-access-section-row,
+body.quick-access-white .quick-access-popup .quick-access-border-row,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip,
+body.quick-access-white .quick-access-popup .quick-access-border-button {
+  background: rgba(0, 0, 0, 0.045) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #111111 !important;
+  font-weight: 500 !important;
 }
 
 body.quick-access-light #settings-toggle i,
 body.quick-access-light .quick-btn i,
 body.quick-access-light .quick-access-popup .quick-access-radius-chip i,
 body.quick-access-light .quick-access-popup .lcp-title,
-body.quick-access-light .quick-access-popup .lcp-label {
-  color: #333 !important;
+body.quick-access-light .quick-access-popup .lcp-label,
+body.quick-access-light .quick-access-popup .lcp-icon,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip i,
+body.quick-access-white .quick-access-popup .lcp-title,
+body.quick-access-white .quick-access-popup .lcp-label,
+body.quick-access-white .quick-access-popup .lcp-icon,
+body.quick-access-white .quick-access-popup .quick-access-section-label {
+  color: #111111 !important;
+}
+
+body.quick-access-light .quick-access-popup .quick-access-section-current,
+body.quick-access-white .quick-access-popup .quick-access-section-current {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+  font-weight: 600 !important;
+}
+
+body.quick-access-light .quick-access-popup .quick-access-section-hint,
+body.quick-access-white .quick-access-popup .quick-access-section-hint {
+  color: rgba(0, 0, 0, 0.7) !important;
+  opacity: 1 !important;
 }
 
 body.quick-access-light #settings-toggle:hover:not(.active),
 body.quick-access-light .quick-btn:hover:not(.active),
 body.quick-access-light .quick-access-popup .quick-access-section-row:hover,
 body.quick-access-light .quick-access-popup .quick-access-border-row:hover,
-body.quick-access-light .quick-access-popup .quick-access-radius-chip:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
+body.quick-access-light .quick-access-popup .quick-access-radius-chip:hover,
+body.quick-access-white .quick-access-popup .quick-access-section-row:hover,
+body.quick-access-white .quick-access-popup .quick-access-border-row:hover,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip:hover,
+body.quick-access-white .quick-access-popup .quick-access-border-button:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+}
+
+body.quick-access-light #settings-toggle:hover:not(.active) i,
+body.quick-access-light .quick-btn:hover:not(.active) i {
+  color: #ffffff !important;
 }
 
 body.quick-access-light #settings-toggle.active,
 body.quick-access-light .quick-btn.active,
-body.quick-access-light .quick-access-radius-chip.is-active {
-  background: #111 !important;
-  border-color: rgba(0, 0, 0, 0.8) !important;
-  color: #fff !important;
+body.quick-access-light .quick-access-radius-chip.is-active,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active,
+body.quick-access-white .quick-access-popup .quick-access-border-button.is-active {
+  background: #000000 !important;
+  border: 1px solid #000000 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 body.quick-access-light #settings-toggle.active i,
 body.quick-access-light .quick-btn.active i,
-body.quick-access-light .quick-access-radius-chip.is-active i {
-  color: #fff !important;
+body.quick-access-light .quick-access-radius-chip.is-active i,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active i {
+  color: #ffffff !important;
 }
 
 body.quick-access-light-transparent #settings-toggle,

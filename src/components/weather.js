@@ -198,13 +198,10 @@ export class Weather {
 
   applySkin() {
     const settings = getSettings()
-    const isWhiteMode = settings.showQuickAccessBg === true
     const skin =
       settings.widgetUseM3Accent === true
         ? "m3-accent"
-        : isWhiteMode
-          ? "white-blur"
-          : settings.weatherSkin || "default"
+        : settings.weatherSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
@@ -401,7 +398,7 @@ export class Weather {
         current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
         daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         timezone: "auto",
-        forecast_days: "4",
+        forecast_days: "8",
       })
       if (getSettings().weatherUnit === "fahrenheit") {
         params.append("temperature_unit", "fahrenheit")
@@ -677,19 +674,21 @@ export class Weather {
     this.setLocationLabel(location)
 
     const forecast = (daily.time || [])
-      .slice(1, 4)
+      .slice(1, 8)
       .map((date, index) => {
         const dayCode = this.describeWeather(daily.weather_code?.[index + 1])
         const label = this.formatDay(date)
         const max = Math.round(daily.temperature_2m_max?.[index + 1] ?? 0)
         const min = Math.round(daily.temperature_2m_min?.[index + 1] ?? 0)
-        const unit = data.daily_units?.temperature_2m_max || "°C"
-        const summary = `${label}: ${max}/${min}${unit}`
+        const summary = `${label}: ${max}° / ${min}° - ${dayCode.label}`
         return `
           <div class="weather-day" title="${this.escapeAttribute(summary)}">
-            <span title="${this.escapeAttribute(label)}">${this.escapeHtml(label)}</span>
+            <span class="day-name" title="${this.escapeAttribute(label)}">${this.escapeHtml(label)}</span>
             <i class="fa-solid fa-${dayCode.icon}"></i>
-            <strong title="${this.escapeAttribute(summary)}">${max}/${min}${this.escapeHtml(unit)}</strong>
+            <strong class="day-temps" title="${this.escapeAttribute(summary)}">
+              <span class="day-temp-high">${max}°</span>
+              <span class="day-temp-low">${min}°</span>
+            </strong>
           </div>
         `
       })
@@ -746,6 +745,7 @@ export class Weather {
     try {
       const cache = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || "null")
       if (!cache || Date.now() - cache.fetchedAt > WEATHER_CACHE_TTL) return null
+      if ((cache.data?.daily?.time?.length || 0) < 8) return null
       const sameLocation =
         Math.abs(cache.location.latitude - location.latitude) < 0.001 &&
         Math.abs(cache.location.longitude - location.longitude) < 0.001
