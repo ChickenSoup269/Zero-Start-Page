@@ -1093,73 +1093,69 @@
 
 /* White Mode for Modals - Including UI parts of Import Mode */
 .quick-access-white .modal-content {
-  background: rgba(255, 255, 255, 0.8) !important;
-  color: #000 !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #0f172a !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.2),
+    0 30px 80px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
 }
 
 .quick-access-white .modal-header,
 .quick-access-white .modal-footer {
-  border-color: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .quick-access-white .modal-header h2 {
-  color: #000 !important;
+  color: #0f172a !important;
 }
 
-/* Specific UI parts for Import Modal to be Black & White */
+/* Specific UI parts for Import Modal */
 .quick-access-white .import-toolbar,
 .quick-access-white .import-footer {
-  color: #000 !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .quick-access-white .import-search-wrap {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .quick-access-white .import-search-wrap i,
 .quick-access-white .import-search-input {
-  color: #000 !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .import-select-all-label,
 .quick-access-white .import-count-label {
-  color: #000 !important;
+  color: #334155 !important;
   opacity: 1 !important;
 }
 
 .quick-access-white .import-select-all-label span {
-  color: #000 !important;
+  color: #0f172a !important;
 }
 
-/* High contrast buttons for Dark Modals in White Mode */
-.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn,
-.quick-access-white .bug-modal-content .bug-primary-btn {
-  background: #fff !important;
-  border: 1px solid #fff !important;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn {
+  background: linear-gradient(
+    135deg,
+    var(--accent-color, #a8c0ff),
+    color-mix(in srgb, var(--accent-color, #a8c0ff) 80%, black)
+  ) !important;
+  border: none !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 4px 15px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
 }
 
-.quick-access-white
-  .modal-content.import-mode
-  .primary-btn#confirm-import-btn
-  *,
-.quick-access-white .bug-modal-content .bug-primary-btn * {
-  color: #000 !important;
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn * {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
-.quick-access-white
-  .modal-content.import-mode
-  .primary-btn#confirm-import-btn:hover,
-.quick-access-white .bug-modal-content .bug-primary-btn:hover {
-  background: #e0e0e0 !important;
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn:hover {
+  filter: brightness(1.1) !important;
   transform: translateY(-2px);
 }
 
@@ -1172,195 +1168,203 @@
   color: #fff !important;
 }
 
-/* Black background for bookmark selection in Import modal */
 .quick-access-white .bookmark-tree-container {
-  background: #000 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(0, 0, 0, 0.035) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   border-radius: var(--radius-md);
 }
 
 .quick-access-white .bookmark-tree-container * {
-  color: #fff !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .bookmark-tree-container i.fa-folder {
-  color: #fbbf24 !important;
+  color: #f59e0b !important;
 }
 
 .quick-access-white .import-search-input:focus {
-  border-color: #000 !important;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
 }
 
 .quick-access-white .import-select-all-label input[type="checkbox"] {
-  accent-color: #000 !important;
+  accent-color: var(--accent-color) !important;
 }
 
 .quick-access-white .bookmark-tree-item input[type="checkbox"] {
-  accent-color: #fff !important;
+  accent-color: var(--accent-color) !important;
 }
 
 .quick-access-white .close:not(#close-bug-modal-btn) {
-  color: rgba(0, 0, 0, 0.65) !important;
+  color: rgba(15, 23, 42, 0.65) !important;
 }
 
 .quick-access-white .close:not(#close-bug-modal-btn):hover {
-  color: #000000 !important;
-  background: rgba(0, 0, 0, 0.12) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
 }
 
 .quick-access-white .modal-content:not(.import-mode) input {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(0, 0, 0, 0.18) !important;
-  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .modal-content:not(.import-mode) input::placeholder {
-  color: rgba(0, 0, 0, 0.52) !important;
+  color: rgba(15, 23, 42, 0.5) !important;
 }
 
 .quick-access-white .modal-content input:focus {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-color: #000000 !important;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
   outline: none !important;
 }
 
 .quick-access-white .modal-input-group:focus-within .modal-input-icon {
-  color: #000000 !important;
+  color: var(--accent-color, #a8c0ff) !important;
 }
 
 .quick-access-white .modal-input-icon {
-  color: rgba(0, 0, 0, 0.6) !important;
+  color: rgba(15, 23, 42, 0.6) !important;
 }
 
 .quick-access-white .modal-back-btn {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.16) !important;
-  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #334155 !important;
 }
 
 .quick-access-white .modal-back-btn:hover {
-  background: rgba(0, 0, 0, 0.16) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
 }
 
 /* White Mode for Custom Dialog (Prompt, Alert, Confirm) */
 .quick-access-white .custom-dialog {
-  background: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(0, 0, 0, 0.14) !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15) !important;
 }
 
 .quick-access-white .dialog-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #000000 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .dialog-icon {
-  color: #000000 !important;
+  color: var(--accent-color, #a8c0ff) !important;
   filter: none !important;
 }
 
 .quick-access-white .dialog-message {
-  color: #111111 !important;
+  color: #334155 !important;
 }
 
 .quick-access-white .dialog-input {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(0, 0, 0, 0.18) !important;
-  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .dialog-input:focus {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-color: #000000 !important;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
 }
 
 .quick-access-white .dialog-footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .quick-access-white .dialog-btn-primary {
-  background: #000000 !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  background: linear-gradient(
+    135deg,
+    var(--accent-color, #a8c0ff),
+    color-mix(in srgb, var(--accent-color, #a8c0ff) 80%, black)
+  ) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
 }
 
 .quick-access-white .dialog-btn-primary:hover {
-  background: #222222 !important;
+  filter: brightness(1.1) !important;
   transform: translateY(-2px);
 }
 
 .quick-access-white .dialog-btn-secondary {
-  background: rgba(0, 0, 0, 0.06) !important;
-  color: #000000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #334155 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
 .quick-access-white .dialog-btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.12) !important;
-  border-color: rgba(0, 0, 0, 0.28) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
   transform: translateY(-2px);
 }
 
 /* White Mode for Checklist Items */
 .quick-access-white .dialog-check-item {
-  background: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(0, 0, 0, 0.035) !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .quick-access-white .dialog-check-item:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
 }
 
 .quick-access-white .dialog-check-item span {
-  color: #000 !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .dialog-check-section {
-  color: rgba(0, 0, 0, 0.62) !important;
+  color: rgba(15, 23, 42, 0.65) !important;
 }
 
 .quick-access-white .dialog-check-item .dialog-check-desc {
-  color: rgba(0, 0, 0, 0.58) !important;
+  color: rgba(15, 23, 42, 0.58) !important;
 }
 
 .quick-access-white .dialog-choice-item {
-  background: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(0, 0, 0, 0.035) !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
-  color: #000 !important;
+  color: #0f172a !important;
 }
 
 .quick-access-white .dialog-choice-item:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
 }
 
 .quick-access-white .dialog-choice-item small {
-  color: rgba(0, 0, 0, 0.58) !important;
+  color: rgba(15, 23, 42, 0.58) !important;
 }
 
 .quick-access-white .dialog-message .dialog-link-white {
-  color: #fff !important;
-  background: #000 !important;
-  border-color: #000 !important;
+  color: var(--accent-contrast-color, #fff) !important;
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
 }
 
 .quick-access-white .dialog-check-item input[type="checkbox"] {
   border-color: rgba(0, 0, 0, 0.2) !important;
+  accent-color: var(--accent-color) !important;
 }
 
 .quick-access-white .dialog-check-item input[type="checkbox"]:checked {
-  background: #000 !important;
-  border-color: #000 !important;
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
 }
 
 .quick-access-white .dialog-check-item input[type="checkbox"]:checked::after {
-  color: #fff !important;
+  color: var(--accent-contrast-color, #fff) !important;
 }
 
 .update-notification-popup {
