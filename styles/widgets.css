@@ -1348,6 +1348,73 @@ body.bookmark-dragging-active .bookmark-groups-container {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
 }
 
+/* Custom representative icon inside bookmark stack */
+.bookmark-stack-icon.has-custom-stack-icon,
+.bookmark .bookmark-stack-icon.has-custom-stack-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon,
+.bookmark-stack-icon.has-custom-stack-icon img.stored-bookmark-icon,
+.bookmark .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon,
+.bookmark .bookmark-stack-icon.has-custom-stack-icon img.stored-bookmark-icon {
+  width: 58% !important;
+  height: 58% !important;
+  max-width: 58% !important;
+  max-height: 58% !important;
+  display: block !important;
+  margin: auto !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon i.stored-bookmark-icon,
+.bookmark .bookmark-stack-icon.has-custom-stack-icon i.stored-bookmark-icon {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.52) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback,
+.bookmark .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback {
+  width: 70% !important;
+  height: 70% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
+  color: var(--text-color, #fff) !important;
+  font-weight: 750 !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.44) !important;
+  border-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px) !important;
+  margin: auto !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
 #bookmark-stack-backdrop {
   position: fixed;
   inset: 0;
@@ -1674,6 +1741,65 @@ body.bookmark-macos-hover .bookmark-stack-popup-grid {
   .bookmark-stack-popup-item.selected
   .bookmark-stack-popup-check {
   display: inline-flex;
+}
+
+/* Quick Hover Action Buttons on Stack Items (Edit & Delete) */
+.bookmark-stack-item-quick-actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 10;
+}
+
+.bookmark-stack-popup-item:hover .bookmark-stack-item-quick-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.bookmark-stack-popup.is-selecting .bookmark-stack-item-quick-actions {
+  display: none !important;
+}
+
+.bookmark-stack-item-quick-btn {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 6px;
+  background: rgba(22, 24, 34, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.65rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bookmark-stack-item-quick-btn:hover {
+  background: var(--accent-color, #a8c0ff);
+  color: var(--accent-contrast-color, #10131a);
+  border-color: var(--accent-color, #a8c0ff);
+  transform: scale(1.12);
+}
+
+.bookmark-stack-item-quick-btn.delete:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
 }
 
 body.hide-bookmark-bg .bookmark img,
