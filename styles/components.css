@@ -875,29 +875,36 @@ body.context-menu-macos .bookmark-edit-field {
 }
 
 .bookmark-stack-icon.has-custom-stack-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon {
-  width: 62% !important;
-  height: 62% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  object-fit: contain;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon,
+.bookmark-stack-icon.has-custom-stack-icon img.stored-bookmark-icon {
+  width: 60% !important;
+  height: 60% !important;
+  max-width: 60% !important;
+  max-height: 60% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  object-fit: contain !important;
   border: 0 !important;
-  border-radius: calc(
-    var(--bookmark-border-radius, var(--radius-md)) - 3px
-  ) !important;
+  border-radius: 0 !important;
   color: var(--accent-color, #a8c0ff) !important;
-  font-size: calc(var(--bookmark-icon-size, 42px) * 0.48) !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.52) !important;
   line-height: 1 !important;
   margin: 0 !important;
+  margin-bottom: 0 !important;
   padding: 0 !important;
   background: transparent !important;
+  background-color: transparent !important;
   box-shadow: none !important;
 }
 
@@ -905,15 +912,29 @@ body.context-menu-macos .bookmark-edit-field {
   width: auto !important;
   height: auto !important;
   display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.52) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
 }
 
 .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
-  color: var(--text-color, #fff);
-  font-weight: 750;
+  width: 68% !important;
+  height: 68% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18) !important;
+  color: var(--text-color, #fff) !important;
+  font-weight: 750 !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.44) !important;
+  border-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px) !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
 }
 
 .bookmark-group-tab .custom-group-tab-icon {
@@ -1032,8 +1053,7 @@ body.context-menu-macos .bookmark-edit-field {
   }
 }
 
-.context-menu,
-.bookmark-stack-popup {
+.context-menu {
   display: none;
   position: fixed;
   width: 192px;
