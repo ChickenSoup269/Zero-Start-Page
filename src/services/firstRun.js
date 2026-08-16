@@ -14,6 +14,12 @@ import {
   showChoiceConfirm,
   showPrompt,
 } from "../utils/dialog.js"
+import {
+  switchSettingsTab,
+  switchBgSubTab,
+  getElementTab,
+  getElementBgSubTab,
+} from "../components/settings/sidebarNavigation.js"
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
@@ -801,6 +807,22 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "This sidebar is where you tune your start page. The guide will walk through the main areas you can customize.",
     },
     {
+      selector: "#sidebar-toc-toggle",
+      icon: "fa-solid fa-list-ul",
+      title: i18n.sidebar_toc || "Table of Contents",
+      text:
+        i18n.first_run_guide_toc_desc ||
+        "Click the Table of Contents button anytime to quickly jump to any section or feature in the sidebar.",
+    },
+    {
+      selector: ".settings-nav-container",
+      icon: "fa-solid fa-layer-group",
+      title: i18n.settings_nav_title || "Categories & Search",
+      text:
+        i18n.first_run_guide_nav_desc ||
+        "Use the 4 category tabs (Appearance, Background, Widgets, System) and instant search bar to find any setting quickly.",
+    },
+    {
       selector: "#language-select",
       icon: "fa-solid fa-language",
       title: i18n.settings_language || "Language",
@@ -1038,8 +1060,12 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const sidebarRect = sidebarContent.getBoundingClientRect()
     const targetRect = target.getBoundingClientRect()
+    const navContainer = document.querySelector(".settings-nav-container")
+    const navOffset = navContainer && !navContainer.classList.contains("nav-hidden")
+      ? (navContainer.offsetHeight || 110)
+      : 10
     const targetTop =
-      targetRect.top - sidebarRect.top + sidebarContent.scrollTop - 18
+      targetRect.top - sidebarRect.top + sidebarContent.scrollTop - navOffset - 14
 
     sidebarContent.scrollTo({
       top: Math.max(0, targetTop),
@@ -1050,7 +1076,7 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
     const nextSidebarRect = sidebarContent.getBoundingClientRect()
     const nextTargetRect = target.getBoundingClientRect()
     const isVisible =
-      nextTargetRect.top >= nextSidebarRect.top + 8 &&
+      nextTargetRect.top >= nextSidebarRect.top + navOffset + 4 &&
       nextTargetRect.bottom <= nextSidebarRect.bottom - 8
 
     if (isVisible || nextTargetRect.height > nextSidebarRect.height - 24) {
@@ -1212,8 +1238,18 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       const section = step.selector
         ? document.querySelector(step.selector)
         : null
-      if (section?.classList?.contains("settings-section")) {
-        setSettingsSectionExpanded(section, true)
+      if (section) {
+        const targetTab = getElementTab(section)
+        const targetBgSubTab = targetTab === "background" ? getElementBgSubTab(section) : null
+        if (targetTab && typeof switchSettingsTab === "function") {
+          switchSettingsTab(targetTab)
+        }
+        if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
+          switchBgSubTab(targetBgSubTab)
+        }
+        if (section.classList?.contains("settings-section")) {
+          setSettingsSectionExpanded(section, true)
+        }
       }
 
       const target = step.virtualTarget ? null : getGuideTarget(step.selector)
