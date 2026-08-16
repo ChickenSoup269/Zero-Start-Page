@@ -1415,15 +1415,6 @@ body.bookmark-dragging-active .bookmark-groups-container {
   box-shadow: none !important;
 }
 
-#bookmark-stack-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10015;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  animation: fadeIn 0.2s ease-out;
-}
 
 .bookmark-stack-popup {
   position: fixed;

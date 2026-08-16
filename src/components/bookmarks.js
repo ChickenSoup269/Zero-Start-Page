@@ -602,12 +602,7 @@ function createStoredIconFallback(label = "Bookmark") {
 function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const existing = document.getElementById("bookmark-stack-popup")
   if (existing) existing.remove()
-  const existingBackdrop = document.getElementById("bookmark-stack-backdrop")
-  if (existingBackdrop) existingBackdrop.remove()
-
-  const backdrop = document.createElement("div")
-  backdrop.id = "bookmark-stack-backdrop"
-  document.body.appendChild(backdrop)
+  document.getElementById("bookmark-stack-backdrop")?.remove()
 
   const popup = document.createElement("div")
   popup.id = "bookmark-stack-popup"
@@ -904,12 +899,14 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   }
 
   const handleStackItemDragStart = function (event) {
-    if (isStackSelectionMode) {
-      event.preventDefault()
-      return false
-    }
     const itemIndex = Number(this.dataset.stackIndex)
-    draggedStackItems = [{ stackIndex, itemIndex }]
+    if (isStackSelectionMode && selectedStackIndices.size > 0 && selectedStackIndices.has(itemIndex)) {
+      draggedStackItems = Array.from(selectedStackIndices)
+        .sort((a, b) => a - b)
+        .map((idx) => ({ stackIndex, itemIndex: idx }))
+    } else {
+      draggedStackItems = [{ stackIndex, itemIndex }]
+    }
     draggedBookmarkIndices = []
     draggedGroupIndex = null
     this.classList.add("dragging")
@@ -1338,7 +1335,6 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const closePopup = () => {
     popup.remove()
-    backdrop.remove()
     document.removeEventListener("click", onDocumentClick)
     document.removeEventListener("keydown", onKeyDown)
     window.dispatchEvent(new CustomEvent("layoutUpdated"))
@@ -1362,7 +1358,6 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   }
 
   closeBtn.addEventListener("click", closePopup)
-  backdrop.addEventListener("click", closePopup)
   setTimeout(() => {
     document.addEventListener("click", onDocumentClick)
     document.addEventListener("keydown", onKeyDown)
@@ -2231,6 +2226,32 @@ export function renderBookmarks() {
   // Clear and update DOM once
   bookmarksContainer.innerHTML = ""
   bookmarksContainer.appendChild(frag)
+
+  if (enableDrag && !bookmarksContainer.dataset.dragListenerBound) {
+    bookmarksContainer.dataset.dragListenerBound = "true"
+    bookmarksContainer.addEventListener("dragover", (e) => {
+      if (draggedStackItems && draggedStackItems.length > 0) {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = "move"
+      }
+    })
+    bookmarksContainer.addEventListener("drop", (e) => {
+      if (e.target === bookmarksContainer && draggedStackItems && draggedStackItems.length > 0) {
+        e.preventDefault()
+        e.stopPropagation()
+        const snapshot = captureBookmarkSnapshot()
+        const extracted = takeDraggedStackItems()
+        if (!extracted?.items || extracted.items.length === 0) return
+        extracted.bookmarks.push(...extracted.items)
+        setBookmarks(extracted.bookmarks)
+        saveBookmarks()
+        document.getElementById("bookmark-stack-popup")?.remove()
+        cancelSelection()
+        renderBookmarks()
+        showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+      }
+    })
+  }
 
   // Use requestAnimationFrame so UI can render before calculations
   requestAnimationFrame(() => {
