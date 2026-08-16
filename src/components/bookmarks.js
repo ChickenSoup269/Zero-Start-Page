@@ -1991,8 +1991,8 @@ function getToggleIconClass(isHidden) {
     // Groups appear above the bottom bar
     return isHidden ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"
   }
-  // Default / no minimal mode
-  return "fa-solid fa-layer-group"
+  // Default Grid mode: Groups are below bookmarks-grid
+  return isHidden ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up"
 }
 
 export function updateBookmarkGroupsToggleIcon() {

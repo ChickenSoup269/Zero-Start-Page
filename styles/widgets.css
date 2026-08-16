@@ -9117,40 +9117,55 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.active {
   z-index: 1000;
   top: 0px;
   right: -34px;
-  transform: none;
   font-size: 11px;
   transition:
     opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .bookmark-groups-toggle:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.3);
   color: #fff;
-  transform: scale(1.06);
 }
 
-/* Auto-Hide Toggle Option (Reveals smoothly on Hover in BOTH open and closed states) */
-body.auto-hide-groups-toggle .bookmark-groups-toggle,
-body.auto-hide-groups-toggle.groups-hidden .bookmark-groups-toggle,
-body.auto-hide-groups-toggle:not(.groups-hidden) .bookmark-groups-toggle {
+/* Default Grid Layout: Toggle is centered neatly below the widget */
+body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-groups-toggle {
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  top: auto;
+  right: auto;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+}
+
+body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode).groups-hidden .bookmark-groups-toggle {
+  bottom: -12px;
+}
+
+body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-groups-toggle:hover {
+  transform: translateX(-50%) scale(1.08);
+}
+
+/* Auto-Hide Toggle (Reveals smoothly on Hover) */
+body.auto-hide-groups-toggle .bookmark-groups-toggle {
   opacity: 0 !important;
   pointer-events: auto !important;
-  transform: scale(0.85);
   transition:
     opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.2s ease,
-    border-color 0.2s ease !important;
+    border-color 0.2s ease,
+    transform 0.2s ease !important;
 }
 
 body.auto-hide-groups-toggle #bookmark-widget:hover .bookmark-groups-toggle,
 body.auto-hide-groups-toggle .bookmark-groups-toggle:hover {
   opacity: 1 !important;
-  transform: scale(1) !important;
   pointer-events: auto !important;
 }
 
