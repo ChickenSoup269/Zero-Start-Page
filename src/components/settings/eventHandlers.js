@@ -45,7 +45,7 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import { switchSettingsTab, getElementTab } from "./sidebarNavigation.js"
+import { switchSettingsTab, switchBgSubTab, getElementTab, getElementBgSubTab } from "./sidebarNavigation.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -1561,16 +1561,41 @@ export function setupGeneralEventHandlers(
       const sections = [...new Set(elList)].filter(Boolean)
       const addedTitles = new Set()
 
+      const i18n = geti18n()
+      const tocHeader = document.createElement("div")
+      tocHeader.className = "toc-header"
+      tocHeader.innerHTML = `
+        <div class="toc-header-title">
+          <i class="fa-solid fa-list-ul"></i>
+          <span>${i18n.sidebar_toc || "Table of Contents"}</span>
+        </div>
+        <span class="toc-badge">${sections.length}</span>
+      `
+      tocMenu.appendChild(tocHeader)
+
       sections.forEach((section) => {
         let title = ""
         let iconClass = ""
         let isSubItem = false
 
+        let liveBadgeText = ""
+
         if (section.classList.contains("settings-section")) {
           // Main Section Title
           const toggle = section.querySelector(".section-toggle")
           if (toggle) {
-            title = toggle.textContent.trim()
+            const liveBadge = toggle.querySelector(".section-live-badge, .section-count")
+            if (liveBadge) {
+              liveBadgeText = liveBadge.textContent.trim()
+            }
+            const titleSpan = toggle.querySelector("span[data-i18n], span:not(.section-live-badge):not(.section-count)")
+            if (titleSpan) {
+              title = titleSpan.textContent.trim()
+            } else {
+              const clone = toggle.cloneNode(true)
+              clone.querySelectorAll(".section-live-badge, .section-count, i").forEach((el) => el.remove())
+              title = clone.textContent.trim()
+            }
             const icon = toggle.querySelector("i")
             if (icon) iconClass = icon.className
           }
@@ -1582,9 +1607,11 @@ export function setupGeneralEventHandlers(
           const settingLabel = section.querySelector(":scope > .setting-label")
 
           if (header) {
-            const span = header.querySelector("span[data-i18n]")
+            const liveBadge = header.querySelector(".section-live-badge, .section-count")
+            if (liveBadge) liveBadgeText = liveBadge.textContent.trim()
+            const span = header.querySelector("span[data-i18n], span:not(.section-live-badge):not(.section-count)")
             title = span ? span.textContent.trim() : header.textContent.trim()
-            const icon = header.querySelector("i.group-icon")
+            const icon = header.querySelector("i.group-icon, i")
             if (icon) iconClass = icon.className
           } else if (label) {
             const span = label.querySelector("span[data-i18n]")
@@ -1603,6 +1630,32 @@ export function setupGeneralEventHandlers(
 
         if (title && !addedTitles.has(title)) {
           addedTitles.add(title)
+
+          const targetTab = getElementTab(section)
+          const targetBgSubTab = targetTab === "background" ? getElementBgSubTab(section) : null
+
+          let tabBadgeLabel = ""
+          if (targetTab === "appearance") {
+            tabBadgeLabel = i18n.settings_tab_appearance || "Appearance"
+          } else if (targetTab === "background") {
+            if (targetBgSubTab === "media") tabBadgeLabel = i18n.bg_subtab_media || "Media"
+            else if (targetBgSubTab === "colors") tabBadgeLabel = i18n.bg_subtab_colors || "Colors"
+            else if (targetBgSubTab === "animated") tabBadgeLabel = i18n.bg_subtab_animated || "Live FX"
+            else if (targetBgSubTab === "adjust") tabBadgeLabel = i18n.bg_subtab_adjust || "Adjust"
+            else tabBadgeLabel = i18n.settings_tab_background || "Background"
+          } else if (targetTab === "widgets") {
+            tabBadgeLabel = i18n.settings_tab_widgets || "Widgets"
+          } else if (targetTab === "system") {
+            tabBadgeLabel = i18n.settings_tab_system || "System"
+          }
+
+          const liveBadgeHtml = liveBadgeText
+            ? `<span class="toc-live-badge">${liveBadgeText}</span>`
+            : ""
+          const badgeHtml = tabBadgeLabel
+            ? `<span class="toc-item-badge tab-${targetTab || "default"}">${tabBadgeLabel}</span>`
+            : ""
+
           const item = document.createElement("div")
           item.className = "toc-item"
           if (isSubItem) {
@@ -1612,19 +1665,34 @@ export function setupGeneralEventHandlers(
             item.classList.add("toc-highlight-glow")
             item.innerHTML = `
               <div class="toc-glow-mask">
-                <div class="toc-glow-beam-1"></div>
-                <div class="toc-glow-beam-2"></div>
+                <div class="toc-glow-rotator"></div>
               </div>
-              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>
+              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i>
+              <span class="toc-item-title">${title}</span>
+              ${liveBadgeHtml}
+              ${badgeHtml}
             `
           } else {
-            item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
+            item.innerHTML = `
+              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i>
+              <span class="toc-item-title">${title}</span>
+              ${liveBadgeHtml}
+              ${badgeHtml}
+            `
           }
           item.addEventListener("click", () => {
+            // Close ToC popup immediately
+            tocMenu.classList.remove("open")
+            tocToggle.classList.remove("active")
+
             // 0) Switch to the tab containing this section/item
-            const targetTab = getElementTab(section)
             if (targetTab) {
               switchSettingsTab(targetTab)
+            }
+
+            // 0.5) If in background tab, switch to subtab
+            if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
+              switchBgSubTab(targetBgSubTab)
             }
 
             // 1) Expand parent section if collapsed
@@ -1659,29 +1727,43 @@ export function setupGeneralEventHandlers(
               }
             }
 
-            // 3) Calculate precise scroll pixel after DOM has re-laid out
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                const sidebarRect = sidebarContent.getBoundingClientRect()
-                const sectionRect = section.getBoundingClientRect()
-                const navContainer = document.querySelector(".settings-nav-container")
-                const navOffset = navContainer && !navContainer.classList.contains("nav-hidden") ? (navContainer.offsetHeight || 130) : 15
-                const targetPixel = Math.max(0,
-                  sectionRect.top -
-                  sidebarRect.top +
-                  sidebarContent.scrollTop -
-                  navOffset - 10
-                )
+            // 3) Smooth scroll to the target element with robust layout calculation
+            const executeScroll = () => {
+              const currentSidebar = sidebarContent || document.getElementById("sidebar-content")
+              if (!currentSidebar || !section) return
 
-                sidebarContent.scrollTo({
-                  top: targetPixel,
-                  behavior: "smooth",
-                })
+              const sidebarRect = currentSidebar.getBoundingClientRect()
+              const sectionRect = section.getBoundingClientRect()
+              const navContainer = document.querySelector(".settings-nav-container")
+              const navOffset = navContainer && !navContainer.classList.contains("nav-hidden")
+                ? (navContainer.offsetHeight || 110)
+                : 10
+
+              const targetPixel = Math.max(0,
+                sectionRect.top -
+                sidebarRect.top +
+                currentSidebar.scrollTop -
+                navOffset - 12
+              )
+
+              currentSidebar.scrollTo({
+                top: targetPixel,
+                behavior: "smooth",
               })
-            })
 
-            tocMenu.classList.remove("open")
-            tocToggle.classList.remove("active")
+              // 4) Add visual focus pulse animation
+              section.classList.remove("settings-scroll-highlight")
+              void section.offsetWidth // Trigger reflow
+              section.classList.add("settings-scroll-highlight")
+              setTimeout(() => {
+                section.classList.remove("settings-scroll-highlight")
+              }, 1800)
+            }
+
+            // Execute on double frame + microtask to ensure tab display reflow is complete
+            requestAnimationFrame(() => {
+              setTimeout(executeScroll, 50)
+            })
           })
           tocMenu.appendChild(item)
         }

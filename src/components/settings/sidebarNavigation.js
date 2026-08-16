@@ -35,10 +35,24 @@ const SECTION_TAB_MAP = {
   "about-project": "system"
 }
 
+const STORAGE_KEY_BG_SUBTAB = "startpage_bg_active_subtab"
+const DEFAULT_BG_SUBTAB = "media"
+
 let activeTab = DEFAULT_TAB
+let activeBgSubTab = DEFAULT_BG_SUBTAB
 let isSearchMode = false
 let searchTimeout = null
 const searchExpandedSections = new Set()
+
+// Load saved subtab
+try {
+  const savedBgSubTab = localStorage.getItem(STORAGE_KEY_BG_SUBTAB)
+  if (savedBgSubTab && ["media", "colors", "animated", "adjust"].includes(savedBgSubTab)) {
+    activeBgSubTab = savedBgSubTab
+  }
+} catch (e) {
+  activeBgSubTab = DEFAULT_BG_SUBTAB
+}
 
 /**
  * Determine which tab an element belongs to
@@ -76,6 +90,72 @@ export function getElementTab(el) {
   }
 
   return null
+}
+
+/**
+ * Determine which background subtab an element belongs to
+ */
+export function getElementBgSubTab(el) {
+  if (!el) return null
+  const direct = el.getAttribute("data-bg-subtab")
+  if (direct) return direct
+  const closest = el.closest("[data-bg-subtab]")
+  if (closest) return closest.getAttribute("data-bg-subtab")
+  return null
+}
+
+/**
+ * Switch active background subtab
+ */
+export function switchBgSubTab(subTabId, targetElementToScrollTo = null) {
+  const sidebar = document.getElementById("settings-sidebar")
+  const sidebarContent = sidebar?.querySelector(".sidebar-content")
+  if (!sidebar || !sidebarContent) return
+
+  activeBgSubTab = subTabId || DEFAULT_BG_SUBTAB
+  try {
+    localStorage.setItem(STORAGE_KEY_BG_SUBTAB, activeBgSubTab)
+  } catch (e) {
+    // Ignore storage quota errors
+  }
+
+  // Update subtab buttons
+  const subTabButtons = sidebar.querySelectorAll(".bg-subtab-btn")
+  subTabButtons.forEach((btn) => {
+    const isSelected = btn.getAttribute("data-bg-subtab") === activeBgSubTab
+    btn.classList.toggle("active", isSelected)
+    btn.setAttribute("aria-selected", isSelected ? "true" : "false")
+  })
+
+  // Apply visibility filtering to all elements with data-bg-subtab
+  const subTabElements = sidebar.querySelectorAll("[data-bg-subtab]")
+  subTabElements.forEach((el) => {
+    // Skip the subtab buttons themselves
+    if (el.classList.contains("bg-subtab-btn")) return
+    const elSubTab = el.getAttribute("data-bg-subtab")
+    if (elSubTab === activeBgSubTab) {
+      el.classList.remove("bg-subtab-hidden")
+    } else {
+      el.classList.add("bg-subtab-hidden")
+    }
+  })
+
+  // Handle the parent .settings-section[data-section-id="background"]
+  const bgSection = sidebar.querySelector('.settings-section[data-section-id="background"]')
+  if (bgSection) {
+    if (activeBgSubTab === "media" || activeBgSubTab === "adjust") {
+      bgSection.classList.remove("bg-subtab-hidden")
+    } else {
+      bgSection.classList.add("bg-subtab-hidden")
+    }
+  }
+
+  // Scroll
+  if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+    setTimeout(() => {
+      targetElementToScrollTo.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 50)
+  }
 }
 
 /**
@@ -134,6 +214,20 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
     }
   })
 
+  // If active tab is background, apply subtab filtering
+  if (activeTab === "background") {
+    if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+      const targetSubTab = getElementBgSubTab(targetElementToScrollTo)
+      if (targetSubTab) {
+        switchBgSubTab(targetSubTab, targetElementToScrollTo)
+      } else {
+        switchBgSubTab(activeBgSubTab, targetElementToScrollTo)
+      }
+    } else {
+      switchBgSubTab(activeBgSubTab)
+    }
+  }
+
   // Scroll
   if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
     setTimeout(() => {
@@ -181,9 +275,13 @@ function handleSettingsSearch(query) {
   isSearchMode = true
   sidebar.setAttribute("data-search-mode", "true")
 
-  // Make all top-level items available for searching
+  // Make all top-level items and background subtab items available for searching
   const topElements = getTopLevelSettingElements(sidebarContent)
   topElements.forEach((el) => el.classList.remove("settings-tab-hidden"))
+
+  sidebar.querySelectorAll(".bg-subtab-hidden").forEach((el) => {
+    el.classList.remove("bg-subtab-hidden")
+  })
 
   let totalMatches = 0
 
@@ -313,6 +411,24 @@ export function initSidebarNavigation() {
         switchSettingsTab(tabId)
       }
     })
+  })
+
+  // Setup Delegated Background Sub-Tab Clicks
+  sidebar.addEventListener("click", (e) => {
+    const subTabBtn = e.target.closest(".bg-subtab-btn")
+    if (subTabBtn) {
+      const subTabId = subTabBtn.getAttribute("data-bg-subtab")
+      if (subTabId) {
+        switchBgSubTab(subTabId)
+      }
+    }
+  })
+
+  // Re-sync background subtabs once partials finish hydrating
+  window.addEventListener("startpage:settingsPartialsReady", () => {
+    if (activeTab === "background") {
+      switchBgSubTab(activeBgSubTab)
+    }
   })
 
   // Setup Live Search Input
