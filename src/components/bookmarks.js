@@ -903,16 +903,18 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     if (isStackSelectionMode && selectedStackIndices.size > 0 && selectedStackIndices.has(itemIndex)) {
       draggedStackItems = Array.from(selectedStackIndices)
         .sort((a, b) => a - b)
-        .map((idx) => ({ stackIndex, itemIndex: idx }))
+        .map((idx) => ({ stack, stackIndex, itemIndex: idx, item: stack.items[idx] }))
     } else {
-      draggedStackItems = [{ stackIndex, itemIndex }]
+      draggedStackItems = [{ stack, stackIndex, itemIndex, item: stack.items[itemIndex] }]
     }
     draggedBookmarkIndices = []
     draggedGroupIndex = null
     this.classList.add("dragging")
     document.body.classList.add("bookmark-dragging-active")
     event.dataTransfer.effectAllowed = "move"
-    event.dataTransfer.setData("text/plain", "")
+    try {
+      event.dataTransfer.setData("text/plain", "bookmark-stack-item")
+    } catch (_) {}
   }
 
   const handleStackPopupDragOver = function (event) {
@@ -1487,11 +1489,39 @@ function createBookmarkStack(title, items) {
 }
 
 function takeDraggedStackItems() {
-  if (draggedStackItems.length === 0) return null
+  if (!draggedStackItems || draggedStackItems.length === 0) return null
   const bookmarks = getBookmarks()
-  const sourceStackIndex = draggedStackItems[0].stackIndex
-  const sourceStack = bookmarks[sourceStackIndex]
-  if (!isBookmarkStack(sourceStack)) return null
+  const first = draggedStackItems[0]
+
+  let sourceStack = first.stack
+  let sourceStackIndex = first.stackIndex
+
+  if (!sourceStack && sourceStackIndex != null && bookmarks[sourceStackIndex]) {
+    sourceStack = bookmarks[sourceStackIndex]
+  }
+
+  // If sourceStack still not found or index is missing, search bookmarks array
+  if (!sourceStack) {
+    sourceStack = bookmarks.find(
+      (b) =>
+        isBookmarkStack(b) &&
+        (first.item ? b.items.includes(first.item) : true),
+    )
+  }
+
+  if (sourceStack) {
+    const idx = bookmarks.indexOf(sourceStack)
+    if (idx !== -1) {
+      sourceStackIndex = idx
+    } else if (
+      sourceStackIndex == null &&
+      typeof activeStackIndex === "number"
+    ) {
+      sourceStackIndex = activeStackIndex
+    }
+  }
+
+  if (!sourceStack || !Array.isArray(sourceStack.items)) return null
 
   const items = []
   const sortedStackItems = [...draggedStackItems].sort(
@@ -1506,13 +1536,19 @@ function takeDraggedStackItems() {
   if (items.length === 0) return null
 
   let removedSourceSlot = false
-  if (sourceStack.items.length <= 0) {
-    bookmarks.splice(sourceStackIndex, 1)
-    removedSourceSlot = true
-  } else if (sourceStack.items.length === 1) {
-    bookmarks[sourceStackIndex] = sourceStack.items[0]
-  } else {
-    bookmarks[sourceStackIndex] = sourceStack
+  if (
+    sourceStackIndex != null &&
+    sourceStackIndex >= 0 &&
+    bookmarks[sourceStackIndex] === sourceStack
+  ) {
+    if (sourceStack.items.length <= 0) {
+      bookmarks.splice(sourceStackIndex, 1)
+      removedSourceSlot = true
+    } else if (sourceStack.items.length === 1) {
+      bookmarks[sourceStackIndex] = sourceStack.items[0]
+    } else {
+      bookmarks[sourceStackIndex] = sourceStack
+    }
   }
 
   return { bookmarks, items, sourceStackIndex, removedSourceSlot }
@@ -2236,7 +2272,7 @@ export function renderBookmarks() {
       }
     })
     bookmarksContainer.addEventListener("drop", (e) => {
-      if (e.target === bookmarksContainer && draggedStackItems && draggedStackItems.length > 0) {
+      if ((e.target === bookmarksContainer || !e.target.closest(".bookmark")) && draggedStackItems && draggedStackItems.length > 0) {
         e.preventDefault()
         e.stopPropagation()
         const snapshot = captureBookmarkSnapshot()
