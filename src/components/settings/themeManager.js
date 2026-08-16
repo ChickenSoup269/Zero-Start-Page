@@ -632,6 +632,40 @@ export function initThemeManager(
     }
   })
 
+  // Show All / Show Less Themes toggle button
+  const showAllThemesBtn = document.getElementById("themes-show-all-btn")
+  const updateShowAllButtonText = () => {
+    if (!showAllThemesBtn || !DOM.themesGrid) return
+    const allCount = DOM.themesGrid.querySelectorAll(".theme-item").length
+    const isExpanded = DOM.themesGrid.classList.contains("show-all")
+    const icon = showAllThemesBtn.querySelector("i")
+    const textSpan = showAllThemesBtn.querySelector("span")
+    const i18n = geti18n()
+
+    if (icon) {
+      icon.className = isExpanded ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"
+    }
+
+    if (textSpan) {
+      if (isExpanded) {
+        textSpan.setAttribute("data-i18n", "themes_show_less")
+        textSpan.textContent = i18n.themes_show_less || "Show less"
+      } else {
+        textSpan.setAttribute("data-i18n", "themes_show_all")
+        const template = i18n.themes_show_all || "Show all ({count})"
+        textSpan.textContent = template.replace("{count}", allCount)
+      }
+    }
+  }
+
+  if (showAllThemesBtn) {
+    updateShowAllButtonText()
+    showAllThemesBtn.addEventListener("click", () => {
+      DOM.themesGrid.classList.toggle("show-all")
+      updateShowAllButtonText()
+    })
+  }
+
   // Save current theme button
   if (DOM.saveCurrentThemeBtn) {
     DOM.saveCurrentThemeBtn.addEventListener("click", () => {
@@ -821,6 +855,10 @@ function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
 
     // Use a preview color from the snapshot if available
     const previewColor = theme.snapshot.accentColor || "#ffffff"
+    item.style.setProperty("--theme-card-accent", previewColor)
+    if (theme.snapshot.sidebarBg) {
+      item.style.setProperty("--theme-card-bg", theme.snapshot.sidebarBg)
+    }
 
     item.innerHTML = `
             <div class="theme-preview">
@@ -836,6 +874,19 @@ function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
 
     DOM.themesGrid.appendChild(item)
   })
+
+  // Update show all button count if present
+  const showAllThemesBtn = document.getElementById("themes-show-all-btn")
+  if (showAllThemesBtn) {
+    const allCount = DOM.themesGrid.querySelectorAll(".theme-item").length
+    const isExpanded = DOM.themesGrid.classList.contains("show-all")
+    const textSpan = showAllThemesBtn.querySelector("span")
+    const i18n = geti18n()
+    if (textSpan && !isExpanded) {
+      const template = i18n.themes_show_all || "Show all ({count})"
+      textSpan.textContent = template.replace("{count}", allCount)
+    }
+  }
 }
 
 function saveUserTheme(

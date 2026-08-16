@@ -1,8 +1,27 @@
+<div class="bg-subtab-nav" id="bg-subtab-nav" data-settings-tab="background" role="tablist">
+    <button type="button" class="bg-subtab-btn active" data-bg-subtab="media" role="tab" aria-selected="true">
+        <i class="fa-solid fa-image"></i>
+        <span data-i18n="bg_subtab_media">Media & Photos</span>
+    </button>
+    <button type="button" class="bg-subtab-btn" data-bg-subtab="colors" role="tab" aria-selected="false">
+        <i class="fa-solid fa-palette"></i>
+        <span data-i18n="bg_subtab_colors">Colors & Gradients</span>
+    </button>
+    <button type="button" class="bg-subtab-btn" data-bg-subtab="animated" role="tab" aria-selected="false">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span data-i18n="bg_subtab_animated">Live FX</span>
+    </button>
+    <button type="button" class="bg-subtab-btn" data-bg-subtab="adjust" role="tab" aria-selected="false">
+        <i class="fa-solid fa-sliders"></i>
+        <span data-i18n="bg_subtab_adjust">Adjust & Fit</span>
+    </button>
+</div>
+
 <div class="settings-section" data-section-id="background" data-settings-tab="background">
     <h3 class="section-toggle" data-i18n="settings_bg"><i class="fa-solid fa-image"></i> Background</h3>
     <div class="section-content">
         <!-- Source Selection Card -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title"><i class="fa-solid fa-link"></i> <span
                     data-i18n="settings_source_colors">Source & Colors</span></div>
             <div class="background-inputs-grid">
@@ -25,7 +44,7 @@
         </div>
 
         <!-- Unsplash Card -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title"><i class="fa-brands fa-unsplash"></i> <span
                     data-i18n="settings_unsplash_title">Unsplash Integration</span></div>
             <div class="unsplash-input-wrapper" style="margin-bottom: 20px;">
@@ -118,7 +137,7 @@
         </div>
 
         <!-- Picsum Photos Card (No API Key Required) -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title">
                 <i class="fa-solid fa-images"></i> <span data-i18n="bg_free_random_photos">Free Random Photos</span>
                 <span data-i18n="bg_free_random_photos_no_api"
@@ -162,7 +181,7 @@
         </div>
 
         <!-- Local Gallery Random Card -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title">
                 <i class="fa-solid fa-photo-film"></i> <span data-i18n="bg_local_gallery_random">Local Gallery
                     Random</span>
@@ -196,7 +215,7 @@
         </div>
 
         <!-- Visual Effects Card -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="adjust">
             <div class="bg-control-title"><i class="fa-solid fa-wand-magic-sparkles"></i> <span
                     data-i18n="settings_visual_effects">Visual Effects</span>
             </div>
@@ -271,7 +290,7 @@
         </div>
 
         <!-- Layout & Fit Card -->
-        <div id="bg-position-setting" class="bg-control-card" style="display: none;">
+        <div id="bg-position-setting" class="bg-control-card" data-bg-subtab="adjust" style="display: none;">
             <div class="bg-control-title"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span
                     data-i18n="settings_layout_fit">Layout & Fit</span>
             </div>
@@ -317,7 +336,7 @@
         </div>
 
         <!-- Local Themes Gallery Card -->
-        <div class="bg-control-card">
+        <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title">
                 <i class="fa-solid fa-images"></i>
                 <span data-i18n="settings_local_bg">Local Themes</span>
@@ -369,7 +388,7 @@
     </div> <!-- Close section-content -->
 </div> <!-- Close settings-section (Background) -->
 
-<div class="setting-group collapsible-group" id="accent-color-group">
+<div class="setting-group collapsible-group" id="accent-color-group" data-bg-subtab="colors" data-settings-tab="background">
     <div class="group-header">
         <i class="fa-solid fa-palette group-icon"></i>
         <span data-i18n="settings_accent">Accent Color</span>
