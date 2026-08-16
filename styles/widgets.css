@@ -1422,6 +1422,34 @@ body.bookmark-dragging-active .bookmark-groups-container {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.bookmark-stack-popup-title-icon {
+  font-size: 0.78rem;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: opacity 0.18s, color 0.18s;
+}
+
+.bookmark-stack-popup-title-icon:hover {
+  opacity: 1;
+  color: var(--accent-color, #a8c0ff);
+}
+
+.bookmark-stack-popup-title-input {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--accent-color, #a8c0ff);
+  border-radius: 6px;
+  padding: 3px 8px;
+  outline: none;
+  width: 100%;
+  max-width: 220px;
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 100, 150, 255), 0.25);
+}
+
 .bookmark-stack-popup-header small,
 .bookmark-stack-popup-count {
   min-width: 22px;
@@ -1438,71 +1466,162 @@ body.bookmark-dragging-active .bookmark-groups-container {
   border: 1px solid rgba(var(--accent-color-rgb, 100, 150, 255), 0.3);
 }
 
+.bookmark-stack-popup-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.bookmark-stack-popup-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.18s ease;
+}
+
+.bookmark-stack-popup-header-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.bookmark-stack-popup-header-btn.active {
+  background: var(--accent-color, rgba(168, 192, 255, 0.3));
+  color: var(--accent-contrast-color, #fff);
+  border-color: var(--accent-color, #a8c0ff);
+}
+
+.bookmark-stack-popup-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ff8a8a;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
 .bookmark-stack-popup-search {
-  margin-bottom: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.bookmark-stack-popup-search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
 }
 
 .bookmark-stack-popup-search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 14px;
-  border-radius: 12px;
+  padding: 8px 34px 8px 34px;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #fff;
   font-size: 0.85rem;
   outline: none;
-  transition: all 0.22s ease;
+  transition: all 0.2s ease;
 }
 
 .bookmark-stack-popup-search-input:focus {
   border-color: var(--accent-color, #a8c0ff);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 100, 150, 255), 0.25);
   background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 100, 150, 255), 0.2);
 }
 
-.bookmark-stack-popup-actions {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.bookmark-stack-popup-action {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: var(--text-color, #fff);
+.bookmark-stack-popup-search-clear {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
+  padding: 4px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.bookmark-stack-popup-search-clear:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bookmark-stack-popup-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  border-radius: 10px;
+}
+
+.selection-bar-left,
+.selection-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selection-bar-count {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.selection-bar-btn {
   display: inline-flex;
-  flex: 1;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.78rem;
   font-weight: 600;
-  gap: 6px;
-  justify-content: center;
-  min-height: 34px;
-  padding: 6px 12px;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.bookmark-stack-popup-action:hover {
-  background: rgba(255, 255, 255, 0.14);
-  transform: translateY(-1px);
+.selection-bar-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
 }
 
-.bookmark-stack-popup-action.danger {
-  color: #ff8a8a;
-  border-color: rgba(239, 68, 68, 0.25);
+.selection-bar-btn.danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ff9b9b;
 }
 
-.bookmark-stack-popup-action.danger:not(:disabled):hover {
-  background: rgba(239, 68, 68, 0.2);
+.selection-bar-btn.danger:not(:disabled):hover {
+  background: rgba(239, 68, 68, 0.28);
   border-color: #ef4444;
+  color: #fff;
 }
 
-.bookmark-stack-popup-action:disabled {
-  cursor: not-allowed;
+.selection-bar-btn:disabled {
   opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .bookmark-stack-popup-grid {
@@ -12143,253 +12262,6 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
   }
 }
 
-.bookmark-stack-popup {
-  overscroll-behavior: contain;
-}
-
-.bookmark-stack-popup-header {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-2);
-  padding: 12px 16px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.bookmark-stack-popup-header span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
-.bookmark-stack-popup-search {
-  margin-bottom: var(--space-1);
-}
-
-.bookmark-stack-popup-search-input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  color: inherit;
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.bookmark-stack-popup-search-input:focus {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.bookmark-stack-popup-actions {
-  background: transparent;
-  border: none;
-  display: inline-flex;
-  gap: var(--space-1);
-  justify-content: flex-end;
-  margin: 0 0 var(--space-2) auto;
-  padding: 0;
-  width: auto;
-  box-shadow: none;
-}
-
-.bookmark-stack-popup-action {
-  align-items: center;
-  aspect-ratio: 1;
-  background: transparent;
-  border-color: transparent;
-  border-radius: 1000px;
-  color: rgba(255, 255, 255, 0.78);
-  display: inline-flex;
-  flex: 0 0 36px;
-  height: 36px;
-  justify-content: center;
-  min-width: 0;
-  padding: 0;
-  position: relative;
-  width: 36px;
-  transition:
-    background 0.25s ease,
-    box-shadow 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.bookmark-stack-popup-action:hover {
-  background: var(--m3-primary, var(--accent-color));
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-  transform: translateY(-2px);
-}
-
-.bookmark-stack-popup-action.danger {
-  color: #ff9b9b;
-}
-
-.bookmark-stack-popup-action.danger:not(:disabled):hover {
-  background: rgba(239, 68, 68, 0.16);
-  color: #ffd0d0;
-}
-
-.bookmark-stack-popup-action:disabled {
-  background: transparent;
-  box-shadow: none;
-  cursor: not-allowed;
-  opacity: 0.38;
-  transform: none;
-}
-
-.bookmark-stack-popup-action i {
-  flex: 0 0 auto;
-  font-size: 0.86rem;
-  line-height: 1;
-}
-
-.bookmark-stack-popup-action span {
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-}
-
-.bookmark-stack-popup-grid {
-  padding: 4px;
-  gap: 12px;
-}
-
-.bookmark-stack-popup .bookmark,
-body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: var(--radius-md) !important;
-  min-height: 96px !important;
-  min-width: 0 !important;
-  padding: 12px !important;
-  width: 100% !important;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-}
-
-.bookmark-stack-popup .bookmark:hover,
-body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-
-.bookmark-stack-popup .bookmark-stack-popup-label,
-body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark-stack-popup-label,
-body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark-stack-popup-label,
-body.bookmark-taskbar-top-mode
-  .bookmark-stack-popup
-  .bookmark-stack-popup-label,
-body.bookmark-taskbar-left-mode
-  .bookmark-stack-popup
-  .bookmark-stack-popup-label,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark-stack-popup-label,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark-stack-popup-label,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark-stack-popup-label {
-  color: var(--text-color, #fff);
-  display: block !important;
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1.2;
-  max-width: 100%;
-  min-height: 1.2em;
-  opacity: 0.88;
-  overflow: hidden;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bookmark-stack-popup .bookmark img,
-.bookmark-stack-popup .bookmark .bookmark-icon-fallback,
-body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-sidebar-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-top-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-left-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback {
-  height: 34px !important;
-  margin-bottom: var(--space-1) !important;
-  width: 34px !important;
-}
-
-.bookmark-stack-popup .bookmark-stack-popup-check {
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.32);
-}
-
-@media (max-width: 520px) {
-  .bookmark-stack-popup {
-    padding: var(--space-2);
-    width: min(330px, calc(100vw - 18px));
-  }
-
-  .bookmark-stack-popup-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-1);
-  }
-
-  .bookmark-stack-popup-action span {
-    display: none;
-  }
-}
 
 /* Final overflow guard for large imported bookmark folder sets. */
 body.bookmark-taskbar-mode .bookmark-groups-container,
