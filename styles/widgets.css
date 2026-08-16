@@ -80,63 +80,50 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
 
 .clear-btn,
 .camera-btn,
-.lens-btn {
-  background: none;
+.lens-btn,
+.ai-btn,
+.search-submit-btn {
+  background: transparent;
   border: none;
   color: var(--text-color);
-  opacity: 0.6;
-  font-size: 1rem;
+  opacity: 0.65;
+  font-size: 1.05rem;
   cursor: pointer;
-  /* Hidden by default; shown via JS */
-  display: none;
   width: 36px;
   height: 36px;
-  line-height: 36px; /* perfectly centers inline font icon vertically */
-  text-align: center; /* perfectly centers horizontally */
+  min-width: 36px;
+  min-height: 36px;
   flex-shrink: 0;
-  padding: 0;
-  margin: 0;
-  text-decoration: none;
-  transition:
-    opacity 0.2s,
-    color 0.2s,
-    transform 0.2s;
-}
-
-.ai-btn {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  opacity: 0.6;
-  font-size: 1rem;
-  cursor: pointer;
   display: none;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   margin: 0;
+  border-radius: 50%;
+  line-height: 1;
+  text-align: center;
   text-decoration: none;
+  box-sizing: border-box;
   transition:
-    opacity 0.2s,
-    color 0.2s,
-    transform 0.2s;
+    opacity 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.search-submit-btn {
+  display: inline-flex !important;
+}
+
+.clear-btn:hover,
 .camera-btn:hover,
 .lens-btn:hover,
-.ai-btn:hover {
+.ai-btn:hover,
+.search-submit-btn:hover {
   opacity: 1;
   color: #fff;
-  transform: scale(1.1);
-}
-
-.clear-btn:hover {
-  opacity: 1;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.08);
 }
 
 .ai-btn {
@@ -147,15 +134,27 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   color: #c2adff;
 }
 
-
+.clear-btn i,
+.camera-btn i,
+.lens-btn i,
+.ai-btn i,
+.search-submit-btn i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+}
 
 .search-divider {
   display: none;
   width: 1px;
-  height: 16px;
+  height: 18px;
   background: var(--text-color);
-  opacity: 0.3;
-  margin: 0 var(--space-0-5);
+  opacity: 0.25;
+  margin: 0 4px;
   flex-shrink: 0;
   align-self: center;
 }
@@ -7481,8 +7480,9 @@ body.widgets-m3-accent .quotes-container,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: var(--space-1);
-  margin-left: var(--space-1);
+  margin-left: 2px;
+  margin-right: 4px;
+  flex-shrink: 0;
   cursor: pointer;
 }
 
@@ -7490,23 +7490,29 @@ body.widgets-m3-accent .quotes-container,
   appearance: none;
   border: 0;
   background: transparent;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background 0.2s;
+  padding: 0;
+  margin: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
   color: var(--text-color);
   font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .selected-engine .search-engine-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
   object-fit: contain;
   display: block;
+  margin: auto;
 }
 
 .selected-engine:hover {
@@ -14766,4 +14772,115 @@ body[data-layout-preset="default"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
 body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-sidebar-mode) .bookmarks-grid {
   justify-content: center !important;
 }
+
+/* Hidden Groups Dropdown Popup & More Tab */
+.bookmark-groups-more-tab {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border-style: dashed !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  transition: all 0.2s ease;
+}
+
+.bookmark-groups-more-tab:hover {
+  border-style: solid !important;
+  border-color: var(--accent-color) !important;
+}
+
+.bookmark-groups-more-tab.has-active-hidden {
+  border-style: solid !important;
+  border-color: var(--accent-color) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
+}
+
+#hidden-groups-popup {
+  position: fixed;
+  z-index: 10040;
+  min-width: 200px;
+  max-width: min(340px, calc(100vw - 24px));
+  max-height: min(380px, calc(100vh - 120px));
+  background: rgba(22, 24, 32, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeInMenu 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hidden-groups-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hidden-groups-popup-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-color, #fff);
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hidden-groups-popup-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.hidden-groups-popup-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hidden-groups-popup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 280px;
+  padding-right: 2px;
+}
+
+.hidden-groups-popup-list .bookmark-group-tab {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 8px 12px !important;
+  border-radius: var(--radius-sm, 8px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.hidden-groups-popup-list .bookmark-group-tab:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.hidden-groups-popup-list .bookmark-group-tab.active {
+  background: var(--accent-color, rgba(168, 192, 255, 0.25)) !important;
+  color: var(--accent-contrast-color, #fff) !important;
+  border-color: var(--accent-color) !important;
+}
+
 

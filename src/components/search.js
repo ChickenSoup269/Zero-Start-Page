@@ -708,7 +708,7 @@ function handleImageSelection(file) {
     
     // Ensure search button/divider are visible
     searchDivider.style.display = "block"
-    clearBtn.style.display = "block"
+    clearBtn.style.display = "flex"
   }
   reader.readAsDataURL(file)
 }
@@ -881,7 +881,7 @@ function initSearch() {
   searchInput.addEventListener("input", () => {
     activeSuggestionIndex = -1
     const hasValue = !!searchInput.value
-    clearBtn.style.display = hasValue ? "block" : "none"
+    clearBtn.style.display = hasValue ? "flex" : "none"
     searchDivider.style.display = hasValue ? "block" : "none"
     clearTimeout(suggestionTimeout)
     suggestionTimeout = setTimeout(() => {
