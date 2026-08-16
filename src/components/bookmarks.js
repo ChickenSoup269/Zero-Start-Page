@@ -624,10 +624,19 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const titleWrapper = document.createElement("div")
   titleWrapper.className = "bookmark-stack-popup-title-wrapper"
 
-  const folderIcon = document.createElement("i")
-  folderIcon.className = "fa-solid fa-folder-open"
-  folderIcon.style.color = "var(--accent-color, #a8c0ff)"
-  folderIcon.style.fontSize = "1.05rem"
+  let folderIcon
+  if (stack.icon) {
+    folderIcon = createStoredIconElement(stack.icon, getBookmarkLabel(stack))
+    folderIcon.classList.add("bookmark-stack-popup-header-icon")
+    if (stack.iconColor) {
+      folderIcon.style.color = stack.iconColor
+    }
+  } else {
+    folderIcon = document.createElement("i")
+    folderIcon.className = "fa-solid fa-folder-open bookmark-stack-popup-header-icon"
+    folderIcon.style.color = stack.iconColor || "var(--accent-color, #a8c0ff)"
+    folderIcon.style.fontSize = "1.05rem"
+  }
 
   const title = document.createElement("span")
   title.className = "bookmark-stack-popup-title"
@@ -978,7 +987,12 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
         link.classList.add("selected")
       }
 
-      link.appendChild(createBookmarkIcon(item))
+      if (isBookmarkStack(item)) {
+        link.classList.add("bookmark-stack")
+        link.appendChild(createBookmarkStackIcon(item))
+      } else {
+        link.appendChild(createBookmarkIcon(item))
+      }
       const label = document.createElement("span")
       label.className = "bookmark-stack-popup-label"
       label.textContent = labelText

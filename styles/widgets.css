@@ -1472,6 +1472,39 @@ body.bookmark-dragging-active .bookmark-groups-container {
   min-width: 0;
 }
 
+.bookmark-stack-popup-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+img.bookmark-stack-popup-header-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+span.bookmark-stack-popup-header-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  color: var(--text-color, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bookmark-stack-popup .bookmark-stack-icon {
+  margin-bottom: var(--space-1);
+}
+
 .bookmark-stack-popup-title {
   font-size: 1.05rem;
   font-weight: 700;
