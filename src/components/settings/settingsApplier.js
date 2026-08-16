@@ -2382,11 +2382,7 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove("hide-bookmark-bg")
     }
 
-    if (settings.bookmarkGroupsToggleAutoHide) {
-      document.body.classList.add("auto-hide-groups-toggle")
-    } else {
-      document.body.classList.remove("auto-hide-groups-toggle")
-    }
+    document.body.classList.add("auto-hide-groups-toggle")
 
     if (settings.bookmarkHideScrollbar) {
       document.body.classList.add("bookmark-hide-scrollbar")
@@ -4356,10 +4352,6 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkLayoutShowGroups) {
         DOM.bookmarkLayoutShowGroups.checked =
           settings.showBookmarkGroups !== false
-      }
-      if (DOM.bookmarkGroupsToggleAutoHide) {
-        DOM.bookmarkGroupsToggleAutoHide.checked =
-          settings.bookmarkGroupsToggleAutoHide === true
       }
     }
 

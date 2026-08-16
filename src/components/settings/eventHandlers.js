@@ -3073,15 +3073,7 @@ export function setupGeneralEventHandlers(
       })
     }
 
-    if (DOM.bookmarkGroupsToggleAutoHide) {
-      DOM.bookmarkGroupsToggleAutoHide.addEventListener("change", () => {
-        markInterfaceStyleCustom("bookmarkGroupsToggleAutoHide")
-        throttleSettingUpdate(
-          "bookmarkGroupsToggleAutoHide",
-          DOM.bookmarkGroupsToggleAutoHide.checked,
-        )
-      })
-    }
+
 
     if (DOM.bookmarkHideScrollbarCheckbox) {
       DOM.bookmarkHideScrollbarCheckbox.addEventListener("change", () => {
