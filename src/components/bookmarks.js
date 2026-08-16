@@ -616,7 +616,6 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   isStackSelectionMode = false
   selectedStackIndices.clear()
   activeStackIndex = stackIndex
-
   const i18n = geti18n()
 
   const header = document.createElement("div")
@@ -628,28 +627,28 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const folderIcon = document.createElement("i")
   folderIcon.className = "fa-solid fa-folder-open"
   folderIcon.style.color = "var(--accent-color, #a8c0ff)"
-  folderIcon.style.fontSize = "1rem"
+  folderIcon.style.fontSize = "1.05rem"
 
   const title = document.createElement("span")
   title.className = "bookmark-stack-popup-title"
   title.textContent = getBookmarkLabel(stack)
-  title.title = "Click to rename"
+  title.title = i18n.bookmark_stack_rename || "Click to rename"
+
+  const titleEditIcon = document.createElement("i")
+  titleEditIcon.className = "fa-solid fa-pen bookmark-stack-popup-title-icon"
+  titleEditIcon.title = i18n.bookmark_stack_rename || "Click to rename"
+
+  const count = document.createElement("span")
+  count.className = "bookmark-stack-popup-count"
+  count.textContent = `${stack.items.length}`
 
   // Inline rename on click
-  title.addEventListener("click", () => {
+  const triggerInlineRename = () => {
     const currentName = getBookmarkLabel(stack)
     const input = document.createElement("input")
     input.type = "text"
     input.value = currentName
     input.className = "bookmark-stack-popup-title-input"
-    input.style.fontSize = "1rem"
-    input.style.fontWeight = "700"
-    input.style.color = "#fff"
-    input.style.background = "rgba(0,0,0,0.3)"
-    input.style.border = "1px solid var(--accent-color)"
-    input.style.borderRadius = "6px"
-    input.style.padding = "2px 6px"
-    input.style.outline = "none"
 
     const finishRename = () => {
       const newName = input.value.trim()
@@ -660,6 +659,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
         renderBookmarks()
       }
       input.replaceWith(title)
+      titleWrapper.insertBefore(titleEditIcon, count)
     }
 
     input.addEventListener("blur", finishRename)
@@ -672,119 +672,135 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       }
     })
 
+    titleEditIcon.remove()
     title.replaceWith(input)
     input.focus()
     input.select()
-  })
+  }
 
-  const count = document.createElement("small")
-  count.className = "bookmark-stack-popup-count"
-  count.textContent = `${stack.items.length}`
+  title.addEventListener("click", triggerInlineRename)
+  titleEditIcon.addEventListener("click", triggerInlineRename)
 
   titleWrapper.appendChild(folderIcon)
   titleWrapper.appendChild(title)
+  titleWrapper.appendChild(titleEditIcon)
   titleWrapper.appendChild(count)
   header.appendChild(titleWrapper)
 
+  const headerActions = document.createElement("div")
+  headerActions.className = "bookmark-stack-popup-header-actions"
+
+  const searchToggleBtn = document.createElement("button")
+  searchToggleBtn.type = "button"
+  searchToggleBtn.className = "bookmark-stack-popup-header-btn"
+  searchToggleBtn.title = i18n.search_placeholder || "Search bookmarks"
+  searchToggleBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i>`
+
+  const selectModeBtn = document.createElement("button")
+  selectModeBtn.type = "button"
+  selectModeBtn.className = "bookmark-stack-popup-header-btn"
+  selectModeBtn.title = i18n.bookmark_stack_select || "Select bookmarks"
+  selectModeBtn.innerHTML = `<i class="fa-solid fa-check-double"></i>`
+
+  const renameFolderBtn = document.createElement("button")
+  renameFolderBtn.type = "button"
+  renameFolderBtn.className = "bookmark-stack-popup-header-btn"
+  renameFolderBtn.title = i18n.bookmark_stack_rename || "Folder settings"
+  renameFolderBtn.innerHTML = `<i class="fa-solid fa-sliders"></i>`
+  renameFolderBtn.addEventListener("click", () => {
+    openBookmarkStackEditPopover(stackIndex, anchor)
+  })
+
   const closeBtn = document.createElement("button")
   closeBtn.type = "button"
-  closeBtn.className = "bookmark-stack-popup-close-btn"
+  closeBtn.className = "bookmark-stack-popup-header-btn bookmark-stack-popup-close-btn"
+  closeBtn.title = i18n.close || "Close"
   closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
-  closeBtn.style.background = "rgba(255,255,255,0.08)"
-  closeBtn.style.border = "none"
-  closeBtn.style.borderRadius = "50%"
-  closeBtn.style.width = "28px"
-  closeBtn.style.height = "28px"
-  closeBtn.style.display = "inline-flex"
-  closeBtn.style.alignItems = "center"
-  closeBtn.style.justifyContent = "center"
-  closeBtn.style.color = "rgba(255,255,255,0.7)"
-  closeBtn.style.cursor = "pointer"
-  closeBtn.style.transition = "all 0.2s"
-  closeBtn.addEventListener("mouseenter", () => {
-    closeBtn.style.background = "rgba(255,255,255,0.18)"
-    closeBtn.style.color = "#fff"
-  })
-  closeBtn.addEventListener("mouseleave", () => {
-    closeBtn.style.background = "rgba(255,255,255,0.08)"
-    closeBtn.style.color = "rgba(255,255,255,0.7)"
-  })
-  header.appendChild(closeBtn)
+
+  headerActions.appendChild(searchToggleBtn)
+  headerActions.appendChild(selectModeBtn)
+  headerActions.appendChild(renameFolderBtn)
+  headerActions.appendChild(closeBtn)
+  header.appendChild(headerActions)
   popup.appendChild(header)
 
-  let searchInput = null
-  if (stack.items.length >= 4) {
-    const searchWrapper = document.createElement("div")
-    searchWrapper.className = "bookmark-stack-popup-search"
-    searchInput = document.createElement("input")
-    searchInput.type = "text"
-    searchInput.placeholder = i18n.bookmark_stack_search || "Search in folder..."
-    searchInput.className = "bookmark-stack-popup-search-input"
-    searchWrapper.appendChild(searchInput)
-    popup.appendChild(searchWrapper)
+  // Search Bar
+  const searchWrapper = document.createElement("div")
+  searchWrapper.className = "bookmark-stack-popup-search"
+  if (stack.items.length < 4) {
+    searchWrapper.style.display = "none"
   }
 
-  const actions = document.createElement("div")
-  actions.className = "bookmark-stack-popup-actions"
+  const searchIcon = document.createElement("i")
+  searchIcon.className = "fa-solid fa-magnifying-glass bookmark-stack-popup-search-icon"
 
-  const toggleBtn = document.createElement("button")
-  toggleBtn.type = "button"
-  toggleBtn.className = "bookmark-stack-popup-action"
-  toggleBtn.title = i18n.bookmark_stack_toggle_actions || "Toggle actions"
-  toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`
-  
-  const innerActions = document.createElement("div")
-  innerActions.style.display = "none"
-  innerActions.style.gap = "var(--space-1)"
-  
-  let isActionsVisible = false
-  toggleBtn.addEventListener("click", (e) => {
-    e.stopPropagation()
-    isActionsVisible = !isActionsVisible
-    innerActions.style.display = isActionsVisible ? "inline-flex" : "none"
-    toggleBtn.innerHTML = isActionsVisible ? `<i class="fa-solid fa-chevron-right"></i>` : `<i class="fa-solid fa-chevron-left"></i>`
+  const searchInput = document.createElement("input")
+  searchInput.type = "text"
+  searchInput.placeholder = i18n.bookmark_stack_search || "Search in folder..."
+  searchInput.className = "bookmark-stack-popup-search-input"
+
+  const clearSearchBtn = document.createElement("button")
+  clearSearchBtn.type = "button"
+  clearSearchBtn.className = "bookmark-stack-popup-search-clear"
+  clearSearchBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
+  clearSearchBtn.style.display = "none"
+  clearSearchBtn.addEventListener("click", () => {
+    searchInput.value = ""
+    clearSearchBtn.style.display = "none"
+    renderStackItems()
+    searchInput.focus()
   })
 
-  const selectBtn = document.createElement("button")
-  selectBtn.type = "button"
-  selectBtn.className = "bookmark-stack-popup-action"
-  selectBtn.title = i18n.bookmark_stack_select || "Select"
-  selectBtn.setAttribute("aria-label", i18n.bookmark_stack_select || "Select")
-  selectBtn.innerHTML = `<i class="fa-solid fa-check-square"></i><span>${i18n.bookmark_stack_select || "Select"}</span>`
+  searchWrapper.appendChild(searchIcon)
+  searchWrapper.appendChild(searchInput)
+  searchWrapper.appendChild(clearSearchBtn)
+  popup.appendChild(searchWrapper)
 
-  const renameBtn = document.createElement("button")
-  renameBtn.type = "button"
-  renameBtn.className = "bookmark-stack-popup-action"
-  renameBtn.title = i18n.bookmark_stack_rename || "Rename"
-  renameBtn.setAttribute("aria-label", i18n.bookmark_stack_rename || "Rename")
-  renameBtn.innerHTML = `<i class="fa-solid fa-pen"></i><span>${i18n.bookmark_stack_rename || "Rename"}</span>`
+  searchToggleBtn.addEventListener("click", () => {
+    const isHidden = searchWrapper.style.display === "none"
+    searchWrapper.style.display = isHidden ? "block" : "none"
+    searchToggleBtn.classList.toggle("active", isHidden)
+    if (isHidden) searchInput.focus()
+  })
 
-  const deleteBtn = document.createElement("button")
-  deleteBtn.type = "button"
-  deleteBtn.className = "bookmark-stack-popup-action danger"
-  deleteBtn.hidden = true
-  deleteBtn.title = i18n.bookmark_stack_delete_selected || "Delete selected"
-  deleteBtn.setAttribute(
-    "aria-label",
-    i18n.bookmark_stack_delete_selected || "Delete selected",
-  )
-  deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i><span>${i18n.bookmark_stack_delete_selected || "Delete selected"}</span>`
+  // Selection Action Bar
+  const selectionBar = document.createElement("div")
+  selectionBar.className = "bookmark-stack-popup-selection-bar"
+  selectionBar.style.display = "none"
 
-  const cancelBtn = document.createElement("button")
-  cancelBtn.type = "button"
-  cancelBtn.className = "bookmark-stack-popup-action"
-  cancelBtn.hidden = true
-  cancelBtn.title = i18n.bookmark_stack_cancel || "Cancel"
-  cancelBtn.setAttribute("aria-label", i18n.bookmark_stack_cancel || "Cancel")
-  cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.bookmark_stack_cancel || "Cancel"}</span>`
+  const selectionBarLeft = document.createElement("div")
+  selectionBarLeft.className = "selection-bar-left"
 
-  innerActions.appendChild(selectBtn)
-  innerActions.appendChild(renameBtn)
-  innerActions.appendChild(deleteBtn)
-  innerActions.appendChild(cancelBtn)
-  actions.appendChild(innerActions)
-  actions.appendChild(toggleBtn)
-  popup.appendChild(actions)
+  const selectAllBtn = document.createElement("button")
+  selectAllBtn.type = "button"
+  selectAllBtn.className = "selection-bar-btn"
+  selectAllBtn.innerHTML = `<i class="fa-solid fa-check-square"></i><span>${i18n.select_all || "Select all"}</span>`
+
+  const selectionCountText = document.createElement("span")
+  selectionCountText.className = "selection-bar-count"
+  selectionCountText.textContent = `0/${stack.items.length} ${i18n.selected || "selected"}`
+
+  selectionBarLeft.appendChild(selectAllBtn)
+  selectionBarLeft.appendChild(selectionCountText)
+
+  const selectionBarRight = document.createElement("div")
+  selectionBarRight.className = "selection-bar-right"
+
+  const deleteSelectedBtn = document.createElement("button")
+  deleteSelectedBtn.type = "button"
+  deleteSelectedBtn.className = "selection-bar-btn danger"
+  deleteSelectedBtn.innerHTML = `<i class="fa-solid fa-trash"></i><span>${i18n.delete || "Delete"}</span>`
+
+  const cancelSelectionBtn = document.createElement("button")
+  cancelSelectionBtn.type = "button"
+  cancelSelectionBtn.className = "selection-bar-btn"
+  cancelSelectionBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.bookmark_stack_cancel || "Cancel"}</span>`
+
+  selectionBarRight.appendChild(deleteSelectedBtn)
+  selectionBarRight.appendChild(cancelSelectionBtn)
+  selectionBar.appendChild(selectionBarLeft)
+  selectionBar.appendChild(selectionBarRight)
+  popup.appendChild(selectionBar)
 
   const grid = document.createElement("div")
   grid.className = "bookmark-stack-popup-grid"
@@ -793,14 +809,21 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const syncStackSelectionUi = () => {
     popup.classList.toggle("is-selecting", isStackSelectionMode)
-    selectBtn.hidden = isStackSelectionMode
-    renameBtn.hidden = isStackSelectionMode
-    deleteBtn.hidden = !isStackSelectionMode
-    cancelBtn.hidden = !isStackSelectionMode
-    deleteBtn.disabled = selectedStackIndices.size === 0
+    selectModeBtn.classList.toggle("active", isStackSelectionMode)
+    selectionBar.style.display = isStackSelectionMode ? "flex" : "none"
+
+    const selectedCount = selectedStackIndices.size
+    deleteSelectedBtn.disabled = selectedCount === 0
+    deleteSelectedBtn.innerHTML = `<i class="fa-solid fa-trash"></i><span>${i18n.delete || "Delete"}${selectedCount > 0 ? ` (${selectedCount})` : ""}</span>`
+    selectionCountText.textContent = `${selectedCount}/${stack.items.length} ${i18n.selected || "selected"}`
     count.textContent = isStackSelectionMode
-      ? `${selectedStackIndices.size}/${stack.items.length}`
+      ? `${selectedCount}/${stack.items.length}`
       : `${stack.items.length}`
+
+    const isAllSelected = stack.items.length > 0 && selectedCount === stack.items.length
+    selectAllBtn.innerHTML = isAllSelected
+      ? `<i class="fa-regular fa-square"></i><span>${i18n.deselect_all || "Deselect"}</span>`
+      : `<i class="fa-solid fa-check-square"></i><span>${i18n.select_all || "Select all"}</span>`
   }
 
   const normalizeStackAfterDelete = () => {
@@ -849,28 +872,41 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     const movedIndices = draggedStackItems
       .filter((item) => item.stackIndex === stackIndex)
       .map((item) => item.itemIndex)
-      .filter((itemIndex) => stack.items[itemIndex])
-      .sort((a, b) => a - b)
+      .sort((a, b) => b - a)
+    if (!movedIndices.length) return false
 
-    if (
-      movedIndices.length === 0 ||
-      movedIndices.some((itemIndex) => itemIndex === targetItemIndex)
-    ) {
-      return false
-    }
+    const movedObjects = []
+    movedIndices.forEach((idx) => {
+      movedObjects.unshift(stack.items.splice(idx, 1)[0])
+    })
 
-    const movedItems = movedIndices.map((itemIndex) => stack.items[itemIndex])
-    const remainingItems = stack.items.filter(
-      (_, index) => !movedIndices.includes(index),
-    )
-    const targetItem = stack.items[targetItemIndex]
-    let baseIndex = remainingItems.indexOf(targetItem)
-    if (baseIndex === -1) baseIndex = remainingItems.length
-    const insertIndex = intent === "before" ? baseIndex : baseIndex + 1
-    remainingItems.splice(Math.max(0, insertIndex), 0, ...movedItems)
-    stack.items = remainingItems
+    let insertAt = targetItemIndex
+    if (intent === "after") insertAt += 1
+
+    movedIndices.forEach((idx) => {
+      if (idx < targetItemIndex && intent === "before") insertAt -= 1
+      if (idx < targetItemIndex && intent === "after") insertAt -= 1
+    })
+
+    insertAt = Math.max(0, Math.min(stack.items.length, insertAt))
+    stack.items.splice(insertAt, 0, ...movedObjects)
     saveBookmarks()
     return true
+  }
+
+  const handleStackItemDragStart = function (event) {
+    if (isStackSelectionMode) {
+      event.preventDefault()
+      return false
+    }
+    const itemIndex = Number(this.dataset.stackIndex)
+    draggedStackItems = [{ stackIndex, itemIndex }]
+    draggedBookmarkIndices = []
+    draggedGroupIndex = null
+    this.classList.add("dragging")
+    document.body.classList.add("bookmark-dragging-active")
+    event.dataTransfer.effectAllowed = "move"
+    event.dataTransfer.setData("text/plain", "")
   }
 
   const handleStackPopupDragOver = function (event) {
@@ -925,11 +961,13 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     grid.innerHTML = ""
     const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
     
+    let visibleCount = 0
     stack.items.forEach((item, itemIndex) => {
       const labelText = getBookmarkLabel(item)
       if (query && !labelText.toLowerCase().includes(query)) {
         return
       }
+      visibleCount++
 
       const link = document.createElement("a")
       applyBookmarkLinkBehavior(link, item.url)
@@ -944,7 +982,59 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       const label = document.createElement("span")
       label.className = "bookmark-stack-popup-label"
       label.textContent = labelText
+      label.title = labelText
       link.appendChild(label)
+
+      // Quick hover action buttons for instant edit/delete
+      const quickActions = document.createElement("div")
+      quickActions.className = "bookmark-stack-item-quick-actions"
+
+      const quickEditBtn = document.createElement("button")
+      quickEditBtn.type = "button"
+      quickEditBtn.className = "bookmark-stack-item-quick-btn edit"
+      quickEditBtn.title = i18n.modal_edit_title || "Edit bookmark"
+      quickEditBtn.innerHTML = `<i class="fa-solid fa-pen"></i>`
+      quickEditBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        openBookmarkEditPopover(
+          null,
+          {
+            type: "stackItem",
+            stackIndex,
+            itemIndex,
+          },
+          link,
+        )
+      })
+
+      const quickDeleteBtn = document.createElement("button")
+      quickDeleteBtn.type = "button"
+      quickDeleteBtn.className = "bookmark-stack-item-quick-btn delete"
+      quickDeleteBtn.title = i18n.delete || "Delete bookmark"
+      quickDeleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`
+      quickDeleteBtn.addEventListener("click", async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const confirmed = await showConfirm(
+          `${i18n.alert_delete_confirm || "Delete"} "${labelText}"?`,
+        )
+        if (!confirmed) return
+        const snapshot = captureBookmarkSnapshot()
+        stack.items.splice(itemIndex, 1)
+        normalizeStackAfterDelete()
+        renderStackItems()
+        syncStackSelectionUi()
+        renderBookmarks()
+        showBookmarkUndo(
+          i18n.bookmark_deleted || "Bookmark deleted",
+          snapshot,
+        )
+      })
+
+      quickActions.appendChild(quickEditBtn)
+      quickActions.appendChild(quickDeleteBtn)
+      link.appendChild(quickActions)
 
       const check = document.createElement("span")
       check.className = "bookmark-stack-popup-check"
@@ -1028,7 +1118,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
               const snapshot = captureBookmarkSnapshot()
               stack.items.splice(itemIndex, 1)
               normalizeStackAfterDelete()
-              closePopup()
+              renderStackItems()
+              syncStackSelectionUi()
               renderBookmarks()
               showBookmarkUndo(
                 i18n.bookmark_deleted || "Bookmark deleted",
@@ -1048,27 +1139,45 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
       grid.appendChild(link)
     })
+
+    // Empty state
+    if (visibleCount === 0) {
+      const emptyBox = document.createElement("div")
+      emptyBox.className = "bookmark-stack-empty"
+      emptyBox.innerHTML = query
+        ? `<i class="fa-solid fa-magnifying-glass"></i><p>${i18n.search_no_results || "No bookmarks found matching query"}</p>`
+        : `<i class="fa-solid fa-folder-open"></i><p>${i18n.bookmark_stack_empty || "This folder is empty"}</p>`
+      grid.appendChild(emptyBox)
+    }
   }
 
-  selectBtn.addEventListener("click", () => {
-    isStackSelectionMode = true
+  // Header and Selection Actions
+  selectModeBtn.addEventListener("click", () => {
+    isStackSelectionMode = !isStackSelectionMode
     selectedStackIndices.clear()
     renderStackItems()
     syncStackSelectionUi()
   })
 
-  renameBtn.addEventListener("click", () => {
-    openBookmarkStackEditPopover(stackIndex, anchor)
+  selectAllBtn.addEventListener("click", () => {
+    if (selectedStackIndices.size === stack.items.length) {
+      selectedStackIndices.clear()
+    } else {
+      selectedStackIndices.clear()
+      stack.items.forEach((_, idx) => selectedStackIndices.add(idx))
+    }
+    renderStackItems()
+    syncStackSelectionUi()
   })
 
-  cancelBtn.addEventListener("click", () => {
+  cancelSelectionBtn.addEventListener("click", () => {
     isStackSelectionMode = false
     selectedStackIndices.clear()
     renderStackItems()
     syncStackSelectionUi()
   })
 
-  deleteBtn.addEventListener("click", async () => {
+  deleteSelectedBtn.addEventListener("click", async () => {
     if (selectedStackIndices.size === 0) return
     const confirmed = await showConfirm(
       (
@@ -1083,8 +1192,11 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     Array.from(selectedStackIndices)
       .sort((a, b) => b - a)
       .forEach((itemIndex) => stack.items.splice(itemIndex, 1))
+    selectedStackIndices.clear()
+    isStackSelectionMode = false
     normalizeStackAfterDelete()
-    closePopup()
+    renderStackItems()
+    syncStackSelectionUi()
     renderBookmarks()
     showBookmarkUndo(
       (i18n.bookmark_deleted_many || "Deleted {count} bookmarks").replace(
@@ -1100,31 +1212,114 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   if (searchInput) {
     searchInput.addEventListener("input", () => {
+      clearSearchBtn.style.display = searchInput.value ? "block" : "none"
       renderStackItems()
     })
   }
 
   document.body.appendChild(popup)
 
+  // Detect layout mode
+  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+  const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
+  const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
+  const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
+  const isTaskbarMode = document.body.classList.contains("bookmark-taskbar-mode")
+  const isFlipped = document.body.classList.contains("flip-layout")
+
   // Position nicely near anchor or centered on smaller displays
   const rect = anchor ? anchor.getBoundingClientRect() : null
+  const hasValidRect = rect && (rect.width > 0 || rect.height > 0)
   const popupRect = popup.getBoundingClientRect()
-  
-  if (rect && window.innerWidth > 600) {
-    const left = Math.min(
-      Math.max(16, rect.left + rect.width / 2 - popupRect.width / 2),
-      window.innerWidth - popupRect.width - 16,
-    )
-    const below = rect.bottom + 14
-    const above = rect.top - popupRect.height - 14
-    popup.style.left = `${left}px`
-    popup.style.top =
-      below + popupRect.height < window.innerHeight - 16
-        ? `${below}px`
-        : `${Math.max(16, above)}px`
+  const pWidth = popupRect.width || 420
+  const pHeight = popupRect.height || 360
+
+  if (hasValidRect && window.innerWidth > 600) {
+    if (isSidebar) {
+      // Sidebar layout: place adjacent to sidebar horizontally, centered vertically
+      let left
+      if (isFlipped) {
+        // Sidebar on left -> expand to the right
+        left = rect.right + 14
+        if (left + pWidth > window.innerWidth - 16) {
+          left = window.innerWidth - pWidth - 16
+        }
+      } else {
+        // Sidebar on right -> expand to the left
+        left = rect.left - pWidth - 14
+        if (left < 16) {
+          left = 16
+        }
+      }
+
+      let top = rect.top + rect.height / 2 - pHeight / 2
+      top = Math.max(16, Math.min(top, window.innerHeight - pHeight - 16))
+
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top = `${Math.round(top)}px`
+    } else if (isTaskbarLeft) {
+      // Left taskbar: expand to right
+      let left = rect.right + 14
+      if (left + pWidth > window.innerWidth - 16) {
+        left = window.innerWidth - pWidth - 16
+      }
+      let top = rect.top + rect.height / 2 - pHeight / 2
+      top = Math.max(16, Math.min(top, window.innerHeight - pHeight - 16))
+
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top = `${Math.round(top)}px`
+    } else if (isTaskbarRight) {
+      // Right taskbar: expand to left
+      let left = rect.left - pWidth - 14
+      if (left < 16) {
+        left = 16
+      }
+      let top = rect.top + rect.height / 2 - pHeight / 2
+      top = Math.max(16, Math.min(top, window.innerHeight - pHeight - 16))
+
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top = `${Math.round(top)}px`
+    } else if (isTaskbarTop) {
+      // Top taskbar: expand below
+      let left = Math.max(
+        16,
+        Math.min(rect.left + rect.width / 2 - pWidth / 2, window.innerWidth - pWidth - 16),
+      )
+      let top = rect.bottom + 14
+      if (top + pHeight > window.innerHeight - 16) {
+        top = Math.max(16, rect.top - pHeight - 14)
+      }
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top = `${Math.round(top)}px`
+    } else if (isTaskbarMode) {
+      // Bottom taskbar: expand above
+      let left = Math.max(
+        16,
+        Math.min(rect.left + rect.width / 2 - pWidth / 2, window.innerWidth - pWidth - 16),
+      )
+      let top = rect.top - pHeight - 14
+      if (top < 16) {
+        top = rect.bottom + 14
+      }
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top = `${Math.round(top)}px`
+    } else {
+      // Default grid layout
+      const left = Math.min(
+        Math.max(16, rect.left + rect.width / 2 - pWidth / 2),
+        window.innerWidth - pWidth - 16,
+      )
+      const below = rect.bottom + 14
+      const above = rect.top - pHeight - 14
+      popup.style.left = `${Math.round(left)}px`
+      popup.style.top =
+        below + pHeight < window.innerHeight - 16
+          ? `${Math.round(below)}px`
+          : `${Math.round(Math.max(16, above))}px`
+    }
   } else {
-    popup.style.left = `calc(50% - ${popupRect.width / 2}px)`
-    popup.style.top = `calc(50% - ${popupRect.height / 2}px)`
+    popup.style.left = `calc(50% - ${pWidth / 2}px)`
+    popup.style.top = `calc(50% - ${pHeight / 2}px)`
   }
 
   const closePopup = () => {
@@ -2317,10 +2512,16 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
           if (bookmarkEl.classList.contains("bookmark-stack")) {
             evt.preventDefault()
             evt.stopPropagation()
-            const original = container.querySelector(
-              `.bookmark[data-index="${idx}"]`,
-            )
-            if (original) original.click()
+            const bookmarks = getBookmarks()
+            const stack = bookmarks[idx]
+            if (stack && isBookmarkStack(stack)) {
+              openBookmarkStackPopup(stack, bookmarkEl, idx)
+            } else {
+              const original = container.querySelector(
+                `.bookmark[data-index="${idx}"]`,
+              )
+              if (original) original.click()
+            }
             popup.remove()
             return false
           }
@@ -2610,6 +2811,199 @@ function animateBookmarksForFolderSwitch(animReads, containerRect) {
     })
 }
 
+function closeHiddenGroupsPopup() {
+  const existing = document.getElementById("hidden-groups-popup")
+  if (existing) {
+    existing.remove()
+  }
+}
+
+function openHiddenGroupsPopup(anchor, hiddenGroups, activeId, enableDrag) {
+  const existing = document.getElementById("hidden-groups-popup")
+  if (existing) {
+    existing.remove()
+    return
+  }
+
+  document.getElementById("hidden-bookmarks-popup")?.remove()
+
+  const popup = document.createElement("div")
+  popup.id = "hidden-groups-popup"
+  popup.className = "hidden-groups-popup"
+
+  const i18n = geti18n()
+
+  const header = document.createElement("div")
+  header.className = "hidden-groups-popup-header"
+
+  const title = document.createElement("span")
+  title.className = "hidden-groups-popup-title"
+  title.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${i18n.more_groups || "Other Groups"} (${hiddenGroups.length})`
+  header.appendChild(title)
+
+  const closeBtn = document.createElement("button")
+  closeBtn.type = "button"
+  closeBtn.className = "hidden-groups-popup-close-btn"
+  closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
+  closeBtn.addEventListener("click", closeHiddenGroupsPopup)
+  header.appendChild(closeBtn)
+  popup.appendChild(header)
+
+  const list = document.createElement("div")
+  list.className = "hidden-groups-popup-list"
+
+  hiddenGroups.forEach((group, idx) => {
+    const realIndex = 8 + idx
+    const tabEl = createGroupTabElement(group, realIndex, activeId, enableDrag, true)
+    list.appendChild(tabEl)
+  })
+
+  popup.appendChild(list)
+  document.body.appendChild(popup)
+
+  // Position adjacent to anchor with boundary checking
+  requestAnimationFrame(() => {
+    const anchorRect = anchor.getBoundingClientRect()
+    const pRect = popup.getBoundingClientRect()
+    const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
+
+    let left = anchorRect.left + (anchorRect.width / 2) - (pRect.width / 2)
+    left = Math.max(12, Math.min(left, window.innerWidth - pRect.width - 12))
+
+    let top
+    if (isTaskbarTop) {
+      top = anchorRect.bottom + 8
+    } else {
+      top = anchorRect.top - pRect.height - 8
+      if (top < 12) {
+        top = anchorRect.bottom + 8
+      }
+    }
+
+    popup.style.left = `${left}px`
+    popup.style.top = `${top}px`
+  })
+
+  const onDocClick = (e) => {
+    if (!popup.contains(e.target) && !anchor.contains(e.target)) {
+      closeHiddenGroupsPopup()
+      document.removeEventListener("click", onDocClick)
+    }
+  }
+  setTimeout(() => document.addEventListener("click", onDocClick), 50)
+}
+
+function createGroupTabElement(group, index, activeId, enableDrag, isInsidePopup = false) {
+  const currentI18n = geti18n()
+  const tab = document.createElement("div")
+  tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
+  tab.dataset.index = index
+  tab.dataset.count = Array.isArray(group.items) ? group.items.length : 0
+  tab.title = group.name
+  tab.setAttribute("role", "button")
+  tab.setAttribute("aria-pressed", String(group.id === activeId))
+
+  if (enableDrag) {
+    tab.draggable = true
+    tab.addEventListener("dragstart", handleGroupDragStart)
+    tab.addEventListener("dragover", handleDragOver)
+    tab.addEventListener("drop", handleGroupDrop)
+    tab.addEventListener("dragenter", handleDragEnter)
+    tab.addEventListener("dragleave", handleDragLeave)
+    tab.addEventListener("dragend", handleDragEnd)
+  }
+
+  // Representative Icon
+  const icon = group.icon
+    ? createStoredIconElement(group.icon, group.name)
+    : document.createElement("i")
+  if (group.icon) {
+    icon.classList.add("group-tab-icon", "custom-group-tab-icon")
+  } else {
+    icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
+  }
+  if (group.iconColor) {
+    tab.style.setProperty("--bookmark-group-icon-color", group.iconColor)
+  }
+  tab.appendChild(icon)
+
+  // Name Span (for double-click edit)
+  const nameSpan = document.createElement("span")
+  nameSpan.textContent = group.name
+  nameSpan.className = "group-tab-name"
+  nameSpan.style.flexGrow = "1"
+  nameSpan.style.marginRight = "8px"
+  tab.appendChild(nameSpan)
+  
+  const hasNestedFolder = Array.isArray(group.items) && group.items.some(item => item && item.type === "stack");
+  if (hasNestedFolder) {
+    const folderMarker = document.createElement("i");
+    folderMarker.className = "fa-solid fa-folder-tree group-tab-folder-marker";
+    folderMarker.title = currentI18n.bookmark_contains_folders || "Contains nested folders";
+    folderMarker.style.fontSize = "11px";
+    folderMarker.style.marginRight = "6px";
+    folderMarker.style.opacity = "0.7";
+    tab.appendChild(folderMarker);
+  }
+
+  const countBadge = document.createElement("small")
+  countBadge.className = "group-tab-count"
+  countBadge.textContent = String(tab.dataset.count)
+  countBadge.setAttribute("aria-label", `${tab.dataset.count} bookmarks`)
+  tab.appendChild(countBadge)
+
+  // Events
+  tab.addEventListener("click", () => {
+    if (group.id !== activeId) {
+      if (isSelectionMode) cancelSelection()
+      pendingGroupTabActiveAnimation = {
+        fromRect: getGroupTabAnimationRect(
+          bookmarkGroupsContainer.querySelector(".bookmark-group-tab.active"),
+        ),
+      }
+      pendingFolderBookmarkReveal = true
+      setActiveGroupId(group.id)
+      renderBookmarks()
+    }
+    if (isInsidePopup) {
+      closeHiddenGroupsPopup()
+    }
+  })
+
+  // Rename (Double Click) - Keeping as valid shortcut
+  tab.addEventListener("dblclick", async () => {
+    const newName = await showPrompt(
+      currentI18n.prompt_rename_group || "Enter new group name:",
+      group.name,
+    )
+    if (newName && newName.trim() !== "") {
+      const snapshot = captureBookmarkSnapshot()
+      group.name = newName.trim()
+      saveBookmarks()
+      renderBookmarks() // Re-render tabs
+      showBookmarkUndo(
+        currentI18n.bookmark_group_renamed || "Group renamed",
+        snapshot,
+      )
+    }
+  })
+
+  // Context Menu (Right Click)
+  tab.addEventListener("contextmenu", (e) => {
+    e.preventDefault()
+    const allGroups = getBookmarkGroups()
+    const realIndex = allGroups.indexOf(group) >= 0 ? allGroups.indexOf(group) : index
+    showContextMenu(e.clientX, e.clientY, realIndex, "group", group.id, {
+      anchor: tab,
+      onEdit: () => openBookmarkGroupEditPopover(group.id, tab),
+      onEditIcon: () =>
+        openBookmarkGroupEditPopover(group.id, tab, { focus: "icon" }),
+    })
+  })
+
+  return tab
+}
+
 function renderGroupTabs() {
   const groups = getBookmarkGroups()
   const activeId = getActiveGroupId()
@@ -2617,112 +3011,90 @@ function renderGroupTabs() {
   const enableDrag = settings.bookmarkEnableDrag === true
   bookmarkGroupsContainer.innerHTML = ""
 
-  groups.forEach((group, index) => {
-    const tab = document.createElement("div")
-    tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
-    tab.dataset.index = index
-    tab.dataset.count = Array.isArray(group.items) ? group.items.length : 0
-    tab.title = group.name
-    tab.setAttribute("role", "button")
-    tab.setAttribute("aria-pressed", String(group.id === activeId))
+  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode") || settings.bookmarkLayout === "sidebar"
+  const MAX_VISIBLE_GROUPS = 8
+  const shouldCollapse = !isSidebar && groups.length > MAX_VISIBLE_GROUPS
 
-    if (enableDrag) {
-      tab.draggable = true
-      tab.addEventListener("dragstart", handleGroupDragStart)
-      tab.addEventListener("dragover", handleDragOver)
-      tab.addEventListener("drop", handleGroupDrop)
-      tab.addEventListener("dragenter", handleDragEnter)
-      tab.addEventListener("dragleave", handleDragLeave)
-      tab.addEventListener("dragend", handleDragEnd)
-    }
+  let visibleGroups = groups
+  let hiddenGroups = []
 
-    // Representative Icon
-    const icon = group.icon
-      ? createStoredIconElement(group.icon, group.name)
-      : document.createElement("i")
-    if (group.icon) {
-      icon.classList.add("group-tab-icon", "custom-group-tab-icon")
-    } else {
-      icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
-    }
-    if (group.iconColor) {
-      tab.style.setProperty("--bookmark-group-icon-color", group.iconColor)
-    }
-    tab.appendChild(icon)
+  if (shouldCollapse) {
+    visibleGroups = groups.slice(0, MAX_VISIBLE_GROUPS)
+    hiddenGroups = groups.slice(MAX_VISIBLE_GROUPS)
+  }
 
-    // Name Span (for double-click edit)
-    const nameSpan = document.createElement("span")
-    nameSpan.textContent = group.name
-    nameSpan.className = "group-tab-name"
-    nameSpan.style.flexGrow = "1"
-    nameSpan.style.marginRight = "8px"
-    tab.appendChild(nameSpan)
-    
-    const hasNestedFolder = Array.isArray(group.items) && group.items.some(item => item && item.type === "stack");
-    if (hasNestedFolder) {
-      const folderMarker = document.createElement("i");
-      folderMarker.className = "fa-solid fa-folder-tree group-tab-folder-marker";
-      folderMarker.title = geti18n().bookmark_contains_folders || "Contains nested folders";
-      folderMarker.style.fontSize = "11px";
-      folderMarker.style.marginRight = "6px";
-      folderMarker.style.opacity = "0.7";
-      tab.appendChild(folderMarker);
-    }
-
-    const countBadge = document.createElement("small")
-    countBadge.className = "group-tab-count"
-    countBadge.textContent = String(tab.dataset.count)
-    countBadge.setAttribute("aria-label", `${tab.dataset.count} bookmarks`)
-    tab.appendChild(countBadge)
-
-    // Events
-    tab.addEventListener("click", () => {
-      if (group.id !== activeId) {
-        if (isSelectionMode) cancelSelection()
-        pendingGroupTabActiveAnimation = {
-          fromRect: getGroupTabAnimationRect(
-            bookmarkGroupsContainer.querySelector(".bookmark-group-tab.active"),
-          ),
-        }
-        pendingFolderBookmarkReveal = true
-        setActiveGroupId(group.id)
-        renderBookmarks()
-      }
-    })
-
-    // Rename (Double Click) - Keeping as valid shortcut
-    tab.addEventListener("dblclick", async () => {
-      const currentI18n = geti18n()
-      const newName = await showPrompt(
-        currentI18n.prompt_rename_group || "Enter new group name:",
-        group.name,
-      )
-      if (newName && newName.trim() !== "") {
-        const snapshot = captureBookmarkSnapshot()
-        group.name = newName.trim()
-        saveBookmarks()
-        renderBookmarks() // Re-render tabs
-        showBookmarkUndo(
-          currentI18n.bookmark_group_renamed || "Group renamed",
-          snapshot,
-        )
-      }
-    })
-
-    // Context Menu (Right Click)
-    tab.addEventListener("contextmenu", (e) => {
-      e.preventDefault()
-      const index = groups.indexOf(group)
-      showContextMenu(e.clientX, e.clientY, index, "group", group.id, {
-        anchor: tab,
-        onEdit: () => openBookmarkGroupEditPopover(group.id, tab),
-        onEditIcon: () =>
-          openBookmarkGroupEditPopover(group.id, tab, { focus: "icon" }),
-      })
-    })
-
+  visibleGroups.forEach((group, index) => {
+    const tab = createGroupTabElement(group, index, activeId, enableDrag, false)
     bookmarkGroupsContainer.appendChild(tab)
   })
+
+  // If there are overflow hidden groups, add the "More Groups" toggle tab
+  if (shouldCollapse && hiddenGroups.length > 0) {
+    const activeHiddenGroup = hiddenGroups.find((g) => g.id === activeId)
+    const isHiddenActive = !!activeHiddenGroup
+    const currentI18n = geti18n()
+
+    const moreTab = document.createElement("div")
+    moreTab.className = `bookmark-group-tab bookmark-groups-more-tab ${isHiddenActive ? "active has-active-hidden" : ""}`
+    moreTab.setAttribute("role", "button")
+    moreTab.setAttribute("aria-label", `${hiddenGroups.length} more bookmark groups`)
+    moreTab.title = isHiddenActive
+      ? `${activeHiddenGroup.name} (${hiddenGroups.length} other groups)`
+      : `${currentI18n.more_groups || "Other groups"} (+${hiddenGroups.length})`
+
+    const moreIcon = isHiddenActive && activeHiddenGroup.icon
+      ? createStoredIconElement(activeHiddenGroup.icon, activeHiddenGroup.name)
+      : document.createElement("i")
+    
+    if (isHiddenActive && activeHiddenGroup.icon) {
+      moreIcon.classList.add("group-tab-icon", "custom-group-tab-icon")
+    } else if (isHiddenActive) {
+      moreIcon.className = `fa-solid ${getGroupIcon(activeHiddenGroup.name)} group-tab-icon`
+    } else {
+      moreIcon.className = "fa-solid fa-layer-group group-tab-icon"
+    }
+    moreTab.appendChild(moreIcon)
+
+    const moreName = document.createElement("span")
+    moreName.className = "group-tab-name"
+    moreName.textContent = isHiddenActive
+      ? activeHiddenGroup.name
+      : (currentI18n.more_groups || "More")
+    moreName.style.flexGrow = "1"
+    moreName.style.marginRight = "6px"
+    moreTab.appendChild(moreName)
+
+    const moreBadge = document.createElement("small")
+    moreBadge.className = "group-tab-count"
+    moreBadge.textContent = isHiddenActive
+      ? String(Array.isArray(activeHiddenGroup.items) ? activeHiddenGroup.items.length : 0)
+      : `+${hiddenGroups.length}`
+    moreTab.appendChild(moreBadge)
+
+    moreTab.addEventListener("click", (e) => {
+      e.stopPropagation()
+      openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
+    })
+
+    // Allow dropping dragged bookmarks into the more tab / active hidden group
+    if (enableDrag) {
+      moreTab.addEventListener("dragover", handleDragOver)
+      moreTab.addEventListener("dragenter", handleDragEnter)
+      moreTab.addEventListener("dragleave", handleDragLeave)
+      moreTab.addEventListener("drop", (e) => {
+        if (isHiddenActive) {
+          const allGroups = getBookmarkGroups()
+          const realIdx = allGroups.indexOf(activeHiddenGroup)
+          moreTab.dataset.index = realIdx
+          handleGroupDrop.call(moreTab, e)
+        } else {
+          openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
+        }
+      })
+    }
+
+    bookmarkGroupsContainer.appendChild(moreTab)
+  }
 
   // "Add Group" Tab
   const addTab = document.createElement("div")
