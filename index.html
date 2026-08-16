@@ -964,17 +964,15 @@
                         <span data-i18n="settings_themes">Themes</span>
                         <hr class="subsection-divider">
                     </div>
-                    <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="margin-bottom: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <button id="save-current-theme-btn" class="secondary-btn"
-                            style="height: 44px; justify-content: center; border-radius: 12px; border: 1px solid var(--accent-color);">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
-                                Custom Theme</span>
+                            style="height: 38px; justify-content: center; border-radius: 9px; border: 1px dashed var(--accent-color); font-size: 0.78rem; padding: 0 8px;">
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span data-i18n="save_current_theme">Create Theme</span>
                         </button>
                         <a class="secondary-btn" href="https://zero-theme.vercel.app/" target="_blank"
                             rel="noopener noreferrer"
-                            style="height: 44px; justify-content: center; border-radius: 12px; border: 1px solid rgba(var(--accent-color-rgb, 255, 255, 255), 0.35);">
-                            <i class="fa-solid fa-store"></i> <span data-i18n="theme_web_beta_link">Theme Web
-                                Beta</span>
+                            style="height: 38px; justify-content: center; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.78rem; padding: 0 8px;">
+                            <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
                         </a>
                     </div>
 
@@ -1288,6 +1286,10 @@
                             <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                         </div>
                     </div>
+                    <button type="button" id="themes-show-all-btn" class="themes-show-all-btn">
+                        <i class="fa-solid fa-chevron-down"></i>
+                        <span id="themes-show-all-text" data-i18n="themes_show_all">Show all</span>
+                    </button>
                 </div>
             </div>
 
@@ -3149,7 +3151,9 @@
                 style="display: none;">
             <input type="file" id="image-lens-upload" aria-label="Image Lens Upload" accept="image/*"
                 style="display: none;">
-            <i class="fa-solid fa-xmark clear-btn" id="clear-btn"></i>
+            <button type="button" class="clear-btn" id="clear-btn" title="Clear search">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <span class="search-divider" id="search-divider"></span>
             <button type="button" class="search-submit-btn" id="search-submit-btn" title="Search">
                 <i class="fa-solid fa-magnifying-glass"></i>
