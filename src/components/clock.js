@@ -330,11 +330,15 @@ function applyHueMode(settings) {
       style === "analog"
     ) {
       clockTargets.push(clockElement)
-    } else if (style === "round" || style === "square") {
-      clockTargets.push(clockElement.querySelector(".clock-time-main"))
-      clockTargets.push(clockElement.querySelector(".clock-time-ampm"))
+    } else if (style === "round") {
+      clockTargets.push(clockElement.querySelector(".round-clock-digits"))
+      clockTargets.push(clockElement.querySelector(".round-clock-ampm"))
+    } else if (style === "square") {
+      clockTargets.push(clockElement.querySelector(".sq-digits"))
+      clockTargets.push(clockElement.querySelector(".sq-ampm"))
     } else if (style === "cool") {
       clockTargets.push(clockElement.querySelector(".cool-time"))
+      clockTargets.push(clockElement.querySelector(".cool-time-ampm"))
     } else if (style === "sidestyle") {
       clockTargets.push(clockElement.querySelector(".clock-sidestyle-time"))
     } else if (style === "jp-style") {
@@ -363,6 +367,16 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".lunar-orbit-time"))
     } else if (style === "cartoon") {
       clockTargets.push(clockElement.querySelector(".cartoon-time"))
+    } else if (style === "custom-angle") {
+      clockTargets.push(clockElement.querySelector(".custom-angle-time"))
+    } else if (style === "space-concentric") {
+      clockTargets.push(clockElement.querySelector(".sc-core-time-main"))
+    } else if (style === "split-pill") {
+      clockTargets.push(clockElement.querySelector(".split-pill-digits"))
+      clockTargets.push(clockElement.querySelector(".split-pill-ampm"))
+    } else if (style === "clock-3d") {
+      clockTargets.push(clockElement.querySelector(".clock-3d-text-main .clock-3d-time-val"))
+      clockTargets.push(clockElement.querySelector(".clock-3d-ampm"))
     }
   }
 
@@ -380,8 +394,13 @@ function applyHueMode(settings) {
         style === "glass"
       ) {
         dateTargets.push(dateElement)
-      } else if (style === "round" || style === "square") {
-        dateTargets.push(clockElement.querySelector(".clock-date-secondary"))
+      } else if (style === "round") {
+        dateTargets.push(clockElement.querySelector(".round-clock-capsule"))
+        dateTargets.push(clockElement.querySelector(".round-clock-footer"))
+      } else if (style === "square") {
+        dateTargets.push(clockElement.querySelector(".sq-date-capsule"))
+        dateTargets.push(clockElement.querySelector(".sq-weekday"))
+        dateTargets.push(clockElement.querySelector(".sq-year-badge"))
       } else if (style === "cool") {
         dateTargets.push(clockElement.querySelector(".cool-dayname"))
         dateTargets.push(clockElement.querySelector(".cool-date"))
@@ -423,6 +442,13 @@ function applyHueMode(settings) {
       } else if (style === "cartoon") {
         dateTargets.push(clockElement.querySelector(".cartoon-weekday"))
         dateTargets.push(clockElement.querySelector(".cartoon-date"))
+      } else if (style === "custom-angle") {
+        dateTargets.push(clockElement.querySelector(".custom-angle-date"))
+      } else if (style === "split-pill") {
+        dateTargets.push(clockElement.querySelector(".split-pill-date-col"))
+        dateTargets.push(clockElement.querySelector(".split-pill-divider"))
+      } else if (style === "clock-3d") {
+        dateTargets.push(clockElement.querySelector(".clock-3d-date"))
       }
     }
   }
@@ -745,6 +771,8 @@ const scMinutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0
 const scSeconds = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 let spaceConcentricHtmlCache = null;
 let spaceConcentricLangCache = null;
+let spaceConcentricRingElements = null;
+let spaceConcentricLastState = {};
 
 
 // Cache Intl.DateTimeFormat instances to avoid expensive re-construction every second
@@ -1161,20 +1189,34 @@ export function updateTime() {
     document.body.classList.add(`framed-theme-${theme}`)
 
     clockElement.innerHTML = `
-      <div class="round-clock-new-layout">
-        <div class="round-clock-notch">
-          <span class="round-clock-date-top">${isTimer ? timerLabel : `${day}/${month}`}</span>
+      <div class="round-clock-card">
+        <div class="round-clock-dial">
+          <div class="round-clock-ticks">
+            <span class="round-tick tick-12"></span>
+            <span class="round-tick tick-3"></span>
+            <span class="round-tick tick-6"></span>
+            <span class="round-tick tick-9"></span>
+          </div>
         </div>
-        <div class="round-clock-center">
-          <div class="round-clock-time-row">
-            <span class="round-clock-hhmm">${hh}:${mm}</span>
-            <div class="round-clock-side-meta">
-              <span class="round-clock-ampm-top">${ampm}</span>
-              ${ss ? `<span class="round-clock-ss-bottom">${ss}</span>` : ""}
+        <div class="round-clock-content">
+          <div class="round-clock-capsule">
+            <i class="fa-solid ${isTimer ? "fa-hourglass-half" : "fa-calendar-day"}"></i>
+            <span class="round-clock-date-text">${isTimer ? timerLabel : `${day}/${month}`}</span>
+          </div>
+          <div class="round-clock-time-hero">
+            <div class="round-clock-digits">
+              <span class="round-clock-hh">${hh}</span>
+              <span class="round-clock-colon">:</span>
+              <span class="round-clock-mm">${mm}</span>
+            </div>
+            <div class="round-clock-sub-col">
+              ${ampm ? `<span class="round-clock-ampm">${ampm}</span>` : ""}
+              ${ss ? `<span class="round-clock-ss">${ss}</span>` : ""}
             </div>
           </div>
-          <div class="round-clock-bottom-info">
-            <span class="round-clock-footer-text">${isTimer ? countdownLabel : `${year} - ${weekday}`}</span>
+          <div class="round-clock-footer">
+            <span class="round-clock-weekday">${isTimer ? countdownLabel : weekday}</span>
+            ${!isTimer ? `<span class="round-clock-footer-dot"></span><span class="round-clock-year">${year}</span>` : ""}
           </div>
         </div>
       </div>
@@ -1197,19 +1239,35 @@ export function updateTime() {
     document.body.classList.add(`framed-theme-${theme}`)
 
     clockElement.innerHTML = `
-      <div class="square-clock-bold-layout">
+      <div class="square-clock-card">
+        <div class="sq-bracket sq-bracket-tl"></div>
+        <div class="sq-bracket sq-bracket-tr"></div>
+        <div class="sq-bracket sq-bracket-bl"></div>
+        <div class="sq-bracket sq-bracket-br"></div>
         <div class="sq-top-row">
-          <span class="sq-date-val">${isTimer ? timerLabel : `${day} / ${month}`}</span>
+          <div class="sq-date-capsule">
+            <i class="fa-solid ${isTimer ? "fa-hourglass-half" : "fa-calendar-day"}"></i>
+            <span class="sq-date-val">${isTimer ? timerLabel : `${day}/${month}`}</span>
+          </div>
+          <div class="sq-status-pill">
+            <span class="sq-pulse-dot"></span>
+            <span>${isTimer ? "TIMER" : "LIVE"}</span>
+          </div>
         </div>
         <div class="sq-main-row">
-          <span class="sq-time-hhmm">${hh}:${mm}</span>
+          <div class="sq-digits">
+            <span class="sq-hh">${hh}</span>
+            <span class="sq-colon">:</span>
+            <span class="sq-mm">${mm}</span>
+          </div>
           <div class="sq-side-info">
-            <span class="sq-ampm">${ampm}</span>
+            ${ampm ? `<span class="sq-ampm">${ampm}</span>` : ""}
             ${ss ? `<span class="sq-ss">${ss}</span>` : ""}
           </div>
         </div>
         <div class="sq-bottom-row">
-          <span class="sq-full-date">${isTimer ? countdownLabel : `${weekday.toUpperCase()} - ${year}`}</span>
+          <span class="sq-weekday">${isTimer ? countdownLabel : weekday}</span>
+          ${!isTimer ? `<span class="sq-year-badge">${year}</span>` : ""}
         </div>
       </div>
     `
@@ -1754,16 +1812,18 @@ export function updateTime() {
     const analogMinuteDeg = analogMinutes * 6
     clockElement.innerHTML = `
       <div class="prism-stack-clock">
-        <div class="prism-stack-mini-clock" aria-hidden="true">
-          <span class="prism-stack-mini-hand prism-stack-mini-hour" style="--mini-hand-rotation: ${analogHourDeg}deg"></span>
-          <span class="prism-stack-mini-hand prism-stack-mini-minute" style="--mini-hand-rotation: ${analogMinuteDeg}deg"></span>
-          <span class="prism-stack-mini-pin"></span>
+        <div class="prism-stack-top-row">
+          <div class="prism-stack-meta">${weekday}</div>
+          <div class="prism-stack-mini-clock" aria-hidden="true">
+            <span class="prism-stack-mini-hand prism-stack-mini-hour" style="--mini-hand-rotation: ${analogHourDeg}deg"></span>
+            <span class="prism-stack-mini-hand prism-stack-mini-minute" style="--mini-hand-rotation: ${analogMinuteDeg}deg"></span>
+            <span class="prism-stack-mini-pin"></span>
+          </div>
         </div>
-        <div class="prism-stack-meta">${weekday}</div>
         <div class="prism-stack-time">
-          <span>${hh}</span>
+          <span class="prism-stack-hh">${hh}</span>
           <span class="prism-stack-separator">:</span>
-          <span>${mm}</span>
+          <span class="prism-stack-mm">${mm}</span>
           ${ss ? `<span class="prism-stack-ss">${ss}</span>` : ""}
           ${ampm ? `<span class="prism-stack-ampm">${ampm}</span>` : ""}
         </div>
@@ -2163,50 +2223,41 @@ export function updateTime() {
         <div class="clock-container satellite-container">
           <div class="sat-left-panel">
             <div class="sat-top-bar">
-              <div class="sat-slashes">//////////////</div>
-              <div class="sat-seconds"></div>
+              <span class="sat-tag">SAT // LINK</span>
+              <span class="sat-seconds"></span>
               <div class="sat-battery">
                 <div class="sat-battery-fill"></div>
-                <div class="sat-battery-text">87%</div>
+                <span class="sat-battery-text">--%</span>
               </div>
             </div>
-            <div class="sat-time"></div>
+            <div class="sat-time-wrap">
+              <span class="sat-time"></span>
+              <span class="sat-ampm"></span>
+            </div>
             <div class="sat-date"></div>
             <div class="sat-weather">
               <div class="sat-weather-item tem">
-                <div class="sat-w-label">TEM</div>
-                <div class="sat-w-line-box">
-                  <svg class="sat-w-line" viewBox="0 0 40 20" preserveAspectRatio="none">
-                    <polyline points="0,18 20,18 30,2 40,2" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="sat-w-value" id="sat-tem-val">--</div>
+                <span class="sat-w-label">TEM</span>
+                <span class="sat-w-value" id="sat-tem-val">--°C</span>
               </div>
               <div class="sat-weather-item hum">
-                <div class="sat-w-label">HUM</div>
-                <div class="sat-w-line-box">
-                  <svg class="sat-w-line" viewBox="0 0 40 20" preserveAspectRatio="none">
-                    <polyline points="0,2 20,2 30,18 40,18" fill="none" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="sat-w-value" id="sat-hum-val">--</div>
+                <span class="sat-w-label">HUM</span>
+                <span class="sat-w-value" id="sat-hum-val">--%</span>
               </div>
             </div>
           </div>
           <div class="sat-right-panel">
             <div class="sat-radar">
-              <div class="sat-radar-ring r1"></div>
-              <div class="sat-radar-ring r2"></div>
-              <div class="sat-radar-ring r3"></div>
-              <div class="sat-radar-ring r4"></div>
-              <div class="sat-radar-ring r5"></div>
-              <div class="sat-radar-ring r6"></div>
-              <div class="sat-radar-ring r7"></div>
-              <div class="sat-radar-ring r8"></div>
-              <div class="sat-radar-ring r9"></div>
-              <div class="sat-radar-ring r10"></div>
+              <div class="sat-radar-grid">
+                <div class="sat-radar-cross-h"></div>
+                <div class="sat-radar-cross-v"></div>
+                <div class="sat-radar-circle r1"></div>
+                <div class="sat-radar-circle r2"></div>
+                <div class="sat-radar-circle r3"></div>
+              </div>
               <div class="sat-radar-sweep"></div>
               <div class="sat-radar-blip"></div>
+              <div class="sat-radar-center"></div>
             </div>
             <div class="sat-galaxy">
               <div class="sat-galaxy-stars"></div>
@@ -2222,28 +2273,39 @@ export function updateTime() {
       `;
     }
     
-    clockElement.querySelector('.sat-time').textContent = `${hh}:${mm}${ampm ? ' ' + ampm : ''}`;
-    clockElement.querySelector('.sat-seconds').textContent = `${ss || '00'}s`;
+    const timeEl = clockElement.querySelector('.sat-time');
+    if (timeEl) timeEl.textContent = `${hh}:${mm}`;
+    
+    const ampmEl = clockElement.querySelector('.sat-ampm');
+    if (ampmEl) ampmEl.textContent = ampm ? ampm.toUpperCase() : '';
+    
+    const secEl = clockElement.querySelector('.sat-seconds');
+    if (secEl) secEl.textContent = `${ss || '00'}s`;
     
     const dateStr = getCustomDateString(now, langCode, tz, settings).replace(/<[^>]*>?/gm, '').trim();
-    clockElement.querySelector('.sat-date').textContent = dateStr;
+    const dateEl = clockElement.querySelector('.sat-date');
+    if (dateEl) dateEl.textContent = dateStr.toUpperCase();
     
     const satContainer = clockElement.querySelector('.satellite-container');
     const animStyle = settings.satelliteAnimStyle || 'classic';
-    if (animStyle === 'galaxy') {
-      satContainer.classList.add('anim-style-galaxy');
-      satContainer.classList.remove('anim-style-classic');
-    } else {
-      satContainer.classList.add('anim-style-classic');
-      satContainer.classList.remove('anim-style-galaxy');
+    if (satContainer) {
+      if (animStyle === 'galaxy') {
+        satContainer.classList.add('anim-style-galaxy');
+        satContainer.classList.remove('anim-style-classic');
+      } else {
+        satContainer.classList.add('anim-style-classic');
+        satContainer.classList.remove('anim-style-galaxy');
+      }
     }
     
     // Calculate hour progress (0% to 100%) for battery
     const currentMin = now.getMinutes();
     const currentSec = now.getSeconds();
     const hourProgress = ((currentMin * 60 + currentSec) / 3600) * 100;
-    clockElement.querySelector('.sat-battery-fill').style.width = `${hourProgress}%`;
-    clockElement.querySelector('.sat-battery-text').textContent = `${Math.round(hourProgress)}%`;
+    const batFill = clockElement.querySelector('.sat-battery-fill');
+    if (batFill) batFill.style.width = `${hourProgress}%`;
+    const batText = clockElement.querySelector('.sat-battery-text');
+    if (batText) batText.textContent = `${Math.round(hourProgress)}%`;
 
     // Fetch weather data from cache
     if (!window._satWeatherLastUpdate || (now.getTime() - window._satWeatherLastUpdate > 60000)) {
@@ -2255,10 +2317,12 @@ export function updateTime() {
                 const hum = cache.data.current.relative_humidity_2m;
                 
                 if (temp !== undefined) {
-                    clockElement.querySelector('#sat-tem-val').textContent = `${(temp).toFixed(1)}°${tempUnit.replace('°', '')}`;
+                    const temEl = clockElement.querySelector('#sat-tem-val');
+                    if (temEl) temEl.textContent = `${(temp).toFixed(1)}°${tempUnit.replace('°', '')}`;
                 }
                 if (hum !== undefined) {
-                    clockElement.querySelector('#sat-hum-val').textContent = `${Math.round(hum)}%`;
+                    const humEl = clockElement.querySelector('#sat-hum-val');
+                    if (humEl) humEl.textContent = `${Math.round(hum)}%`;
                 }
             }
         } catch(e) {}
@@ -2269,129 +2333,140 @@ export function updateTime() {
     if (!clockElement.querySelector('.pixel-hud-container')) {
       clockElement.innerHTML = `
         <div class="clock-container pixel-hud-container">
-          <div class="hud-top">
-            <div class="hud-off">OFF</div>
-            <div class="hud-slope"></div>
-            <div class="hud-battery">
-              ${Array(14).fill(0).map(() => '<div class="hud-bat-segment"></div>').join('')}
+          <div class="hud-header">
+            <div class="hud-badge-wrap">
+              <span class="hud-sys-tag">SYS // ACT</span>
+              <span class="hud-pwr-pct">--%</span>
+            </div>
+            <div class="hud-battery-track">
+              ${Array(12).fill(0).map(() => '<span class="hud-bat-segment"></span>').join('')}
             </div>
           </div>
-          <div class="hud-middle">
-            <div class="hud-location" id="hud-loc-val">--</div>
-            <div class="hud-time"></div>
-          </div>
-          <div class="hud-date-block">
-            <div class="hud-date-left">
-              <div class="hud-date-day"></div>
+          <div class="hud-main-display">
+            <div class="hud-meta-row">
+              <span class="hud-location" id="hud-loc-val">--</span>
+              <span class="hud-sec-tag">${ss ? `:${ss}` : ''}</span>
             </div>
-            <div class="hud-date-right">
-              <div class="hud-date-my">
-                <span class="hud-date-month"></span>
-                <span class="hud-date-year"></span>
+            <div class="hud-time">${hh}:${mm}</div>
+          </div>
+          <div class="hud-data-grid">
+            <div class="hud-date-card">
+              <div class="hud-day-badge">${String(now.getDate()).padStart(2, '0')}</div>
+              <div class="hud-date-meta">
+                <div class="hud-date-my">${now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase()} ${now.getFullYear()}</div>
+                <div class="hud-date-weekday">${now.toLocaleDateString(langCode, { weekday: 'short' }).toUpperCase()}</div>
               </div>
-              <div class="hud-date-weekday"></div>
-              <div class="hud-station"><div class="hud-station-wings"></div></div>
             </div>
-          </div>
-          <div class="hud-weather-block1">
-            <div class="hud-w-temp"></div>
-            <div class="hud-w-slash">/</div>
-            <div class="hud-w-hum"></div>
-          </div>
-          <div class="hud-weather-block2">
-            <div class="hud-w2-title">OutDoor:</div>
-            <div class="hud-w2-info">
-              <i class="fa-solid fa-temperature-half" style="color: #fca311;"></i>
-              <span class="hud-w2-temp"></span>
-              <i class="fa-solid fa-droplet" style="color: #3caac8;"></i>
-              <span class="hud-w2-hum"></span>
-              <span class="hud-w2-cond-icon"></span>
-              <span class="hud-w2-cond-text"></span>
+            <div class="hud-weather-card">
+              <div class="hud-weather-metrics">
+                <span class="hud-w-item">
+                  <i class="fa-solid fa-temperature-half hud-icon-temp"></i>
+                  <span class="hud-w2-temp">--°</span>
+                </span>
+                <span class="hud-w-item">
+                  <i class="fa-solid fa-droplet hud-icon-hum"></i>
+                  <span class="hud-w2-hum">--%</span>
+                </span>
+              </div>
+              <div class="hud-weather-condition">
+                <span class="hud-w2-cond-icon"><i class="fa-solid fa-sun"></i></span>
+                <span class="hud-w2-cond-text">CLEAR</span>
+              </div>
             </div>
           </div>
         </div>
       `;
     }
     
-    clockElement.querySelector('.hud-time').textContent = `${hh}:${mm}`;
+    const timeEl = clockElement.querySelector('.hud-time');
+    if (timeEl) timeEl.textContent = `${hh}:${mm}`;
     
-    clockElement.querySelector('.hud-date-day').textContent = String(now.getDate()).padStart(2, '0');
-    clockElement.querySelector('.hud-date-month').textContent = now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase();
-    clockElement.querySelector('.hud-date-year').textContent = now.getFullYear();
-    clockElement.querySelector('.hud-date-weekday').textContent = now.toLocaleDateString(langCode, { weekday: 'long' }).toLowerCase();
+    const secTag = clockElement.querySelector('.hud-sec-tag');
+    if (secTag) secTag.textContent = ss ? `:${ss}` : '';
+    
+    const dayBadge = clockElement.querySelector('.hud-day-badge');
+    if (dayBadge) dayBadge.textContent = String(now.getDate()).padStart(2, '0');
+    
+    const dateMy = clockElement.querySelector('.hud-date-my');
+    if (dateMy) dateMy.textContent = `${now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase()} ${now.getFullYear()}`;
+    
+    const dateWeekday = clockElement.querySelector('.hud-date-weekday');
+    if (dateWeekday) dateWeekday.textContent = now.toLocaleDateString(langCode, { weekday: 'short' }).toUpperCase();
     
     const currentMinHUD = now.getMinutes();
     const currentSecHUD = now.getSeconds();
     const progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600;
     
-    clockElement.querySelector('.hud-off').textContent = `${Math.floor(progressPct * 100)}%`;
+    const pwrPct = clockElement.querySelector('.hud-pwr-pct');
+    if (pwrPct) pwrPct.textContent = `${Math.floor(progressPct * 100)}%`;
     
-    const activeSegments = Math.round(progressPct * 14);
+    const activeSegments = Math.round(progressPct * 12);
     const segments = clockElement.querySelectorAll('.hud-bat-segment');
     segments.forEach((seg, idx) => {
       if (idx < activeSegments) seg.classList.add('active');
       else seg.classList.remove('active');
     });
 
-    try {
-        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
-        if (cache && cache.data && cache.data.current) {
-                const temp = cache.data.current.temperature_2m;
-                const tempUnit = cache.data.current_units?.temperature_2m || "C";
-                const hum = cache.data.current.relative_humidity_2m;
-                
-                let loc = settings.weatherLocationName || "Unknown";
-                if (loc.length > 10) loc = loc.split(',')[0];
-                clockElement.querySelector('#hud-loc-val').textContent = loc;
-                
-                if (temp !== undefined) {
-                    const tempStr = `${Math.round(temp)}${tempUnit.replace('°', '')}`;
-                    clockElement.querySelector('.hud-w-temp').textContent = tempStr;
-                    clockElement.querySelector('.hud-w2-temp').textContent = tempStr;
-                }
-                if (hum !== undefined) {
-                    const humStr = `${Math.round(hum)}%`;
-                    clockElement.querySelector('.hud-w-hum').textContent = humStr;
-                    clockElement.querySelector('.hud-w2-hum').textContent = humStr;
-                }
-                
-                const WEATHER_CODES = {
-                  0: ["sun", "CLEAR", "Trời quang"],
-                  1: ["cloud-sun", "CLEAR", "Ít mây"],
-                  2: ["cloud-sun", "CLOUDY", "Có mây"],
-                  3: ["cloud", "CLOUDY", "Nhiều mây"],
-                  45: ["smog", "FOG", "Sương mù"],
-                  48: ["smog", "FOG", "Sương mù đóng băng"],
-                  51: ["cloud-rain", "RAIN", "Mưa phùn nhẹ"],
-                  53: ["cloud-rain", "RAIN", "Mưa phùn"],
-                  55: ["cloud-rain", "RAIN", "Mưa phùn dày"],
-                  61: ["cloud-showers-heavy", "RAIN", "Mưa nhẹ"],
-                  63: ["cloud-showers-heavy", "RAIN", "Mưa"],
-                  65: ["cloud-showers-heavy", "RAIN", "Mưa lớn"],
-                  71: ["snowflake", "SNOW", "Tuyết nhẹ"],
-                  73: ["snowflake", "SNOW", "Tuyết"],
-                  75: ["snowflake", "SNOW", "Tuyết lớn"],
-                  80: ["cloud-sun-rain", "RAIN", "Mưa rào nhẹ"],
-                  81: ["cloud-sun-rain", "RAIN", "Mưa rào"],
-                  82: ["cloud-showers-heavy", "RAIN", "Mưa rào lớn"],
-                  95: ["cloud-bolt", "STORM", "Dông"],
-                  96: ["cloud-bolt", "STORM", "Dông kèm mưa đá"],
-                  99: ["cloud-bolt", "STORM", "Dông mạnh kèm mưa đá"],
-                }
+    const WEATHER_CODES = {
+      0: ["sun", "CLEAR", "Trời quang"],
+      1: ["cloud-sun", "CLEAR", "Ít mây"],
+      2: ["cloud-sun", "CLOUDY", "Có mây"],
+      3: ["cloud", "CLOUDY", "Nhiều mây"],
+      45: ["smog", "FOG", "Sương mù"],
+      48: ["smog", "FOG", "Sương mù đóng băng"],
+      51: ["cloud-rain", "RAIN", "Mưa phùn nhẹ"],
+      53: ["cloud-rain", "RAIN", "Mưa phùn"],
+      55: ["cloud-rain", "RAIN", "Mưa phùn dày"],
+      61: ["cloud-showers-heavy", "RAIN", "Mưa nhẹ"],
+      63: ["cloud-showers-heavy", "RAIN", "Mưa"],
+      65: ["cloud-showers-heavy", "RAIN", "Mưa lớn"],
+      71: ["snowflake", "SNOW", "Tuyết nhẹ"],
+      73: ["snowflake", "SNOW", "Tuyết"],
+      75: ["snowflake", "SNOW", "Tuyết lớn"],
+      80: ["cloud-sun-rain", "RAIN", "Mưa rào nhẹ"],
+      81: ["cloud-sun-rain", "RAIN", "Mưa rào"],
+      82: ["cloud-showers-heavy", "RAIN", "Mưa rào lớn"],
+      95: ["cloud-bolt", "STORM", "Dông"],
+      96: ["cloud-bolt", "STORM", "Dông kèm mưa đá"],
+      99: ["cloud-bolt", "STORM", "Dông mạnh kèm mưa đá"],
+    };
 
-                let condText = "CLEAR";
-                let condIcon = '<i class="fa-solid fa-sun"></i>';
-                const code = cache.data.current.weather_code;
-                if (code !== undefined) {
-                   const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0];
-                   const langIdx = langCode.startsWith('vi') ? 2 : 1;
-                   condText = item[langIdx].toUpperCase();
-                   condIcon = `<i class="fa-solid fa-${item[0]}"></i>`;
-                }
-                clockElement.querySelector('.hud-w2-cond-text').textContent = condText;
-                clockElement.querySelector('.hud-w2-cond-icon').innerHTML = condIcon;
-            }
-        } catch(e) {}
+    try {
+      const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
+      if (cache && cache.data && cache.data.current) {
+        const temp = cache.data.current.temperature_2m;
+        const tempUnit = cache.data.current_units?.temperature_2m || "C";
+        const hum = cache.data.current.relative_humidity_2m;
+
+        let loc = settings.weatherLocationName || "SECTOR-01";
+        if (loc.length > 12) loc = loc.split(',')[0].substring(0, 12);
+        const locEl = clockElement.querySelector('#hud-loc-val');
+        if (locEl) locEl.textContent = loc.toUpperCase();
+
+        if (temp !== undefined) {
+          const tempStr = `${Math.round(temp)}°${tempUnit.replace('°', '')}`;
+          const wTempEl = clockElement.querySelector('.hud-w2-temp');
+          if (wTempEl) wTempEl.textContent = tempStr;
+        }
+        if (hum !== undefined) {
+          const humStr = `${Math.round(hum)}%`;
+          const wHumEl = clockElement.querySelector('.hud-w2-hum');
+          if (wHumEl) wHumEl.textContent = humStr;
+        }
+
+        const code = cache.data.current.weather_code;
+        if (code !== undefined) {
+          const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0];
+          const langIdx = langCode.startsWith('vi') ? 2 : 1;
+          const condText = item[langIdx].toUpperCase();
+          const condIcon = `<i class="fa-solid fa-${item[0]}"></i>`;
+          const condTextEl = clockElement.querySelector('.hud-w2-cond-text');
+          const condIconEl = clockElement.querySelector('.hud-w2-cond-icon');
+          if (condTextEl) condTextEl.textContent = condText;
+          if (condIconEl) condIconEl.innerHTML = condIcon;
+        }
+      }
+    } catch(e) {}
         
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
@@ -2415,59 +2490,280 @@ export function updateTime() {
     const cacheKey = `${langCode}-${is12Hour}-${showSec}`;
 
     if (!spaceConcentricHtmlCache || spaceConcentricLangCache !== cacheKey) {
-      const scMonthsVi = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-      const scWeekdaysVi = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
-      const scDaysVi = Array.from({length: 31}, (_, i) => `Ngày ${i + 1}`);
+      const scMonthsEn = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      const scMonthsVi = ["THG 01", "THG 02", "THG 03", "THG 04", "THG 05", "THG 06", "THG 07", "THG 08", "THG 09", "THG 10", "THG 11", "THG 12"];
+      const scWeekdaysEn = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const scWeekdaysVi = ["CN", "T.HAI", "T.BA", "T.TƯ", "T.NĂM", "T.SÁU", "T.BẢY"];
+      const scDaysList = Array.from({length: 31}, (_, i) => (i + 1).toString().padStart(2, '0'));
       const scHours12 = Array.from({length: 12}, (_, i) => (i === 0 ? 12 : i).toString().padStart(2, '0'));
+      const scHours24 = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
 
-      const m = isVi ? scMonthsVi : scMonths;
-      const w = isVi ? scWeekdaysVi : scWeekdays;
-      const d = isVi ? scDaysVi : scDays;
-      const hArray = is12Hour ? scHours12 : scHours;
+      const m = isVi ? scMonthsVi : scMonthsEn;
+      const w = isVi ? scWeekdaysVi : scWeekdaysEn;
+      const d = scDaysList;
+      const hArray = is12Hour ? scHours12 : scHours24;
 
-      const genRing = (items, id) => {
+      const genRing = (items, id, ringLabel) => {
         const step = 360 / items.length;
-        const itemsHtml = items.map((t, i) => `<div class="sc-text-item" style="transform: rotate(${i * step}deg)">${t}</div>`).join("");
-        return `<div id="${id}" class="sc-ring">${itemsHtml}</div>`;
-      }
+        const itemsHtml = items
+          .map(
+            (t, i) =>
+              `<div class="sc-text-item" style="transform: rotate(${i * step}deg)"><span class="sc-item-label">${t}</span></div>`,
+          )
+          .join("");
+        return `<div id="${id}" class="sc-ring" data-label="${ringLabel}">${itemsHtml}</div>`;
+      };
+
       spaceConcentricHtmlCache = `
         <div class="space-concentric-container">
-            <div class="sc-indicator-line"></div>
-            ${genRing(m, 'sc-ring-month')}
-            ${genRing(d, 'sc-ring-day')}
-            ${genRing(w, 'sc-ring-week')}
-            ${genRing(hArray, 'sc-ring-hour')}
-            ${genRing(scMinutes, 'sc-ring-min')}
-            ${showSec ? genRing(scSeconds, 'sc-ring-sec') : ''}
+            <div class="sc-focus-axis">
+                <div class="sc-focus-beam-glow"></div>
+                <div class="sc-focus-beam-core"></div>
+                <div class="sc-focus-reticle">
+                    <div class="sc-reticle-arrow"></div>
+                    <div class="sc-reticle-dot"></div>
+                </div>
+                <div class="sc-focus-ticks">
+                    <span class="sc-tick sc-tick-1"></span>
+                    <span class="sc-tick sc-tick-2"></span>
+                    <span class="sc-tick sc-tick-3"></span>
+                    <span class="sc-tick sc-tick-4"></span>
+                    <span class="sc-tick sc-tick-5"></span>
+                    <span class="sc-tick sc-tick-6"></span>
+                </div>
+            </div>
+            ${genRing(m, 'sc-ring-month', 'MONTH')}
+            ${genRing(d, 'sc-ring-day', 'DAY')}
+            ${genRing(w, 'sc-ring-week', 'WEEK')}
+            ${genRing(hArray, 'sc-ring-hour', 'HOUR')}
+            ${genRing(scMinutes, 'sc-ring-min', 'MIN')}
+            ${showSec ? genRing(scSeconds, 'sc-ring-sec', 'SEC') : ''}
+            <div class="sc-center-core">
+                <div class="sc-core-glow"></div>
+                <div class="sc-core-hud">
+                    <div class="sc-core-time-main">${hh}:${mm}</div>
+                    ${ss ? `<div class="sc-core-sec">${ss}</div>` : ''}
+                    ${ampm ? `<div class="sc-core-ampm">${ampm}</div>` : ''}
+                </div>
+            </div>
         </div>
       `;
       spaceConcentricLangCache = cacheKey;
       clockElement.innerHTML = spaceConcentricHtmlCache;
+      spaceConcentricRingElements = null;
+      spaceConcentricLastState = {};
     } else if (clockElement.children.length === 0 || !clockElement.querySelector('.space-concentric-container')) {
       clockElement.innerHTML = spaceConcentricHtmlCache;
+      spaceConcentricRingElements = null;
+      spaceConcentricLastState = {};
     }
 
-    const setRingRot = (id, angle, activeIndex) => {
-      const el = clockElement.querySelector(`#${id}`);
-      if (el) {
-        el.style.transform = `rotate(${angle}deg)`;
-        const currentActive = el.querySelector('.sc-text-item.is-active');
-        const items = el.querySelectorAll('.sc-text-item');
-        const nextActive = items[activeIndex];
-        
-        if (currentActive !== nextActive) {
-          if (currentActive) currentActive.classList.remove('is-active');
-          if (nextActive) nextActive.classList.add('is-active');
-        }
+    if (!spaceConcentricRingElements) {
+      spaceConcentricRingElements = {
+        coreTime: clockElement.querySelector('.sc-core-time-main'),
+        coreSec: clockElement.querySelector('.sc-core-sec'),
+        coreAmPm: clockElement.querySelector('.sc-core-ampm'),
+        rings: {
+          month: {
+            el: clockElement.querySelector('#sc-ring-month'),
+            items: clockElement.querySelectorAll('#sc-ring-month .sc-text-item'),
+          },
+          day: {
+            el: clockElement.querySelector('#sc-ring-day'),
+            items: clockElement.querySelectorAll('#sc-ring-day .sc-text-item'),
+          },
+          week: {
+            el: clockElement.querySelector('#sc-ring-week'),
+            items: clockElement.querySelectorAll('#sc-ring-week .sc-text-item'),
+          },
+          hour: {
+            el: clockElement.querySelector('#sc-ring-hour'),
+            items: clockElement.querySelectorAll('#sc-ring-hour .sc-text-item'),
+          },
+          min: {
+            el: clockElement.querySelector('#sc-ring-min'),
+            items: clockElement.querySelectorAll('#sc-ring-min .sc-text-item'),
+          },
+          sec: {
+            el: clockElement.querySelector('#sc-ring-sec'),
+            items: clockElement.querySelectorAll('#sc-ring-sec .sc-text-item'),
+          },
+        },
+      };
+      spaceConcentricLastState = {};
+    }
+
+    // Update central core time only when values change
+    const timeStr = `${hh}:${mm}`;
+    if (spaceConcentricLastState.time !== timeStr) {
+      if (spaceConcentricRingElements.coreTime) {
+        spaceConcentricRingElements.coreTime.textContent = timeStr;
       }
+      spaceConcentricLastState.time = timeStr;
     }
-    setRingRot('sc-ring-month', monthAngle, currentMonth);
-    setRingRot('sc-ring-day', dayAngle, currentDay);
-    setRingRot('sc-ring-week', weekAngle, currentWeek);
-    setRingRot('sc-ring-hour', hourAngle, hourIdx);
-    setRingRot('sc-ring-min', minAngle, currentMin);
-    if (showSec) setRingRot('sc-ring-sec', secAngle, currentSec);
+    if (ss && spaceConcentricLastState.sec !== ss) {
+      if (spaceConcentricRingElements.coreSec) {
+        spaceConcentricRingElements.coreSec.textContent = ss;
+      }
+      spaceConcentricLastState.sec = ss;
+    }
+    if (ampm && spaceConcentricLastState.ampm !== ampm) {
+      if (spaceConcentricRingElements.coreAmPm) {
+        spaceConcentricRingElements.coreAmPm.textContent = ampm;
+      }
+      spaceConcentricLastState.ampm = ampm;
+    }
 
+    const updateRingFast = (ringKey, angle, activeIndex) => {
+      const ringObj = spaceConcentricRingElements.rings[ringKey];
+      if (!ringObj || !ringObj.el) return;
+
+      const lastKey = `ring_${ringKey}`;
+      if (spaceConcentricLastState[lastKey] === activeIndex) {
+        return; // Value hasn't changed, skip DOM touching completely
+      }
+
+      const lastIndex = spaceConcentricLastState[lastKey];
+      ringObj.el.style.transform = `rotate(${angle}deg)`;
+
+      if (lastIndex !== undefined && ringObj.items[lastIndex]) {
+        ringObj.items[lastIndex].classList.remove('is-active');
+      }
+      if (ringObj.items[activeIndex]) {
+        ringObj.items[activeIndex].classList.add('is-active');
+      }
+
+      spaceConcentricLastState[lastKey] = activeIndex;
+    };
+
+    updateRingFast('month', monthAngle, currentMonth);
+    updateRingFast('day', dayAngle, currentDay);
+    updateRingFast('week', weekAngle, currentWeek);
+    updateRingFast('hour', hourAngle, hourIdx);
+    updateRingFast('min', minAngle, currentMin);
+    if (showSec) updateRingFast('sec', secAngle, currentSec);
+
+  } else if (dateClockStyle === "split-pill") {
+    const parts = getZonedDateParts(now, tz)
+    const day = parts.day
+    const monthName = new Intl.DateTimeFormat(langCode, {
+      month: "short",
+      timeZone: tz,
+    }).format(now).toUpperCase()
+    const weekday = getSafeWeekday(
+      now,
+      langCode,
+      true, // short weekday
+      tz,
+      settings,
+    ).toLowerCase()
+
+    clockElement.innerHTML = `
+      <div class="split-pill-card">
+        <div class="split-pill-time-col">
+          <div class="split-pill-digits">
+            <span class="split-pill-hh">${hh}</span>
+            <span class="split-pill-colon">:</span>
+            <span class="split-pill-mm">${mm}</span>
+          </div>
+          <div class="split-pill-ampm-wrap">
+            ${ampm ? `<span class="split-pill-ampm">${ampm}</span>` : ""}
+            ${ss ? `<span class="split-pill-ss">${ss}</span>` : ""}
+          </div>
+        </div>
+        <div class="split-pill-divider"></div>
+        <div class="split-pill-date-col">
+          <span class="split-pill-month">${isTimer ? "TIMER" : monthName}</span>
+          <span class="split-pill-day">${isTimer ? timerLabel : day}</span>
+          <span class="split-pill-weekday">${isTimer ? countdownLabel : weekday}</span>
+        </div>
+      </div>
+    `
+  } else if (dateClockStyle === "clock-3d") {
+    const showSec = !settings.hideSeconds
+    const is12Hour = settings.clockTimeFormat === "12"
+    let displayHH = hh
+    if (is12Hour) {
+      let hNum = parseInt(hh, 10)
+      if (hNum > 12) hNum -= 12
+      if (hNum === 0) hNum = 12
+      displayHH = String(hNum).padStart(2, "0")
+    }
+
+    const timeMainText = `${displayHH}:${mm}${showSec ? `:${ss || "00"}` : ""}`
+
+    // Date formatting respecting all settings (format, timezone, language)
+    let formattedDate = ""
+    if (isTimer) {
+      formattedDate = countdownLabel
+    } else {
+      const rawDate = getCustomDateString(now, langCode, tz, settings)
+      formattedDate = (rawDate || "").replace(/<[^>]*>?/gm, "").trim()
+    }
+
+    const shouldShowDate =
+      (displayMode === "all" || displayMode === "date" || displayMode === "weekday") &&
+      settings.showGregorian !== false
+
+    const shouldShowClock =
+      displayMode === "all" || displayMode === "clock"
+
+    const existingScene = clockElement.querySelector(".clock-3d-scene")
+    const existingVal = existingScene?.querySelector(".clock-3d-text-main .clock-3d-time-val")
+
+    if (existingScene && existingVal) {
+      // Fast path: update text directly across all shadow and main layers
+      const allVals = existingScene.querySelectorAll(".clock-3d-time-val")
+      allVals.forEach((valEl) => {
+        if (valEl.textContent !== timeMainText) valEl.textContent = timeMainText
+      })
+
+      const datePill = existingScene.querySelector(".clock-3d-date-pill-text")
+      if (datePill && datePill.textContent !== formattedDate) {
+        datePill.textContent = formattedDate
+      }
+
+      const dateContainer = existingScene.querySelector(".clock-3d-date")
+      if (dateContainer) {
+        dateContainer.style.display = shouldShowDate ? "flex" : "none"
+      }
+
+      const stageContainer = existingScene.querySelector(".clock-3d-stage")
+      if (stageContainer) {
+        stageContainer.style.display = shouldShowClock ? "inline-flex" : "none"
+      }
+
+      const ampmEl = existingScene.querySelector(".clock-3d-ampm")
+      if (ampmEl && ampmEl.textContent !== (ampm || "")) {
+        ampmEl.textContent = ampm || ""
+      }
+    } else {
+      clockElement.innerHTML = `
+        <div class="clock-3d-scene">
+          <div class="clock-3d-stage" style="${shouldShowClock ? "" : "display: none;"}">
+            <!-- Main 3D Text Layer -->
+            <div class="clock-3d-text-layer clock-3d-text-main">
+              <span class="clock-3d-time-val">${timeMainText}</span>
+              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
+            </div>
+            <!-- 3D Floor Shadow Reflection Layer 1 -->
+            <div class="clock-3d-text-layer clock-3d-text-shadow clock-3d-text-shadow1" aria-hidden="true">
+              <span class="clock-3d-time-val">${timeMainText}</span>
+            </div>
+            <!-- 3D Floor Shadow Reflection Layer 2 -->
+            <div class="clock-3d-text-layer clock-3d-text-shadow clock-3d-text-shadow2" aria-hidden="true">
+              <span class="clock-3d-time-val">${timeMainText}</span>
+            </div>
+          </div>
+          <div class="clock-3d-date" style="${shouldShowDate ? "" : "display: none;"}">
+            <span class="clock-3d-date-pill">
+              <i class="fa-solid fa-calendar-day"></i>
+              <span class="clock-3d-date-pill-text">${formattedDate}</span>
+            </span>
+          </div>
+        </div>
+      `
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -2492,31 +2788,39 @@ export function updateTime() {
   // Handle date visibility - check both showDate (removed, default true) AND showGregorian
   const finalShouldShowDate = settings.showGregorian !== false
 
+  const isCustomAngleShowingInternalDate =
+    dateClockStyle === "custom-angle" && settings.customAngleShowDate !== false
+
   // Determine if we should show the standard date element
-  const isSpecialStyle = [
-    "cool",
-    "sidestyle",
-    "jp-style",
-    "sidebar",
-    "weekday-style",
-    "fliqlo",
-    "cyber-pulse",
-    "neon-grid",
-    "terminal",
-    "c4-bomb",
-    "holo-ring",
-    "media-orb",
-    "prism-stack",
-    "metro-panel",
-    "aurora-ribbon",
-    "lunar-orbit",
-    "cartoon",
-    "minimalist-word",
-    "space-concentric",
-    "audio-wave",
-    "glass-float",
-    "satellite"
-  ].includes(dateClockStyle)
+  const isSpecialStyle =
+    [
+      "cool",
+      "sidestyle",
+      "jp-style",
+      "sidebar",
+      "weekday-style",
+      "fliqlo",
+      "cyber-pulse",
+      "neon-grid",
+      "terminal",
+      "c4-bomb",
+      "holo-ring",
+      "media-orb",
+      "prism-stack",
+      "metro-panel",
+      "aurora-ribbon",
+      "lunar-orbit",
+      "cartoon",
+      "minimalist-word",
+      "space-concentric",
+      "audio-wave",
+      "glass-float",
+      "satellite",
+      "pixel-hud",
+      "code",
+      "split-pill",
+      "clock-3d",
+    ].includes(dateClockStyle) || isCustomAngleShowingInternalDate
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
   if (dateFadeWrap) {
@@ -2712,7 +3016,8 @@ export function initClock() {
       e.detail.key === "mediaOrbImageData" ||
       e.detail.key === "mediaOrbLayout" ||
       e.detail.key === "showClockLunarCalendar" ||
-      e.detail.key === "showClockLunarMode"
+      e.detail.key === "showClockLunarMode" ||
+      (e.detail.key && e.detail.key.startsWith("customAngle"))
     ) {
       updateTime()
     }

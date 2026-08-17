@@ -128,7 +128,9 @@ i {
 }
 
 .clock-date-wrap {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   position: relative;
   font-family: var(--font-clock-date);
 }
@@ -185,7 +187,9 @@ body.date-clock-style-round .clock-date-wrap.timer-running-hidden {
 }
 
 .clock-date-wrap {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   position: relative;
   font-family: var(--font-clock-date);
 }
@@ -619,51 +623,9 @@ body.framed-theme-dark .round-clock-notch {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Base styles for Round Clock */
-body.date-clock-style-round .clock-date-wrap {
-  --frame-size: max(min(88vw, 360px), calc(var(--clock-size, 6rem) * 4));
-  width: var(--frame-size);
-  height: var(--frame-size);
-  margin: 0 auto var(--space-5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: visible;
-  animation: framedClockFloat 8s ease-in-out infinite;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  user-select: none;
-}
 
-body.date-clock-style-round .clock-date-wrap:hover {
-  transform: scale(1.04) translateY(-8px);
-  box-shadow:
-    0 50px 100px -20px rgba(0, 0, 0, 0.7),
-    0 0 60px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-}
 
-/* Base styles for Square Clock */
-body.date-clock-style-square .clock-date-wrap {
-  --frame-size: max(min(80vw, 280px), calc(var(--clock-size, 6rem) * 3.5));
-  width: var(--frame-size);
-  height: var(--frame-size);
-  margin: 0 auto var(--space-5);
-  border-radius: 40px; /* Squircle gọn hơn */
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-3); /* Giảm padding cho cân đối size mới */
-  box-sizing: border-box;
-  justify-content: space-between;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  animation: framedClockFloat 8s ease-in-out infinite;
-  overflow: hidden;
-}
 
-body.date-clock-style-square .clock-date-wrap:hover {
-  transform: scale(1.05) translateY(-5px);
-}
 
 /* Notch "Ngày tháng" mới - Phong cách Seamless Glass */
 .round-clock-notch {
@@ -809,8 +771,7 @@ body.date-clock-style-round #clock::after {
   display: none !important;
 }
 
-/* Theme overrides for both styles - HIGHER SPECIFICITY */
-body.framed-theme-light.date-clock-style-round .clock-date-wrap,
+/* Theme overrides for Square Clock */
 body.framed-theme-light.date-clock-style-square .clock-date-wrap {
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   background: radial-gradient(
@@ -826,102 +787,7 @@ body.framed-theme-light.date-clock-style-square .clock-date-wrap {
     inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
-body.framed-theme-dark.date-clock-style-round .clock-date-wrap,
-body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
-  border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
-  background: rgba(0, 0, 0, 0.55) !important;
-  backdrop-filter: blur(40px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(40px) saturate(150%) !important;
-  box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.6),
-    inset 0 0 30px rgba(255, 255, 255, 0.03) !important;
-}
 
-.square-clock-bold-layout {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.sq-top-row {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.sq-date-val {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 3px;
-  opacity: 0.9;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  border-left: 3px solid var(--accent-color);
-  padding-left: var(--space-2);
-}
-
-.sq-main-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-.sq-time-hhmm {
-  font-size: clamp(4rem, 15vw, 6rem);
-  font-weight: 900;
-  color: #fff;
-  line-height: 0.9;
-  letter-spacing: -3px;
-  text-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(var(--accent-color-rgb), 0.15);
-}
-
-.sq-side-info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-0-5);
-  text-align: left;
-}
-
-.sq-ampm {
-  font-size: 1rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--accent-color, #fff);
-  letter-spacing: 1px;
-}
-
-.sq-ss {
-  font-size: 1.5rem;
-  font-weight: 300;
-  font-family: var(--font-clock, "JetBrains Mono", monospace);
-  color: #fff;
-  opacity: 0.6;
-}
-
-.sq-bottom-row {
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: var(--space-2);
-}
-
-.sq-full-date {
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  color: #fff;
-  opacity: 0.45;
-  text-transform: uppercase;
-}
-
-body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
-  opacity: 0.9;
-  color: var(--accent-color);
-}
 
 /* Ẩn thành phần cũ */
 body.date-clock-style-square #date,
@@ -967,351 +833,1085 @@ body.date-clock-style-square .clock-date-wrap {
   transform-origin: center;
 }
 
+/* ==========================================================================
+   Round Clock (Chrono-Glass Orbital Edition)
+   ========================================================================== */
+/* ==========================================================================
+   Round Clock (Chrono-Glass Orbital Edition)
+   ========================================================================== */
+/* ==========================================================================
+   Round Clock (Chrono-Glass Orbital Edition)
+   ========================================================================== */
 body.date-clock-style-round .clock-date-wrap {
-  --frame-size: min(84vw, 330px);
-  width: var(--frame-size);
-  height: var(--frame-size);
-  padding: clamp(var(--space-3), 7vw, var(--space-5));
-  margin: 0 auto var(--space-4);
-  overflow: hidden;
-  animation: framedClockFloat 10s ease-in-out infinite;
-  transition:
-    transform 0.28s ease,
-    box-shadow 0.28s ease,
-    border-color 0.28s ease;
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
 }
 
-body.date-clock-style-square .clock-date-wrap {
-  width: fit-content;
-  min-width: min(82vw, 230px);
-  max-width: 88vw;
-  height: auto;
-  min-height: 0;
-  padding: clamp(var(--space-1), 2.8vw, var(--space-2))
-    clamp(var(--space-2), 4vw, var(--space-3))
-    clamp(var(--space-2), 3.2vw, var(--space-2));
-  margin: 0 auto var(--space-4);
-  border-radius: var(--radius-lg);
-  animation: framedClockFloat 10s ease-in-out infinite;
-  transition:
-    transform 0.28s ease,
-    box-shadow 0.28s ease,
-    border-color 0.28s ease;
+body.date-clock-style-round .date-fade-wrapper,
+body.date-clock-style-round #date {
+  display: none !important;
 }
 
-body.date-clock-style-round .clock-date-wrap::before,
-body.date-clock-style-square .clock-date-wrap::before {
-  content: "";
-  position: absolute;
-  inset: var(--space-1);
-  z-index: -1;
-  pointer-events: none;
+body.date-clock-style-round .clock-fade-wrapper,
+body.date-clock-style-round #clock {
+  width: fit-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-body.date-clock-style-round .clock-date-wrap::before {
+.round-clock-card {
+  --round-size: min(85vw, 290px);
+  width: var(--round-size);
+  height: var(--round-size);
   border-radius: 50%;
-  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.14);
-  background:
-    radial-gradient(
-      circle at 50% 28%,
-      rgba(255, 255, 255, 0.14),
-      transparent 34%
-    ),
-    radial-gradient(
-      circle at 50% 70%,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
-      transparent 48%
-    );
-}
-
-body.date-clock-style-square .clock-date-wrap::before {
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.12);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.15),
-      transparent 42%
-    ),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.06), transparent);
-}
-
-body.framed-theme-light.date-clock-style-round .clock-date-wrap,
-body.framed-theme-light.date-clock-style-square .clock-date-wrap {
-  border: 1px solid rgba(255, 255, 255, 0.26) !important;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.16),
-      rgba(255, 255, 255, 0.05)
-    ),
-    rgba(24, 28, 38, 0.18) !important;
-  backdrop-filter: blur(18px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
-  box-shadow:
-    0 22px 48px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-}
-
-body.framed-theme-dark.date-clock-style-round .clock-date-wrap,
-body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
-  border: 1px solid rgba(255, 255, 255, 0.13) !important;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.08),
-      rgba(255, 255, 255, 0.025)
-    ),
-    rgba(5, 8, 13, 0.58) !important;
-  backdrop-filter: blur(20px) saturate(135%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(135%) !important;
-  box-shadow:
-    0 24px 58px rgba(0, 0, 0, 0.48),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-}
-
-body.date-clock-style-round .clock-date-wrap:hover,
-body.date-clock-style-square .clock-date-wrap:hover {
-  transform: translateY(-4px) scale(1.015);
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42) !important;
-  box-shadow:
-    0 28px 62px rgba(0, 0, 0, 0.42),
-    0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
-}
-
-body.date-clock-style-round .round-clock-new-layout,
-body.date-clock-style-square .square-clock-bold-layout {
   position: relative;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  padding: 24px;
+  background: radial-gradient(
+      circle at 50% 25%,
+      rgba(255, 255, 255, 0.12),
+      rgba(15, 20, 30, 0.6) 70%
+    ),
+    rgba(10, 15, 25, 0.7);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    inset 0 0 24px rgba(var(--accent-color-rgb, 120, 180, 255), 0.1);
+  animation: framedClockFloat 10s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
 }
 
-body.date-clock-style-round .round-clock-new-layout {
-  gap: clamp(var(--space-1), 3vw, var(--space-2));
+.round-clock-card:hover {
+  transform: translateY(-6px) scale(1.025);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  box-shadow:
+    0 32px 70px rgba(0, 0, 0, 0.55),
+    0 0 35px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.45);
 }
 
-body.date-clock-style-round .round-clock-notch {
-  position: static;
-  transform: none;
-  padding: var(--space-1) var(--space-2);
-  border-radius: 1000px;
-  background: rgba(var(--clock-color-rgb, 255, 255, 255), 0.08);
-  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
-  box-shadow: none;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* Outer Orbital Dial & Cardinal Ticks */
+.round-clock-dial {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(var(--clock-color-rgb, 255, 255, 255), 0.15);
+  pointer-events: none;
+  z-index: 1;
 }
 
-body.date-clock-style-round .clock-date-wrap:hover .round-clock-notch {
-  top: auto;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.13);
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
-  box-shadow: none;
+.round-clock-ticks {
+  position: absolute;
+  inset: 0;
 }
 
-body.date-clock-style-round .round-clock-date-top {
-  margin: 0;
-  color: var(--date-color, rgba(255, 255, 255, 0.82));
-  font-family: var(--font-date, "Inter", sans-serif);
-  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.13), 0.96rem);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-shadow: none;
+.round-tick {
+  position: absolute;
+  background: var(--accent-color, #a8c0ff);
+  opacity: 0.7;
+  border-radius: 2px;
 }
 
-body.date-clock-style-round .round-clock-center {
-  gap: clamp(var(--space-1), 3vw, var(--space-2));
+.round-tick.tick-12 {
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 8px;
 }
 
-body.date-clock-style-round .round-clock-time-row {
-  align-items: flex-start;
-  justify-content: center;
-  gap: clamp(var(--space-1), 2.6vw, var(--space-2));
-  margin: 0;
+.round-tick.tick-6 {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 8px;
 }
 
-body.date-clock-style-round .round-clock-date-notch i {
-  color: var(--accent-color, #a8c0ff);
-  font-size: 1.1em;
+.round-tick.tick-3 {
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 3px;
 }
 
-body.date-clock-style-round .clock-date-wrap:hover .round-clock-date-notch {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
-  transform: translateY(-2px);
+.round-tick.tick-9 {
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 3px;
 }
 
-body.date-clock-style-round .round-clock-time-main {
+/* Inner Card Content */
+.round-clock-content {
+  position: relative;
+  z-index: 2;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-body.date-clock-style-round .round-clock-time-core {
-  font-family: var(--font-clock, "Inter", sans-serif);
-  color: var(--clock-color, #ffffff);
-  font-size: clamp(3.2rem, calc(var(--clock-size, 6rem) * 0.75), 5.2rem);
-  font-weight: 850;
-  line-height: 0.9;
-  letter-spacing: -2px;
-  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+/* Top Date Capsule */
+.round-clock-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--date-color, rgba(255, 255, 255, 0.9));
+  transition: all 0.3s ease;
+}
+
+.round-clock-capsule i {
+  font-size: 0.72rem;
+  color: var(--accent-color, #a8c0ff);
+  opacity: 0.9;
+}
+
+.round-clock-date-text {
+  font-family: var(--font-date, "Inter", sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: inherit;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+/* Hero Time Row */
+.round-clock-time-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.round-clock-digits {
   display: flex;
   align-items: baseline;
+  font-family: var(--font-clock, "Inter", sans-serif);
+  color: var(--clock-color, #ffffff);
+  font-size: clamp(2.8rem, calc(var(--clock-size, 6rem) * 0.65), 4rem);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-colon {
-  margin: 0 4px;
-  opacity: 0.8;
-  animation: pulse 2s infinite;
+.round-clock-colon {
+  margin: 0 2px;
+  opacity: 0.75;
+  animation: roundColonPulse 1.8s ease-in-out infinite;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-meta {
+@keyframes roundColonPulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(0.92); }
+}
+
+.round-clock-sub-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  padding-left: 12px;
-  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.15);
-  margin-top: 4px;
+  align-items: flex-start;
+  gap: 3px;
 }
 
-body.date-clock-style-round .round-clock-ampm {
-  color: var(--accent-color, #a8c0ff);
+.round-clock-ampm {
   font-family: var(--font-clock, "Inter", sans-serif);
-  font-size: clamp(0.75rem, calc(var(--clock-size, 6rem) * 0.13), 1rem);
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--accent-color, #a8c0ff);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-ss {
-  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.6);
-  font-size: clamp(1.1rem, calc(var(--clock-size, 6rem) * 0.22), 1.5rem);
-  font-weight: 400;
+.round-clock-ss {
   font-family: var(--font-clock, "JetBrains Mono", monospace);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.65);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-footer {
+/* Footer / Weekday & Year */
+.round-clock-footer {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: var(--date-color, rgba(255, 255, 255, 0.7));
+  gap: 8px;
   font-family: var(--font-weekday, var(--font-date, "Inter", sans-serif));
-  font-size: clamp(0.75rem, calc(var(--clock-size, 6rem) * 0.12), 0.95rem);
-  font-weight: 750;
-  letter-spacing: 0.15em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  position: relative;
-  padding-top: 16px;
-  transition: all 0.4s ease;
+  color: var(--date-color, rgba(255, 255, 255, 0.75));
 }
 
-body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer {
-  color: var(--date-color, rgba(255, 255, 255, 0.9));
+.round-clock-weekday,
+.round-clock-year {
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -20%;
-  right: -20%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(var(--clock-color-rgb, 255, 255, 255), 0.2),
-    transparent
-  );
-}
-
-body.date-clock-style-round .round-clock-dot {
+.round-clock-footer-dot {
   width: 4px;
   height: 4px;
-  background-color: var(--accent-color, #a8c0ff);
   border-radius: 50%;
+  background: var(--accent-color, #a8c0ff);
   opacity: 0.8;
 }
 
-body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
-  color: var(--date-color, rgba(255, 255, 255, 0.86));
-  letter-spacing: 0.12em;
-  opacity: 0.92;
+/* Themes: Light glass & Dark OLED support */
+body.framed-theme-light.date-clock-style-round .round-clock-card {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  background: radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.28), rgba(240, 245, 255, 0.12)), rgba(20, 28, 45, 0.22) !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.45) !important;
 }
 
-body.date-clock-style-square .square-clock-bold-layout {
-  align-items: stretch;
-  justify-content: center;
-  height: auto;
-  gap: clamp(var(--space-1), 2.4vw, var(--space-2));
+body.framed-theme-dark.date-clock-style-round .round-clock-card {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: radial-gradient(circle at 50% 25%, rgba(30, 35, 48, 0.8), rgba(8, 12, 18, 0.9)) !important;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
 }
 
-body.date-clock-style-square .sq-top-row,
-body.date-clock-style-square .sq-bottom-row {
+/* ==========================================================================
+   Square Clock (Tactical Squircle Edition)
+   ========================================================================== */
+body.date-clock-style-square .clock-date-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
+
+body.date-clock-style-square .date-fade-wrapper,
+body.date-clock-style-square #date {
+  display: none !important;
+}
+
+body.date-clock-style-square .clock-fade-wrapper,
+body.date-clock-style-square #clock {
+  width: fit-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.square-clock-card {
+  position: relative;
+  width: fit-content;
+  min-width: min(85vw, 280px);
+  max-width: min(92vw, 360px);
+  box-sizing: border-box;
+  padding: 18px 24px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: radial-gradient(
+      circle at 50% 15%,
+      rgba(255, 255, 255, 0.12),
+      rgba(15, 20, 30, 0.6) 70%
+    ),
+    rgba(10, 15, 25, 0.7);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    inset 0 0 20px rgba(var(--accent-color-rgb, 120, 180, 255), 0.08);
+  animation: framedClockFloat 10s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.square-clock-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  box-shadow:
+    0 30px 68px rgba(0, 0, 0, 0.55),
+    0 0 30px rgba(var(--accent-color-rgb, 168, 192, 255), 0.22),
+    inset 0 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+/* Corner Tactical Brackets */
+.sq-bracket {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+  border-style: solid;
+  transition: all 0.3s ease;
+}
+
+.sq-bracket-tl {
+  top: 6px;
+  left: 6px;
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 4px;
+}
+
+.sq-bracket-tr {
+  top: 6px;
+  right: 6px;
+  border-width: 2px 2px 0 0;
+  border-top-right-radius: 4px;
+}
+
+.sq-bracket-bl {
+  bottom: 6px;
+  left: 6px;
+  border-width: 0 0 2px 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.sq-bracket-br {
+  bottom: 6px;
+  right: 6px;
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 4px;
+}
+
+.square-clock-card:hover .sq-bracket {
+  border-color: var(--accent-color, #a8c0ff);
+  filter: drop-shadow(0 0 4px var(--accent-color, #a8c0ff));
+}
+
+/* Top Row: Date capsule & Live indicator */
+.sq-top-row {
   display: flex;
   align-items: center;
-}
-
-body.date-clock-style-square .sq-top-row {
   justify-content: space-between;
-  min-height: 0;
+  gap: 12px;
 }
 
-body.date-clock-style-square .sq-date-val {
-  color: var(--date-color, rgba(255, 255, 255, 0.84));
+.sq-date-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
+  color: var(--date-color, rgba(255, 255, 255, 0.9));
   font-family: var(--font-date, "Inter", sans-serif);
-  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.13), 1rem);
-  font-weight: 850;
-  letter-spacing: 0.12em;
-  text-shadow: none;
-  border-left: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.sq-date-capsule i {
+  font-size: 0.72rem;
+  color: var(--accent-color, #a8c0ff);
+  margin: 0;
   padding: 0;
 }
 
-body.date-clock-style-square .sq-date-val::before {
-  content: "";
-  display: inline-block;
-  width: 0.65em;
-  height: 0.65em;
-  margin-right: 0.55em;
-  border-radius: 2px;
-  background: var(--accent-color, #a8c0ff);
-  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+.sq-date-val {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-shadow: none;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-square .sq-main-row {
+.sq-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-clock, "JetBrains Mono", monospace);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sq-pulse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 6px var(--accent-color, #a8c0ff);
+  animation: sqPulse 2s infinite;
+}
+
+@keyframes sqPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Center Time Row */
+.sq-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 2px 0;
+}
+
+.sq-digits {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-clock, "Inter", sans-serif);
+  color: var(--clock-color, #ffffff);
+  font-size: clamp(2.8rem, calc(var(--clock-size, 6rem) * 0.68), 4.2rem);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.sq-colon {
+  margin: 0 2px;
+  opacity: 0.8;
+  animation: roundColonPulse 1.8s ease-in-out infinite;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.sq-side-info {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: clamp(var(--space-1), 2.4vw, var(--space-2));
-  margin: -2px 0 0;
+  gap: 3px;
 }
 
-body.date-clock-style-square .sq-time-hhmm {
-  font-size: clamp(2.85rem, calc(var(--clock-size, 6rem) * 0.66), 4.6rem);
-  line-height: 0.92;
+.sq-ampm {
+  font-family: var(--font-clock, "Inter", sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-color, #a8c0ff);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-square .sq-side-info {
-  gap: var(--space-1);
-  margin-top: 0.34em;
-  padding-left: clamp(var(--space-1), 2.5vw, var(--space-2));
-  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.15);
+.sq-ss {
+  font-family: var(--font-clock, "JetBrains Mono", monospace);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.65);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-square .sq-bottom-row {
+/* Bottom Row */
+.sq-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-weekday, var(--font-date, "Inter", sans-serif));
+  color: var(--date-color, rgba(255, 255, 255, 0.75));
+}
+
+.sq-weekday {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+.sq-year-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+/* Themes */
+body.framed-theme-light.date-clock-style-square .square-clock-card {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  background: radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.28), rgba(240, 245, 255, 0.12)), rgba(20, 28, 45, 0.22) !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.45) !important;
+}
+
+body.framed-theme-dark.date-clock-style-square .square-clock-card {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: radial-gradient(circle at 50% 15%, rgba(30, 35, 48, 0.8), rgba(8, 12, 18, 0.9)) !important;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================================================
+   Split Pill Clock (Minimalist Dual Plate Edition)
+   ========================================================================== */
+body.date-clock-style-split-pill .clock-date-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
+
+body.date-clock-style-split-pill .date-fade-wrapper,
+body.date-clock-style-split-pill #date {
+  display: none !important;
+}
+
+body.date-clock-style-split-pill {
+  --split-pill-card-bg: #ffffff;
+  --split-pill-clock-color: #111111;
+  --split-pill-date-color: #111111;
+  --split-pill-divider-color: rgba(0, 0, 0, 0.28);
+}
+
+body.clock-style-bg-dark.date-clock-style-split-pill {
+  --split-pill-card-bg: radial-gradient(circle at 50% 15%, rgba(35, 42, 58, 0.95), rgba(12, 16, 24, 0.96));
+  --split-pill-clock-color: #ffffff;
+  --split-pill-date-color: #ffffff;
+  --split-pill-divider-color: rgba(255, 255, 255, 0.25);
+}
+
+body.clock-style-bg-light.date-clock-style-split-pill {
+  --split-pill-card-bg: #ffffff;
+  --split-pill-clock-color: #111111;
+  --split-pill-date-color: #111111;
+  --split-pill-divider-color: rgba(0, 0, 0, 0.28);
+}
+
+body.clock-style-bg-accent.date-clock-style-split-pill {
+  --split-pill-card-bg: radial-gradient(circle at 50% 15%, rgba(var(--accent-color-rgb, 168, 192, 255), 0.25), rgba(var(--accent-color-rgb, 168, 192, 255), 0.12));
+  --split-pill-clock-color: #ffffff;
+  --split-pill-date-color: #ffffff;
+  --split-pill-divider-color: rgba(255, 255, 255, 0.35);
+}
+
+body.clock-style-bg-custom.date-clock-style-split-pill {
+  --split-pill-card-bg: var(--clock-style-custom-bg-color, #1f2937);
+  --split-pill-clock-color: #ffffff;
+  --split-pill-date-color: #ffffff;
+  --split-pill-divider-color: rgba(255, 255, 255, 0.25);
+}
+
+body.clock-style-transparent-bg.date-clock-style-split-pill {
+  --split-pill-card-bg: transparent;
+  --split-pill-clock-color: #ffffff;
+  --split-pill-date-color: #ffffff;
+  --split-pill-divider-color: rgba(255, 255, 255, 0.35);
+}
+
+body.date-clock-style-split-pill .clock-date-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
+
+body.date-clock-style-split-pill .date-fade-wrapper,
+body.date-clock-style-split-pill #date {
+  display: none !important;
+}
+
+body.date-clock-style-split-pill .clock-fade-wrapper,
+body.date-clock-style-split-pill #clock {
+  width: fit-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.split-pill-card {
+  position: relative;
+  width: fit-content;
+  max-width: min(94vw, 440px);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  padding-top: clamp(var(--space-1), 2.4vw, var(--space-2));
-  border-top: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.13);
+  gap: clamp(14px, 2.5vw, 20px);
+  padding: 14px 26px;
+  border-radius: 10px;
+  background: var(--split-pill-card-bg) !important;
+  border: none !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  animation: framedClockFloat 10s ease-in-out infinite;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.split-pill-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, 0.16),
+    0 0 20px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+}
+
+/* Time Column (Left) */
+.split-pill-time-col {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.split-pill-digits {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-clock, "Inter", -apple-system, sans-serif);
+  font-size: clamp(3.2rem, calc(var(--clock-size, 6rem) * 0.78), 5.2rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--split-pill-clock-color) !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.split-pill-hh,
+.split-pill-colon,
+.split-pill-mm {
+  color: var(--split-pill-clock-color) !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.split-pill-colon {
+  margin: 0 1px;
+  opacity: 0.85;
+  animation: roundColonPulse 1.8s ease-in-out infinite;
+}
+
+.split-pill-ampm-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.split-pill-ampm {
+  font-family: var(--font-clock, "Inter", -apple-system, sans-serif);
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.16), 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--split-pill-clock-color) !important;
+  text-shadow: none !important;
+  line-height: 1;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.split-pill-ss {
+  font-family: var(--font-clock, "JetBrains Mono", monospace);
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.65;
+  line-height: 1;
+  color: var(--split-pill-clock-color) !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+/* Vertical Divider */
+.split-pill-divider {
+  display: block !important;
+  width: 2px !important;
+  min-width: 2px !important;
+  height: 52px !important;
+  align-self: center !important;
+  background: var(--split-pill-divider-color) !important;
+  opacity: 1 !important;
+  border-radius: 2px !important;
+  margin: 0 2px !important;
+}
+
+/* Date Column (Right - 3 Tier Stack) */
+.split-pill-date-col {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-width: 50px;
+}
+
+.split-pill-month {
+  font-family: var(--font-date, "Inter", sans-serif);
+  font-size: clamp(0.72rem, calc(var(--date-size, 1.5rem) * 0.55), 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--split-pill-date-color) !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+.split-pill-day {
+  font-family: var(--font-date, "Inter", sans-serif);
+  font-size: clamp(1.25rem, calc(var(--date-size, 1.5rem) * 0.95), 1.75rem);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--split-pill-date-color) !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+.split-pill-weekday {
+  font-family: var(--font-weekday, var(--font-date, "Inter", sans-serif));
+  font-size: clamp(0.75rem, calc(var(--date-size, 1.5rem) * 0.58), 1rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--split-pill-date-color) !important;
+  text-shadow: none !important;
+  opacity: 0.9;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+/* ==========================================================================
+   3D Clock (Isometric 3D Segments & Floor Reflection)
+   ========================================================================== */
+body.date-clock-style-clock-3d .clock-date-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  perspective: 1000px !important;
+}
+
+body.date-clock-style-clock-3d .date-fade-wrapper,
+body.date-clock-style-clock-3d #date {
+  display: none !important;
+}
+
+body.date-clock-style-clock-3d .clock-fade-wrapper,
+body.date-clock-style-clock-3d #clock {
+  width: fit-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  overflow: visible !important;
+}
+
+.clock-3d-scene {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  padding: 1rem 2rem 2.5rem;
+  user-select: none;
+  font-family: var(--font-clock);
+}
+
+.clock-3d-stage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  color: var(--clock-color, #ffffff);
+  animation: clock3DCameraRotate 32s ease-in-out infinite alternate;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.clock-3d-text-layer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  white-space: nowrap;
+}
+
+.clock-3d-time-val {
+  font-family: var(--font-clock);
+  font-size: var(--clock-size, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--clock-color, #ffffff);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.45),
+    0 0 26px rgba(255, 255, 255, 0.22),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-3d-ampm {
+  font-family: var(--font-clock);
+  font-size: calc(var(--clock-size, 6rem) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clock-color, #ffffff);
+  align-self: flex-start;
+  margin-top: calc(var(--clock-size, 6rem) * 0.05);
+  margin-left: 0.5rem;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+/* 3D Floor Shadow Projection Layers */
+.clock-3d-text-shadow {
+  top: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  transform-origin: bottom center;
+  transform: translateY(calc(var(--clock-size, 6rem) * 0.08)) translateZ(calc(var(--clock-size, 6rem) * 0.16)) rotateX(-90.1deg);
+  pointer-events: none;
+}
+
+.clock-3d-text-shadow .clock-3d-time-val {
+  text-shadow: none !important;
+  color: var(--clock-color, #ffffff) !important;
+}
+
+.clock-3d-text-shadow1 {
+  opacity: 0.45;
+  filter: blur(8px);
+  mask-image: linear-gradient(to bottom, white, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, white, transparent 80%);
+}
+
+.clock-3d-text-shadow2 {
+  opacity: 0.3;
+  filter: blur(3px);
+  mask-image: linear-gradient(to top, black, transparent);
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+}
+
+/* Date Pill */
+.clock-3d-date {
+  margin-top: calc(var(--clock-size, 6rem) * 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-date, var(--font-clock));
+}
+
+.clock-3d-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: clamp(0.78rem, calc(var(--date-size, 1.5rem) * 0.62), 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--date-color, var(--clock-color, #ffffff));
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+@keyframes clock3DCameraRotate {
+  0% {
+    transform: rotateY(-11deg) rotateX(5deg);
+  }
+  50% {
+    transform: rotateY(11deg) rotateX(1deg);
+  }
+  100% {
+    transform: rotateY(-11deg) rotateX(5deg);
+  }
+}
+
+/* Background modes for 3D Clock scene */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-scene {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), inset 0 1px 2px #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-time-val,
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-ampm {
+  color: var(--clock-color, #111111) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-date-pill {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: var(--date-color, #111111) !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-clock-3d .clock-3d-scene {
+  background: rgba(18, 20, 26, 0.78) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-clock-3d .clock-3d-scene {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 30%),
+    linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.35), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.12)),
+    rgba(15, 17, 24, 0.72) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.45) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-clock-3d .clock-3d-scene {
+  background: var(--clock-style-custom-bg-color) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-clock-3d .clock-3d-scene {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 640px) {
+  .clock-3d-scene {
+    --digit-h: clamp(52px, calc(var(--clock-size, 6rem) * 1.1), 90px);
+    padding: calc(var(--digit-h) * 0.1) calc(var(--digit-h) * 0.15) calc(var(--digit-h) * 0.35);
+  }
+
   body.date-clock-style-round .clock-date-wrap {
     --frame-size: min(86vw, 300px);
     padding: var(--space-3);
@@ -1419,7 +2019,13 @@ body.date-clock-style-weekday-style .clock-date-primary {
   text-shadow: var(--clock-effect-shadow) !important;
 }
 
-.clock-shadow-target-box {
+.clock-shadow-target-box,
+.clock-shadow-target-box .round-clock-card,
+.clock-shadow-target-box .square-clock-card,
+.clock-shadow-target-box .split-pill-card,
+.clock-shadow-target-box .prism-stack-clock,
+.clock-shadow-target-box .sat-card,
+.clock-shadow-target-box .hud-terminal-card {
   box-shadow: var(--clock-effect-box-shadow) !important;
 }
 
@@ -2109,6 +2715,238 @@ body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-colon {
 body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-ampm {
   background: rgba(255, 255, 255, 0.2);
   color: var(--clock-color, #f0f0f0);
+}
+
+/* --- FROSTED GLASS THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-flip-bottom {
+  color: var(--clock-color, #ffffff) !important;
+  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-flip-top {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card-flip-bottom {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.22) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-top: none !important;
+  box-shadow: inset 0 -1px 2px rgba(255, 255, 255, 0.4), 0 14px 32px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-card::after {
+  background: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-colon {
+  color: var(--clock-color, #ffffff) !important;
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-glass .fliqlo-ampm {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  color: var(--clock-color, #ffffff) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* --- RETRO TERMINAL THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-flip-bottom {
+  color: var(--clock-color, #00ff66) !important;
+  font-family: 'JetBrains Mono', 'VT323', monospace !important;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.85), 0 0 22px rgba(0, 255, 102, 0.45) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-flip-top {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.04) 0px, rgba(0, 255, 102, 0.04) 1px, transparent 1px, transparent 3px),
+    linear-gradient(180deg, #0d1f14 0%, #06120a 100%) !important;
+  border: 1px solid rgba(0, 255, 102, 0.3) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 0 12px rgba(0, 255, 102, 0.12), 0 0 16px rgba(0, 255, 102, 0.1) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card-flip-bottom {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.04) 0px, rgba(0, 255, 102, 0.04) 1px, transparent 1px, transparent 3px),
+    linear-gradient(180deg, #030a05 0%, #09170e 100%) !important;
+  border: 1px solid rgba(0, 255, 102, 0.25) !important;
+  border-top: none !important;
+  box-shadow: inset 0 0 12px rgba(0, 255, 102, 0.1), 0 12px 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-card::after {
+  background: rgba(0, 255, 102, 0.5) !important;
+  box-shadow: 0 0 8px rgba(0, 255, 102, 0.8) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-colon {
+  color: var(--clock-color, #00ff66) !important;
+  text-shadow: 0 0 10px rgba(0, 255, 102, 0.9), 0 0 20px rgba(0, 255, 102, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-terminal .fliqlo-ampm {
+  background: rgba(0, 255, 102, 0.14) !important;
+  border: 1px solid rgba(0, 255, 102, 0.4) !important;
+  color: var(--clock-color, #00ff66) !important;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.8) !important;
+}
+
+/* --- SAKURA PASTEL THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-flip-bottom {
+  color: var(--clock-color, #5c2438) !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-flip-top {
+  background: linear-gradient(180deg, #fff2f5 0%, #fbd5df 100%) !important;
+  border: 1px solid rgba(244, 143, 177, 0.45) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 1px 2px #ffffff, 0 4px 14px rgba(244, 143, 177, 0.2) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card-flip-bottom {
+  background: linear-gradient(180deg, #f7c1cf 0%, #fae2e8 100%) !important;
+  border: 1px solid rgba(244, 143, 177, 0.35) !important;
+  border-top: none !important;
+  box-shadow: inset 0 -1px 2px #ffffff, 0 10px 24px rgba(216, 112, 147, 0.25) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-card::after {
+  background: rgba(216, 112, 147, 0.4) !important;
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-colon {
+  color: var(--clock-color, #d87093) !important;
+  text-shadow: 0 0 12px rgba(244, 143, 177, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-sakura .fliqlo-ampm {
+  background: rgba(255, 240, 245, 0.9) !important;
+  border: 1px solid rgba(244, 143, 177, 0.5) !important;
+  color: var(--clock-color, #5c2438) !important;
+  box-shadow: 0 2px 8px rgba(244, 143, 177, 0.25) !important;
+}
+
+/* --- VINTAGE WALNUT & BRASS THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-flip-bottom {
+  color: var(--clock-color, #fff2d6) !important;
+  font-family: 'Cinzel', 'Playfair Display', 'Georgia', serif !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 175, 55, 0.3) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-flip-top {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 70%),
+    linear-gradient(180deg, #42291d 0%, #2f1c13 100%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.45) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 1px 2px rgba(212, 175, 55, 0.4), 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card-flip-bottom {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #1f110b 0%, #351f15 100%) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+  border-top: none !important;
+  box-shadow: inset 0 -1px 2px rgba(212, 175, 55, 0.3), 0 12px 32px rgba(0, 0, 0, 0.75) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-card::after {
+  height: 2px !important;
+  background: linear-gradient(90deg, #8a7322 0%, #ffd700 50%, #8a7322 100%) !important;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-colon {
+  color: var(--clock-color, #d4af37) !important;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.8) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-walnut .fliqlo-ampm {
+  background: rgba(50, 30, 20, 0.85) !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+  color: var(--clock-color, #ffd700) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* --- CYBERPUNK 2077 THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-flip-bottom {
+  color: var(--clock-color, #fcee0a) !important;
+  font-family: 'Orbitron', 'Inter', sans-serif !important;
+  text-shadow: 0 0 10px rgba(252, 238, 10, 0.85), 0 0 24px rgba(252, 238, 10, 0.45) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-flip-top {
+  background:
+    linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #12151f 0%, #0a0d14 100%) !important;
+  border: 1.5px solid #00f2fe !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 0 14px rgba(0, 242, 254, 0.25), 0 0 16px rgba(0, 242, 254, 0.25) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card-flip-bottom {
+  background:
+    linear-gradient(315deg, rgba(252, 238, 10, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #07090e 0%, #0f121a 100%) !important;
+  border: 1.5px solid #fcee0a !important;
+  border-top: none !important;
+  box-shadow: inset 0 0 14px rgba(252, 238, 10, 0.2), 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 16px rgba(252, 238, 10, 0.25) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-card::after {
+  height: 2px !important;
+  background: linear-gradient(90deg, #00f2fe 0%, #fcee0a 100%) !important;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.8) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-colon {
+  color: var(--clock-color, #00f2fe) !important;
+  text-shadow: 0 0 12px rgba(0, 242, 254, 0.9), 0 0 24px rgba(0, 242, 254, 0.6) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-cyberpunk .fliqlo-ampm {
+  background: rgba(18, 21, 31, 0.95) !important;
+  border: 1.5px solid #fcee0a !important;
+  color: var(--clock-color, #fcee0a) !important;
+  text-shadow: 0 0 10px rgba(252, 238, 10, 0.9) !important;
+  box-shadow: 0 0 12px rgba(252, 238, 10, 0.4) !important;
 }
 
 /* --- ZEN MODE (FULL SCREEN) --- */
@@ -3839,145 +4677,88 @@ body.date-clock-style-media-orb .media-orb-ampm {
   text-transform: uppercase;
 }
 
-/* Prism Stack Style */
+/* --- Prism Stack Clock (Layered Dimensional Acrylic Glass) --- */
 body.date-clock-style-prism-stack .prism-stack-clock {
-  --prism-pad: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.13), 1.2rem);
-  --prism-mini-size: clamp(
-    3.45rem,
-    calc(var(--clock-size, 6rem) * 0.64),
-    5.6rem
-  );
-  --prism-mini-space: clamp(
-    4.75rem,
-    calc(var(--clock-size, 6rem) * 0.98),
-    7.2rem
-  );
-  --prism-surface: rgba(9, 12, 20, 0.72);
-  --prism-line: rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+  --prism-accent: var(--accent-color, #a8c0ff);
+  --prism-accent-rgb: var(--accent-color-rgb, 168, 192, 255);
   position: relative;
   display: inline-flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: calc(var(--clock-size, 6rem) * 0.075);
   box-sizing: border-box;
-  width: min(92vw, calc(var(--clock-size, 6rem) * 4.55));
-  padding: calc(var(--prism-pad) * 0.9) calc(var(--prism-pad) * 1.15)
-    calc(var(--prism-pad) * 1.05);
-  border: 1px solid var(--prism-line);
-  border-radius: 4px;
-  background:
-    linear-gradient(115deg, rgba(255, 255, 255, 0.14), transparent 28%),
-    linear-gradient(
-      245deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.22),
-      transparent 44%
-    ),
-    var(--prism-surface);
+  width: 100%;
+  max-width: min(390px, 92vw);
+  margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(12, 16, 26, 0.84);
+  border: 1.5px solid rgba(var(--prism-accent-rgb), 0.35);
   box-shadow:
-    0 20px 38px rgba(0, 0, 0, 0.32),
-    10px 10px 0 rgba(0, 0, 0, 0.18),
-    18px 18px 0 rgba(var(--accent-color-rgb, 168, 192, 255), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(10px) saturate(128%);
-  -webkit-backdrop-filter: blur(10px) saturate(128%);
+    0 18px 42px rgba(0, 0, 0, 0.4),
+    6px 6px 0 rgba(var(--prism-accent-rgb), 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   isolation: isolate;
-  overflow: visible;
 }
 
+/* Prismatic Offset Layer Behind */
 body.date-clock-style-prism-stack .prism-stack-clock::before {
   content: "";
   position: absolute;
-  inset: calc(var(--prism-pad) * -0.34) calc(var(--prism-pad) * -0.42)
-    calc(var(--prism-pad) * 0.34) calc(var(--prism-pad) * 0.42);
-  z-index: -2;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
-  border-radius: 4px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.18),
-      transparent 48%
-    ),
-    rgba(255, 255, 255, 0.04);
-  transform: skew(-6deg)
-    translate3d(
-      calc(var(--clock-size, 6rem) * 0.08),
-      calc(var(--clock-size, 6rem) * 0.08),
-      0
-    );
+  inset: -2px;
+  z-index: -1;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--prism-accent-rgb), 0.3) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(var(--prism-accent-rgb), 0.15) 100%
+  );
+  transform: translate(6px, 6px);
   pointer-events: none;
+  opacity: 0.85;
 }
 
-body.date-clock-style-prism-stack .prism-stack-clock::after {
-  content: "";
-  position: absolute;
-  inset: calc(var(--prism-pad) * 0.42);
-  z-index: -1;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-  border-bottom: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
-  border-radius: 3px;
-  background:
-    linear-gradient(
-      120deg,
-      transparent 0 52%,
-      rgba(255, 255, 255, 0.08) 52% 54%,
-      transparent 54% 100%
-    ),
-    rgba(255, 255, 255, 0.035);
-  transform: translate3d(
-    calc(var(--clock-size, 6rem) * 0.04),
-    calc(var(--clock-size, 6rem) * 0.04),
-    0
-  );
-  pointer-events: none;
+/* Top Row: Weekday Meta & Analog Mini Chronograph */
+body.date-clock-style-prism-stack .prism-stack-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.date-clock-style-prism-stack .prism-stack-meta {
+  font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--prism-accent);
+  opacity: 0.9;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-clock {
-  position: absolute;
-  top: 50%;
-  right: calc(
-    var(--prism-pad) * 1.15 +
-      (var(--prism-mini-space) - var(--prism-mini-size)) / 2
-  );
-  z-index: 2;
-  width: var(--prism-mini-size);
-  aspect-ratio: 1;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.36);
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid rgba(var(--prism-accent-rgb), 0.4);
   border-radius: 50%;
-  background:
-    radial-gradient(
-      circle at 34% 26%,
-      rgba(255, 255, 255, 0.22),
-      transparent 24%
-    ),
-    rgba(8, 10, 18, 0.72);
-  box-shadow:
-    0 0 0 5px rgba(var(--accent-color-rgb, 168, 192, 255), 0.08),
-    0 12px 26px rgba(0, 0, 0, 0.28),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-body.date-clock-style-prism-stack .prism-stack-mini-clock::before {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 1px dashed rgba(var(--clock-color-rgb, 255, 255, 255), 0.2);
-  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.5));
+  box-shadow: 0 0 8px rgba(var(--prism-accent-rgb), 0.2);
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-clock::after {
   content: "";
   position: absolute;
+  top: 2px;
   left: 50%;
-  top: 8%;
-  width: 1px;
-  height: 12%;
-  background: var(--accent-color, #a8c0ff);
+  width: 1.5px;
+  height: 4px;
+  background: var(--prism-accent);
   transform: translateX(-50%);
-  box-shadow: 0 calc(var(--prism-mini-size) * 0.72) 0
-    rgba(var(--clock-color-rgb, 255, 255, 255), 0.34);
+  border-radius: 1px;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-hand {
@@ -3985,215 +4766,124 @@ body.date-clock-style-prism-stack .prism-stack-mini-hand {
   left: 50%;
   bottom: 50%;
   width: 2px;
-  border-radius: 999px;
-  background: var(--clock-color, #ffffff);
+  border-radius: 2px;
+  background: #ffffff;
   transform: translateX(-50%) rotate(var(--mini-hand-rotation, 0deg));
   transform-origin: 50% 100%;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-hour {
-  height: 24%;
-  opacity: 0.82;
+  height: 28%;
+  opacity: 0.85;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-minute {
-  height: 33%;
-  background: var(--accent-color, #a8c0ff);
+  height: 38%;
+  background: var(--prism-accent);
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-pin {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 7px;
-  aspect-ratio: 1;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--accent-color, #a8c0ff);
-  box-shadow: 0 0 0 2px rgba(8, 10, 18, 0.82);
+  background: var(--prism-accent);
+  box-shadow: 0 0 3px #ffffff;
   transform: translate(-50%, -50%);
 }
 
-body.clock-style-bg-animated.date-clock-style-prism-stack .prism-stack-clock {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) 0 10px,
-      transparent 10px 24px
-    ),
-    radial-gradient(
-      circle at 18% 24%,
-      rgba(255, 255, 255, 0.22),
-      transparent 8%
-    ),
-    radial-gradient(
-      circle at 82% 76%,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.28),
-      transparent 10%
-    ),
-    linear-gradient(
-      125deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.3),
-      transparent 38%
-    ),
-    rgba(8, 10, 18, 0.42) !important;
-  background-size:
-    42px 42px,
-    120% 120%,
-    120% 120%,
-    180% 180%,
-    auto;
-  animation: prismCartoonBackground 5.5s steps(8) infinite;
-  image-rendering: pixelated;
-}
-
-body.clock-style-bg-animated.date-clock-style-prism-stack
-  .prism-stack-clock::before {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.18) 0 10px,
-      transparent 10px 22px
-    ),
-    rgba(255, 255, 255, 0.04);
-}
-
-@keyframes prismAnimatedBackground {
-  0%,
-  100% {
-    background-position:
-      0 0,
-      0% 0%,
-      100% 100%,
-      0% 50%,
-      center;
-  }
-  50% {
-    background-position:
-      42px 42px,
-      100% 30%,
-      0% 70%,
-      100% 50%,
-      center;
-  }
-}
-
-@keyframes prismCartoonBackground {
-  0% {
-    background-position:
-      0 0,
-      0% 0%,
-      100% 100%,
-      0% 50%,
-      center;
-  }
-  100% {
-    background-position:
-      42px 42px,
-      100% 30%,
-      0% 70%,
-      100% 50%,
-      center;
-  }
-}
-
-body.date-clock-style-prism-stack .prism-stack-meta,
-body.date-clock-style-prism-stack .prism-stack-date {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 0 0.42em;
-  border: 0;
-  border-bottom: 1px solid var(--prism-line);
-  border-radius: 0;
-  background: transparent;
-  font-family: var(--font-date, "Inter", sans-serif);
-  font-size: clamp(0.7rem, calc(var(--clock-size, 6rem) * 0.12), 1rem);
-  font-weight: 780;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-color, #a8c0ff);
-  opacity: 0.82;
-}
-
-body.date-clock-style-prism-stack .prism-stack-date {
-  padding: 0.42em 0 0;
-  border-top: 1px solid var(--prism-line);
-  border-bottom: 0;
-  color: var(--date-color, rgba(255, 255, 255, 0.74));
-  text-align: right;
-}
-
+/* Center Hero Time Display */
 body.date-clock-style-prism-stack .prism-stack-time {
-  position: relative;
-  z-index: 1;
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   justify-content: flex-start;
-  gap: calc(var(--clock-size, 6rem) * 0.035);
+  gap: 2px;
   width: 100%;
-  padding: calc(var(--clock-size, 6rem) * 0.075) var(--prism-mini-space)
-    calc(var(--clock-size, 6rem) * 0.055) 0;
-  border-left: 0;
-  border-radius: 0;
-  background: transparent;
-  font-family: var(--font-clock, "Inter", sans-serif);
-  font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.9), 7.6rem);
-  font-weight: 920;
-  line-height: 0.86;
-  letter-spacing: -0.035em;
+  font-family: var(--font-clock, 'Inter', -apple-system, sans-serif);
+  font-size: clamp(2.6rem, 9vw, 3.8rem);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -1px;
   color: var(--clock-color, #ffffff);
-  text-shadow:
-    calc(var(--clock-size, 6rem) * 0.03) calc(var(--clock-size, 6rem) * 0.03) 0
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.42),
-    0 10px 24px rgba(0, 0, 0, 0.36);
-  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+  padding: 8px 0 6px;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
 body.date-clock-style-prism-stack .prism-stack-separator {
-  padding: 0 0.02em;
-  color: var(--accent-color, #a8c0ff);
-  opacity: 0.9;
-  transform: translateY(-0.04em);
+  color: var(--prism-accent);
+  margin: 0 1px;
+  animation: prismPulse 2s infinite ease-in-out;
+}
+
+@keyframes prismPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 body.date-clock-style-prism-stack .prism-stack-ss {
-  align-self: flex-start;
-  margin-left: calc(var(--clock-size, 6rem) * 0.055);
-  padding: 0.2em 0.38em;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
-  border-radius: 3px;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
-  font-size: 0.28em;
-  font-weight: 850;
-  line-height: 1;
-  color: var(--accent-color, #a8c0ff);
+  font-size: 0.32em;
+  font-weight: 800;
+  color: var(--prism-accent);
+  background: rgba(var(--prism-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--prism-accent-rgb), 0.35);
+  border-radius: 4px;
+  padding: 2px 5px;
+  margin-left: 8px;
+  align-self: center;
 }
 
 body.date-clock-style-prism-stack .prism-stack-ampm {
-  align-self: flex-start;
-  margin-top: 0.04em;
-  margin-left: calc(var(--clock-size, 6rem) * 0.03);
-  padding: 0.24em 0.48em;
-  border: 1px solid var(--prism-line);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.055);
-  font-size: 0.16em;
-  font-weight: 850;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--date-color, rgba(255, 255, 255, 0.74));
+  font-size: 0.26em;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin-left: 6px;
+  align-self: center;
 }
 
-@keyframes prismStackSweep {
-  0%,
-  40% {
-    transform: translateX(-110%);
-  }
-  70%,
-  100% {
-    transform: translateX(110%);
-  }
+/* Bottom Date */
+body.date-clock-style-prism-stack .prism-stack-date {
+  font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--date-color, rgba(255, 255, 255, 0.8));
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Light Mode Overrides */
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.08),
+    6px 6px 0 rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock::before {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--prism-accent-rgb), 0.2) 0%,
+    rgba(0, 0, 0, 0.03) 100%
+  ) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-time {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-date {
+  color: #334155 !important;
 }
 
 /* Metro Panel Style */
@@ -7126,433 +7816,362 @@ body.date-clock-style-satellite #date-fade-wrap {
   display: none !important;
 }
 
+/* --- Satellite Terminal Clock (Refined & Compact) --- */
 .satellite-container {
-  font-size: min(
-    calc(var(--clock-size, 6rem) * 0.17),
-    4vw
-  ); /* Scale basis, capped by screen width */
-  position: relative;
+  font-family: var(--font-mono, 'JetBrains Mono', 'Courier New', monospace);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1.1em;
-  background: rgba(42, 42, 42, 0.85); /* Default fallback */
-  border: 2px solid var(--sat-color, #3caac8);
-  padding: 0.9em 1.5em;
-  border-radius: 0.75em;
-  box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
-  color: var(--sat-color, #3caac8);
-  overflow: hidden;
-  min-width: 20em;
-  width: fit-content;
-  max-width: 94vw;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: min(400px, 92vw);
   margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-sizing: border-box;
+  background: rgba(10, 14, 20, 0.82);
+  border: 1.5px solid var(--sat-color, #3caac8);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  user-select: none;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 .sat-left-panel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5em;
-  z-index: 2;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
+/* Top Telemetry Bar */
 .sat-top-bar {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  font-size: 0.85em;
-  font-weight: bold;
-  white-space: nowrap;
+  gap: 8px;
+  width: 100%;
 }
 
-.sat-slashes {
-  letter-spacing: 0.125em;
-  font-style: italic;
-  color: #e0e0e0;
+.sat-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--sat-color, #3caac8);
+  letter-spacing: 1px;
+  opacity: 0.9;
 }
 
 .sat-seconds {
+  font-size: 0.78rem;
+  font-weight: 800;
   color: var(--sat-sec-color, #7ced7a);
-  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
 }
 
 .sat-battery {
-  width: 10em;
-  height: 1em;
-  border: 0.06em solid var(--sat-sec-color, #7ced7a);
-  padding: 0.125em;
-  border-radius: 0.125em;
+  display: flex;
+  align-items: center;
   position: relative;
+  width: 70px;
+  height: 14px;
+  border: 1px solid var(--sat-sec-color, #7ced7a);
+  border-radius: 3px;
+  padding: 1px;
+  margin-left: auto;
+  background: rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .sat-battery-fill {
   height: 100%;
-  background-color: var(--sat-sec-color, #7ced7a);
-  width: 87%;
-  transition: width 1s linear;
+  background: var(--sat-sec-color, #7ced7a);
+  border-radius: 2px;
+  transition: width 0.4s ease;
 }
 
 .sat-battery-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  mix-blend-mode: difference;
-  font-size: 0.7em;
+  right: 4px;
+  font-size: 0.62rem;
   font-weight: 900;
-  text-shadow: none;
-  z-index: 2;
-  pointer-events: none;
+  color: #ffffff;
+  text-shadow: 0 0 3px #000000;
+  line-height: 1;
+}
+
+/* Time & Date Display */
+.sat-time-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .sat-time {
-  font-size: 4em;
-  font-weight: bold;
-  font-variant-numeric: tabular-nums;
+  font-size: clamp(2.5rem, 8vw, 3.4rem);
+  font-weight: 800;
   line-height: 1;
-  text-shadow: 0 0 0.15em var(--sat-color, #3caac8);
-  margin: 0.3em 0 0.1em;
+  letter-spacing: 2px;
+  color: var(--sat-color, #3caac8);
+  text-shadow: 0 0 16px rgba(60, 170, 200, 0.4), 0 0 4px #ffffff;
+}
+
+.sat-ampm {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--sat-sec-color, #7ced7a);
 }
 
 .sat-date {
-  font-size: 0.9em;
-  letter-spacing: 0.125em;
-  text-transform: uppercase;
-  color: #e0e0e0;
-  margin-bottom: 0.9em;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
+/* Environmental Telemetry (TEM & HUM) */
 .sat-weather {
   display: flex;
-  flex-direction: column;
-  gap: 0.3em;
+  align-items: center;
+  gap: 12px;
   width: 100%;
+  margin-top: 2px;
 }
 
 .sat-weather-item {
   display: flex;
   align-items: center;
-  font-size: 1em;
-  font-weight: bold;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .sat-weather-item.tem {
   color: var(--sat-sec-color, #7ced7a);
 }
+
 .sat-weather-item.hum {
   color: var(--sat-ter-color, #b57aed);
 }
 
 .sat-w-label {
-  width: 2.5em;
-}
-
-.sat-w-line-box {
-  width: 2.5em;
-  height: 1.25em;
-  margin: 0 0.3em;
-  display: flex;
-  align-items: center;
-}
-
-.sat-w-line {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  opacity: 0.85;
 }
 
 .sat-w-value {
+  background: rgba(0, 0, 0, 0.35);
   border: 1px solid currentColor;
-  padding: 0.1em 0.3em;
-  border-radius: 0.125em;
-  min-width: 2.5em;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
 }
 
+/* Right Panel: High-Tech Radar / Galaxy View */
 .sat-right-panel {
   position: relative;
-  width: 8em;
-  height: 8em;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(60, 170, 200, 0.3);
+  border-radius: 50%;
   overflow: hidden;
-  z-index: 1;
 }
 
+/* Radar Animation Mode */
 .sat-radar {
-  position: absolute;
-  bottom: -0.3em;
-  right: -0.3em;
-  width: 8.75em;
-  height: 8.75em;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.sat-radar-ring {
+.sat-radar-grid {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  border-radius: 100% 0 0 0;
-  border-top: 0.125em dotted var(--sat-color, #3caac8);
-  border-left: 0.125em dotted var(--sat-color, #3caac8);
-  opacity: 0.6;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.sat-radar-ring.r1 {
-  width: 0.875em;
-  height: 0.875em;
+.sat-radar-cross-h {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: rgba(60, 170, 200, 0.25);
 }
-.sat-radar-ring.r2 {
-  width: 1.75em;
-  height: 1.75em;
+
+.sat-radar-cross-v {
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background: rgba(60, 170, 200, 0.25);
 }
-.sat-radar-ring.r3 {
-  width: 2.625em;
-  height: 2.625em;
+
+.sat-radar-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(60, 170, 200, 0.2);
 }
-.sat-radar-ring.r4 {
-  width: 3.5em;
-  height: 3.5em;
-}
-.sat-radar-ring.r5 {
-  width: 4.375em;
-  height: 4.375em;
-}
-.sat-radar-ring.r6 {
-  width: 5.25em;
-  height: 5.25em;
-}
-.sat-radar-ring.r7 {
-  width: 6.125em;
-  height: 6.125em;
-}
-.sat-radar-ring.r8 {
-  width: 7em;
-  height: 7em;
-}
-.sat-radar-ring.r9 {
-  width: 7.875em;
-  height: 7.875em;
-}
-.sat-radar-ring.r10 {
-  width: 8.75em;
-  height: 8.75em;
-}
+
+.sat-radar-circle.r1 { width: 30%; height: 30%; }
+.sat-radar-circle.r2 { width: 60%; height: 60%; }
+.sat-radar-circle.r3 { width: 90%; height: 90%; }
 
 .sat-radar-sweep {
   position: absolute;
-  bottom: -8.75em;
-  right: -8.75em;
-  width: 17.5em;
-  height: 17.5em;
+  inset: 0;
   border-radius: 50%;
   background: conic-gradient(
-    transparent 0deg,
-    var(--sat-color, rgba(60, 170, 200, 0.1)) 50deg,
-    var(--sat-color, rgba(60, 170, 200, 0.6)) 88deg,
-    rgba(255, 255, 255, 1) 90deg,
-    transparent 91deg
+    from 0deg,
+    rgba(60, 170, 200, 0.45) 0deg,
+    rgba(60, 170, 200, 0.1) 40deg,
+    transparent 60deg
   );
-  transform-origin: 50% 50%;
-  animation: satRadarSweep 6s linear infinite;
-  pointer-events: none;
+  animation: satRadarSpin 4s linear infinite;
+  transform-origin: center;
+  will-change: transform;
 }
 
-.sat-radar-sweep::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50%;
-  height: 0.15em;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow:
-    0 0 0.5em #fff,
-    0 0 1em var(--sat-color, #3caac8);
-  transform: translateY(-50%);
-  transform-origin: 0 50%;
-  animation: radarBlinkLine 2s infinite alternate;
-}
-
-@keyframes radarBlinkLine {
-  from {
-    opacity: 0.2;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes satRadarSweep {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes satRadarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .sat-radar-blip {
   position: absolute;
-  bottom: 4em;
-  right: 3.5em;
-  width: 0.4em;
-  height: 0.4em;
-  background: #fff;
+  top: 26%;
+  right: 28%;
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
   border-radius: 50%;
-  box-shadow:
-    0 0 0.5em #fff,
-    0 0 1em var(--sat-color, #3caac8);
-  opacity: 0;
-  animation: radarBlip 6s infinite;
-  animation-delay: 4s; /* Sync roughly with the sweep passing over */
+  box-shadow: 0 0 6px var(--sat-sec-color, #7ced7a);
+  animation: satBlipPulse 4s infinite;
+  animation-delay: 1.2s;
 }
 
-@keyframes radarBlip {
-  0%,
-  15% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  18% {
-    opacity: 1;
-    transform: scale(1.5);
-  }
-  35%,
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
+@keyframes satBlipPulse {
+  0%, 20% { opacity: 0; transform: scale(0.5); }
+  25% { opacity: 1; transform: scale(1.4); }
+  45%, 100% { opacity: 0; transform: scale(0.5); }
 }
 
-.satellite-container.anim-style-classic .sat-galaxy {
-  display: none;
-}
-.satellite-container.anim-style-galaxy .sat-radar {
-  display: none;
-}
-
-.sat-galaxy {
+.sat-radar-center {
   position: absolute;
-  bottom: -0.3em;
-  right: -0.3em;
-  width: 8.75em;
-  height: 8.75em;
+  width: 4px;
+  height: 4px;
+  background: var(--sat-color, #3caac8);
+  border-radius: 50%;
+  box-shadow: 0 0 4px var(--sat-color, #3caac8);
+}
+
+/* Galaxy Animation Mode */
+.sat-galaxy {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.satellite-container.anim-style-classic .sat-galaxy { display: none; }
+.satellite-container.anim-style-galaxy .sat-radar { display: none; }
+
 .sat-galaxy-planet {
-  width: 1.75em;
-  height: 1.75em;
+  width: 16px;
+  height: 16px;
   background: var(--sat-color, #3caac8);
   border-radius: 50%;
-  box-shadow:
-    inset -0.25em -0.25em rgba(0, 0, 0, 0.4),
-    inset 0.125em 0.125em rgba(255, 255, 255, 0.4),
-    0 0 0.75em var(--sat-color, #3caac8);
-  z-index: 5;
+  box-shadow: 0 0 8px var(--sat-color, #3caac8);
+  z-index: 2;
 }
 
 .sat-galaxy-orbit {
   position: absolute;
   border-radius: 50%;
-  border: 0.125em dotted var(--sat-color, #3caac8);
-  opacity: 0.4;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(60, 170, 200, 0.35);
 }
 
-.sat-galaxy-orbit.o1 {
-  width: 3.75em;
-  height: 3.75em;
-}
-.sat-galaxy-orbit.o2 {
-  width: 6.25em;
-  height: 6.25em;
-  border-width: 0.06em;
-}
+.sat-galaxy-orbit.o1 { width: 44px; height: 44px; }
+.sat-galaxy-orbit.o2 { width: 72px; height: 72px; }
 
 .sat-galaxy-moon-container {
   position: absolute;
-  width: 6.25em;
-  height: 6.25em;
-  animation: satOrbitRotate 10s linear infinite;
-  z-index: 6;
+  width: 72px;
+  height: 72px;
+  animation: satOrbitRotate 8s linear infinite;
+  z-index: 3;
 }
 
-/* Pixel Satellite Station */
 .sat-galaxy-moon {
   position: absolute;
-  top: -0.6em;
+  top: -3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1em;
-  height: 1em;
-  background:
-    linear-gradient(var(--sat-color, #3caac8), var(--sat-color, #3caac8)) 0%
-      50% / 0.25em 0.75em no-repeat,
-    linear-gradient(var(--sat-color, #3caac8), var(--sat-color, #3caac8)) 100%
-      50% / 0.25em 0.75em no-repeat,
-    linear-gradient(#fff, #fff) 50% 50% / 0.35em 0.35em no-repeat,
-    linear-gradient(#ccc, #ccc) 50% 50% / 1em 0.125em no-repeat;
-  filter: drop-shadow(0 0 0.25em rgba(255, 255, 255, 0.6));
-  border-radius: 0;
-  box-shadow: none;
+  width: 7px;
+  height: 7px;
+  background: var(--sat-sec-color, #7ced7a);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--sat-sec-color, #7ced7a);
 }
 
 @keyframes satOrbitRotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .sat-galaxy-stars {
   position: absolute;
-  width: 8.75em;
-  height: 8.75em;
-  border-radius: 50%;
+  inset: 0;
   background-image:
-    radial-gradient(0.06em 0.06em at 1.25em 1.875em, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(0.1em 0.1em at 6.875em 2.5em, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(
-      0.06em 0.06em at 2.5em 6.875em,
-      rgba(255, 255, 255, 0.8),
-      rgba(0, 0, 0, 0)
-    ),
-    radial-gradient(
-      0.1em 0.1em at 5.625em 6.25em,
-      rgba(255, 255, 255, 0.6),
-      rgba(0, 0, 0, 0)
-    );
-  background-repeat: no-repeat;
-  animation: satTwinkle 4s infinite alternate ease-in-out;
+    radial-gradient(1px 1px at 15px 20px, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 70px 25px, #ffffff, transparent),
+    radial-gradient(1px 1px at 25px 65px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 60px 70px, rgba(255,255,255,0.8), transparent);
+  animation: satStarTwinkle 3s infinite alternate ease-in-out;
 }
 
-@keyframes satTwinkle {
-  0% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 1;
-  }
+@keyframes satStarTwinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.9; }
 }
 
-@keyframes satRadarSweep {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(90deg);
-  }
+/* Light Theme overrides for Satellite */
+body.clock-style-bg-light.date-clock-style-satellite .satellite-container {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-satellite .sat-battery,
+body.clock-style-bg-light.date-clock-style-satellite .sat-w-value,
+body.clock-style-bg-light.date-clock-style-satellite .sat-right-panel {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-satellite .sat-date {
+  color: #1e293b !important;
+}
+
+body.clock-style-bg-light.date-clock-style-satellite .sat-time {
+  text-shadow: none !important;
 }
 
 /* --- Pixel HUD Clock (Satellite V2) --- */
@@ -7570,285 +8189,266 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   display: none !important;
 }
 
+/* --- Pixel HUD Tactical Clock (Refined & Compact) --- */
 .pixel-hud-container {
+  --hud-c1: var(--hud-color-1, #ffaa00);
+  --hud-c2: var(--hud-color-2, #3cf0f0);
+  --hud-c3: var(--hud-color-3, #a4de6c);
   font-family: var(--font-clock, "VT323", "Courier New", monospace);
-  font-size: calc(
-    var(--clock-size, 6rem) * 0.13
-  ); /* Scale basis based on custom size */
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
-  min-width: 20em;
-  width: fit-content;
-  color: #fff;
-  text-transform: uppercase;
-  margin: 0 auto;
-  padding: 1em 1.25em;
-  border-radius: 0.75em;
-  max-width: 94vw;
-  border: 2px solid transparent; /* Allows border-color from background styles to apply gracefully */
-}
-
-.hud-top {
-  display: flex;
-  align-items: flex-start;
-  position: relative;
-  padding: 0;
-  border: none;
-  background: none;
-  clip-path: none;
-  margin: 0 auto;
+  gap: 10px;
   width: 100%;
-}
-
-.hud-top::before {
-  display: none;
-}
-
-.hud-off {
+  max-width: min(390px, 92vw);
+  margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: 14px;
   box-sizing: border-box;
-  height: 38px;
-  padding: 0 14px 0 16px;
-  border: 2px solid var(--hud-color-1, #ffaa00);
-  border-right: none;
-  border-radius: 6px 0 0 6px;
+  background: rgba(10, 14, 20, 0.82);
+  border: 1.5px solid rgba(60, 240, 240, 0.28);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  user-select: none;
+  text-transform: uppercase;
+}
+
+/* Header: Badge & Battery Bar */
+.hud-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-family: "Orbitron", "Montserrat", sans-serif;
-  font-weight: 900;
-  font-size: 1.15rem;
-  letter-spacing: 2px;
-  color: #fff;
-  background: rgba(10, 15, 20, 0.7);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.hud-slope {
-  width: 14px;
-  height: 38px;
-  position: relative;
-  border-top: 2px solid var(--hud-color-1, #ffaa00);
-  box-sizing: border-box;
-}
-
-.hud-slope::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(10, 15, 20, 0.7);
-  clip-path: polygon(0 0, 100% 0, 100% 22px, 0 36px);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.hud-slope::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  gap: 10px;
   width: 100%;
-  height: 16px;
-  background: var(--hud-color-1, #ffaa00);
-  clip-path: polygon(0 100%, 100% 2px, 100% 0, 0 calc(100% - 2px));
-  z-index: 2;
 }
 
-.hud-battery {
-  box-sizing: border-box;
-  height: 24px;
-  border: 2px solid var(--hud-color-1, #ffaa00);
-  border-left: none;
-  border-radius: 0 6px 6px 0;
-  padding: 0 10px 0 4px;
+.hud-badge-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--hud-c1);
+  border-radius: 6px;
+  padding: 3px 8px;
+  gap: 6px;
+}
+
+.hud-sys-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.hud-pwr-pct {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: var(--hud-c1);
+  letter-spacing: 1px;
+}
+
+.hud-battery-track {
   display: flex;
   align-items: center;
   gap: 3px;
-  background: rgba(10, 15, 20, 0.7);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
   flex: 1;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--hud-c1);
+  border-radius: 6px;
+  padding: 2px 4px;
+  box-sizing: border-box;
 }
 
 .hud-bat-segment {
   flex: 1;
-  height: 12px;
-  background: #2a3a3c;
-  border-radius: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1.5px;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .hud-bat-segment.active {
-  background: var(--hud-color-1, #ffaa00);
-  box-shadow: 0 0 4px var(--hud-color-1, #ffaa00);
+  background: var(--hud-c1);
+  box-shadow: 0 0 5px var(--hud-c1);
 }
 
-.hud-middle {
-  text-align: right;
-  margin: 0.6em 0;
-  position: relative;
+/* Main Display: Meta & Big Pixel Time */
+.hud-main-display {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 14px;
 }
 
-.hud-loc.sat-w-icon {
-  font-size: 1.5em;
-  color: var(--sat-sec-color, #7ced7a);
+.hud-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.75);
 }
+
 .hud-location {
-  font-size: 1.25em;
-  color: #fff;
-  letter-spacing: 0.1em;
-  margin-right: 0.3em;
-  margin-bottom: -0.3em;
+  color: var(--hud-c2);
+  font-weight: 700;
+}
+
+.hud-sec-tag {
+  color: var(--hud-c1);
+  font-weight: 700;
 }
 
 .hud-time {
-  font-size: 6.8em;
-  color: var(--hud-color-2, #3cf0f0);
-  line-height: 0.8;
-  text-shadow: 0 0 0.15em rgba(60, 240, 240, 0.4);
+  font-size: clamp(2.8rem, 10vw, 4rem);
+  color: var(--hud-c2);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-align: center;
+  text-shadow: 0 0 16px rgba(60, 240, 240, 0.4), 0 0 4px #ffffff;
+  margin: 4px 0 2px;
 }
 
-.hud-date-block {
-  display: flex;
-  border: 0.125em solid var(--hud-color-3, #a4de6c);
-  border-radius: 0.75em 0.25em 0.25em 0.75em;
-  padding: 0.25em;
-  align-items: stretch;
-  gap: 0.75em;
-  position: relative;
+/* Lower Tactical Data Grid */
+.hud-data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 10px;
+  width: 100%;
 }
 
-.hud-date-left {
-  background-color: var(--hud-color-3, #a4de6c);
-  color: #000;
-  padding: 0 1em;
+.hud-date-card {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 0.5em 0.1em 0.1em 0.5em;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--hud-c3);
+  border-radius: 8px;
+  padding: 6px 8px;
+  box-sizing: border-box;
 }
 
-.hud-date-day {
-  font-size: 3.5em;
+.hud-day-badge {
+  font-size: 1.6rem;
+  font-weight: 900;
   line-height: 1;
+  background: var(--hud-c3);
+  color: #0b1118;
+  padding: 3px 6px;
+  border-radius: 5px;
   text-shadow: none;
 }
 
-.hud-date-right {
+.hud-date-meta {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  flex: 1;
-  gap: 0.1em;
-  padding-right: 2em; /* Ensure space for absolute icon */
+  line-height: 1.15;
 }
 
 .hud-date-my {
-  display: flex;
-  gap: 0.6em;
-  color: var(--hud-color-3, #a4de6c);
-  font-size: 2em;
-  line-height: 1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--hud-c3);
+  letter-spacing: 0.5px;
 }
 
 .hud-date-weekday {
-  color: #fff;
-  font-size: 1.4em;
-  line-height: 1;
+  font-size: 0.76rem;
+  color: #ffffff;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
 }
 
-.hud-station {
-  position: absolute;
-  bottom: -0.2em;
-  right: -0.2em;
-  width: 2.8em;
-  height: 2.8em;
-  background:
-    linear-gradient(#fff, #fff) 50% 50% / 0.7em 0.7em no-repeat,
-    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)) 50%
-      50% / 0.3em 0.3em no-repeat;
-  filter: drop-shadow(0 0 0.25em rgba(255, 255, 255, 0.6));
-  z-index: 10;
-}
-
-.hud-station-wings {
-  width: 100%;
-  height: 100%;
-  background:
-    linear-gradient(var(--hud-color-3, #a4de6c), var(--hud-color-3, #a4de6c)) 0%
-      50% / 0.6em 2.2em no-repeat,
-    linear-gradient(var(--hud-color-3, #a4de6c), var(--hud-color-3, #a4de6c))
-      100% 50% / 0.6em 2.2em no-repeat,
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)) 0% 50% /
-      0.6em 0.2em no-repeat,
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)) 100%
-      50% / 0.6em 0.2em no-repeat,
-    linear-gradient(#ccc, #ccc) 50% 50% / 100% 0.2em no-repeat;
-  animation: hudStationSpin 12s linear infinite;
-}
-
-@keyframes hudStationSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.hud-weather-block1 {
-  display: flex;
-  border: 0.125em solid var(--hud-color-2, #3cf0f0);
-  border-radius: 0.25em 0.75em 0.25em 0.75em;
-  padding: 0.4em 1em;
-  align-items: center;
-  font-size: 1.75em;
-  width: fit-content;
-  align-self: flex-start;
-  min-width: 60%;
-}
-
-.hud-w-temp {
-  color: var(--hud-color-1, #ffaa00);
-}
-.hud-w-slash {
-  color: #fff;
-  margin: 0 0.8em;
-  font-style: italic;
-}
-.hud-w-hum {
-  color: var(--hud-color-2, #3cf0f0);
-}
-
-.hud-weather-block2 {
-  border: 0.125em solid var(--hud-color-2, #3cf0f0);
-  border-radius: 0.75em 0.25em 0.75em 0.25em;
-  padding: 0.6em 1em;
+/* Weather Card */
+.hud-weather-card {
   display: flex;
   flex-direction: column;
-  gap: 0.3em;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--hud-c2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-sizing: border-box;
 }
 
-.hud-w2-title {
-  color: #fff;
-  font-size: 1.25em;
-}
-
-.hud-w2-info {
+.hud-weather-metrics {
   display: flex;
   align-items: center;
-  gap: 0.6em;
-  font-size: 1.5em;
-  color: #fff;
-  flex-wrap: wrap; /* Prevent overflow on small screens */
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
-.hud-w2-cond-text {
-  margin-left: auto;
-  font-size: 1.75em;
-  color: #fff;
+.hud-w-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-icon-temp {
+  color: var(--hud-c1);
+  font-size: 0.8rem;
+}
+
+.hud-icon-hum {
+  color: var(--hud-c2);
+  font-size: 0.8rem;
+}
+
+.hud-w2-temp {
+  color: var(--hud-c1);
+}
+
+.hud-w2-hum {
+  color: var(--hud-c2);
+}
+
+.hud-weather-condition {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  color: #ffffff;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Theme Adaptations for Pixel HUD */
+body.clock-style-bg-light.date-clock-style-pixel-hud .pixel-hud-container {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-badge-wrap,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-battery-track,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-main-display,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-date-card,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-weather-card {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-sys-tag,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-meta-row,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-date-weekday,
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-weather-condition {
+  color: #1e293b !important;
+}
+
+body.clock-style-bg-light.date-clock-style-pixel-hud .hud-time {
+  text-shadow: none !important;
 }
 
 /* Layout Presets (CSS Flexbox approach) */
