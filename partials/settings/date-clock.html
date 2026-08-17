@@ -319,7 +319,6 @@
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="prism-stack">
-                                    <div class="bug-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 6px; font-weight: bold; pointer-events: none; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">BUG</div>
                                     <i class="fa-solid fa-layer-group"></i>
                                     <span class="clock-style-name"
                                         data-i18n="settings_clock_date_style_prism_stack">Prism Stack</span>
@@ -337,7 +336,6 @@
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="space-concentric">
-                                    <div class="bug-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 6px; font-weight: bold; pointer-events: none; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">BUG</div>
                                     <i class="fa-solid fa-bullseye"></i>
                                     <span class="clock-style-name">Space Concentric</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
@@ -371,21 +369,28 @@
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="satellite">
-                                    <div class="bug-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 6px; font-weight: bold; pointer-events: none; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">BUG</div>
                                     <i class="fa-solid fa-satellite"></i>
                                     <span class="clock-style-name">Satellite</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="pixel-hud">
-                                    <div class="bug-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 6px; font-weight: bold; pointer-events: none; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">BUG</div>
                                     <i class="fa-solid fa-gamepad"></i>
                                     <span class="clock-style-name">Pixel HUD</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="custom-angle">
-                                    <div class="bug-badge" style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 6px; font-weight: bold; pointer-events: none; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px;">BUG</div>
                                     <i class="fa-solid fa-compass-drafting"></i>
                                     <span class="clock-style-name">Custom Angle</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="split-pill">
+                                    <i class="fa-solid fa-table-columns"></i>
+                                    <span class="clock-style-name">Split Pill</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="clock-3d">
+                                    <i class="fa-solid fa-cube"></i>
+                                    <span class="clock-style-name">3D Clock</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                             </div>
@@ -422,6 +427,9 @@
                             <option value="audio-wave" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</option>
                             <option value="glass-float" data-i18n="settings_clock_date_style_glass_float">Glass Float</option>
                             <option value="satellite">Satellite</option>
+                            <option value="pixel-hud">Pixel HUD</option>
+                            <option value="split-pill">Split Pill</option>
+                            <option value="clock-3d">3D Clock</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -813,6 +821,11 @@
                             <select id="fliqlo-theme-select">
                                 <option value="dark" data-i18n="settings_fliqlo_theme_dark">Dark</option>
                                 <option value="light" data-i18n="settings_fliqlo_theme_light">Light</option>
+                                <option value="glass">Frosted Glass</option>
+                                <option value="terminal">Retro Terminal</option>
+                                <option value="sakura">Sakura Pastel</option>
+                                <option value="walnut">Vintage Walnut & Brass</option>
+                                <option value="cyberpunk">Cyberpunk 2077</option>
                                 <option value="divergence">Divergence Meter</option>
                             </select>
                             <div id="fliqlo-divergence-color-setting" class="setting-item-row" style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
@@ -893,158 +906,225 @@
                         </div>
                         <div class="setting-group-content">
 
+                        <!-- 1. Font Application Target -->
                         <div class="setting-item no-margin-top">
-                            <label data-i18n="settings_clock_font_target">Apply Font To</label>
-                            <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <label style="font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-font"></i> <span data-i18n="settings_clock_font_target">Apply Font To</span>
+                            </label>
+                            <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
                                 <div class="clock-style-card compact-style-card font-target-card" data-value="both">
-                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_both" style="text-transform: none;">Both</span>
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_both" style="text-transform: none;">Both (Clock + Date)</span>
                                 </div>
                                 <div class="clock-style-card compact-style-card font-target-card" data-value="clock">
-                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_clock" style="text-transform: none;">Clock only</span>
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_clock" style="text-transform: none;">Clock Only</span>
                                 </div>
                                 <div class="clock-style-card compact-style-card font-target-card" data-value="date">
-                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_date" style="text-transform: none;">Date only</span>
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_date" style="text-transform: none;">Date Only</span>
                                 </div>
                                 <div class="clock-style-card compact-style-card font-target-card" data-value="weekday">
-                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_weekday" style="text-transform: none;">Weekday only</span>
+                                    <i class="fa-solid fa-calendar-week"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_weekday" style="text-transform: none;">Weekday Only</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-top: 15px;">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_clock_size">Clock Size</span>
-                                    <span id="clock-size-value"
-                                        style="opacity: 0.7; font-family: monospace;">6rem</span>
-                                </label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <button class="secondary-btn" id="clock-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-minus"></i></button>
+                        <!-- 2. Typography & Sizing -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <!-- Clock Size Row -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="margin: 0; display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size</span>
+                                    </label>
+                                    <span id="clock-size-value" style="font-size: 0.75rem; background: rgba(var(--accent-color-rgb), 0.15); color: var(--accent-color); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-weight: bold;">6rem</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button class="secondary-btn" id="clock-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0;"><i class="fa-solid fa-minus" style="font-size: 0.75rem;"></i></button>
                                     <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6" style="flex: 1;">
-                                    <button class="secondary-btn" id="clock-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="secondary-btn" id="clock-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0;"><i class="fa-solid fa-plus" style="font-size: 0.75rem;"></i></button>
                                 </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_date_size">Date Size</span>
-                                    <span id="date-size-value"
-                                        style="opacity: 0.7; font-family: monospace;">1.5rem</span>
+
+                            <!-- Date Size Row -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="margin: 0; display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-calendar-day"></i> <span data-i18n="settings_date_size">Date Size</span>
+                                    </label>
+                                    <span id="date-size-value" style="font-size: 0.75rem; background: rgba(var(--accent-color-rgb), 0.15); color: var(--accent-color); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-weight: bold;">1.5rem</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button class="secondary-btn" id="date-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0;"><i class="fa-solid fa-minus" style="font-size: 0.75rem;"></i></button>
+                                    <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5" style="flex: 1;">
+                                    <button class="secondary-btn" id="date-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0;"><i class="fa-solid fa-plus" style="font-size: 0.75rem;"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Primary Text Colors -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px;">
+                                    <i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_color">Clock Color</span>
                                 </label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <button class="secondary-btn" id="date-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5" style="flex: 1;">
-                                    <button class="secondary-btn" id="date-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-plus"></i></button>
+                                    <input type="color" id="clock-color-picker" value="#ffffff" style="height: 32px; width: 100%; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: transparent;">
+                                </div>
+                            </div>
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px;">
+                                <label style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px;">
+                                    <i class="fa-solid fa-calendar-day"></i> <span data-i18n="settings_date_color">Date Color</span>
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="color" id="date-color-picker" value="#ffffff" style="height: 32px; width: 100%; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: transparent;">
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 15px;">
-                            <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_clock_color">Clock Color</label>
-                                <input type="color" id="clock-color-picker" value="#ffffff">
+                        <!-- 4. Auto Contrast Toggle -->
+                        <div class="setting-item-row" style="margin-top: 15px; padding: 10px 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px;">
+                            <div>
+                                <label for="clock-auto-contrast-checkbox" style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.82rem;">
+                                    <i class="fa-solid fa-circle-half-stroke"></i> <span data-i18n="settings_clock_auto_contrast">Auto Contrast Text Color</span>
+                                </label>
+                                <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;">Tự động đổi màu chữ sáng/tối theo nền hình nền</div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_date_color">Date Color</label>
-                                <input type="color" id="date-color-picker" value="#ffffff">
-                            </div>
-                        </div>
-
-                        <div class="setting-item-row" style="margin-top: 15px;">
-                            <label for="clock-auto-contrast-checkbox" data-i18n="settings_clock_auto_contrast">Auto Contrast Text Color</label>
-                            <input type="checkbox" id="clock-auto-contrast-checkbox">
-                        </div>
-
-                        <div class="setting-item"
-                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                            <label
-                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_clock_effects">Clock Effects</span>
-                                <span id="clock-shadow-strength-value"
-                                    style="opacity: 0.7; font-family: monospace;">0%</span>
+                            <label class="switch">
+                                <input type="checkbox" id="clock-auto-contrast-checkbox">
+                                <span class="slider round"></span>
                             </label>
-                            <div class="setting-item-row"
-                                style="background: transparent; padding: 0; border: none; margin-bottom: 10px;">
-                                <label for="clock-use-accent-checkbox" data-i18n="settings_clock_use_accent">Use M3 Accent</label>
-                                <input type="checkbox" id="clock-use-accent-checkbox">
+                        </div>
+
+                        <!-- 5. Material 3 Accent Color & Target -->
+                        <div class="setting-item" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 15px;">
+                            <label style="font-weight: 600; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="settings_clock_effects">Theme Accent & Effects</span>
+                            </label>
+                            
+                            <div class="setting-item-row" style="margin-bottom: 12px; padding: 10px 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px;">
+                                <div>
+                                    <label for="clock-use-accent-checkbox" style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.82rem;">
+                                        <span data-i18n="settings_clock_use_accent">Use M3 Dynamic Accent</span>
+                                    </label>
+                                    <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;">Đồng bộ màu sắc với bảng màu hệ thống Material 3</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="clock-use-accent-checkbox">
+                                    <span class="slider round"></span>
+                                </label>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-                                <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;" data-i18n="settings_clock_accent_target">Accent Target</label>
-                                    <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="style">
-                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_style" style="text-transform: none; font-size: 0.7rem;">Style accents only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="both">
-                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_both" style="text-transform: none; font-size: 0.7rem;">Clock + Date</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="time">
-                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_time" style="text-transform: none; font-size: 0.7rem;">Time only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="date">
-                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_date" style="text-transform: none; font-size: 0.7rem;">Date only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="weekday">
-                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_weekday" style="text-transform: none; font-size: 0.7rem;">Weekday only</span>
-                                        </div>
+
+                            <div class="setting-item no-margin-top" style="margin-bottom: 15px;">
+                                <label style="font-size: 0.75rem; opacity: 0.75; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;" data-i18n="settings_clock_accent_target">
+                                    <i class="fa-solid fa-bullseye"></i> Accent Target
+                                </label>
+                                <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                    <div class="clock-style-card compact-style-card accent-target-card" data-value="style">
+                                        <i class="fa-solid fa-palette"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_accent_target_style" style="text-transform: none;">Style Accents Only</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card accent-target-card" data-value="both">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_accent_target_both" style="text-transform: none;">Clock + Date</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card accent-target-card" data-value="time">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_accent_target_time" style="text-transform: none;">Time Only</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card accent-target-card" data-value="date">
+                                        <i class="fa-solid fa-calendar-day"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_accent_target_date" style="text-transform: none;">Date Only</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card accent-target-card" data-value="weekday" style="grid-column: 1 / -1;">
+                                        <i class="fa-solid fa-calendar-week"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_accent_target_weekday" style="text-transform: none;">Weekday Only</span>
                                     </div>
                                 </div>
-                                <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;"
-                                        data-i18n="settings_clock_shadow_target">Shadow Target</label>
-                                    <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="none">
-                                            <span class="clock-style-name" data-i18n="settings_hue_text_mode_off" style="text-transform: none; font-size: 0.7rem;">Off</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="all">
-                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_all" style="text-transform: none; font-size: 0.7rem;">Clock + Date</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="time">
-                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_time" style="text-transform: none; font-size: 0.7rem;">Time only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="date">
-                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_date" style="text-transform: none; font-size: 0.7rem;">Date only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="weekday">
-                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_weekday" style="text-transform: none; font-size: 0.7rem;">Weekday only</span>
-                                        </div>
-                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="box">
-                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_box" style="text-transform: none; font-size: 0.7rem;">Box shadow</span>
-                                        </div>
+                            </div>
+
+                            <!-- 6. Shadow & Glow Effects -->
+                            <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
+                                <label style="font-size: 0.75rem; opacity: 0.75; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;" data-i18n="settings_clock_shadow_target">
+                                    <i class="fa-solid fa-sun"></i> Shadow / Glow Target
+                                </label>
+                                <div class="clock-style-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="none">
+                                        <i class="fa-solid fa-ban"></i>
+                                        <span class="clock-style-name" data-i18n="settings_hue_text_mode_off" style="text-transform: none;">Off</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="all">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_shadow_target_all" style="text-transform: none;">All</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="time">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_shadow_target_time" style="text-transform: none;">Time</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="date">
+                                        <i class="fa-solid fa-calendar-day"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_shadow_target_date" style="text-transform: none;">Date</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="weekday">
+                                        <i class="fa-solid fa-calendar-week"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_shadow_target_weekday" style="text-transform: none;">Weekday</span>
+                                    </div>
+                                    <div class="clock-style-card compact-style-card shadow-target-card" data-value="box">
+                                        <i class="fa-solid fa-square"></i>
+                                        <span class="clock-style-name" data-i18n="settings_clock_shadow_target_box" style="text-transform: none;">Box</span>
                                     </div>
                                 </div>
-                                <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;"
-                                        data-i18n="settings_clock_shadow_color">Shadow Color</label>
-                                    <input type="color" id="clock-shadow-color-picker" value="#000000"
-                                        style="height: 34px; width: 100%;">
+                            </div>
+
+                            <!-- Shadow Color Row -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="margin: 0; font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 6px;" data-i18n="settings_clock_shadow_color">
+                                        <i class="fa-solid fa-palette"></i> Shadow Color
+                                    </label>
+                                    <input type="color" id="clock-shadow-color-picker" value="#000000" style="height: 30px; width: 60px; border: none; border-radius: 4px; cursor: pointer; padding: 0; background: transparent;">
                                 </div>
-                                <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;" data-i18n="settings_clock_shadow_strength">Strength</label>
-                                    <input type="range" id="clock-shadow-strength-input" min="0" max="100" step="1"
-                                        value="0">
+                            </div>
+
+                            <!-- Shadow Strength Slider Row (Dedicated Full Line) -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="margin: 0; font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-sliders"></i> <span data-i18n="settings_clock_shadow_strength">Shadow Strength</span>
+                                    </label>
+                                    <span id="clock-shadow-strength-value" style="font-size: 0.75rem; background: rgba(var(--accent-color-rgb), 0.15); color: var(--accent-color); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-weight: bold;">0%</span>
                                 </div>
+                                <input type="range" id="clock-shadow-strength-input" min="0" max="100" step="1" value="0" style="width: 100%;">
                             </div>
                         </div>
 
-                        <div class="setting-item" id="clock-date-stroke-setting"
-                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                            <label
-                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_custom_title_border">Text Outline</span>
-                                <span id="clock-date-stroke-width-value"
-                                    style="opacity: 0.7; font-family: monospace;">0px</span>
+                        <!-- 7. Text Outline (Stroke) -->
+                        <div class="setting-item" id="clock-date-stroke-setting" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 15px;">
+                            <label style="font-weight: 600; font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-border-none"></i> <span data-i18n="settings_custom_title_border">Text Outline (Stroke)</span>
                             </label>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-                                <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;" data-i18n="settings_custom_title_border_color">Color</label>
-                                    <input type="color" id="clock-date-stroke-color-picker" value="#000000"
-                                        style="height: 34px; width: 100%;">
+
+                            <!-- Outline Color Row -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="margin: 0; font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 6px;" data-i18n="settings_custom_title_border_color">
+                                        <i class="fa-solid fa-palette"></i> Outline Color
+                                    </label>
+                                    <input type="color" id="clock-date-stroke-color-picker" value="#000000" style="height: 30px; width: 60px; border: none; border-radius: 4px; cursor: pointer; padding: 0; background: transparent;">
                                 </div>
-                                <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;" data-i18n="settings_custom_title_border_size">Thickness</label>
-                                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
-                                        value="0">
+                            </div>
+
+                            <!-- Outline Thickness Slider Row (Dedicated Full Line) -->
+                            <div class="setting-item no-margin-top" style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 14px; border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="margin: 0; font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-pen-ruler"></i> <span data-i18n="settings_custom_title_border_size">Outline Thickness</span>
+                                    </label>
+                                    <span id="clock-date-stroke-width-value" style="font-size: 0.75rem; background: rgba(var(--accent-color-rgb), 0.15); color: var(--accent-color); padding: 2px 8px; border-radius: 6px; font-family: monospace; font-weight: bold;">0px</span>
                                 </div>
+                                <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0" style="width: 100%;">
                             </div>
                         </div>
                         </div> <!-- end setting-group-content -->

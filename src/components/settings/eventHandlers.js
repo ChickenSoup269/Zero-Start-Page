@@ -5954,7 +5954,7 @@ export function setupGeneralEventHandlers(
 
   DOM.clockDateStrokeWidthInput?.addEventListener("input", (e) => {
     if (DOM.clockDateStrokeWidthValue)
-      DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}${DOM.bookmarkGroupFontSizeInput?.value || 16}px`
+      DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}px`
     handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
   })
 

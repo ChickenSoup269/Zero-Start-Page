@@ -5644,14 +5644,20 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card.compact-style-card {
-  min-height: 38px;
+  min-height: 36px;
   padding: 6px 10px;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
   border-radius: 8px;
 }
 
 .clock-style-card.compact-style-card i {
-  display: none;
+  display: inline-block;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
