@@ -84,6 +84,8 @@ const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "lunar-orbit": "#ffffff",
   cartoon: "#ffffff",
   "space-concentric": "#00ff66",
+  "split-pill": "#111111",
+  "clock-3d": "#ffffff",
 }
 
 const CLOCK_STYLE_ACCENT_STYLES = Object.keys(CLOCK_STYLE_ACCENT_DEFAULTS)
@@ -2519,6 +2521,8 @@ function createApplySettings(effectInstances) {
       "date-clock-style-custom-angle",
       "date-clock-style-space-concentric",
       "date-clock-style-audio-wave",
+      "date-clock-style-split-pill",
+      "date-clock-style-clock-3d",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -2588,7 +2592,16 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle("quick-access-horizontal", settings.quickAccessHorizontal === true)
 
     // Fliqlo Theme
-    document.body.classList.remove("fliqlo-theme-dark", "fliqlo-theme-light")
+    document.body.classList.remove(
+      "fliqlo-theme-dark",
+      "fliqlo-theme-light",
+      "fliqlo-theme-glass",
+      "fliqlo-theme-terminal",
+      "fliqlo-theme-sakura",
+      "fliqlo-theme-walnut",
+      "fliqlo-theme-cyberpunk",
+      "fliqlo-theme-divergence",
+    )
     document.body.classList.add(
       `fliqlo-theme-${settings.fliqloTheme || "dark"}`,
     )
@@ -2637,6 +2650,8 @@ function createApplySettings(effectInstances) {
       "audio-wave",
       "satellite",
       "pixel-hud",
+      "split-pill",
+      "clock-3d",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -2720,12 +2735,17 @@ function createApplySettings(effectInstances) {
     if (!finalClockColor || !finalDateColor) {
       let fallbackColor = "#ffffff"
 
-      // If Fliqlo is active and theme is light, fallback to black
+      // If Fliqlo is active and theme is light, or Split Pill on default/light bg, fallback to black
       const isFliqloLight =
         settings.dateClockStyle === "fliqlo" && settings.fliqloTheme === "light"
+      const isSplitPillLight =
+        settings.dateClockStyle === "split-pill" &&
+        (!settings.clockStyleBackground ||
+          settings.clockStyleBackground === "default" ||
+          settings.clockStyleBackground === "light")
 
-      if (isFliqloLight) {
-        fallbackColor = "#000000"
+      if (isFliqloLight || isSplitPillLight) {
+        fallbackColor = "#111111"
       } else if (settings.clockAutoContrast === false) {
         fallbackColor = "#ffffff"
       } else if (
@@ -2769,6 +2789,24 @@ function createApplySettings(effectInstances) {
 
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
     document.documentElement.style.setProperty("--date-color", finalDateColor)
+
+    if (settings.clockColor) {
+      document.documentElement.style.setProperty(
+        "--split-pill-clock-color",
+        settings.clockColor,
+      )
+    } else {
+      document.documentElement.style.removeProperty("--split-pill-clock-color")
+    }
+
+    if (settings.dateColor) {
+      document.documentElement.style.setProperty(
+        "--split-pill-date-color",
+        settings.dateColor,
+      )
+    } else {
+      document.documentElement.style.removeProperty("--split-pill-date-color")
+    }
 
     const clockRgb = hexToRgb(finalClockColor)
     if (clockRgb) {
@@ -3663,6 +3701,8 @@ function createUpdateSettingsInputs(effectInstances) {
       "glass-float",
       "satellite",
       "pixel-hud",
+      "split-pill",
+      "clock-3d",
     ]
 
     // Show style-specific container if current style has special settings
