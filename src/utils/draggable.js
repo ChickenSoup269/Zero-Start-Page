@@ -1,7 +1,7 @@
 import { saveComponentPosition, getSettings } from "../services/state.js"
 import { showContextMenu } from "../components/contextMenu.js"
 
-const VIEWPORT_PADDING = 8
+const VIEWPORT_PADDING = 0
 
 function parsePixelValue(value) {
   const parsed = Number.parseFloat(value)
@@ -58,22 +58,10 @@ function processClampQueue() {
     const { element, data, style, rect, parentOffsetLeft, parentOffsetTop } =
       read
 
-    const minLeft = Math.min(
-      VIEWPORT_PADDING,
-      vw - rect.width - VIEWPORT_PADDING,
-    )
-    const maxLeft = Math.max(
-      VIEWPORT_PADDING,
-      vw - rect.width - VIEWPORT_PADDING,
-    )
-    const minTop = Math.min(
-      VIEWPORT_PADDING,
-      vh - rect.height - VIEWPORT_PADDING,
-    )
-    const maxTop = Math.max(
-      VIEWPORT_PADDING,
-      vh - rect.height - VIEWPORT_PADDING,
-    )
+    const minLeft = 0
+    const maxLeft = Math.max(0, vw - rect.width)
+    const minTop = 0
+    const maxTop = Math.max(0, vh - rect.height)
 
     const clampedLeft = Math.max(minLeft, Math.min(rect.left, maxLeft))
     const clampedTop = Math.max(minTop, Math.min(rect.top, maxTop))
@@ -131,7 +119,8 @@ function processClampQueue() {
       saveComponentPosition(data.componentId, {
         top: element.style.top,
         left: element.style.left,
-        transform: element.style.transform,
+        right: element.style.right,
+        transform: element.style.transform || "none",
       })
     }
   }
@@ -165,7 +154,12 @@ export function makeDraggable(
   const savedPos = settings.componentPositions?.[componentId]
 
   // Apply initial position
-  if (savedPos && savedPos.top && savedPos.left) {
+  if (
+    savedPos &&
+    savedPos.top !== undefined &&
+    savedPos.top !== null &&
+    (savedPos.left !== undefined || savedPos.right !== undefined)
+  ) {
     const isClockOrTitleOrSearch =
       componentId === "clock" ||
       componentId === "customTitle" ||
@@ -184,7 +178,7 @@ export function makeDraggable(
       if (savedPos.right && savedPos.right !== "auto") {
         element.style.right = savedPos.right
         element.style.left = "auto"
-      } else {
+      } else if (savedPos.left && savedPos.left !== "auto") {
         element.style.left = savedPos.left
         element.style.right = "auto"
       }
@@ -248,6 +242,7 @@ export function makeDraggable(
         { passive: true },
       )
     }
+
     if (!element._draggableLayoutUpdated) {
       element._draggableLayoutUpdated = (e) => {
         if (!element.isConnected) {
@@ -330,16 +325,22 @@ export function makeDraggable(
 
     e.preventDefault()
 
-    // 1. Prepare element: Disable laggy transitions and centering transforms
+    // 1. Measure current visual rect BEFORE altering any styles or transforms
+    const currentRect = element.getBoundingClientRect()
+    cachedZoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
+
+    offsetX = e.clientX - currentRect.left
+    offsetY = e.clientY - currentRect.top
+    initialWidth = currentRect.width
+    initialHeight = currentRect.height
+
+    // 2. Prepare element: Disable transitions & centering transforms
     const originalTransition = element.style.transition
     element.style.transition = "none"
     element.style.transform = "none"
     element.style.margin = "0"
 
-    // 2. Measure current screen rect (where it is visually right now, without transforms)
-    const currentRect = element.getBoundingClientRect()
-
-    // 3. Prepare for absolute 0,0 measurement
+    // 3. Prepare for coordinate origin measurement
     const style = window.getComputedStyle(element)
     const isFixed = style.position === "fixed"
     element.style.position = isFixed ? "fixed" : "absolute"
@@ -353,19 +354,10 @@ export function makeDraggable(
     magicOffsetX = zeroRect.left
     magicOffsetY = zeroRect.top
 
-    // 5. Calculate mouse offsets relative to the element's top-left
-    offsetX = e.clientX - currentRect.left
-    offsetY = e.clientY - currentRect.top
-    initialWidth = currentRect.width
-    initialHeight = currentRect.height
-
-    // 6. Put it exactly where it was visually
-    element.style.left = currentRect.left - magicOffsetX + "px"
-    element.style.top = currentRect.top - magicOffsetY + "px"
+    // 5. Put it exactly where it was visually
+    element.style.left = (currentRect.left - magicOffsetX) / cachedZoom + "px"
+    element.style.top = (currentRect.top - magicOffsetY) / cachedZoom + "px"
     element.classList.add("has-position")
-
-    // Cache zoom once at drag start to avoid getComputedStyle in hot loop
-    cachedZoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
 
     document.onmouseup = closeDragElement
     document.onmousemove = elementDrag
@@ -392,37 +384,50 @@ export function makeDraggable(
     // Smart clamping for both small and large widgets
     if (initialWidth <= vw) {
       targetScreenLeft = Math.max(
-        VIEWPORT_PADDING,
-        Math.min(targetScreenLeft, vw - initialWidth - VIEWPORT_PADDING),
+        0,
+        Math.min(targetScreenLeft, vw - initialWidth),
       )
     } else {
       targetScreenLeft = Math.max(
-        vw - initialWidth - VIEWPORT_PADDING,
-        Math.min(targetScreenLeft, VIEWPORT_PADDING),
+        vw - initialWidth,
+        Math.min(targetScreenLeft, 0),
       )
     }
 
     if (initialHeight <= vh) {
       targetScreenTop = Math.max(
-        VIEWPORT_PADDING,
-        Math.min(targetScreenTop, vh - initialHeight - VIEWPORT_PADDING),
+        0,
+        Math.min(targetScreenTop, vh - initialHeight),
       )
     } else {
       targetScreenTop = Math.max(
-        vh - initialHeight - VIEWPORT_PADDING,
-        Math.min(targetScreenTop, VIEWPORT_PADDING),
+        vh - initialHeight,
+        Math.min(targetScreenTop, 0),
       )
+    }
+
+    const currentSettings = getSettings()
+    if (currentSettings.snapToGrid) {
+      const grid = parseInt(currentSettings.snapGridSize, 10) || 20
+      targetScreenLeft = Math.round(targetScreenLeft / grid) * grid
+      targetScreenTop = Math.round(targetScreenTop / grid) * grid
+
+      if (initialWidth <= vw) {
+        targetScreenLeft = Math.max(
+          0,
+          Math.min(targetScreenLeft, vw - initialWidth),
+        )
+      }
+      if (initialHeight <= vh) {
+        targetScreenTop = Math.max(
+          0,
+          Math.min(targetScreenTop, vh - initialHeight),
+        )
+      }
     }
 
     // Use cached zoom to avoid forced synchronous layout on every mousemove
     const zoom = cachedZoom
-
-    const currentSettings = getSettings()
-    if (currentSettings.snapToGrid) {
-      const grid = parseInt(currentSettings.snapGridSize) || 20
-      targetScreenLeft = Math.round(targetScreenLeft / grid) * grid
-      targetScreenTop = Math.round(targetScreenTop / grid) * grid
-    }
 
     element.style.left = (targetScreenLeft - magicOffsetX) / zoom + "px"
     element.style.top = (targetScreenTop - magicOffsetY) / zoom + "px"
@@ -434,36 +439,18 @@ export function makeDraggable(
     element.classList.remove("dragging")
     document.body.classList.remove("show-snap-grid")
     element.style.transition = ""
+    element.style.right = "auto"
+    element.style.bottom = "auto"
     element.classList.add("has-position")
-
-    // Anchor to right if placed on the right side of the screen
-    const rect = element.getBoundingClientRect()
-    const vw = document.documentElement.clientWidth
-    if (
-      rect.left + rect.width / 2 > vw / 2 &&
-      window.getComputedStyle(element).position === "fixed"
-    ) {
-      const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
-
-      // Temporarily set to right: 0 to measure magic offset (handles transform scales and origins)
-      const originalLeft = element.style.left
-      element.style.left = "auto"
-      element.style.right = "0px"
-      const zeroRight = element.getBoundingClientRect().right
-      const magicOffsetRight = vw - zeroRight
-
-      const rightPx = (vw - rect.right - magicOffsetRight) / zoom
-      element.style.right = `${rightPx}px`
-      element.style.left = "auto"
-    }
 
     saveComponentPosition(componentId, {
       top: element.style.top,
       left: element.style.left,
-      right: element.style.right,
-      transform: element.style.transform,
+      right: "auto",
+      transform: element.style.transform || "none",
     })
 
     if (onDragEndCallback) onDragEndCallback(element)
   }
 }
+

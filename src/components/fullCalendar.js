@@ -16,6 +16,8 @@ import {
   convertSolar2Lunar,
 } from "../utils/lunarCalendar.js"
 
+const GCAL_CACHE_KEY = "startpage_calendar_gcal_cache"
+
 function getCalendarDisplayMode(settings = getSettings()) {
   const mode = settings.calendarDateMode
   if (mode === "solar" || mode === "lunar" || mode === "both") {
@@ -35,23 +37,50 @@ function getCalendarSize(settings = getSettings()) {
 }
 
 function normalizeGoogleCalendarUrl(value) {
-  const url = String(value || "").trim()
+  let url = String(value || "").trim()
   if (!url) return ""
-  if (url.startsWith("webcal://")) return `https://${url.slice(9)}`
-  if (/^https:\/\/calendar\.google\.com\/calendar\/ical\//i.test(url)) return url
+  if (url.startsWith("webcal://")) {
+    url = `https://${url.slice(9)}`
+  }
+  if (/^https?:\/\//i.test(url)) {
+    return url
+  }
   return ""
 }
 
 function decodeIcsText(value = "") {
-  return value
+  return String(value || "")
     .replace(/\\n/gi, "\n")
     .replace(/\\,/g, ",")
     .replace(/\\;/g, ";")
     .replace(/\\\\/g, "\\")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+}
+
+function cleanHtmlDescription(value = "") {
+  if (!value) return ""
+  let text = decodeIcsText(value)
+  // Clean google calendar blob tags
+  text = text.replace(/<\/?html-blob[^>]*>/gi, "")
+  // Convert line breaks and paragraph tags
+  text = text.replace(/<br\s*\/?>/gi, "\n")
+  text = text.replace(/<\/p>/gi, "\n\n")
+  text = text.replace(/<p[^>]*>/gi, "")
+  text = text.replace(/<div[^>]*>/gi, "")
+  text = text.replace(/<\/div>/gi, "\n")
+  // Strip remaining HTML tags
+  text = text.replace(/<[^>]+>/g, "")
+  // Normalize consecutive empty lines
+  text = text.replace(/\n{3,}/g, "\n\n")
+  return text.trim()
 }
 
 function escapeHtml(value = "") {
-  return String(value)
+  return String(value || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -59,43 +88,135 @@ function escapeHtml(value = "") {
     .replace(/'/g, "&#39;")
 }
 
+function linkifyText(text = "") {
+  const escaped = escapeHtml(text)
+  const urlRegex = /(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/g
+  return escaped.replace(
+    urlRegex,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="calendar-link">$1</a>',
+  )
+}
+
+function extractMeetingInfo(text = "", location = "", url = "") {
+  const combined = `${url} ${location} ${text}`
+
+  // Google Meet
+  const meetMatch = combined.match(/https?:\/\/meet\.google\.com\/[a-z0-9-]+/i)
+  if (meetMatch) {
+    return {
+      meetingUrl: meetMatch[0],
+      meetingType: "meet",
+      meetingLabel: "Google Meet",
+      iconClass: "fa-solid fa-video",
+    }
+  }
+
+  // Zoom
+  const zoomMatch = combined.match(
+    /https?:\/\/[a-zA-Z0-9.-]*zoom\.us\/(?:j|my|w)\/[0-9a-zA-Z?=_&#-]+/i,
+  )
+  if (zoomMatch) {
+    return {
+      meetingUrl: zoomMatch[0],
+      meetingType: "zoom",
+      meetingLabel: "Zoom",
+      iconClass: "fa-solid fa-video",
+    }
+  }
+
+  // Microsoft Teams
+  const teamsMatch = combined.match(
+    /https?:\/\/(?:teams\.microsoft\.com\/l\/meetup-join|teams\.live\.com\/meet)\/[^\s"'>]+/i,
+  )
+  if (teamsMatch) {
+    return {
+      meetingUrl: teamsMatch[0],
+      meetingType: "teams",
+      meetingLabel: "Microsoft Teams",
+      iconClass: "fa-solid fa-users-rectangle",
+    }
+  }
+
+  // Webex
+  const webexMatch = combined.match(
+    /https?:\/\/[a-zA-Z0-9.-]+\.webex\.com\/[^\s"'>]+/i,
+  )
+  if (webexMatch) {
+    return {
+      meetingUrl: webexMatch[0],
+      meetingType: "webex",
+      meetingLabel: "Webex",
+      iconClass: "fa-solid fa-video",
+    }
+  }
+
+  // Skype
+  const skypeMatch = combined.match(/https?:\/\/join\.skype\.com\/[^\s"'>]+/i)
+  if (skypeMatch) {
+    return {
+      meetingUrl: skypeMatch[0],
+      meetingType: "skype",
+      meetingLabel: "Skype",
+      iconClass: "fa-brands fa-skype",
+    }
+  }
+
+  return null
+}
+
+function extractLocationInfo(location = "") {
+  const loc = decodeIcsText(location).trim()
+  if (!loc) return { text: "", mapsUrl: "" }
+
+  // If location is a web URL, don't generate a Google Maps link
+  if (/^https?:\/\//i.test(loc)) {
+    return { text: loc, mapsUrl: "" }
+  }
+
+  return {
+    text: loc,
+    mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`,
+  }
+}
+
 function parseIcsDate(value = "") {
-  const clean = value.trim()
+  const clean = String(value || "").trim()
+  if (!clean) return null
+
+  // Date only: YYYYMMDD
   const dateOnly = clean.match(/^(\d{4})(\d{2})(\d{2})$/)
   if (dateOnly) {
+    const year = Number(dateOnly[1])
+    const month = Number(dateOnly[2]) - 1
+    const day = Number(dateOnly[3])
     return {
       date: `${dateOnly[1]}-${dateOnly[2]}-${dateOnly[3]}`,
       time: "",
       allDay: true,
-      obj: new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3])),
+      obj: new Date(year, month, day, 0, 0, 0),
     }
   }
 
-  const dateTime = clean.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?/)
+  // DateTime: YYYYMMDDTHHMMSS[Z]
+  const dateTime = clean.match(
+    /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?/,
+  )
   if (!dateTime) return null
 
   const isUtc = !!dateTime[7]
+  const year = Number(dateTime[1])
+  const month = Number(dateTime[2]) - 1
+  const day = Number(dateTime[3])
+  const hour = Number(dateTime[4])
+  const min = Number(dateTime[5])
+  const sec = Number(dateTime[6] || 0)
+
   const date = isUtc
-    ? new Date(
-        Date.UTC(
-          Number(dateTime[1]),
-          Number(dateTime[2]) - 1,
-          Number(dateTime[3]),
-          Number(dateTime[4]),
-          Number(dateTime[5]),
-          Number(dateTime[6] || 0),
-        ),
-      )
-    : new Date(
-        Number(dateTime[1]),
-        Number(dateTime[2]) - 1,
-        Number(dateTime[3]),
-        Number(dateTime[4]),
-        Number(dateTime[5]),
-        Number(dateTime[6] || 0),
-      )
+    ? new Date(Date.UTC(year, month, day, hour, min, sec))
+    : new Date(year, month, day, hour, min, sec)
 
   if (Number.isNaN(date.getTime())) return null
+
   return {
     date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
     time: `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
@@ -104,12 +225,343 @@ function parseIcsDate(value = "") {
   }
 }
 
+function parseIcsDuration(value = "") {
+  const clean = String(value || "").trim()
+  if (!clean) return 0
+
+  const match = clean.match(
+    /^P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/i,
+  )
+  if (!match) return 0
+
+  const weeks = parseInt(match[1] || 0, 10)
+  const days = parseInt(match[2] || 0, 10)
+  const hours = parseInt(match[3] || 0, 10)
+  const minutes = parseInt(match[4] || 0, 10)
+  const seconds = parseInt(match[5] || 0, 10)
+
+  return (
+    ((((weeks * 7 + days) * 24 + hours) * 60 + minutes) * 60 + seconds) * 1000
+  )
+}
+
+function formatDateStr(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
+function formatTimeStr(date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`
+}
+
+function pushEventOccurrences(
+  eventsArray,
+  baseEvent,
+  uid,
+  startObj,
+  durationMs,
+  allDay,
+  exdates,
+  index = 0,
+) {
+  const endObj = new Date(startObj.getTime() + durationMs)
+  const startDateStr = formatDateStr(startObj)
+  const endDateStr = formatDateStr(endObj)
+
+  const startTimeStr = allDay ? "" : formatTimeStr(startObj)
+  const endTimeStr = allDay ? "" : formatTimeStr(endObj)
+  const timeRange = allDay
+    ? ""
+    : endTimeStr && endTimeStr !== startTimeStr
+      ? `${startTimeStr} - ${endTimeStr}`
+      : startTimeStr
+
+  let currentObj = new Date(startObj)
+  currentObj.setHours(0, 0, 0, 0)
+
+  const endMidnight = new Date(endObj)
+  if (allDay && durationMs > 0) {
+    // For all-day events, DTEND is exclusive
+    endMidnight.setDate(endMidnight.getDate() - 1)
+  }
+  endMidnight.setHours(0, 0, 0, 0)
+
+  // Calculate total days
+  const msPerDay = 24 * 60 * 60 * 1000
+  const diffDays =
+    Math.round((endMidnight.getTime() - currentObj.getTime()) / msPerDay) + 1
+  const totalDays = Math.max(1, diffDays)
+  const isMultiDay = totalDays > 1
+
+  if (currentObj.getTime() >= endMidnight.getTime() || !isMultiDay) {
+    const dateStr = formatDateStr(startObj)
+    if (!exdates.has(dateStr)) {
+      eventsArray.push({
+        ...baseEvent,
+        id: `google-${uid}-${index}-0`,
+        uid,
+        date: dateStr,
+        time: startTimeStr,
+        endTime: endTimeStr,
+        timeRange,
+        startDate: startDateStr,
+        endDate: endDateStr,
+        isMultiDay: false,
+        dayIndex: 1,
+        totalDays: 1,
+        startObj: new Date(startObj),
+        endObj: new Date(endObj),
+      })
+    }
+    return
+  }
+
+  let dayOffset = 0
+  let loopObj = new Date(currentObj)
+  while (loopObj <= endMidnight && dayOffset < 90) {
+    const dateStr = formatDateStr(loopObj)
+    if (!exdates.has(dateStr)) {
+      const isFirst = dayOffset === 0
+      const isLast = loopObj.getTime() === endMidnight.getTime()
+
+      let dayTime = ""
+      let dayTimeRange = ""
+      if (!allDay) {
+        if (isFirst) {
+          dayTime = startTimeStr
+          dayTimeRange = `Từ ${startTimeStr}`
+        } else if (isLast) {
+          dayTime = endTimeStr
+          dayTimeRange = `Đến ${endTimeStr}`
+        } else {
+          dayTime = ""
+          dayTimeRange = "Cả ngày"
+        }
+      }
+
+      eventsArray.push({
+        ...baseEvent,
+        id: `google-${uid}-${index}-${dayOffset}`,
+        uid,
+        date: dateStr,
+        time: dayTime,
+        endTime: isLast ? endTimeStr : "",
+        timeRange: dayTimeRange || timeRange,
+        startDate: startDateStr,
+        endDate: endDateStr,
+        isMultiDay: true,
+        dayIndex: dayOffset + 1,
+        totalDays,
+        isStartDay: isFirst,
+        isEndDay: isLast,
+        startObj: new Date(startObj),
+        endObj: new Date(endObj),
+      })
+    }
+    loopObj.setDate(loopObj.getDate() + 1)
+    dayOffset++
+  }
+}
+
+function expandIcsEvents(rawEvents) {
+  const events = []
+  const maxOccurrences = 400
+  const windowEnd = new Date()
+  windowEnd.setFullYear(windowEnd.getFullYear() + 2) // Expand up to 2 years ahead
+  const windowStart = new Date()
+  windowStart.setFullYear(windowStart.getFullYear() - 1) // 1 year behind
+
+  rawEvents.forEach((raw) => {
+    // Skip cancelled events
+    if (raw.STATUS && raw.STATUS.toUpperCase() === "CANCELLED") {
+      return
+    }
+
+    const start = parseIcsDate(raw.DTSTART)
+    if (!start) return
+
+    let duration = 0
+    if (raw.DTEND) {
+      const end = parseIcsDate(raw.DTEND)
+      if (end) {
+        duration = Math.max(0, end.obj.getTime() - start.obj.getTime())
+      }
+    } else if (raw.DURATION) {
+      duration = parseIcsDuration(raw.DURATION)
+    } else if (!start.allDay) {
+      duration = 60 * 60 * 1000 // default 1 hour for timed events
+    }
+
+    const rawSummary = raw.SUMMARY || "(Không có tiêu đề)"
+    const rawDescription = raw.DESCRIPTION || ""
+    const rawLocation = raw.LOCATION || ""
+    const rawUrl = raw.URL || ""
+
+    const title = decodeIcsText(rawSummary)
+    const cleanDesc = cleanHtmlDescription(rawDescription)
+    const locationInfo = extractLocationInfo(rawLocation)
+    const meetingInfo = extractMeetingInfo(rawDescription, rawLocation, rawUrl)
+
+    // Extract organizer if available
+    let organizer = ""
+    if (raw.ORGANIZER) {
+      const cnMatch = raw.ORGANIZER.match(/CN="?([^";:]+)"?/i)
+      const mailMatch = raw.ORGANIZER.match(/mailto:([^\s;]+)/i)
+      organizer = cnMatch ? cnMatch[1] : mailMatch ? mailMatch[1] : ""
+    }
+
+    const baseEvent = {
+      title,
+      description: cleanDesc,
+      rawDescription,
+      location: locationInfo.text,
+      mapsUrl: locationInfo.mapsUrl,
+      meetingUrl: meetingInfo ? meetingInfo.meetingUrl : "",
+      meetingType: meetingInfo ? meetingInfo.meetingType : "",
+      meetingLabel: meetingInfo ? meetingInfo.meetingLabel : "",
+      meetingIcon: meetingInfo ? meetingInfo.iconClass : "",
+      url: rawUrl,
+      organizer,
+      status: raw.STATUS ? raw.STATUS.toUpperCase() : "CONFIRMED",
+      source: "google",
+      allDay: start.allDay,
+    }
+
+    const exdates = new Set()
+    if (raw.EXDATE) {
+      raw.EXDATE.forEach((ex) => {
+        const parsedEx = parseIcsDate(ex)
+        if (parsedEx) exdates.add(parsedEx.date)
+      })
+    }
+
+    const eventUid = raw.UID || `${start.date}-${title}`
+
+    if (!raw.RRULE) {
+      pushEventOccurrences(
+        events,
+        baseEvent,
+        eventUid,
+        start.obj,
+        duration,
+        start.allDay,
+        exdates,
+      )
+    } else {
+      const rule = {}
+      raw.RRULE.split(";").forEach((part) => {
+        const [k, v] = part.split("=")
+        if (k && v) rule[k.toUpperCase()] = v
+      })
+
+      const freq = rule.FREQ
+      let untilDate = null
+      if (rule.UNTIL) {
+        const u = parseIcsDate(rule.UNTIL)
+        if (u) untilDate = u.obj
+      }
+      const count = parseInt(rule.COUNT, 10) || null
+      const interval = parseInt(rule.INTERVAL, 10) || 1
+
+      let occurrences = 0
+      const dayMap = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 }
+
+      if (freq === "WEEKLY" && rule.BYDAY) {
+        const days = rule.BYDAY.split(",")
+          .map((d) => dayMap[d.replace(/[^A-Z]/g, "")])
+          .filter((d) => d !== undefined)
+
+        let weekStart = new Date(start.obj)
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+
+        while (occurrences < maxOccurrences) {
+          if (untilDate && weekStart > untilDate) break
+          if (weekStart > windowEnd) break
+
+          for (const day of days.sort((a, b) => a - b)) {
+            const dayObj = new Date(weekStart)
+            dayObj.setDate(dayObj.getDate() + day)
+            dayObj.setHours(
+              start.obj.getHours(),
+              start.obj.getMinutes(),
+              start.obj.getSeconds(),
+              0,
+            )
+
+            if (dayObj >= start.obj && dayObj <= windowEnd) {
+              if (untilDate && dayObj > untilDate) break
+              if (dayObj >= windowStart) {
+                pushEventOccurrences(
+                  events,
+                  baseEvent,
+                  eventUid,
+                  dayObj,
+                  duration,
+                  start.allDay,
+                  exdates,
+                  occurrences,
+                )
+              }
+              occurrences++
+              if (count && occurrences >= count) break
+            }
+          }
+          if (count && occurrences >= count) break
+          weekStart.setDate(weekStart.getDate() + 7 * interval)
+        }
+      } else {
+        let currentObj = new Date(start.obj)
+        while (occurrences < maxOccurrences) {
+          if (untilDate && currentObj > untilDate) break
+          if (currentObj > windowEnd) break
+
+          if (currentObj >= windowStart) {
+            pushEventOccurrences(
+              events,
+              baseEvent,
+              eventUid,
+              currentObj,
+              duration,
+              start.allDay,
+              exdates,
+              occurrences,
+            )
+          }
+
+          occurrences++
+          if (count && occurrences >= count) break
+
+          if (freq === "DAILY") {
+            currentObj.setDate(currentObj.getDate() + interval)
+          } else if (freq === "WEEKLY") {
+            currentObj.setDate(currentObj.getDate() + 7 * interval)
+          } else if (freq === "MONTHLY") {
+            if (rule.BYMONTHDAY) {
+              const bmd = parseInt(rule.BYMONTHDAY, 10)
+              currentObj.setMonth(currentObj.getMonth() + interval)
+              currentObj.setDate(bmd)
+            } else {
+              currentObj.setMonth(currentObj.getMonth() + interval)
+            }
+          } else if (freq === "YEARLY") {
+            currentObj.setFullYear(currentObj.getFullYear() + interval)
+          } else {
+            break
+          }
+        }
+      }
+    }
+  })
+
+  return events
+}
+
 function parseGoogleCalendarIcs(text) {
-  const lines = text
-    .replace(/\r?\n[ \t]/g, "") // Unfold folded lines
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-  
+  if (!text || typeof text !== "string") return []
+
+  // RFC 5545 line unfolding: a CRLF/LF immediately followed by a space or tab is folded line
+  const unfolded = text.replace(/\r\n[ \t]|\r[ \t]|\n[ \t]/g, "")
+  const lines = unfolded.split(/\r?\n/).map((line) => line.trim())
+
   const rawEvents = []
   let current = null
   let nestedDepth = 0
@@ -121,7 +573,7 @@ function parseGoogleCalendarIcs(text) {
       return
     }
     if (line === "END:VEVENT") {
-      if (current?.SUMMARY && current?.DTSTART) {
+      if (current && current.DTSTART) {
         rawEvents.push(current)
       }
       current = null
@@ -146,7 +598,7 @@ function parseGoogleCalendarIcs(text) {
     const keyPart = line.slice(0, separatorIndex)
     const key = keyPart.split(";")[0].toUpperCase()
     const value = line.slice(separatorIndex + 1)
-    
+
     if (
       key === "UID" ||
       key === "SUMMARY" ||
@@ -154,12 +606,18 @@ function parseGoogleCalendarIcs(text) {
       key === "LOCATION" ||
       key === "DTSTART" ||
       key === "DTEND" ||
+      key === "DURATION" ||
       key === "RRULE" ||
-      key === "EXDATE"
+      key === "EXDATE" ||
+      key === "STATUS" ||
+      key === "URL" ||
+      key === "ORGANIZER"
     ) {
       if (key === "EXDATE") {
         current.EXDATE = current.EXDATE || []
         current.EXDATE.push(...value.split(","))
+      } else if (key === "ORGANIZER") {
+        current.ORGANIZER = line // keep full line for CN/mailto
       } else {
         current[key] = value
       }
@@ -167,168 +625,6 @@ function parseGoogleCalendarIcs(text) {
   })
 
   return expandIcsEvents(rawEvents)
-}
-
-function formatDateStr(date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-}
-
-function formatTimeStr(date) {
-  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`
-}
-
-function pushEventOccurrences(eventsArray, baseEvent, uid, startObj, durationMs, allDay, exdates, index = 0) {
-  const endObj = new Date(startObj.getTime() + durationMs)
-  
-  let currentObj = new Date(startObj)
-  currentObj.setHours(0, 0, 0, 0)
-  
-  const endMidnight = new Date(endObj)
-  if (allDay && durationMs > 0) {
-    endMidnight.setDate(endMidnight.getDate() - 1)
-  }
-  endMidnight.setHours(0, 0, 0, 0)
-
-  if (currentObj.getTime() === endMidnight.getTime()) {
-    const dateStr = formatDateStr(startObj)
-    if (!exdates.has(dateStr)) {
-      eventsArray.push({
-        ...baseEvent,
-        id: `google-${uid}-${index}`,
-        date: dateStr,
-        time: allDay ? "" : formatTimeStr(startObj),
-      })
-    }
-    return
-  }
-
-  let dayOffset = 0
-  let loopObj = new Date(currentObj)
-  while (loopObj <= endMidnight) {
-    const dateStr = formatDateStr(loopObj)
-    if (!exdates.has(dateStr)) {
-      eventsArray.push({
-        ...baseEvent,
-        id: `google-${uid}-${index}-${dayOffset}`,
-        date: dateStr,
-        time: allDay ? "" : (dayOffset === 0 ? formatTimeStr(startObj) : ""),
-      })
-    }
-    loopObj.setDate(loopObj.getDate() + 1)
-    dayOffset++
-  }
-}
-
-function expandIcsEvents(rawEvents) {
-  const events = []
-  const maxOccurrences = 365 // Prevent infinite loops
-  const windowEnd = new Date()
-  windowEnd.setFullYear(windowEnd.getFullYear() + 2) // Expand up to 2 years ahead
-  const windowStart = new Date()
-  windowStart.setFullYear(windowStart.getFullYear() - 1) // 1 year behind
-
-  rawEvents.forEach((raw) => {
-    const start = parseIcsDate(raw.DTSTART)
-    if (!start) return
-
-    let end = parseIcsDate(raw.DTEND)
-    if (!end) end = start
-
-    const duration = end.obj.getTime() - start.obj.getTime()
-
-    const baseEvent = {
-      title: decodeIcsText(raw.SUMMARY),
-      description: decodeIcsText(raw.DESCRIPTION || ""),
-      location: decodeIcsText(raw.LOCATION || ""),
-      source: "google",
-      allDay: start.allDay,
-    }
-
-    const exdates = new Set()
-    if (raw.EXDATE) {
-      raw.EXDATE.forEach(ex => {
-        const parsedEx = parseIcsDate(ex)
-        if (parsedEx) exdates.add(parsedEx.date)
-      })
-    }
-
-    if (!raw.RRULE) {
-      pushEventOccurrences(events, baseEvent, raw.UID || start.date, start.obj, duration, start.allDay, exdates)
-    } else {
-      const rule = {}
-      raw.RRULE.split(";").forEach(part => {
-        const [k, v] = part.split("=")
-        if (k && v) rule[k.toUpperCase()] = v
-      })
-
-      const freq = rule.FREQ
-      let untilDate = null
-      if (rule.UNTIL) {
-        const u = parseIcsDate(rule.UNTIL)
-        if (u) untilDate = u.obj
-      }
-      const count = parseInt(rule.COUNT, 10) || null
-      const interval = parseInt(rule.INTERVAL, 10) || 1
-
-      let occurrences = 0
-      const dayMap = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 }
-
-      if (freq === "WEEKLY" && rule.BYDAY) {
-        const days = rule.BYDAY.split(",").map(d => dayMap[d]).filter(d => d !== undefined)
-        let weekStart = new Date(start.obj)
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-        
-        while (occurrences < maxOccurrences) {
-          if (untilDate && weekStart > untilDate) break
-          if (weekStart > windowEnd) break
-
-          for (const day of days.sort((a,b)=>a-b)) {
-            let dayObj = new Date(weekStart)
-            dayObj.setDate(dayObj.getDate() + day)
-            dayObj.setHours(start.obj.getHours(), start.obj.getMinutes(), 0, 0)
-            
-            if (dayObj >= start.obj && dayObj <= windowEnd) {
-              if (untilDate && dayObj > untilDate) break
-              if (dayObj >= windowStart) {
-                pushEventOccurrences(events, baseEvent, raw.UID || start.date, dayObj, duration, start.allDay, exdates, occurrences)
-              }
-              occurrences++
-              if (count && occurrences >= count) break
-            }
-          }
-          if (count && occurrences >= count) break
-          weekStart.setDate(weekStart.getDate() + 7 * interval)
-        }
-      } else {
-        let currentObj = new Date(start.obj)
-        while (occurrences < maxOccurrences) {
-          if (untilDate && currentObj > untilDate) break
-          if (currentObj > windowEnd) break
-          
-          if (currentObj >= windowStart) {
-            pushEventOccurrences(events, baseEvent, raw.UID || start.date, currentObj, duration, start.allDay, exdates, occurrences)
-          }
-          
-          occurrences++
-          if (count && occurrences >= count) break
-
-          if (freq === "DAILY") {
-            currentObj.setDate(currentObj.getDate() + interval)
-          } else if (freq === "WEEKLY") {
-            currentObj.setDate(currentObj.getDate() + 7 * interval)
-          } else if (freq === "MONTHLY") {
-            currentObj.setMonth(currentObj.getMonth() + interval)
-          } else if (freq === "YEARLY") {
-            currentObj.setFullYear(currentObj.getFullYear() + interval)
-          } else {
-            break 
-          }
-        }
-      }
-    }
-  })
-  
-  return events
 }
 
 export class FullCalendar {
@@ -346,7 +642,49 @@ export class FullCalendar {
     this.googleCalendarStatus = ""
     this.googleCalendarLoading = false
     this.googleCalendarLoadedUrl = ""
+    this.lastSyncTime = null
+
+    this.loadCachedGoogleEvents()
     this.init()
+  }
+
+  loadCachedGoogleEvents() {
+    try {
+      const cachedRaw = localStorage.getItem(GCAL_CACHE_KEY)
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw)
+        const currentUrl = normalizeGoogleCalendarUrl(
+          getSettings().googleCalendarIcsUrl,
+        )
+        if (cached && cached.url === currentUrl && Array.isArray(cached.events)) {
+          this.googleEvents = cached.events
+          this.googleCalendarLoadedUrl = cached.url
+          this.lastSyncTime = cached.timestamp ? new Date(cached.timestamp) : null
+          if (this.lastSyncTime) {
+            const timeStr = formatTimeStr(this.lastSyncTime)
+            const i18n = geti18n()
+            const msg = i18n.calendar_last_synced || "Last synced: {time}"
+            this.googleCalendarStatus = msg.replace("{time}", timeStr)
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load Google Calendar cache", e)
+    }
+  }
+
+  saveCachedGoogleEvents(events, url) {
+    try {
+      const payload = {
+        url,
+        timestamp: Date.now(),
+        events,
+      }
+      localStorage.setItem(GCAL_CACHE_KEY, JSON.stringify(payload))
+      this.lastSyncTime = new Date()
+    } catch (e) {
+      console.warn("Failed to save Google Calendar cache", e)
+    }
   }
 
   syncCalendarMode() {
@@ -359,9 +697,17 @@ export class FullCalendar {
     this.applySkin()
     this.setupEventListeners()
     this.updateVisibility()
+
     const url = normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl)
     if (this.calendarEventSource === "google" && url) {
-      this.refreshGoogleCalendar({ silent: true })
+      // If no cached events or cache is older than 20 minutes, refresh silently
+      const shouldRefresh =
+        !this.googleEvents.length ||
+        !this.lastSyncTime ||
+        Date.now() - this.lastSyncTime.getTime() > 20 * 60 * 1000
+      if (shouldRefresh) {
+        this.refreshGoogleCalendar({ silent: true })
+      }
     }
   }
 
@@ -416,13 +762,10 @@ export class FullCalendar {
         }
         e.stopPropagation()
       } else if (e.target.closest(".day-item")) {
-        // Just select the day with left click
         const dayItem = e.target.closest(".day-item")
         const dayNumber = dayItem.dataset.day
         if (dayNumber) {
           this.selectDay(dayItem)
-
-          // Show day menu on left click as a floating menu outside the card.
           const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
           const events = this.getVisibleEvents().filter(
@@ -438,7 +781,6 @@ export class FullCalendar {
     this.container.addEventListener("contextmenu", (e) => {
       e.preventDefault()
 
-      // Right click on calendar event
       if (e.target.closest(".calendar-event")) {
         const eventId = e.target.closest(".calendar-event").dataset.eventId
         if (this.calendarEventSource === "google") {
@@ -446,15 +788,15 @@ export class FullCalendar {
         } else {
           this.showEventContextMenu(e.clientX, e.clientY, eventId)
         }
-      }
-      // Right click on day item
-      else if (e.target.closest(".day-item")) {
+      } else if (e.target.closest(".day-item")) {
         const dayItem = e.target.closest(".day-item")
         const dayNumber = dayItem.dataset.day
         if (dayNumber) {
           const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-          const events = this.getVisibleEvents().filter((e) => e.date === dateStr)
+          const events = this.getVisibleEvents().filter(
+            (evt) => evt.date === dateStr,
+          )
           this.showDayContextMenu(e.clientX, e.clientY, day, events)
         }
       }
@@ -540,7 +882,7 @@ export class FullCalendar {
     if (!url) {
       this.googleCalendarStatus =
         i18n.calendar_google_url_invalid ||
-        "Use a Google Calendar iCal URL."
+        "Use a valid iCal URL (https://... or webcal://...)."
       this.render()
       return
     }
@@ -566,24 +908,65 @@ export class FullCalendar {
     this.googleCalendarLoading = true
     this.googleCalendarStatus = silent
       ? ""
-      : i18n.calendar_google_loading || "Loading Google Calendar..."
+      : i18n.calendar_google_loading || "Loading calendar events..."
     this.render()
 
     try {
-      const response = await fetch(url, { cache: "no-store" })
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      let text = ""
+      let fetchSuccess = false
 
-      const text = await response.text()
+      // 1. Direct fetch with timeout
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 12000)
+        const response = await fetch(url, {
+          cache: "no-store",
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+        if (response.ok) {
+          text = await response.text()
+          if (text.includes("BEGIN:VCALENDAR")) {
+            fetchSuccess = true
+          }
+        }
+      } catch (directErr) {
+        console.warn("Direct iCal fetch failed, attempting proxy fallback...", directErr)
+      }
+
+      // 2. Fallback via CORS proxy if direct fetch is blocked
+      if (!fetchSuccess) {
+        try {
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+          const proxyResponse = await fetch(proxyUrl, { cache: "no-store" })
+          if (proxyResponse.ok) {
+            text = await proxyResponse.text()
+            if (text.includes("BEGIN:VCALENDAR")) {
+              fetchSuccess = true
+            }
+          }
+        } catch (proxyErr) {
+          console.warn("Proxy iCal fetch failed", proxyErr)
+        }
+      }
+
+      if (!fetchSuccess || !text) {
+        throw new Error("Could not retrieve valid iCal calendar data.")
+      }
+
       this.googleEvents = parseGoogleCalendarIcs(text)
       this.googleCalendarLoadedUrl = url
-      this.googleCalendarStatus =
-        i18n.calendar_google_loaded ||
-        `Loaded ${this.googleEvents.length} Google events.`
+      this.saveCachedGoogleEvents(this.googleEvents, url)
+
+      const timeStr = formatTimeStr(new Date())
+      const loadedMsg =
+        i18n.calendar_google_loaded || "Loaded {count} events."
+      this.googleCalendarStatus = `${loadedMsg.replace("{count}", this.googleEvents.length)} (${timeStr})`
     } catch (error) {
-      console.warn("Failed to load Google Calendar", error)
+      console.warn("Failed to load calendar", error)
       this.googleCalendarStatus =
         i18n.calendar_google_error ||
-        "Could not load that Google Calendar URL."
+        "Could not load that calendar URL. Please check the link."
     } finally {
       this.googleCalendarLoading = false
       this.render()
@@ -591,7 +974,10 @@ export class FullCalendar {
   }
 
   selectDay(dayElement) {
-    const day = parseInt(dayElement.dataset.day || "", 10)
+    const dayNumber = dayElement.dataset.day || dayElement.querySelector(".day-number")?.textContent
+    if (!dayNumber) return
+
+    const day = parseInt(dayNumber, 10)
     if (Number.isNaN(day)) return
 
     this.selectedDate = new Date(
@@ -611,15 +997,29 @@ export class FullCalendar {
     this.hideContextMenu()
 
     const menu = document.createElement("div")
-    menu.className = "calendar-context-menu"
-    menu.style.left = `${x}px`
-    menu.style.top = `${y}px`
+    menu.className = "calendar-context-menu calendar-day-menu"
     menu.addEventListener("click", (e) => e.stopPropagation())
+
+    const dateObj = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth(), day)
+    const formattedHeader = dateObj.toLocaleDateString(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+
+    const header = document.createElement("div")
+    header.className = "calendar-day-menu-header"
+    header.innerHTML = `
+      <div class="calendar-day-menu-date"><i class="fa-regular fa-calendar"></i> ${formattedHeader}</div>
+      <div class="calendar-day-menu-count">${events.length} ${events.length === 1 ? "sự kiện" : "sự kiện"}</div>
+    `
+    menu.appendChild(header)
 
     if (this.calendarEventSource === "local") {
       const addItem = document.createElement("div")
-      addItem.className = "context-menu-item"
-      addItem.innerHTML = `<i class="fa-solid fa-plus"></i> ${i18n.calendar_add_event || "Add Event"}`
+      addItem.className = "context-menu-item calendar-add-item-btn"
+      addItem.innerHTML = `<i class="fa-solid fa-plus"></i> <span>${i18n.calendar_add_event || "Add Event"}</span>`
       addItem.addEventListener("click", () => {
         const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
         this.hideContextMenu()
@@ -628,16 +1028,28 @@ export class FullCalendar {
       menu.appendChild(addItem)
     }
 
-    // Show existing events if any
     if (events.length > 0) {
-      const divider = document.createElement("div")
-      divider.className = "context-menu-divider"
-      menu.appendChild(divider)
+      const listContainer = document.createElement("div")
+      listContainer.className = "calendar-day-events-list"
 
       events.forEach((event) => {
         const eventItem = document.createElement("div")
-        eventItem.className = "context-menu-item event-item"
-        eventItem.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${event.title}${event.time ? " - " + event.time : ""}`
+        eventItem.className = "context-menu-item event-item calendar-day-event-card"
+        
+        let meetingBadge = ""
+        if (event.meetingUrl) {
+          meetingBadge = `<span class="calendar-meeting-icon-pill" title="${escapeHtml(event.meetingLabel || "Meeting")}"><i class="${event.meetingIcon || "fa-solid fa-video"}"></i></span>`
+        }
+
+        const timeLabel = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+
+        eventItem.innerHTML = `
+          <div class="calendar-day-event-left">
+            <span class="calendar-event-time-pill">${escapeHtml(timeLabel)}</span>
+            <span class="calendar-day-event-title">${escapeHtml(event.title)}</span>
+          </div>
+          ${meetingBadge}
+        `
         eventItem.addEventListener("click", () => {
           this.hideContextMenu()
           if (this.calendarEventSource === "google") {
@@ -646,13 +1058,18 @@ export class FullCalendar {
             this.showEventFormMenu(x, y, { eventId: event.id })
           }
         })
-        menu.appendChild(eventItem)
+        listContainer.appendChild(eventItem)
       })
+      menu.appendChild(listContainer)
+    } else {
+      const emptyMsg = document.createElement("div")
+      emptyMsg.className = "calendar-day-events-empty"
+      emptyMsg.textContent = i18n.calendar_no_events || "Không có sự kiện nào"
+      menu.appendChild(emptyMsg)
     }
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-
     this.positionContextMenu(menu, x, y)
   }
 
@@ -662,13 +1079,11 @@ export class FullCalendar {
 
     const menu = document.createElement("div")
     menu.className = "calendar-context-menu"
-    menu.style.left = `${x}px`
-    menu.style.top = `${y}px`
     menu.addEventListener("click", (e) => e.stopPropagation())
 
     const editItem = document.createElement("div")
     editItem.className = "context-menu-item"
-    editItem.innerHTML = `<i class="fa-solid fa-edit"></i> ${i18n.menu_edit || "Edit"}`
+    editItem.innerHTML = `<i class="fa-solid fa-edit"></i> <span>${i18n.menu_edit || "Edit"}</span>`
     editItem.addEventListener("click", () => {
       this.hideContextMenu()
       this.showEventFormMenu(x, y, { eventId })
@@ -677,7 +1092,7 @@ export class FullCalendar {
 
     const deleteItem = document.createElement("div")
     deleteItem.className = "context-menu-item danger"
-    deleteItem.innerHTML = `<i class="fa-solid fa-trash"></i> ${i18n.menu_delete || "Delete"}`
+    deleteItem.innerHTML = `<i class="fa-solid fa-trash"></i> <span>${i18n.menu_delete || "Delete"}</span>`
     deleteItem.addEventListener("click", async () => {
       const confirm = await showConfirm(
         i18n.calendar_delete_confirm || "Delete this event?",
@@ -692,7 +1107,6 @@ export class FullCalendar {
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-
     this.positionContextMenu(menu, x, y)
   }
 
@@ -700,34 +1114,115 @@ export class FullCalendar {
     const event = this.googleEvents.find((e) => e.id === eventId)
     if (!event) return
 
+    const i18n = geti18n()
     this.hideContextMenu()
 
     const menu = document.createElement("div")
-    menu.className = "calendar-context-menu calendar-event-preview"
+    menu.className = "calendar-context-menu calendar-google-event-modal"
     menu.addEventListener("click", (e) => e.stopPropagation())
 
-    const title = document.createElement("div")
-    title.className = "calendar-event-preview-title"
-    title.textContent = event.title
-    menu.appendChild(title)
+    // Header with title and source badge
+    const header = document.createElement("div")
+    header.className = "calendar-modal-header"
+    header.innerHTML = `
+      <div class="calendar-modal-header-top">
+        <span class="calendar-source-badge"><i class="fa-brands fa-google"></i> Google Calendar</span>
+        ${event.isMultiDay ? `<span class="calendar-multiday-badge">${i18n.calendar_days_count ? i18n.calendar_days_count.replace("{count}", event.totalDays) : `${event.totalDays} ngày`}</span>` : ""}
+        <button class="calendar-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <h3 class="calendar-modal-title">${escapeHtml(event.title)}</h3>
+    `
+    menu.appendChild(header)
 
-    const meta = document.createElement("div")
-    meta.className = "calendar-event-preview-meta"
-    meta.textContent = [
-      event.date,
-      event.time || (event.allDay ? "All day" : ""),
-      event.location,
-    ]
-      .filter(Boolean)
-      .join(" | ")
-    menu.appendChild(meta)
+    // Time & Date info
+    const timeSection = document.createElement("div")
+    timeSection.className = "calendar-modal-section calendar-modal-time"
 
-    if (event.description) {
-      const desc = document.createElement("div")
-      desc.className = "calendar-event-preview-desc"
-      desc.textContent = event.description
-      menu.appendChild(desc)
+    let timeDisplay = ""
+    if (event.allDay) {
+      timeDisplay = event.isMultiDay
+        ? `${event.startDate} → ${event.endDate} (${i18n.calendar_all_day || "Cả ngày"})`
+        : `${event.date} • ${i18n.calendar_all_day || "Cả ngày"}`
+    } else {
+      timeDisplay = event.isMultiDay
+        ? `${event.startDate} ${event.time} → ${event.endDate} ${event.endTime}`
+        : `${event.date} • ${event.timeRange || event.time}`
     }
+
+    timeSection.innerHTML = `
+      <i class="fa-regular fa-clock calendar-modal-icon"></i>
+      <div class="calendar-modal-text">${escapeHtml(timeDisplay)}</div>
+    `
+    menu.appendChild(timeSection)
+
+    // Meeting Quick Action Button
+    if (event.meetingUrl) {
+      const meetingBox = document.createElement("div")
+      meetingBox.className = "calendar-modal-action-box"
+      meetingBox.innerHTML = `
+        <a href="${escapeHtml(event.meetingUrl)}" target="_blank" rel="noopener noreferrer" class="calendar-join-btn">
+          <i class="${event.meetingIcon || "fa-solid fa-video"}"></i>
+          <span>${i18n.calendar_join_meeting || "Tham gia cuộc họp"} (${escapeHtml(event.meetingLabel || "Video Call")})</span>
+        </a>
+      `
+      menu.appendChild(meetingBox)
+    }
+
+    // Location & Google Maps Action
+    if (event.location) {
+      const locSection = document.createElement("div")
+      locSection.className = "calendar-modal-section calendar-modal-location"
+      locSection.innerHTML = `
+        <i class="fa-solid fa-location-dot calendar-modal-icon"></i>
+        <div class="calendar-modal-text">
+          <span>${escapeHtml(event.location)}</span>
+          ${
+            event.mapsUrl
+              ? `<a href="${escapeHtml(event.mapsUrl)}" target="_blank" rel="noopener noreferrer" class="calendar-map-link"><i class="fa-solid fa-map-location-dot"></i> ${i18n.calendar_open_map || "Xem trên Maps"}</a>`
+              : ""
+          }
+        </div>
+      `
+      menu.appendChild(locSection)
+    }
+
+    // Organizer if present
+    if (event.organizer) {
+      const orgSection = document.createElement("div")
+      orgSection.className = "calendar-modal-section calendar-modal-organizer"
+      orgSection.innerHTML = `
+        <i class="fa-regular fa-user calendar-modal-icon"></i>
+        <div class="calendar-modal-text">
+          <span class="calendar-modal-sublabel">${i18n.calendar_organizer || "Người tổ chức"}:</span> ${escapeHtml(event.organizer)}
+        </div>
+      `
+      menu.appendChild(orgSection)
+    }
+
+    // Description
+    if (event.description) {
+      const descSection = document.createElement("div")
+      descSection.className = "calendar-modal-desc-box"
+      descSection.innerHTML = `
+        <div class="calendar-modal-desc-label"><i class="fa-regular fa-file-lines"></i> ${i18n.calendar_description || "Mô tả"}</div>
+        <div class="calendar-modal-desc-content">${linkifyText(event.description)}</div>
+      `
+      menu.appendChild(descSection)
+    }
+
+    // Footer actions
+    const footer = document.createElement("div")
+    footer.className = "calendar-modal-footer"
+    footer.innerHTML = `
+      <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer" class="calendar-footer-link">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.calendar_open_in_gcal || "Mở trên Google Calendar"}
+      </a>
+    `
+    menu.appendChild(footer)
+
+    menu.querySelector(".calendar-modal-close")?.addEventListener("click", () => {
+      this.hideContextMenu()
+    })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
@@ -822,6 +1317,7 @@ export class FullCalendar {
     const event = this.getVisibleEvents().find((e) => e.id === eventId)
     if (!event) return
 
+    const i18n = geti18n()
     this.hideEventPreview()
 
     const preview = document.createElement("div")
@@ -834,19 +1330,28 @@ export class FullCalendar {
 
     const meta = document.createElement("div")
     meta.className = "calendar-event-preview-meta"
-    meta.textContent = [
-      event.date,
-      event.time || (event.allDay ? "All day" : ""),
-      event.location,
-    ]
-      .filter(Boolean)
-      .join(" | ")
+
+    const timeText = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+    const metaParts = [event.date, timeText, event.location].filter(Boolean)
+    meta.textContent = metaParts.join(" • ")
     preview.appendChild(meta)
+
+    if (event.meetingUrl) {
+      const meetingTag = document.createElement("div")
+      meetingTag.className = "calendar-preview-meeting-tag"
+      meetingTag.innerHTML = `<i class="${event.meetingIcon || "fa-solid fa-video"}"></i> ${escapeHtml(event.meetingLabel || "Video Call")}`
+      preview.appendChild(meetingTag)
+    }
 
     if (event.description) {
       const desc = document.createElement("div")
       desc.className = "calendar-event-preview-desc"
-      desc.textContent = event.description
+      // Truncate preview description
+      const truncated =
+        event.description.length > 120
+          ? `${event.description.slice(0, 117)}...`
+          : event.description
+      desc.textContent = truncated
       preview.appendChild(desc)
     }
 
@@ -902,10 +1407,16 @@ export class FullCalendar {
 
   positionContextMenu(menu, x, y) {
     const rect = menu.getBoundingClientRect()
-    const safeX = rect.right > window.innerWidth ? x - rect.width : x
-    const safeY = rect.bottom > window.innerHeight ? y - rect.height : y
-    menu.style.left = `${Math.max(8, safeX)}px`
-    menu.style.top = `${Math.max(8, safeY)}px`
+    const safeX =
+      rect.right > window.innerWidth
+        ? Math.max(10, window.innerWidth - rect.width - 15)
+        : Math.max(10, x)
+    const safeY =
+      rect.bottom > window.innerHeight
+        ? Math.max(10, window.innerHeight - rect.height - 15)
+        : Math.max(10, y)
+    menu.style.left = `${safeX}px`
+    menu.style.top = `${safeY}px`
   }
 
   hideContextMenu() {
@@ -913,23 +1424,6 @@ export class FullCalendar {
       this.currentContextMenu.remove()
       this.currentContextMenu = null
     }
-  }
-
-  selectDay(dayElement) {
-    const dayNumber = dayElement.querySelector(".day-number")
-    if (!dayNumber) return
-
-    const day = parseInt(dayNumber.textContent)
-    this.selectedDate = new Date(
-      this.viewDate.getFullYear(),
-      this.viewDate.getMonth(),
-      day,
-    )
-
-    this.container
-      .querySelectorAll(".day-item")
-      .forEach((d) => d.classList.remove("selected"))
-    dayElement.classList.add("selected")
   }
 
   navigateMonth(offset) {
@@ -946,86 +1440,19 @@ export class FullCalendar {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = settings.widgetUseM3Accent === true
-      ? "m3-accent"
-      : isWhiteMode ? "white-blur" : settings.calendarSkin || "default"
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.calendarSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
-  }
-
-  async openEventModal(eventId = null) {
-    const i18n = geti18n()
-    const event = eventId
-      ? getCalendarEvents().find((e) => e.id === eventId)
-      : null
-
-    const title = event
-      ? await showPrompt(
-          i18n.calendar_edit_event || "Edit Event Title:",
-          event.title,
-        )
-      : await showPrompt(i18n.calendar_new_event || "New Event Title:", "")
-
-    if (!title || title.trim() === "") return
-
-    const dateStr = event
-      ? event.date
-      : this.selectedDate
-        ? this.selectedDate.toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0]
-
-    const time = event
-      ? await showPrompt(
-          i18n.calendar_event_time || "Time (HH:MM, optional):",
-          event.time || "",
-        )
-      : await showPrompt(
-          i18n.calendar_event_time || "Time (HH:MM, optional):",
-          "",
-        )
-
-    const description = event
-      ? await showPrompt(
-          i18n.calendar_event_desc || "Description (optional):",
-          event.description || "",
-        )
-      : await showPrompt(
-          i18n.calendar_event_desc || "Description (optional):",
-          "",
-        )
-
-    if (event) {
-      // Show options: Update or Delete
-      const action = await showConfirm(
-        i18n.calendar_event_action ||
-          "Update event or Delete?\n(OK = Update, Cancel = Delete)",
-      )
-      if (action) {
-        updateCalendarEvent(eventId, {
-          title: title.trim(),
-          date: dateStr,
-          time: time?.trim() || "",
-          description: description?.trim() || "",
-        })
-        await showAlert(
-          i18n.calendar_update_success || "Event updated successfully.",
-        )
-      } else {
-        deleteCalendarEvent(eventId)
-      }
-    } else {
-      addCalendarEvent({
-        title: title.trim(),
-        date: dateStr,
-        time: time?.trim() || "",
-        description: description?.trim() || "",
-      })
-      await showAlert(i18n.calendar_add_success || "Event added successfully.")
-    }
-
-    this.render()
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
   }
 
   render() {
@@ -1033,7 +1460,6 @@ export class FullCalendar {
     this.hideEventPreview()
     this.hideHolidayPreview()
 
-    // Preserve current position/display if container already exists
     const currentStyle = this.container.style.cssText
     this.container.innerHTML = ""
     this.container.style.cssText = currentStyle
@@ -1049,7 +1475,10 @@ export class FullCalendar {
     this.calendarSize = getCalendarSize(settings)
 
     this.container.classList.add("calendar-card", "glass-panel", "drag-handle")
-    this.container.classList.toggle("calendar-size-mini", this.calendarSize === "mini")
+    this.container.classList.toggle(
+      "calendar-size-mini",
+      this.calendarSize === "mini",
+    )
     this.container.classList.toggle(
       "calendar-size-expanded",
       this.calendarSize === "expanded",
@@ -1100,9 +1529,6 @@ export class FullCalendar {
 
     let lunarMonthHeader = ""
     if (this.showLunar) {
-      // Get lunar info for the first day of the viewed month
-      const firstDayLunar = convertSolar2Lunar(1, month + 1, year)
-      // Or better, get it for the middle of the month to be more representative
       const midDayLunar = convertSolar2Lunar(15, month + 1, year)
       lunarMonthHeader = `<span class="lunar-month-title"> (Tháng ${midDayLunar.month}${midDayLunar.leap ? " nhuận" : ""})</span>`
     }
@@ -1110,13 +1536,13 @@ export class FullCalendar {
     const header = document.createElement("div")
     header.className = "calendar-header"
     header.innerHTML = `
-            <button id="prev-month" class="icon-btn" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
-            <h3 class="month-title">${monthName} ${year}${lunarMonthHeader}</h3>
-            <div class="calendar-header-actions" style="margin-left: auto; display: flex; gap: 5px;">
-              ${this.calendarEventSource === "local" ? `<button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>` : ""}
-              <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-        `
+      <button id="prev-month" class="icon-btn" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
+      <h3 class="month-title">${monthName} ${year}${lunarMonthHeader}</h3>
+      <div class="calendar-header-actions" style="margin-left: auto; display: flex; gap: 5px;">
+        ${this.calendarEventSource === "local" ? `<button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>` : ""}
+        <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    `
     this.container.appendChild(header)
 
     const showSourceSwitcher = settings.calendarShowSourceSwitcher !== false
@@ -1140,9 +1566,11 @@ export class FullCalendar {
       const googlePanel = document.createElement("div")
       googlePanel.className = "calendar-google-panel"
       googlePanel.innerHTML = `
-        <input id="calendar-google-url" type="url" autocomplete="off" spellcheck="false" placeholder="${i18n.calendar_google_url_placeholder || "Google Calendar iCal URL"}" value="${escapeHtml(normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl))}">
-        <button id="calendar-google-save" class="icon-btn" type="button" title="${i18n.settings_save || "Save"}"><i class="fa-solid fa-check"></i></button>
-        <button id="calendar-google-refresh" class="icon-btn" type="button" title="${i18n.calendar_refresh || "Refresh"}" ${this.googleCalendarLoading ? "disabled" : ""}><i class="fa-solid fa-rotate"></i></button>
+        <div class="calendar-google-input-row">
+          <input id="calendar-google-url" type="url" autocomplete="off" spellcheck="false" placeholder="${i18n.calendar_google_url_placeholder || "Google Calendar iCal URL"}" value="${escapeHtml(normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl))}">
+          <button id="calendar-google-save" class="icon-btn" type="button" title="${i18n.settings_save || "Save"}"><i class="fa-solid fa-check"></i></button>
+          <button id="calendar-google-refresh" class="icon-btn ${this.googleCalendarLoading ? "is-loading" : ""}" type="button" title="${i18n.calendar_refresh || "Refresh"}" ${this.googleCalendarLoading ? "disabled" : ""}><i class="fa-solid fa-rotate ${this.googleCalendarLoading ? "fa-spin" : ""}"></i></button>
+        </div>
         ${this.googleCalendarStatus ? `<div class="calendar-google-status">${escapeHtml(this.googleCalendarStatus)}</div>` : ""}
       `
       this.container.appendChild(googlePanel)
@@ -1249,8 +1677,19 @@ export class FullCalendar {
         dayEvents.slice(0, 2).forEach((event) => {
           const eventEl = document.createElement("div")
           eventEl.className = "calendar-event"
+          if (event.meetingUrl) {
+            eventEl.classList.add("has-meeting")
+          }
           eventEl.dataset.eventId = event.id
-          eventEl.innerHTML = `<span class="event-dot"></span><span class="event-title">${event.time ? event.time + " " : ""}${event.title}</span>`
+
+          const timePrefix = event.time ? `<span class="event-time-tag">${escapeHtml(event.time)}</span>` : ""
+          const meetingDot = event.meetingUrl ? `<i class="fa-solid fa-video event-meeting-icon"></i>` : ""
+
+          eventEl.innerHTML = `
+            <span class="event-dot"></span>
+            ${meetingDot}
+            <span class="event-title">${timePrefix}${escapeHtml(event.title)}</span>
+          `
           eventsContainer.appendChild(eventEl)
         })
 
