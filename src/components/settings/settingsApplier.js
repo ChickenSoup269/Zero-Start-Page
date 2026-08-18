@@ -12,6 +12,7 @@ import {
 import {
   initMacosHoverForBookmarks,
   updateBookmarkGroupsToggleIcon,
+  renderBookmarks,
 } from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
 import { PREDEFINED_FONTS } from "./fontManager.js"
@@ -2418,15 +2419,26 @@ function createApplySettings(effectInstances) {
     const targetClass = layout === "default" ? null : `bookmark-${layout}-mode`
 
     // JITTER-PROOF: Only update classes if the layout has actually changed
+    let layoutChanged = false
     if (targetClass === null) {
       if (layoutClasses.some((c) => document.body.classList.contains(c))) {
         document.body.classList.remove(...layoutClasses)
+        layoutChanged = true
       }
     } else if (!document.body.classList.contains(targetClass)) {
       document.body.classList.remove(...layoutClasses)
       document.body.classList.add(targetClass)
+      layoutChanged = true
     }
     updateBookmarkGroupsToggleIcon()
+    if (layoutChanged) {
+      renderBookmarks()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "bookmarkLayout", value: layout },
+        }),
+      )
+    }
 
     let bgStyle = settings.bookmarkLayoutBgStyle || "default"
     let bgColor = settings.bookmarkLayoutBgColor || ""

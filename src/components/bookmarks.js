@@ -3297,12 +3297,15 @@ export function initBookmarks() {
     }
 
     if (
-      e.detail &&
-      (e.detail.key === "bookmarkLayout" ||
-        e.detail.key === "bookmarkSidebarMode" ||
-        e.detail.key === "bookmarkTheme")
+      !e.detail ||
+      e.detail.key === "bookmarkLayout" ||
+      e.detail.key === "bookmarkSidebarMode" ||
+      e.detail.key === "bookmarkTheme" ||
+      e.detail.key === "showBookmarkGroups" ||
+      e.detail.key === "bookmarkLayoutShowGroups"
     ) {
       updateBookmarkGroupsToggleIcon()
+      renderGroupTabs()
       requestAnimationFrame(updateOverflowBookmarks)
     }
   })
