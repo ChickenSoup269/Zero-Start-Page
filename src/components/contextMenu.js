@@ -165,91 +165,45 @@ async function openSettingsSection(sectionId, targetSelector = null) {
     await window.ensureSettingsInitialized("context-menu-open-section")
   }
   const sidebar = document.getElementById("settings-sidebar")
-  const sidebarContent = sidebar?.querySelector(".sidebar-content")
   const section = document.querySelector(`[data-section-id="${sectionId}"]`)
   if (!sidebar || !section) return
 
   sidebar.classList.add("open")
 
-  // Ensure correct tab is activated in Tab Navigation
-  try {
-    const { switchSettingsTab, getElementTab } = await import(
-      "./settings/sidebarNavigation.js"
-    )
-    if (
-      typeof getElementTab === "function" &&
-      typeof switchSettingsTab === "function"
-    ) {
-      const tab = getElementTab(section)
-      if (tab) {
-        switchSettingsTab(tab)
-      }
-    }
-  } catch (err) {
-    console.warn("Could not switch settings tab:", err)
-  }
-
-  section.classList.remove("collapsed")
-
-  // Expand target collapsible group if any
   let targetElement = null
   if (targetSelector) {
     targetElement =
       section.querySelector(targetSelector) ||
       document.querySelector(targetSelector)
-    if (targetElement) {
-      const collGroup = targetElement.closest(".collapsible-group")
-      if (collGroup) {
-        collGroup.classList.remove("collapsed")
-        collGroup.classList.add("expanded")
-      }
+  }
+
+  const scrollTarget = targetElement || section.querySelector(".section-toggle") || section
+
+  // Ensure correct tab & subtab are activated and scrolled smoothly
+  try {
+    const { scrollToSidebarElement } = await import(
+      "./settings/sidebarNavigation.js"
+    )
+    if (typeof scrollToSidebarElement === "function") {
+      scrollToSidebarElement(scrollTarget, true)
+      return
+    }
+  } catch (err) {
+    console.warn("Could not switch settings tab via scrollToSidebarElement:", err)
+  }
+
+  section.classList.remove("collapsed")
+  if (targetElement) {
+    const collGroup = targetElement.closest(".collapsible-group")
+    if (collGroup) {
+      collGroup.classList.remove("collapsed")
+      collGroup.classList.add("expanded")
     }
   }
 
-  const sectionStates = JSON.parse(
-    localStorage.getItem("settingsSectionStates") || "{}",
-  )
-  sectionStates[sectionId] = false
-  localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
-
-  // Allow DOM to settle for layout calculation and scroll to the top title of target
   setTimeout(() => {
-    let scrollTarget = null
-    let highlightTarget = null
-
-    if (targetElement) {
-      // Find the most appropriate title / header element for this setting
-      const collGroup = targetElement.closest(".collapsible-group")
-      const settingGroup = targetElement.closest(".setting-group")
-      const itemRow = targetElement.closest(
-        ".setting-item-row, .setting-item, .bg-control-card, .theme-item",
-      )
-
-      const groupHeader =
-        collGroup?.querySelector(".group-header, .setting-group-title") ||
-        settingGroup?.querySelector(
-          ".group-header, .setting-group-title, h3, h4, .settings-subsection-title",
-        )
-
-      // Scroll directly to the title/header of the group or item row
-      scrollTarget = groupHeader || itemRow || targetElement
-      highlightTarget = itemRow || groupHeader || settingGroup || targetElement
-    } else {
-      // If no specific sub-target, scroll to the section header title
-      scrollTarget = section.querySelector(".section-toggle") || section
-      highlightTarget = section.querySelector(".section-toggle") || section
-    }
-
     if (scrollTarget) {
-      // Scroll exactly to the header title aligned at the top (with scroll-margin-top)
       scrollTarget.scrollIntoView({ behavior: "smooth", block: "start" })
-
-      if (highlightTarget) {
-        highlightTarget.classList.add("settings-scroll-highlight")
-        window.setTimeout(() => {
-          highlightTarget.classList.remove("settings-scroll-highlight")
-        }, 1600)
-      }
     }
   }, 80)
 }
@@ -269,6 +223,12 @@ function getWidgetSettingsTarget(id) {
       fallback: "Clock",
     },
     "custom-title": {
+      section: "custom-title",
+      target: "#custom-title-text",
+      labelKey: "settings_show_custom_title",
+      fallback: "Custom Title",
+    },
+    customTitle: {
       section: "custom-title",
       target: "#custom-title-text",
       labelKey: "settings_show_custom_title",
@@ -315,6 +275,18 @@ function getWidgetSettingsTarget(id) {
       target: "#show-music-checkbox",
       labelKey: "settings_show_music",
       fallback: "Music",
+    },
+    habitTracker: {
+      section: "layout",
+      target: "#show-habits-checkbox",
+      labelKey: "settings_show_habits",
+      fallback: "Habit Tracker",
+    },
+    rss: {
+      section: "layout",
+      target: "#layout-group-widgets",
+      labelKey: "settings_group_widgets",
+      fallback: "Widgets",
     },
   }
   return targets[id] || null

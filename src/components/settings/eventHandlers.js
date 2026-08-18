@@ -45,7 +45,7 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import { switchSettingsTab, switchBgSubTab, getElementTab, getElementBgSubTab } from "./sidebarNavigation.js"
+import { switchSettingsTab, switchBgSubTab, getElementTab, getElementBgSubTab, scrollToSidebarElement } from "./sidebarNavigation.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -1685,85 +1685,14 @@ export function setupGeneralEventHandlers(
             tocMenu.classList.remove("open")
             tocToggle.classList.remove("active")
 
-            // 0) Switch to the tab containing this section/item
-            if (targetTab) {
-              switchSettingsTab(targetTab)
-            }
-
-            // 0.5) If in background tab, switch to subtab
-            if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
-              switchBgSubTab(targetBgSubTab)
-            }
-
-            // 1) Expand parent section if collapsed
-            const parentSection = section.closest(".settings-section")
-            if (
-              parentSection &&
-              parentSection.classList.contains("collapsed")
-            ) {
-              parentSection.classList.remove("collapsed")
-              const sectionId = parentSection.dataset.sectionId
-              if (sectionId) {
-                const sectionStates = JSON.parse(
-                  localStorage.getItem("settingsSectionStates") || "{}",
-                )
-                sectionStates[sectionId] = false
-                localStorage.setItem(
-                  "settingsSectionStates",
-                  JSON.stringify(sectionStates),
-                )
+            if (typeof scrollToSidebarElement === "function") {
+              scrollToSidebarElement(section, true)
+            } else {
+              if (targetTab) switchSettingsTab(targetTab)
+              if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
+                switchBgSubTab(targetBgSubTab)
               }
             }
-
-            // 2) Expand the item itself if it's a collapsible group (e.g. Effect)
-            if (
-              section.classList.contains("collapsible-group") &&
-              !section.classList.contains("expanded")
-            ) {
-              section.classList.add("expanded")
-              const groupId = section.id || section.dataset.groupId
-              if (groupId) {
-                localStorage.setItem(`settingsGroupExpanded:${groupId}`, "1")
-              }
-            }
-
-            // 3) Smooth scroll to the target element with robust layout calculation
-            const executeScroll = () => {
-              const currentSidebar = sidebarContent || document.getElementById("sidebar-content")
-              if (!currentSidebar || !section) return
-
-              const sidebarRect = currentSidebar.getBoundingClientRect()
-              const sectionRect = section.getBoundingClientRect()
-              const navContainer = document.querySelector(".settings-nav-container")
-              const navOffset = navContainer && !navContainer.classList.contains("nav-hidden")
-                ? (navContainer.offsetHeight || 110)
-                : 10
-
-              const targetPixel = Math.max(0,
-                sectionRect.top -
-                sidebarRect.top +
-                currentSidebar.scrollTop -
-                navOffset - 12
-              )
-
-              currentSidebar.scrollTo({
-                top: targetPixel,
-                behavior: "smooth",
-              })
-
-              // 4) Add visual focus pulse animation
-              section.classList.remove("settings-scroll-highlight")
-              void section.offsetWidth // Trigger reflow
-              section.classList.add("settings-scroll-highlight")
-              setTimeout(() => {
-                section.classList.remove("settings-scroll-highlight")
-              }, 1800)
-            }
-
-            // Execute on double frame + microtask to ensure tab display reflow is complete
-            requestAnimationFrame(() => {
-              setTimeout(executeScroll, 50)
-            })
           })
           tocMenu.appendChild(item)
         }

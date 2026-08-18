@@ -65,7 +65,7 @@ export function getElementTab(el) {
   if (directTab) return directTab
   
   // By section ID
-  const sectionId = el.getAttribute("data-section-id")
+  const sectionId = el.getAttribute("data-section-id") || el.id
   if (sectionId && SECTION_TAB_MAP[sectionId]) {
     return SECTION_TAB_MAP[sectionId]
   }
@@ -77,19 +77,34 @@ export function getElementTab(el) {
   }
 
   // Check specific class or ID
-  if (el.classList.contains("language-setting-group")) return "system"
-  if (el.querySelector("#page-title-input") || el.querySelector("#tab-icon-input")) return "appearance"
+  if (el.classList?.contains("language-setting-group") || el.closest?.(".language-setting-group") || el.id === "language-select") return "system"
+  if (el.querySelector?.("#page-title-input") || el.closest?.("#page-title-group") || el.id === "page-title-input") return "appearance"
+  if (el.closest?.("#accent-color-group") || el.id === "accent-color-group") return "background"
   
+  // Check closest element with data-settings-tab
+  const closestTab = el.closest("[data-settings-tab]")
+  if (closestTab) {
+    return closestTab.getAttribute("data-settings-tab")
+  }
+
   // Check closest section
-  const closestSection = el.closest(".settings-section")
+  const closestSection = el.closest(".settings-section, .setting-group")
   if (closestSection) {
-    const parentSectionId = closestSection.getAttribute("data-section-id")
+    const parentSectionId = closestSection.getAttribute("data-section-id") || closestSection.id
     if (parentSectionId && SECTION_TAB_MAP[parentSectionId]) {
       return SECTION_TAB_MAP[parentSectionId]
     }
   }
 
   return null
+}
+
+const SECTION_BG_SUBTAB_MAP = {
+  "background": "media",
+  "gradient-multi-color": "colors",
+  "accent-color-group": "colors",
+  "animated-backgrounds": "animated",
+  "special-effects": "animated"
 }
 
 /**
@@ -101,7 +116,117 @@ export function getElementBgSubTab(el) {
   if (direct) return direct
   const closest = el.closest("[data-bg-subtab]")
   if (closest) return closest.getAttribute("data-bg-subtab")
+
+  const sectionId = el.getAttribute("data-section-id") || el.id
+  if (sectionId && SECTION_BG_SUBTAB_MAP[sectionId]) {
+    return SECTION_BG_SUBTAB_MAP[sectionId]
+  }
+
+  const closestSection = el.closest(".settings-section, .setting-group, .bg-control-card")
+  if (closestSection) {
+    const parentSubTab = closestSection.getAttribute("data-bg-subtab")
+    if (parentSubTab) return parentSubTab
+
+    const parentSectionId = closestSection.getAttribute("data-section-id") || closestSection.id
+    if (parentSectionId && SECTION_BG_SUBTAB_MAP[parentSectionId]) {
+      return SECTION_BG_SUBTAB_MAP[parentSectionId]
+    }
+  }
+
   return null
+}
+
+/**
+ * Scroll sidebar to a specific element with accurate nav offset & highlight
+ */
+export function scrollToSidebarElement(element, highlight = true) {
+  const sidebar = document.getElementById("settings-sidebar")
+  const sidebarContent = sidebar?.querySelector(".sidebar-content")
+  if (!sidebar || !sidebarContent || !element) return
+
+  // 0. Ensure sidebar is open
+  sidebar.classList.add("open")
+
+  // 1. Ensure target Tab is activated
+  const targetTab = getElementTab(element)
+  if (targetTab && targetTab !== activeTab) {
+    switchSettingsTab(targetTab)
+  }
+
+  // 2. If target is in Background tab, ensure target SubTab is activated
+  if (targetTab === "background" || activeTab === "background") {
+    const targetSubTab = getElementBgSubTab(element) || DEFAULT_BG_SUBTAB
+    if (targetSubTab && targetSubTab !== activeBgSubTab) {
+      switchBgSubTab(targetSubTab)
+    }
+  }
+
+  // 3. Expand parent section if collapsed
+  const parentSection = element.closest(".settings-section")
+  if (parentSection && parentSection.classList.contains("collapsed")) {
+    parentSection.classList.remove("collapsed")
+    const sectionId = parentSection.dataset.sectionId
+    if (sectionId) {
+      try {
+        const states = JSON.parse(localStorage.getItem("settingsSectionStates") || "{}")
+        states[sectionId] = false
+        localStorage.setItem("settingsSectionStates", JSON.stringify(states))
+      } catch (e) {}
+    }
+  }
+
+  // 4. Expand collapsible group if element is or is inside one
+  const collGroup = element.closest(".collapsible-group")
+  if (collGroup && !collGroup.classList.contains("expanded")) {
+    collGroup.classList.remove("collapsed")
+    collGroup.classList.add("expanded")
+    const groupId = collGroup.id || collGroup.dataset.groupId
+    if (groupId) {
+      try {
+        localStorage.setItem(`settingsGroupExpanded:${groupId}`, "1")
+      } catch (e) {}
+    }
+  }
+
+  // 5. Accurate scroll calculation after layout settles
+  const performScroll = () => {
+    const currentSidebar = sidebar.querySelector(".sidebar-content") || sidebarContent
+    if (!currentSidebar || !element) return
+
+    const sidebarRect = currentSidebar.getBoundingClientRect()
+    const elemRect = element.getBoundingClientRect()
+    const navContainer = document.querySelector(".settings-nav-container")
+    const navOffset = navContainer && !navContainer.classList.contains("nav-hidden")
+      ? (navContainer.offsetHeight || 110)
+      : 10
+
+    const targetPixel = Math.max(
+      0,
+      elemRect.top - sidebarRect.top + currentSidebar.scrollTop - navOffset - 14
+    )
+
+    currentSidebar.scrollTo({
+      top: targetPixel,
+      behavior: "smooth",
+    })
+
+    if (highlight) {
+      const highlightTarget =
+        element.closest(".setting-item-row, .setting-item, .bg-control-card, .preset-theme-card, .collapsible-group") ||
+        element.querySelector(".section-toggle") ||
+        element
+      highlightTarget.classList.remove("settings-scroll-highlight")
+      void highlightTarget.offsetWidth // Trigger reflow
+      highlightTarget.classList.add("settings-scroll-highlight")
+      setTimeout(() => {
+        highlightTarget.classList.remove("settings-scroll-highlight")
+      }, 1800)
+    }
+  }
+
+  requestAnimationFrame(() => {
+    setTimeout(performScroll, 80)
+  })
 }
 
 /**
@@ -152,9 +277,9 @@ export function switchBgSubTab(subTabId, targetElementToScrollTo = null) {
 
   // Scroll
   if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
-    setTimeout(() => {
-      targetElementToScrollTo.scrollIntoView({ behavior: "smooth", block: "start" })
-    }, 50)
+    scrollToSidebarElement(targetElementToScrollTo)
+  } else {
+    sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
   }
 }
 
@@ -165,7 +290,7 @@ function getTopLevelSettingElements(sidebarContent) {
   if (!sidebarContent) return []
   return Array.from(
     sidebarContent.querySelectorAll(
-      ":scope > .settings-section, :scope > .setting-group, :scope > [data-settings-partial]"
+      ":scope > .settings-section, :scope > .setting-group, :scope > .bg-subtab-nav, :scope > [data-settings-partial], :scope > [data-settings-tab]"
     )
   )
 }
@@ -214,6 +339,16 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
     }
   })
 
+  // Ensure bg-subtab-nav visibility is in sync with background tab
+  const bgSubTabNav = sidebar.querySelector(".bg-subtab-nav")
+  if (bgSubTabNav) {
+    if (activeTab === "background") {
+      bgSubTabNav.classList.remove("settings-tab-hidden")
+    } else {
+      bgSubTabNav.classList.add("settings-tab-hidden")
+    }
+  }
+
   // If active tab is background, apply subtab filtering
   if (activeTab === "background") {
     if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
@@ -226,13 +361,8 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
     } else {
       switchBgSubTab(activeBgSubTab)
     }
-  }
-
-  // Scroll
-  if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
-    setTimeout(() => {
-      targetElementToScrollTo.scrollIntoView({ behavior: "smooth", block: "start" })
-    }, 50)
+  } else if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+    scrollToSidebarElement(targetElementToScrollTo)
   } else {
     sidebarContent.scrollTo({ top: 0, behavior: "instant" })
   }
