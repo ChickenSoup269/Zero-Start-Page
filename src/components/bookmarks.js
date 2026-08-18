@@ -913,6 +913,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     } else {
       draggedStackItems = [{ stack, stackIndex, itemIndex, item: stack.items[itemIndex] }]
     }
+    window._activeDraggedStackItems = draggedStackItems
     draggedBookmarkIndices = []
     draggedGroupIndex = null
     this.classList.add("dragging")
@@ -987,7 +988,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       applyBookmarkLinkBehavior(link, item.url)
       link.className = "bookmark bookmark-stack-popup-item"
       link.dataset.stackIndex = itemIndex
-      link.draggable = getSettings().bookmarkEnableDrag === true
+      link.draggable = getSettings().bookmarkEnableDrag !== false
       if (selectedStackIndices.has(itemIndex)) {
         link.classList.add("selected")
       }
@@ -1490,9 +1491,13 @@ function createBookmarkStack(title, items) {
 }
 
 function takeDraggedStackItems() {
-  if (!draggedStackItems || draggedStackItems.length === 0) return null
+  const currentStackItems = (draggedStackItems && draggedStackItems.length > 0)
+    ? draggedStackItems
+    : (window._activeDraggedStackItems || [])
+
+  if (!currentStackItems || currentStackItems.length === 0) return null
   const bookmarks = getBookmarks()
-  const first = draggedStackItems[0]
+  const first = currentStackItems[0]
 
   let sourceStack = first.stack
   let sourceStackIndex = first.stackIndex
@@ -1508,7 +1513,7 @@ function takeDraggedStackItems() {
         (b) =>
           b === sourceStack ||
           (b.id && sourceStack.id && b.id === sourceStack.id) ||
-          (b.type === "stack" && b.title === sourceStack.title && Array.isArray(b.items)),
+          (Array.isArray(b.items) && (b.items === sourceStack.items || (first.item && b.items.includes(first.item)))),
       )
       if (rootIdx !== -1) {
         sourceStack = bookmarks[rootIdx]
@@ -1527,7 +1532,7 @@ function takeDraggedStackItems() {
           (it) =>
             it === sourceStack ||
             (it.id && sourceStack.id && it.id === sourceStack.id) ||
-            (it.type === "stack" && it.title === sourceStack.title),
+            (Array.isArray(it.items) && (it.items === sourceStack.items || (first.item && it.items.includes(first.item)))),
         )
         if (nestedIdx !== -1) {
           parentStack = b
@@ -1554,7 +1559,7 @@ function takeDraggedStackItems() {
   if (!sourceStack || !Array.isArray(sourceStack.items)) return null
 
   const items = []
-  const sortedStackItems = [...draggedStackItems].sort(
+  const sortedStackItems = [...currentStackItems].sort(
     (a, b) => b.itemIndex - a.itemIndex,
   )
   for (const ds of sortedStackItems) {
@@ -1591,6 +1596,7 @@ function takeDraggedStackItems() {
   }
 
   draggedStackItems = []
+  window._activeDraggedStackItems = null
   return { bookmarks, items, sourceStackIndex, removedSourceSlot }
 }
 
@@ -1793,23 +1799,35 @@ function handleDrop(e) {
   clearBookmarkDropClasses(this)
   const targetIndex = Number(this.dataset.index)
 
-  if (draggedStackItems.length > 0) {
+  if (draggedStackItems.length > 0 || window._activeDraggedStackItems?.length > 0) {
     const snapshot = captureBookmarkSnapshot()
+    const currentBookmarks = getBookmarks()
+    const targetItem = currentBookmarks[targetIndex]
+    const intent = getBookmarkDropIntent(this, e)
+
     const extracted = takeDraggedStackItems()
     if (!extracted?.items || extracted.items.length === 0) return false
 
-    const { bookmarks, items, sourceStackIndex, removedSourceSlot } = extracted
-    let insertIndex = targetIndex
-    if (removedSourceSlot && sourceStackIndex < targetIndex) insertIndex -= 1
-    const intent = getBookmarkDropIntent(this, e)
-    if (intent !== "before") insertIndex += 1
-    bookmarks.splice(Math.max(0, insertIndex), 0, ...items)
+    const { items, sourceStackIndex, removedSourceSlot } = extracted
+    const bookmarks = extracted.bookmarks
+
+    if (intent === "stack" && isBookmarkStack(targetItem)) {
+      targetItem.items = targetItem.items || []
+      targetItem.items.push(...items)
+    } else {
+      let insertIndex = targetIndex
+      if (removedSourceSlot && sourceStackIndex < targetIndex) insertIndex -= 1
+      if (intent !== "before") insertIndex += 1
+      bookmarks.splice(Math.max(0, insertIndex), 0, ...items)
+    }
+
     setBookmarks(bookmarks)
     saveBookmarks()
     document.getElementById("bookmark-stack-popup")?.remove()
     cancelSelection()
     renderBookmarks()
     showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+    return false
   } else if (
     draggedBookmarkIndices.length > 0 &&
     !draggedBookmarkIndices.includes(targetIndex)
@@ -2005,7 +2023,10 @@ function handleDragEnd(e) {
     })
   draggedBookmarkIndices = []
   draggedGroupIndex = null
-  draggedStackItems = []
+  setTimeout(() => {
+    draggedStackItems = []
+    window._activeDraggedStackItems = null
+  }, 100)
   document.body.classList.remove("bookmark-dragging-active")
 }
 
@@ -2155,7 +2176,7 @@ export function renderBookmarks() {
     frag.appendChild(breadcrumb);
   }
 
-  const enableDrag = settings.bookmarkEnableDrag === true
+  const enableDrag = settings.bookmarkEnableDrag !== false
 
   bookmarks.forEach((bookmark, index) => {
     const isStack = isBookmarkStack(bookmark)
@@ -2575,7 +2596,7 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
            getFaviconObserver().observe(img)
         }
       })
-      if (getSettings().bookmarkEnableDrag === true) {
+      if (getSettings().bookmarkEnableDrag !== false) {
         clone.draggable = true
         clone.addEventListener("dragstart", handleDragStart)
         clone.addEventListener("dragover", handleDragOver)
@@ -3194,7 +3215,7 @@ function renderGroupTabs() {
   const groups = getBookmarkGroups()
   const activeId = getActiveGroupId()
   const settings = getSettings()
-  const enableDrag = settings.bookmarkEnableDrag === true
+  const enableDrag = settings.bookmarkEnableDrag !== false
   bookmarkGroupsContainer.innerHTML = ""
 
   const isSidebar = document.body.classList.contains("bookmark-sidebar-mode") || settings.bookmarkLayout === "sidebar"
