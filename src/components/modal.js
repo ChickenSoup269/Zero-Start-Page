@@ -131,6 +131,9 @@ function getBookmarkHostname(url) {
 function getBookmarkForEdit(index, target) {
   const bookmarks = getBookmarks()
   if (target?.type === "stackItem") {
+    if (target.stack?.items?.[target.itemIndex]) {
+      return target.stack.items[target.itemIndex]
+    }
     return bookmarks[target.stackIndex]?.items?.[target.itemIndex] || null
   }
   if (index !== null) return bookmarks[index] || null
@@ -355,9 +358,13 @@ export function openBookmarkEditPopover(
     const bookmarks = getBookmarks()
 
     if (editingTarget?.type === "stackItem") {
-      const stack = bookmarks[editingTarget.stackIndex]
-      if (stack?.items?.[editingTarget.itemIndex]) {
-        stack.items[editingTarget.itemIndex] = updatedBookmark
+      if (editingTarget.stack?.items?.[editingTarget.itemIndex]) {
+        editingTarget.stack.items[editingTarget.itemIndex] = updatedBookmark
+      } else {
+        const stack = bookmarks[editingTarget.stackIndex]
+        if (stack?.items?.[editingTarget.itemIndex]) {
+          stack.items[editingTarget.itemIndex] = updatedBookmark
+        }
       }
     } else if (editingIndex !== null) {
       bookmarks[editingIndex] = updatedBookmark
@@ -705,14 +712,28 @@ function createFolderIconEditor({
 }
 
 export function openBookmarkStackEditPopover(
-  stackIndex,
+  stackOrIndex,
   anchor = null,
   options = {},
 ) {
   const i18n = geti18n()
   const bookmarks = getBookmarks()
-  const stack = bookmarks[stackIndex]
-  if (!stack?.items) return
+  let stack = null
+  let stackIndex = null
+
+  if (typeof stackOrIndex === "number") {
+    stackIndex = stackOrIndex
+    stack = bookmarks[stackIndex]
+  } else if (stackOrIndex && typeof stackOrIndex === "object") {
+    if (stackOrIndex.stack) {
+      stack = stackOrIndex.stack
+      stackIndex = stackOrIndex.stackIndex
+    } else {
+      stack = stackOrIndex
+    }
+  }
+
+  if (!stack || !Array.isArray(stack.items)) return
 
   createFolderIconEditor({
     title: i18n.bookmark_stack_edit || "Edit bookmark folder",
@@ -725,14 +746,31 @@ export function openBookmarkStackEditPopover(
     focus: options.focus,
     onSave: ({ name, icon, iconColor }) => {
       const snapshot = captureBookmarkSnapshot()
-      const current = getBookmarks()
-      if (!current[stackIndex]?.items) return
-      current[stackIndex].title = name
-      current[stackIndex].icon = icon
-      if (iconColor !== undefined) current[stackIndex].iconColor = iconColor || ""
-      setBookmarks(current)
+      stack.title = name
+      stack.icon = icon
+      if (iconColor !== undefined) stack.iconColor = iconColor || ""
+
+      if (typeof stackIndex === "number" && bookmarks[stackIndex]) {
+        bookmarks[stackIndex].title = name
+        bookmarks[stackIndex].icon = icon
+        if (iconColor !== undefined) bookmarks[stackIndex].iconColor = iconColor || ""
+        setBookmarks(bookmarks)
+      }
+
       saveBookmarks()
       renderBookmarks()
+
+      const popup = document.getElementById("bookmark-stack-popup")
+      if (popup) {
+        const titleEl = popup.querySelector(".bookmark-stack-popup-title")
+        if (titleEl) titleEl.textContent = name
+        const headerIcon = popup.querySelector(".bookmark-stack-popup-header-icon")
+        if (headerIcon) {
+          if (iconColor) headerIcon.style.color = iconColor
+          else headerIcon.style.removeProperty("color")
+        }
+      }
+
       showBookmarkUndo(i18n.bookmark_group_renamed || "Folder updated", snapshot)
     },
   })

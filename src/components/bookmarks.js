@@ -718,7 +718,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       anchor && anchor.isConnected && anchor.getBoundingClientRect().width > 0
         ? anchor
         : renameFolderBtn
-    openBookmarkStackEditPopover(stackIndex, validAnchor)
+    openBookmarkStackEditPopover({ stack, stackIndex }, validAnchor)
   })
 
   const closeBtn = document.createElement("button")
@@ -1033,7 +1033,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
         if (isBookmarkStack(item)) {
           event.preventDefault()
           event.stopPropagation()
-          openBookmarkStackPopup(item, anchor, null)
+          openBookmarkStackPopup(item, link, null)
           return
         }
 
@@ -1048,61 +1048,107 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       link.addEventListener("contextmenu", (event) => {
         event.preventDefault()
         event.stopPropagation()
-        showContextMenu(
-          event.clientX,
-          event.clientY,
-          itemIndex,
-          "bookmarkStackItem",
-          `${stackIndex}:${itemIndex}`,
-          {
-            onEdit: () => {
-              openBookmarkEditPopover(
-                null,
-                {
-                  type: "stackItem",
-                  stackIndex,
-                  itemIndex,
-                },
-                link,
-              )
+
+        if (isBookmarkStack(item)) {
+          showContextMenu(
+            event.clientX,
+            event.clientY,
+            itemIndex,
+            "bookmarkStack",
+            item.id,
+            {
+              anchor: link,
+              onEdit: () => {
+                openBookmarkStackEditPopover(item, link)
+              },
+              onEditIcon: () => {
+                openBookmarkStackEditPopover(item, link, { focus: "icon" })
+              },
+              onDelete: async () => {
+                const confirmed = await showConfirm(
+                  `${i18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(item)}"?`,
+                )
+                if (!confirmed) return
+                const snapshot = captureBookmarkSnapshot()
+                stack.items.splice(itemIndex, 1)
+                normalizeStackAfterDelete()
+                renderStackItems()
+                syncStackSelectionUi()
+                renderBookmarks()
+                showBookmarkUndo(
+                  i18n.bookmark_group_deleted || "Group deleted",
+                  snapshot,
+                )
+              },
+              onSelect: () => {
+                isStackSelectionMode = true
+                selectedStackIndices.clear()
+                selectedStackIndices.add(itemIndex)
+                renderStackItems()
+                syncStackSelectionUi()
+              },
             },
-            onEditIcon: () => {
-              openBookmarkEditPopover(
-                null,
-                {
-                  type: "stackItem",
-                  stackIndex,
-                  itemIndex,
-                },
-                link,
-                { focus: "icon" },
-              )
+          )
+        } else {
+          showContextMenu(
+            event.clientX,
+            event.clientY,
+            itemIndex,
+            "bookmarkStackItem",
+            `${stackIndex}:${itemIndex}`,
+            {
+              anchor: link,
+              onEdit: () => {
+                openBookmarkEditPopover(
+                  null,
+                  {
+                    type: "stackItem",
+                    stack,
+                    stackIndex,
+                    itemIndex,
+                  },
+                  link,
+                )
+              },
+              onEditIcon: () => {
+                openBookmarkEditPopover(
+                  null,
+                  {
+                    type: "stackItem",
+                    stack,
+                    stackIndex,
+                    itemIndex,
+                  },
+                  link,
+                  { focus: "icon" },
+                )
+              },
+              onDelete: async () => {
+                const confirmed = await showConfirm(
+                  `${i18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(item)}"?`,
+                )
+                if (!confirmed) return
+                const snapshot = captureBookmarkSnapshot()
+                stack.items.splice(itemIndex, 1)
+                normalizeStackAfterDelete()
+                renderStackItems()
+                syncStackSelectionUi()
+                renderBookmarks()
+                showBookmarkUndo(
+                  i18n.bookmark_deleted || "Bookmark deleted",
+                  snapshot,
+                )
+              },
+              onSelect: () => {
+                isStackSelectionMode = true
+                selectedStackIndices.clear()
+                selectedStackIndices.add(itemIndex)
+                renderStackItems()
+                syncStackSelectionUi()
+              },
             },
-            onDelete: async () => {
-              const confirmed = await showConfirm(
-                `${i18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(item)}"?`,
-              )
-              if (!confirmed) return
-              const snapshot = captureBookmarkSnapshot()
-              stack.items.splice(itemIndex, 1)
-              normalizeStackAfterDelete()
-              renderStackItems()
-              syncStackSelectionUi()
-              renderBookmarks()
-              showBookmarkUndo(
-                i18n.bookmark_deleted || "Bookmark deleted",
-                snapshot,
-              )
-            },
-            onSelect: () => {
-              isStackSelectionMode = true
-              selectedStackIndices.clear()
-              selectedStackIndices.add(itemIndex)
-              renderStackItems()
-              syncStackSelectionUi()
-            },
-          },
-        )
+          )
+        }
       })
 
       grid.appendChild(link)
@@ -1464,15 +1510,21 @@ function takeDraggedStackItems() {
     )
   }
 
+  // Check if sourceStack is at root level or nested inside a parent stack
+  let parentStack = null
   if (sourceStack) {
     const idx = bookmarks.indexOf(sourceStack)
     if (idx !== -1) {
       sourceStackIndex = idx
-    } else if (
-      sourceStackIndex == null &&
-      typeof activeStackIndex === "number"
-    ) {
-      sourceStackIndex = activeStackIndex
+    } else {
+      for (let i = 0; i < bookmarks.length; i++) {
+        const b = bookmarks[i]
+        if (isBookmarkStack(b) && b.items.includes(sourceStack)) {
+          parentStack = b
+          sourceStackIndex = i
+          break
+        }
+      }
     }
   }
 
@@ -1483,15 +1535,27 @@ function takeDraggedStackItems() {
     (a, b) => b.itemIndex - a.itemIndex,
   )
   for (const ds of sortedStackItems) {
-    if (sourceStack.items[ds.itemIndex]) {
-      items.unshift(...sourceStack.items.splice(ds.itemIndex, 1))
+    let idx = ds.itemIndex
+    if (ds.item && sourceStack.items[idx] !== ds.item) {
+      idx = sourceStack.items.indexOf(ds.item)
+    }
+    if (idx !== -1 && sourceStack.items[idx]) {
+      items.unshift(...sourceStack.items.splice(idx, 1))
     }
   }
 
   if (items.length === 0) return null
 
   let removedSourceSlot = false
-  if (
+  if (parentStack) {
+    if (sourceStack.items.length <= 0) {
+      const pIdx = parentStack.items.indexOf(sourceStack)
+      if (pIdx !== -1) parentStack.items.splice(pIdx, 1)
+    } else if (sourceStack.items.length === 1) {
+      const pIdx = parentStack.items.indexOf(sourceStack)
+      if (pIdx !== -1) parentStack.items[pIdx] = sourceStack.items[0]
+    }
+  } else if (
     sourceStackIndex != null &&
     sourceStackIndex >= 0 &&
     bookmarks[sourceStackIndex] === sourceStack
@@ -1506,6 +1570,7 @@ function takeDraggedStackItems() {
     }
   }
 
+  draggedStackItems = []
   return { bookmarks, items, sourceStackIndex, removedSourceSlot }
 }
 
@@ -2242,6 +2307,39 @@ export function renderBookmarks() {
         showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
       }
     })
+
+    const bookmarkWidget = document.getElementById("bookmark-widget")
+    if (bookmarkWidget && !bookmarkWidget.dataset.dragListenerBound) {
+      bookmarkWidget.dataset.dragListenerBound = "true"
+      bookmarkWidget.addEventListener("dragover", (e) => {
+        if (draggedStackItems && draggedStackItems.length > 0) {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = "move"
+        }
+      })
+      bookmarkWidget.addEventListener("drop", (e) => {
+        if (
+          !e.target.closest(".bookmark") &&
+          !e.target.closest(".bookmark-group-tab") &&
+          !e.target.closest(".bookmark-stack-popup") &&
+          draggedStackItems &&
+          draggedStackItems.length > 0
+        ) {
+          e.preventDefault()
+          e.stopPropagation()
+          const snapshot = captureBookmarkSnapshot()
+          const extracted = takeDraggedStackItems()
+          if (!extracted?.items || extracted.items.length === 0) return
+          extracted.bookmarks.push(...extracted.items)
+          setBookmarks(extracted.bookmarks)
+          saveBookmarks()
+          document.getElementById("bookmark-stack-popup")?.remove()
+          cancelSelection()
+          renderBookmarks()
+          showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+        }
+      })
+    }
   }
 
   // Use requestAnimationFrame so UI can render before calculations
