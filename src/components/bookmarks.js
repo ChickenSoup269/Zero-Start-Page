@@ -764,7 +764,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   searchToggleBtn.addEventListener("click", () => {
     const isHidden = searchWrapper.style.display === "none"
-    searchWrapper.style.display = isHidden ? "block" : "none"
+    searchWrapper.style.display = isHidden ? "flex" : "none"
     searchToggleBtn.classList.toggle("active", isHidden)
     if (isHidden) searchInput.focus()
   })
@@ -1176,7 +1176,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   if (searchInput) {
     searchInput.addEventListener("input", () => {
-      clearSearchBtn.style.display = searchInput.value ? "block" : "none"
+      clearSearchBtn.style.display = searchInput.value ? "flex" : "none"
       renderStackItems()
     })
   }

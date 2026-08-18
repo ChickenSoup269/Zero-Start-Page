@@ -1623,14 +1623,22 @@ span.bookmark-stack-popup-header-icon {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .bookmark-stack-popup-search-icon {
   position: absolute;
   left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.45);
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .bookmark-stack-popup-search-input {
@@ -1647,30 +1655,35 @@ span.bookmark-stack-popup-header-icon {
 }
 
 .bookmark-stack-popup-search-input:focus {
-  border-color: var(--accent-color, #a8c0ff);
+  border-color: var(--accent-color, #60a5fa);
   background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 100, 150, 255), 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 96, 165, 250), 0.2);
 }
 
 .bookmark-stack-popup-search-clear {
   position: absolute;
   right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   padding: 4px;
+  width: 22px;
+  height: 22px;
   font-size: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 50%;
   transition: all 0.15s ease;
+  z-index: 1;
 }
 
 .bookmark-stack-popup-search-clear:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .bookmark-stack-popup-selection-bar {
@@ -1785,6 +1798,36 @@ body.bookmark-macos-hover .bookmark-stack-popup-grid {
   .bookmark-stack-popup-item.selected
   .bookmark-stack-popup-check {
   display: inline-flex;
+}
+
+.bookmark-stack-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  color: var(--text-color, #fff);
+  opacity: 0.85;
+}
+
+.bookmark-stack-empty i {
+  font-size: 2.2rem;
+  color: var(--accent-color, #60a5fa);
+  opacity: 0.75;
+  margin-bottom: 2px;
+}
+
+.bookmark-stack-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: inherit;
 }
 
 body.hide-bookmark-bg .bookmark img,
@@ -15227,6 +15270,14 @@ body.context-menu-dark .bookmark-stack-popup-search-input {
   color: #ffffff !important;
 }
 
+body.context-menu-dark .bookmark-stack-empty {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.context-menu-dark .bookmark-stack-empty i {
+  color: var(--accent-color, #60a5fa) !important;
+}
+
 /* 2. LIGHT GLASS (body.context-menu-light) */
 body.context-menu-light .bookmark-stack-popup {
   background: rgba(255, 255, 255, 0.88) !important;
@@ -15381,6 +15432,14 @@ body.context-menu-light .bookmark-stack-popup .bookmark:hover {
   border-radius: 12px;
 }
 
+body.context-menu-light .bookmark-stack-empty {
+  color: #334155 !important;
+}
+
+body.context-menu-light .bookmark-stack-empty i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
 /* 3. MACOS GRAPHITE / FROST (body.context-menu-macos) */
 body.context-menu-macos .bookmark-stack-popup {
   background: rgba(246, 246, 248, 0.88) !important;
@@ -15500,6 +15559,14 @@ body.context-menu-macos .bookmark-stack-popup .bookmark:hover {
   border-radius: 12px;
 }
 
+body.context-menu-macos .bookmark-stack-empty {
+  color: #1d1d1f !important;
+}
+
+body.context-menu-macos .bookmark-stack-empty i {
+  color: var(--accent-color, #007aff) !important;
+}
+
 /* 4. TRANSPARENT (body.context-menu-none) */
 body.context-menu-none .bookmark-stack-popup {
   background: rgba(255, 255, 255, 0.65) !important;
@@ -15610,6 +15677,14 @@ body.context-menu-none .bookmark-stack-popup .bookmark:hover {
   border-radius: 12px;
 }
 
+body.context-menu-none .bookmark-stack-empty {
+  color: #0f172a !important;
+}
+
+body.context-menu-none .bookmark-stack-empty i {
+  color: var(--accent-color, #0284c7) !important;
+}
+
 /* 5. MATERIAL YOU 3 (body.context-menu-m3) */
 body.context-menu-m3 .bookmark-stack-popup {
   background:
@@ -15691,6 +15766,14 @@ body.context-menu-m3 .bookmark-stack-popup-search-input {
 
 body.context-menu-m3 .bookmark-stack-popup-search-input::placeholder {
   color: color-mix(in srgb, var(--m3-on-primary-container, #fff) 60%, transparent) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-empty {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-empty i {
+  color: var(--m3-primary, var(--safe-accent)) !important;
 }
 
 /* Ensure tooltip text is always white/text-color when macOS hover is active, regardless of light theme context */
