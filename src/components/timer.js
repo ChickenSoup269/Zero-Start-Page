@@ -86,14 +86,25 @@ export class Timer {
     }
 
     this.container.innerHTML = `
-            <div class="timer-main-view">
-                <div class="timer-display" id="timer-display">00:00:00</div>
-                <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <div class="timer-top-header">
+                <div class="timer-badges-row">
                     <div class="timer-status" id="timer-status">
                         <i class="fa-solid fa-circle-pause"></i>
                         <span>${i18n.timer_status_ready || "Ready"}</span>
                     </div>
-                    <div class="pomodoro-stats" id="pomodoro-stats" style="display: none;" title="Pomodoros Today"><i class="fa-solid fa-stopwatch pomodoro-icon"></i> <span class="pomodoro-count">0</span></div>
+                    <div class="pomodoro-stats" id="pomodoro-stats" style="display: none;" title="Pomodoros Today">
+                        <i class="fa-solid fa-fire pomodoro-icon"></i>
+                        <span class="pomodoro-count">0</span>
+                    </div>
+                </div>
+                <button type="button" id="timer-header-close" class="timer-header-action-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="timer-main-view">
+                <div class="timer-hero-card">
+                    <div class="timer-display" id="timer-display">00:00:00</div>
+                    <div class="timer-progress-wrap">
+                        <div class="timer-progress-bar" id="timer-progress-bar" style="width: 0%;"></div>
+                    </div>
                 </div>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
@@ -111,11 +122,21 @@ export class Timer {
                 </label>
             </div>
             <div id="timer-input-view" class="timer-input-view" style="display: none;">
-                <div class="timer-input-header">Set Timer</div>
+                <div class="timer-input-header">
+                    <button type="button" id="timer-back-btn" class="timer-back-btn" title="Back"><i class="fa-solid fa-arrow-left"></i></button>
+                    <span>Set Timer</span>
+                </div>
                 <div class="pomodoro-presets" aria-label="Pomodoro presets">
                     <button type="button" class="pomodoro-btn" data-time="1500" data-i18n-title="pomodoroFocus" title="Focus (25m)"><i class="fa-solid fa-brain"></i> <span>25m</span></button>
                     <button type="button" class="pomodoro-btn" data-time="300" data-i18n-title="pomodoroShortBreak" title="Short Break (5m)"><i class="fa-solid fa-mug-hot"></i> <span>5m</span></button>
                     <button type="button" class="pomodoro-btn" data-time="900" data-i18n-title="pomodoroLongBreak" title="Long Break (15m)"><i class="fa-solid fa-couch"></i> <span>15m</span></button>
+                </div>
+                <div class="timer-quick-increments" aria-label="Quick increments">
+                    <button type="button" class="timer-inc-btn" data-add="60">+1m</button>
+                    <button type="button" class="timer-inc-btn" data-add="300">+5m</button>
+                    <button type="button" class="timer-inc-btn" data-add="600">+10m</button>
+                    <button type="button" class="timer-inc-btn" data-add="900">+15m</button>
+                    <button type="button" class="timer-inc-btn" data-add="1800">+30m</button>
                 </div>
                 <div class="timer-saved-presets" id="timer-saved-presets" hidden>
                     <div class="timer-saved-presets-label">${i18n.timer_saved_presets || "Saved"}</div>
@@ -152,6 +173,7 @@ export class Timer {
 
     this.display = this.container.querySelector("#timer-display")
     this.status = this.container.querySelector("#timer-status")
+    this.progressBar = this.container.querySelector("#timer-progress-bar")
     this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
     this.applyAlarmDropdownVisibility()
     this.applyClockHiddenCompactMode()
@@ -298,7 +320,36 @@ export class Timer {
       })
     this.container
       .querySelector("#timer-cancel-edit")
-      .addEventListener("click", () => this.hideInputView())
+      ?.addEventListener("click", () => this.hideInputView())
+    this.container
+      .querySelector("#timer-back-btn")
+      ?.addEventListener("click", () => this.hideInputView())
+    this.container
+      .querySelector("#timer-header-close")
+      ?.addEventListener("click", () => {
+        updateSetting("showTimer", false)
+        saveSettings()
+        this.isVisible = false
+        this.syncTimerVisibilityControls(false)
+        this.updateVisibility()
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showTimer", value: false },
+          }),
+        )
+      })
+    this.container.querySelectorAll(".timer-inc-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const addSec = parseInt(btn.dataset.add, 10) || 0
+        const smartInput = this.container.querySelector("#timer-smart-input")
+        if (smartInput) {
+          const currentSec = this.parseSmartTimerInput(smartInput.value || "0")
+          const nextSec = currentSec + addSec
+          smartInput.value = this.formatDurationLabel(nextSec)
+          this.updateSmartInputPreview(smartInput.value)
+        }
+      })
+    })
     this.container
       .querySelector("#timer-set-confirm")
       .addEventListener("click", () => this.setTimer())
@@ -967,6 +1018,14 @@ export class Timer {
 
   render() {
     this.renderTime(this.timeLeft, this.display)
+
+    if (this.progressBar) {
+      const pct =
+        this.initialTime > 0
+          ? ((this.initialTime - this.timeLeft) / this.initialTime) * 100
+          : 0
+      this.progressBar.style.width = `${Math.min(100, Math.max(0, pct))}%`
+    }
 
     const miniText = document.querySelector(
       "#mini-timer-indicator .mini-timer-text",
