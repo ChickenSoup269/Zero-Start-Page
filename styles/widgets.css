@@ -11994,20 +11994,21 @@ body.bookmark-taskbar-right-mode .bookmark-groups-container {
   animation: launchpadFolderIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Sidebar mode: Display as a vertical column */
+/* Sidebar mode: Display with multi-column wrapping and equal padding */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
-  flex-direction: column !important;
-  flex-wrap: nowrap !important;
-  width: max-content !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  max-height: 80vh !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  width: fit-content !important;
+  max-width: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + var(--space-2)) !important;
+  max-height: 75vh !important;
   padding: var(--space-1) !important;
-  gap: var(--bookmark-gap-y, var(--space-1)) !important;
+  gap: var(--bookmark-gap-y, var(--space-1)) var(--bookmark-gap-x, var(--space-1)) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   box-sizing: border-box !important;
-  align-items: center !important;
+  justify-content: center !important;
+  align-content: flex-start !important;
   background: rgba(0, 0, 0, 0.3) !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
@@ -15195,21 +15196,22 @@ body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab
   outline: none !important;
 }
 
-/* --- MULTI-ROW WRAPPING FOR HIDDEN BOOKMARKS TASKBAR POPUP --- */
-/* Sidebar Popup: Clean vertical single column matching sidebar layout */
+/* --- MULTI-COLUMN/ROW WRAPPING FOR HIDDEN BOOKMARKS POPUP --- */
+/* Sidebar Popup: Multi-column wrapping with fit-content width and equal padding */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
-  flex-direction: column !important;
-  flex-wrap: nowrap !important;
-  width: max-content !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  max-height: 80vh !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  width: fit-content !important;
+  max-width: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + var(--space-2)) !important;
+  max-height: 75vh !important;
   padding: var(--space-1) !important;
-  gap: var(--bookmark-gap-y, var(--space-1)) !important;
+  gap: var(--bookmark-gap-y, var(--space-1)) var(--bookmark-gap-x, var(--space-1)) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   box-sizing: border-box !important;
-  align-items: center !important;
+  justify-content: center !important;
+  align-content: flex-start !important;
 }
 
 /* Taskbar Popup: Wrap into rows (vertical expansion up to 3 rows, then scroll horizontally) */
