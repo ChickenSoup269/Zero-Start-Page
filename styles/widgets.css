@@ -11919,19 +11919,19 @@ body.bookmark-taskbar-right-mode .bookmark-groups-container {
   flex-wrap: wrap !important;
 }
 
-/* === HIDDEN BOOKMARKS SUB-MENU POPUP === */
+/* === HIDDEN BOOKMARKS SUB-MENU POPUP (DOCK CONTAINER MATCHING) === */
 #hidden-bookmarks-popup {
   position: fixed;
-  background: linear-gradient(145deg, rgba(28, 32, 46, 0.92), rgba(14, 16, 26, 0.98)) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  border-radius: 20px !important;
-  padding: 16px !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--space-1) var(--space-1-5) !important;
   display: flex;
   gap: var(--space-1);
   z-index: 10020;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
   animation: launchpadFolderIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
