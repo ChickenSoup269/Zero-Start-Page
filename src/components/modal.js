@@ -139,14 +139,45 @@ function getBookmarkForEdit(index, target) {
 
 function positionBookmarkEditPopover(popover, anchor) {
   const margin = 12
-  const anchorRect = anchor?.getBoundingClientRect?.()
   const width = popover.offsetWidth || 340
   const height = popover.offsetHeight || 420
+
+  let anchorRect = null
+  if (anchor && typeof anchor.getBoundingClientRect === "function") {
+    if (anchor.isConnected !== false) {
+      const r = anchor.getBoundingClientRect()
+      if (
+        r &&
+        (r.width > 0 || r.height > 0) &&
+        r.bottom > 0 &&
+        r.top < window.innerHeight &&
+        r.right > 0 &&
+        r.left < window.innerWidth
+      ) {
+        anchorRect = r
+      }
+    }
+  }
+
+  // Fallback: If no valid anchorRect, try to anchor to an open active stack popup, hidden bookmarks popup, or window center
+  if (!anchorRect) {
+    const activePopup = document.querySelector(
+      ".bookmark-stack-popup, .hidden-bookmarks-popup",
+    )
+    if (activePopup && activePopup.isConnected) {
+      const pr = activePopup.getBoundingClientRect()
+      if (pr && (pr.width > 0 || pr.height > 0)) {
+        anchorRect = pr
+      }
+    }
+  }
 
   let left = anchorRect
     ? anchorRect.left + anchorRect.width / 2 - width / 2
     : window.innerWidth / 2 - width / 2
-  let top = anchorRect ? anchorRect.bottom + 10 : window.innerHeight / 2 - height / 2
+  let top = anchorRect
+    ? anchorRect.bottom + 10
+    : window.innerHeight / 2 - height / 2
 
   if (anchorRect && top + height > window.innerHeight - margin) {
     top = anchorRect.top - height - 10

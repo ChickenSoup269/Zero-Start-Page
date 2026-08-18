@@ -714,7 +714,11 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   renameFolderBtn.title = i18n.bookmark_stack_rename || "Folder settings"
   renameFolderBtn.innerHTML = `<i class="fa-solid fa-sliders"></i>`
   renameFolderBtn.addEventListener("click", () => {
-    openBookmarkStackEditPopover(stackIndex, anchor)
+    const validAnchor =
+      anchor && anchor.isConnected && anchor.getBoundingClientRect().width > 0
+        ? anchor
+        : renameFolderBtn
+    openBookmarkStackEditPopover(stackIndex, validAnchor)
   })
 
   const closeBtn = document.createElement("button")
@@ -2481,13 +2485,55 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
 
       clone.addEventListener("contextmenu", (evt) => {
         evt.preventDefault()
-        const simulatedEvt = new MouseEvent("contextmenu", {
-          bubbles: true,
-          cancelable: true,
-          clientX: evt.clientX,
-          clientY: evt.clientY,
-        })
-        el.dispatchEvent(simulatedEvt)
+        evt.stopPropagation()
+        if (isSelectionMode) return
+        const numericIdx = parseInt(idx)
+        if (isNaN(numericIdx)) return
+        const bookmarks = getBookmarks()
+        const bookmark = bookmarks[numericIdx]
+        if (!bookmark) return
+
+        const isStack = isBookmarkStack(bookmark)
+        if (isStack) {
+          showContextMenu(
+            evt.clientX,
+            evt.clientY,
+            numericIdx,
+            "bookmarkStack",
+            bookmark.id,
+            {
+              anchor: clone,
+              onEdit: async () => {
+                openBookmarkStackEditPopover(numericIdx, clone)
+              },
+              onEditIcon: () => {
+                openBookmarkStackEditPopover(numericIdx, clone, { focus: "icon" })
+              },
+              onDelete: async () => {
+                const currentI18n = geti18n()
+                const confirmed = await showConfirm(
+                  `${currentI18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(bookmark)}"?`,
+                )
+                if (confirmed) {
+                  const snapshot = captureBookmarkSnapshot()
+                  bookmarks.splice(numericIdx, 1)
+                  setBookmarks(bookmarks)
+                  saveBookmarks()
+                  renderBookmarks()
+                  popup.remove()
+                  showBookmarkUndo(
+                    currentI18n.bookmark_group_deleted || "Group deleted",
+                    snapshot,
+                  )
+                }
+              },
+            },
+          )
+        } else {
+          showContextMenu(evt.clientX, evt.clientY, numericIdx, "bookmark", null, {
+            anchor: clone,
+          })
+        }
       })
 
       popup.appendChild(clone)
