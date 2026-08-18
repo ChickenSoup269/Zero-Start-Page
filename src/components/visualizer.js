@@ -35,10 +35,29 @@ class MusicVisualizer {
     this._cpuSave = getSettings().musicVisualizerCpuSave !== false
     this.isWhiteModeCached = false
     this._lastConfigCheck = 0
-    this._resizeTimeout = null
     this._resizeListener = () => {
       clearTimeout(this._resizeTimeout)
       this._resizeTimeout = setTimeout(() => this.updateDimensions(), 150)
+    }
+
+    this._visibilityListener = () => {
+      if (document.visibilityState === "visible") {
+        this._lastTs = 0
+        this._lastFrameTime = 0
+        this.updateDimensions()
+        if (this.isPlaying) {
+          if (this.currentStyle === "heartbeat") this._startHeartbeat()
+          else if (this.currentStyle === "pixel") this._startPixel()
+          else if (this.currentStyle === "moon8") this._startMoon8()
+          else if (this.currentStyle === "forest") this._startForest()
+          else if (this.currentStyle === "orbit") this._startOrbit()
+          else if (this.currentStyle === "beach") this._startBeach()
+          else this._startCSSLoop()
+        }
+      } else {
+        this._lastTs = 0
+        this._lastFrameTime = 0
+      }
     }
   }
 
@@ -61,6 +80,7 @@ class MusicVisualizer {
     }
 
     window.addEventListener("resize", this._resizeListener)
+    document.addEventListener("visibilitychange", this._visibilityListener)
     this.updateDimensions()
     this.setStyle(getSettings().musicBarStyle || "vinyl")
   }
@@ -81,7 +101,7 @@ class MusicVisualizer {
     if (style === "soundcloud") newBarCount = 10
     if (style === "terminal") newBarCount = 12
     if (style === "heartbeat" || style === "moon8" || style === "forest" || style === "beach") newBarCount = 0
-    if (style === "square-thumb") newBarCount = 24
+    if (style === "square-thumb") newBarCount = 5
 
     if (newBarCount !== this.barCount) {
       this.barCount = newBarCount
@@ -723,19 +743,35 @@ class MusicVisualizer {
   }
 
   _startHeartbeat() {
-    this._stopHeartbeat()
-    const canvas = document.createElement("canvas")
-    canvas.className = "heartbeat-canvas"
-    canvas.style.cssText =
-      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
-    this.heartbeatCanvas = canvas
+    this._stopHeartbeat(false)
+    this.bars.forEach((b) => (b.style.display = "none"))
 
-    if (this.container) {
-      this.container.appendChild(canvas)
+    if (!this.heartbeatCanvas) {
+      const canvas = document.createElement("canvas")
+      canvas.className = "heartbeat-canvas"
+      canvas.style.cssText =
+        "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
+      this.heartbeatCanvas = canvas
+
+      if (this.container) {
+        this.container.appendChild(canvas)
+      }
     }
 
     this.updateDimensions()
-    this.heartbeatPoints = []
+    const W = this.cachedW || 276
+    const H = this.cachedH || 40
+    const currentBaseY = H / 2
+
+    // Pre-populate baseline if points array is empty or too short
+    if (!this.heartbeatPoints || this.heartbeatPoints.length < 5) {
+      this.heartbeatPoints = []
+      const step = 8
+      for (let x = -10; x <= W + 20; x += step) {
+        this.heartbeatPoints.push({ x, y: currentBaseY + (Math.random() - 0.5) * 1.5 })
+      }
+    }
+
     this._pulseTimer = 0
     this._lastTs = 0
     this._lastFrameTime = 0
@@ -743,7 +779,7 @@ class MusicVisualizer {
     this._baseYOffset = 0
 
     const loop = (ts) => {
-      if (this.currentStyle !== "heartbeat") return
+      if (this.currentStyle !== "heartbeat" || !this.isPlaying) return
       this.heartbeatAnimId = requestAnimationFrame(loop)
 
       if (!this._lastTs) {
@@ -769,25 +805,27 @@ class MusicVisualizer {
     this.heartbeatAnimId = requestAnimationFrame(loop)
   }
 
-  _stopHeartbeat() {
+  _stopHeartbeat(fullDestroy = false) {
     if (this.heartbeatAnimId) {
       cancelAnimationFrame(this.heartbeatAnimId)
       this.heartbeatAnimId = null
     }
-    if (this.heartbeatCanvas) {
-      this.heartbeatCanvas.remove()
-      this.heartbeatCanvas = null
+    if (fullDestroy) {
+      if (this.heartbeatCanvas) {
+        this.heartbeatCanvas.remove()
+        this.heartbeatCanvas = null
+      }
+      this.heartbeatPoints = []
     }
-    this.heartbeatPoints = []
   }
 
   _heartbeatFrame(dt) {
     const canvas = this.heartbeatCanvas
     if (!canvas) return
-    const W = this.cachedW
-    const H = this.cachedH
+    const W = this.cachedW || 276
+    const H = this.cachedH || 40
 
-    if (canvas.width !== W * 2) {
+    if (canvas.width !== W * 2 || canvas.height !== H * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
     }
@@ -807,13 +845,14 @@ class MusicVisualizer {
       norm = (this._realBands[0] + this._realBands[1]) / 2
       active = true
     } else if (this.isPlaying) {
-      norm = 0.1
+      norm = 0.15
       active = true
     }
 
+    const now = Date.now()
     this._baseYOffset += (Math.random() - 0.5) * 2
     this._baseYOffset *= 0.98
-    const drift = Math.sin(now * 0.003) * 5
+    const drift = Math.sin(now * 0.003) * 3
     const currentBaseY = H / 2 + this._baseYOffset + drift
 
     const scrollSpeed = (W / 1.5) * dt
@@ -834,7 +873,7 @@ class MusicVisualizer {
         const bx = W + 10
         const amp = active ? 1 + norm * 3.5 : 1.2
 
-        // Mô phỏng chu trình P-QRS-T chuẩn hơn
+        // Mô phỏng chu trình P-QRS-T chuẩn
         this.heartbeatPoints.push({ x: bx, y: currentBaseY })
         this.heartbeatPoints.push({ x: bx + 4, y: currentBaseY - 3 * amp }) // Sóng P (nhô nhẹ)
         this.heartbeatPoints.push({ x: bx + 8, y: currentBaseY }) // Về nền
@@ -1363,8 +1402,9 @@ class MusicVisualizer {
   }
 
   start() {
-    if (this.isPlaying) return
     this.isPlaying = true
+    this._lastTs = 0
+    this._lastFrameTime = 0
     if (this.currentStyle === "pixel") this._startPixel()
     else if (this.currentStyle === "moon8") this._startMoon8()
     else if (this.currentStyle === "heartbeat") this._startHeartbeat()
@@ -1378,22 +1418,23 @@ class MusicVisualizer {
     this.isPlaying = false
     this._realBands = null
     this._stopCSSLoop()
-    this._stopMoon8()
-    this._stopHeartbeat()
-    this._stopForest()
-    this._stopOrbit()
-    this._stopBeach()
-    this._stopPixel()
+    this._stopMoon8(false)
+    this._stopHeartbeat(false)
+    this._stopForest(false)
+    this._stopOrbit(false)
+    this._stopBeach(false)
+    this._stopPixel(false)
   }
 
   destroy() {
     window.removeEventListener("resize", this._resizeListener)
-    this._stopPixel()
-    this._stopMoon8()
-    this._stopHeartbeat()
-    this._stopForest()
-    this._stopOrbit()
-    this._stopBeach()
+    document.removeEventListener("visibilitychange", this._visibilityListener)
+    this._stopPixel(true)
+    this._stopMoon8(true)
+    this._stopHeartbeat(true)
+    this._stopForest(true)
+    this._stopOrbit(true)
+    this._stopBeach(true)
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container)
     }

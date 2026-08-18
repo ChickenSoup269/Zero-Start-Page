@@ -5168,31 +5168,44 @@ body.widgets-m3-accent
   }
 }
 
-/* Square Thumb Style */
+/* ============================================================
+   SQUARE THUMB STYLE - COMPLETELY REBUILT MODERN UI
+   ============================================================ */
+
 .music-player-container.music-style-square-thumb {
-  width: 240px;
-  height: 240px;
-  border-radius: 5px;
+  width: 250px;
+  height: 250px;
+  border-radius: 20px;
   overflow: hidden;
   padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #0b0d14;
   position: relative;
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6); /* Increased box shadow */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 
-/* Overlay removed from container, moved to wrapper */
+.music-player-container.music-style-square-thumb:hover {
+  box-shadow:
+    0 28px 65px rgba(0, 0, 0, 0.75),
+    0 0 25px rgba(var(--accent-color-rgb, 255, 255, 255), 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.25) inset;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
 .music-player-container.music-style-square-thumb::before {
   display: none !important;
 }
 
-/* Make disc the background by expanding it to fill container */
 .music-style-square-thumb .music-player-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   min-width: 0 !important;
@@ -5202,57 +5215,14 @@ body.widgets-m3-accent
   margin: 0 !important;
   border: none !important;
   box-shadow: none !important;
+  background: transparent !important;
   z-index: 1;
 }
 
-/* New overlay applied directly over the thumbnail */
-.music-style-square-thumb .music-player-wrapper::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 2; /* Above disc-container, below player-main */
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.music-style-square-thumb:hover .music-player-wrapper::before {
-  opacity: 1;
-}
-
-/* Small hover title for default skin */
-.music-style-square-thumb:not(.skin-vertical-card):not(.skin-horizontal-card)
-  .music-player-wrapper::after {
-  content: "NOW PLAYING";
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 3;
-  letter-spacing: 1.5px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.music-style-square-thumb:not(.skin-vertical-card):not(
-    .skin-horizontal-card
-  ):hover
-  .music-player-wrapper::after {
-  opacity: 1;
-}
-
+/* Background Disc / Full Cover Art */
 .music-style-square-thumb .disc-container {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -5260,474 +5230,402 @@ body.widgets-m3-accent
   border: none;
   box-shadow: none;
   display: block;
-  z-index: 1; /* Inside wrapper, disc at bottom */
+  z-index: 1;
 }
 
 .music-style-square-thumb .vinyl-disc,
 .music-style-square-thumb .vinyl-disc.playing {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   border-radius: 0;
   margin: 0;
   box-shadow: none;
-  animation: none !important; /* Force no rotation */
+  animation: none !important;
   transform: none !important;
-  z-index: 0;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  image-rendering: -webkit-optimize-contrast; /* Enhance thumbnail crispness */
-  image-rendering: high-quality;
-}
-
-/* Remove hole in center */
-.music-style-square-thumb .vinyl-disc::after {
-  display: none !important;
-}
-
-/* Hide text/info completely */
-.music-style-square-thumb .player-info {
-  display: none !important;
-}
-
-/* Bring player-main to front and position at bottom (hidden until hover) */
-.music-style-square-thumb .player-main {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  min-width: 0 !important;
-  padding: 0;
-  padding-bottom: 25px; /* Push items up a bit from bottom edge */
-  z-index: 3; /* Controls above disc and overlay */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* Align items to bottom */
-  align-items: center;
-  gap: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.music-style-square-thumb:hover .player-main {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Controls container */
-.music-style-square-thumb .controls-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-/* Ensure progress bar is centered */
-.music-style-square-thumb .progress-row {
-  width: 85%;
-  min-width: 0 !important;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Time text inside progress row */
-.music-style-square-thumb .progress-time {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-.music-style-square-thumb .progress-bar-track {
-  height: 5px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 3px;
-  flex: 1;
-  position: relative;
-  cursor: pointer;
-}
-
-.music-style-square-thumb .progress-bar-fill {
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-.music-style-square-thumb .progress-bar-thumb {
-  background: #fff;
-  width: 10px;
-  height: 10px;
-  margin-top: -2.5px;
-  border-radius: 50%;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-/* Make buttons white and larger */
-.music-style-square-thumb .player-btn {
-  color: rgba(255, 255, 255, 0.95);
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
-  padding: 0;
-  width: auto;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform 0.2s,
-    color 0.2s;
-}
-.music-style-square-thumb .player-btn:hover {
-  color: #fff;
-  transform: scale(1.15);
-  background: transparent;
-  box-shadow: none;
-}
-.music-style-square-thumb .play-pause-btn {
-  font-size: 1.8rem;
-  width: 40px;
-  height: 40px;
-}
-.music-style-square-thumb .player-btn:not(.play-pause-btn) {
-  font-size: 1.25rem;
-}
-
-/* --- Horizontal Visualizer (Rotated from right) --- */
-.music-style-square-thumb .music-visualizer {
-  display: flex !important;
-  position: absolute !important;
-  top: 15px !important;
-  right: 5px !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: 14px !important;
-  gap: 2px !important;
-  z-index: 4 !important;
-  transform: rotate(-90deg) !important; /* Base on right, pointing left */
-  transform-origin: center !important;
-  align-items: flex-end !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.music-style-square-thumb .visualizer-bar {
-  width: 3px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-radius: 1.5px !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  transition:
-    transform 0.4s ease-out,
-    height 0.4s ease-out !important; /* Makes it chill/smooth */
-}
-
-/* Limit to exactly 5 bars */
-.music-style-square-thumb .visualizer-bar:nth-child(n + 6) {
-  display: none !important;
-}
-
-/* --- Vertical Card Skin for Square Thumb --- */
-.music-player-container.music-style-square-thumb.skin-vertical-card {
-  width: 240px;
-  height: 380px;
-  border-radius: 16px;
-  overflow: hidden;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  background-color: #0f0f0f;
-  position: relative;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-}
-
-/* Overlay removed */
-.music-player-container.music-style-square-thumb.skin-vertical-card::before,
-.music-style-square-thumb.skin-vertical-card .music-player-wrapper::before {
-  display: none !important;
-}
-
-/* Make disc the background of the top half */
-.music-style-square-thumb.skin-vertical-card .music-player-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  min-width: 0 !important;
-  display: flex;
-  flex-direction: column;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.music-style-square-thumb.skin-vertical-card
-  .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode),
-.music-style-square-thumb.skin-horizontal-card
-  .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode),
-.music-style-square-thumb
-  .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode) {
-  background: transparent !important;
-}
-
-/* Top Square Thumbnail */
-.music-style-square-thumb.skin-vertical-card .disc-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 240px;
-  margin: 0;
-  padding: 0;
-  border: none;
-  box-shadow: none;
-  display: block;
   z-index: 1;
-}
-
-.music-style-square-thumb.skin-vertical-card .vinyl-disc,
-.music-style-square-thumb.skin-vertical-card .vinyl-disc.playing {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  margin: 0;
-  box-shadow: none;
-  animation: none !important; /* Force no rotation */
-  transform: none !important;
-  z-index: 0;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
 }
-.music-style-square-thumb.skin-vertical-card .vinyl-disc::after {
+
+.music-style-square-thumb:hover .vinyl-disc {
+  transform: scale(1.04) !important;
+  filter: brightness(0.85);
+}
+
+.music-style-square-thumb .vinyl-disc::after {
   display: none !important;
 }
 
-/* Gradient fade to black at the bottom of the thumbnail */
+/* Scrim Gradient Overlays */
+.music-style-square-thumb .music-player-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    transparent 35%,
+    rgba(0, 0, 0, 0.45) 60%,
+    rgba(8, 10, 16, 0.95) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.music-style-square-thumb:hover .music-player-wrapper::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.3) 30%,
+    rgba(0, 0, 0, 0.7) 65%,
+    rgba(6, 8, 14, 0.96) 100%
+  );
+}
+
+/* Top "NOW PLAYING" Badge */
+.music-style-square-thumb:not(.skin-vertical-card):not(.skin-horizontal-card)
+  .music-player-wrapper::after {
+  content: "NOW PLAYING";
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.8px;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Top-Right Soundwave Visualizer Pill */
+.music-style-square-thumb .music-visualizer {
+  display: flex !important;
+  position: absolute !important;
+  top: 13px !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: 20px !important;
+  gap: 2.5px !important;
+  z-index: 5 !important;
+  transform: none !important;
+  align-items: flex-end !important;
+  padding: 3px 7px !important;
+  margin: 0 !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  box-sizing: border-box !important;
+}
+
+.music-style-square-thumb .visualizer-bar {
+  width: 2.5px !important;
+  background: var(--accent-color, #fff) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 0 6px rgba(var(--accent-color-rgb, 255, 255, 255), 0.5) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 3px !important;
+}
+
+.music-style-square-thumb .visualizer-bar:nth-child(n + 6) {
+  display: none !important;
+}
+
+/* Player Main & Bottom Info Layout */
+.music-style-square-thumb .player-main {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0 !important;
+  padding: 14px 14px 12px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: 6px;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+/* Track Info */
+.music-style-square-thumb .player-info {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.music-style-square-thumb .player-info h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  color: #fff;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  letter-spacing: -0.2px;
+}
+
+.music-style-square-thumb .player-info p {
+  font-size: 0.74rem;
+  font-weight: 500;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* Progress Row */
+.music-style-square-thumb .progress-row {
+  width: 100%;
+  min-width: 0 !important;
+  padding: 0;
+  margin: 2px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-style-square-thumb .progress-time {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.music-style-square-thumb .progress-bar-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+  transition: height 0.15s ease;
+}
+
+.music-style-square-thumb:hover .progress-bar-track {
+  height: 5px;
+}
+
+.music-style-square-thumb .progress-bar-fill {
+  background: var(--accent-color, #fff);
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 255, 255, 255), 0.6);
+}
+
+.music-style-square-thumb .progress-bar-thumb {
+  background: #fff;
+  width: 9px;
+  height: 9px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.music-style-square-thumb:hover .progress-bar-thumb {
+  opacity: 1;
+}
+
+/* Controls Row */
+.music-style-square-thumb .controls-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 2px 0 0;
+  margin: 0;
+  width: 100%;
+}
+
+.music-style-square-thumb .player-btn {
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.music-style-square-thumb .player-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
+.music-style-square-thumb .play-pause-btn {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  font-size: 1.05rem;
+  background: var(--accent-color, #fff);
+  color: #0b0d14;
+  border: none;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 255, 255, 255), 0.45);
+}
+
+.music-style-square-thumb .play-pause-btn:hover {
+  background: #fff;
+  color: #0b0d14;
+  transform: scale(1.12);
+  box-shadow: 0 6px 20px rgba(var(--accent-color-rgb, 255, 255, 255), 0.65);
+}
+
+/* ============================================================
+   VERTICAL CARD SKIN FOR SQUARE THUMB
+   ============================================================ */
+
+.music-player-container.music-style-square-thumb.skin-vertical-card {
+  width: 260px;
+  height: 390px;
+  border-radius: 22px;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #0d0f18;
+  position: relative;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.music-style-square-thumb.skin-vertical-card .disc-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  z-index: 1;
+}
+
 .music-style-square-thumb.skin-vertical-card .disc-container::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 120px;
-  background: linear-gradient(to bottom, transparent 0%, #0f0f0f 100%);
+  height: 100px;
+  background: linear-gradient(to bottom, transparent 0%, #0d0f18 100%);
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* Info and controls in the bottom area */
 .music-style-square-thumb.skin-vertical-card .player-main {
   position: absolute;
-  top: 230px; /* Slightly overlaps the fade */
+  top: 240px;
   left: 0;
   width: 100%;
-  height: 150px; /* 380 - 230 = 150px */
-  min-width: 0 !important;
-  padding: 0 15px 15px 15px;
+  height: 150px;
+  padding: 0 18px 18px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   box-sizing: border-box;
-  z-index: 2;
-  opacity: 1; /* Always visible */
-  pointer-events: auto;
+  z-index: 3;
 }
 
 .music-style-square-thumb.skin-vertical-card .player-info {
-  display: flex !important;
-  flex-direction: column;
   align-items: center;
-  width: 100%;
   text-align: center;
-  margin-bottom: 5px;
 }
 
 .music-style-square-thumb.skin-vertical-card .player-info h3 {
-  font-size: 1.15rem;
-  margin: 0 0 4px 0;
-  color: #fff;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-.music-style-square-thumb.skin-vertical-card .player-info p {
-  font-size: 0.85rem;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.05rem;
 }
 
-.music-style-square-thumb.skin-vertical-card .progress-row {
-  width: 100%;
-  min-width: 0 !important;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.music-style-square-thumb.skin-vertical-card .progress-time {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.7rem;
-  font-weight: 600;
+.music-style-square-thumb.skin-vertical-card .player-info p {
+  font-size: 0.8rem;
 }
 
 .music-style-square-thumb.skin-vertical-card .controls-row {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
-  padding-bottom: 5px;
-}
-.music-style-square-thumb.skin-vertical-card .player-btn {
-  color: rgba(255, 255, 255, 0.7);
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  transition:
-    color 0.2s,
-    transform 0.2s;
-}
-.music-style-square-thumb.skin-vertical-card .player-btn:hover {
-  color: #fff;
-  transform: scale(1.1);
-}
-.music-style-square-thumb.skin-vertical-card .play-pause-btn {
-  font-size: 2rem;
-  color: #fff;
+  gap: 20px;
 }
 
-/* Visualizer on the bottom right corner rotated */
 .music-style-square-thumb.skin-vertical-card .music-visualizer {
-  position: absolute !important;
-  top: 200px !important; /* Bottom-right will be at top: 225px */
-  right: 20px !important; /* Move a bit left to avoid border-radius */
-  bottom: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: 25px !important;
-  display: flex !important;
-  flex-direction: row-reverse !important;
-  align-items: flex-end !important;
-  justify-content: flex-start !important;
-  gap: 3px !important;
-  z-index: 5 !important;
-  transform: rotate(-90deg) !important;
-  transform-origin: right bottom !important;
-  background: none !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-}
-.music-style-square-thumb.skin-vertical-card .visualizer-bar {
-  width: 4px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-radius: 2px !important;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
-  flex: none !important;
-  max-width: none !important;
-}
-.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n + 25) {
-  display: none !important;
+  top: 14px !important;
+  right: 14px !important;
 }
 
-/* --- Horizontal Card Skin for Square Thumb --- */
+/* ============================================================
+   HORIZONTAL CARD SKIN FOR SQUARE THUMB
+   ============================================================ */
+
 .music-player-container.music-style-square-thumb.skin-horizontal-card {
-  width: 400px !important;
-  height: 180px !important;
-  border-radius: 16px !important;
+  width: 390px !important;
+  height: 165px !important;
+  border-radius: 20px !important;
   overflow: hidden !important;
   padding: 0 !important;
   display: flex !important;
   flex-direction: row !important;
-  background-color: #0f0f0f !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  background-color: #0d0f18 !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.15) inset !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
-.music-player-container.music-style-square-thumb.skin-horizontal-card::before,
-.music-style-square-thumb.skin-horizontal-card .music-player-wrapper::before {
-  display: none !important;
-}
-
-.music-style-square-thumb.skin-horizontal-card .music-player-wrapper {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: row !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Left Thumbnail */
 .music-style-square-thumb.skin-horizontal-card .disc-container {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
-  width: 180px !important;
-  height: 180px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  display: block !important;
+  width: 165px !important;
+  height: 165px !important;
   z-index: 1 !important;
 }
 
-.music-style-square-thumb.skin-horizontal-card .vinyl-disc,
-.music-style-square-thumb.skin-horizontal-card .vinyl-disc.playing {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  box-shadow: none !important;
-  animation: none !important;
-  transform: none !important;
-  z-index: 0 !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-.music-style-square-thumb.skin-horizontal-card .vinyl-disc::after {
-  display: none !important;
-}
-
-/* Gradient fade to right */
 .music-style-square-thumb.skin-horizontal-card .disc-container::after {
   content: "" !important;
   position: absolute !important;
@@ -5735,221 +5633,46 @@ body.widgets-m3-accent
   right: 0 !important;
   width: 60px !important;
   height: 100% !important;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    #0f0f0f 100%
-  ) !important;
+  background: linear-gradient(to right, transparent 0%, #0d0f18 100%) !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
-/* Right Controls */
 .music-style-square-thumb.skin-horizontal-card .player-main {
   position: absolute !important;
   top: 0 !important;
-  left: 170px !important;
-  width: 230px !important;
+  left: 155px !important;
+  width: 235px !important;
   height: 100% !important;
-  min-width: 0 !important;
-  padding: 15px !important;
+  padding: 14px 16px 14px 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 12px !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
   box-sizing: border-box !important;
-  z-index: 2 !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
+  z-index: 3 !important;
 }
 
 .music-style-square-thumb.skin-horizontal-card .player-info {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  width: 100% !important;
-  text-align: center !important;
-  margin-bottom: 5px !important;
+  align-items: flex-start !important;
+  text-align: left !important;
 }
 
 .music-style-square-thumb.skin-horizontal-card .player-info h3 {
-  font-size: 1.15rem !important;
-  margin: 0 0 4px 0 !important;
-  color: var(--text-color, #fff) !important;
-  width: 100% !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
-}
-.music-style-square-thumb.skin-horizontal-card .player-info p {
-  font-size: 0.85rem !important;
-  margin: 0 !important;
-  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 0.95rem !important;
 }
 
-.music-style-square-thumb.skin-horizontal-card .progress-row {
-  width: 100% !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-.music-style-square-thumb.skin-horizontal-card .progress-time {
-  color: rgba(255, 255, 255, 0.7) !important;
-  font-size: 0.7rem !important;
-  font-weight: 600 !important;
+.music-style-square-thumb.skin-horizontal-card .player-info p {
+  font-size: 0.75rem !important;
 }
 
 .music-style-square-thumb.skin-horizontal-card .controls-row {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 20px !important;
-}
-.music-style-square-thumb.skin-horizontal-card .player-btn {
-  color: rgba(255, 255, 255, 0.8) !important;
-  background: none !important;
-  border: none !important;
-  font-size: 1.2rem !important;
-  transition:
-    color 0.2s,
-    transform 0.2s !important;
-}
-.music-style-square-thumb.skin-horizontal-card .player-btn:hover {
-  color: var(--accent-color, #fff) !important;
-  transform: scale(1.1) !important;
-}
-.music-style-square-thumb.skin-horizontal-card .play-pause-btn {
-  font-size: 2rem !important;
-  color: var(--accent-color, #fff) !important;
+  gap: 16px !important;
 }
 
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
-  position: absolute !important;
-  top: 110px !important; /* Move up by another 15px */
-  right: 240px !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: 25px !important;
-  display: flex !important;
-  flex-direction: row-reverse !important;
-  align-items: flex-end !important;
-  justify-content: flex-start !important;
-  gap: 3px !important;
-  z-index: 5 !important;
-  transform: rotate(-90deg) !important;
-  transform-origin: right bottom !important;
-  background: none !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-}
-.music-style-square-thumb.skin-horizontal-card .visualizer-bar {
-  width: 4px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-radius: 2px !important;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
-  flex: none !important;
-  max-width: none !important;
-}
-.music-style-square-thumb.skin-vertical-card .visualizer-bar.playing,
-.music-style-square-thumb.skin-horizontal-card .visualizer-bar.playing {
-  animation-name: squareThumbSkinPulse !important;
-  animation-duration: 1.2s !important;
-  animation-iteration-count: infinite !important;
-}
-
-@keyframes squareThumbSkinPulse {
-  0%,
-  100% {
-    height: 4px;
-    opacity: 0.6;
-  }
-  50% {
-    height: 20px;
-    opacity: 1;
-  }
-}
-
-/* 24 animation delays for square-thumb visualizer */
-.music-style-square-thumb .visualizer-bar:nth-child(1) {
-  animation-delay: 0.1s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(2) {
-  animation-delay: 0.3s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(3) {
-  animation-delay: 0.6s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(4) {
-  animation-delay: 0.9s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(5) {
-  animation-delay: 0.2s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(6) {
-  animation-delay: 0.4s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(7) {
-  animation-delay: 0.7s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(8) {
-  animation-delay: 0.1s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(9) {
-  animation-delay: 0.8s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(10) {
-  animation-delay: 0.5s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(11) {
-  animation-delay: 0.3s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(12) {
-  animation-delay: 0.9s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(13) {
-  animation-delay: 0.2s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(14) {
-  animation-delay: 0.7s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(15) {
-  animation-delay: 0.4s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(16) {
-  animation-delay: 0.6s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(17) {
-  animation-delay: 0.1s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(18) {
-  animation-delay: 0.5s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(19) {
-  animation-delay: 0.8s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(20) {
-  animation-delay: 0.3s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(21) {
-  animation-delay: 0.9s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(22) {
-  animation-delay: 0.2s !important;
-}
-.music-style-square-thumb .visualizer-bar:nth-child(24) {
-  animation-delay: 0.4s !important;
-}
-
-.music-style-square-thumb.skin-horizontal-card
-  .visualizer-bar:nth-child(n + 21) {
-  display: none !important;
+  top: 12px !important;
+  right: 14px !important;
 }
 
 /* Dynamic Background overlay for square-thumb */
