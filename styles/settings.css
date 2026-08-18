@@ -365,6 +365,16 @@ body.sidebar-m3-accent .settings-sidebar {
   }
 }
 
+.settings-sidebar[data-active-tab="background"]:not(.nav-collapsed) .sidebar-content {
+  padding-top: 215px;
+}
+
+@container settings-sidebar (min-width: 520px) {
+  .settings-sidebar[data-active-tab="background"]:not(.nav-collapsed) .sidebar-content {
+    padding-top: 175px;
+  }
+}
+
 /* Remove top padding and fill space ONLY when navigation is manually collapsed by user */
 .settings-sidebar.nav-collapsed .sidebar-content {
   padding-top: var(--space-3) !important;
@@ -956,9 +966,9 @@ body.sidebar-light .toc-glow-mask::after {
   transform: translateY(0);
   opacity: 1;
   transition:
-    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.28s ease,
-    box-shadow 0.28s ease;
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
   pointer-events: auto;
   box-sizing: border-box;
 }
@@ -1061,6 +1071,7 @@ body.sidebar-light .toc-glow-mask::after {
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   width: 100%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @container settings-sidebar (min-width: 520px) {
@@ -1134,6 +1145,11 @@ body.sidebar-light .toc-glow-mask::after {
   display: none !important;
 }
 
+/* Ensure bg-subtab-nav only appears on background tab */
+.settings-sidebar:not([data-active-tab="background"]) .bg-subtab-nav {
+  display: none !important;
+}
+
 .settings-sidebar[data-search-mode="true"] .settings-tab-nav,
 .settings-sidebar[data-search-mode="true"] .bg-subtab-nav {
   opacity: 0.45;
@@ -1148,11 +1164,13 @@ body.sidebar-light .toc-glow-mask::after {
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   width: 100%;
-  margin-bottom: 12px;
+  margin-top: 6px;
+  margin-bottom: 0;
   background: rgba(0, 0, 0, 0.25);
   padding: 4px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bg-subtab-btn {
