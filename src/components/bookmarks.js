@@ -865,9 +865,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const updateStackPopupDropIntent = (target, event, cachedRect) => {
     clearBookmarkDropClasses(target)
     const targetItemIndex = Number(target.dataset.stackIndex)
-    const isSelfDrop = draggedStackItems.some(
+    const isSelfDrop = (draggedStackItems || []).some(
       (item) =>
-        item.stackIndex === stackIndex && item.itemIndex === targetItemIndex,
+        (item.stack === stack || (item.stackIndex != null && item.stackIndex === stackIndex)) &&
+        (item.itemIndex === targetItemIndex || (item.item && stack.items[targetItemIndex] === item.item)),
     )
     if (isSelfDrop) return
 
@@ -879,9 +880,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   }
 
   const moveDraggedStackItemsInsidePopup = (targetItemIndex, intent) => {
-    const movedIndices = draggedStackItems
-      .filter((item) => item.stackIndex === stackIndex)
-      .map((item) => item.itemIndex)
+    const movedIndices = (draggedStackItems || [])
+      .filter((item) => item.stack === stack || (item.stackIndex != null && item.stackIndex === stackIndex) || (item.item && stack.items.includes(item.item)))
+      .map((item) => item.item ? stack.items.indexOf(item.item) : item.itemIndex)
+      .filter((idx) => idx !== -1)
       .sort((a, b) => b - a)
     if (!movedIndices.length) return false
 
@@ -916,12 +918,20 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     window._activeDraggedStackItems = draggedStackItems
     draggedBookmarkIndices = []
     draggedGroupIndex = null
-    this.classList.add("dragging")
-    document.body.classList.add("bookmark-dragging-active")
     event.dataTransfer.effectAllowed = "move"
     try {
-      event.dataTransfer.setData("text/plain", "bookmark-stack-item")
+      event.dataTransfer.setData("text/plain", `stack-item:${itemIndex}`)
     } catch (_) {}
+    document.body.classList.add("bookmark-dragging-active")
+    if (isStackSelectionMode) {
+      setTimeout(() => {
+        document
+          .querySelectorAll(".bookmark-stack-popup-item.selected")
+          .forEach((el) => el.classList.add("dragging"))
+      }, 0)
+    } else {
+      setTimeout(() => this.classList.add("dragging"), 0)
+    }
   }
 
   const handleStackPopupDragOver = function (event) {
@@ -1670,8 +1680,12 @@ function handleDragStart(e) {
     draggedBookmarkIndices = [index]
   }
   draggedStackItems = []
+  window._activeDraggedStackItems = null
   draggedGroupIndex = null
   e.dataTransfer.effectAllowed = "move"
+  try {
+    e.dataTransfer.setData("text/plain", `bookmark:${index}`)
+  } catch (_) {}
   document.body.classList.add("bookmark-dragging-active")
   if (isSelectionMode) {
     setTimeout(() => {
@@ -1684,37 +1698,16 @@ function handleDragStart(e) {
   }
 }
 
-function handleStackItemDragStart(e) {
-  const stackIndexStr = this.dataset.parentStackIndex
-  const stackIndex = stackIndexStr === "null" ? null : Number(stackIndexStr)
-  const itemIndex = Number(this.dataset.stackIndex)
-  if (isStackSelectionMode && selectedStackIndices.has(itemIndex)) {
-    draggedStackItems = Array.from(selectedStackIndices)
-      .sort((a, b) => a - b)
-      .map((idx) => ({ stackIndex, itemIndex: idx }))
-  } else {
-    draggedStackItems = [{ stackIndex, itemIndex }]
-  }
-  draggedBookmarkIndices = []
-  draggedGroupIndex = null
-  e.dataTransfer.effectAllowed = "move"
-  document.body.classList.add("bookmark-dragging-active")
-  if (isStackSelectionMode) {
-    setTimeout(() => {
-      document
-        .querySelectorAll(".bookmark-stack-popup-item.selected")
-        .forEach((el) => el.classList.add("dragging"))
-    }, 0)
-  } else {
-    setTimeout(() => this.classList.add("dragging"), 0)
-  }
-}
-
 function handleGroupDragStart(e) {
   draggedGroupIndex = Number(this.dataset.index)
   draggedStackItems = []
+  window._activeDraggedStackItems = null
   draggedBookmarkIndices = []
   e.dataTransfer.effectAllowed = "move"
+  try {
+    e.dataTransfer.setData("text/plain", `group:${draggedGroupIndex}`)
+  } catch (_) {}
+  document.body.classList.add("bookmark-dragging-active")
   setTimeout(() => this.classList.add("dragging"), 0)
 }
 

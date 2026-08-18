@@ -1091,7 +1091,6 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   transform: scale(1.06) rotate(3deg) translateY(-6px);
   filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.45));
   z-index: 10000;
-  pointer-events: none;
 }
 
 .bookmark-folder-reveal {
