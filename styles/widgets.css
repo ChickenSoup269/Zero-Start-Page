@@ -11996,10 +11996,18 @@ body.bookmark-taskbar-right-mode .bookmark-groups-container {
 
 /* Sidebar mode: Display as a vertical column */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
-  flex-direction: column;
-  max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  max-height: 80vh !important;
+  padding: var(--space-1) !important;
+  gap: var(--bookmark-gap-y, var(--space-1)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
   background: rgba(0, 0, 0, 0.3) !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
@@ -12468,8 +12476,7 @@ body.bookmark-layout-bg-colored .add-bookmark-card i {
 
 /* --- HIDDEN BOOKMARKS POPUP INHERITING BOOKMARK CONTAINER / DOCK STYLES --- */
 #hidden-bookmarks-popup,
-#hidden-bookmarks-popup.hidden-bookmarks-taskbar,
-#hidden-bookmarks-popup.hidden-bookmarks-sidebar {
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
   background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(12px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
@@ -12477,6 +12484,16 @@ body.bookmark-layout-bg-colored .add-bookmark-card i {
   border-radius: var(--radius-md) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
   padding: var(--space-1) var(--space-1-5) !important;
+}
+
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(12px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+  padding: var(--space-1) !important;
 }
 
 body.bookmark-layout-bg-hidden #hidden-bookmarks-popup,
@@ -15178,28 +15195,28 @@ body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab
   outline: none !important;
 }
 
-/* --- MULTI-COLUMN/ROW WRAPPING FOR HIDDEN BOOKMARKS POPUP --- */
-/* Overrides the nowrap rule to allow grid/multi-line expansion */
-#hidden-bookmarks-popup.hidden-bookmarks-sidebar,
-#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
-  flex-wrap: wrap !important;
-}
-
-/* Sidebar Popup: Wrap into columns (horizontal expansion up to 3 columns, then scroll vertically) */
+/* --- MULTI-ROW WRAPPING FOR HIDDEN BOOKMARKS TASKBAR POPUP --- */
+/* Sidebar Popup: Clean vertical single column matching sidebar layout */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
-  flex-direction: row !important; /* Flow left-to-right to form columns */
-  max-width: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + 32px) !important; /* approx 3 columns max */
-  max-height: 70vh !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  max-height: 80vh !important;
+  padding: var(--space-1) !important;
+  gap: var(--bookmark-gap-y, var(--space-1)) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  justify-content: flex-start !important;
-  align-content: flex-start !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
 }
 
 /* Taskbar Popup: Wrap into rows (vertical expansion up to 3 rows, then scroll horizontally) */
 #hidden-bookmarks-popup.hidden-bookmarks-taskbar {
-  flex-direction: column !important; /* Flow top-to-bottom to form rows */
-  max-height: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + 32px) !important; /* approx 3 rows max */
+  flex-direction: column !important;
+  flex-wrap: wrap !important;
+  max-height: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + 32px) !important;
   max-width: 75vw !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
