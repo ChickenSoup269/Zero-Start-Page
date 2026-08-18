@@ -998,57 +998,6 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       label.title = labelText
       link.appendChild(label)
 
-      // Quick hover action buttons for instant edit/delete
-      const quickActions = document.createElement("div")
-      quickActions.className = "bookmark-stack-item-quick-actions"
-
-      const quickEditBtn = document.createElement("button")
-      quickEditBtn.type = "button"
-      quickEditBtn.className = "bookmark-stack-item-quick-btn edit"
-      quickEditBtn.title = i18n.modal_edit_title || "Edit bookmark"
-      quickEditBtn.innerHTML = `<i class="fa-solid fa-pen"></i>`
-      quickEditBtn.addEventListener("click", (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        openBookmarkEditPopover(
-          null,
-          {
-            type: "stackItem",
-            stackIndex,
-            itemIndex,
-          },
-          link,
-        )
-      })
-
-      const quickDeleteBtn = document.createElement("button")
-      quickDeleteBtn.type = "button"
-      quickDeleteBtn.className = "bookmark-stack-item-quick-btn delete"
-      quickDeleteBtn.title = i18n.delete || "Delete bookmark"
-      quickDeleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`
-      quickDeleteBtn.addEventListener("click", async (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        const confirmed = await showConfirm(
-          `${i18n.alert_delete_confirm || "Delete"} "${labelText}"?`,
-        )
-        if (!confirmed) return
-        const snapshot = captureBookmarkSnapshot()
-        stack.items.splice(itemIndex, 1)
-        normalizeStackAfterDelete()
-        renderStackItems()
-        syncStackSelectionUi()
-        renderBookmarks()
-        showBookmarkUndo(
-          i18n.bookmark_deleted || "Bookmark deleted",
-          snapshot,
-        )
-      })
-
-      quickActions.appendChild(quickEditBtn)
-      quickActions.appendChild(quickDeleteBtn)
-      link.appendChild(quickActions)
-
       const check = document.createElement("span")
       check.className = "bookmark-stack-popup-check"
       check.innerHTML = `<i class="fa-solid fa-check"></i>`
