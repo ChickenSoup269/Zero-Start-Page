@@ -269,6 +269,7 @@ export class MusicPlayer {
 
     this.container.innerHTML = `
             <div class="music-player-wrapper">
+                <button class="music-close-btn widget-close-btn" id="music-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
                 <div class="music-bg-blur" id="music-bg-blur"></div>
                 <div class="disc-container">
                     <div id="vinyl-disc" class="vinyl-disc"></div>
@@ -341,8 +342,19 @@ export class MusicPlayer {
 
   setupEventListeners() {
     // Toggle is now external via Quick Access/Settings
+    this.container.querySelector("#music-close-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation()
+      updateSetting("musicPlayerEnabled", false)
+      saveSettings()
+      this.setEnabled(false)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "musicPlayerEnabled", value: false },
+        }),
+      )
+    })
 
-    document.getElementById("play-pause-btn").addEventListener("click", () => {
+    document.getElementById("play-pause-btn")?.addEventListener("click", () => {
       this.sendControl("playPause")
     })
 

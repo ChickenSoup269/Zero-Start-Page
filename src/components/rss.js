@@ -100,6 +100,7 @@ export class RssReader {
                 <div class="rss-actions">
                     <button class="rss-refresh-btn" data-i18n-title="rss_refresh_btn" title="Làm mới"><i class="fa-solid fa-rotate-right"></i></button>
                     <button class="rss-settings-btn" data-i18n-title="rss_settings_btn" title="Cài đặt"><i class="fa-solid fa-gear"></i></button>
+                    <button class="rss-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
                <div class="rss-tabs" style="display: none;"></div>
@@ -184,8 +185,18 @@ export class RssReader {
             });
         }
         
-        this.container.querySelector('.rss-refresh-btn').addEventListener('click', () => this.fetchRSS(true));
-        this.container.querySelector('.rss-settings-btn').addEventListener('click', () => {
+        this.container.querySelector('.rss-refresh-btn')?.addEventListener('click', () => this.fetchRSS(true));
+        this.container.querySelector('.rss-close-btn')?.addEventListener('click', () => {
+            updateSetting('showRss', false);
+            saveSettings();
+            fadeToggle(this.container, false, 'flex');
+            window.dispatchEvent(
+                new CustomEvent('layoutUpdated', {
+                    detail: { key: 'showRss', value: false },
+                }),
+            );
+        });
+        this.container.querySelector('.rss-settings-btn')?.addEventListener('click', () => {
             this.settingsEl.classList.toggle('active');
             const isActive = this.settingsEl.classList.contains('active');
             this.contentEl.style.display = isActive ? 'none' : 'flex';

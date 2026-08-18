@@ -112,16 +112,28 @@ export class HabitTracker {
     this.headerContainer.innerHTML = `
       <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600;">
         <span><i class="fa-solid fa-bars-progress"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
           <div style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px;">
             <button class="habit-dec-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-minus" style="font-size: 0.8em;"></i></button>
             <span style="font-size: 0.8em; opacity: 0.8; min-width: 14px; text-align: center;">${this.maxLevel}</span>
             <button class="habit-inc-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-plus" style="font-size: 0.8em;"></i></button>
           </div>
-          <button class="habit-add-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 4px;"><i class="fa-solid fa-plus"></i></button>
+          <button class="habit-add-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 4px;" title="Add"><i class="fa-solid fa-plus"></i></button>
+          <button class="habit-close-btn widget-close-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 2px;" title="Close"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
     `
+
+    this.headerContainer.querySelector(".habit-close-btn")?.addEventListener("click", () => {
+      updateSetting("showHabits", false)
+      saveSettings()
+      fadeToggle(this.container, false, "flex")
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showHabits", value: false },
+        }),
+      )
+    })
 
     let gridHtml = ""
 

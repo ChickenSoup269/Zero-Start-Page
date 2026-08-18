@@ -740,10 +740,25 @@ export class FullCalendar {
         this.saveGoogleCalendarUrl()
       } else if (e.target.closest("#calendar-google-refresh")) {
         this.refreshGoogleCalendar()
+      } else if (e.target.closest("#calendar-today-btn")) {
+        this.goToToday()
       } else if (e.target.closest("#prev-month")) {
         this.navigateMonth(-1)
       } else if (e.target.closest("#next-month")) {
         this.navigateMonth(1)
+      } else if (e.target.closest("#calendar-close-btn")) {
+        e.stopPropagation()
+        this.hideContextMenu?.()
+        this.hideEventPreview?.()
+        updateSetting("showFullCalendar", false)
+        saveSettings()
+        this.isVisible = false
+        this.updateVisibility()
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showFullCalendar", value: false },
+          }),
+        )
       } else if (e.target.closest("#calendar-add-event")) {
         if (this.calendarEventSource !== "local") return
         const rect = e.target
@@ -763,6 +778,11 @@ export class FullCalendar {
         e.stopPropagation()
       } else if (e.target.closest(".day-item")) {
         const dayItem = e.target.closest(".day-item")
+        if (dayItem.dataset.monthOffset) {
+          const offset = parseInt(dayItem.dataset.monthOffset, 10)
+          this.navigateMonth(offset)
+          return
+        }
         const dayNumber = dayItem.dataset.day
         if (dayNumber) {
           this.selectDay(dayItem)
@@ -790,6 +810,11 @@ export class FullCalendar {
         }
       } else if (e.target.closest(".day-item")) {
         const dayItem = e.target.closest(".day-item")
+        if (dayItem.dataset.monthOffset) {
+          const offset = parseInt(dayItem.dataset.monthOffset, 10)
+          this.navigateMonth(offset)
+          return
+        }
         const dayNumber = dayItem.dataset.day
         if (dayNumber) {
           const day = parseInt(dayNumber, 10)
@@ -816,9 +841,11 @@ export class FullCalendar {
     })
 
     this.container.addEventListener("mousemove", (e) => {
-      const preview = this.currentEventPreview || this.currentHolidayPreview
-      if (!preview) return
-      this.positionContextMenu(preview, e.clientX + 12, e.clientY + 12)
+      if (this.currentEventPreview) {
+        this.positionContextMenu(this.currentEventPreview, e.clientX, e.clientY, "left")
+      } else if (this.currentHolidayPreview) {
+        this.positionContextMenu(this.currentHolidayPreview, e.clientX, e.clientY, "right")
+      }
     })
 
     this.container.addEventListener("mouseout", (e) => {
@@ -1055,63 +1082,28 @@ export class FullCalendar {
           if (this.calendarEventSource === "google") {
             this.showGoogleEventDetailMenu(x, y, event.id)
           } else {
-            this.showEventFormMenu(x, y, { eventId: event.id })
+            this.showEventContextMenu(x, y, event.id)
           }
         })
+
         listContainer.appendChild(eventItem)
       })
+
       menu.appendChild(listContainer)
     } else {
-      const emptyMsg = document.createElement("div")
-      emptyMsg.className = "calendar-day-events-empty"
-      emptyMsg.textContent = i18n.calendar_no_events || "Không có sự kiện nào"
-      menu.appendChild(emptyMsg)
+      const empty = document.createElement("div")
+      empty.className = "calendar-day-events-empty"
+      empty.textContent = i18n.calendar_no_events || "Không có sự kiện nào"
+      menu.appendChild(empty)
     }
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y)
-  }
-
-  showEventContextMenu(x, y, eventId) {
-    const i18n = geti18n()
-    this.hideContextMenu()
-
-    const menu = document.createElement("div")
-    menu.className = "calendar-context-menu"
-    menu.addEventListener("click", (e) => e.stopPropagation())
-
-    const editItem = document.createElement("div")
-    editItem.className = "context-menu-item"
-    editItem.innerHTML = `<i class="fa-solid fa-edit"></i> <span>${i18n.menu_edit || "Edit"}</span>`
-    editItem.addEventListener("click", () => {
-      this.hideContextMenu()
-      this.showEventFormMenu(x, y, { eventId })
-    })
-    menu.appendChild(editItem)
-
-    const deleteItem = document.createElement("div")
-    deleteItem.className = "context-menu-item danger"
-    deleteItem.innerHTML = `<i class="fa-solid fa-trash"></i> <span>${i18n.menu_delete || "Delete"}</span>`
-    deleteItem.addEventListener("click", async () => {
-      const confirm = await showConfirm(
-        i18n.calendar_delete_confirm || "Delete this event?",
-      )
-      if (confirm) {
-        deleteCalendarEvent(eventId)
-        this.render()
-      }
-      this.hideContextMenu()
-    })
-    menu.appendChild(deleteItem)
-
-    document.body.appendChild(menu)
-    this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y)
+    this.positionContextMenu(menu, x, y, "right")
   }
 
   showGoogleEventDetailMenu(x, y, eventId) {
-    const event = this.googleEvents.find((e) => e.id === eventId)
+    const event = this.getVisibleEvents().find((e) => e.id === eventId)
     if (!event) return
 
     const i18n = geti18n()
@@ -1121,194 +1113,217 @@ export class FullCalendar {
     menu.className = "calendar-context-menu calendar-google-event-modal"
     menu.addEventListener("click", (e) => e.stopPropagation())
 
-    // Header with title and source badge
-    const header = document.createElement("div")
-    header.className = "calendar-modal-header"
-    header.innerHTML = `
-      <div class="calendar-modal-header-top">
-        <span class="calendar-source-badge"><i class="fa-brands fa-google"></i> Google Calendar</span>
-        ${event.isMultiDay ? `<span class="calendar-multiday-badge">${i18n.calendar_days_count ? i18n.calendar_days_count.replace("{count}", event.totalDays) : `${event.totalDays} ngày`}</span>` : ""}
-        <button class="calendar-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
+    const timeLabel = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+
+    let html = `
+      <div class="calendar-modal-header">
+        <div class="calendar-modal-title-row">
+          <span class="calendar-modal-badge"><i class="fa-brands fa-google"></i> Google Calendar</span>
+          <button class="calendar-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <h4 class="calendar-modal-event-title">${escapeHtml(event.title)}</h4>
       </div>
-      <h3 class="calendar-modal-title">${escapeHtml(event.title)}</h3>
+      <div class="calendar-modal-body">
+        <div class="calendar-modal-meta-row">
+          <i class="fa-regular fa-clock"></i>
+          <span>${escapeHtml(event.date)} • ${escapeHtml(timeLabel)}</span>
+        </div>
     `
-    menu.appendChild(header)
 
-    // Time & Date info
-    const timeSection = document.createElement("div")
-    timeSection.className = "calendar-modal-section calendar-modal-time"
-
-    let timeDisplay = ""
-    if (event.allDay) {
-      timeDisplay = event.isMultiDay
-        ? `${event.startDate} → ${event.endDate} (${i18n.calendar_all_day || "Cả ngày"})`
-        : `${event.date} • ${i18n.calendar_all_day || "Cả ngày"}`
-    } else {
-      timeDisplay = event.isMultiDay
-        ? `${event.startDate} ${event.time} → ${event.endDate} ${event.endTime}`
-        : `${event.date} • ${event.timeRange || event.time}`
-    }
-
-    timeSection.innerHTML = `
-      <i class="fa-regular fa-clock calendar-modal-icon"></i>
-      <div class="calendar-modal-text">${escapeHtml(timeDisplay)}</div>
-    `
-    menu.appendChild(timeSection)
-
-    // Meeting Quick Action Button
-    if (event.meetingUrl) {
-      const meetingBox = document.createElement("div")
-      meetingBox.className = "calendar-modal-action-box"
-      meetingBox.innerHTML = `
-        <a href="${escapeHtml(event.meetingUrl)}" target="_blank" rel="noopener noreferrer" class="calendar-join-btn">
-          <i class="${event.meetingIcon || "fa-solid fa-video"}"></i>
-          <span>${i18n.calendar_join_meeting || "Tham gia cuộc họp"} (${escapeHtml(event.meetingLabel || "Video Call")})</span>
-        </a>
-      `
-      menu.appendChild(meetingBox)
-    }
-
-    // Location & Google Maps Action
     if (event.location) {
-      const locSection = document.createElement("div")
-      locSection.className = "calendar-modal-section calendar-modal-location"
-      locSection.innerHTML = `
-        <i class="fa-solid fa-location-dot calendar-modal-icon"></i>
-        <div class="calendar-modal-text">
-          <span>${escapeHtml(event.location)}</span>
-          ${
-            event.mapsUrl
-              ? `<a href="${escapeHtml(event.mapsUrl)}" target="_blank" rel="noopener noreferrer" class="calendar-map-link"><i class="fa-solid fa-map-location-dot"></i> ${i18n.calendar_open_map || "Xem trên Maps"}</a>`
-              : ""
-          }
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`
+      html += `
+        <div class="calendar-modal-meta-row">
+          <i class="fa-solid fa-location-dot"></i>
+          <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="calendar-link">${escapeHtml(event.location)}</a>
         </div>
       `
-      menu.appendChild(locSection)
     }
 
-    // Organizer if present
-    if (event.organizer) {
-      const orgSection = document.createElement("div")
-      orgSection.className = "calendar-modal-section calendar-modal-organizer"
-      orgSection.innerHTML = `
-        <i class="fa-regular fa-user calendar-modal-icon"></i>
-        <div class="calendar-modal-text">
-          <span class="calendar-modal-sublabel">${i18n.calendar_organizer || "Người tổ chức"}:</span> ${escapeHtml(event.organizer)}
+    if (event.meetingUrl) {
+      html += `
+        <div class="calendar-modal-meeting-card">
+          <div class="meeting-card-info">
+            <i class="${event.meetingIcon || "fa-solid fa-video"}"></i>
+            <div>
+              <div class="meeting-label">${escapeHtml(event.meetingLabel || "Video Call")}</div>
+              <div class="meeting-url-text">${escapeHtml(event.meetingUrl)}</div>
+            </div>
+          </div>
+          <a href="${event.meetingUrl}" target="_blank" rel="noopener noreferrer" class="calendar-join-btn">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.calendar_join_meeting || "Join"}
+          </a>
         </div>
       `
-      menu.appendChild(orgSection)
     }
 
-    // Description
     if (event.description) {
-      const descSection = document.createElement("div")
-      descSection.className = "calendar-modal-desc-box"
-      descSection.innerHTML = `
-        <div class="calendar-modal-desc-label"><i class="fa-regular fa-file-lines"></i> ${i18n.calendar_description || "Mô tả"}</div>
-        <div class="calendar-modal-desc-content">${linkifyText(event.description)}</div>
+      html += `
+        <div class="calendar-modal-desc-section">
+          <div class="desc-label">${i18n.calendar_description || "Description:"}</div>
+          <div class="desc-content">${linkifyText(event.description)}</div>
+        </div>
       `
-      menu.appendChild(descSection)
     }
 
-    // Footer actions
-    const footer = document.createElement("div")
-    footer.className = "calendar-modal-footer"
-    footer.innerHTML = `
-      <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer" class="calendar-footer-link">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.calendar_open_in_gcal || "Mở trên Google Calendar"}
-      </a>
-    `
-    menu.appendChild(footer)
+    if (event.organizer) {
+      html += `
+        <div class="calendar-modal-organizer">
+          <i class="fa-regular fa-user"></i>
+          <span>${escapeHtml(event.organizer)}</span>
+        </div>
+      `
+    }
 
-    menu.querySelector(".calendar-modal-close")?.addEventListener("click", () => {
-      this.hideContextMenu()
+    html += `
+      </div>
+      <div class="calendar-modal-footer">
+        <button class="calendar-modal-btn calendar-modal-close-btn" type="button">Đóng</button>
+      </div>
+    `
+
+    menu.innerHTML = html
+    menu.querySelectorAll(".calendar-modal-close, .calendar-modal-close-btn").forEach((btn) => {
+      btn.addEventListener("click", () => this.hideContextMenu())
     })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y)
+    this.positionContextMenu(menu, x, y, "left")
   }
 
-  showEventFormMenu(x, y, { dateStr = null, eventId = null } = {}) {
+  showEventContextMenu(x, y, eventId) {
+    const event = this.getVisibleEvents().find((e) => e.id === eventId)
+    if (!event) return
+
     const i18n = geti18n()
     this.hideContextMenu()
 
-    const event = eventId
-      ? getCalendarEvents().find((e) => e.id === eventId)
-      : null
-    const targetDate = event?.date || dateStr || this.formatDate(new Date())
+    const menu = document.createElement("div")
+    menu.className = "calendar-context-menu"
+
+    const editItem = document.createElement("div")
+    editItem.className = "context-menu-item"
+    editItem.innerHTML = `<i class="fa-solid fa-pen"></i> <span>${i18n.settings_edit || "Edit"}</span>`
+    editItem.addEventListener("click", () => {
+      this.hideContextMenu()
+      this.showEventFormMenu(x, y, event)
+    })
+
+    const deleteItem = document.createElement("div")
+    deleteItem.className = "context-menu-item danger"
+    deleteItem.innerHTML = `<i class="fa-solid fa-trash"></i> <span>${i18n.settings_delete || "Delete"}</span>`
+    deleteItem.addEventListener("click", async () => {
+      this.hideContextMenu()
+      const confirmed = await showConfirm(
+        i18n.calendar_delete_confirm || "Delete this event?",
+      )
+      if (confirmed) {
+        deleteCalendarEvent(eventId)
+        this.render()
+      }
+    })
+
+    menu.appendChild(editItem)
+    menu.appendChild(deleteItem)
+
+    document.body.appendChild(menu)
+    this.currentContextMenu = menu
+    this.positionContextMenu(menu, x, y, "left")
+  }
+
+  showEventFormMenu(x, y, event = null) {
+    const i18n = geti18n()
+    this.hideContextMenu()
+
+    const isEdit = Boolean(event?.id)
+    const initialDate =
+      event?.date ||
+      (this.selectedDate
+        ? this.formatDate(this.selectedDate)
+        : this.formatDate(new Date()))
+    const initialTime = event?.time || ""
+    const initialTitle = event?.title || ""
+    const initialDesc = event?.description || ""
 
     const menu = document.createElement("div")
     menu.className = "calendar-context-menu calendar-event-form-menu"
     menu.addEventListener("click", (e) => e.stopPropagation())
+
     menu.innerHTML = `
-      <form class="calendar-event-form">
-        <div class="calendar-event-form-title">
-          <i class="fa-solid ${event ? "fa-pen" : "fa-plus"}"></i>
-          <span>${event ? i18n.calendar_edit_event || "Edit Event" : i18n.calendar_add_event || "Add Event"}</span>
+      <div class="calendar-form-title">
+        <i class="${isEdit ? "fa-solid fa-pen" : "fa-solid fa-calendar-plus"}"></i>
+        <span>${isEdit ? (i18n.calendar_edit_event || "Edit Event") : (i18n.calendar_new_event || "New Event")}</span>
+      </div>
+      <div class="calendar-form-body">
+        <label class="calendar-form-label">
+          <span>${i18n.calendar_event_title || "Tiêu đề"}</span>
+          <input type="text" class="calendar-form-input calendar-event-title-input" value="${escapeHtml(initialTitle)}" placeholder="Nhập tiêu đề sự kiện..." />
+        </label>
+        <div class="calendar-form-row">
+          <label class="calendar-form-label">
+            <span>${i18n.calendar_event_date || "Ngày"}</span>
+            <input type="date" class="calendar-form-input calendar-event-date-input" value="${escapeHtml(initialDate)}" />
+          </label>
+          <label class="calendar-form-label">
+            <span>${i18n.calendar_event_time || "Giờ"}</span>
+            <input type="time" class="calendar-form-input calendar-event-time-input" value="${escapeHtml(initialTime)}" />
+          </label>
         </div>
-        <label>
-          <span>${i18n.calendar_new_event || "Event Title"}</span>
-          <input type="text" name="title" autocomplete="off" required>
+        <label class="calendar-form-label">
+          <span>${i18n.calendar_event_desc || "Mô tả (tùy chọn)"}</span>
+          <textarea class="calendar-form-input calendar-event-desc-input" rows="2" placeholder="Ghi chú thêm...">${escapeHtml(initialDesc)}</textarea>
         </label>
-        <label>
-          <span>${i18n.calendar_event_time || "Time"}</span>
-          <input type="time" name="time">
-        </label>
-        <label>
-          <span>${i18n.calendar_event_desc || "Description"}</span>
-          <textarea name="description" rows="3"></textarea>
-        </label>
-        <div class="calendar-event-form-actions">
-          <button type="button" class="calendar-event-cancel">${i18n.menu_cancel || "Cancel"}</button>
-          <button type="submit">${i18n.settings_save || "Save"}</button>
-        </div>
-      </form>
+      </div>
+      <div class="calendar-form-actions">
+        <button type="button" class="calendar-form-btn calendar-event-cancel">${i18n.settings_cancel || "Cancel"}</button>
+        <button type="button" class="calendar-form-btn primary calendar-event-save">${isEdit ? (i18n.settings_save || "Save") : (i18n.calendar_add_event || "Add")}</button>
+      </div>
     `
 
-    const form = menu.querySelector(".calendar-event-form")
-    const titleInput = form.elements.title
-    const timeInput = form.elements.time
-    const descInput = form.elements.description
+    const titleInput = menu.querySelector(".calendar-event-title-input")
+    const dateInput = menu.querySelector(".calendar-event-date-input")
+    const timeInput = menu.querySelector(".calendar-event-time-input")
+    const descInput = menu.querySelector(".calendar-event-desc-input")
 
-    titleInput.value = event?.title || ""
-    timeInput.value = event?.time || ""
-    descInput.value = event?.description || ""
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault()
+    menu.querySelector(".calendar-event-save")?.addEventListener("click", () => {
       const title = titleInput.value.trim()
+      const date = dateInput.value
+      const time = timeInput.value
+      const description = descInput.value.trim()
+
       if (!title) {
         titleInput.focus()
         return
       }
 
-      const payload = {
-        title,
-        date: targetDate,
-        time: timeInput.value.trim(),
-        description: descInput.value.trim(),
-      }
-
-      if (event) {
-        updateCalendarEvent(event.id, payload)
+      if (isEdit) {
+        updateCalendarEvent(event.id, {
+          title,
+          date,
+          time,
+          description,
+        })
       } else {
-        addCalendarEvent(payload)
+        addCalendarEvent({
+          title,
+          date,
+          time,
+          description,
+        })
       }
 
       this.render()
       this.hideContextMenu()
     })
 
-    menu
-      .querySelector(".calendar-event-cancel")
-      ?.addEventListener("click", () => {
-        this.hideContextMenu()
-      })
+    menu.querySelector(".calendar-event-cancel")?.addEventListener("click", () => {
+      this.hideContextMenu()
+    })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y)
+    this.positionContextMenu(menu, x, y, event ? "left" : "right")
     titleInput.focus()
     titleInput.select()
   }
@@ -1357,7 +1372,7 @@ export class FullCalendar {
 
     document.body.appendChild(preview)
     this.currentEventPreview = preview
-    this.positionContextMenu(preview, x + 12, y + 12)
+    this.positionContextMenu(preview, x, y, "left")
   }
 
   showHolidayPreview(x, y, holidayEl) {
@@ -1388,7 +1403,7 @@ export class FullCalendar {
 
     document.body.appendChild(preview)
     this.currentHolidayPreview = preview
-    this.positionContextMenu(preview, x + 12, y + 12)
+    this.positionContextMenu(preview, x, y, "right")
   }
 
   hideEventPreview() {
@@ -1405,16 +1420,45 @@ export class FullCalendar {
     }
   }
 
-  positionContextMenu(menu, x, y) {
+  positionContextMenu(menu, x, y, preferredSide = "auto") {
     const rect = menu.getBoundingClientRect()
-    const safeX =
-      rect.right > window.innerWidth
-        ? Math.max(10, window.innerWidth - rect.width - 15)
-        : Math.max(10, x)
-    const safeY =
-      rect.bottom > window.innerHeight
-        ? Math.max(10, window.innerHeight - rect.height - 15)
-        : Math.max(10, y)
+    let safeX = x
+    let safeY = y
+
+    if (preferredSide === "left") {
+      safeX = x - rect.width - 12
+      // If overflowing left screen edge, flip to right
+      if (safeX < 10) {
+        if (x + 12 + rect.width <= window.innerWidth - 10) {
+          safeX = x + 12
+        } else {
+          safeX = 10
+        }
+      }
+    } else if (preferredSide === "right") {
+      safeX = x + 12
+      // If overflowing right screen edge, flip to left
+      if (safeX + rect.width > window.innerWidth - 10) {
+        if (x - rect.width - 12 >= 10) {
+          safeX = x - rect.width - 12
+        } else {
+          safeX = Math.max(10, window.innerWidth - rect.width - 15)
+        }
+      }
+    } else {
+      if (x + rect.width > window.innerWidth - 10) {
+        safeX = Math.max(10, window.innerWidth - rect.width - 15)
+      } else {
+        safeX = Math.max(10, x)
+      }
+    }
+
+    if (safeY + rect.height > window.innerHeight - 10) {
+      safeY = Math.max(10, window.innerHeight - rect.height - 15)
+    } else {
+      safeY = Math.max(10, y)
+    }
+
     menu.style.left = `${safeX}px`
     menu.style.top = `${safeY}px`
   }
@@ -1530,17 +1574,33 @@ export class FullCalendar {
     let lunarMonthHeader = ""
     if (this.showLunar) {
       const midDayLunar = convertSolar2Lunar(15, month + 1, year)
-      lunarMonthHeader = `<span class="lunar-month-title"> (Tháng ${midDayLunar.month}${midDayLunar.leap ? " nhuận" : ""})</span>`
+      lunarMonthHeader = `Tháng ${midDayLunar.month}${midDayLunar.leap ? " nhuận" : ""} ÂL`
     }
+
+    const isCurrentMonthView =
+      year === now.getFullYear() && month === now.getMonth()
 
     const header = document.createElement("div")
     header.className = "calendar-header"
     header.innerHTML = `
-      <button id="prev-month" class="icon-btn" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
-      <h3 class="month-title">${monthName} ${year}${lunarMonthHeader}</h3>
-      <div class="calendar-header-actions" style="margin-left: auto; display: flex; gap: 5px;">
-        ${this.calendarEventSource === "local" ? `<button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>` : ""}
-        <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="calendar-header-title-group">
+        <h3 class="month-title">
+          <span class="month-name">${monthName}</span>
+          <span class="year-number">${year}</span>
+        </h3>
+        ${lunarMonthHeader ? `<span class="lunar-month-badge">${lunarMonthHeader}</span>` : ""}
+      </div>
+      <div class="calendar-header-nav">
+        <button id="calendar-today-btn" class="calendar-today-pill ${isCurrentMonthView ? "is-current" : ""}" type="button" title="${i18n.calendar_today || "Today"}">
+          <i class="fa-regular fa-calendar-check"></i>
+          <span>${i18n.calendar_today || "Today"}</span>
+        </button>
+        <div class="calendar-nav-btn-group">
+          <button id="prev-month" class="icon-btn calendar-nav-btn" type="button" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
+          <button id="next-month" class="icon-btn calendar-nav-btn" type="button" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        ${this.calendarEventSource === "local" ? `<button id="calendar-add-event" class="icon-btn calendar-add-btn" type="button" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>` : ""}
+        <button id="calendar-close-btn" class="icon-btn calendar-close-btn widget-close-btn" type="button" title="${i18n.close || "Close"}"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `
     this.container.appendChild(header)
@@ -1589,28 +1649,59 @@ export class FullCalendar {
       i18n.calendar_weekday_fri || "Fri",
       i18n.calendar_weekday_sat || "Sat",
     ]
-    weekdays.forEach((wd) => {
+    weekdays.forEach((wd, idx) => {
       const wdDiv = document.createElement("div")
-      wdDiv.className = "weekday-header"
+      wdDiv.className = `weekday-header ${idx === 0 || idx === 6 ? "is-weekend" : ""}`
       wdDiv.textContent = wd
       daysGrid.appendChild(wdDiv)
     })
 
     const firstDay = new Date(year, month, 1).getDay()
     const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const prevMonthDays = new Date(year, month, 0).getDate()
 
-    // Empty slots for padding
-    for (let i = 0; i < firstDay; i++) {
-      const empty = document.createElement("div")
-      daysGrid.appendChild(empty)
+    // 1. Previous month trailing days
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const prevDay = prevMonthDays - i
+      const prevDate = new Date(year, month - 1, prevDay)
+      const pYear = prevDate.getFullYear()
+      const pMonth = prevDate.getMonth()
+      const dateStr = `${pYear}-${String(pMonth + 1).padStart(2, "0")}-${String(prevDay).padStart(2, "0")}`
+      const lunarDate = this.showLunar ? getLunarDateString(prevDay, pMonth + 1, pYear) : ""
+      const dayOfWeek = prevDate.getDay()
+
+      const dayDiv = document.createElement("div")
+      dayDiv.className = `day-item other-month prev-month-day ${dayOfWeek === 0 || dayOfWeek === 6 ? "is-weekend" : ""}`
+      dayDiv.dataset.day = String(prevDay)
+      dayDiv.dataset.solarDate = dateStr
+      dayDiv.dataset.monthOffset = "-1"
+      if (lunarDate) dayDiv.dataset.lunarDate = lunarDate
+
+      const dayHeader = document.createElement("div")
+      dayHeader.className = "day-info-header"
+      const dayNumber = document.createElement("div")
+      dayNumber.className = "day-number"
+      dayNumber.textContent = this.calendarDateMode === "lunar" ? (lunarDate || String(prevDay)) : prevDay
+      dayHeader.appendChild(dayNumber)
+
+      if (this.calendarDateMode === "both" && lunarDate) {
+        const lunarDiv = document.createElement("div")
+        lunarDiv.className = "lunar-date"
+        lunarDiv.textContent = lunarDate
+        dayHeader.appendChild(lunarDiv)
+      }
+      dayDiv.appendChild(dayHeader)
+      daysGrid.appendChild(dayDiv)
     }
 
     const events = this.getVisibleEvents()
 
-    // Days
+    // 2. Current month days
     for (let day = 1; day <= daysInMonth; day++) {
       const dayDiv = document.createElement("div")
-      dayDiv.className = "day-item"
+      const currentDate = new Date(year, month, day)
+      const dayOfWeek = currentDate.getDay()
+      dayDiv.className = `day-item ${dayOfWeek === 0 || dayOfWeek === 6 ? "is-weekend" : ""}`
 
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
       const lunarDate = this.showLunar
@@ -1630,6 +1721,16 @@ export class FullCalendar {
         year === now.getFullYear()
       ) {
         dayDiv.classList.add("today")
+      }
+
+      // Check if selected
+      if (
+        this.selectedDate &&
+        day === this.selectedDate.getDate() &&
+        month === this.selectedDate.getMonth() &&
+        year === this.selectedDate.getFullYear()
+      ) {
+        dayDiv.classList.add("selected")
       }
 
       // Day header (Solar + Lunar)
@@ -1663,6 +1764,7 @@ export class FullCalendar {
           const holidayDiv = document.createElement("div")
           holidayDiv.className = "holiday-name"
           holidayDiv.textContent = holiday
+          holidayDiv.title = holiday
           dayDiv.appendChild(holidayDiv)
         }
       }
@@ -1703,6 +1805,43 @@ export class FullCalendar {
         dayDiv.appendChild(eventsContainer)
       }
 
+      daysGrid.appendChild(dayDiv)
+    }
+
+    // 3. Next month leading days (fill 5 or 6 complete weeks: 35 or 42 cells total)
+    const totalRendered = firstDay + daysInMonth
+    const totalCellsNeeded = totalRendered <= 35 ? 35 : 42
+    const nextDaysNeeded = totalCellsNeeded - totalRendered
+
+    for (let nextDay = 1; nextDay <= nextDaysNeeded; nextDay++) {
+      const nextDate = new Date(year, month + 1, nextDay)
+      const nYear = nextDate.getFullYear()
+      const nMonth = nextDate.getMonth()
+      const dateStr = `${nYear}-${String(nMonth + 1).padStart(2, "0")}-${String(nextDay).padStart(2, "0")}`
+      const lunarDate = this.showLunar ? getLunarDateString(nextDay, nMonth + 1, nYear) : ""
+      const dayOfWeek = nextDate.getDay()
+
+      const dayDiv = document.createElement("div")
+      dayDiv.className = `day-item other-month next-month-day ${dayOfWeek === 0 || dayOfWeek === 6 ? "is-weekend" : ""}`
+      dayDiv.dataset.day = String(nextDay)
+      dayDiv.dataset.solarDate = dateStr
+      dayDiv.dataset.monthOffset = "1"
+      if (lunarDate) dayDiv.dataset.lunarDate = lunarDate
+
+      const dayHeader = document.createElement("div")
+      dayHeader.className = "day-info-header"
+      const dayNumber = document.createElement("div")
+      dayNumber.className = "day-number"
+      dayNumber.textContent = this.calendarDateMode === "lunar" ? (lunarDate || String(nextDay)) : nextDay
+      dayHeader.appendChild(dayNumber)
+
+      if (this.calendarDateMode === "both" && lunarDate) {
+        const lunarDiv = document.createElement("div")
+        lunarDiv.className = "lunar-date"
+        lunarDiv.textContent = lunarDate
+        dayHeader.appendChild(lunarDiv)
+      }
+      dayDiv.appendChild(dayHeader)
       daysGrid.appendChild(dayDiv)
     }
 

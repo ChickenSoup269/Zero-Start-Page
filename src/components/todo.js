@@ -97,6 +97,7 @@ export class TodoList {
                   <button id="todo-columns-btn" class="icon-btn todo-fullscreen-only" title="${i18n.todo_toggle_columns || "Columns"}"><i class="fa-solid fa-table-columns"></i><span class="todo-action-label" data-i18n="todo_toggle_columns">${i18n.todo_toggle_columns || "Columns"}</span></button>
                   <button id="todo-fullscreen-btn" class="icon-btn todo-fullscreen-btn" title="${i18n.todo_open_fullscreen || "Open Fullscreen"}"><i class="fa-solid fa-expand"></i><span class="todo-action-label" data-i18n="todo_open_fullscreen">${i18n.todo_open_fullscreen || "Open Fullscreen"}</span></button>
                   <button id="todo-exit-fullscreen-btn" class="icon-btn todo-fullscreen-only todo-exit-fullscreen-btn" title="${i18n.todo_exit_fullscreen || "Exit"}"><i class="fa-solid fa-xmark"></i><span class="todo-action-label" data-i18n="todo_exit_fullscreen">${i18n.todo_exit_fullscreen || "Exit"}</span></button>
+                  <button id="todo-close-btn" class="icon-btn todo-close-btn widget-close-btn" title="${i18n.close || "Close"}"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
             <div id="todo-input-container" class="todo-input-container" style="display: none;">
@@ -128,10 +129,22 @@ export class TodoList {
     const fullscreenBtn = this.container.querySelector("#todo-fullscreen-btn")
     const columnsBtn = this.container.querySelector("#todo-columns-btn")
     const exitFullscreenBtn = this.container.querySelector("#todo-exit-fullscreen-btn")
+    const closeBtn = this.container.querySelector("#todo-close-btn")
     const deleteSelectedBtn = this.container.querySelector(
       "#todo-delete-selected-btn",
     )
     const list = this.container.querySelector("#todo-list")
+
+    closeBtn?.addEventListener("click", () => {
+      updateSetting("showTodoList", false)
+      saveSettings()
+      this.updateVisibility()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showTodoList", value: false },
+        }),
+      )
+    })
 
     list.addEventListener("dragover", (e) => {
       e.preventDefault()

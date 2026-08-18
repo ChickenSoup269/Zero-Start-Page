@@ -470,6 +470,7 @@ export class DailyQuotes {
             <div class="quotes-actions">
               <div class="quote-refresh-btn" title="Refresh Quote"><i class="fa-solid fa-rotate"></i></div>
               <div class="crystal-ball-trigger" title="Crystal Ball"><i class="fa-solid fa-chevron-up"></i></div>
+              <div class="quote-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></div>
             </div>
           </div>
         </div>
@@ -683,6 +684,19 @@ export class DailyQuotes {
       const isHidden = ui.style.display === "none"
       ui.style.display = isHidden ? "block" : "none"
       trigger.classList.toggle("active", isHidden)
+    })
+
+    const closeBtn = this.container.querySelector(".quote-close-btn")
+    closeBtn?.addEventListener("click", (e) => {
+      e.stopPropagation()
+      updateSetting("showQuotes", false)
+      saveSettings()
+      fadeToggle(this.container, false, "flex")
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showQuotes", value: false },
+        }),
+      )
     })
 
     refreshBtn?.addEventListener("click", (e) => {

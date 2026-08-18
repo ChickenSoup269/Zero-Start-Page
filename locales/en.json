@@ -1000,6 +1000,7 @@
   "calendar_organizer": "Organizer:",
   "calendar_no_events": "No events scheduled",
   "calendar_days_count": "{count} days",
+  "calendar_today": "Today",
   "calendar_today_events": "Today's Events",
   "calendar_hide_source_tabs": "Hide Calendar Source",
   "calendar_show_source_tabs": "Show Calendar Source",

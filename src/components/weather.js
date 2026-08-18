@@ -86,6 +86,7 @@ export class Weather {
         <div class="weather-actions">
           <button class="icon-btn" id="weather-locate-btn" title="${this.escapeAttribute(i18n.weather_use_current || "Use current location")}"><i class="fa-solid fa-location-crosshairs"></i></button>
           <button class="icon-btn" id="weather-refresh-btn" title="${this.escapeAttribute(i18n.weather_refresh || "Refresh")}"><i class="fa-solid fa-rotate"></i></button>
+          <button class="icon-btn weather-close-btn widget-close-btn" id="weather-close-btn" title="${this.escapeAttribute(i18n.close || "Close")}"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
       <div class="weather-search-wrap">
@@ -104,6 +105,17 @@ export class Weather {
   }
 
   setupEventListeners() {
+    this.container.querySelector("#weather-close-btn")?.addEventListener("click", () => {
+      updateSetting("showWeather", false)
+      saveSettings()
+      this.applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showWeather", value: false },
+        }),
+      )
+    })
+
     this.container.querySelector("#weather-refresh-btn")?.addEventListener("click", () => {
       this.loadWeather({ force: true })
     })

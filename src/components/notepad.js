@@ -61,7 +61,10 @@ export class Notepad {
     this.container.innerHTML = `
       <div class="notepad-header drag-handle">
         <h3 data-i18n="notepad_title">Notepad</h3>
-        <button id="add-note-btn" class="icon-btn" title="Add Note"><i class="fa-solid fa-plus"></i></button>
+        <div class="notepad-header-actions" style="display: flex; align-items: center; gap: 4px;">
+          <button id="add-note-btn" class="icon-btn" title="Add Note"><i class="fa-solid fa-plus"></i></button>
+          <button id="notepad-close-btn" class="icon-btn notepad-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
       </div>
       <div class="notepad-body">
         <div class="notes-list"></div>
@@ -71,7 +74,20 @@ export class Notepad {
 
   setupEventListeners() {
     const addBtn = this.container.querySelector("#add-note-btn")
-    addBtn.addEventListener("click", () => this.addNote())
+    addBtn?.addEventListener("click", () => this.addNote())
+
+    const closeBtn = this.container.querySelector("#notepad-close-btn")
+    closeBtn?.addEventListener("click", () => {
+      updateSetting("showNotepad", false)
+      saveSettings()
+      this.isVisible = false
+      this.updateVisibility()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showNotepad", value: false },
+        }),
+      )
+    })
 
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showNotepad") {
