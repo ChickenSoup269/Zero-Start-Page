@@ -9755,16 +9755,35 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.active {
   top: 0px;
   right: -34px;
   font-size: 11px;
+  box-sizing: border-box;
+  transform-origin: center center;
   transition:
     opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bookmark-groups-toggle i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 11px;
+  pointer-events: none;
+  transition: color 0.2s ease;
 }
 
 .bookmark-groups-toggle:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.bookmark-groups-toggle:hover i {
   color: #fff;
 }
 
@@ -9783,10 +9802,6 @@ body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskb
 
 body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode).groups-hidden .bookmark-groups-toggle {
   bottom: -12px;
-}
-
-body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-groups-toggle:hover {
-  transform: translateX(-50%) scale(1.08);
 }
 
 /* Auto-Hide Toggle (Reveals smoothly on Hover) */
@@ -10329,13 +10344,11 @@ body.bookmark-sidebar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-right-mode .bookmark-groups-toggle:hover {
   background: rgba(255, 255, 255, 0.25) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
   color: #fff !important;
-  transform: scale(1.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Specific position adjustments for Toggle Button flow */
@@ -10525,31 +10538,17 @@ body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-container {
   padding-top: 2px !important;
 }
 
-/* Hover khi đang ẩn groups: taskbar expand ngang, sidebar expand dọc */
+/* Hover khi đang ẩn groups: làm sáng màu accent mà không bị giãn méo kích thước */
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle:hover {
-  opacity: 1 !important;
-  background: var(--accent-color, rgba(100, 180, 255, 0.3)) !important;
-  border-color: var(--accent-color, rgba(100, 180, 255, 0.5)) !important;
-  color: var(--accent-contrast-color, #fff) !important;
-  width: 80px !important;
-}
-
+body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle:hover {
-  opacity: 1 !important;
-  background: var(--accent-color, rgba(100, 180, 255, 0.3)) !important;
-  border-color: var(--accent-color, rgba(100, 180, 255, 0.5)) !important;
-  color: var(--accent-contrast-color, #fff) !important;
-  height: 80px !important;
-}
-
+body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1 !important;
   background: var(--accent-color, rgba(100, 180, 255, 0.3)) !important;
   border-color: var(--accent-color, rgba(100, 180, 255, 0.5)) !important;
   color: var(--accent-contrast-color, #fff) !important;
-  height: 80px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container,
@@ -10659,12 +10658,12 @@ body.bookmark-taskbar-right-mode .bookmark-groups-container {
 /* Beautiful Toggle Animation */
 .bookmark-groups-toggle {
   transition:
-    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.3s ease,
-    opacity 0.3s ease,
-    border-color 0.3s ease !important;
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    opacity 0.25s ease !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden:not(.auto-hide-groups-toggle) .bookmark-groups-toggle,
