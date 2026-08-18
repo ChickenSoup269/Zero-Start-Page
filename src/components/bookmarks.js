@@ -1497,35 +1497,58 @@ function takeDraggedStackItems() {
   let sourceStack = first.stack
   let sourceStackIndex = first.stackIndex
 
+  // 1. Try matching sourceStack in root bookmarks
+  let parentStack = null
+  let rootIdx = -1
+
+  if (sourceStack) {
+    rootIdx = bookmarks.indexOf(sourceStack)
+    if (rootIdx === -1) {
+      rootIdx = bookmarks.findIndex(
+        (b) =>
+          b === sourceStack ||
+          (b.id && sourceStack.id && b.id === sourceStack.id) ||
+          (b.type === "stack" && b.title === sourceStack.title && Array.isArray(b.items)),
+      )
+      if (rootIdx !== -1) {
+        sourceStack = bookmarks[rootIdx]
+      }
+    }
+  }
+
+  if (rootIdx !== -1) {
+    sourceStackIndex = rootIdx
+  } else if (sourceStack) {
+    // 2. Check if sourceStack is nested inside a parent stack in root bookmarks
+    for (let i = 0; i < bookmarks.length; i++) {
+      const b = bookmarks[i]
+      if (isBookmarkStack(b)) {
+        const nestedIdx = b.items.findIndex(
+          (it) =>
+            it === sourceStack ||
+            (it.id && sourceStack.id && it.id === sourceStack.id) ||
+            (it.type === "stack" && it.title === sourceStack.title),
+        )
+        if (nestedIdx !== -1) {
+          parentStack = b
+          sourceStack = b.items[nestedIdx]
+          sourceStackIndex = i
+          break
+        }
+      }
+    }
+  }
+
   if (!sourceStack && sourceStackIndex != null && bookmarks[sourceStackIndex]) {
     sourceStack = bookmarks[sourceStackIndex]
   }
 
-  // If sourceStack still not found or index is missing, search bookmarks array
   if (!sourceStack) {
     sourceStack = bookmarks.find(
       (b) =>
         isBookmarkStack(b) &&
         (first.item ? b.items.includes(first.item) : true),
     )
-  }
-
-  // Check if sourceStack is at root level or nested inside a parent stack
-  let parentStack = null
-  if (sourceStack) {
-    const idx = bookmarks.indexOf(sourceStack)
-    if (idx !== -1) {
-      sourceStackIndex = idx
-    } else {
-      for (let i = 0; i < bookmarks.length; i++) {
-        const b = bookmarks[i]
-        if (isBookmarkStack(b) && b.items.includes(sourceStack)) {
-          parentStack = b
-          sourceStackIndex = i
-          break
-        }
-      }
-    }
   }
 
   if (!sourceStack || !Array.isArray(sourceStack.items)) return null
@@ -1537,7 +1560,9 @@ function takeDraggedStackItems() {
   for (const ds of sortedStackItems) {
     let idx = ds.itemIndex
     if (ds.item && sourceStack.items[idx] !== ds.item) {
-      idx = sourceStack.items.indexOf(ds.item)
+      idx = sourceStack.items.findIndex(
+        (it) => it === ds.item || (it.url && it.url === ds.item.url && it.title === ds.item.title),
+      )
     }
     if (idx !== -1 && sourceStack.items[idx]) {
       items.unshift(...sourceStack.items.splice(idx, 1))
@@ -1548,18 +1573,13 @@ function takeDraggedStackItems() {
 
   let removedSourceSlot = false
   if (parentStack) {
+    const pIdx = parentStack.items.indexOf(sourceStack)
     if (sourceStack.items.length <= 0) {
-      const pIdx = parentStack.items.indexOf(sourceStack)
       if (pIdx !== -1) parentStack.items.splice(pIdx, 1)
     } else if (sourceStack.items.length === 1) {
-      const pIdx = parentStack.items.indexOf(sourceStack)
       if (pIdx !== -1) parentStack.items[pIdx] = sourceStack.items[0]
     }
-  } else if (
-    sourceStackIndex != null &&
-    sourceStackIndex >= 0 &&
-    bookmarks[sourceStackIndex] === sourceStack
-  ) {
+  } else if (sourceStackIndex != null && sourceStackIndex >= 0 && bookmarks[sourceStackIndex]) {
     if (sourceStack.items.length <= 0) {
       bookmarks.splice(sourceStackIndex, 1)
       removedSourceSlot = true
@@ -3310,7 +3330,40 @@ function renderGroupTabs() {
   requestAnimationFrame(animateGroupTabActiveRunner)
 }
 
+let globalStackDragBound = false
+function initGlobalStackDragListeners() {
+  if (globalStackDragBound) return
+  globalStackDragBound = true
+
+  document.addEventListener("dragover", (e) => {
+    if (draggedStackItems && draggedStackItems.length > 0) {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = "move"
+    }
+  })
+
+  document.addEventListener("drop", (e) => {
+    if (draggedStackItems && draggedStackItems.length > 0) {
+      // If dropped inside popup, popup's handleStackPopupDrop handles it with stopPropagation
+      if (e.target.closest("#bookmark-stack-popup")) return
+
+      e.preventDefault()
+      const snapshot = captureBookmarkSnapshot()
+      const extracted = takeDraggedStackItems()
+      if (!extracted?.items || extracted.items.length === 0) return
+      extracted.bookmarks.push(...extracted.items)
+      setBookmarks(extracted.bookmarks)
+      saveBookmarks()
+      document.getElementById("bookmark-stack-popup")?.remove()
+      cancelSelection()
+      renderBookmarks()
+      showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+    }
+  })
+}
+
 export function initBookmarks() {
+  initGlobalStackDragListeners()
   renderBookmarks()
 
   bookmarkGroupsContainer.addEventListener("dragover", (e) => {

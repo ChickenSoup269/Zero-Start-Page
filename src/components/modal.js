@@ -145,6 +145,46 @@ function positionBookmarkEditPopover(popover, anchor) {
   const width = popover.offsetWidth || 340
   const height = popover.offsetHeight || 420
 
+  // 1. Check if anchor is inside or related to a bookmark-stack-popup or hidden-bookmarks-popup
+  const stackPopup =
+    anchor?.closest?.(".bookmark-stack-popup, .hidden-bookmarks-popup") ||
+    document.querySelector(".bookmark-stack-popup, .hidden-bookmarks-popup")
+
+  if (stackPopup && stackPopup.isConnected) {
+    const pr = stackPopup.getBoundingClientRect()
+    if (pr.width > 0 && pr.height > 0) {
+      // Try placing docked to the right of the stack popup:
+      if (pr.right + width + margin <= window.innerWidth) {
+        let top = pr.top
+        top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+        popover.style.left = `${Math.round(pr.right + 10)}px`
+        popover.style.top = `${Math.round(top)}px`
+        return
+      }
+      // If not enough room on right, try placing docked to the left of the stack popup:
+      if (pr.left - width - margin >= 0) {
+        let top = pr.top
+        top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+        popover.style.left = `${Math.round(pr.left - width - 10)}px`
+        popover.style.top = `${Math.round(top)}px`
+        return
+      }
+      // If neither side has enough horizontal room, place below/above popup centered:
+      let left = Math.min(
+        Math.max(pr.left + (pr.width - width) / 2, margin),
+        window.innerWidth - width - margin,
+      )
+      let top = pr.bottom + 10
+      if (top + height > window.innerHeight - margin) {
+        top = Math.max(margin, pr.top - height - 10)
+      }
+      popover.style.left = `${Math.round(left)}px`
+      popover.style.top = `${Math.round(top)}px`
+      return
+    }
+  }
+
+  // 2. Standard anchor positioning for bookmarks / elements on the main page
   let anchorRect = null
   if (anchor && typeof anchor.getBoundingClientRect === "function") {
     if (anchor.isConnected !== false) {
@@ -158,19 +198,6 @@ function positionBookmarkEditPopover(popover, anchor) {
         r.left < window.innerWidth
       ) {
         anchorRect = r
-      }
-    }
-  }
-
-  // Fallback: If no valid anchorRect, try to anchor to an open active stack popup, hidden bookmarks popup, or window center
-  if (!anchorRect) {
-    const activePopup = document.querySelector(
-      ".bookmark-stack-popup, .hidden-bookmarks-popup",
-    )
-    if (activePopup && activePopup.isConnected) {
-      const pr = activePopup.getBoundingClientRect()
-      if (pr && (pr.width > 0 || pr.height > 0)) {
-        anchorRect = pr
       }
     }
   }
