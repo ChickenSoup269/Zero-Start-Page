@@ -46,6 +46,7 @@ import {
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import { switchSettingsTab, switchBgSubTab, getElementTab, getElementBgSubTab, scrollToSidebarElement } from "./sidebarNavigation.js"
+import { initLcpCustomDropdowns } from "../../utils/lcpDropdowns.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -6899,6 +6900,7 @@ export function setupGeneralEventHandlers(
 
   const showLcp = (tabName = "layout") => {
     setLcpTab(tabName)
+    initLcpCustomDropdowns()
     DOM.fadeToggle(DOM.layoutControlsPopup, true, "block")
     DOM.layoutControlsBtn.classList.add("active")
   }

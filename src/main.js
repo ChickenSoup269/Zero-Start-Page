@@ -43,6 +43,7 @@ import {
   saveSettings,
 } from "./services/state.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
+import { initLcpCustomDropdowns } from "./utils/lcpDropdowns.js"
 
 // ── Imports: Boot Modules ─────────────────────────────────────────────────────
 import {
@@ -221,6 +222,7 @@ async function bootstrap() {
 
   initContextMenu()
   initModal()
+  initLcpCustomDropdowns()
   DriveSync.init()
 
   // ── 11. Draggable UI elements ─────────────────────────────────────────────
