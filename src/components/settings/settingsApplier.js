@@ -5659,6 +5659,10 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
       }
     }
+    const currentWidthStr = String(settings.searchBarWidth || 600)
+    document.querySelectorAll(".lcp-preset-btn, .width-preset-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.width === currentWidthStr)
+    })
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     if (DOM.showQuickAccessBgCheckbox) {
       DOM.showQuickAccessBgCheckbox.checked =

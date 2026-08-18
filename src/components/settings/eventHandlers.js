@@ -6583,6 +6583,33 @@ export function setupGeneralEventHandlers(
       )
     })
   }
+  const syncWidthPresets = (val) => {
+    const s = String(val)
+    document.querySelectorAll(".lcp-preset-btn, .width-preset-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.width === s)
+    })
+  }
+
+  document.addEventListener("click", (e) => {
+    const presetBtn = e.target.closest(".lcp-preset-btn, .width-preset-btn")
+    if (!presetBtn || !presetBtn.dataset.width) return
+    const width = parseInt(presetBtn.dataset.width, 10)
+    if (!width) return
+
+    if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
+    if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
+    if (DOM.searchBarWidthVal) DOM.searchBarWidthVal.textContent = `${width}px`
+    if (DOM.lcpSearchBarWidthVal) DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+
+    syncWidthPresets(width)
+    handleSettingUpdate("searchBarWidth", width)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "searchBarWidth", value: width },
+      }),
+    )
+  })
+
   if (DOM.searchBarWidthSlider) {
     DOM.searchBarWidthSlider.addEventListener("input", (e) => {
       const width = e.target.value
@@ -6591,6 +6618,7 @@ export function setupGeneralEventHandlers(
       if (DOM.lcpSearchBarWidthVal)
         DOM.lcpSearchBarWidthVal.textContent = `${width}px`
       if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
+      syncWidthPresets(width)
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
@@ -6964,6 +6992,7 @@ export function setupGeneralEventHandlers(
       if (DOM.searchBarWidthVal)
         DOM.searchBarWidthVal.textContent = `${width}px`
       if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
+      syncWidthPresets(width)
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {

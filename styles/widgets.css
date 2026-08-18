@@ -2825,6 +2825,44 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   background: var(--accent-contrast-color, #ffffff);
 }
 
+/* Search Bar Width Preset Buttons */
+.lcp-width-presets {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.lcp-preset-btn {
+  flex: 1;
+  padding: 5px 0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-color, #e0e0e0);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  font-family: inherit;
+}
+
+.lcp-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.lcp-preset-btn.active {
+  background: var(--accent-color, #3b82f6) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #3b82f6) !important;
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 59, 130, 246), 0.35);
+  font-weight: 600;
+}
+
 /* Glass Panels */
 .glass-panel {
   background: rgba(15, 18, 25, 0.85);
