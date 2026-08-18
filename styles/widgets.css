@@ -12407,6 +12407,110 @@ body.bookmark-layout-bg-colored .add-bookmark-card i {
   color: var(--bookmark-layout-text-color, #1e293b) !important;
 }
 
+/* --- HIDDEN BOOKMARKS POPUP INHERITING BOOKMARK CONTAINER STYLES --- */
+body.bookmark-layout-bg-hidden #hidden-bookmarks-popup,
+body.bookmark-group-container-bg-hidden #hidden-bookmarks-popup {
+  background: rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.bookmark-layout-bg-colored #hidden-bookmarks-popup {
+  background: var(--bookmark-layout-bg-color, #ffffff) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.bookmark-layout-bg-colored #hidden-bookmarks-popup .bookmark span,
+body.bookmark-layout-bg-colored #hidden-bookmarks-popup .bookmark .bookmark-title {
+  color: var(--bookmark-layout-text-color, #1e293b) !important;
+  text-shadow: none !important;
+}
+
+body.bookmark-layout-bg-m3-accent #hidden-bookmarks-popup,
+body.sidebar-m3-accent #hidden-bookmarks-popup {
+  background:
+    radial-gradient(
+      circle at 14% 8%,
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--accent-color, #3b82f6)) 20%,
+        transparent
+      ),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--m3-surface-container-high, rgba(18, 20, 26, 0.92)) 75%,
+        var(--m3-primary-container, var(--accent-color, #3b82f6)) 25%
+      ),
+      color-mix(
+        in srgb,
+        var(--m3-secondary-container, var(--accent-color, #3b82f6)) 30%,
+        rgba(12, 14, 20, 0.88)
+      )
+    ) !important;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--m3-primary, var(--accent-color, #3b82f6)) 34%,
+      rgba(255, 255, 255, 0.14)
+    ) !important;
+  box-shadow:
+    0 20px 48px
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--accent-color, #3b82f6)) 18%,
+        rgba(0, 0, 0, 0.5)
+      ),
+    inset 0 1px 0
+      color-mix(in srgb, var(--m3-on-primary-container, #fff) 16%, transparent) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
+body.bookmark-layout-bg-white #hidden-bookmarks-popup,
+body.context-menu-light #hidden-bookmarks-popup {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16) !important;
+  color: #111827 !important;
+}
+
+body.bookmark-layout-bg-white #hidden-bookmarks-popup .bookmark span,
+body.context-menu-light #hidden-bookmarks-popup .bookmark span {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+body.context-menu-macos:not(.bookmark-layout-bg-white):not(.bookmark-layout-bg-colored) #hidden-bookmarks-popup {
+  background: rgba(30, 30, 34, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: var(--radius-md) !important;
+  backdrop-filter: blur(40px) saturate(1.8) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(1.8) !important;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.context-menu-none:not(.bookmark-layout-bg-white):not(.bookmark-layout-bg-colored) #hidden-bookmarks-popup {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.18) !important;
+  backdrop-filter: blur(24px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
+}
+
+body.context-menu-none #hidden-bookmarks-popup .bookmark span {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
 /* --- BOOKMARK ITEM CARD STYLE --- */
 body.bookmark-item-card-style .bookmark {
   background: rgba(255, 255, 255, 0.1) !important;
