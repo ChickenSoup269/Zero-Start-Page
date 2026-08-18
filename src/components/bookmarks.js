@@ -629,8 +629,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   } else {
     folderIcon = document.createElement("i")
     folderIcon.className = "fa-solid fa-folder-open bookmark-stack-popup-header-icon"
-    folderIcon.style.color = stack.iconColor || "var(--accent-color, #a8c0ff)"
-    folderIcon.style.fontSize = "1.05rem"
+    if (stack.iconColor) {
+      folderIcon.style.color = stack.iconColor
+    }
+    folderIcon.style.fontSize = "1.1rem"
   }
 
   const title = document.createElement("span")
