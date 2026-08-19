@@ -856,9 +856,6 @@ function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
     // Use a preview color from the snapshot if available
     const previewColor = theme.snapshot.accentColor || "#ffffff"
     item.style.setProperty("--theme-card-accent", previewColor)
-    if (theme.snapshot.sidebarBg) {
-      item.style.setProperty("--theme-card-bg", theme.snapshot.sidebarBg)
-    }
 
     item.innerHTML = `
             <div class="theme-preview">
