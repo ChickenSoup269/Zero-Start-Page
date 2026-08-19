@@ -430,6 +430,36 @@ const CRYSTAL_BALL_ANSWERS = {
   },
 }
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 3500) {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal })
+    clearTimeout(timeoutId)
+    return response
+  } catch (err) {
+    clearTimeout(timeoutId)
+    throw err
+  }
+}
+
+async function translateQuoteText(text, targetLang = "vi") {
+  if (!text || targetLang !== "vi") return text
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(text)}`
+    const res = await fetchWithTimeout(url, {}, 2500)
+    if (!res.ok) return text
+    const data = await res.json()
+    if (data && data[0] && Array.isArray(data[0])) {
+      const translated = data[0].map((item) => item[0]).join("")
+      return translated || text
+    }
+    return text
+  } catch (e) {
+    return text
+  }
+}
+
 export class DailyQuotes {
   constructor() {
     this.container = null
@@ -438,6 +468,7 @@ export class DailyQuotes {
     this.lastQuestion = ""
     this.questionCount = 0
     this.currentIndex = -1
+    this.fetchAbortController = null
     this.init()
   }
 
@@ -523,39 +554,45 @@ export class DailyQuotes {
     const source = getSettings().quotesSource || "local"
     
     if (source === "quotable") {
-      await this.fetchFromQuotable(isManual);
-      return;
+      await this.fetchFromQuotable(isManual)
+      return
     }
     if (source === "adviceslip") {
-      await this.fetchFromAdviceSlip(isManual);
-      return;
+      await this.fetchFromAdviceSlip(isManual)
+      return
     }
 
-    this.updateLocalQuote(isManual);
+    this.updateLocalQuote(isManual)
   }
 
-  renderQuote(text, author) {
+  renderQuote(text, author, originalText = null) {
     const textEl = this.container.querySelector(".quote-text")
     const authEl = this.container.querySelector(".quote-author")
     
     if (textEl) {
-      textEl.style.opacity = 0
+      textEl.style.opacity = "0"
       setTimeout(() => {
         textEl.textContent = text
-        textEl.style.opacity = 1
-      }, 200)
+        if (originalText && originalText !== text) {
+          textEl.title = originalText
+        } else {
+          textEl.removeAttribute("title")
+        }
+        textEl.style.opacity = "1"
+      }, 150)
     }
     if (authEl) {
-      authEl.style.opacity = 0
+      authEl.style.opacity = "0"
       setTimeout(() => {
         authEl.textContent = author
-        authEl.style.opacity = 1
-      }, 200)
+        authEl.style.opacity = "1"
+      }, 150)
     }
   }
 
   async fetchWithCache(isManual, sourceName, fetchFn) {
     const freq = getSettings().quotesUpdateFreq || "tab"
+    const currentLang = getSettings().language || "en"
     const cacheKey = `quote_cache_${sourceName}`
     const timeKey = `quote_time_${sourceName}`
     
@@ -576,49 +613,139 @@ export class DailyQuotes {
         if (!shouldFetch) {
           try {
             const parsed = JSON.parse(cached)
-            this.renderQuote(parsed.text, parsed.author)
-            return
+            if (parsed.lang === currentLang) {
+              this.renderQuote(parsed.text, parsed.author, parsed.originalText)
+              return
+            }
           } catch(e) {}
         }
       }
     }
     
-    this.renderQuote("...", "")
+    // Show subtle ellipsis if no content yet
+    const textEl = this.container?.querySelector(".quote-text")
+    if (!textEl || !textEl.textContent.trim()) {
+      this.renderQuote("...", "")
+    }
     
     try {
       const data = await fetchFn()
-      this.renderQuote(data.text, data.author)
-      localStorage.setItem(cacheKey, JSON.stringify(data))
+      this.renderQuote(data.text, data.author, data.originalText)
+      localStorage.setItem(cacheKey, JSON.stringify({ ...data, lang: currentLang }))
       localStorage.setItem(timeKey, Date.now().toString())
     } catch(err) {
-      console.warn(`${sourceName} fallback to local`, err)
+      console.warn(`${sourceName} fallback to local:`, err)
       this.updateLocalQuote(isManual)
     }
   }
 
   async fetchFromQuotable(isManual) {
     const fetchFn = async () => {
-      const response = await fetch('https://type.fit/api/quotes')
-      if (!response.ok) throw new Error("API Network error")
-      const data = await response.json()
-      // type.fit returns an array of quotes
-      const randomQuote = data[Math.floor(Math.random() * data.length)]
-      let author = randomQuote.author || "Unknown"
-      // Remove ", type.fit" from author name if it exists (legacy type.fit behavior)
-      if (author.includes(", type.fit")) {
-        author = author.replace(", type.fit", "")
+      const isVi = getSettings().language === "vi"
+      let rawQuote = null
+
+      // Attempt 1: DummyJSON Quotes API (Fast, Reliable, HTTPS)
+      try {
+        const res = await fetchWithTimeout("https://dummyjson.com/quotes/random", {}, 3500)
+        if (res.ok) {
+          const data = await res.json()
+          if (data && data.quote) {
+            rawQuote = {
+              text: data.quote,
+              author: data.author ? `- ${data.author}` : "- Unknown"
+            }
+          }
+        }
+      } catch (e) {}
+
+      // Attempt 2: ZenQuotes API
+      if (!rawQuote) {
+        try {
+          const res = await fetchWithTimeout("https://zenquotes.io/api/random", {}, 3500)
+          if (res.ok) {
+            const data = await res.json()
+            if (Array.isArray(data) && data[0]?.q) {
+              rawQuote = {
+                text: data[0].q,
+                author: data[0].a ? `- ${data[0].a}` : "- Unknown"
+              }
+            }
+          }
+        } catch (e) {}
       }
-      return { text: randomQuote.text, author: `- ${author}` }
+
+      // Attempt 3: Type.fit Quotes
+      if (!rawQuote) {
+        try {
+          const res = await fetchWithTimeout("https://type.fit/api/quotes", {}, 3500)
+          if (res.ok) {
+            const data = await res.json()
+            if (Array.isArray(data) && data.length > 0) {
+              const item = data[Math.floor(Math.random() * data.length)]
+              let author = (item.author || "Unknown").replace(", type.fit", "")
+              rawQuote = {
+                text: item.text,
+                author: `- ${author}`
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      // Attempt 4: Quotable.io
+      if (!rawQuote) {
+        try {
+          const res = await fetchWithTimeout("https://api.quotable.io/random", {}, 3000)
+          if (res.ok) {
+            const data = await res.json()
+            if (data && data.content) {
+              rawQuote = {
+                text: data.content,
+                author: data.author ? `- ${data.author}` : "- Unknown"
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!rawQuote) {
+        throw new Error("All online quote APIs failed")
+      }
+
+      let finalText = rawQuote.text
+      if (isVi) {
+        finalText = await translateQuoteText(rawQuote.text, "vi")
+      }
+
+      return {
+        text: finalText,
+        author: rawQuote.author,
+        originalText: rawQuote.text
+      }
     }
     await this.fetchWithCache(isManual, "quotable", fetchFn)
   }
 
   async fetchFromAdviceSlip(isManual) {
     const fetchFn = async () => {
-      const response = await fetch('https://api.adviceslip.com/advice')
-      if (!response.ok) throw new Error("API Network error")
-      const data = await response.json()
-      return { text: data.slip.advice, author: `- Advice Slip` }
+      const isVi = getSettings().language === "vi"
+      // Use cache-busting timestamp and no-store to prevent stale browser caching
+      const res = await fetchWithTimeout(`https://api.adviceslip.com/advice?t=${Date.now()}`, { cache: "no-store" }, 3500)
+      if (!res.ok) throw new Error("Advice Slip API Network error")
+      const data = await res.json()
+      const originalAdvice = data?.slip?.advice || "Keep moving forward."
+      
+      let finalAdvice = originalAdvice
+      if (isVi) {
+        finalAdvice = await translateQuoteText(originalAdvice, "vi")
+      }
+
+      const author = isVi ? "- Lời khuyên" : "- Advice Slip"
+      return {
+        text: finalAdvice,
+        author,
+        originalText: originalAdvice
+      }
     }
     await this.fetchWithCache(isManual, "adviceslip", fetchFn)
   }
