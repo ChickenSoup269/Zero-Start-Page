@@ -2615,9 +2615,11 @@ body.sidebar-light .preset-code-line-value {
 
 /* Dropdown Select Controls */
 .setting-item-row select,
-.setting-item-row .settings-select {
+.setting-item-row .settings-select,
+.setting-item select,
+.settings-select {
   height: 32px;
-  min-width: 110px;
+  min-width: 100px;
   max-width: 170px;
   padding: 0 24px 0 10px !important;
   font-size: 0.82rem !important;
@@ -2632,14 +2634,32 @@ body.sidebar-light .preset-code-line-value {
   box-sizing: border-box;
 }
 
+.setting-item-row select option,
+.setting-item select option,
+.settings-select option {
+  background-color: #1e222d !important;
+  color: #ffffff !important;
+}
+
+body.sidebar-light .setting-item-row select option,
+body.sidebar-light .setting-item select option,
+body.sidebar-light .settings-select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
 .setting-item-row select:hover,
-.setting-item-row .settings-select:hover {
+.setting-item-row .settings-select:hover,
+.setting-item select:hover,
+.settings-select:hover {
   background-color: rgba(255, 255, 255, 0.11) !important;
   border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.35) !important;
 }
 
 .setting-item-row select:focus,
-.setting-item-row .settings-select:focus {
+.setting-item-row .settings-select:focus,
+.setting-item select:focus,
+.settings-select:focus {
   border-color: var(--accent-color) !important;
   box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 100, 150, 255), 0.25) !important;
 }
