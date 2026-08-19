@@ -721,14 +721,16 @@ function clearImagePreview() {
   updateSearchUI()
 }
 
-function updateSearchUI() {
+export function updateSearchUI() {
   // If pending image exists, don't override placeholder
   if (pendingImageFile) {
     return
   }
 
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
-  cameraBtn.style.display = currentEngine === "google-image" ? "flex" : "none"
+  if (cameraBtn) {
+    cameraBtn.style.display = currentEngine === "google-image" ? "flex" : "none"
+  }
   if (lensBtn) {
     lensBtn.style.display = currentEngine === "google-lens" ? "flex" : "none"
   }
@@ -739,7 +741,15 @@ function updateSearchUI() {
         : "none"
   }
   const i18n = geti18n()
-  searchInput.placeholder = i18n[engine.placeholderKey] || engine.name
+  const ph = (engine.placeholderKey && i18n[engine.placeholderKey]) || `Search ${engine.name}...`
+  if (searchInput) {
+    searchInput.placeholder = ph
+    if (engine.placeholderKey) {
+      searchInput.setAttribute("data-i18n-placeholder", engine.placeholderKey)
+    } else {
+      searchInput.removeAttribute("data-i18n-placeholder")
+    }
+  }
 }
 
 function initSearch() {

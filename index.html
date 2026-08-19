@@ -464,17 +464,15 @@
 
                 <div class="lcp-divider" style="height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0;"></div>
 
-                <div class="lcp-row lcp-slider-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <span style="display: flex; align-items: center; gap: 10px;">
+                <div class="lcp-row lcp-slider-row">
+                    <div class="lcp-slider-header">
+                        <span class="lcp-slider-title-wrap">
                             <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
                             <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
                         </span>
-                        <span class="range-val" id="lcp-search-bar-width-val"
-                            style="font-size: 0.78rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.08);">600px</span>
+                        <span class="range-val" id="lcp-search-bar-width-val">600px</span>
                     </div>
-                    <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600"
-                        style="width: 100%;">
+                    <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600">
                     <div class="lcp-width-presets" role="group" aria-label="Search bar width presets">
                         <button type="button" class="lcp-preset-btn" data-width="450">450px</button>
                         <button type="button" class="lcp-preset-btn active" data-width="600">600px</button>
@@ -533,6 +531,17 @@
             </div>
 
             <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
+                <div class="lcp-row">
+                    <i class="fa-solid fa-border-all lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_border_toggle">Border Visibility</span>
+                    <label class="lcp-switch" for="lcp-quick-access-border-visible">
+                        <input type="checkbox" id="lcp-quick-access-border-visible">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+
+                <div class="lcp-divider" style="height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0;"></div>
+
                 <div class="lcp-row">
                     <i class="fa-solid fa-list-check lcp-icon"></i>
                     <span class="lcp-label" data-i18n="qa_show_todo">Show Todo</span>
@@ -690,14 +699,6 @@
                         <option value="light-transparent" data-i18n="skin_light_transparent">Light Transparent</option>
                         <option value="contrast" data-i18n="skin_contrast">Contrast</option>
                     </select>
-                </div>
-                <div class="lcp-row">
-                    <i class="fa-solid fa-border-all lcp-icon"></i>
-                    <span class="lcp-label" data-i18n="quick_access_border_toggle">Border Visibility</span>
-                    <label class="lcp-switch" for="lcp-quick-access-border-visible">
-                        <input type="checkbox" id="lcp-quick-access-border-visible">
-                        <span class="lcp-slider"></span>
-                    </label>
                 </div>
             </div>
         </div>
@@ -3171,8 +3172,8 @@
             </div>
 
             <form action="https://www.google.com/search" method="GET" target="_self">
-                <input type="text" id="search-input" aria-label="Search" name="q" class="i18n-placeholder"
-                    data-i18n-placeholder="search_placeholder" placeholder="Search Google..." autocomplete="off">
+                <input type="text" id="search-input" aria-label="Search" name="q"
+                    placeholder="Search Google..." autocomplete="off">
             </form>
             <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>
             <i class="fa-solid fa-camera-viewfinder lens-btn" id="search-lens-btn"
