@@ -377,6 +377,15 @@ function applyHueMode(settings) {
     } else if (style === "clock-3d") {
       clockTargets.push(clockElement.querySelector(".clock-3d-text-main .clock-3d-time-val"))
       clockTargets.push(clockElement.querySelector(".clock-3d-ampm"))
+    } else if (style === "satellite") {
+      clockTargets.push(clockElement.querySelector(".sat-time"))
+      clockTargets.push(clockElement.querySelector(".sat-ampm"))
+      clockTargets.push(clockElement.querySelector(".sat-seconds"))
+    } else if (style === "audio-wave") {
+      clockTargets.push(clockElement.querySelector(".aw-time"))
+    } else if (style === "glass-float") {
+      clockTargets.push(clockElement.querySelector(".gf-time"))
+      clockTargets.push(clockElement.querySelector(".gf-text"))
     }
   }
 
@@ -449,6 +458,12 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".split-pill-divider"))
       } else if (style === "clock-3d") {
         dateTargets.push(clockElement.querySelector(".clock-3d-date"))
+      } else if (style === "satellite") {
+        dateTargets.push(clockElement.querySelector(".sat-date"))
+      } else if (style === "audio-wave") {
+        dateTargets.push(clockElement.querySelector(".aw-date"))
+      } else if (style === "glass-float") {
+        dateTargets.push(clockElement.querySelector(".gf-date"))
       }
     }
   }
@@ -626,7 +641,7 @@ function getSafeWeekday(date, lang, isShort, tz, settings = getSettings()) {
     ? getCustomTranslation(settings, weekdayKey)
     : i18n[weekdayKey]
 
-  if (translatedWeekday && (isCustomLanguage(settings) || isShort)) {
+  if (translatedWeekday) {
     return `<span class="weekday-part">${translatedWeekday}</span>`
   }
 
@@ -634,6 +649,9 @@ function getSafeWeekday(date, lang, isShort, tz, settings = getSettings()) {
   let str = date.toLocaleDateString(lang, { weekday: format, timeZone: tz })
   if (isShort && lang === "vi-VN") {
     str = formatViShortWeekday(str)
+  }
+  if (str) {
+    str = str.charAt(0).toUpperCase() + str.slice(1)
   }
   return `<span class="weekday-part">${str}</span>`
 }
@@ -2516,9 +2534,14 @@ export function updateTime() {
 
       spaceConcentricHtmlCache = `
         <div class="space-concentric-container">
+            <!-- Dynamic Rotating Chrono / Radar Sweep Hand -->
+            <div class="sc-chrono-hand" style="transform: rotate(${currentSec * 6}deg)">
+                <div class="sc-chrono-beam-glow"></div>
+                <div class="sc-chrono-beam-core"></div>
+                <div class="sc-chrono-tip"></div>
+            </div>
+            <!-- 12 o'clock Reading Reticle & Precision Brackets -->
             <div class="sc-focus-axis">
-                <div class="sc-focus-beam-glow"></div>
-                <div class="sc-focus-beam-core"></div>
                 <div class="sc-focus-reticle">
                     <div class="sc-reticle-arrow"></div>
                     <div class="sc-reticle-dot"></div>
@@ -2560,6 +2583,7 @@ export function updateTime() {
 
     if (!spaceConcentricRingElements) {
       spaceConcentricRingElements = {
+        chronoHand: clockElement.querySelector('.sc-chrono-hand'),
         coreTime: clockElement.querySelector('.sc-core-time-main'),
         coreSec: clockElement.querySelector('.sc-core-sec'),
         coreAmPm: clockElement.querySelector('.sc-core-ampm'),
@@ -2614,6 +2638,13 @@ export function updateTime() {
       spaceConcentricLastState.ampm = ampm;
     }
 
+    // Update rotating chrono / radar sweep hand
+    const chronoAngle = currentSec * 6;
+    if (spaceConcentricRingElements.chronoHand && spaceConcentricLastState.chronoAngle !== chronoAngle) {
+      spaceConcentricRingElements.chronoHand.style.transform = `rotate(${chronoAngle}deg)`;
+      spaceConcentricLastState.chronoAngle = chronoAngle;
+    }
+
     const updateRingFast = (ringKey, angle, activeIndex) => {
       const ringObj = spaceConcentricRingElements.rings[ringKey];
       if (!ringObj || !ringObj.el) return;
@@ -2650,13 +2681,17 @@ export function updateTime() {
       month: "short",
       timeZone: tz,
     }).format(now).toUpperCase()
-    const weekday = getSafeWeekday(
+    const rawWeekday = getSafeWeekday(
       now,
       langCode,
       true, // short weekday
       tz,
       settings,
-    ).toLowerCase()
+    )
+    const weekday = rawWeekday.replace(
+      /(<span[^>]*>)?([a-zA-ZÀ-ỹ0-9])/i,
+      (match, prefix, char) => (prefix || "") + char.toUpperCase(),
+    )
 
     clockElement.innerHTML = `
       <div class="split-pill-card">
@@ -2712,10 +2747,17 @@ export function updateTime() {
     const existingVal = existingScene?.querySelector(".clock-3d-text-main .clock-3d-time-val")
 
     if (existingScene && existingVal) {
-      // Fast path: update text directly across all shadow and main layers
+      // Fast path: update text directly across all reflection and main layers
       const allVals = existingScene.querySelectorAll(".clock-3d-time-val")
       allVals.forEach((valEl) => {
         if (valEl.textContent !== timeMainText) valEl.textContent = timeMainText
+      })
+
+      const allAmpms = existingScene.querySelectorAll(".clock-3d-ampm")
+      allAmpms.forEach((ampmEl) => {
+        if (ampmEl.textContent !== (ampm || "")) {
+          ampmEl.textContent = ampm || ""
+        }
       })
 
       const datePill = existingScene.querySelector(".clock-3d-date-pill-text")
@@ -2732,11 +2774,6 @@ export function updateTime() {
       if (stageContainer) {
         stageContainer.style.display = shouldShowClock ? "inline-flex" : "none"
       }
-
-      const ampmEl = existingScene.querySelector(".clock-3d-ampm")
-      if (ampmEl && ampmEl.textContent !== (ampm || "")) {
-        ampmEl.textContent = ampm || ""
-      }
     } else {
       clockElement.innerHTML = `
         <div class="clock-3d-scene">
@@ -2746,13 +2783,17 @@ export function updateTime() {
               <span class="clock-3d-time-val">${timeMainText}</span>
               ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
             </div>
-            <!-- 3D Floor Shadow Reflection Layer 1 -->
-            <div class="clock-3d-text-layer clock-3d-text-shadow clock-3d-text-shadow1" aria-hidden="true">
+            <!-- Ambient Ground Light Disc -->
+            <div class="clock-3d-floor-glow" aria-hidden="true"></div>
+            <!-- 3D Glossy Mirror Floor Reflection -->
+            <div class="clock-3d-text-layer clock-3d-reflection clock-3d-reflection-sharp" aria-hidden="true">
               <span class="clock-3d-time-val">${timeMainText}</span>
+              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
             </div>
-            <!-- 3D Floor Shadow Reflection Layer 2 -->
-            <div class="clock-3d-text-layer clock-3d-text-shadow clock-3d-text-shadow2" aria-hidden="true">
+            <!-- 3D Diffuse Atmospheric Glow Reflection -->
+            <div class="clock-3d-text-layer clock-3d-reflection clock-3d-reflection-blur" aria-hidden="true">
               <span class="clock-3d-time-val">${timeMainText}</span>
+              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
             </div>
           </div>
           <div class="clock-3d-date" style="${shouldShowDate ? "" : "display: none;"}">

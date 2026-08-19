@@ -1477,34 +1477,9 @@ body.clock-style-bg-custom.date-clock-style-split-pill {
 
 body.clock-style-transparent-bg.date-clock-style-split-pill {
   --split-pill-card-bg: transparent;
-  --split-pill-clock-color: #ffffff;
-  --split-pill-date-color: #ffffff;
-  --split-pill-divider-color: rgba(255, 255, 255, 0.35);
-}
-
-body.date-clock-style-split-pill .clock-date-wrap {
-  width: fit-content !important;
-  max-width: 100% !important;
-  height: auto !important;
-  border-radius: 0 !important;
-  margin: 0 auto var(--space-4) !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: relative !important;
-  overflow: visible !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  animation: none !important;
-}
-
-body.date-clock-style-split-pill .date-fade-wrapper,
-body.date-clock-style-split-pill #date {
-  display: none !important;
+  --split-pill-clock-color: var(--clock-color, #ffffff);
+  --split-pill-date-color: var(--date-color, #ffffff);
+  --split-pill-divider-color: var(--clock-color, rgba(255, 255, 255, 0.4));
 }
 
 body.date-clock-style-split-pill .clock-fade-wrapper,
@@ -1543,6 +1518,25 @@ body.date-clock-style-split-pill #clock {
   animation: framedClockFloat 10s ease-in-out infinite;
   transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   user-select: none;
+}
+
+body.clock-style-bg-dark.date-clock-style-split-pill .split-pill-card {
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+body.clock-style-transparent-bg.date-clock-style-split-pill .split-pill-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-split-pill .split-pill-card:hover {
+  transform: translateY(-2px);
+  box-shadow: none !important;
 }
 
 .split-pill-card:hover {
@@ -1753,65 +1747,88 @@ body.date-clock-style-clock-3d #clock {
 
 .clock-3d-time-val {
   font-family: var(--font-clock);
-  font-size: var(--clock-size, 6rem);
-  font-weight: 700;
+  font-size: clamp(3.4rem, calc(var(--clock-size, 6rem) * 1.25), 14rem);
+  font-weight: 750;
   line-height: 1;
   letter-spacing: 0.04em;
   color: var(--clock-color, #ffffff);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
   text-shadow:
-    0 0 12px rgba(255, 255, 255, 0.45),
-    0 0 26px rgba(255, 255, 255, 0.22),
-    0 2px 8px rgba(0, 0, 0, 0.5);
+    0 0 14px rgba(255, 255, 255, 0.45),
+    0 0 28px rgba(255, 255, 255, 0.22),
+    0 2px 10px rgba(0, 0, 0, 0.5);
   font-variant-numeric: tabular-nums;
 }
 
 .clock-3d-ampm {
   font-family: var(--font-clock);
-  font-size: calc(var(--clock-size, 6rem) * 0.22);
+  font-size: calc(var(--clock-size, 6rem) * 0.26);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--clock-color, #ffffff);
   align-self: flex-start;
-  margin-top: calc(var(--clock-size, 6rem) * 0.05);
-  margin-left: 0.5rem;
+  margin-top: calc(var(--clock-size, 6rem) * 0.06);
+  margin-left: 0.6rem;
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
 }
 
-/* 3D Floor Shadow Projection Layers */
-.clock-3d-text-shadow {
-  top: 0;
+/* 3D Floor Reflection & Ground Ambient Lighting */
+.clock-3d-reflection {
+  top: 100%;
   left: 0;
   right: 0;
   position: absolute;
-  transform-origin: bottom center;
-  transform: translateY(calc(var(--clock-size, 6rem) * 0.08)) translateZ(calc(var(--clock-size, 6rem) * 0.16)) rotateX(-90.1deg);
+  transform-origin: 50% 0%;
+  transform: scaleY(-1) translateY(2px) translateZ(-2px) rotateX(15deg);
   pointer-events: none;
+  user-select: none;
 }
 
-.clock-3d-text-shadow .clock-3d-time-val {
+.clock-3d-reflection .clock-3d-time-val {
+  text-shadow: none !important;
+  color: var(--clock-color, #ffffff) !important;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.clock-3d-reflection .clock-3d-ampm {
   text-shadow: none !important;
   color: var(--clock-color, #ffffff) !important;
 }
 
-.clock-3d-text-shadow1 {
-  opacity: 0.45;
-  filter: blur(8px);
-  mask-image: linear-gradient(to bottom, white, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, white, transparent 80%);
+/* Sharp Glossy Mirror Reflection */
+.clock-3d-reflection-sharp {
+  opacity: 0.38;
+  filter: blur(1.2px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 35%, transparent 75%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 35%, transparent 75%);
 }
 
-.clock-3d-text-shadow2 {
-  opacity: 0.3;
-  filter: blur(3px);
-  mask-image: linear-gradient(to top, black, transparent);
-  -webkit-mask-image: linear-gradient(to top, black, transparent);
+/* Diffuse Atmospheric Glow Reflection */
+.clock-3d-reflection-blur {
+  opacity: 0.25;
+  filter: blur(8px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
+}
+
+/* Ambient Ground Light Disc under 3D numbers */
+.clock-3d-floor-glow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(80deg) translateZ(-6px);
+  width: 110%;
+  height: calc(var(--clock-size, 6rem) * 0.4);
+  background: radial-gradient(ellipse at center, rgba(var(--clock-color-rgb, 255, 255, 255), 0.22) 0%, rgba(var(--clock-color-rgb, 255, 255, 255), 0.05) 55%, transparent 75%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(4px);
 }
 
 /* Date Pill */
 .clock-3d-date {
-  margin-top: calc(var(--clock-size, 6rem) * 0.35);
+  margin-top: calc(var(--clock-size, 6rem) * 0.38);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1822,19 +1839,26 @@ body.date-clock-style-clock-3d #clock {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 18px;
+  padding: 7px 20px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  font-size: clamp(0.78rem, calc(var(--date-size, 1.5rem) * 0.62), 1.05rem);
+  font-size: clamp(0.82rem, calc(var(--date-size, 1.5rem) * 0.68), 1.15rem);
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-transform: none;
   color: var(--date-color, var(--clock-color, #ffffff));
   -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+  transition: all 0.3s ease;
+}
+
+.clock-3d-date-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
 }
 
 @keyframes clock3DCameraRotate {
@@ -1869,6 +1893,20 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-date-pill {
   background: rgba(0, 0, 0, 0.06) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   color: var(--date-color, #111111) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-reflection-sharp {
+  opacity: 0.18;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 60%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 60%);
+}
+
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-reflection-blur {
+  opacity: 0.1;
+}
+
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-floor-glow {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.08) 0%, transparent 70%);
 }
 
 body.clock-style-bg-dark.date-clock-style-clock-3d .clock-3d-scene {
@@ -7867,6 +7905,7 @@ body.date-clock-style-satellite #date-fade-wrap {
 }
 
 .sat-seconds {
+  font-family: var(--font-clock, inherit);
   font-size: 0.78rem;
   font-weight: 800;
   color: var(--sat-sec-color, #7ced7a);
@@ -7913,6 +7952,7 @@ body.date-clock-style-satellite #date-fade-wrap {
 }
 
 .sat-time {
+  font-family: var(--font-clock, inherit) !important;
   font-size: clamp(2.5rem, 8vw, 3.4rem);
   font-weight: 800;
   line-height: 1;
@@ -7922,12 +7962,14 @@ body.date-clock-style-satellite #date-fade-wrap {
 }
 
 .sat-ampm {
+  font-family: var(--font-clock, inherit);
   font-size: 0.85rem;
   font-weight: 800;
   color: var(--sat-sec-color, #7ced7a);
 }
 
 .sat-date {
+  font-family: var(--font-date, var(--font-clock, inherit));
   font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 1px;

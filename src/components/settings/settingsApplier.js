@@ -2754,7 +2754,9 @@ function createApplySettings(effectInstances) {
         settings.dateClockStyle === "split-pill" &&
         (!settings.clockStyleBackground ||
           settings.clockStyleBackground === "default" ||
-          settings.clockStyleBackground === "light")
+          settings.clockStyleBackground === "light") &&
+        settings.clockStyleBackground !== "transparent" &&
+        settings.clockStyleTransparentBackground !== true
 
       if (isFliqloLight || isSplitPillLight) {
         fallbackColor = "#111111"
