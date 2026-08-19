@@ -2056,6 +2056,11 @@ export function showContextMenu(
           icon: "fa-solid fa-circle",
         },
         {
+          value: "light",
+          label: i18n.skin_light || "Light",
+          icon: "fa-solid fa-sun",
+        },
+        {
           value: "m3-accent",
           label: i18n.skin_m3_accent || "M3 Accent",
           icon: "fa-solid fa-palette",
@@ -2064,6 +2069,11 @@ export function showContextMenu(
           value: "light-transparent",
           label: i18n.skin_light_transparent || "Light Transparent",
           icon: "fa-solid fa-droplet",
+        },
+        {
+          value: "contrast",
+          label: i18n.skin_contrast || "Contrast",
+          icon: "fa-solid fa-circle-half-stroke",
         },
       ]
       let activeSkin = skins.some(
@@ -2088,6 +2098,14 @@ export function showContextMenu(
           document.body.classList.toggle(
             "quick-access-light-transparent",
             skin.value === "light-transparent",
+          )
+          document.body.classList.toggle(
+            "quick-access-light",
+            skin.value === "light",
+          )
+          document.body.classList.toggle(
+            "quick-access-contrast",
+            skin.value === "contrast",
           )
           document.body.classList.toggle("quick-access-transparent", false)
           window.dispatchEvent(

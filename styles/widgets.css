@@ -12054,61 +12054,162 @@ body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active 
   color: var(--accent-contrast-color, #ffffff) !important;
 }
 
+/* Quick Access - Light Transparent Glass Skin */
 body.quick-access-light-transparent #settings-toggle,
 body.quick-access-light-transparent .quick-access-bar,
-body.quick-access-light-transparent .layout-controls-popup.quick-access-popup,
-body.quick-access-light-transparent .quick-access-popup {
-  background: var(--glass-bg) !important;
-  border-color: var(--glass-border) !important;
-  box-shadow: var(--glass-shadow) !important;
-  backdrop-filter: blur(24px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+body.quick-access-light-transparent #quick-access-toggle {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.55) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: #ffffff !important;
 }
 
-body.quick-access-light-transparent .quick-btn {
+body.quick-access-light-transparent #settings-toggle.no-border,
+body.quick-access-light-transparent .quick-access-bar.no-border {
+  border: none !important;
+}
+
+body.quick-access-light-transparent .quick-access-bar .quick-access-divider,
+body.quick-access-light-transparent .quick-access-popup .quick-access-divider {
+  background: rgba(255, 255, 255, 0.28) !important;
+  opacity: 1 !important;
+}
+
+body.quick-access-light-transparent .quick-btn,
+body.quick-access-light-transparent #settings-toggle,
+body.quick-access-light-transparent #quick-access-toggle {
   background: transparent !important;
   border-color: transparent !important;
+  color: rgba(255, 255, 255, 0.92) !important;
 }
 
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-section-row,
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-border-row,
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-radius-chip {
-  background: rgba(255, 255, 255, 0.055) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+body.quick-access-light-transparent #settings-toggle i,
+body.quick-access-light-transparent .quick-btn i,
+body.quick-access-light-transparent #quick-access-toggle i {
+  color: rgba(255, 255, 255, 0.95) !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
+body.quick-access-light-transparent #settings-toggle:hover:not(.active),
 body.quick-access-light-transparent .quick-btn:hover:not(.active),
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-section-row:hover,
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-border-row:hover,
-body.quick-access-light-transparent
-  .quick-access-popup
-  .quick-access-radius-chip:hover {
-  background: rgba(255, 255, 255, 0.095) !important;
-}
-
-body.quick-access-light-transparent .quick-btn.active,
-body.quick-access-light-transparent .quick-access-radius-chip.is-active {
-  background: rgba(15, 18, 25, 0.82) !important;
-  border-color: rgba(15, 18, 25, 0.38) !important;
-  color: rgba(255, 255, 255, 0.96) !important;
+body.quick-access-light-transparent #quick-access-toggle:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
   box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    0 4px 14px rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
+body.quick-access-light-transparent #settings-toggle:hover:not(.active) i,
+body.quick-access-light-transparent .quick-btn:hover:not(.active) i,
+body.quick-access-light-transparent #quick-access-toggle:hover:not(.active) i {
+  color: #ffffff !important;
+}
+
+body.quick-access-light-transparent #settings-toggle.active,
+body.quick-access-light-transparent .quick-btn.active,
+body.quick-access-light-transparent #quick-access-toggle.active,
+body.sidebar-open body.quick-access-light-transparent #settings-toggle {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow:
+    0 4px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.42),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45) !important;
+}
+
+body.quick-access-light-transparent #settings-toggle.active i,
 body.quick-access-light-transparent .quick-btn.active i,
-body.quick-access-light-transparent .quick-access-radius-chip.is-active i {
-  color: currentColor !important;
+body.quick-access-light-transparent #quick-access-toggle.active i,
+body.sidebar-open body.quick-access-light-transparent #settings-toggle i {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+/* Quick Access Popup (Context Menu / LCP) */
+body.quick-access-light-transparent .layout-controls-popup.quick-access-popup,
+body.quick-access-light-transparent .quick-access-popup {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.15) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(32px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
+  color: #ffffff !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .lcp-title,
+body.quick-access-light-transparent .quick-access-popup .lcp-label,
+body.quick-access-light-transparent .quick-access-popup .lcp-icon,
+body.quick-access-light-transparent .quick-access-popup .quick-access-section-label,
+body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip i,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-button i,
+body.quick-access-light-transparent .quick-access-popup span {
+  color: #ffffff !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-section-hint {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-section-row,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-row,
+body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-button {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-section-row:hover,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-row:hover,
+body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip:hover,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-button:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+  border-color: rgba(255, 255, 255, 0.48) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.18) !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip.is-active,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-button.is-active {
+  background: var(--accent-color) !important;
+  border: 1px solid var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow:
+    0 4px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45) !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip.is-active i,
+body.quick-access-light-transparent .quick-access-popup .quick-access-border-button.is-active i {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.quick-access-light-transparent .quick-access-popup .quick-access-section-current {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid var(--accent-color) !important;
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
 }
 
 /* Make Bookmark Sidebar respect the Flip Layout (thuộc tính của layout control) */

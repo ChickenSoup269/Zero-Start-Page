@@ -7185,7 +7185,13 @@ export function setupGeneralEventHandlers(
     )
   }
   if (DOM.lcpQuickAccessSkin) {
-    const validQuickAccessSkins = ["default", "light", "m3-accent", "light-transparent"]
+    const validQuickAccessSkins = [
+      "default",
+      "light",
+      "m3-accent",
+      "light-transparent",
+      "contrast",
+    ]
     DOM.lcpQuickAccessSkin.value = validQuickAccessSkins.includes(
       settings.quickAccessSkin,
     )
@@ -7202,6 +7208,7 @@ export function setupGeneralEventHandlers(
         skin === "light-transparent",
       )
       document.body.classList.toggle("quick-access-light", skin === "light")
+      document.body.classList.toggle("quick-access-contrast", skin === "contrast")
       document.body.classList.toggle("quick-access-transparent", false)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
