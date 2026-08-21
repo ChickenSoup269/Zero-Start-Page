@@ -189,6 +189,38 @@
   transform: scale(1);
 }
 
+.effect-custom-badge {
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  width: 15px;
+  height: 15px;
+  background: rgba(var(--accent-color-rgb, 96, 200, 255), 0.16);
+  border: 1px solid rgba(var(--accent-color-rgb, 96, 200, 255), 0.35);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.52rem;
+  color: var(--accent-color, #60c8ff);
+  opacity: 0.8;
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+.effect-item:hover .effect-custom-badge {
+  opacity: 1;
+  background: rgba(var(--accent-color-rgb, 96, 200, 255), 0.28);
+  border-color: var(--accent-color, #60c8ff);
+  transform: scale(1.1);
+}
+
+.effect-item.active .effect-custom-badge {
+  opacity: 1;
+  background: rgba(var(--accent-color-rgb, 96, 200, 255), 0.3);
+  border-color: var(--accent-color, #60c8ff);
+}
+
 .effect-icon {
   font-size: 1.3rem;
   line-height: 1;
@@ -211,7 +243,35 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  opacity: 0.8;
+}
+
+.effects-legend-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  color: var(--text-color);
+  opacity: 0.85;
+}
+
+.effects-legend-hint .effect-custom-badge-sample {
+  width: 16px;
+  height: 16px;
+  background: rgba(var(--accent-color-rgb, 96, 200, 255), 0.2);
+  border: 1px solid rgba(var(--accent-color-rgb, 96, 200, 255), 0.4);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  color: var(--accent-color, #60c8ff);
+  flex-shrink: 0;
 }
 
 /* Font picker grid */
@@ -5265,11 +5325,12 @@ body.sidebar-light .settings-select option {
   width: 100%;
   box-sizing: border-box;
   margin-top: var(--space-2);
+  margin-bottom: var(--space-3);
   background: var(--glass-bg, rgba(255, 255, 255, 0.08));
   border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   border-top: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.12));
   border-radius: var(--radius-md);
-  padding: var(--space-2);
+  padding: var(--space-3);
   box-shadow: var(--inner-glow, inset 0 1px 1px rgba(255, 255, 255, 0.1));
   transition: all 0.3s ease;
 }

@@ -755,7 +755,78 @@ function getCreatedEffect(effectInstances, key) {
   return effectInstances[key] || null
 }
 
+export const EFFECTS_WITH_CUSTOM_SETTINGS = new Set([
+  "rainbow",
+  "galaxy",
+  "meteor",
+  "network",
+  "matrix",
+  "aura",
+  "northernLights",
+  "wind",
+  "hacker",
+  "dvd",
+  "pixelCubes",
+  "pixelWeather",
+  "pixelBlast",
+  "neonGrid",
+  "frostedGlassOrbs",
+  "blackHole",
+  "interactiveFluid",
+  "cinematicBokeh",
+  "auroraWave",
+  "sunbeam",
+  "lightPillars",
+  "tetFireworks",
+  "pixelSnowHQ",
+  "skyLanterns",
+  "jellyfish",
+  "sakura",
+  "snowfall",
+  "fallingLeavesSettled",
+  "bubbles",
+  "flashlight",
+  "gridScan",
+  "cursorTrail",
+  "plantGrowth",
+  "oceanFish",
+  "rainHD",
+  "musicBars",
+  "wavyLines",
+  "oceanWave",
+  "cloudDrift",
+  "shiny",
+  "lineShiny",
+  "pixelRun",
+  "nintendoPixel",
+  "crtScanlines",
+  "retroGame",
+  "wavyPattern",
+  "angledPattern",
+  "floatingLines",
+  "softAurora",
+])
+
+export function markEffectsWithCustomBadges(container = document) {
+  const items = container.querySelectorAll(".effect-item")
+  if (!items || items.length === 0) return
+  items.forEach((item) => {
+    const val = item.getAttribute("data-value")
+    if (EFFECTS_WITH_CUSTOM_SETTINGS.has(val)) {
+      item.classList.add("has-custom-settings")
+      if (!item.querySelector(".effect-custom-badge")) {
+        const badge = document.createElement("div")
+        badge.className = "effect-custom-badge"
+        badge.title = window.i18n?.effect_custom_badge_tooltip || "Customizable Effect"
+        badge.innerHTML = '<i class="fa-solid fa-sliders"></i>'
+        item.appendChild(badge)
+      }
+    }
+  })
+}
+
 function setEffectActive(effectGrid, value) {
+  markEffectsWithCustomBadges(effectGrid)
   effectGrid.querySelectorAll(".effect-item").forEach((el) => {
     el.classList.toggle("active", el.dataset.value === value)
   })
@@ -5241,60 +5312,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.rainbowDirRightBtn?.classList.remove("active")
     }
 
-    // Visibility of Active Effect Settings Container
+    // Visibility of Active Effect Settings Container & Badges
+    markEffectsWithCustomBadges()
     if (DOM.activeEffectSettingsContainer) {
-      const effectsWithSettings = [
-        "rainbow",
-        "galaxy",
-        "meteor",
-        "network",
-        "matrix",
-        "aura",
-        "northernLights",
-        "wind",
-        "hacker",
-        "dvd",
-        "pixelCubes",
-        "pixelWeather",
-        "pixelBlast",
-        "neonGrid",
-        "frostedGlassOrbs",
-        "blackHole",
-        "interactiveFluid",
-        "cinematicBokeh",
-        "auroraWave",
-        "sunbeam",
-        "lightPillars",
-        "tetFireworks",
-        "pixelSnowHQ",
-        "skyLanterns",
-        "jellyfish",
-        "sakura",
-        "snowfall",
-        "fallingLeavesSettled",
-        "bubbles",
-        "flashlight",
-        "gridScan",
-        "cursorTrail",
-        "plantGrowth",
-        "oceanFish",
-        "rainHD",
-        "musicBars",
-        "wavyLines",
-        "oceanWave",
-        "cloudDrift",
-        "shiny",
-        "lineShiny",
-        "pixelRun",
-        "nintendoPixel",
-        "crtScanlines",
-        "retroGame",
-        "wavyPattern",
-        "angledPattern",
-        "floatingLines",
-        "softAurora",
-      ]
-      const hasSettings = effectsWithSettings.includes(settings.effect)
+      const hasSettings = EFFECTS_WITH_CUSTOM_SETTINGS.has(settings.effect)
       DOM.activeEffectSettingsContainer.style.display = hasSettings
         ? "block"
         : "none"
