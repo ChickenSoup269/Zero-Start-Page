@@ -21,12 +21,14 @@ export class Notepad {
     this.notes = JSON.parse(localStorage.getItem("notepadNotes")) || []
     this.detachedNotes = JSON.parse(localStorage.getItem("detachedNotes")) || {} // { noteId: true }
     this.hiddenNotes = JSON.parse(localStorage.getItem("hiddenNotes")) || {} // { noteId: true }
+    this.pinnedNotes = JSON.parse(localStorage.getItem("notepadPinnedNotes")) || {} // { noteId: true }
     this.collapsedFloatingNotes =
       JSON.parse(localStorage.getItem("collapsedFloatingNotes")) || {} // { noteId: true }
     this.hiddenEditToolbars =
       JSON.parse(localStorage.getItem("hiddenEditToolbars")) || {} // { noteId: true }
     this.noteDimensions =
       JSON.parse(localStorage.getItem("notepadNoteDimensions")) || {} // { noteId: { width, height } }
+    this.searchQuery = ""
     this.isVisible = getSettings().showNotepad !== false
     this.container = null
     this.floatingNotes = {} // Store floating note containers
@@ -58,11 +60,21 @@ export class Notepad {
       document.body.appendChild(this.container)
     }
 
+    const i18n = geti18n()
     this.container.innerHTML = `
       <div class="notepad-header drag-handle">
-        <h3 data-i18n="notepad_title">Notepad</h3>
-        <div class="notepad-header-actions" style="display: flex; align-items: center; gap: 4px;">
-          <button id="add-note-btn" class="icon-btn" title="Add Note"><i class="fa-solid fa-plus"></i></button>
+        <div class="notepad-title-wrap">
+          <i class="fa-solid fa-note-sticky notepad-title-icon"></i>
+          <h3 data-i18n="notepad_title">${i18n.notepad_title || "Notepad"}</h3>
+          <span class="notepad-count-badge" id="notepad-count-badge">0</span>
+        </div>
+        <div class="notepad-header-actions">
+          <div class="notepad-search-wrap">
+            <i class="fa-solid fa-magnifying-glass notepad-search-icon"></i>
+            <input type="text" class="notepad-search-input" placeholder="${i18n.notepad_search_placeholder || "Search notes..."}" value="${this.escapeHtml(this.searchQuery)}">
+            <button type="button" class="notepad-search-clear" style="display: ${this.searchQuery ? "flex" : "none"};" title="Clear search"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <button id="add-note-btn" class="icon-btn notepad-add-btn" title="Add Note"><i class="fa-solid fa-plus"></i></button>
           <button id="notepad-close-btn" class="icon-btn notepad-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
@@ -75,6 +87,20 @@ export class Notepad {
   setupEventListeners() {
     const addBtn = this.container.querySelector("#add-note-btn")
     addBtn?.addEventListener("click", () => this.addNote())
+
+    const searchInput = this.container.querySelector(".notepad-search-input")
+    const searchClear = this.container.querySelector(".notepad-search-clear")
+    searchInput?.addEventListener("input", (e) => {
+      this.searchQuery = e.target.value
+      if (searchClear) searchClear.style.display = this.searchQuery ? "flex" : "none"
+      this.render()
+    })
+    searchClear?.addEventListener("click", () => {
+      this.searchQuery = ""
+      if (searchInput) searchInput.value = ""
+      searchClear.style.display = "none"
+      this.render()
+    })
 
     const closeBtn = this.container.querySelector("#notepad-close-btn")
     closeBtn?.addEventListener("click", () => {
@@ -121,8 +147,15 @@ export class Notepad {
       contentBg: "#FFFFFF", // Default white background
       createdAt: new Date().toISOString(),
     }
-    this.notes.push(note)
+    this.notes.unshift(note)
     this.saveNotes()
+    if (this.searchQuery) {
+      this.searchQuery = ""
+      const searchInput = this.container.querySelector(".notepad-search-input")
+      const searchClear = this.container.querySelector(".notepad-search-clear")
+      if (searchInput) searchInput.value = ""
+      if (searchClear) searchClear.style.display = "none"
+    }
     this.render()
 
     // Auto-focus on the new note for editing
@@ -137,6 +170,47 @@ export class Notepad {
     }, 100)
   }
 
+  togglePin(id) {
+    if (this.pinnedNotes[id]) {
+      delete this.pinnedNotes[id]
+    } else {
+      this.pinnedNotes[id] = true
+    }
+    this.savePinnedState()
+    this.render()
+  }
+
+  savePinnedState() {
+    localStorage.setItem("notepadPinnedNotes", JSON.stringify(this.pinnedNotes))
+  }
+
+  copyNote(id, btn) {
+    const note = this.notes.find((n) => n.id === id)
+    if (!note) return
+    const i18n = geti18n()
+    const temp = document.createElement("div")
+    temp.innerHTML = note.content || ""
+    const plainText = (note.title ? note.title + "\n\n" : "") + (temp.innerText || temp.textContent || "")
+    navigator.clipboard.writeText(plainText.trim()).then(() => {
+      if (btn) {
+        const icon = btn.querySelector("i")
+        if (icon) {
+          const originalClass = icon.className
+          icon.className = "fa-solid fa-check"
+          btn.setAttribute("title", i18n.notepad_copied || "Copied!")
+          btn.classList.add("copy-success")
+          setTimeout(() => {
+            icon.className = originalClass
+            btn.setAttribute("title", i18n.notepad_copy_note || "Copy note text")
+            btn.classList.remove("copy-success")
+          }, 1500)
+        }
+      }
+    }).catch((err) => {
+      console.error("Failed to copy note:", err)
+    })
+  }
+
   async deleteNote(id) {
     const i18n = geti18n()
     const confirmed = await showConfirm(
@@ -147,6 +221,7 @@ export class Notepad {
     this.notes = this.notes.filter((n) => n.id !== id)
     delete this.detachedNotes[id]
     delete this.hiddenNotes[id]
+    delete this.pinnedNotes[id]
     delete this.hiddenEditToolbars[id]
     delete this.collapsedFloatingNotes[id]
     delete this.noteDimensions[id]
@@ -157,6 +232,7 @@ export class Notepad {
     this.saveNotes()
     this.saveDetachedState()
     this.saveHiddenState()
+    this.savePinnedState()
     this.saveHiddenEditToolbarState()
     this.saveCollapsedFloatingState()
     this.saveNoteDimensions()
@@ -250,19 +326,27 @@ export class Notepad {
     const note = this.notes.find((n) => n.id === noteId)
     if (!note) return
 
+    const i18n = geti18n()
     const floatingContainer = document.createElement("div")
     floatingContainer.id = `floating-note-${noteId}`
     floatingContainer.className = "floating-note-window"
+    floatingContainer.style.setProperty("--note-color", note.color)
     const isCollapsed = this.collapsedFloatingNotes[noteId]
-    const isEditToolbarHidden = this.hiddenEditToolbars[noteId]
+    const isEditToolbarHidden = this.hiddenEditToolbars[noteId] !== false
     if (isCollapsed) floatingContainer.classList.add("collapsed")
     if (isEditToolbarHidden) floatingContainer.classList.add("edit-toolbar-hidden")
 
     floatingContainer.innerHTML = `
       <div class="floating-note-header drag-handle">
+        <div class="floating-note-header-left">
+          <div class="floating-drag-grip-wrap" title="Drag to move">
+            <i class="fa-solid fa-grip-vertical floating-drag-grip"></i>
+          </div>
+          <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
+        </div>
         <div class="floating-note-actions">
           <div class="note-color-dropdown">
-            <button class="icon-btn note-color-trigger" title="Change Color">
+            <button class="icon-btn note-action-btn note-color-trigger" title="Change Color">
               <i class="fa-solid fa-palette"></i>
             </button>
             <div class="note-color-menu">
@@ -276,13 +360,11 @@ export class Notepad {
               ).join("")}
             </div>
           </div>
-          <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
-          <button class="icon-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
-          <button class="icon-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
-          <button class="icon-btn floating-note-close" title="Reattach"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="floating-note-title-row">
-          <span class="floating-note-title">${this.escapeHtml(note.title)}</span>
+          <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}"><i class="fa-regular fa-copy"></i></button>
+          <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
+          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
+          <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
+          <button class="icon-btn note-action-btn floating-note-close" title="Reattach to Notepad"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
       <div class="floating-note-toolbar">
@@ -297,8 +379,8 @@ export class Notepad {
         <span class="toolbar-divider"></span>
         <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
         <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
-        <button class="toolbar-btn" data-action="indent" title="Indent"><i class="fa-solid fa-indent"></i></button>
-        <button class="toolbar-btn" data-action="outdent" title="Outdent"><i class="fa-solid fa-outdent"></i></button>
+        <button class="toolbar-btn" data-action="outdent" title="Decrease Indent"><i class="fa-solid fa-outdent"></i></button>
+        <button class="toolbar-btn" data-action="indent" title="Increase Indent"><i class="fa-solid fa-indent"></i></button>
         <span class="toolbar-divider"></span>
         <button class="toolbar-btn" data-action="create-link" title="Insert Link"><i class="fa-solid fa-link"></i></button>
         <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
@@ -370,6 +452,11 @@ export class Notepad {
     // Setup event listeners
     const closeBtn = floatingContainer.querySelector(".floating-note-close")
     closeBtn.addEventListener("click", () => this.reattachNote(noteId))
+
+    const copyBtn = floatingContainer.querySelector('[data-action="copy"]')
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => this.copyNote(noteId, copyBtn))
+    }
 
     const collapseBtn = floatingContainer.querySelector(
       '[data-action="toggle-collapse"]',
@@ -481,24 +568,29 @@ export class Notepad {
       this.updateNote(noteId, { content: contentDiv.innerHTML })
     })
 
-    const titleSpan = floatingContainer.querySelector(".floating-note-title")
-    titleSpan.addEventListener("blur", () => {
-      this.updateNote(noteId, { title: titleSpan.textContent })
-    })
-    titleSpan.contentEditable = true
+    const titleInput = floatingContainer.querySelector(".floating-note-title-input")
+    if (titleInput) {
+      titleInput.addEventListener("change", () => {
+        this.updateNote(noteId, { title: titleInput.value })
+      })
+    }
 
     this.setupEditorToolbar(floatingContainer, contentDiv, noteId)
   }
 
   renderNote(note) {
     const isHidden = this.hiddenNotes[note.id]
+    const isPinned = !!this.pinnedNotes[note.id]
+    const isEditToolbarHidden = this.hiddenEditToolbars[note.id] !== false
     const isDetached = this.detachedNotes[note.id] && !window.location.pathname.includes("sidepanel.html")
 
     if (isDetached) return null // Don't render detached notes in parent
 
+    const i18n = geti18n()
     const noteDiv = document.createElement("div")
-    noteDiv.className = "note-item"
+    noteDiv.className = `note-item ${isPinned ? "is-pinned" : ""} ${isEditToolbarHidden ? "edit-toolbar-hidden" : ""}`
     noteDiv.setAttribute("data-note-id", note.id)
+    noteDiv.style.setProperty("--note-color", note.color)
 
     const savedDimensions = this.noteDimensions[note.id]
     if (savedDimensions) {
@@ -507,6 +599,9 @@ export class Notepad {
 
     noteDiv.innerHTML = `
       <div class="note-header">
+        <button class="icon-btn note-action-btn note-pin-btn ${isPinned ? "is-pinned" : ""}" data-action="toggle-pin" title="${isPinned ? (i18n.notepad_unpin_note || "Unpin note") : (i18n.notepad_pin_note || "Pin note to top")}">
+          <i class="fa-solid fa-thumbtack"></i>
+        </button>
         <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
         <div class="note-actions">
           <div class="note-color-dropdown">
@@ -524,8 +619,14 @@ export class Notepad {
               ).join("")}
             </div>
           </div>
+          <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}">
+            <i class="fa-regular fa-copy"></i>
+          </button>
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)">
             <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
+          </button>
+          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar">
+            <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i>
           </button>
           <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
@@ -535,7 +636,7 @@ export class Notepad {
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
           `}
-          <button class="icon-btn note-action-btn" data-action="delete" title="Delete">
+          <button class="icon-btn note-action-btn note-delete-btn" data-action="delete" title="Delete">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
@@ -543,7 +644,28 @@ export class Notepad {
       ${
         isHidden
           ? ""
-          : `<div class="note-content" contenteditable="true">${note.content}</div>`
+          : `
+          <div class="note-toolbar">
+            <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
+            <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
+            <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+            <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
+            <span class="toolbar-divider"></span>
+            <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+            <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
+            <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
+            <span class="toolbar-divider"></span>
+            <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+            <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+            <button class="toolbar-btn" data-action="outdent" title="Decrease Indent"><i class="fa-solid fa-outdent"></i></button>
+            <button class="toolbar-btn" data-action="indent" title="Increase Indent"><i class="fa-solid fa-indent"></i></button>
+            <span class="toolbar-divider"></span>
+            <button class="toolbar-btn" data-action="create-link" title="Insert Link"><i class="fa-solid fa-link"></i></button>
+            <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
+            <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
+          </div>
+          <div class="note-content" contenteditable="true">${note.content}</div>
+          `
       }
       ${this.getResizeHandlesHtml()}
     `
@@ -563,6 +685,7 @@ export class Notepad {
     this.applyNoteContentTheme(note, noteDiv)
     this.setupNoteResizeObserver(noteDiv, note.id)
     this.setupManualResize(noteDiv, note.id, false)
+    this.setupEditToolbarToggle(noteDiv, note.id)
 
     const contentDiv = noteDiv.querySelector(".note-content")
     if (contentDiv) {
@@ -572,6 +695,18 @@ export class Notepad {
       })
 
       this.setupEditorToolbar(noteDiv, contentDiv, note.id)
+    }
+
+    // Pin button listener
+    const pinBtn = noteDiv.querySelector('[data-action="toggle-pin"]')
+    if (pinBtn) {
+      pinBtn.addEventListener("click", () => this.togglePin(note.id))
+    }
+
+    // Copy button listener
+    const copyBtn = noteDiv.querySelector('[data-action="copy"]')
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => this.copyNote(note.id, copyBtn))
     }
 
     // Toggle background color button
@@ -659,14 +794,67 @@ export class Notepad {
 
   render() {
     const notesList = this.container.querySelector(".notes-list")
+    const countBadge = this.container.querySelector("#notepad-count-badge")
+    if (!notesList) return
     notesList.innerHTML = ""
 
+    if (countBadge) {
+      countBadge.textContent = this.notes.length
+    }
+
+    const i18n = geti18n()
+
     if (this.notes.length === 0) {
-      notesList.innerHTML = `<p class="notes-empty" data-i18n="notepad_empty">No notes yet. Click + to add one.</p>`
+      notesList.innerHTML = `
+        <div class="notes-empty-card">
+          <div class="notes-empty-icon-wrap">
+            <i class="fa-solid fa-book-open notes-empty-icon"></i>
+          </div>
+          <p class="notes-empty-title" data-i18n="notepad_empty">${i18n.notepad_empty || "No notes yet. Click + to add one."}</p>
+          <button type="button" class="notes-empty-btn" id="notes-empty-add-btn">
+            <i class="fa-solid fa-plus"></i>
+            <span data-i18n="notepad_create_first_note">${i18n.notepad_create_first_note || "Create your first note"}</span>
+          </button>
+        </div>
+      `
+      const emptyAddBtn = notesList.querySelector("#notes-empty-add-btn")
+      emptyAddBtn?.addEventListener("click", () => this.addNote())
       return
     }
 
-    this.notes.forEach((note) => {
+    // Filter notes if searchQuery exists
+    const query = this.searchQuery.trim().toLowerCase()
+    let filteredNotes = this.notes
+    if (query) {
+      filteredNotes = this.notes.filter((n) => {
+        const titleMatch = (n.title || "").toLowerCase().includes(query)
+        const contentMatch = (n.content || "").toLowerCase().includes(query)
+        return titleMatch || contentMatch
+      })
+    }
+
+    if (filteredNotes.length === 0) {
+      notesList.innerHTML = `
+        <div class="notes-empty-card">
+          <div class="notes-empty-icon-wrap">
+            <i class="fa-solid fa-magnifying-glass notes-empty-icon"></i>
+          </div>
+          <p class="notes-empty-title" data-i18n="notepad_no_results">${i18n.notepad_no_results || "No notes match your search"}</p>
+        </div>
+      `
+      return
+    }
+
+    // Sort notes: pinned notes first, maintaining relative order
+    const sortedNotes = [...filteredNotes].sort((a, b) => {
+      const isPinnedA = !!this.pinnedNotes[a.id]
+      const isPinnedB = !!this.pinnedNotes[b.id]
+      if (isPinnedA && !isPinnedB) return -1
+      if (!isPinnedA && isPinnedB) return 1
+      return 0
+    })
+
+    sortedNotes.forEach((note) => {
       const noteElement = this.renderNote(note)
       if (noteElement) {
         notesList.appendChild(noteElement)
