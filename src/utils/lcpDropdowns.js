@@ -155,12 +155,22 @@ function setupLcpButtonGroup(select) {
 
   // Add toggle button for long list if needed
   if (hasCollapsedItems) {
-    btnContainer.classList.add("has-overflow", "is-collapsed")
+    btnContainer.classList.add("has-overflow")
+    const isChipsExpanded =
+      selectId &&
+      localStorage.getItem("lcp_chips_expanded_" + selectId) === "true"
+    if (!isChipsExpanded) {
+      btnContainer.classList.add("is-collapsed")
+    }
 
     const toggleMoreBtn = document.createElement("button")
     toggleMoreBtn.type = "button"
     toggleMoreBtn.className = "lcp-btn-chip lcp-toggle-more-btn"
-    toggleMoreBtn.innerHTML = `<span>+ ${totalOptions - MAX_INITIAL}</span> <i class="fa-solid fa-chevron-down"></i>`
+    if (isChipsExpanded) {
+      toggleMoreBtn.innerHTML = `<span>Thu gọn</span> <i class="fa-solid fa-chevron-up"></i>`
+    } else {
+      toggleMoreBtn.innerHTML = `<span>+ ${totalOptions - MAX_INITIAL}</span> <i class="fa-solid fa-chevron-down"></i>`
+    }
 
     toggleMoreBtn.addEventListener("click", (e) => {
       e.stopPropagation()
@@ -169,6 +179,14 @@ function setupLcpButtonGroup(select) {
         toggleMoreBtn.innerHTML = `<span>+ ${totalOptions - MAX_INITIAL}</span> <i class="fa-solid fa-chevron-down"></i>`
       } else {
         toggleMoreBtn.innerHTML = `<span>Thu gọn</span> <i class="fa-solid fa-chevron-up"></i>`
+      }
+      if (selectId) {
+        try {
+          localStorage.setItem(
+            "lcp_chips_expanded_" + selectId,
+            isCollapsed ? "false" : "true",
+          )
+        } catch (_) {}
       }
     })
 

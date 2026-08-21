@@ -339,14 +339,14 @@ export class Notepad {
     floatingContainer.innerHTML = `
       <div class="floating-note-header drag-handle">
         <div class="floating-note-header-left">
-          <div class="floating-drag-grip-wrap" title="Drag to move">
+          <div class="floating-drag-grip-wrap" title="${i18n.notepad_drag_grip || "Drag to move"}">
             <i class="fa-solid fa-grip-vertical floating-drag-grip"></i>
           </div>
           <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
         </div>
         <div class="floating-note-actions">
           <div class="note-color-dropdown">
-            <button class="icon-btn note-action-btn note-color-trigger" title="Change Color">
+            <button class="icon-btn note-action-btn note-color-trigger" title="${i18n.notepad_change_color || "Change color"}">
               <i class="fa-solid fa-palette"></i>
             </button>
             <div class="note-color-menu">
@@ -360,17 +360,17 @@ export class Notepad {
               ).join("")}
             </div>
           </div>
-          <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}"><i class="fa-regular fa-copy"></i></button>
-          <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
-          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
-          <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
-          <button class="icon-btn note-action-btn floating-note-close" title="Reattach to Notepad"><i class="fa-solid fa-xmark"></i></button>
+          <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}"><i class="fa-solid fa-copy"></i></button>
+          <button class="icon-btn note-action-btn" data-action="toggle-bg" title="${i18n.notepad_toggle_bg || "Toggle background theme"}"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
+          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? (i18n.notepad_show_toolbar || "Show formatting toolbar") : (i18n.notepad_hide_toolbar || "Hide formatting toolbar")}"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i></button>
+          <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="${isCollapsed ? (i18n.notepad_expand || "Expand note") : (i18n.notepad_collapse || "Collapse note")}"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
+          <button class="icon-btn note-action-btn floating-note-close" title="${i18n.notepad_reattach || "Dock back to Notepad"}"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
         </div>
       </div>
       <div class="floating-note-toolbar">
-        <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-        <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-        <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+        <button class="toolbar-btn" data-command="bold" title="Bold (Ctrl+B)"><i class="fa-solid fa-bold"></i></button>
+        <button class="toolbar-btn" data-command="italic" title="Italic (Ctrl+I)"><i class="fa-solid fa-italic"></i></button>
+        <button class="toolbar-btn" data-command="underline" title="Underline (Ctrl+U)"><i class="fa-solid fa-underline"></i></button>
         <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
         <span class="toolbar-divider"></span>
         <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
@@ -478,6 +478,12 @@ export class Notepad {
           icon.className =
             "fa-solid " + (isNowCollapsed ? "fa-chevron-down" : "fa-chevron-up")
         }
+        collapseBtn.setAttribute(
+          "title",
+          isNowCollapsed
+            ? (i18n.notepad_expand || "Expand note")
+            : (i18n.notepad_collapse || "Collapse note"),
+        )
       })
     }
 
@@ -605,7 +611,7 @@ export class Notepad {
         <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
         <div class="note-actions">
           <div class="note-color-dropdown">
-            <button class="icon-btn note-action-btn note-color-trigger" title="Change Color">
+            <button class="icon-btn note-action-btn note-color-trigger" title="${i18n.notepad_change_color || "Change color"}">
               <i class="fa-solid fa-palette"></i>
             </button>
             <div class="note-color-menu">
@@ -620,23 +626,23 @@ export class Notepad {
             </div>
           </div>
           <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}">
-            <i class="fa-regular fa-copy"></i>
+            <i class="fa-solid fa-copy"></i>
           </button>
-          <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)">
+          <button class="icon-btn note-action-btn" data-action="toggle-bg" title="${i18n.notepad_toggle_bg || "Toggle background theme"}">
             <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
           </button>
-          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar">
-            <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i>
+          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? (i18n.notepad_show_toolbar || "Show formatting toolbar") : (i18n.notepad_hide_toolbar || "Hide formatting toolbar")}">
+            <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i>
           </button>
-          <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
+          <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="${isHidden ? (i18n.notepad_expand || "Show note content") : (i18n.notepad_collapse || "Hide note content")}">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
           </button>
           ${window.location.pathname.includes("sidepanel.html") ? "" : `
-          <button class="icon-btn note-action-btn" data-action="detach" title="Pop out">
+          <button class="icon-btn note-action-btn" data-action="detach" title="${i18n.notepad_detach || "Pop out note"}">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
           `}
-          <button class="icon-btn note-action-btn note-delete-btn" data-action="delete" title="Delete">
+          <button class="icon-btn note-action-btn note-delete-btn" data-action="delete" title="${i18n.notepad_delete_note || "Delete note"}">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
@@ -646,9 +652,9 @@ export class Notepad {
           ? ""
           : `
           <div class="note-toolbar">
-            <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-            <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-            <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+            <button class="toolbar-btn" data-command="bold" title="Bold (Ctrl+B)"><i class="fa-solid fa-bold"></i></button>
+            <button class="toolbar-btn" data-command="italic" title="Italic (Ctrl+I)"><i class="fa-solid fa-italic"></i></button>
+            <button class="toolbar-btn" data-command="underline" title="Underline (Ctrl+U)"><i class="fa-solid fa-underline"></i></button>
             <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
             <span class="toolbar-divider"></span>
             <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
@@ -897,11 +903,19 @@ export class Notepad {
       }
       this.saveHiddenEditToolbarState()
 
+      const i18n = geti18n()
       const icon = toggleBtn.querySelector("i")
       if (icon) {
         icon.className =
-          "fa-solid " + (isHidden ? "fa-pen-to-square" : "fa-pen")
+          "fa-solid " + (isHidden ? "fa-pen-ruler" : "fa-pen-clip")
       }
+      toggleBtn.classList.toggle("active", !isHidden)
+      toggleBtn.setAttribute(
+        "title",
+        isHidden
+          ? (i18n.notepad_show_toolbar || "Show formatting toolbar")
+          : (i18n.notepad_hide_toolbar || "Hide formatting toolbar"),
+      )
     })
   }
 
@@ -1274,15 +1288,15 @@ export class Notepad {
       btn.style.setProperty("color", contrastColor, "important")
     })
 
-    const titleInput = header.querySelector(".note-title-input")
+    const titleInput = header.querySelector(".note-title-input, .floating-note-title-input")
     if (titleInput) {
       titleInput.style.setProperty("color", contrastColor, "important")
       titleInput.style.setProperty("background-color", "transparent", "important")
       titleInput.style.setProperty(
         "border-color",
         contrastColor === "#000000"
-          ? "rgba(0, 0, 0, 0.22)"
-          : "rgba(255, 255, 255, 0.28)",
+           ? "rgba(0, 0, 0, 0.22)"
+           : "rgba(255, 255, 255, 0.28)",
         "important",
       )
     }
@@ -1290,6 +1304,11 @@ export class Notepad {
     const floatingTitle = header.querySelector(".floating-note-title")
     if (floatingTitle) {
       floatingTitle.style.setProperty("color", contrastColor, "important")
+    }
+
+    const dragGrip = header.querySelector(".floating-drag-grip-wrap")
+    if (dragGrip) {
+      dragGrip.style.setProperty("color", contrastColor, "important")
     }
 
     const icons = header.querySelectorAll("i, svg")

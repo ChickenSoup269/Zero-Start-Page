@@ -1332,6 +1332,8 @@ export let showWeatherCheckbox = document.getElementById(
   "show-weather-checkbox",
 )
 export let showMusicCheckbox = document.getElementById("show-music-checkbox")
+export let musicRealAudioReactiveCheckbox = document.getElementById("music-real-audio-reactive-checkbox")
+export let lcpMusicRealAudioReactive = document.getElementById("lcp-music-real-audio-reactive")
 export let freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",
 )
@@ -3091,6 +3093,8 @@ export function refreshDOMReferences() {
   quotesUpdateFreqSelect = document.getElementById("quotes-update-freq-select")
   showWeatherCheckbox = document.getElementById("show-weather-checkbox")
   showMusicCheckbox = document.getElementById("show-music-checkbox")
+  musicRealAudioReactiveCheckbox = document.getElementById("music-real-audio-reactive-checkbox")
+  lcpMusicRealAudioReactive = document.getElementById("lcp-music-real-audio-reactive")
   freeMoveClockCheckbox = document.getElementById("free-move-clock-checkbox")
   clockDisplaySelect = document.getElementById("clock-display-select")
   showFullCalendarCheckbox = document.getElementById(
