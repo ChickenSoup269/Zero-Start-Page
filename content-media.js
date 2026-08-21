@@ -368,13 +368,34 @@
     }
   }
 
-  function sendStateUpdate() {
+  let lastBroadcastTitle = ""
+  let lastBroadcastUrl = ""
+  let lastBroadcastThumb = ""
+  let lastBroadcastPaused = null
+  let lastBroadcastTime = -1
+
+  function sendStateUpdate(force = false) {
     try {
       const state = getMediaState()
-      chrome.runtime.sendMessage({
-        action: "mediaStateUpdated",
-        state: state,
-      })
+      if (!state) return null
+      const isTitleChanged = state.title !== lastBroadcastTitle
+      const isUrlChanged = state.url !== lastBroadcastUrl
+      const isThumbChanged = state.thumbnail !== lastBroadcastThumb
+      const isPausedChanged = state.paused !== lastBroadcastPaused
+      const isTimeChanged = Math.abs((state.currentTime || 0) - lastBroadcastTime) >= 1.0
+
+      if (force || isTitleChanged || isUrlChanged || isThumbChanged || isPausedChanged || isTimeChanged) {
+        lastBroadcastTitle = state.title
+        lastBroadcastUrl = state.url
+        lastBroadcastThumb = state.thumbnail
+        lastBroadcastPaused = state.paused
+        lastBroadcastTime = state.currentTime || 0
+
+        chrome.runtime.sendMessage({
+          action: "mediaStateUpdated",
+          state: state,
+        })
+      }
       return state
     } catch (e) {
       // Ignore extension context invalidated errors
@@ -382,23 +403,23 @@
   }
 
   function handlePlay() {
-    sendStateUpdate()
+    sendStateUpdate(true)
     startPeriodicSync()
   }
 
   function handlePause() {
-    sendStateUpdate()
+    sendStateUpdate(true)
     stopPeriodicSync()
   }
 
   function startPeriodicSync() {
     if (updateInterval) return
     updateInterval = setInterval(() => {
-      const state = sendStateUpdate()
+      const state = sendStateUpdate(false)
       if (state && state.paused) {
         stopPeriodicSync()
       }
-    }, 4000)
+    }, 1000)
   }
 
   function stopPeriodicSync() {
@@ -408,11 +429,90 @@
     }
   }
 
-  // Setup event listeners
-  document.addEventListener("play", handlePlay, true)
-  document.addEventListener("pause", handlePause, true)
-  document.addEventListener("seeked", sendStateUpdate, true)
-  document.addEventListener("durationchange", sendStateUpdate, true)
+  // Setup rich event listeners on video/audio elements and document
+  const mediaEvents = [
+    "play",
+    "playing",
+    "pause",
+    "seeked",
+    "durationchange",
+    "loadedmetadata",
+    "loadeddata",
+    "ended",
+    "ratechange",
+    "timeupdate",
+  ]
+  mediaEvents.forEach((ev) => {
+    document.addEventListener(
+      ev,
+      () => {
+        if (ev === "play" || ev === "playing") {
+          handlePlay()
+        } else if (ev === "pause") {
+          handlePause()
+        } else {
+          sendStateUpdate(ev === "loadedmetadata" || ev === "ended")
+        }
+      },
+      true,
+    )
+  })
+
+  // Observe Document Title mutations for background track changes
+  const titleEl = document.querySelector("title")
+  if (titleEl) {
+    const titleObserver = new MutationObserver(() => {
+      sendStateUpdate(true)
+    })
+    titleObserver.observe(titleEl, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    })
+  }
+
+  // Observe Document Head for title/meta tag changes in SPAs
+  if (document.head) {
+    const headObserver = new MutationObserver(() => {
+      sendStateUpdate(false)
+    })
+    headObserver.observe(document.head, {
+      childList: true,
+      subtree: true,
+    })
+  }
+
+  // Listen for SPA navigation events (YouTube, Spotify, SoundCloud, Zing)
+  window.addEventListener("yt-navigate-finish", () => {
+    setTimeout(() => sendStateUpdate(true), 150)
+  })
+  window.addEventListener("yt-page-data-updated", () => {
+    setTimeout(() => sendStateUpdate(true), 150)
+  })
+  window.addEventListener("popstate", () => {
+    setTimeout(() => sendStateUpdate(true), 150)
+  })
+  window.addEventListener("hashchange", () => {
+    setTimeout(() => sendStateUpdate(true), 150)
+  })
+
+  // Hook into MediaSession metadata setter if available
+  if ("mediaSession" in navigator) {
+    try {
+      let origMetadata = navigator.mediaSession.metadata
+      Object.defineProperty(navigator.mediaSession, "metadata", {
+        get() {
+          return origMetadata
+        },
+        set(v) {
+          origMetadata = v
+          setTimeout(() => sendStateUpdate(true), 100)
+        },
+        configurable: true,
+        enumerable: true,
+      })
+    } catch (_) {}
+  }
 
   // Listen for control commands from background script
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

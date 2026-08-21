@@ -323,6 +323,34 @@ chrome.tabs?.onRemoved?.addListener((tabId) => {
     stopTabAudioCapture()
   }
 })
+function broadcastMediaState(state) {
+  if (!state) return
+  const extensionPrefix = chrome.runtime.getURL("")
+  chrome.tabs.query({}, (tabs) => {
+    if (!tabs || chrome.runtime.lastError) return
+    tabs.forEach((tab) => {
+      const isStartpage =
+        tab.url &&
+        (tab.url.startsWith(extensionPrefix) ||
+          tab.url.includes(chrome.runtime.id) ||
+          tab.url.startsWith("chrome://newtab") ||
+          tab.url.startsWith("edge://newtab"))
+      if (isStartpage) {
+        chrome.tabs.sendMessage(
+          tab.id,
+          {
+            action: "mediaStateUpdatedBroadcast",
+            state: { audible: true, ...state },
+          },
+          () => {
+            const err = chrome.runtime.lastError
+          },
+        )
+      }
+    })
+  })
+}
+
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   // 2. LƯỚI QUÉT CHÍ MẠNG: Chỉ chạy khi tab đã complete để không ngắt quãng quá trình tải
   if (changeInfo.status === "complete" || changeInfo.title) {
@@ -332,6 +360,19 @@ chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   // 1. Media caching logic
   if (tabId === lastKnownMediaTabId && changeInfo.url) {
     if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
+  }
+
+  // 3. Reactive Media tracking on track change or title change in background tab
+  if (isKnownMediaTab(tab) && (changeInfo.title || changeInfo.url || changeInfo.audible !== undefined)) {
+    getMediaFromTab(tabId, (state) => {
+      if (state && (state.title || state.isPlaying)) {
+        mediaStates[tabId] = {
+          ...state,
+          lastUpdated: Date.now(),
+        }
+        broadcastMediaState(state)
+      }
+    })
   }
 })
 
@@ -353,24 +394,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
 
       // Broadcast update to all Startpage tabs
-      chrome.tabs.query({}, (tabs) => {
-        const startpageUrl = chrome.runtime.getURL("index.html")
-        tabs.forEach((tab) => {
-          if (tab.url && tab.url.startsWith(startpageUrl)) {
-            chrome.tabs.sendMessage(
-              tab.id,
-              {
-                action: "mediaStateUpdatedBroadcast",
-                state: { audible: true, ...request.state },
-              },
-              () => {
-                // Ignore errors from tabs that might be closed or not loaded yet
-                const err = chrome.runtime.lastError
-              },
-            )
-          }
-        })
-      })
+      broadcastMediaState(request.state)
     }
     return
   }
