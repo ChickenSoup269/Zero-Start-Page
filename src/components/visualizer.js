@@ -49,17 +49,12 @@ class MusicVisualizer {
         this._lastFrameTime = 0
         this.updateDimensions()
         if (this.isPlaying) {
-          if (this.currentStyle === "heartbeat") this._startHeartbeat()
-          else if (this.currentStyle === "pixel") this._startPixel()
-          else if (this.currentStyle === "moon8") this._startMoon8()
-          else if (this.currentStyle === "forest") this._startForest()
-          else if (this.currentStyle === "orbit") this._startOrbit()
-          else if (this.currentStyle === "beach") this._startBeach()
-          else this._startCSSLoop()
+          this.start()
         }
       } else {
         this._lastTs = 0
         this._lastFrameTime = 0
+        this._stopAll()
       }
     }
   }
@@ -88,104 +83,79 @@ class MusicVisualizer {
     this.setStyle(getSettings().musicBarStyle || "vinyl")
   }
 
+  _scheduleDimensionUpdates() {
+    if (this._dimTimeouts) {
+      this._dimTimeouts.forEach((t) => clearTimeout(t))
+    }
+    this._dimTimeouts = []
+    ;[0, 30, 80, 150, 250, 400].forEach((delay) => {
+      const t = setTimeout(() => {
+        this.updateDimensions()
+      }, delay)
+      this._dimTimeouts.push(t)
+    })
+  }
+
+  _stopAll() {
+    this._stopCSSLoop()
+    this._stopPixel()
+    this._stopMoon8()
+    this._stopHeartbeat()
+    this._stopForest()
+    this._stopBeach()
+    this._stopOrbit()
+    if (this.container) {
+      this.container.querySelectorAll("canvas").forEach((c) => c.remove())
+      this.container.style.position = ""
+      this.container.style.top = ""
+      this.container.style.left = ""
+      this.container.style.width = ""
+      this.container.style.height = ""
+      this.container.style.margin = ""
+      this.container.style.overflow = ""
+    }
+    this.bars.forEach((b) => (b.style.display = ""))
+  }
+
   setStyle(style) {
-    const prev = this.currentStyle
     this.currentStyle = style
 
-    // Dynamic bar count based on style
     let newBarCount = 5
     if (style === "vinyl" || style === "apple") newBarCount = 6
     if (style === "neon") newBarCount = 8
     if (style === "minimal") newBarCount = 6
     if (style === "pill") newBarCount = 4
     if (style === "overlap") newBarCount = 9
-    if (style === "orbit") newBarCount = 0
     if (style === "spotify" || style === "sidebar") newBarCount = 5
     if (style === "soundcloud") newBarCount = 10
     if (style === "terminal") newBarCount = 12
-    if (style === "heartbeat" || style === "moon8" || style === "forest" || style === "beach") newBarCount = 0
+    if (
+      style === "heartbeat" ||
+      style === "moon8" ||
+      style === "forest" ||
+      style === "beach" ||
+      style === "orbit"
+    )
+      newBarCount = 0
     if (style === "square-thumb") newBarCount = 5
 
-    if (newBarCount !== this.barCount) {
-      this.barCount = newBarCount
-      this._recreateBars()
-    }
+    // Stop all active visualizers completely and clean up DOM/state
+    this._stopAll()
 
-    if (prev === "pixel" && style !== "pixel") {
-      this._stopPixel()
-    }
-    if (prev === "moon8" && style !== "moon8") {
-      this._stopMoon8()
-    }
-    if (prev === "heartbeat" && style !== "heartbeat") {
-      this._stopHeartbeat()
-    }
-    if (prev === "forest" && style !== "forest") {
-      this._stopForest()
-    }
-    if (prev === "beach" && style !== "beach") {
-      this._stopBeach()
-    }
-    if (prev === "orbit" && style !== "orbit") {
-      this._stopOrbit()
-    }
+    this.barCount = newBarCount
+    this._recreateBars()
 
-    if (style === "pixel") {
-      this._stopCSSLoop()
-      this._stopMoon8()
-      this._stopHeartbeat()
-      this._stopForest()
-      this._stopBeach()
-      this._stopOrbit()
-      if (this.isPlaying) this._startPixel()
-      else this._stopPixel()
-    } else if (style === "moon8") {
-      this._stopCSSLoop()
-      this._stopPixel()
-      this._stopHeartbeat()
-      this._stopForest()
-      this._stopBeach()
-      this._stopOrbit()
-      if (this.isPlaying) this._startMoon8()
-      else this._stopMoon8()
-    } else if (style === "heartbeat") {
-      this._stopCSSLoop()
-      this._stopPixel()
-      this._stopMoon8()
-      this._stopForest()
-      this._stopBeach()
-      this._stopOrbit()
-      if (this.isPlaying) this._startHeartbeat()
-      else this._stopHeartbeat()
-    } else if (style === "forest") {
-      this._stopCSSLoop()
-      this._stopPixel()
-      this._stopMoon8()
-      this._stopHeartbeat()
-      this._stopBeach()
-      this._stopOrbit()
-      if (this.isPlaying) this._startForest()
-      else this._stopForest()
-    } else if (style === "beach") {
-      this._stopCSSLoop()
-      this._stopPixel()
-      this._stopMoon8()
-      this._stopHeartbeat()
-      this._stopForest()
-      this._stopOrbit()
-      if (this.isPlaying) this._startBeach()
-      else this._stopBeach()
-    } else if (style === "orbit") {
-      this._stopCSSLoop()
-      this._stopPixel()
-      this._stopMoon8()
-      this._stopHeartbeat()
-      this._stopForest()
-      this._stopBeach()
-      if (this.isPlaying) this._startOrbit()
-      else this._stopOrbit()
-    } else {
-      if (this.isPlaying) this._startCSSLoop()
+    this.updateDimensions()
+    this._scheduleDimensionUpdates()
+
+    if (this.isPlaying) {
+      if (style === "pixel") this._startPixel()
+      else if (style === "moon8") this._startMoon8()
+      else if (style === "heartbeat") this._startHeartbeat()
+      else if (style === "orbit") this._startOrbit()
+      else if (style === "forest") this._startForest()
+      else if (style === "beach") this._startBeach()
+      else this._startCSSLoop()
     }
   }
 
@@ -213,6 +183,8 @@ class MusicVisualizer {
                              this.container.classList.contains("skin-white-blur") ||
                              document.querySelector(".side-controls")?.classList.contains("light-mode")
   }
+
+  // ── Orbit Visualizer ──────────────────────────────────────────────────────
 
   _startOrbit() {
     this._stopOrbit()
@@ -247,7 +219,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save mode
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -436,6 +408,7 @@ class MusicVisualizer {
       "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"
     this.beachCanvas = canvas
     if (this.container) {
+      this.container.classList.add("is-canvas-mode")
       this.container.style.position = "absolute"
       this.container.style.top = "0"
       this.container.style.left = "0"
@@ -464,7 +437,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -486,6 +459,7 @@ class MusicVisualizer {
       this.beachCanvas = null
     }
     if (this.container) {
+      this.container.classList.remove("is-canvas-mode")
       this.container.style.position = ""
       this.container.style.top = ""
       this.container.style.left = ""
@@ -498,11 +472,16 @@ class MusicVisualizer {
   _beachFrame(dt) {
     const canvas = this.beachCanvas
     if (!canvas) return
-    const W = this.cachedParentWidth
-    const H = this.cachedParentHeight
-    const now = Date.now()
+    const W =
+      this.cachedParentWidth ||
+      this.container?.parentElement?.offsetWidth ||
+      340
+    const H =
+      this.cachedParentHeight ||
+      this.container?.parentElement?.offsetHeight ||
+      90
 
-    if (canvas.width !== W * 2) {
+    if (canvas.width !== W * 2 || canvas.height !== H * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
     }
@@ -511,53 +490,227 @@ class MusicVisualizer {
     ctx.save()
     ctx.scale(2, 2)
 
-    let norm = 0
-    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-      norm = (this._realBands[0] + this._realBands[1]) / 2
-    } else if (this.isPlaying) {
-      norm = 0.15
+    if (!this._beachSimTime) this._beachSimTime = 0
+    this._beachSimTime += dt
+    const simTime = this._beachSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    let bassNorm = 0
+    let midNorm = 0
+    let highNorm = 0
+
+    if (this.isPlaying && isReactive) {
+      if (hasRealAudio) {
+        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.40) * 1.95)
+        midNorm = Math.min(
+          1.0,
+          Math.pow(this._realBands[Math.min(2, bandsCount - 1)] || 0, 0.45) *
+            1.75,
+        )
+        highNorm = Math.min(
+          1.0,
+          Math.pow(this._realBands[Math.min(5, bandsCount - 1)] || 0, 0.45) *
+            1.6,
+        )
+      } else {
+        const bpm = 128
+        const beatPhase = (simTime * (bpm / 60)) % 1
+        const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+        const sub = Math.sin(simTime * 8.5) * 0.5 + 0.5
+        const midBounce = (Math.sin(simTime * 14.0) * 0.5 + 0.5) * 0.5
+        const hat = (Math.sin(simTime * 24.0) * 0.5 + 0.5) * 0.35
+        bassNorm = Math.min(1.0, kick * 1.15 + sub * 0.25)
+        midNorm = Math.min(1.0, midBounce * 0.75 + hat * 0.35)
+        highNorm = Math.min(1.0, hat * 0.9)
+      }
     }
 
-    const time = now * 0.002
+    if (!this._beachSmoothedNorm) this._beachSmoothedNorm = 0
+    const attack = bassNorm > this._beachSmoothedNorm ? 0.65 : 0.25
+    this._beachSmoothedNorm += (bassNorm - this._beachSmoothedNorm) * attack
+    const norm = this._beachSmoothedNorm
+
     const isWhiteBlur = this.isWhiteBlurCached
-    
-    // Vẽ 3 lớp sóng biển
-    const drawWave = (offsetY, amplitude, freq, speed, color, alpha) => {
-        ctx.save()
-        ctx.fillStyle = isWhiteBlur ? "#000000" : color
-        ctx.globalAlpha = isWhiteBlur ? alpha * 0.4 : alpha
-        ctx.beginPath()
-        ctx.moveTo(0, H)
-        
-        for (let x = 0; x <= W; x += 5) {
-            const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
-            ctx.lineTo(x, y)
-        }
-        
-        ctx.lineTo(W, H)
-        ctx.lineTo(0, H)
-        ctx.fill()
-        
-        // Vẽ bọt biển ở đỉnh sóng
-        if (norm > 0.2) {
-            ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.3)" : "#fff"
-            ctx.globalAlpha = norm * 0.5
-            for (let x = 0; x <= W; x += 20) {
-                const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
-                ctx.beginPath()
-                ctx.arc(x, y, 2 * norm, 0, Math.PI * 2)
-                ctx.fill()
-            }
-        }
-        ctx.restore()
+    const accent = this.cachedAccent || "#00b4d8"
+
+    // 0. Soft ambient oceanic glow aura
+    if (isReactive && this.isPlaying && norm > 0.05 && !isWhiteBlur) {
+      const auraGrad = ctx.createRadialGradient(
+        W / 2,
+        H * 0.65,
+        0,
+        W / 2,
+        H * 0.65,
+        W * (0.35 + norm * 0.35),
+      )
+      auraGrad.addColorStop(0, accent)
+      auraGrad.addColorStop(1, "transparent")
+      ctx.save()
+      ctx.fillStyle = auraGrad
+      ctx.globalAlpha = 0.1 + norm * 0.18
+      ctx.fillRect(0, 0, W, H)
+      ctx.restore()
     }
 
-    // Lớp sóng xa (Xanh nhạt)
-    drawWave(H * 0.6, 5, 0.01, 0.5, "#b3e5fc", 0.4)
-    // Lớp sóng giữa (Xanh ngọc lơ)
-    drawWave(H * 0.7, 8, 0.015, 0.8, "#e1f5fe", 0.5)
-    // Lớp sóng gần (Trắng xanh - gần như trắng)
-    drawWave(H * 0.8, 10, 0.02, 1.2, "#f0faff", 0.8)
+    // Function to get audio frequency value interpolated at position x (0..1)
+    const getAudioFreqAt = (normX) => {
+      if (!isReactive || !this.isPlaying) return 0
+      if (hasRealAudio) {
+        const idx = Math.min(bandsCount - 1, Math.floor(normX * bandsCount))
+        const val = this._realBands[idx] || 0
+        return Math.min(1.0, Math.pow(val, 0.42) * 1.8)
+      }
+      return (
+        Math.sin(simTime * 6.0 + normX * Math.PI * 4) * 0.35 * norm +
+        norm * 0.65
+      )
+    }
+
+    // 1. Layer 1: Deep Ocean Background Swell
+    ctx.save()
+    const deepGrad = ctx.createLinearGradient(0, H * 0.45, 0, H)
+    deepGrad.addColorStop(
+      0,
+      isWhiteBlur ? "rgba(0,0,0,0.18)" : "rgba(0, 119, 182, 0.55)",
+    )
+    deepGrad.addColorStop(
+      1,
+      isWhiteBlur ? "rgba(0,0,0,0.30)" : "rgba(3, 4, 94, 0.75)",
+    )
+    ctx.fillStyle = deepGrad
+    ctx.beginPath()
+    ctx.moveTo(0, H)
+    for (let x = 0; x <= W; x += 4) {
+      const u = x / W
+      const freq = getAudioFreqAt(u * 0.6)
+      const waveY =
+        H * (0.54 - norm * 0.1) +
+        Math.sin(x * 0.012 + simTime * 1.5) * (7 + norm * 12) +
+        Math.cos(x * 0.022 - simTime * 1.2) * 3 -
+        freq * (H * 0.18)
+      ctx.lineTo(x, waveY)
+    }
+    ctx.lineTo(W, H)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+
+    // 2. Layer 2: Tropical Cyan Mid-Wave (Surges with mids & vocals)
+    ctx.save()
+    const midGrad = ctx.createLinearGradient(0, H * 0.58, 0, H)
+    midGrad.addColorStop(
+      0,
+      isWhiteBlur ? "rgba(0,0,0,0.14)" : accent || "rgba(72, 202, 228, 0.65)",
+    )
+    midGrad.addColorStop(
+      1,
+      isWhiteBlur ? "rgba(0,0,0,0.22)" : "rgba(0, 150, 199, 0.65)",
+    )
+    ctx.fillStyle = midGrad
+    ctx.beginPath()
+    ctx.moveTo(0, H)
+    for (let x = 0; x <= W; x += 3) {
+      const u = x / W
+      const freq = getAudioFreqAt(0.2 + u * 0.6)
+      const waveY =
+        H * (0.66 - norm * 0.08) +
+        Math.sin(x * 0.018 + simTime * 2.2) * (8 + norm * 14) +
+        Math.cos(x * 0.035 - simTime * 1.8) * (4 + midNorm * 6) -
+        freq * (H * 0.22)
+      ctx.lineTo(x, waveY)
+    }
+    ctx.lineTo(W, H)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+
+    // 3. Layer 3: Foreground Luminous Foam Wave (Shimmers with treble and beats)
+    ctx.save()
+    const foreGrad = ctx.createLinearGradient(0, H * 0.7, 0, H)
+    foreGrad.addColorStop(
+      0,
+      isWhiteBlur ? "rgba(0,0,0,0.25)" : "rgba(224, 251, 252, 0.92)",
+    )
+    foreGrad.addColorStop(
+      1,
+      isWhiteBlur ? "rgba(0,0,0,0.40)" : "rgba(72, 202, 228, 0.85)",
+    )
+    ctx.fillStyle = foreGrad
+
+    // Collect points to draw both fill and glowing crest stroke
+    const crestPoints = []
+    for (let x = 0; x <= W; x += 3) {
+      const u = x / W
+      const freq = getAudioFreqAt(u)
+      const waveY =
+        H * (0.76 - norm * 0.07) +
+        Math.sin(x * 0.024 + simTime * 3.0) * (9 + norm * 16) +
+        Math.cos(x * 0.048 - simTime * 2.4) * (3 + highNorm * 5) -
+        freq * (H * 0.26)
+      crestPoints.push({ x, y: waveY })
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(0, H)
+    crestPoints.forEach((pt, i) => {
+      if (i === 0) ctx.lineTo(pt.x, pt.y)
+      else ctx.lineTo(pt.x, pt.y)
+    })
+    ctx.lineTo(W, H)
+    ctx.closePath()
+    ctx.fill()
+
+    // Glowing Crest Line
+    ctx.beginPath()
+    crestPoints.forEach((pt, i) => {
+      if (i === 0) ctx.moveTo(pt.x, pt.y)
+      else ctx.lineTo(pt.x, pt.y)
+    })
+    ctx.strokeStyle = isWhiteBlur
+      ? "rgba(0,0,0,0.6)"
+      : "rgba(255, 255, 255, 0.95)"
+    ctx.lineWidth = 1.8 + highNorm * 1.2
+    ctx.shadowColor = isWhiteBlur ? "transparent" : accent || "#48cae4"
+    ctx.shadowBlur = isWhiteBlur ? 0 : 8 + norm * 8
+    ctx.stroke()
+    ctx.restore()
+
+    // 4. Ambient floating foam sparkles
+    if (!this._beachParticles || this._beachParticles.length < 18) {
+      this._beachParticles = []
+      for (let i = 0; i < 18; i++) {
+        this._beachParticles.push({
+          x: Math.random() * W,
+          y: H * 0.5 + Math.random() * (H * 0.5),
+          radius: 1 + Math.random() * 2.2,
+          vy: -(0.4 + Math.random() * 1.2),
+          vx: (Math.random() - 0.5) * 1.2,
+          alpha: 0.35 + Math.random() * 0.55,
+        })
+      }
+    }
+
+    ctx.save()
+    this._beachParticles.forEach((p) => {
+      if (this.isPlaying) {
+        p.y += p.vy * (1 + norm * 2.5) * dt * 30
+        p.x += p.vx * (1 + midNorm * 1.2) * dt * 30
+        if (p.y < H * 0.38 || p.alpha <= 0.05) {
+          p.x = Math.random() * W
+          p.y = H * 0.75 + Math.random() * (H * 0.25)
+          p.alpha = 0.35 + Math.random() * 0.55
+        }
+      }
+      ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.3)" : "#ffffff"
+      ctx.globalAlpha = p.alpha * (0.6 + norm * 0.4)
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.radius * (1 + norm * 0.6), 0, Math.PI * 2)
+      ctx.fill()
+    })
+    ctx.restore()
 
     ctx.restore()
   }
@@ -571,7 +724,7 @@ class MusicVisualizer {
       "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"
     this.forestCanvas = canvas
     if (this.container) {
-      // Đảm bảo container phủ toàn bộ wrapper để làm background
+      this.container.classList.add("is-canvas-mode")
       this.container.style.position = "absolute"
       this.container.style.top = "0"
       this.container.style.left = "0"
@@ -591,10 +744,12 @@ class MusicVisualizer {
         startY: isTop ? -5 : 65,
         length: 20 + Math.random() * 40,
         curve: (Math.random() - 0.5) * 40,
-        color: ["#1b5e20", "#2e7d32", "#388e3c", "#43a047"][Math.floor(Math.random() * 4)],
+        color: ["#1b5e20", "#2e7d32", "#388e3c", "#43a047"][
+          Math.floor(Math.random() * 4)
+        ],
         thickness: 0.8 + Math.random() * 1.5,
         speed: 0.3 + Math.random() * 0.7,
-        leafNodes: Array.from({ length: 3 }, () => Math.random())
+        leafNodes: Array.from({ length: 3 }, () => Math.random()),
       })
     }
 
@@ -623,7 +778,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -647,11 +802,13 @@ class MusicVisualizer {
     this.forestParticles = []
     this.forestVines = []
     if (this.container) {
+      this.container.classList.remove("is-canvas-mode")
       this.container.style.position = ""
       this.container.style.top = ""
       this.container.style.left = ""
       this.container.style.width = ""
       this.container.style.height = ""
+      this.container.style.margin = ""
     }
     this.bars.forEach((b) => (b.style.display = ""))
   }
@@ -676,11 +833,16 @@ class MusicVisualizer {
   _forestFrame(dt) {
     const canvas = this.forestCanvas
     if (!canvas) return
-    const W = this.cachedParentWidth
-    const H = this.cachedParentHeight
-    const now = Date.now()
+    const W =
+      this.cachedParentWidth ||
+      this.container?.parentElement?.offsetWidth ||
+      340
+    const H =
+      this.cachedParentHeight ||
+      this.container?.parentElement?.offsetHeight ||
+      90
 
-    if (canvas.width !== W * 2) {
+    if (canvas.width !== W * 2 || canvas.height !== H * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
     }
@@ -689,79 +851,199 @@ class MusicVisualizer {
     ctx.save()
     ctx.scale(2, 2)
 
-    let norm = 0
-    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-      norm = (this._realBands[0] + this._realBands[1]) / 2
-    } else if (this.isPlaying) {
-      norm = 0.15
+    this._forestSimTime = (this._forestSimTime || 0) + dt
+    const simTime = this._forestSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    let bassNorm = 0
+    let midNorm = 0
+    let highNorm = 0
+
+    if (this.isPlaying && isReactive) {
+      if (hasRealAudio) {
+        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.40) * 1.95)
+        midNorm = Math.min(
+          1.0,
+          Math.pow(this._realBands[Math.min(2, bandsCount - 1)] || 0, 0.45) *
+            1.75,
+        )
+        highNorm = Math.min(
+          1.0,
+          Math.pow(this._realBands[Math.min(5, bandsCount - 1)] || 0, 0.45) *
+            1.6,
+        )
+      } else {
+        const bpm = 128
+        const beatPhase = (simTime * (bpm / 60)) % 1
+        const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+        const sub = Math.sin(simTime * 8.5) * 0.5 + 0.5
+        const midBounce = (Math.sin(simTime * 14.0) * 0.5 + 0.5) * 0.5
+        const hat = (Math.sin(simTime * 24.0) * 0.5 + 0.5) * 0.35
+        bassNorm = Math.min(1.0, kick * 1.15 + sub * 0.25)
+        midNorm = Math.min(1.0, midBounce * 0.75 + hat * 0.35)
+        highNorm = Math.min(1.0, hat * 0.9)
+      }
     }
 
-    const isWhiteBlur = this.isWhiteBlurCached
+    if (!this._forestSmoothedNorm) this._forestSmoothedNorm = 0
+    const attack = bassNorm > this._forestSmoothedNorm ? 0.65 : 0.25
+    this._forestSmoothedNorm += (bassNorm - this._forestSmoothedNorm) * attack
+    const norm = this._forestSmoothedNorm
 
-    // 1. Vẽ mạng lưới Dây leo nền (Background Vines)
+    const isWhiteBlur = this.isWhiteBlurCached
+    const accent = this.cachedAccent || "#4caf50"
+
+    // 0. Ethereal Bioluminescent Canopy Mist Aura in background
+    if (isReactive && this.isPlaying && norm > 0.05 && !isWhiteBlur) {
+      const auraGrad = ctx.createRadialGradient(
+        W / 2,
+        H * 0.55,
+        0,
+        W / 2,
+        H * 0.55,
+        W * (0.35 + norm * 0.35),
+      )
+      auraGrad.addColorStop(0, accent)
+      auraGrad.addColorStop(1, "transparent")
+      ctx.save()
+      ctx.fillStyle = auraGrad
+      ctx.globalAlpha = 0.12 + norm * 0.2
+      ctx.fillRect(0, 0, W, H)
+      ctx.restore()
+    }
+
+    // 1. Swaying Hanging Forest Vines
     ctx.save()
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     this.forestVines.forEach((v, idx) => {
       ctx.beginPath()
       ctx.strokeStyle = isWhiteBlur ? "#000000" : v.color
-      ctx.lineWidth = v.thickness * (1 + norm * 0.5)
-      ctx.globalAlpha = isWhiteBlur ? (0.15 + norm * 0.2) : (0.25 + norm * 0.3)
+      ctx.lineWidth = v.thickness * (1 + norm * 0.7)
+      ctx.globalAlpha = isWhiteBlur
+        ? 0.15 + norm * 0.2
+        : 0.25 + norm * 0.3
 
-      const time = now * 0.001 * v.speed
-      // Chuyển động đung đưa (Swaying)
-      const sway = Math.sin(time + idx) * (v.curve + norm * 15)
-      
+      const time = simTime * (v.speed + norm * 0.4)
+      const sway = Math.sin(time + idx) * (v.curve + norm * 28)
+
       const startX = v.startX * (W / 300)
       const startY = v.isTop ? -5 : H + 5
       const endY = v.isTop ? v.length * (H / 60) : H - v.length * (H / 60)
       const endX = startX + sway
 
       ctx.moveTo(startX, startY)
-      // Vẽ đường cong Bezier để tạo cảm giác hữu cơ
       ctx.bezierCurveTo(
-        startX, (startY + endY) / 2,
-        endX, (startY + endY) / 2,
-        endX, endY
+        startX,
+        (startY + endY) / 2,
+        endX,
+        (startY + endY) / 2,
+        endX,
+        endY,
       )
       ctx.stroke()
 
-      // Vẽ lá mọc trực tiếp trên dây leo
+      // Leaf & dew nodes
       v.leafNodes.forEach((nodePos, lIdx) => {
-          const ly = startY + (endY - startY) * nodePos
-          // Tính toán vị trí x trên đường cong (đơn giản hóa bằng lerp)
-          const lx = startX + (endX - startX) * nodePos
-          
-          ctx.save()
-          ctx.translate(lx, ly)
-          ctx.rotate(Math.sin(time + lIdx) * 0.5)
-          ctx.fillStyle = isWhiteBlur ? "#000000" : v.color
-          const lSize = (2 + v.thickness) * (1 + norm)
-          
-          ctx.beginPath()
-          ctx.ellipse(0, 0, lSize, lSize / 2, Math.PI / 4, 0, Math.PI * 2)
-          ctx.fill()
-          ctx.restore()
-      })
+        const ly = startY + (endY - startY) * nodePos
+        const lx = startX + (endX - startX) * nodePos
 
-      // Vẽ các tua cuốn (Tendrils) nhỏ
-      if (norm > 0.4 && idx % 3 === 0) {
+        ctx.save()
+        ctx.translate(lx, ly)
+        ctx.rotate(Math.sin(time + lIdx) * 0.5)
+        ctx.fillStyle = isWhiteBlur ? "#000000" : v.color
+        const lSize = (2 + v.thickness) * (1 + norm * 0.9)
+
+        ctx.beginPath()
+        ctx.ellipse(0, 0, lSize, lSize / 2, Math.PI / 4, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Glowing dew drop on leaves
+        if (isReactive && this.isPlaying && norm > 0.15) {
+          ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.5)" : "#ffffff"
           ctx.beginPath()
-          ctx.lineWidth = 0.5
-          ctx.arc(endX, endY, 5 * norm, 0, Math.PI * 1.5)
-          ctx.stroke()
-      }
+          ctx.arc(lSize * 0.8, 0, 1 + norm * 1.2, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        ctx.restore()
+      })
     })
     ctx.restore()
 
-    // 2. Vẽ Bụi cỏ dày ở cạnh dưới
+    // 2. Soft Bioluminescent Meadow Wave (Blended seamless frequency carpet)
+    if (isReactive && this.isPlaying) {
+      ctx.save()
+      const pts = []
+      const step = 4
+      for (let x = 0; x <= W; x += step) {
+        const u = x / W
+        let freq = 0
+        if (hasRealAudio) {
+          const bIdx = Math.min(bandsCount - 1, Math.floor(u * bandsCount))
+          freq = Math.min(1.0, Math.pow(this._realBands[bIdx] || 0, 0.42) * 1.85)
+        } else {
+          freq =
+            Math.sin(simTime * 5.0 + u * Math.PI * 3) * 0.35 * norm +
+            norm * 0.65
+        }
+        const ry =
+          H * 0.82 -
+          freq * (H * 0.32) +
+          Math.sin(x * 0.02 + simTime * 2.5) * (3 + norm * 6)
+        pts.push({ x, y: ry })
+      }
+
+      const meadowGrad = ctx.createLinearGradient(0, H * 0.55, 0, H)
+      meadowGrad.addColorStop(
+        0,
+        isWhiteBlur ? "rgba(0,0,0,0.12)" : "rgba(129, 199, 132, 0.35)",
+      )
+      meadowGrad.addColorStop(
+        1,
+        isWhiteBlur ? "rgba(0,0,0,0.25)" : "rgba(46, 125, 50, 0.55)",
+      )
+      ctx.fillStyle = meadowGrad
+      ctx.beginPath()
+      ctx.moveTo(0, H)
+      pts.forEach((pt, i) => {
+        if (i === 0) ctx.lineTo(pt.x, pt.y)
+        else ctx.lineTo(pt.x, pt.y)
+      })
+      ctx.lineTo(W, H)
+      ctx.closePath()
+      ctx.fill()
+
+      // Luminous organic edge
+      ctx.beginPath()
+      pts.forEach((pt, i) => {
+        if (i === 0) ctx.moveTo(pt.x, pt.y)
+        else ctx.lineTo(pt.x, pt.y)
+      })
+      ctx.strokeStyle = isWhiteBlur
+        ? "rgba(0,0,0,0.4)"
+        : accent || "#81c784"
+      ctx.lineWidth = 1.6 + norm * 1.0
+      ctx.shadowColor = isWhiteBlur ? "transparent" : accent || "#81c784"
+      ctx.shadowBlur = isWhiteBlur ? 0 : 8 + norm * 8
+      ctx.stroke()
+      ctx.restore()
+    }
+
+    // 3. Grass on the bottom
     ctx.save()
-    const grassCount = 15
+    const grassCount = 18
     for (let i = 0; i < grassCount; i++) {
       const x = (i / (grassCount - 1)) * W
-      const h = (15 + Math.sin(i + now * 0.003) * 5) * (1 + norm)
-      ctx.fillStyle = isWhiteBlur ? "#000000" : (i % 2 === 0 ? "#1b5e20" : "#2e7d32")
-      ctx.globalAlpha = isWhiteBlur ? (0.2 + norm * 0.2) : (0.5 + norm * 0.3)
+      const h = (12 + Math.sin(i + simTime * 3.5) * 4) * (1 + norm * 1.4)
+      ctx.fillStyle = isWhiteBlur
+        ? "#000000"
+        : i % 2 === 0
+          ? "#1b5e20"
+          : "#2e7d32"
+      ctx.globalAlpha = isWhiteBlur ? 0.2 + norm * 0.3 : 0.5 + norm * 0.4
       ctx.beginPath()
       ctx.moveTo(x - 5, H)
       ctx.quadraticCurveTo(x, H - h, x + 5, H)
@@ -769,22 +1051,24 @@ class MusicVisualizer {
     }
     ctx.restore()
 
-    // 3. Cập nhật và vẽ hạt (Lá và Hoa bay)
+    // 4. Floating Fireflies & Petals
     for (let i = this.forestParticles.length - 1; i >= 0; i--) {
       const p = this.forestParticles[i]
       if (this.isPlaying) {
-        p.y += p.speed * dt * (1 + norm * 2)
-        p.rotation += p.rotSpeed * dt * (1 + norm * 5)
-        p.x += Math.sin(p.phase + now * 0.002) * 5 * dt
+        p.y += p.speed * dt * (1 + norm * 3.5)
+        p.rotation += p.rotSpeed * dt * (1 + norm * 6)
+        p.x += Math.sin(p.phase + simTime * 2.5) * (5 + norm * 8) * dt
       }
 
       ctx.save()
       ctx.translate(p.x * (W / 300), p.y * (H / 60))
       ctx.rotate(p.rotation)
       ctx.fillStyle = isWhiteBlur ? "#000000" : p.color
-      ctx.globalAlpha = isWhiteBlur ? (0.4 + norm * 0.3) : (0.7 + norm * 0.3)
+      ctx.globalAlpha = isWhiteBlur
+        ? 0.4 + norm * 0.4
+        : 0.7 + norm * 0.3
 
-      const pulse = 1 + norm * (p.type === "flower" ? 1.5 : 0.5)
+      const pulse = 1 + norm * (p.type === "flower" ? 1.8 : 0.8)
 
       if (p.type === "leaf") {
         ctx.beginPath()
@@ -796,7 +1080,13 @@ class MusicVisualizer {
         for (let j = 0; j < 5; j++) {
           ctx.rotate((Math.PI * 2) / 5)
           ctx.beginPath()
-          ctx.arc(p.size * 0.8 * pulse, 0, p.size * 0.5 * pulse, 0, Math.PI * 2)
+          ctx.arc(
+            p.size * 0.8 * pulse,
+            0,
+            p.size * 0.5 * pulse,
+            0,
+            Math.PI * 2,
+          )
           ctx.fill()
         }
         ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.5)" : "#fff"
@@ -814,40 +1104,43 @@ class MusicVisualizer {
   }
 
   _startHeartbeat() {
-    this._stopHeartbeat(false)
+    this._stopHeartbeat()
     this.bars.forEach((b) => (b.style.display = "none"))
 
-    if (!this.heartbeatCanvas) {
-      const canvas = document.createElement("canvas")
-      canvas.className = "heartbeat-canvas"
-      canvas.style.cssText =
-        "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
-      this.heartbeatCanvas = canvas
+    const canvas = document.createElement("canvas")
+    canvas.className = "heartbeat-canvas"
+    canvas.style.cssText =
+      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
+    this.heartbeatCanvas = canvas
 
-      if (this.container) {
-        this.container.appendChild(canvas)
-      }
+    if (this.container) {
+      this.container.appendChild(canvas)
     }
 
     this.updateDimensions()
     const W = this.cachedW || 276
-    const H = this.cachedH || 40
-    const currentBaseY = H / 2
 
-    // Pre-populate baseline if points array is empty or too short
-    if (!this.heartbeatPoints || this.heartbeatPoints.length < 5) {
-      this.heartbeatPoints = []
-      const step = 8
-      for (let x = -10; x <= W + 20; x += step) {
-        this.heartbeatPoints.push({ x, y: currentBaseY + (Math.random() - 0.5) * 1.5 })
-      }
+    // Pre-allocate history buffer for tracking camera
+    this._hbHistory = new Float32Array(800).fill(0)
+    this._hbDistance = 0
+    this._hbStepRemainder = 0
+    this._hbCardiacProgress = -1
+    this._hbCardiacAmp = 1.0
+    this._hbPulseTimer = 0
+    this._hbCamY = 0
+    this._hbEmbers = []
+    this._lastBassEnergy = 0
+    this._heartbeatNorm = 0.15
+    this._heartbeatSimTime = 0
+
+    // Seed resting baseline
+    for (let i = 0; i < Math.min(W, 300); i++) {
+      this._hbHistory[i] = (Math.random() - 0.5) * 0.8
     }
 
-    this._pulseTimer = 0
     this._lastTs = 0
     this._lastFrameTime = 0
     this._lastConfigCheck = performance.now()
-    this._baseYOffset = 0
 
     const loop = (ts) => {
       if (this.currentStyle !== "heartbeat" || !this.isPlaying) return
@@ -864,7 +1157,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -876,25 +1169,29 @@ class MusicVisualizer {
     this.heartbeatAnimId = requestAnimationFrame(loop)
   }
 
-  _stopHeartbeat(fullDestroy = false) {
+  _stopHeartbeat() {
     if (this.heartbeatAnimId) {
       cancelAnimationFrame(this.heartbeatAnimId)
       this.heartbeatAnimId = null
     }
-    if (fullDestroy) {
-      if (this.heartbeatCanvas) {
-        this.heartbeatCanvas.remove()
-        this.heartbeatCanvas = null
-      }
-      this.heartbeatPoints = []
+    if (this.heartbeatCanvas) {
+      this.heartbeatCanvas.remove()
+      this.heartbeatCanvas = null
     }
+    this._hbHistory = null
+    this._hbCardiacProgress = -1
+    this._hbEmbers = []
+    if (this.container) {
+      this.container.style.position = ""
+    }
+    this.bars.forEach((b) => (b.style.display = ""))
   }
 
   _heartbeatFrame(dt) {
     const canvas = this.heartbeatCanvas
     if (!canvas) return
-    const W = this.cachedW || 276
-    const H = this.cachedH || 40
+    const W = Math.max(120, Math.floor(this.cachedW || 276))
+    const H = Math.max(30, Math.floor(this.cachedH || 40))
 
     if (canvas.width !== W * 2 || canvas.height !== H * 2) {
       canvas.width = W * 2
@@ -918,19 +1215,37 @@ class MusicVisualizer {
     const bandsCount = this._realBands?.length || 0
     const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
 
+    if (this.container) {
+      this.container.classList.toggle("real-audio-active", isReactive && hasRealAudio)
+    }
+
     let targetNorm = 0.15
     const bpm = 128
     const beatPhase = (simTime * (bpm / 60)) % 1
     const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
 
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, treble = 0, bassEnergy = 0, instantKick = 0
+
     if (this.isPlaying) {
       if (isReactive) {
         if (hasRealAudio) {
-          const b0 = this._realBands[0] || 0
-          const b1 = this._realBands[1] || 0
-          targetNorm = Math.min(1.0, Math.pow((b0 + b1) / 2, 0.42) * 1.85)
+          b0 = this._realBands[0] || 0
+          b1 = this._realBands[1] || 0
+          b2 = this._realBands[2] || 0
+          b3 = this._realBands[3] || 0
+          treble =
+            this._realBands.slice(4).reduce((a, b) => a + b, 0) /
+            Math.max(1, bandsCount - 4)
+          bassEnergy = Math.max(b0, b1, (b0 + b1 + b2 * 0.5) / 2.5)
+          instantKick = Math.max(0, bassEnergy - (this._lastBassEnergy || 0.12))
+          this._lastBassEnergy =
+            (this._lastBassEnergy || 0.12) * 0.82 + bassEnergy * 0.18
+          targetNorm = Math.min(1.0, Math.pow(bassEnergy, 0.38) * 1.95)
         } else {
-          targetNorm = Math.max(0.1, kick * 1.15 + (Math.sin(simTime * 9.5) * 0.5 + 0.5) * 0.25)
+          targetNorm = Math.max(
+            0.1,
+            kick * 1.25 + (Math.sin(simTime * 9.5) * 0.5 + 0.5) * 0.3,
+          )
         }
       } else {
         targetNorm = 0.28 + Math.sin(simTime * 4.0) * 0.12
@@ -939,160 +1254,242 @@ class MusicVisualizer {
       targetNorm = 0
     }
 
-    const smoothing = targetNorm > (this._heartbeatNorm || 0) ? 0.8 : 0.35
+    const smoothing = targetNorm > (this._heartbeatNorm || 0) ? 0.85 : 0.32
     this._heartbeatNorm =
-      (this._heartbeatNorm || 0) + (targetNorm - (this._heartbeatNorm || 0)) * smoothing
+      (this._heartbeatNorm || 0) +
+      (targetNorm - (this._heartbeatNorm || 0)) * smoothing
     const norm = this._heartbeatNorm
 
-    this._baseYOffset += (Math.random() - 0.5) * 1.5
-    this._baseYOffset *= 0.96
-    const currentBaseY = H / 2 + this._baseYOffset
+    const currentBaseY = H / 2
+    const headX = Math.floor(W * 0.70) // Camera tracking focal point at 70% width
 
-    const scrollSpeed = (W / 1.35) * dt
+    // Forward speed of camera flight (pixels/second)
+    const speed = 100
+    const advance = speed * dt
+    this._hbDistance += advance
+    this._hbStepRemainder = (this._hbStepRemainder || 0) + advance
+    const numSteps = Math.floor(this._hbStepRemainder)
+    this._hbStepRemainder -= numSteps
 
-    if (!this.heartbeatPoints) this.heartbeatPoints = []
+    if (!this._hbHistory || this._hbHistory.length < W + 100) {
+      this._hbHistory = new Float32Array(Math.max(W + 100, 800)).fill(0)
+    }
 
-    const lastX =
-      this.heartbeatPoints.length > 0
-        ? this.heartbeatPoints[this.heartbeatPoints.length - 1].x
-        : W
+    // Step physics & record newly formed ECG wave at the head
+    const minInterval = hasRealAudio ? 0.20 : 0.32
+    for (let s = 0; s < numSteps; s++) {
+      this._hbPulseTimer = (this._hbPulseTimer || 0) + (1 / speed)
 
-    if (lastX < W + 20) {
-      this._pulseTimer = (this._pulseTimer || 0) + dt
-      const minInterval = 0.38
       const beatTriggered =
         this.isPlaying &&
-        this._pulseTimer >= minInterval &&
-        ((isReactive && !hasRealAudio && kick > 0.82) ||
-          (isReactive && hasRealAudio && norm > 0.52) ||
-          (!isReactive && this._pulseTimer >= 0.72) ||
-          this._pulseTimer >= 0.95)
+        this._hbCardiacProgress < 0 &&
+        this._hbPulseTimer >= minInterval &&
+        ((isReactive &&
+          hasRealAudio &&
+          (instantKick > 0.065 || bassEnergy > 0.26 || norm > 0.36)) ||
+          (isReactive && !hasRealAudio && kick > 0.78) ||
+          (!isReactive && this._hbPulseTimer >= 0.75) ||
+          this._hbPulseTimer >= 0.95)
 
       if (beatTriggered) {
-        this._pulseTimer = 0
-        const bx = W + 10
-        const amp = 0.9 + norm * 2.2
+        this._hbPulseTimer = 0
+        this._hbCardiacProgress = 0
+        this._hbCardiacAmp =
+          0.85 + norm * 2.8 + (hasRealAudio ? bassEnergy * 1.8 : kick * 1.4)
+        this._hbCardiacDuration = 26
+      }
 
-        // Standard medical P-QRS-T complex synced to music beat
-        this.heartbeatPoints.push({ x: bx, y: currentBaseY })
-        this.heartbeatPoints.push({ x: bx + 3, y: currentBaseY - 2.5 * amp }) // P wave
-        this.heartbeatPoints.push({ x: bx + 6, y: currentBaseY })
-        this.heartbeatPoints.push({ x: bx + 8, y: currentBaseY + 2.2 * amp }) // Q wave
-        this.heartbeatPoints.push({ x: bx + 12, y: currentBaseY - 22 * amp }) // R peak (sharp beat spike)
-        this.heartbeatPoints.push({ x: bx + 16, y: currentBaseY + 11 * amp }) // S wave
-        this.heartbeatPoints.push({ x: bx + 20, y: currentBaseY })
-        this.heartbeatPoints.push({ x: bx + 25, y: currentBaseY - 5.5 * amp }) // T wave
-        this.heartbeatPoints.push({ x: bx + 30, y: currentBaseY })
+      let currentSampleY = 0
+      if (this._hbCardiacProgress >= 0) {
+        const p = this._hbCardiacProgress / this._hbCardiacDuration
+        const amp = this._hbCardiacAmp || 1.0
+        if (p < 0.16) {
+          currentSampleY = -Math.sin((p / 0.16) * Math.PI) * 2.8 * amp // P wave
+        } else if (p < 0.28) {
+          currentSampleY = Math.sin(((p - 0.16) / 0.12) * Math.PI) * 3.0 * amp // Q dip
+        } else if (p < 0.48) {
+          currentSampleY = -Math.sin(((p - 0.28) / 0.20) * Math.PI) * 24.0 * amp // R peak spike
+        } else if (p < 0.64) {
+          currentSampleY = Math.sin(((p - 0.48) / 0.16) * Math.PI) * 12.0 * amp // S wave rebound
+        } else if (p < 0.92) {
+          currentSampleY = -Math.sin(((p - 0.64) / 0.28) * Math.PI) * 6.0 * amp // T wave
+        } else {
+          currentSampleY = 0
+        }
+        this._hbCardiacProgress++
+        if (this._hbCardiacProgress >= this._hbCardiacDuration) {
+          this._hbCardiacProgress = -1
+        }
       } else {
-        const noise = (Math.random() - 0.5) * (this.isPlaying ? 0.8 + norm * 2.5 : 0.3)
-        this.heartbeatPoints.push({ x: W + 10, y: currentBaseY + noise })
+        const audioVibration = hasRealAudio
+          ? Math.sin(simTime * 28 + this._hbDistance * 0.15) * (b2 + b3) * 3.5 +
+            (Math.random() - 0.5) * (treble * 3.8)
+          : (Math.random() - 0.5) * (this.isPlaying ? 0.6 + norm * 2.0 : 0.2)
+        currentSampleY = audioVibration
+      }
+
+      // Shift history backward (flow into past) and write new sample at head
+      this._hbHistory.copyWithin(1, 0, headX + 30)
+      this._hbHistory[0] = currentSampleY
+
+      // Spawn trailing cinematic ember particles from the moving spark head
+      if (this.isPlaying && Math.random() < 0.25 + norm * 0.35) {
+        if (!this._hbEmbers) this._hbEmbers = []
+        if (this._hbEmbers.length < 25) {
+          this._hbEmbers.push({
+            x: headX,
+            y: currentBaseY + currentSampleY,
+            vx: -(70 + Math.random() * 50),
+            vy: (Math.random() - 0.5) * 16,
+            life: 1.0,
+            size: 1.0 + Math.random() * 1.5,
+          })
+        }
       }
     }
+
+    // Dynamic Camera Spring Tracking (Camera pan & damping following cardiac spikes)
+    const targetCamY = (this._hbHistory[0] || 0) * 0.22
+    this._hbCamY = (this._hbCamY || 0) + (targetCamY - (this._hbCamY || 0)) * 0.16
+    const camOffsetY = this._hbCamY
 
     const isCpuSave = this._cpuSave !== false
 
-    // 1. Draw subtle ambient ECG baseline
+    // 1. Draw Infinite Scrolling Background Medical Grid (Hiệu ứng không gian trôi)
     ctx.save()
-    ctx.strokeStyle = isWhiteMode ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)"
+    ctx.strokeStyle = isWhiteMode
+      ? "rgba(0,0,0,0.08)"
+      : "rgba(255,255,255,0.08)"
     ctx.lineWidth = 0.8
+    const gridSpacing = 18
+    const gridOffset = (this._hbDistance || 0) % gridSpacing
+    for (let gx = -gridOffset; gx <= W; gx += gridSpacing) {
+      if (gx >= 0) {
+        ctx.beginPath()
+        ctx.moveTo(gx, 0)
+        ctx.lineTo(gx, H)
+        ctx.stroke()
+      }
+    }
+    // Horizontal center line
     ctx.beginPath()
-    ctx.moveTo(0, currentBaseY)
-    ctx.lineTo(W, currentBaseY)
+    ctx.moveTo(0, currentBaseY - camOffsetY)
+    ctx.lineTo(W, currentBaseY - camOffsetY)
     ctx.stroke()
     ctx.restore()
 
-    // 2. Draw ECG Signal Line with Glow & Fade-out at left edge
-    if (this.heartbeatPoints.length > 1) {
-      // Pass 1: Neon Glow Outline
+    // 2. Draw Forward Holographic Guide Beam (Phía trước đầu kim - Chưa biết trước)
+    ctx.save()
+    const guideGrad = ctx.createLinearGradient(headX, 0, W, 0)
+    guideGrad.addColorStop(0, accent)
+    guideGrad.addColorStop(0.35, "rgba(255,255,255,0.25)")
+    guideGrad.addColorStop(1, "transparent")
+    ctx.strokeStyle = guideGrad
+    ctx.lineWidth = 1.0
+    ctx.setLineDash([4, 4])
+    ctx.lineDashOffset = -(this._hbDistance * 0.8) % 8
+    ctx.beginPath()
+    ctx.moveTo(headX, currentBaseY - camOffsetY)
+    ctx.lineTo(W, currentBaseY - camOffsetY)
+    ctx.stroke()
+    ctx.restore()
+
+    // 3. Draw Formed ECG Waveform (Phía sau đầu kim - Đã hình thành theo nhịp beat)
+    const subPixelOffset = this._hbStepRemainder || 0
+    const drawECGWave = () => {
+      ctx.beginPath()
+      for (let x = 0; x <= headX; x++) {
+        const histIdx = headX - x
+        const sampleY = this._hbHistory[histIdx] || 0
+        const px = x - subPixelOffset
+        const py = currentBaseY + sampleY - camOffsetY
+        if (x === 0) {
+          ctx.moveTo(px, py)
+        } else {
+          ctx.lineTo(px, py)
+        }
+      }
+      ctx.stroke()
+    }
+
+    // Pass 1: Neon Glow Outline
+    ctx.save()
+    ctx.strokeStyle = accent
+    ctx.lineWidth = 2.2 + norm * 0.8
+    ctx.lineJoin = "round"
+    ctx.lineCap = "round"
+    ctx.shadowBlur = isWhiteMode ? 0 : isCpuSave ? 5 : 8 + norm * 14
+    ctx.shadowColor = accent
+    drawECGWave()
+    ctx.restore()
+
+    // Pass 2: Sharp Crisp White Core Line
+    if (!isWhiteMode) {
       ctx.save()
-      ctx.strokeStyle = accent
-      ctx.lineWidth = 2.2
+      ctx.strokeStyle = "rgba(255,255,255,0.92)"
+      ctx.lineWidth = 1.0 + norm * 0.6
       ctx.lineJoin = "round"
       ctx.lineCap = "round"
-      ctx.shadowBlur = isWhiteMode ? 0 : (isCpuSave ? 4 : 8 + norm * 6)
-      ctx.shadowColor = accent
+      drawECGWave()
+      ctx.restore()
+    }
 
-      for (let i = 0; i < this.heartbeatPoints.length - 1; i++) {
-        const p1 = this.heartbeatPoints[i]
-        const p2 = this.heartbeatPoints[i + 1]
-        p1.x -= scrollSpeed
-
-        // Fade out smoothly at left border
-        const fadeAlpha = p1.x < 30 ? Math.max(0, p1.x / 30) : 1.0
-        ctx.globalAlpha = fadeAlpha * 0.9
-
+    // 4. Update & Draw Trailing Cinematic Embers (Tia lửa phát quang trôi về phía sau)
+    if (this._hbEmbers && this._hbEmbers.length > 0) {
+      ctx.save()
+      ctx.fillStyle = isWhiteMode ? accent : "#ffffff"
+      for (let i = this._hbEmbers.length - 1; i >= 0; i--) {
+        const p = this._hbEmbers[i]
+        p.x += p.vx * dt
+        p.y += p.vy * dt
+        p.life -= dt * 1.8
+        if (p.life <= 0 || p.x < 0) {
+          this._hbEmbers.splice(i, 1)
+          continue
+        }
+        ctx.globalAlpha = p.life * 0.8
         ctx.beginPath()
-        ctx.moveTo(p1.x, p1.y)
-        ctx.lineTo(p2.x, p2.y)
-        ctx.stroke()
+        ctx.arc(p.x, p.y - camOffsetY, p.size, 0, Math.PI * 2)
+        ctx.fill()
       }
       ctx.restore()
-
-      // Pass 2: Sharp Crisp White Core Line
-      if (!isWhiteMode) {
-        ctx.save()
-        ctx.strokeStyle = "rgba(255,255,255,0.75)"
-        ctx.lineWidth = 0.9
-        ctx.lineJoin = "round"
-        for (let i = 0; i < this.heartbeatPoints.length - 1; i++) {
-          const p1 = this.heartbeatPoints[i]
-          const p2 = this.heartbeatPoints[i + 1]
-          const fadeAlpha = p1.x < 30 ? Math.max(0, p1.x / 30) : 1.0
-          ctx.globalAlpha = fadeAlpha * 0.85
-
-          ctx.beginPath()
-          ctx.moveTo(p1.x, p1.y)
-          ctx.lineTo(p2.x, p2.y)
-          ctx.stroke()
-        }
-        ctx.restore()
-      }
-
-      // Update position of last point
-      if (this.heartbeatPoints.length > 0) {
-        this.heartbeatPoints[this.heartbeatPoints.length - 1].x -= scrollSpeed
-      }
-
-      // 3. Glowing Tracer Spark Head (Điểm sáng dẫn đường phát quang)
-      const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
-      if (lastP && lastP.x <= W + 5) {
-        const sparkRadius = 1.8 + norm * 1.5
-        // Outer halo
-        ctx.save()
-        ctx.shadowColor = accent
-        ctx.shadowBlur = isWhiteMode ? 0 : 8 + norm * 8
-        const haloGrad = ctx.createRadialGradient(
-          lastP.x,
-          lastP.y,
-          0,
-          lastP.x,
-          lastP.y,
-          sparkRadius * 2.8,
-        )
-        haloGrad.addColorStop(
-          0,
-          isWhiteMode ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.85)",
-        )
-        haloGrad.addColorStop(0.4, accent)
-        haloGrad.addColorStop(1, "transparent")
-        ctx.fillStyle = haloGrad
-        ctx.globalAlpha = 0.85
-        ctx.beginPath()
-        ctx.arc(lastP.x, lastP.y, sparkRadius * 2.8, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.restore()
-
-        // White core dot
-        ctx.beginPath()
-        ctx.fillStyle = isWhiteMode ? "#000000" : "#ffffff"
-        ctx.arc(lastP.x, lastP.y, sparkRadius, 0, Math.PI * 2)
-        ctx.fill()
-      }
     }
 
-    if (this.heartbeatPoints.length > 0 && this.heartbeatPoints[0].x < -50) {
-      this.heartbeatPoints.shift()
-    }
+    // 5. Glowing Tracer Spark Head (Điểm sáng dẫn đường camera tracking)
+    const headY = currentBaseY + (this._hbHistory[0] || 0) - camOffsetY
+    const sparkRadius = 2.2 + norm * 3.4
+
+    ctx.save()
+    ctx.shadowColor = accent
+    ctx.shadowBlur = isWhiteMode ? 0 : 9 + norm * 18
+    const haloGrad = ctx.createRadialGradient(
+      headX,
+      headY,
+      0,
+      headX,
+      headY,
+      sparkRadius * 2.8,
+    )
+    haloGrad.addColorStop(
+      0,
+      isWhiteMode ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.95)",
+    )
+    haloGrad.addColorStop(0.4, accent)
+    haloGrad.addColorStop(1, "transparent")
+    ctx.fillStyle = haloGrad
+    ctx.globalAlpha = 0.95
+    ctx.beginPath()
+    ctx.arc(headX, headY, sparkRadius * 2.8, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.restore()
+
+    // White core spark dot
+    ctx.save()
+    ctx.beginPath()
+    ctx.fillStyle = isWhiteMode ? "#000000" : "#ffffff"
+    ctx.arc(headX, headY, sparkRadius, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.restore()
 
     ctx.restore()
   }
@@ -1118,6 +1515,7 @@ class MusicVisualizer {
   // ── Pixel canvas ─────────────────────────────────────────────────────────
 
   _startPixel() {
+    this._stopPixel()
     this.bars.forEach((b) => {
       b.style.display = "none"
     })
@@ -1152,7 +1550,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -1172,6 +1570,9 @@ class MusicVisualizer {
     if (this.pixelCanvas) {
       this.pixelCanvas.remove()
       this.pixelCanvas = null
+    }
+    if (this.container) {
+      this.container.style.position = ""
     }
     this.bars.forEach((b) => {
       b.style.display = ""
@@ -1290,6 +1691,7 @@ class MusicVisualizer {
   // ── Moon 8 canvas ────────────────────────────────────────────────────────
 
   _startMoon8() {
+    this._stopMoon8()
     this.bars.forEach((b) => {
       b.style.display = "none"
     })
@@ -1333,7 +1735,7 @@ class MusicVisualizer {
       if (isCpuSave && elapsed < 33) return
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
-      if (ts - this._lastConfigCheck > 1000) {
+      if (ts - this._lastConfigCheck > 200) {
         this._lastConfigCheck = ts
         this.updateDimensions()
       }
@@ -1354,6 +1756,10 @@ class MusicVisualizer {
       this.moonCanvas.remove()
       this.moonCanvas = null
     }
+    if (this.container) {
+      this.container.style.position = ""
+      this.container.style.overflow = ""
+    }
     this.bars.forEach((b) => {
       b.style.display = ""
     })
@@ -1361,10 +1767,11 @@ class MusicVisualizer {
 
   _moon8Frame(dt) {
     const canvas = this.moonCanvas
-    const CW = this.cachedW
-    const CH = this.cachedH
+    if (!canvas) return
+    const CW = this.cachedW || this.container?.offsetWidth || 276
+    const CH = this.cachedH || this.container?.offsetHeight || 60
 
-    if (canvas.width !== CW * 3) {
+    if (canvas.width !== CW * 3 || canvas.height !== CH * 3) {
       canvas.width = CW * 3
       canvas.height = CH * 3
     }
@@ -1842,7 +2249,15 @@ class MusicVisualizer {
   }
 
   setAudioReactive(enabled) {
-    if (this.isPlaying) {
+    if (
+      this.isPlaying &&
+      this.currentStyle !== "pixel" &&
+      this.currentStyle !== "moon8" &&
+      this.currentStyle !== "heartbeat" &&
+      this.currentStyle !== "forest" &&
+      this.currentStyle !== "beach" &&
+      this.currentStyle !== "orbit"
+    ) {
       this._startCSSLoop()
     }
   }
@@ -1932,11 +2347,28 @@ class MusicVisualizer {
           (targetNorm - this._currentScales[index]) * smoothing
 
         const curVal = this._currentScales[index]
-        const heightPx = Math.max(5, Math.round(5 + curVal * 38))
-
-        bar.style.setProperty("height", `${heightPx}px`, "important")
-        bar.style.setProperty("animation", "none", "important")
-        bar.style.setProperty("transition", "none", "important")
+        if (this.currentStyle === "overlap") {
+          const translateY = Math.round(5 - curVal * 9)
+          const scaleY = (0.55 + curVal * 0.85).toFixed(2)
+          const brightness = (0.86 + curVal * 0.38).toFixed(2)
+          bar.style.setProperty(
+            "transform",
+            `translateY(${translateY}px) scaleY(${scaleY})`,
+            "important",
+          )
+          bar.style.setProperty(
+            "filter",
+            `brightness(${brightness})`,
+            "important",
+          )
+          bar.style.setProperty("animation", "none", "important")
+          bar.style.setProperty("transition", "none", "important")
+        } else {
+          const heightPx = Math.max(5, Math.round(5 + curVal * 38))
+          bar.style.setProperty("height", `${heightPx}px`, "important")
+          bar.style.setProperty("animation", "none", "important")
+          bar.style.setProperty("transition", "none", "important")
+        }
       })
     }
 
@@ -1961,6 +2393,8 @@ class MusicVisualizer {
     this._currentScales = []
     this.bars.forEach((bar) => {
       bar.style.removeProperty("height")
+      bar.style.removeProperty("transform")
+      bar.style.removeProperty("filter")
       bar.style.removeProperty("animation")
       bar.style.removeProperty("transition")
       bar.classList.remove("playing")
@@ -1968,14 +2402,27 @@ class MusicVisualizer {
   }
 
   start() {
+    if (
+      this.isPlaying &&
+      (this.heartbeatAnimId ||
+        this.orbitAnimId ||
+        this.forestAnimId ||
+        this.beachAnimId ||
+        this.moonAnimId ||
+        this.pixelAnimId ||
+        this._cssAnimId)
+    ) {
+      return
+    }
     this.isPlaying = true
     this._lastTs = 0
     this._lastFrameTime = 0
+    const isReactive = getSettings().musicRealAudioReactive === true
     if (this.currentStyle === "pixel") this._startPixel()
     else if (this.currentStyle === "moon8") this._startMoon8()
     else if (this.currentStyle === "heartbeat") this._startHeartbeat()
-    else if (this.currentStyle === "forest") this._startForest()
     else if (this.currentStyle === "orbit") this._startOrbit()
+    else if (this.currentStyle === "forest") this._startForest()
     else if (this.currentStyle === "beach") this._startBeach()
     else this._startCSSLoop()
   }
@@ -1983,30 +2430,26 @@ class MusicVisualizer {
   stop() {
     this.isPlaying = false
     this._realBands = null
-    this._stopCSSLoop()
-    this._stopMoon8(false)
-    this._stopHeartbeat(false)
-    this._stopForest(false)
-    this._stopOrbit(false)
-    this._stopBeach(false)
-    this._stopPixel(false)
+    this._stopAll()
   }
 
   destroy() {
     window.removeEventListener("resize", this._resizeListener)
     document.removeEventListener("visibilitychange", this._visibilityListener)
+    if (this._dimTimeouts) {
+      this._dimTimeouts.forEach((t) => clearTimeout(t))
+      this._dimTimeouts = []
+    }
+    if (this._resizeTimeout) {
+      clearTimeout(this._resizeTimeout)
+    }
     if (this._audioChannel) {
       try {
         this._audioChannel.close()
       } catch (e) {}
       this._audioChannel = null
     }
-    this._stopPixel(true)
-    this._stopMoon8(true)
-    this._stopHeartbeat(true)
-    this._stopForest(true)
-    this._stopOrbit(true)
-    this._stopBeach(true)
+    this._stopAll()
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container)
     }
