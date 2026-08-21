@@ -3183,68 +3183,15 @@ body.widgets-m3-accent
 }
 
 .music-style-beach .music-visualizer {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  position: relative;
-  z-index: 2;
-}
-
-.music-style-beach .visualizer-bar {
-  width: 4px;
-  border-radius: 2px;
-  animation: beachWave 2s ease-in-out infinite;
-}
-
-.music-style-beach .visualizer-bar:nth-child(1) {
-  background: #eeddbb;
-  box-shadow: 0 0 8px #eeddbb;
-  animation-delay: 0.1s;
-}
-.music-style-beach .visualizer-bar:nth-child(2) {
-  background: #ffcc00;
-  box-shadow: 0 0 8px #ffcc00;
-  animation-delay: 0.4s;
-}
-.music-style-beach .visualizer-bar:nth-child(3) {
-  background: #f0f8ff;
-  box-shadow: 0 0 8px #f0f8ff;
-  animation-delay: 0.8s;
-}
-.music-style-beach .visualizer-bar:nth-child(4) {
-  background: #40e0d0;
-  box-shadow: 0 0 8px #40e0d0;
-  animation-delay: 1.2s;
-}
-.music-style-beach .visualizer-bar:nth-child(5) {
-  background: #0077be;
-  box-shadow: 0 0 8px #0077be;
-  animation-delay: 2.1s;
-}
-.music-style-beach .visualizer-bar:nth-child(6) {
-  background: #40e0d0;
-  box-shadow: 0 0 8px #40e0d0;
-  animation-delay: 0.8s;
-}
-.music-style-beach .visualizer-bar:nth-child(7) {
-  background: #f0f8ff;
-  box-shadow: 0 0 8px #f0f8ff;
-  animation-delay: 0.4s;
-}
-.music-style-beach .visualizer-bar:nth-child(8) {
-  background: #eeddbb;
-  box-shadow: 0 0 8px #eeddbb;
-  animation-delay: 0.1s;
-}
-
-@keyframes beachWave {
-  0%,
-  100% {
-    height: 6px;
-  }
-  50% {
-    height: 30px;
-  }
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
 }
 
 /* =========================================
@@ -3988,36 +3935,6 @@ body.widgets-m3-accent
   text-shadow: 0 0 10px rgba(129, 199, 132, 0.5);
 }
 
-.music-style-forest .play-pause-btn {
-  color: #a5d6a7;
-}
-
-.music-style-forest .progress-bar-track {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.music-style-forest .progress-bar-fill {
-  background: linear-gradient(90deg, #4caf50, #81c784);
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
-
-.music-style-forest .music-visualizer {
-  display: block;
-  flex: 1;
-  width: 140px;
-  height: 45px;
-  position: relative;
-  z-index: 2;
-}
-
-/* S?a l?i Visualizer che m?t n�t di?u khi?n */
-.music-style-beach .music-player-wrapper,
-.music-style-forest .music-player-wrapper {
-  position: relative;
-  overflow: hidden;
-}
-
-.music-style-beach .music-visualizer,
 .music-style-forest .music-visualizer {
   position: absolute !important;
   top: 0 !important;
@@ -4028,6 +3945,12 @@ body.widgets-m3-accent
   margin: 0 !important;
   padding: 0 !important;
   pointer-events: none !important;
+}
+
+.music-style-beach .music-player-wrapper,
+.music-style-forest .music-player-wrapper {
+  position: relative;
+  overflow: hidden;
 }
 
 .music-style-beach .music-disc-container,
@@ -5723,22 +5646,33 @@ body.widgets-m3-accent
   padding-bottom: 20px;
 }
 
-/* Hide the blur background on square-thumb skins so context menu background is visible */
-.music-player-container.music-style-square-thumb .music-bg-blur {
+/* Hide the blur background on square-thumb skins unless Thumbnail Background is active */
+.music-player-container.music-style-square-thumb:not(.skin-thumbnail-bg) .music-bg-blur {
   display: none !important;
 }
 
-/* Context menu match logic removed because user prefers independent music player background */
-
-/* --- Thumbnail Background Skin --- */
+/* --- High-Fidelity Glassmorphism Thumbnail Background Skin --- */
 .music-player-container.skin-thumbnail-bg {
   background: transparent !important;
 }
+
 .music-player-wrapper.skin-thumbnail-bg {
-  background: rgba(0, 0, 0, 0.4) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(12, 14, 20, 0.62) 0%,
+    rgba(20, 24, 34, 0.45) 50%,
+    rgba(8, 10, 16, 0.72) 100%
+  ) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
   overflow: hidden !important;
 }
+
 .music-player-container.skin-thumbnail-bg .music-bg-blur,
 .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
   display: block !important;
@@ -5750,15 +5684,131 @@ body.widgets-m3-accent
   z-index: -1;
   background-size: cover;
   background-position: center;
-  filter: blur(25px) saturate(150%) brightness(0.5);
-  transform: scale(1.2);
-  opacity: 0.8;
+  filter: blur(28px) saturate(190%) brightness(0.65) contrast(105%);
+  transform: scale(1.25);
+  opacity: 0.92;
   pointer-events: none;
   border-radius: inherit;
+  transition: background-image 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
 }
+
+/* Enhanced typography & contrast in Thumbnail Background mode */
+.music-player-wrapper.skin-thumbnail-bg #music-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+.music-player-wrapper.skin-thumbnail-bg #artist-text {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.music-player-wrapper.skin-thumbnail-bg .progress-time {
+  color: rgba(255, 255, 255, 0.75) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.music-player-wrapper.skin-thumbnail-bg .progress-bar-track {
+  background: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.music-player-wrapper.skin-thumbnail-bg .control-btn {
+  color: rgba(255, 255, 255, 0.9) !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.music-player-wrapper.skin-thumbnail-bg .vinyl-disc,
+.music-player-wrapper.skin-thumbnail-bg .disc-container {
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.65));
+}
+
 /* For styles that apply skin class to wrapper */
 .music-player-wrapper.skin-thumbnail-bg::before {
   display: none !important;
+}
+
+/* Support Thumbnail Background for Square Thumb style */
+.music-player-container.music-style-square-thumb.skin-thumbnail-bg .music-bg-blur,
+.music-player-container.music-style-square-thumb .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  display: block !important;
+}
+
+.music-style-square-thumb .music-player-wrapper.skin-thumbnail-bg {
+  border-radius: 20px !important;
+}
+
+/* Fix Orbit Circle style clipping and wave visibility in Thumbnail Background */
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg {
+  overflow: visible !important;
+  border-radius: 50% !important;
+}
+
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg::before,
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg::after {
+  display: block !important;
+  border-radius: 50% !important;
+}
+
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  clip-path: circle(50% at 50% 50%) !important;
+  border-radius: 50% !important;
+  opacity: 0.95 !important;
+  z-index: 0 !important;
+}
+
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
+.music-style-orbit.skin-thumbnail-bg .music-visualizer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  z-index: 5 !important;
+}
+
+.music-style-orbit .music-player-wrapper.skin-thumbnail-bg .orbit-wave-canvas {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 5 !important;
+}
+
+/* Fix Moon8 / Infinity visualizer in Thumbnail Background */
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg {
+  overflow: visible !important;
+}
+
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  clip-path: inset(0 round inherit);
+  z-index: 0 !important;
+}
+
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-visualizer {
+  display: block !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+}
+
+/* Fix Beach, Forest, and Heartbeat visualizers in Thumbnail Background */
+.music-style-beach .music-player-wrapper.skin-thumbnail-bg,
+.music-style-forest .music-player-wrapper.skin-thumbnail-bg,
+.music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg {
+  overflow: visible !important;
+}
+
+.music-style-beach .music-player-wrapper.skin-thumbnail-bg .music-bg-blur,
+.music-style-forest .music-player-wrapper.skin-thumbnail-bg .music-bg-blur,
+.music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  clip-path: inset(0 round inherit);
+  z-index: 0 !important;
+}
+
+.music-style-beach .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
+.music-style-forest .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
+.music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg .music-visualizer {
+  display: block !important;
+  z-index: 5 !important;
+  overflow: visible !important;
 }
 
 /* Fix overlap style cutting off the top card in skin-thumbnail-bg */

@@ -1694,13 +1694,34 @@ export function showContextMenu(
       itemsToInsert.push(shakeBtn)
 
       // Color Mode (Cycle)
-      const colorModes = [true, false, "thumbnail"]
-      const currentColorMode = settings.musicPlayerUseDefaultColor === undefined ? true : settings.musicPlayerUseDefaultColor
-      const nextColorMode = colorModes[(colorModes.indexOf(currentColorMode) + 1) % colorModes.length]
-      
-      let colorModeLabel = i18n.music_player_color_brand || "Mặc định của Giao diện"
-      if (currentColorMode === false) colorModeLabel = i18n.music_player_color_global || "Màu chủ đề chung"
-      else if (currentColorMode === "thumbnail") colorModeLabel = i18n.music_player_color_thumb || "Màu theo Thumbnail"
+      const colorModes = [
+        true,
+        false,
+        "thumbnail",
+        "thumbnail-dynamic",
+        "rgb-flow",
+      ]
+      const currentColorMode =
+        settings.musicPlayerUseDefaultColor === undefined
+          ? true
+          : settings.musicPlayerUseDefaultColor
+      const nextColorMode =
+        colorModes[
+          (colorModes.indexOf(currentColorMode) + 1) % colorModes.length
+        ]
+
+      let colorModeLabel =
+        i18n.music_player_color_brand || "Mặc định của Giao diện"
+      if (currentColorMode === false)
+        colorModeLabel = i18n.music_player_color_global || "Màu chủ đề chung"
+      else if (currentColorMode === "thumbnail")
+        colorModeLabel = i18n.music_player_color_thumb || "Màu theo Thumbnail"
+      else if (currentColorMode === "thumbnail-dynamic")
+        colorModeLabel =
+          i18n.music_player_color_thumb_dynamic || "Chuyển màu theo Thumbnail"
+      else if (currentColorMode === "rgb-flow")
+        colorModeLabel =
+          i18n.music_player_color_rgb_flow || "Chuyển màu RGB Rainbow"
 
       const defaultColorBtn = document.createElement("div")
       defaultColorBtn.className = "context-menu-item custom-music-item"
@@ -1760,6 +1781,22 @@ export function showContextMenu(
         hideContextMenu()
       }
       itemsToInsert.push(sourceIconBtn)
+
+      // Real-time Audio Reactive Toggler ("Sóng nhạc Real-time")
+      const isReactive = settings.musicRealAudioReactive === true
+      const audioReactiveBtn = document.createElement("div")
+      audioReactiveBtn.className = "context-menu-item custom-music-item"
+      audioReactiveBtn.innerHTML = `<i class="fa-solid ${isReactive ? "fa-bolt-lightning" : "fa-wave-square"}"></i> <span>${isReactive ? i18n.music_real_audio_reactive_on || "Sóng nhạc Real-time: Bật" : i18n.music_real_audio_reactive_off || "Sóng nhạc Real-time: Tắt"}</span>`
+      audioReactiveBtn.onclick = () => {
+        const newVal = !isReactive
+        window.dispatchEvent(
+          new CustomEvent("toggleMusicRealAudioReactive", {
+            detail: { value: newVal },
+          }),
+        )
+        hideContextMenu()
+      }
+      itemsToInsert.push(audioReactiveBtn)
 
       // CPU Saving Mode Toggler ("Chế độ sóng nhạc: Tiết kiệm CPU / Mặc định")
       const isCpuSave = settings.musicVisualizerCpuSave !== false

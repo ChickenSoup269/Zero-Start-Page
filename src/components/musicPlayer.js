@@ -256,6 +256,9 @@ export class MusicPlayer {
     if (enabled) {
       if (wrapper) wrapper.classList.add("skin-thumbnail-bg")
       this.container.classList.add("skin-thumbnail-bg")
+      if (this.bgBlur && this.currentThumbnail) {
+        this.bgBlur.style.backgroundImage = `url("${this.currentThumbnail}")`
+      }
     } else {
       if (wrapper) wrapper.classList.remove("skin-thumbnail-bg")
       this.container.classList.remove("skin-thumbnail-bg")
@@ -398,14 +401,21 @@ export class MusicPlayer {
     // Determine accent color
     this.container.style.removeProperty("--music-player-bg")
     this.container.classList.remove("thumbnail-color-mode")
-    if (this.useDefaultColor === "thumbnail") {
+    if (
+      this.useDefaultColor === "thumbnail" ||
+      this.useDefaultColor === "thumbnail-dynamic"
+    ) {
       if (this.currentThumbnail) {
         this.applyThumbnailColor(this.currentThumbnail)
       } else {
+        this._stopDynamicColorLoop()
         this.container.style.removeProperty("--accent-color")
         this.container.style.removeProperty("--accent-color-rgb")
       }
+    } else if (this.useDefaultColor === "rgb-flow") {
+      this._startRgbFlowLoop()
     } else if (this.useDefaultColor === true) {
+      this._stopDynamicColorLoop()
       let accentColor = ""
       switch (styleName) {
         case "spotify":
@@ -441,6 +451,9 @@ export class MusicPlayer {
         case "forest":
           accentColor = "#4caf50"
           break
+        case "beach":
+          accentColor = "#b3e5fc"
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }
@@ -475,47 +488,376 @@ export class MusicPlayer {
       this.container.style.removeProperty("--accent-color-rgb")
     }
 
-    // Update visualizer style
+    this.applySkin()
+
+    // Update visualizer style after classes and styling are applied
     if (this.visualizer) {
       this.visualizer.setStyle(this.currentStyle)
     }
-
-    this.applySkin()
   }
 
-  applyThumbnailColor(url) {
+  _rgbToHsl(r, g, b) {
+    r /= 255
+    g /= 255
+    b /= 255
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b)
+    let h = 0,
+      s = 0,
+      l = (max + min) / 2
+    if (max !== min) {
+      const d = max - min
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+      switch (max) {
+        case r:
+          h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+          break
+        case g:
+          h = ((b - r) / d + 2) / 6
+          break
+        case b:
+          h = ((r - g) / d + 4) / 6
+          break
+      }
+    }
+    return [h, s, l]
+  }
+
+  _hslToRgb(h, s, l) {
+    let r, g, b
+    if (s === 0) {
+      r = g = b = l
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1
+        if (t > 1) t -= 1
+        if (t < 1 / 6) return p + (q - p) * 6 * t
+        if (t < 1 / 2) return q
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+        return p
+      }
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s
+      const p = 2 * l - q
+      r = hue2rgb(p, q, h + 1 / 3)
+      g = hue2rgb(p, q, h)
+      b = hue2rgb(p, q, h - 1 / 3)
+    }
+    return [
+      Math.round(r * 255),
+      Math.round(g * 255),
+      Math.round(b * 255),
+    ]
+  }
+
+  _stopDynamicColorLoop() {
+    if (this._dynamicColorAnimId) {
+      cancelAnimationFrame(this._dynamicColorAnimId)
+      this._dynamicColorAnimId = null
+    }
+  }
+
+  _startRgbFlowLoop() {
+    this._stopDynamicColorLoop()
+    let lastTs = performance.now()
+    let currentHue = 0
+
+    const loop = (ts) => {
+      if (
+        this._destroyed ||
+        this.useDefaultColor !== "rgb-flow" ||
+        !this.container
+      ) {
+        this._dynamicColorAnimId = null
+        return
+      }
+
+      const dt = Math.min((ts - lastTs) / 1000, 0.1)
+      lastTs = ts
+
+      // Smooth full 360° rainbow hue cycle every 7 seconds
+      currentHue = (currentHue + dt * 52) % 360
+
+      const [r, g, b] = this._hslToRgb(currentHue / 360, 0.96, 0.54)
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+      const contrastColor = luminance > 0.55 ? "#0a0e17" : "#ffffff"
+
+      this.container.style.setProperty(
+        "--accent-color",
+        `rgb(${r}, ${g}, ${b})`,
+      )
+      this.container.style.setProperty(
+        "--accent-color-rgb",
+        `${r}, ${g}, ${b}`,
+      )
+      this.container.style.setProperty(
+        "--accent-contrast-color",
+        contrastColor,
+      )
+      this.container.style.setProperty(
+        "--music-player-bg",
+        `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.45) 0%, rgba(${r}, ${g}, ${b}, 0.15) 100%)`,
+      )
+      this.container.classList.add("thumbnail-color-mode")
+
+      if (this.visualizer) {
+        this.visualizer.cachedAccent = `rgb(${r}, ${g}, ${b})`
+      }
+
+      this._dynamicColorAnimId = requestAnimationFrame(loop)
+    }
+
+    this._dynamicColorAnimId = requestAnimationFrame(loop)
+  }
+
+  _startDynamicColorLoop() {
+    this._stopDynamicColorLoop()
+    if (!this._thumbnailPalette || this._thumbnailPalette.length < 2) return
+
+    let lastTs = performance.now()
+    let morphProgress = 0
+    let fromIdx = 0
+
+    const morphDuration = 3.2 // Seconds per color transition
+
+    const loop = (ts) => {
+      if (
+        this._destroyed ||
+        this.useDefaultColor !== "thumbnail-dynamic" ||
+        !this.container
+      ) {
+        this._dynamicColorAnimId = null
+        return
+      }
+
+      const dt = Math.min((ts - lastTs) / 1000, 0.1)
+      lastTs = ts
+
+      morphProgress += dt / morphDuration
+      if (morphProgress >= 1.0) {
+        morphProgress = 0
+        fromIdx = (fromIdx + 1) % this._thumbnailPalette.length
+      }
+
+      const toIdx = (fromIdx + 1) % this._thumbnailPalette.length
+      const c1 = this._thumbnailPalette[fromIdx]
+      const c2 = this._thumbnailPalette[toIdx]
+
+      // Smooth cosine easing
+      const ease = 0.5 - 0.5 * Math.cos(morphProgress * Math.PI)
+
+      const curR = Math.round(c1.r + (c2.r - c1.r) * ease)
+      const curG = Math.round(c1.g + (c2.g - c1.g) * ease)
+      const curB = Math.round(c1.b + (c2.b - c1.b) * ease)
+
+      const luminance = (0.299 * curR + 0.587 * curG + 0.114 * curB) / 255
+      const contrastColor = luminance > 0.55 ? "#0a0e17" : "#ffffff"
+
+      this.container.style.setProperty(
+        "--accent-color",
+        `rgb(${curR}, ${curG}, ${curB})`,
+      )
+      this.container.style.setProperty(
+        "--accent-color-rgb",
+        `${curR}, ${curG}, ${curB}`,
+      )
+      this.container.style.setProperty(
+        "--accent-contrast-color",
+        contrastColor,
+      )
+      this.container.style.setProperty(
+        "--music-player-bg",
+        `linear-gradient(135deg, rgba(${curR}, ${curG}, ${curB}, 0.45) 0%, rgba(${curR}, ${curG}, ${curB}, 0.15) 100%)`,
+      )
+      this.container.classList.add("thumbnail-color-mode")
+
+      if (this.visualizer) {
+        this.visualizer.cachedAccent = `rgb(${curR}, ${curG}, ${curB})`
+      }
+
+      this._dynamicColorAnimId = requestAnimationFrame(loop)
+    }
+
+    this._dynamicColorAnimId = requestAnimationFrame(loop)
+  }
+
+  async applyThumbnailColor(url) {
     if (!url || !this.container) return
+
+    const parsePixels = (data) => {
+      if (!data || data.length === 0) return
+
+      // 16 Hue sectors (22.5° each) for distinct color detection
+      const sectors = new Array(16).fill(0).map(() => ({
+        count: 0,
+        totalWeight: 0,
+        r: 0,
+        g: 0,
+        b: 0,
+      }))
+      let fallbackR = 0,
+        fallbackG = 0,
+        fallbackB = 0,
+        fallbackCount = 0
+
+      for (let i = 0; i < data.length; i += 4) {
+        const a = data[i + 3]
+        if (a < 128) continue
+        const pr = data[i],
+          pg = data[i + 1],
+          pb = data[i + 2]
+        fallbackR += pr
+        fallbackG += pg
+        fallbackB += pb
+        fallbackCount++
+
+        const [h, s, l] = this._rgbToHsl(pr, pg, pb)
+        if (l < 0.08 || l > 0.94) continue
+        if (s < 0.14) continue
+
+        const sectorIdx = Math.min(15, Math.floor(h * 16))
+        const weight = Math.pow(s, 1.5) * (1 - Math.abs(l - 0.55) * 1.3)
+        const sec = sectors[sectorIdx]
+        sec.count++
+        sec.totalWeight += weight
+        sec.r += pr * weight
+        sec.g += pg * weight
+        sec.b += pb * weight
+      }
+
+      // Sort sectors by total vibrancy weight
+      const validSectors = sectors
+        .map((sec, idx) => {
+          if (sec.totalWeight <= 0) return null
+          return {
+            sectorIdx: idx,
+            hCenter: (idx + 0.5) / 16,
+            score: sec.totalWeight,
+            r: sec.r / sec.totalWeight,
+            g: sec.g / sec.totalWeight,
+            b: sec.b / sec.totalWeight,
+          }
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.score - a.score)
+
+      const palette = []
+      for (const vs of validSectors) {
+        let [h, s, l] = this._rgbToHsl(vs.r, vs.g, vs.b)
+        // Ensure hue distance of at least 40° between palette entries
+        const isFar = palette.every((p) => {
+          const diff = Math.abs(p.h - h)
+          return Math.min(diff, 1 - diff) >= 0.075
+        })
+        if (isFar || palette.length === 0) {
+          // Boost saturation & lightness for high-voltage vivid aesthetic
+          s = Math.min(1.0, Math.max(0.78, s * 1.4))
+          l = Math.min(0.68, Math.max(0.5, l * 1.1))
+          const [finalR, finalG, finalB] = this._hslToRgb(h, s, l)
+          palette.push({ r: finalR, g: finalG, b: finalB, h, s, l })
+          if (palette.length >= 6) break
+        }
+      }
+
+      // Generate harmonious palette if artwork is monochromatic
+      if (palette.length === 1) {
+        const base = palette[0]
+        const h2 = (base.h + 0.14) % 1
+        const [r2, g2, b2] = this._hslToRgb(h2, base.s, base.l)
+        palette.push({ r: r2, g: g2, b: b2, h: h2, s: base.s, l: base.l })
+
+        const h3 = (base.h + 0.3) % 1
+        const [r3, g3, b3] = this._hslToRgb(h3, base.s, base.l)
+        palette.push({ r: r3, g: g3, b: b3, h: h3, s: base.s, l: base.l })
+      } else if (palette.length === 0 && fallbackCount > 0) {
+        let [h, s, l] = this._rgbToHsl(
+          fallbackR / fallbackCount,
+          fallbackG / fallbackCount,
+          fallbackB / fallbackCount,
+        )
+        s = Math.min(1.0, Math.max(0.7, s * 1.5))
+        l = Math.min(0.68, Math.max(0.5, l))
+        const [finalR, finalG, finalB] = this._hslToRgb(h, s, l)
+        palette.push({ r: finalR, g: finalG, b: finalB, h, s, l })
+        const h2 = (h + 0.18) % 1
+        const [r2, g2, b2] = this._hslToRgb(h2, s, l)
+        palette.push({ r: r2, g: g2, b: b2, h: h2, s, l })
+      }
+
+      this._thumbnailPalette = palette
+
+      if (this.useDefaultColor === "thumbnail-dynamic") {
+        this._startDynamicColorLoop()
+      } else if (this.useDefaultColor === "thumbnail") {
+        this._stopDynamicColorLoop()
+        if (palette.length > 0) {
+          const dominant = palette[0]
+          const finalR = dominant.r,
+            finalG = dominant.g,
+            finalB = dominant.b
+          const luminance =
+            (0.299 * finalR + 0.587 * finalG + 0.114 * finalB) / 255
+          const contrastColor = luminance > 0.55 ? "#0a0e17" : "#ffffff"
+
+          this.container.style.setProperty(
+            "--accent-color",
+            `rgb(${finalR}, ${finalG}, ${finalB})`,
+          )
+          this.container.style.setProperty(
+            "--accent-color-rgb",
+            `${finalR}, ${finalG}, ${finalB}`,
+          )
+          this.container.style.setProperty(
+            "--accent-contrast-color",
+            contrastColor,
+          )
+          this.container.style.setProperty(
+            "--music-player-bg",
+            `linear-gradient(135deg, rgba(${finalR}, ${finalG}, ${finalB}, 0.45) 0%, rgba(${finalR}, ${finalG}, ${finalB}, 0.15) 100%)`,
+          )
+          this.container.classList.add("thumbnail-color-mode")
+
+          if (this.visualizer) {
+            this.visualizer.cachedAccent = `rgb(${finalR}, ${finalG}, ${finalB})`
+            this.visualizer.updateDimensions()
+          }
+        }
+      }
+    }
+
+    // Try fetch with blob first to completely bypass CORS SecurityError in extension
+    try {
+      const res = await fetch(url)
+      if (res.ok) {
+        const blob = await res.blob()
+        const bitmap = await createImageBitmap(blob)
+        const canvas = document.createElement("canvas")
+        const size = 64
+        canvas.width = size
+        canvas.height = size
+        const ctx = canvas.getContext("2d", { willReadFrequently: true })
+        ctx.drawImage(bitmap, 0, 0, size, size)
+        const data = ctx.getImageData(0, 0, size, size).data
+        parsePixels(data)
+        return
+      }
+    } catch (e) {
+      // Fall back to Image element
+    }
+
     const img = new Image()
     img.crossOrigin = "Anonymous"
     img.onload = () => {
-      const canvas = document.createElement("canvas")
-      canvas.width = 50
-      canvas.height = 50
-      const ctx = canvas.getContext("2d")
-      ctx.drawImage(img, 0, 0, 50, 50)
       try {
-        const data = ctx.getImageData(0, 0, 50, 50).data
-        let r = 0, g = 0, b = 0, count = 0
-        for (let i = 0; i < data.length; i += 4) {
-          if (data[i + 3] < 128) continue
-          const avg = (data[i] + data[i+1] + data[i+2]) / 3
-          if (avg < 30 || avg > 230) continue
-          r += data[i]
-          g += data[i+1]
-          b += data[i+2]
-          count++
-        }
-        if (count > 0) {
-          const rr = Math.floor(r / count)
-          const gg = Math.floor(g / count)
-          const bb = Math.floor(b / count)
-          this.container.style.setProperty("--accent-color", `rgb(${rr}, ${gg}, ${bb})`)
-          this.container.style.setProperty("--accent-color-rgb", `${rr}, ${gg}, ${bb}`)
-          this.container.style.setProperty("--music-player-bg", `linear-gradient(135deg, rgba(${rr}, ${gg}, ${bb}, 0.45) 0%, rgba(${rr}, ${gg}, ${bb}, 0.15) 100%)`)
-          this.container.classList.add("thumbnail-color-mode")
-        }
-      } catch (e) {
-        // Fallback or CORS error - leave as is or remove
+        const canvas = document.createElement("canvas")
+        const size = 64
+        canvas.width = size
+        canvas.height = size
+        const ctx = canvas.getContext("2d", { willReadFrequently: true })
+        ctx.drawImage(img, 0, 0, size, size)
+        const data = ctx.getImageData(0, 0, size, size).data
+        parsePixels(data)
+      } catch (err) {
+        // Ignored
       }
     }
     img.onerror = () => {}
@@ -524,10 +866,22 @@ export class MusicPlayer {
 
   startPolling() {
     this.syncMediaState()
+    if (!this.pollInterval) {
+      this.pollInterval = setInterval(() => {
+        if (
+          !this._destroyed &&
+          this.showPlayer &&
+          this.isVisible &&
+          document.visibilityState === "visible"
+        ) {
+          this.syncMediaState()
+        }
+      }, 2000)
+    }
   }
 
   scheduleNextPoll(delay = null) {
-    // No-op to eliminate background polling
+    this.syncMediaState()
   }
 
   fetchMediaState() {
@@ -563,6 +917,10 @@ export class MusicPlayer {
   }
 
   stopPolling() {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval)
+      this.pollInterval = null
+    }
     if (this.pollTimeout) {
       clearTimeout(this.pollTimeout)
       this.pollTimeout = null
@@ -612,14 +970,18 @@ export class MusicPlayer {
     if (shouldAnimate) {
       this.disc.classList.add("playing")
       if (wrapper) wrapper.classList.add("playing")
-      this.visualizer.start()
+      if (!this.visualizer.isPlaying) {
+        this.visualizer.start()
+      }
       if (getSettings().musicRealAudioReactive === true) {
         chrome.runtime?.sendMessage?.({ action: "startRealAudioCapture" })?.catch?.(() => {})
       }
     } else {
       this.disc.classList.remove("playing")
       if (wrapper) wrapper.classList.remove("playing")
-      this.visualizer.stop()
+      if (this.visualizer.isPlaying) {
+        this.visualizer.stop()
+      }
     }
 
     // Update thumbnail
@@ -631,7 +993,10 @@ export class MusicPlayer {
         this.disc.style.backgroundPosition = "center"
         this.disc.classList.add("has-thumb")
         if (this.bgBlur) this.bgBlur.style.backgroundImage = `url("${url}")`
-        if (this.useDefaultColor === "thumbnail") {
+        if (
+          this.useDefaultColor === "thumbnail" ||
+          this.useDefaultColor === "thumbnail-dynamic"
+        ) {
           this.applyThumbnailColor(url)
         }
       }
@@ -663,7 +1028,11 @@ export class MusicPlayer {
       this.disc.style.backgroundImage = "none"
       this.disc.classList.remove("has-thumb")
       if (this.bgBlur) this.bgBlur.style.backgroundImage = "none"
-      if (this.useDefaultColor === "thumbnail") {
+      if (
+        this.useDefaultColor === "thumbnail" ||
+        this.useDefaultColor === "thumbnail-dynamic"
+      ) {
+        this._stopDynamicColorLoop()
         this.container.style.removeProperty("--accent-color")
         this.container.style.removeProperty("--accent-color-rgb")
       }
@@ -708,7 +1077,7 @@ export class MusicPlayer {
       const elapsed = (Date.now() - this._lastUpdateTimestamp) / 1000
       const estimated = Math.min(this._lastKnownTime + elapsed, this._duration)
       this._updateProgressUI(estimated, this._duration)
-    }, 1000)
+    }, 250)
   }
 
   _stopProgressAnimation() {
@@ -844,6 +1213,7 @@ export class MusicPlayer {
   destroy() {
     this._destroyed = true
     this.stopPolling()
+    this._stopDynamicColorLoop()
     this._controlRefreshTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
     this._controlRefreshTimeouts.clear()
     window.removeEventListener("settingsUpdated", this._settingsHandler)
