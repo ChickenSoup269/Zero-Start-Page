@@ -23,7 +23,10 @@ class MusicVisualizer {
       { length: 10 },
       () => 1.5 + Math.random() * 2.0,
     )
-    this._realBands = null // We will not use real audio data anymore
+    this._realBands = null
+    this._audioChannel = null
+    this._currentScales = []
+    this._initAudioChannel()
 
     // Caching layout/config to avoid layout thrashing
     this.cachedW = 276
@@ -279,10 +282,7 @@ class MusicVisualizer {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const targetW = Math.floor(W * dpr)
     const targetH = Math.floor(H * dpr)
-    if (
-      canvas.width !== targetW ||
-      canvas.height !== targetH
-    ) {
+    if (canvas.width !== targetW || canvas.height !== targetH) {
       canvas.width = targetW
       canvas.height = targetH
     }
@@ -290,70 +290,141 @@ class MusicVisualizer {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, W, H)
 
+    // Audio Reactive Beat Calculation
+    this._orbitSimTime = (this._orbitSimTime || 0) + dt
+    const simTime = this._orbitSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    let targetBass = 0.15
+    let targetMid = 0.1
+    if (this.isPlaying) {
+      if (isReactive) {
+        if (hasRealAudio) {
+          const b0 = this._realBands[0] || 0
+          const b1 = this._realBands[1] || 0
+          const b2 = this._realBands[2] || 0
+          targetBass = Math.min(1.0, Math.pow((b0 + b1) / 2, 0.42) * 1.85)
+          targetMid = Math.min(1.0, Math.pow(b2, 0.45) * 1.5)
+        } else {
+          const bpm = 128
+          const beatPhase = (simTime * (bpm / 60)) % 1
+          const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+          const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+          targetBass = Math.max(0.1, kick * 1.15 + sub * 0.25)
+          targetMid = (Math.sin(simTime * 14.0) * 0.5 + 0.5) * 0.4
+        }
+      } else {
+        targetBass = 0.28 + Math.sin(simTime * 5.0) * 0.14
+        targetMid = 0.2
+      }
+    } else {
+      targetBass = 0
+      targetMid = 0
+    }
+
+    const smoothing = targetBass > (this._orbitBass || 0) ? 0.8 : 0.35
+    this._orbitBass =
+      (this._orbitBass || 0) + (targetBass - (this._orbitBass || 0)) * smoothing
+    const bass = this._orbitBass
+
     this.orbitPhase =
-      (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.78 : 0.16)
+      (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.75 + bass * 0.6 : 0.15)
     const cx = W / 2
     const cy = H / 2
     const playerSize = Math.min(this.cachedParentWidth, this.cachedParentHeight)
     const baseRadius = Math.min(playerSize / 2 + 8, Math.min(W, H) / 2 - 58)
-    const accent = this.cachedAccent || "#64f4d2"
-    const bass =
-      this.isPlaying && this._realBands?.length
-        ? Math.min(1, (this._realBands[0] + this._realBands[1]) * 0.72)
-        : this.isPlaying
-          ? 0.42
-          : 0
-
+    const isWhiteBlur = this.isWhiteBlurCached
+    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#64f4d2")
     const isCpuSave = this._cpuSave !== false
 
-    const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
+    // 1. Concentric NCS Shockwave Pulse Rings
+    const drawNcsRing = (
+      phaseOffset,
+      alphaBase,
+      width,
+      expansion,
+      holdEnd,
+    ) => {
       const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
       const attack = phase < 0.16 ? phase / 0.16 : 1
       const hold =
         phase < holdEnd ? 1 : Math.max(0, 1 - (phase - holdEnd) / (1 - holdEnd))
-      const punch = Math.sin(Math.min(phase / 0.2, 1) * Math.PI * 0.5)
-      const easeOut = 1 - Math.pow(1 - phase, 2.6)
-      const beatLift = bass * Math.pow(hold, 1.7)
+      const punch = Math.sin(Math.min(phase / 0.22, 1) * Math.PI * 0.5)
+      const easeOut = 1 - Math.pow(1 - phase, 2.4)
+      const beatLift = bass * Math.pow(hold, 1.6)
       const radius =
-        baseRadius - 8 + punch * (4 + beatLift * 9) + easeOut * expansion
+        baseRadius -
+        6 +
+        punch * (3 + beatLift * 10) +
+        easeOut * (expansion + bass * 14)
       const alpha =
         alphaBase *
         Math.pow(hold, 1.15) *
-        (this.isPlaying ? 0.22 + attack * 0.78 : 0.42)
+        (this.isPlaying ? 0.25 + attack * 0.75 : 0.38)
 
+      ctx.save()
       ctx.globalAlpha = alpha
       ctx.lineWidth = width + beatLift * 2.8
-      // Toggle shadowBlur radius based on mode
-      ctx.shadowBlur = isCpuSave ? (6 + punch * 10 + beatLift * 12) : (12 + punch * 20 + beatLift * 24)
+      ctx.shadowBlur = isWhiteBlur
+        ? 0
+        : isCpuSave
+          ? 6 + beatLift * 8
+          : 10 + punch * 12 + beatLift * 18
       ctx.shadowColor = accent
+      ctx.strokeStyle = accent
       ctx.beginPath()
       ctx.arc(cx, cy, radius, 0, Math.PI * 2)
       ctx.stroke()
-
-      // Outer glow - toggle off second shadowBlur pass in CPU save
-      ctx.globalAlpha = alpha * (0.18 + beatLift * 0.16)
-      ctx.lineWidth = width + 8 + beatLift * 5
-      ctx.shadowBlur = isCpuSave ? 0 : (22 + punch * 24 + beatLift * 28)
-      ctx.beginPath()
-      ctx.arc(cx, cy, radius + 1.5, 0, Math.PI * 2)
-      ctx.stroke()
+      ctx.restore()
     }
 
     ctx.lineJoin = "round"
     ctx.lineCap = "round"
-    ctx.strokeStyle = accent
 
-    drawNcsRing(0, 0.9, 4.25, 23, 0.38)
-    drawNcsRing(0.34, 0.58, 3, 18, 0.26)
-    drawNcsRing(0.68, 0.42, 2.35, 15, 0.22)
+    drawNcsRing(0, 0.95, 4.0, 26, 0.4)
+    drawNcsRing(0.25, 0.65, 3.2, 20, 0.3)
+    drawNcsRing(0.5, 0.45, 2.4, 16, 0.24)
+    drawNcsRing(0.75, 0.3, 1.8, 12, 0.18)
 
+    // 2. Harmonic Audio Wave Perimeter Ring (Beat Spectrum Ripples)
+    if (this.isPlaying) {
+      ctx.save()
+      ctx.strokeStyle = accent
+      ctx.lineWidth = 1.6 + bass * 1.8
+      ctx.globalAlpha = (0.55 + bass * 0.4) * (isWhiteBlur ? 0.4 : 0.85)
+      ctx.shadowBlur = isWhiteBlur ? 0 : 6 + bass * 10
+      ctx.shadowColor = accent
+      ctx.beginPath()
+      const segs = 90
+      for (let j = 0; j <= segs; j++) {
+        const ang = (j / segs) * Math.PI * 2
+        const harmonic =
+          Math.sin(ang * 12 + simTime * 7.5) * (1.2 + bass * 4.2) +
+          Math.cos(ang * 24 - simTime * 9.0) * (0.6 + bass * 2.5)
+        const r = baseRadius - 4 + harmonic
+        const px = cx + Math.cos(ang) * r
+        const py = cy + Math.sin(ang) * r
+        if (j === 0) ctx.moveTo(px, py)
+        else ctx.lineTo(px, py)
+      }
+      ctx.closePath()
+      ctx.stroke()
+      ctx.restore()
+    }
+
+    // 3. Central Disc Aura Ring
+    ctx.save()
     ctx.shadowBlur = 0
-    ctx.globalAlpha = 1
-    ctx.lineWidth = 1
-    ctx.strokeStyle = "rgba(255,255,255,0.18)"
+    ctx.globalAlpha = isWhiteBlur ? 0.18 : 0.35 + bass * 0.35
+    ctx.lineWidth = 1.2 + bass * 0.8
+    ctx.strokeStyle = isWhiteBlur ? "rgba(0,0,0,0.3)" : accent
     ctx.beginPath()
-    ctx.arc(cx, cy, baseRadius - 9, 0, Math.PI * 2)
+    ctx.arc(cx, cy, baseRadius - 8, 0, Math.PI * 2)
     ctx.stroke()
+    ctx.restore()
   }
 
   _startBeach() {
@@ -839,23 +910,45 @@ class MusicVisualizer {
     const isWhiteMode = this.isWhiteModeCached
     let accent = isWhiteMode ? "#000000" : (this.cachedAccent || "#ff4d4d")
 
-    let norm = 0
-    let active = false
-    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-      norm = (this._realBands[0] + this._realBands[1]) / 2
-      active = true
-    } else if (this.isPlaying) {
-      norm = 0.15
-      active = true
+    // Audio Reactive Beat Calculation
+    this._heartbeatSimTime = (this._heartbeatSimTime || 0) + dt
+    const simTime = this._heartbeatSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    let targetNorm = 0.15
+    const bpm = 128
+    const beatPhase = (simTime * (bpm / 60)) % 1
+    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+
+    if (this.isPlaying) {
+      if (isReactive) {
+        if (hasRealAudio) {
+          const b0 = this._realBands[0] || 0
+          const b1 = this._realBands[1] || 0
+          targetNorm = Math.min(1.0, Math.pow((b0 + b1) / 2, 0.42) * 1.85)
+        } else {
+          targetNorm = Math.max(0.1, kick * 1.15 + (Math.sin(simTime * 9.5) * 0.5 + 0.5) * 0.25)
+        }
+      } else {
+        targetNorm = 0.28 + Math.sin(simTime * 4.0) * 0.12
+      }
+    } else {
+      targetNorm = 0
     }
 
-    const now = Date.now()
-    this._baseYOffset += (Math.random() - 0.5) * 2
-    this._baseYOffset *= 0.98
-    const drift = Math.sin(now * 0.003) * 3
-    const currentBaseY = H / 2 + this._baseYOffset + drift
+    const smoothing = targetNorm > (this._heartbeatNorm || 0) ? 0.8 : 0.35
+    this._heartbeatNorm =
+      (this._heartbeatNorm || 0) + (targetNorm - (this._heartbeatNorm || 0)) * smoothing
+    const norm = this._heartbeatNorm
 
-    const scrollSpeed = (W / 1.5) * dt
+    this._baseYOffset += (Math.random() - 0.5) * 1.5
+    this._baseYOffset *= 0.96
+    const currentBaseY = H / 2 + this._baseYOffset
+
+    const scrollSpeed = (W / 1.35) * dt
 
     if (!this.heartbeatPoints) this.heartbeatPoints = []
 
@@ -865,53 +958,134 @@ class MusicVisualizer {
         : W
 
     if (lastX < W + 20) {
-      this._pulseTimer += dt
-      const beatInterval = active ? 0.7 - norm * 0.3 : 1.2
+      this._pulseTimer = (this._pulseTimer || 0) + dt
+      const minInterval = 0.38
+      const beatTriggered =
+        this.isPlaying &&
+        this._pulseTimer >= minInterval &&
+        ((isReactive && !hasRealAudio && kick > 0.82) ||
+          (isReactive && hasRealAudio && norm > 0.52) ||
+          (!isReactive && this._pulseTimer >= 0.72) ||
+          this._pulseTimer >= 0.95)
 
-      if (this._pulseTimer >= beatInterval) {
+      if (beatTriggered) {
         this._pulseTimer = 0
         const bx = W + 10
-        const amp = active ? 1 + norm * 3.5 : 1.2
+        const amp = 0.9 + norm * 2.2
 
-        // Mô phỏng chu trình P-QRS-T chuẩn
+        // Standard medical P-QRS-T complex synced to music beat
         this.heartbeatPoints.push({ x: bx, y: currentBaseY })
-        this.heartbeatPoints.push({ x: bx + 4, y: currentBaseY - 3 * amp }) // Sóng P (nhô nhẹ)
-        this.heartbeatPoints.push({ x: bx + 8, y: currentBaseY }) // Về nền
-        this.heartbeatPoints.push({ x: bx + 10, y: currentBaseY + 2 * amp }) // Sóng Q (hụp nhẹ)
-        this.heartbeatPoints.push({ x: bx + 14, y: currentBaseY - 24 * amp }) // Sóng R (đỉnh nhọn cực cao)
-        this.heartbeatPoints.push({ x: bx + 18, y: currentBaseY + 12 * amp }) // Sóng S (hụp sâu)
-        this.heartbeatPoints.push({ x: bx + 22, y: currentBaseY }) // Về nền
-        this.heartbeatPoints.push({ x: bx + 28, y: currentBaseY - 6 * amp }) // Sóng T (nhô vừa)
-        this.heartbeatPoints.push({ x: bx + 34, y: currentBaseY }) // Kết thúc chu trình
+        this.heartbeatPoints.push({ x: bx + 3, y: currentBaseY - 2.5 * amp }) // P wave
+        this.heartbeatPoints.push({ x: bx + 6, y: currentBaseY })
+        this.heartbeatPoints.push({ x: bx + 8, y: currentBaseY + 2.2 * amp }) // Q wave
+        this.heartbeatPoints.push({ x: bx + 12, y: currentBaseY - 22 * amp }) // R peak (sharp beat spike)
+        this.heartbeatPoints.push({ x: bx + 16, y: currentBaseY + 11 * amp }) // S wave
+        this.heartbeatPoints.push({ x: bx + 20, y: currentBaseY })
+        this.heartbeatPoints.push({ x: bx + 25, y: currentBaseY - 5.5 * amp }) // T wave
+        this.heartbeatPoints.push({ x: bx + 30, y: currentBaseY })
       } else {
-        const noise = (Math.random() - 0.5) * (active ? 1 + norm * 5 : 0.5)
+        const noise = (Math.random() - 0.5) * (this.isPlaying ? 0.8 + norm * 2.5 : 0.3)
         this.heartbeatPoints.push({ x: W + 10, y: currentBaseY + noise })
       }
     }
 
     const isCpuSave = this._cpuSave !== false
 
+    // 1. Draw subtle ambient ECG baseline
+    ctx.save()
+    ctx.strokeStyle = isWhiteMode ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)"
+    ctx.lineWidth = 0.8
+    ctx.beginPath()
+    ctx.moveTo(0, currentBaseY)
+    ctx.lineTo(W, currentBaseY)
+    ctx.stroke()
+    ctx.restore()
+
+    // 2. Draw ECG Signal Line with Glow & Fade-out at left edge
     if (this.heartbeatPoints.length > 1) {
-      ctx.beginPath()
+      // Pass 1: Neon Glow Outline
+      ctx.save()
       ctx.strokeStyle = accent
-      ctx.lineWidth = 2.5
+      ctx.lineWidth = 2.2
       ctx.lineJoin = "round"
-      ctx.shadowBlur = isCpuSave ? 4 : 10 // Toggle shadowBlur radius based on mode
+      ctx.lineCap = "round"
+      ctx.shadowBlur = isWhiteMode ? 0 : (isCpuSave ? 4 : 8 + norm * 6)
       ctx.shadowColor = accent
 
-      for (let i = 0; i < this.heartbeatPoints.length; i++) {
-        const p = this.heartbeatPoints[i]
-        p.x -= scrollSpeed
-        if (i === 0) ctx.moveTo(p.x, p.y)
-        else ctx.lineTo(p.x, p.y)
-      }
-      ctx.stroke()
+      for (let i = 0; i < this.heartbeatPoints.length - 1; i++) {
+        const p1 = this.heartbeatPoints[i]
+        const p2 = this.heartbeatPoints[i + 1]
+        p1.x -= scrollSpeed
 
-      const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
-      if (lastP.x <= W) {
+        // Fade out smoothly at left border
+        const fadeAlpha = p1.x < 30 ? Math.max(0, p1.x / 30) : 1.0
+        ctx.globalAlpha = fadeAlpha * 0.9
+
         ctx.beginPath()
-        ctx.fillStyle = "#fff"
-        ctx.arc(lastP.x, lastP.y, 2, 0, Math.PI * 2)
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.stroke()
+      }
+      ctx.restore()
+
+      // Pass 2: Sharp Crisp White Core Line
+      if (!isWhiteMode) {
+        ctx.save()
+        ctx.strokeStyle = "rgba(255,255,255,0.75)"
+        ctx.lineWidth = 0.9
+        ctx.lineJoin = "round"
+        for (let i = 0; i < this.heartbeatPoints.length - 1; i++) {
+          const p1 = this.heartbeatPoints[i]
+          const p2 = this.heartbeatPoints[i + 1]
+          const fadeAlpha = p1.x < 30 ? Math.max(0, p1.x / 30) : 1.0
+          ctx.globalAlpha = fadeAlpha * 0.85
+
+          ctx.beginPath()
+          ctx.moveTo(p1.x, p1.y)
+          ctx.lineTo(p2.x, p2.y)
+          ctx.stroke()
+        }
+        ctx.restore()
+      }
+
+      // Update position of last point
+      if (this.heartbeatPoints.length > 0) {
+        this.heartbeatPoints[this.heartbeatPoints.length - 1].x -= scrollSpeed
+      }
+
+      // 3. Glowing Tracer Spark Head (Điểm sáng dẫn đường phát quang)
+      const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
+      if (lastP && lastP.x <= W + 5) {
+        const sparkRadius = 1.8 + norm * 1.5
+        // Outer halo
+        ctx.save()
+        ctx.shadowColor = accent
+        ctx.shadowBlur = isWhiteMode ? 0 : 8 + norm * 8
+        const haloGrad = ctx.createRadialGradient(
+          lastP.x,
+          lastP.y,
+          0,
+          lastP.x,
+          lastP.y,
+          sparkRadius * 2.8,
+        )
+        haloGrad.addColorStop(
+          0,
+          isWhiteMode ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.85)",
+        )
+        haloGrad.addColorStop(0.4, accent)
+        haloGrad.addColorStop(1, "transparent")
+        ctx.fillStyle = haloGrad
+        ctx.globalAlpha = 0.85
+        ctx.beginPath()
+        ctx.arc(lastP.x, lastP.y, sparkRadius * 2.8, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+
+        // White core dot
+        ctx.beginPath()
+        ctx.fillStyle = isWhiteMode ? "#000000" : "#ffffff"
+        ctx.arc(lastP.x, lastP.y, sparkRadius, 0, Math.PI * 2)
         ctx.fill()
       }
     }
@@ -1013,10 +1187,10 @@ class MusicVisualizer {
     if (canvas.height !== H) canvas.height = H
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, W, H)
-    
+
     const isWhiteBlur = this.isWhiteBlurCached
     const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
-    
+
     const gap = 3
     const barW = Math.max(
       5,
@@ -1038,20 +1212,60 @@ class MusicVisualizer {
       }
     }
 
+    if (!this._pixelScales || this._pixelScales.length !== this.barCount) {
+      this._pixelScales = new Array(this.barCount).fill(0.1)
+      this._pixelSimTime = 0
+    }
+    this._pixelSimTime = (this._pixelSimTime || 0) + dt
+    const simTime = this._pixelSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    const bpm = 128
+    const beatPhase = (simTime * (bpm / 60)) % 1
+    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+    const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+    const hat = (Math.sin(simTime * 24.0) * 0.5 + 0.5) * 0.35
+
     for (let i = 0; i < this.barCount; i++) {
-      let norm
-      if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-        // Trải đều 4 dải âm lên các cột Pixel
-        const bandIdx = Math.floor((i / this.barCount) * this._realBands.length)
-        norm = Math.sqrt(
-          Math.max(0, Math.min(1, this._realBands[bandIdx] * 1.5)),
-        )
+      let norm = 0
+
+      if (isReactive) {
+        let targetNorm = 0
+        if (hasRealAudio) {
+          const bandIdx = Math.min(
+            bandsCount - 1,
+            Math.floor((i / this.barCount) * bandsCount),
+          )
+          const rawVal = this._realBands[bandIdx] || 0
+          targetNorm = Math.min(1.0, Math.pow(rawVal, 0.45) * 1.65)
+        } else {
+          const barPhase = i * 0.65
+          const bounce = Math.sin(simTime * 8.0 + barPhase) * 0.5 + 0.5
+          const barKick =
+            i === 0 || i === 1
+              ? kick * 1.15
+              : i === 2 || i === 3
+                ? kick * 0.75 + bounce * 0.35
+                : hat + bounce * 0.45
+          targetNorm = Math.max(
+            0.1,
+            Math.min(1.0, barKick * 0.85 + bounce * 0.25 + sub * 0.15),
+          )
+        }
+
+        const smoothing = targetNorm > this._pixelScales[i] ? 0.8 : 0.35
+        this._pixelScales[i] += (targetNorm - this._pixelScales[i]) * smoothing
+        norm = this._pixelScales[i]
       } else {
         if (this.isPlaying) {
           this.pixelPhase[i] += this.pixelSpeeds[i] * dt * Math.PI
         }
         norm = (Math.sin(this.pixelPhase[i]) + 1) / 2
       }
+
       const numSegs = Math.max(1, Math.round(norm * maxSegs))
       if (numSegs > this.peakIdx[i]) {
         this.peakIdx[i] = numSegs
@@ -1064,7 +1278,9 @@ class MusicVisualizer {
       if (this.peakIdx[i] > 0) {
         const py = H - this.peakIdx[i] * segStep
         if (py >= 0) {
-          ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.95)"
+          ctx.fillStyle = isWhiteBlur
+            ? "rgba(0,0,0,0.4)"
+            : "rgba(255,255,255,0.95)"
           ctx.fillRect(x, py, barW, segH)
         }
       }
@@ -1079,7 +1295,6 @@ class MusicVisualizer {
     })
 
     const canvas = document.createElement("canvas")
-    // Vùng vẽ mở rộng để chứa glow nhưng đặt tuyệt đối giữa
     canvas.style.cssText =
       "position:absolute; top:50%; left:50%; width:300%; height:300%; transform:translate(-50%, -50%); pointer-events:none; z-index: 1;"
 
@@ -1095,6 +1310,8 @@ class MusicVisualizer {
     this.isSpecialMode = false
     this.specialLaps = 0
     this.startSpecialPhase = 0
+    this._moonNorm = 0.1
+    this._moonSimTime = 0
 
     this.updateDimensions()
     this._lastTs = 0
@@ -1113,7 +1330,7 @@ class MusicVisualizer {
 
       const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
-      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      if (isCpuSave && elapsed < 33) return
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
       if (ts - this._lastConfigCheck > 1000) {
@@ -1158,16 +1375,44 @@ class MusicVisualizer {
     const isWhiteBlur = this.isWhiteBlurCached
     const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
 
-    let norm = 0
-    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-      norm = (this._realBands[0] + this._realBands[1]) / 2
-    } else if (this.isPlaying) {
-      norm = 0.1
+    // Smooth Audio Reactive Beat Calculation (Punchy & Organic)
+    this._moonSimTime = (this._moonSimTime || 0) + dt
+    const simTime = this._moonSimTime
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    let targetNorm = 0.15
+    if (this.isPlaying) {
+      if (isReactive) {
+        if (hasRealAudio) {
+          const bassVal =
+            ((this._realBands[0] || 0) + (this._realBands[1] || 0)) / 2
+          targetNorm = Math.min(1.0, Math.pow(bassVal, 0.42) * 1.7)
+        } else {
+          const bpm = 128
+          const beatPhase = (simTime * (bpm / 60)) % 1
+          const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+          const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+          targetNorm = Math.max(0.1, kick * 1.1 + sub * 0.35)
+        }
+      } else {
+        targetNorm = 0.26 + Math.sin(simTime * 3.5) * 0.12
+      }
+    } else {
+      targetNorm = 0
     }
 
+    // Snappy attack, smooth organic decay
+    const smoothing = targetNorm > (this._moonNorm || 0) ? 0.65 : 0.28
+    this._moonNorm =
+      (this._moonNorm || 0) + (targetNorm - (this._moonNorm || 0)) * smoothing
+    const norm = this._moonNorm
+
     if (this.isPlaying) {
-      const baseSpeed = Math.PI / 2
-      const speedBoost = 1 + norm * 2.5
+      const baseSpeed = Math.PI / 2.1
+      const speedBoost = 1 + norm * 0.85 // Punchy yet smooth speed acceleration
 
       if (!this.isSpecialMode) {
         this.moonPhase += dt * baseSpeed * speedBoost * this.moonDir
@@ -1201,22 +1446,28 @@ class MusicVisualizer {
           }
         }
       } else {
-        this.moonPhase += dt * baseSpeed * speedBoost * 1.5
+        this.moonPhase += dt * baseSpeed * speedBoost * 1.2
         const diff = Math.abs(this.moonPhase - this.startSpecialPhase)
         this.specialLaps = diff / (Math.PI * 2)
 
         if (this.specialLaps > 6) {
-          const rotSpeed = dt * 1.5
+          // Slow down universe rotation gracefully during the return phase
+          const returnPhase =
+            this.specialLaps > 20
+              ? Math.max(0, 1 - (this.specialLaps - 20) / 5)
+              : 1.0
+          const rotSpeed = dt * 0.95 * returnPhase
           this.universeRotY += rotSpeed
-          this.universeRotX += rotSpeed * 0.6
+          this.universeRotX += rotSpeed * 0.4
         }
 
-        if (this.specialLaps >= 12) {
+        // Extended Special Mode duration with ultra-smooth 5-lap return transition
+        if (this.specialLaps >= 25.5) {
           this.isSpecialMode = false
           this.collisionCount = 0
           this.moonDir = 1
           this.nextCollisionPhase =
-            Math.round(this.moonPhase / Math.PI) * Math.PI + Math.PI
+            Math.ceil(this.moonPhase / Math.PI) * Math.PI + Math.PI
           this.universeRotY = 0
           this.universeRotX = 0
         }
@@ -1225,8 +1476,8 @@ class MusicVisualizer {
 
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
-    const amplitudeX = CW * 0.38
-    const amplitudeY = CH * 0.32
+    const amplitudeX = CW * (0.38 + norm * 0.04)
+    const amplitudeY = CH * (0.32 + norm * 0.03)
 
     const getPos = (p, rotY = 0, rotX = 0, shapeMorph = 0) => {
       const x = amplitudeX * Math.sin(p)
@@ -1241,60 +1492,62 @@ class MusicVisualizer {
       let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX)
       let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX)
 
-      const perspective = 400
+      const perspective = 380
       const scale = perspective / (perspective + z2)
 
       return {
         x: centerX + x1 * scale,
         y: centerY + y2 * scale,
         z: z2,
+        scale,
       }
     }
 
-    const smoothStep = (x) => x * x * (3 - 2 * x)
-
-    let collisionFactor = 0
     let universeFactor = 0
     let shapeMorph = 0
 
     if (this.isSpecialMode) {
-      collisionFactor = 1.0
-      if (this.specialLaps > 6) {
-        const progress = Math.min(1, this.specialLaps - 6)
-        universeFactor = smoothStep(progress)
-
-        if (this.specialLaps <= 7) {
-          shapeMorph = smoothStep(this.specialLaps - 6)
-        } else if (this.specialLaps <= 11) {
-          shapeMorph = 1.0
-        } else {
-          shapeMorph = smoothStep(1 - (this.specialLaps - 11))
-          universeFactor = smoothStep(1 - (this.specialLaps - 11))
-        }
+      if (this.specialLaps <= 6) {
+        shapeMorph = 0
+        universeFactor = 0
+      } else if (this.specialLaps <= 9) {
+        // Slow, gentle morph into 3D circle (3 laps)
+        const t = (this.specialLaps - 6) / 3
+        const ease = 0.5 - 0.5 * Math.cos(Math.PI * t)
+        shapeMorph = ease
+        universeFactor = ease
+      } else if (this.specialLaps <= 20) {
+        // Extended holding duration in quantum circle orbit
+        shapeMorph = 1.0
+        universeFactor = 1.0
+      } else {
+        // Slow, graceful, silky smooth 5-lap return back to infinity (no jerkiness)
+        const t = Math.min(1.0, (this.specialLaps - 20) / 5.0)
+        const ease = 0.5 + 0.5 * Math.cos(Math.PI * t)
+        shapeMorph = ease
+        universeFactor = ease
       }
-    } else {
-      const distToCenter = Math.abs(
-        this.moonPhase - Math.round(this.moonPhase / Math.PI) * Math.PI,
-      )
-      collisionFactor = Math.pow(Math.max(0, 1 - distToCenter / 0.5), 4)
     }
 
     const currentRotY = (this.universeRotY || 0) * universeFactor
     const currentRotX =
-      ((this.universeRotX || 0) + Math.sin(this.moonPhase * 0.5) * 0.2) *
+      ((this.universeRotX || 0) + Math.sin(this.moonPhase * 0.5) * 0.18) *
       universeFactor
 
+    // 1. Primary Luminous 3D orbit wireframe
     ctx.save()
     ctx.strokeStyle = accent
-
-    for (let p = 0; p <= Math.PI * 2; p += 0.2) {
-      const pNext = p + 0.22
+    ctx.shadowColor = accent
+    ctx.shadowBlur = isWhiteBlur ? 0 : 8
+    for (let p = 0; p <= Math.PI * 2; p += 0.16) {
+      const pNext = p + 0.18
       const pos1 = getPos(p, currentRotY, currentRotX, shapeMorph)
       const pos2 = getPos(pNext, currentRotY, currentRotX, shapeMorph)
 
       const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
-      ctx.globalAlpha = (0.05 + collisionFactor * 0.4) * (0.3 + 0.7 * zFactor)
-      ctx.lineWidth = (1 + collisionFactor * 2) * (0.5 + 0.5 * zFactor)
+      const isFront = zFactor > 0.5
+      ctx.globalAlpha = (0.16 + norm * 0.12) * (isFront ? 0.95 : 0.42)
+      ctx.lineWidth = (1.4 + norm * 0.4) * (0.65 + 0.65 * zFactor)
 
       ctx.beginPath()
       ctx.moveTo(pos1.x, pos1.y)
@@ -1303,16 +1556,169 @@ class MusicVisualizer {
     }
     ctx.restore()
 
+    // 2. Secondary Cloned Quantum Orbital Ring (Brighter & Luminous after 3s of circle mode)
+    const qAppearFactor =
+      this.specialLaps > 11.5
+        ? Math.min(1.0, (this.specialLaps - 11.5) / 2.5) * universeFactor
+        : 0
+
+    if (qAppearFactor > 0.02) {
+      const qRotY = -currentRotY * 1.15 + Math.PI / 3.5
+      const qRotX = -currentRotX * 0.95 + Math.PI / 4.0
+
+      ctx.save()
+      ctx.strokeStyle = isWhiteBlur ? "rgba(0,0,0,0.45)" : accent
+      ctx.shadowColor = accent
+      ctx.shadowBlur = isWhiteBlur ? 0 : 10 + norm * 8
+
+      for (let p = 0; p <= Math.PI * 2; p += 0.16) {
+        const pNext = p + 0.18
+        const pos1 = getPos(p, qRotY, qRotX, shapeMorph)
+        const pos2 = getPos(pNext, qRotY, qRotX, shapeMorph)
+
+        const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
+        const isFront = zFactor > 0.5
+        ctx.globalAlpha =
+          qAppearFactor *
+          (0.24 + norm * 0.18) *
+          (isFront ? 0.95 : 0.45)
+        ctx.lineWidth = (1.5 + norm * 0.6) * (0.65 + 0.65 * zFactor)
+
+        ctx.beginPath()
+        ctx.moveTo(pos1.x, pos1.y)
+        ctx.lineTo(pos2.x, pos2.y)
+        ctx.stroke()
+      }
+
+      // 2 Quantum Orbital Valence Electron Beads on the Secondary Ring
+      const qHeadP1 = this.moonPhase * 1.25 + Math.PI / 2
+      const qHeadP2 = this.moonPhase * 1.25 + (Math.PI * 3) / 2
+
+      const drawQuantumBead = (p) => {
+        const pos = getPos(p, qRotY, qRotX, shapeMorph)
+        const z = (pos.z + amplitudeX) / (2 * amplitudeX)
+        const r = (2.0 + norm * 1.2) * (0.7 + 0.4 * z)
+
+        // Outer halo
+        ctx.beginPath()
+        ctx.fillStyle = accent
+        ctx.globalAlpha = qAppearFactor * (0.6 + norm * 0.3) * (0.5 + 0.5 * z)
+        ctx.arc(pos.x, pos.y, r * 2.4, 0, Math.PI * 2)
+        ctx.fill()
+
+        // White Core
+        ctx.beginPath()
+        ctx.fillStyle = isWhiteBlur ? "#000" : "#ffffff"
+        ctx.globalAlpha = qAppearFactor * 0.95 * (0.5 + 0.5 * z)
+        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      drawQuantumBead(qHeadP1)
+      drawQuantumBead(qHeadP2)
+
+      ctx.restore()
+    }
+
+    // 3. Miniature Glowing Celestial Star & Orbiting Planets in the Center
+    if (universeFactor > 0.04) {
+      const planetRadius = (4.2 + norm * 2.0) * universeFactor
+      ctx.save()
+
+      // Atmospheric Glow Halo
+      ctx.shadowColor = accent
+      ctx.shadowBlur = isWhiteBlur ? 0 : 12 + norm * 8
+      const planetGlow = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        planetRadius * 3.2,
+      )
+      planetGlow.addColorStop(
+        0,
+        isWhiteBlur ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.9)",
+      )
+      planetGlow.addColorStop(0.35, accent)
+      planetGlow.addColorStop(1, "transparent")
+      ctx.fillStyle = planetGlow
+      ctx.globalAlpha = universeFactor * (0.75 + norm * 0.25)
+      ctx.beginPath()
+      ctx.arc(centerX, centerY, planetRadius * 3.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Miniature Planetary Orbit Ring
+      ctx.strokeStyle = isWhiteBlur ? "rgba(0,0,0,0.4)" : accent
+      ctx.lineWidth = 1.0 + norm * 0.5
+      ctx.globalAlpha = universeFactor * (0.6 + norm * 0.3)
+      ctx.beginPath()
+      ctx.ellipse(
+        centerX,
+        centerY,
+        planetRadius * 2.2,
+        planetRadius * 0.68,
+        Math.PI / 6 + (this.universeRotX || 0) * 0.5,
+        0,
+        Math.PI * 2,
+      )
+      ctx.stroke()
+
+      // Glowing Center Planet Core
+      ctx.beginPath()
+      ctx.fillStyle = isWhiteBlur ? "#000000" : "#ffffff"
+      ctx.globalAlpha = universeFactor * 0.95
+      ctx.arc(centerX, centerY, planetRadius, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Orbiting Mini Planets / Tiny Star Satellites (4 Tiểu hành tinh & vì sao nhỏ xung quanh)
+      const miniOrbits = [
+        { dist: planetRadius * 1.6, speed: 2.7, phase: 0, size: 1.1 },
+        { dist: planetRadius * 2.5, speed: -2.0, phase: 2.1, size: 0.95 },
+        { dist: planetRadius * 3.6, speed: 1.4, phase: 4.3, size: 1.3 },
+        { dist: planetRadius * 4.8, speed: -0.9, phase: 1.2, size: 1.45 },
+      ]
+
+      miniOrbits.forEach((orb) => {
+        const ang = simTime * orb.speed + orb.phase
+        const ox = centerX + Math.cos(ang) * orb.dist
+        const oy = centerY + Math.sin(ang) * (orb.dist * 0.55)
+
+        // Tiny Star Glow Halo
+        ctx.beginPath()
+        ctx.fillStyle = accent
+        ctx.globalAlpha = universeFactor * (0.55 + norm * 0.35)
+        ctx.arc(ox, oy, orb.size * 2.2, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Tiny Star White Core
+        ctx.beginPath()
+        ctx.fillStyle = isWhiteBlur ? "#000" : "#ffffff"
+        ctx.globalAlpha = universeFactor * 0.95
+        ctx.arc(ox, oy, orb.size, 0, Math.PI * 2)
+        ctx.fill()
+      })
+
+      ctx.restore()
+    }
+
+    // 4. Punchy yet smooth glowing neon ribbons with feathered tail fade
     const drawLine = (isSecond) => {
       let pBase = isSecond ? -this.moonPhase : this.moonPhase
       let currentDir = this.isSpecialMode ? 1 : this.moonDir
       const segmentLen = this.isSpecialMode
-        ? 0.8 + norm * 1.5
-        : 0.4 + collisionFactor * 0.6 + norm * 0.8
+        ? 0.82 + norm * 0.75
+        : 0.55 + norm * 0.7
 
       ctx.lineCap = "round"
+      const step = 0.04
 
-      const step = 0.05
+      // Pass 1: Luminous colored neon glow ribbon with feathered fade
+      ctx.save()
+      ctx.strokeStyle = accent
+      ctx.shadowColor = accent
+      ctx.shadowBlur = isWhiteBlur ? 0 : 12 + norm * 12
+
       for (let s = 0; s <= segmentLen; s += step) {
         const dir = isSecond ? -currentDir : currentDir
         const p1 = pBase - s * dir
@@ -1322,81 +1728,241 @@ class MusicVisualizer {
         const pos2 = getPos(p2, currentRotY, currentRotX, shapeMorph)
 
         const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
-        const fadeFactor = 1 - s / segmentLen
+        const fadeFactor = Math.pow(1 - s / segmentLen, 1.45) // Silky smooth tail fade
 
         ctx.beginPath()
-        ctx.lineWidth =
-          (2.5 + collisionFactor * 4 + norm * 5) * (0.4 + 0.6 * zFactor)
-        ctx.strokeStyle = accent
+        ctx.lineWidth = (3.0 + norm * 2.5) * (0.5 + 0.65 * zFactor)
         ctx.globalAlpha =
-          (0.4 + collisionFactor * 0.6) * (0.2 + 0.8 * zFactor) * fadeFactor
+          (0.65 + norm * 0.3) * (0.35 + 0.65 * zFactor) * fadeFactor
 
         ctx.moveTo(pos1.x, pos1.y)
         ctx.lineTo(pos2.x, pos2.y)
         ctx.stroke()
       }
+      ctx.restore()
 
+      // Pass 2: High-energy white core stripe
+      if (!isWhiteBlur) {
+        ctx.save()
+        ctx.strokeStyle = "rgba(255,255,255,0.9)"
+        ctx.shadowBlur = 2
+        for (let s = 0; s <= segmentLen * 0.58; s += step) {
+          const dir = isSecond ? -currentDir : currentDir
+          const p1 = pBase - s * dir
+          const p2 = pBase - (s + step) * dir
+
+          const pos1 = getPos(p1, currentRotY, currentRotX, shapeMorph)
+          const pos2 = getPos(p2, currentRotY, currentRotX, shapeMorph)
+
+          const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
+          const fadeFactor = Math.pow(1 - s / (segmentLen * 0.58), 1.5)
+
+          ctx.beginPath()
+          ctx.lineWidth = (1.3 + norm * 0.9) * (0.6 + 0.5 * zFactor)
+          ctx.globalAlpha =
+            (0.75 + norm * 0.22) * (0.4 + 0.6 * zFactor) * fadeFactor
+
+          ctx.moveTo(pos1.x, pos1.y)
+          ctx.lineTo(pos2.x, pos2.y)
+          ctx.stroke()
+        }
+        ctx.restore()
+      }
+
+      // 5. Luminous 3D Light Head Bead
       const headPos = getPos(pBase, currentRotY, currentRotX, shapeMorph)
       const headZFactor = (headPos.z + amplitudeX) / (2 * amplitudeX)
-      ctx.beginPath()
-      ctx.fillStyle = "#fff"
-      ctx.globalAlpha =
-        (0.8 + collisionFactor * 0.2) * (0.5 + 0.5 * headZFactor)
-      ctx.arc(
+      const headRadius = (2.2 + norm * 1.3) * (0.7 + 0.4 * headZFactor)
+
+      // Soft ambient neon halo flare
+      ctx.save()
+      ctx.shadowColor = accent
+      ctx.shadowBlur = isWhiteBlur ? 0 : 12 + norm * 8
+      const haloGrad = ctx.createRadialGradient(
         headPos.x,
         headPos.y,
-        (1.5 + collisionFactor * 2 + norm * 2) * (0.6 + 0.4 * headZFactor),
         0,
-        Math.PI * 2,
+        headPos.x,
+        headPos.y,
+        headRadius * 2.6,
       )
+      haloGrad.addColorStop(
+        0,
+        isWhiteBlur ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.8)",
+      )
+      haloGrad.addColorStop(0.4, accent)
+      haloGrad.addColorStop(1, "transparent")
+      ctx.fillStyle = haloGrad
+      ctx.globalAlpha = (0.6 + norm * 0.3) * (0.5 + 0.5 * headZFactor)
+      ctx.beginPath()
+      ctx.arc(headPos.x, headPos.y, headRadius * 2.6, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+
+      // Core White Light Dot
+      ctx.beginPath()
+      ctx.fillStyle = isWhiteBlur ? "#000" : "#ffffff"
+      ctx.globalAlpha = 0.95 * (0.5 + 0.5 * headZFactor)
+      ctx.arc(headPos.x, headPos.y, headRadius, 0, Math.PI * 2)
       ctx.fill()
     }
 
     drawLine(false)
     drawLine(true)
 
-    if (!this.isSpecialMode && collisionFactor > 0.8) {
-      const burstSize = (collisionFactor - 0.8) * 70 + norm * 50
-      const grad = ctx.createRadialGradient(
-        centerX,
-        centerY,
-        0,
-        centerX,
-        centerY,
-        burstSize,
-      )
-      grad.addColorStop(0, "#fff")
-      grad.addColorStop(0.4, accent)
-      grad.addColorStop(1, "transparent")
-      ctx.fillStyle = grad
-      ctx.globalAlpha = (collisionFactor - 0.8) * 5
-      ctx.beginPath()
-      ctx.arc(centerX, centerY, burstSize, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
     ctx.globalAlpha = 1.0
+  }
+
+  _initAudioChannel() {
+    try {
+      this._audioChannel = new BroadcastChannel("startpage_real_audio_channel")
+      this._audioChannel.onmessage = (e) => {
+        if (e.data?.type === "AUDIO_BANDS" && Array.isArray(e.data.bands)) {
+          this.feedFrequencyData(e.data.bands)
+        } else if (e.data?.type === "AUDIO_BANDS_STOP") {
+          this.feedFrequencyData(null)
+        }
+      }
+    } catch (e) {}
+
+    this._runtimeMessageListener = (message) => {
+      if (message?.type === "AUDIO_BANDS" && Array.isArray(message.bands)) {
+        this.feedFrequencyData(message.bands)
+      } else if (message?.type === "AUDIO_BANDS_STOP") {
+        this.feedFrequencyData(null)
+      }
+    }
+    try {
+      chrome.runtime?.onMessage?.addListener(this._runtimeMessageListener)
+    } catch (e) {}
   }
 
   feedFrequencyData(bands) {
     this._realBands = bands && Array.isArray(bands) ? bands : null
   }
 
-  _startCSSLoop() {
+  setAudioReactive(enabled) {
+    if (this.isPlaying) {
+      this._startCSSLoop()
+    }
+  }
+
+  _startClassicCSS() {
     this._stopCSSLoop()
+    if (this.container) this.container.classList.remove("real-audio-active")
     this.bars.forEach((bar) => {
+      bar.style.removeProperty("height")
+      bar.style.removeProperty("animation")
+      bar.style.removeProperty("transition")
       bar.classList.add("playing")
     })
   }
 
+  _startBeatLoop() {
+    this._stopCSSLoop()
+    this.bars.forEach((bar) => {
+      bar.classList.remove("playing")
+      bar.style.setProperty("animation", "none", "important")
+      bar.style.setProperty("transition", "none", "important")
+    })
+
+    let simTime = 0
+    let lastTs = 0
+
+    const loop = (ts) => {
+      if (!this.isPlaying) return
+      this._cssAnimId = requestAnimationFrame(loop)
+
+      if (!lastTs) lastTs = ts
+      const dt = Math.min((ts - lastTs) / 1000, 0.05)
+      lastTs = ts
+      simTime += dt
+
+      const bandsCount = this._realBands?.length || 0
+      const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+      if (this.container) {
+        this.container.classList.toggle("real-audio-active", hasRealAudio)
+      }
+
+      if (
+        !this._currentScales ||
+        this._currentScales.length !== this.bars.length
+      ) {
+        this._currentScales = new Array(this.bars.length).fill(0.1)
+      }
+
+      // Procedural beat simulation (Kick drum at ~128 BPM with sub-bass punch)
+      const bpm = 128
+      const beatPhase = (simTime * (bpm / 60)) % 1
+      const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+      const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+      const hat = (Math.sin(simTime * 24.0) * 0.5 + 0.5) * 0.35
+
+      this.bars.forEach((bar, index) => {
+        let targetNorm = 0
+
+        if (hasRealAudio) {
+          // 100% REAL AUDIO FREQUENCY
+          const bandIdx = Math.min(
+            bandsCount - 1,
+            Math.floor((index / this.bars.length) * bandsCount),
+          )
+          const rawVal = this._realBands[bandIdx] || 0
+          targetNorm = Math.min(1.0, Math.pow(rawVal, 0.45) * 1.65)
+        } else {
+          // PROCEDURAL BEAT SIMULATION (Dynamic spring bounce)
+          const barPhase = index * 0.65
+          const bounce = Math.sin(simTime * 8.0 + barPhase) * 0.5 + 0.5
+          const barKick =
+            index === 0 || index === 1
+              ? kick * 1.15
+              : index === 2 || index === 3
+                ? kick * 0.75 + bounce * 0.35
+                : hat + bounce * 0.45
+          targetNorm = Math.max(
+            0.1,
+            Math.min(1.0, barKick * 0.85 + bounce * 0.25 + sub * 0.15),
+          )
+        }
+
+        const smoothing =
+          targetNorm > this._currentScales[index] ? 0.8 : 0.35
+        this._currentScales[index] +=
+          (targetNorm - this._currentScales[index]) * smoothing
+
+        const curVal = this._currentScales[index]
+        const heightPx = Math.max(5, Math.round(5 + curVal * 38))
+
+        bar.style.setProperty("height", `${heightPx}px`, "important")
+        bar.style.setProperty("animation", "none", "important")
+        bar.style.setProperty("transition", "none", "important")
+      })
+    }
+
+    this._cssAnimId = requestAnimationFrame(loop)
+  }
+
+  _startCSSLoop() {
+    const isReactive = getSettings().musicRealAudioReactive === true
+    if (isReactive) {
+      this._startBeatLoop()
+    } else {
+      this._startClassicCSS()
+    }
+  }
 
   _stopCSSLoop() {
     if (this._cssAnimId) {
       cancelAnimationFrame(this._cssAnimId)
       this._cssAnimId = null
     }
+    if (this.container) this.container.classList.remove("real-audio-active")
+    this._currentScales = []
     this.bars.forEach((bar) => {
-      bar.style.height = ""
+      bar.style.removeProperty("height")
+      bar.style.removeProperty("animation")
+      bar.style.removeProperty("transition")
       bar.classList.remove("playing")
     })
   }
@@ -1429,6 +1995,12 @@ class MusicVisualizer {
   destroy() {
     window.removeEventListener("resize", this._resizeListener)
     document.removeEventListener("visibilitychange", this._visibilityListener)
+    if (this._audioChannel) {
+      try {
+        this._audioChannel.close()
+      } catch (e) {}
+      this._audioChannel = null
+    }
     this._stopPixel(true)
     this._stopMoon8(true)
     this._stopHeartbeat(true)

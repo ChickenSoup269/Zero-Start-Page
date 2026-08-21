@@ -122,6 +122,19 @@ export class MusicPlayer {
       if (key === "musicVisualizerCpuSave") {
         this.applyCpuSave(value)
       }
+      if (key === "musicRealAudioReactive") {
+        this.visualizer.setAudioReactive(value)
+        if (value && this.isPlaying) {
+          chrome.runtime
+            ?.sendMessage?.({ action: "startRealAudioCapture" })
+            ?.catch?.(() => {})
+        } else if (!value) {
+          chrome.runtime
+            ?.sendMessage?.({ action: "stopRealAudioCapture" })
+            ?.catch?.(() => {})
+          this.visualizer.feedFrequencyData(null)
+        }
+      }
     }
     this._visibilityHandler = () => {
       if (this._destroyed) return
@@ -600,6 +613,9 @@ export class MusicPlayer {
       this.disc.classList.add("playing")
       if (wrapper) wrapper.classList.add("playing")
       this.visualizer.start()
+      if (getSettings().musicRealAudioReactive === true) {
+        chrome.runtime?.sendMessage?.({ action: "startRealAudioCapture" })?.catch?.(() => {})
+      }
     } else {
       this.disc.classList.remove("playing")
       if (wrapper) wrapper.classList.remove("playing")
@@ -609,13 +625,38 @@ export class MusicPlayer {
     // Update thumbnail
     if (data.thumbnail && data.thumbnail !== this.currentThumbnail) {
       this.currentThumbnail = data.thumbnail
-      this.disc.style.backgroundImage = `url(${data.thumbnail})`
-      this.disc.style.backgroundSize = "cover"
-      this.disc.style.backgroundPosition = "center"
-      this.disc.classList.add("has-thumb")
-      if (this.bgBlur) this.bgBlur.style.backgroundImage = `url(${data.thumbnail})`
-      if (this.useDefaultColor === "thumbnail") {
-        this.applyThumbnailColor(data.thumbnail)
+      const applyThumb = (url) => {
+        this.disc.style.backgroundImage = `url("${url}")`
+        this.disc.style.backgroundSize = "cover"
+        this.disc.style.backgroundPosition = "center"
+        this.disc.classList.add("has-thumb")
+        if (this.bgBlur) this.bgBlur.style.backgroundImage = `url("${url}")`
+        if (this.useDefaultColor === "thumbnail") {
+          this.applyThumbnailColor(url)
+        }
+      }
+      applyThumb(data.thumbnail)
+
+      // Fallback for rare YouTube videos without maxresdefault
+      if (data.thumbnail.includes("maxresdefault.jpg")) {
+        const testImg = new Image()
+        testImg.onload = () => {
+          if (testImg.naturalWidth === 120 && testImg.naturalHeight === 90) {
+            const fallback = data.thumbnail.replace(
+              "maxresdefault.jpg",
+              "hqdefault.jpg",
+            )
+            applyThumb(fallback)
+          }
+        }
+        testImg.onerror = () => {
+          const fallback = data.thumbnail.replace(
+            "maxresdefault.jpg",
+            "hqdefault.jpg",
+          )
+          applyThumb(fallback)
+        }
+        testImg.src = data.thumbnail
       }
     } else if (!data.thumbnail) {
       this.currentThumbnail = ""
