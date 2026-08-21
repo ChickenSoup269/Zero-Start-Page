@@ -5556,6 +5556,13 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
+    if (DOM.musicRealAudioReactiveCheckbox) {
+      DOM.musicRealAudioReactiveCheckbox.checked = settings.musicRealAudioReactive === true
+    }
+    if (DOM.lcpMusicRealAudioReactive) {
+      DOM.lcpMusicRealAudioReactive.checked = settings.musicRealAudioReactive === true
+    }
+    chrome.storage?.local?.set({ musicRealAudioReactive: settings.musicRealAudioReactive === true })
     if (DOM.musicPlayerUseDefaultColorMode) {
       if (settings.musicPlayerUseDefaultColor === "thumbnail") {
         DOM.musicPlayerUseDefaultColorMode.value = "thumbnail"

@@ -97,19 +97,36 @@
       const zingPlayButton = document.querySelector(
         ".player-controls__container .btn-play, .zm-btn.btn-play",
       )
-      const soundCloudPlayButton = document.querySelector(".playControl")
-      const mediaState = navigator.mediaSession?.playbackState
+      const spotifyPlayBtn = document.querySelector(
+        '[data-testid="control-button-playpause"]',
+      )
+      const spotifyIsPlaying = Boolean(
+        spotifyPlayBtn &&
+          (spotifyPlayBtn
+            .getAttribute("aria-label")
+            ?.toLowerCase()
+            .includes("pause") ||
+            spotifyPlayBtn
+              .getAttribute("aria-label")
+              ?.toLowerCase()
+              .includes("tạm dừng") ||
+            spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
+            spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
+            navigator.mediaSession?.playbackState === "playing"),
+      )
       const paused =
-        mediaState === "playing"
-          ? false
-          : mediaState === "paused"
-            ? true
-            : isZing
-              ? !zingPlayButton?.classList.contains("is-playing") &&
-                !zingPlayButton?.classList.contains("playing")
-              : isSoundCloud
-                ? !soundCloudPlayButton?.classList.contains("playing")
-                : playPauseLabel.includes("play")
+        isSpotify
+          ? !spotifyIsPlaying
+          : mediaState === "playing"
+            ? false
+            : mediaState === "paused"
+              ? true
+              : isZing
+                ? !zingPlayButton?.classList.contains("is-playing") &&
+                  !zingPlayButton?.classList.contains("playing")
+                : isSoundCloud
+                  ? !soundCloudPlayButton?.classList.contains("playing")
+                  : playPauseLabel.includes("play")
       return { currentTime, duration, paused }
     })()
 
@@ -196,22 +213,29 @@
     ])
 
     const paused =
-      isSoundCloud && webPlayback
+      isSpotify && webPlayback
         ? webPlayback.paused
-        : video
-          ? video.paused
-          : webPlayback?.paused ?? true
+        : isSoundCloud && webPlayback
+          ? webPlayback.paused
+          : video
+            ? video.paused
+            : (webPlayback?.paused ?? true)
 
     const currentTime =
-      video && typeof video.currentTime === "number" && video.currentTime > 0
-        ? video.currentTime
-        : webPlayback?.currentTime || 0
+      (isSpotify || isSoundCloud || isZing) && webPlayback
+        ? webPlayback.currentTime
+        : video && typeof video.currentTime === "number" && video.currentTime > 0
+          ? video.currentTime
+          : (webPlayback?.currentTime || 0)
 
-    const duration = video
-      ? isFinite(video.duration) && video.duration > 0
-        ? video.duration
-        : webPlayback?.duration || 0
-      : webPlayback?.duration || 0
+    const duration =
+      (isSpotify || isSoundCloud || isZing) && webPlayback && webPlayback.duration > 0
+        ? webPlayback.duration
+        : video
+          ? isFinite(video.duration) && video.duration > 0
+            ? video.duration
+            : (webPlayback?.duration || 0)
+          : (webPlayback?.duration || 0)
 
     const thumbnail = (() => {
       if (metadata && metadata.artwork && metadata.artwork.length > 0) {
@@ -226,7 +250,13 @@
 
       if (window.location.href.includes("youtube.com")) {
         const videoId = new URLSearchParams(window.location.search).get("v")
-        if (videoId) return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+        if (videoId) return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+
+        const ytMusicThumb =
+          document.querySelector("ytmusic-player-bar img")?.src ||
+          document.querySelector(".image.ytmusic-player-bar img")?.src ||
+          document.querySelector("#thumbnail img")?.src
+        if (ytMusicThumb) return ytMusicThumb
 
         const ytThumb =
           document.querySelector("img.ytp-videowall-still-image")?.src ||

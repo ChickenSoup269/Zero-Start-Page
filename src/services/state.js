@@ -339,6 +339,7 @@ export const defaultSettings = {
   musicPlayerUseDefaultColor: false,
   musicSourceIconColorMode: "brand",
   musicVisualizerCpuSave: true,
+  musicRealAudioReactive: false,
   sideControlsGhostMode: false,
   flipLayout: false,
   showDonateButton: true,

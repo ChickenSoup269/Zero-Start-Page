@@ -6734,6 +6734,74 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  const handleAudioReactiveToggle = async (isChecked) => {
+    if (isChecked) {
+      if (chrome.permissions && chrome.permissions.request) {
+        chrome.permissions.request(
+          { permissions: ["tabCapture"] },
+          (granted) => {
+            if (granted) {
+              if (DOM.musicRealAudioReactiveCheckbox)
+                DOM.musicRealAudioReactiveCheckbox.checked = true
+              if (DOM.lcpMusicRealAudioReactive)
+                DOM.lcpMusicRealAudioReactive.checked = true
+              handleSettingUpdate("musicRealAudioReactive", true)
+              chrome.storage?.local?.set({ musicRealAudioReactive: true }, () => {
+                chrome.runtime
+                  ?.sendMessage({ action: "startRealAudioCapture" })
+                  ?.catch?.(() => {})
+              })
+              window.dispatchEvent(
+                new CustomEvent("settingsUpdated", {
+                  detail: {
+                    key: "musicRealAudioReactive",
+                    value: true,
+                  },
+                }),
+              )
+            } else {
+              if (DOM.musicRealAudioReactiveCheckbox)
+                DOM.musicRealAudioReactiveCheckbox.checked = false
+              if (DOM.lcpMusicRealAudioReactive)
+                DOM.lcpMusicRealAudioReactive.checked = false
+              handleSettingUpdate("musicRealAudioReactive", false)
+              chrome.storage?.local?.set({ musicRealAudioReactive: false })
+            }
+          },
+        )
+      } else {
+        handleSettingUpdate("musicRealAudioReactive", true)
+        chrome.storage?.local?.set({ musicRealAudioReactive: true })
+      }
+    } else {
+      if (DOM.musicRealAudioReactiveCheckbox)
+        DOM.musicRealAudioReactiveCheckbox.checked = false
+      if (DOM.lcpMusicRealAudioReactive)
+        DOM.lcpMusicRealAudioReactive.checked = false
+      handleSettingUpdate("musicRealAudioReactive", false)
+      chrome.storage?.local?.set({ musicRealAudioReactive: false }, () => {
+        chrome.runtime
+          ?.sendMessage({ action: "stopRealAudioCapture" })
+          ?.catch?.(() => {})
+      })
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: {
+            key: "musicRealAudioReactive",
+            value: false,
+          },
+        }),
+      )
+    }
+  }
+
+  DOM.musicRealAudioReactiveCheckbox?.addEventListener("change", (e) => {
+    handleAudioReactiveToggle(e.target.checked)
+  })
+  DOM.lcpMusicRealAudioReactive?.addEventListener("change", (e) => {
+    handleAudioReactiveToggle(e.target.checked)
+  })
+
   DOM.showQuotesCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showQuotes", DOM.showQuotesCheckbox.checked)
     window.dispatchEvent(

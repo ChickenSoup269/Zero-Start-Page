@@ -182,9 +182,146 @@ chrome.action?.onClicked?.addListener((tab) => {
     }
   })
 })
+let activeCapturingTabId = null
+
+async function ensureOffscreenDocument() {
+  if (!chrome.offscreen) return false
+  try {
+    const hasDoc = await chrome.offscreen.hasDocument()
+    if (hasDoc) return true
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: ["USER_MEDIA", "AUDIO_PLAYBACK"],
+      justification:
+        "Capture media tab audio to compute frequency bands for the music visualizer",
+    })
+    return true
+  } catch (err) {
+    console.warn("Failed to create offscreen document:", err)
+    return false
+  }
+}
+
+function isValidCapturableTab(tab) {
+  if (!tab || !tab.id || tab.id < 0) return false
+  const url = tab.url || tab.pendingUrl || ""
+  if (
+    !url ||
+    url.startsWith("chrome://") ||
+    url.startsWith("chrome-extension://") ||
+    url.startsWith("edge://") ||
+    url.startsWith("about:") ||
+    url.startsWith("devtools://") ||
+    url.startsWith("view-source:")
+  ) {
+    return false
+  }
+  return isKnownMediaTab(tab)
+}
+
+function findAndCaptureActiveMediaTab() {
+  if (lastKnownMediaTabId) {
+    chrome.tabs.get(lastKnownMediaTabId, (tab) => {
+      if (!chrome.runtime.lastError && tab && isValidCapturableTab(tab)) {
+        startTabAudioCapture(tab.id)
+      } else {
+        queryAudibleAndCapture()
+      }
+    })
+    return
+  }
+  queryAudibleAndCapture()
+}
+
+function queryAudibleAndCapture() {
+  chrome.tabs.query({ audible: true }, (tabs) => {
+    const valid = tabs?.find((t) => isValidCapturableTab(t))
+    if (valid) {
+      rememberKnownMediaTab(valid)
+      startTabAudioCapture(valid.id)
+      return
+    }
+    chrome.tabs.query({}, (allTabs) => {
+      const mediaTab = allTabs?.find((t) => isValidCapturableTab(t))
+      if (mediaTab) {
+        rememberKnownMediaTab(mediaTab)
+        startTabAudioCapture(mediaTab.id)
+      }
+    })
+  })
+}
+
+async function startTabAudioCapture(tabId) {
+  if (!chrome.tabCapture || !tabId) return
+  try {
+    const tab = await new Promise((resolve) => {
+      chrome.tabs.get(tabId, (t) => {
+        if (chrome.runtime.lastError || !t) resolve(null)
+        else resolve(t)
+      })
+    })
+
+    if (!isValidCapturableTab(tab)) {
+      return
+    }
+
+    const offscreenOk = await ensureOffscreenDocument()
+    if (!offscreenOk) return
+
+    chrome.tabCapture.getMediaStreamId({ targetTabId: tabId }, (streamId) => {
+      if (chrome.runtime.lastError || !streamId) {
+        // Tab capture on background tabs is restricted by Chrome sandbox policy when focused on extension pages
+        return
+      }
+      activeCapturingTabId = tabId
+      chrome.runtime
+        .sendMessage({
+          target: "offscreen",
+          type: "START_AUDIO_CAPTURE",
+          streamId,
+          tabId,
+        })
+        .catch(() => {})
+    })
+  } catch (e) {
+    console.warn("[Background Audio] startTabAudioCapture error:", e)
+  }
+}
+
+async function stopTabAudioCapture() {
+  activeCapturingTabId = null
+  try {
+    if (chrome.offscreen && (await chrome.offscreen.hasDocument())) {
+      chrome.runtime
+        .sendMessage({
+          target: "offscreen",
+          type: "STOP_AUDIO_CAPTURE",
+        })
+        .catch(() => {})
+    }
+  } catch (e) {}
+}
+
+async function maybeStartTabAudioCapture(tabId) {
+  chrome.storage.local.get(["musicRealAudioReactive"], (data) => {
+    if (data.musicRealAudioReactive === true) {
+      startTabAudioCapture(tabId)
+    }
+  })
+}
+
+async function maybeStopTabAudioCapture(tabId) {
+  if (activeCapturingTabId === tabId) {
+    stopTabAudioCapture()
+  }
+}
+
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   clearRememberedKnownMediaTab(tabId)
   delete mediaStates[tabId]
+  if (activeCapturingTabId === tabId) {
+    stopTabAudioCapture()
+  }
 })
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   // 2. LƯỚI QUÉT CHÍ MẠNG: Chỉ chạy khi tab đã complete để không ngắt quãng quá trình tải
@@ -209,6 +346,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         lastUpdated: Date.now(),
       }
 
+      if (request.state?.isPlaying) {
+        maybeStartTabAudioCapture(sender.tab.id)
+      } else {
+        maybeStopTabAudioCapture(sender.tab.id)
+      }
+
       // Broadcast update to all Startpage tabs
       chrome.tabs.query({}, (tabs) => {
         const startpageUrl = chrome.runtime.getURL("index.html")
@@ -230,6 +373,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
     }
     return
+  }
+
+  if (request.action === "startRealAudioCapture") {
+    chrome.storage.local.set({ musicRealAudioReactive: true }, () => {
+      if (request.tabId) {
+        startTabAudioCapture(request.tabId)
+      } else {
+        findAndCaptureActiveMediaTab()
+      }
+    })
+    sendResponse({ ok: true })
+    return true
+  }
+
+  if (request.action === "stopRealAudioCapture") {
+    chrome.storage.local.set({ musicRealAudioReactive: false }, () => {
+      stopTabAudioCapture()
+    })
+    sendResponse({ ok: true })
+    return true
   }
 
   if (request.action === "updateActionBehavior") {
@@ -719,22 +882,36 @@ function getMediaFromTab(tabId, sendResponse) {
               ?.getAttribute("aria-label")
               ?.toLowerCase() ||
             ""
-          const zingPlayButton = document.querySelector(
-            ".player-controls__container .btn-play, .zm-btn.btn-play",
+          const spotifyPlayBtn = document.querySelector(
+            '[data-testid="control-button-playpause"]',
           )
-          const soundCloudPlayButton = document.querySelector(".playControl")
-          const mediaState = navigator.mediaSession?.playbackState
+          const spotifyIsPlaying = Boolean(
+            spotifyPlayBtn &&
+              (spotifyPlayBtn
+                .getAttribute("aria-label")
+                ?.toLowerCase()
+                .includes("pause") ||
+                spotifyPlayBtn
+                  .getAttribute("aria-label")
+                  ?.toLowerCase()
+                  .includes("tạm dừng") ||
+                spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
+                spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
+                navigator.mediaSession?.playbackState === "playing"),
+          )
           const paused =
-            mediaState === "playing"
-              ? false
-              : mediaState === "paused"
-                ? true
-                : isZing
-                  ? !zingPlayButton?.classList.contains("is-playing") &&
-                    !zingPlayButton?.classList.contains("playing")
-                  : isSoundCloud
-                    ? !soundCloudPlayButton?.classList.contains("playing")
-                    : playPauseLabel.includes("play")
+            isSpotify
+              ? !spotifyIsPlaying
+              : mediaState === "playing"
+                ? false
+                : mediaState === "paused"
+                  ? true
+                  : isZing
+                    ? !zingPlayButton?.classList.contains("is-playing") &&
+                      !zingPlayButton?.classList.contains("playing")
+                    : isSoundCloud
+                      ? !soundCloudPlayButton?.classList.contains("playing")
+                      : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()
 
@@ -841,22 +1018,31 @@ function getMediaFromTab(tabId, sendResponse) {
             nctArtist ||
             "",
           paused:
-            isSoundCloud && webPlayback
+            isSpotify && webPlayback
               ? webPlayback.paused
-              : video
-                ? video.paused
-                : (webPlayback?.paused ?? true),
+              : isSoundCloud && webPlayback
+                ? webPlayback.paused
+                : video
+                  ? video.paused
+                  : (webPlayback?.paused ?? true),
           currentTime:
-            video &&
-            typeof video.currentTime === "number" &&
-            video.currentTime > 0
-              ? video.currentTime
-              : webPlayback?.currentTime || 0,
-          duration: video
-            ? isFinite(video.duration) && video.duration > 0
-              ? video.duration
-              : webPlayback?.duration || 0
-            : webPlayback?.duration || 0,
+            (isSpotify || isSoundCloud || isZing) && webPlayback
+              ? webPlayback.currentTime
+              : video &&
+                  typeof video.currentTime === "number" &&
+                  video.currentTime > 0
+                ? video.currentTime
+                : (webPlayback?.currentTime || 0),
+          duration:
+            (isSpotify || isSoundCloud || isZing) &&
+            webPlayback &&
+            webPlayback.duration > 0
+              ? webPlayback.duration
+              : video
+                ? isFinite(video.duration) && video.duration > 0
+                  ? video.duration
+                  : (webPlayback?.duration || 0)
+                : (webPlayback?.duration || 0),
           url: window.location.href,
           source: isSpotify
             ? "spotify"
@@ -887,9 +1073,15 @@ function getMediaFromTab(tabId, sendResponse) {
                 "v",
               )
               if (videoId)
-                return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+                return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
 
               // YouTube Music player bar thumbnail fallback
+              const ytMusicThumb =
+                document.querySelector("ytmusic-player-bar img")?.src ||
+                document.querySelector(".image.ytmusic-player-bar img")?.src ||
+                document.querySelector("#thumbnail img")?.src
+              if (ytMusicThumb) return ytMusicThumb
+
               const ytThumb =
                 document.querySelector("img.ytp-videowall-still-image")?.src ||
                 document.querySelector("img.yt-music-player-bar")?.src ||

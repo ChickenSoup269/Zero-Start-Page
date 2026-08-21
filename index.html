@@ -528,6 +528,14 @@
                         <option value="minimal" data-i18n="style_minimal">Minimal</option>
                     </select>
                 </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-bolt lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_music_real_audio_reactive">Audio Reactive</span>
+                    <label class="lcp-switch" for="lcp-music-real-audio-reactive">
+                        <input type="checkbox" id="lcp-music-real-audio-reactive">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
             </div>
 
             <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
@@ -2764,6 +2772,13 @@
                                 <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music
                                     Player</label>
                                 <input type="checkbox" id="show-music-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <div>
+                                    <label for="music-real-audio-reactive-checkbox" data-i18n="settings_music_real_audio_reactive">Real-time Audio Reactive (Beta)</label>
+                                    <div class="setting-help-text" data-i18n="settings_music_real_audio_reactive_hint" style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Capture tab audio in real-time so visualizer waves react to actual bass & beats.</div>
+                                </div>
+                                <input type="checkbox" id="music-real-audio-reactive-checkbox">
                             </div>
                             <div class="setting-item">
                                 <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
