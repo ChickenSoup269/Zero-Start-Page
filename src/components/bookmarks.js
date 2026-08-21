@@ -2410,6 +2410,8 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   const i18n = geti18n()
   const container = document.getElementById("bookmarks-container")
   if (!container) return
+  container.scrollTop = 0
+  container.scrollLeft = 0
 
   const isMinimalModeMatch = document.body.className.match(
     /bookmark-(sidebar|taskbar|taskbar-top|taskbar-left|taskbar-right)-mode/,
@@ -2464,28 +2466,26 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
     if (overflowItems.length > 25) requiredHiddenCount = overflowItems.length - 25
   } else if (overflowItems.length > 0) {
     const firstItem = overflowItems[0]
+    const itemH = (firstItem.offsetHeight || 52) + 8
     if (isSidebar) {
-      if (overflowItems.length > 10) {
-        requiredHiddenCount = overflowItems.length - 10
+      const maxVisibleSlots = Math.max(3, Math.floor((window.innerHeight - 175) / itemH))
+      if (overflowItems.length > maxVisibleSlots) {
+        requiredHiddenCount = overflowItems.length - maxVisibleSlots
       }
       const overflowAmt = container.scrollHeight - container.clientHeight
       if (overflowAmt > 2) {
-        const itemH = firstItem.offsetHeight + 12 // estimate gap
         const overflowHiddenCount = Math.ceil((overflowAmt + itemH) / itemH)
         requiredHiddenCount = Math.max(requiredHiddenCount, overflowHiddenCount)
       }
     } else {
-      let limit = 12
-      if (isTaskbarLeft || isTaskbarRight) {
-        limit = 9
-      }
+      const maxTaskbarSlots = Math.max(3, Math.floor((window.innerHeight - 180) / itemH))
+      let limit = isTaskbarLeft || isTaskbarRight ? Math.min(9, maxTaskbarSlots) : Math.min(12, maxTaskbarSlots)
       if (overflowItems.length > limit) {
         requiredHiddenCount = overflowItems.length - limit
       }
       // Taskbars are forced to vertical layout via CSS override, so we must check vertical overflow (scrollHeight)
       const overflowAmt = container.scrollHeight - container.clientHeight
       if (overflowAmt > 2 || (isTaskbarRight && container.getBoundingClientRect().top > firstItem.getBoundingClientRect().top)) {
-        const itemH = firstItem.offsetHeight + 12
         let actualOverflow = overflowAmt
         if (isTaskbarRight) {
           const cRect = container.getBoundingClientRect()

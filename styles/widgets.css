@@ -1059,9 +1059,12 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   align-items: flex-start;
   margin-top: var(--space-3);
   gap: var(--bookmark-gap, var(--space-3));
-  max-width: 800px;
+  max-width: min(880px, calc(100vw - 32px));
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
+  padding: 0 var(--space-1);
 }
 
 .bookmark,
@@ -2039,6 +2042,29 @@ body.ghost-controls .side-controls:hover {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: top;
   position: relative;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) transparent;
+  box-sizing: border-box;
+}
+
+.quick-access-bar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.quick-access-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.quick-access-bar::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  border-radius: 999px;
+}
+
+.quick-access-bar::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
 }
 
 /* === LIGHT MODE (White Background) === */
@@ -2249,24 +2275,90 @@ body.quick-access-white .lcp-slider-row input[type="range"]:active::-webkit-slid
 }
 
 .side-controls.light-mode .lcp-preset-btn,
-body.quick-access-white .lcp-preset-btn {
+body.quick-access-white .lcp-preset-btn,
+body.quick-access-light .lcp-preset-btn {
   background: rgba(0, 0, 0, 0.04) !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
   color: #334155 !important;
 }
 
 .side-controls.light-mode .lcp-preset-btn:hover,
-body.quick-access-white .lcp-preset-btn:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
+body.quick-access-white .lcp-preset-btn:hover,
+body.quick-access-light .lcp-preset-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+  border-color: var(--accent-color) !important;
   color: #0f172a !important;
 }
 
 .side-controls.light-mode .lcp-preset-btn.active,
-body.quick-access-white .lcp-preset-btn.active {
+body.quick-access-white .lcp-preset-btn.active,
+body.quick-access-light .lcp-preset-btn.active {
   background: var(--accent-color) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   border-color: var(--accent-color) !important;
+  font-weight: 700 !important;
+}
+
+.side-controls.light-mode .lcp-preset-btn.active *,
+body.quick-access-white .lcp-preset-btn.active *,
+body.quick-access-light .lcp-preset-btn.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip,
+body.quick-access-white .lcp-btn-chip,
+body.quick-access-light .lcp-btn-chip {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip:hover,
+body.quick-access-white .lcp-btn-chip:hover,
+body.quick-access-light .lcp-btn-chip:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15) !important;
+  border-color: var(--accent-color) !important;
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.active,
+body.quick-access-white .lcp-btn-chip.active,
+body.quick-access-light .lcp-btn-chip.active {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.active *,
+body.quick-access-white .lcp-btn-chip.active *,
+body.quick-access-light .lcp-btn-chip.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn,
+body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn,
+body.quick-access-light .lcp-btn-chip.lcp-toggle-more-btn {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1) !important;
+  border: 1px dashed var(--accent-color) !important;
+  color: var(--accent-color, #0f172a) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn:hover,
+body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn:hover,
+body.quick-access-light .lcp-btn-chip.lcp-toggle-more-btn:hover {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-selected-badge,
+body.quick-access-white .lcp-selected-badge,
+body.quick-access-light .lcp-selected-badge {
+  color: var(--accent-color, #2563eb) !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
 }
 
 .side-controls.light-mode .lcp-slider,
@@ -2474,12 +2566,12 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   position: absolute;
   left: calc(100% + var(--space-2));
   top: 0;
-  width: min(380px, calc(100vw - 22px));
+  width: min(440px, calc(100vw - 24px));
   height: auto;
   max-height: calc(100vh - 40px);
   overflow-x: hidden;
   overflow-y: auto;
-  background: rgba(15, 18, 25, 0.9);
+  background: rgba(15, 18, 25, 0.92);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -2655,13 +2747,13 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--accent-color, #a8c0ff);
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
-  padding: 2px 9px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+  padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
   white-space: nowrap;
   letter-spacing: 0.2px;
-  max-width: 130px;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -2705,22 +2797,22 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 .lcp-btn-group.is-chips-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
 }
 
 .lcp-btn-group.is-radius-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  gap: 5px;
 }
 
 /* Individual Option Button Chips */
 .lcp-btn-chip {
-  padding: 6px 10px;
+  padding: 6px 11px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 0.78rem;
   font-weight: 500;
   font-family: inherit;
@@ -2735,22 +2827,27 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 }
 
 .lcp-btn-chip:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
   transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .lcp-btn-chip:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .lcp-btn-chip.active {
-  background: var(--accent-color, #6875f5);
-  border-color: var(--accent-color, #6875f5);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 104, 117, 245), 0.45);
+  background: var(--accent-color, #6875f5) !important;
+  border-color: var(--accent-color, #6875f5) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 12px rgba(var(--accent-color-rgb, 104, 117, 245), 0.45) !important;
+}
+
+.lcp-btn-chip.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 /* Radius button specific style */
@@ -2766,17 +2863,21 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 }
 
 .lcp-btn-chip.lcp-toggle-more-btn {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
-  border: 1px dashed rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  border: 1px dashed rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
   color: var(--accent-color, #a8c0ff);
   gap: 5px;
   font-weight: 600;
 }
 
 .lcp-btn-chip.lcp-toggle-more-btn:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
-  border-color: var(--accent-color, #a8c0ff);
-  color: #fff;
+  background: var(--accent-color, #a8c0ff) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.lcp-btn-chip.lcp-toggle-more-btn:hover * {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 .lcp-select {
@@ -2993,12 +3094,12 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 
 .lcp-preset-btn {
   flex: 1;
-  padding: 5px 0;
-  font-size: 0.72rem;
+  padding: 6px 0;
+  font-size: 0.74rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.88);
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 6px;
   cursor: pointer;
   text-align: center;
@@ -3010,8 +3111,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 }
 
 .lcp-preset-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
   color: #fff;
   transform: translateY(-1px);
 }
@@ -3024,8 +3125,12 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   background: var(--accent-color, #3b82f6) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   border-color: var(--accent-color, #3b82f6) !important;
-  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 59, 130, 246), 0.35);
+  box-shadow: 0 3px 12px rgba(var(--accent-color-rgb, 59, 130, 246), 0.45);
   font-weight: 700;
+}
+
+.lcp-preset-btn.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 /* Glass Panels */
@@ -8527,12 +8632,45 @@ body.context-menu-m3 .calendar-event-preview-desc {
 /* Specific fix for Notepad header in white-blur */
 .notepad-container.skin-white-blur .notepad-header h3 {
   background: none !important;
-  -webkit-text-fill-color: #000 !important;
+  -webkit-text-fill-color: #0f172a !important;
+  color: #0f172a !important;
+}
+
+.notepad-container.skin-white-blur .notepad-title-icon {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.notepad-container.skin-white-blur .notepad-search-wrap {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+.notepad-container.skin-white-blur .notepad-search-input {
+  color: #0f172a !important;
+}
+
+.notepad-container.skin-white-blur .notepad-search-input::placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.notepad-container.skin-white-blur .notepad-search-icon,
+.notepad-container.skin-white-blur .notepad-search-clear {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.notepad-container.skin-white-blur .note-item {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+.notepad-container.skin-white-blur .notes-empty-title {
+  color: #334155 !important;
 }
 
 .notepad-container.skin-white-blur .notepad-header #add-note-btn,
 .notepad-container.skin-white-blur .notepad-header #add-note-btn i {
-  color: #000000 !important;
+  color: var(--accent-contrast-color, #000000) !important;
 }
 
 /* === M3 ACCENT SKIN FOR WIDGETS === */
@@ -9293,26 +9431,26 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   position: fixed;
   top: 104px;
   left: var(--space-3);
-  width: 490px;
-  max-height: 700px;
+  width: 500px;
+  max-height: 720px;
   display: flex;
   flex-direction: column;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-md);
+  background: rgba(15, 18, 26, 0.88);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md, 14px);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 16px 48px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  padding: var(--space-3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 16px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .notepad-container:hover {
   box-shadow:
-    0 12px 48px rgba(0, 0, 0, 0.5),
+    0 20px 56px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   transform: translateY(-2px);
 }
@@ -9320,45 +9458,153 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .notepad-header {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  margin-bottom: 1rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   cursor: default;
+}
+
+.notepad-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notepad-title-icon {
+  font-size: 1.15rem;
+  color: var(--accent-color, #a8c0ff);
+  flex-shrink: 0;
 }
 
 .notepad-header h3 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.18rem;
   font-weight: 600;
-  flex: 1;
-  background: linear-gradient(135deg, #ffffff, var(--accent-color));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
-.notepad-header #add-note-btn {
-  background: var(--accent-color);
-  color: #000;
+.notepad-count-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-color, #a8c0ff);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.32);
+  padding: 1px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.notepad-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.notepad-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  padding: 5px 10px;
+  height: 32px;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notepad-search-wrap:focus-within {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+}
+
+.notepad-search-icon {
+  font-size: 0.82rem;
+  opacity: 0.6;
+  color: #fff;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.notepad-search-input {
+  background: transparent;
   border: none;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  cursor: default;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  color: #fff;
+  font-size: 0.84rem;
+  font-family: inherit;
+  width: 140px;
+  outline: none;
+  padding: 0;
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.notepad-header #add-note-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+.notepad-search-input:focus {
+  width: 175px;
+}
+
+.notepad-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.notepad-search-clear {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.notepad-search-clear:hover {
+  color: #fff;
+}
+
+.notepad-header #add-note-btn,
+.notepad-add-btn {
+  background: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-contrast-color, #000000) !important;
+  border: none;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  box-sizing: border-box;
+}
+
+.notepad-header #add-note-btn i,
+.notepad-add-btn i {
+  color: var(--accent-contrast-color, #000000) !important;
+  font-size: 0.85rem;
+}
+
+.notepad-header #add-note-btn:hover,
+.notepad-add-btn:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
 }
 
 .notepad-body {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
-  padding-right: var(--space-1);
+  padding-right: 4px;
   margin-right: -4px;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
@@ -9369,64 +9615,135 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .note-content::-webkit-scrollbar,
 .note-editor::-webkit-scrollbar,
 .floating-note-content::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .notepad-body::-webkit-scrollbar-track,
 .note-content::-webkit-scrollbar-track,
 .note-editor::-webkit-scrollbar-track,
 .floating-note-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
 }
 
 .notepad-body::-webkit-scrollbar-thumb,
 .note-content::-webkit-scrollbar-thumb,
 .note-editor::-webkit-scrollbar-thumb,
 .floating-note-content::-webkit-scrollbar-thumb {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
-  border-radius: 1000px;
-  border: 2px solid rgba(15, 18, 25, 0.92);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  border-radius: 999px;
 }
 
 .notepad-body::-webkit-scrollbar-thumb:hover,
 .note-content::-webkit-scrollbar-thumb:hover,
 .note-editor::-webkit-scrollbar-thumb:hover,
 .floating-note-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.64);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.65);
 }
 
 .notes-list {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
+  align-items: stretch;
+  gap: 10px;
 }
 
-.notes-empty {
+/* Modern Empty State */
+.notes-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
   text-align: center;
-  padding: 2rem 1rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-style: italic;
+  gap: 12px;
 }
 
+.notes-empty-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.notes-empty-icon {
+  font-size: 1.4rem;
+  color: var(--accent-color, #a8c0ff);
+}
+
+.notes-empty-title {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.notes-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--accent-color, #a8c0ff);
+  color: var(--accent-contrast-color, #000000) !important;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  margin-top: 4px;
+}
+
+.notes-empty-btn i,
+.notes-empty-btn span {
+  color: var(--accent-contrast-color, #000000) !important;
+}
+
+.notes-empty-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+}
+
+/* Note Item Card */
 .note-item {
   position: relative;
   width: 100%;
   min-width: 260px;
   max-width: none;
-  min-height: 128px;
+  min-height: 120px;
   box-sizing: border-box;
-  margin-bottom: var(--space-2);
-  border-radius: var(--radius-md);
+  margin-bottom: 2px;
+  border-radius: 12px;
   overflow: hidden;
   resize: none;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.note-item:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.note-item.is-pinned {
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) inset;
 }
 
 .note-item.resizing,
@@ -9434,19 +9751,15 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   user-select: none;
 }
 
-.note-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
 .note-header {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-2) var(--space-2);
+  gap: 6px;
+  padding: 6px 10px;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .note-header i {
@@ -9466,61 +9779,102 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   color: var(--note-header-text, currentColor) !important;
 }
 
-.note-header .icon-btn:hover i {
-  opacity: 1;
+.note-pin-btn {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.note-collapse-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: var(--space-0-5);
-  font-size: 0.9rem;
-  transition: color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
+.note-item:hover .note-pin-btn {
+  opacity: 0.7;
+  visibility: visible;
 }
 
-.note-collapse-btn:hover {
-  color: var(--accent-color);
+.note-pin-btn:hover {
+  opacity: 1 !important;
+  transform: rotate(-30deg) scale(1.1);
 }
 
-.note-spacer {
-  display: inline-block;
-  width: 20px;
+.note-item.is-pinned .note-pin-btn,
+.note-pin-btn.is-pinned {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: rotate(-45deg);
+  background: rgba(255, 255, 255, 0.25) !important;
 }
 
 .note-title-input {
-  flex: 0 1 150px;
-  width: 150px;
-  max-width: 38%;
-  min-width: 76px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  padding: var(--space-1) var(--space-1);
-  color: white;
-  font-size: 0.9rem;
+  flex: 1 1 auto;
+  min-width: 60px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 6px;
+  color: inherit;
+  font-size: 0.88rem;
   font-weight: 600;
+  font-family: inherit;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.note-title-input:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .note-title-input:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  background: rgba(255, 255, 255, 0.22);
+  border-color: currentColor;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 .note-actions {
   display: flex;
-  gap: var(--space-1);
-  opacity: 0.7;
+  gap: 4px;
+  opacity: 0.85;
   transition: opacity 0.2s;
   align-items: center;
+}
+
+.note-item:hover .note-actions {
+  opacity: 1;
+}
+
+.note-action-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 6px;
+}
+
+.note-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.08);
+}
+
+.note-action-btn:active {
+  transform: scale(0.95);
+}
+
+.note-action-btn.copy-success i {
+  color: #10b981 !important;
+}
+
+.note-action-btn.note-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.35) !important;
+}
+
+.note-action-btn.note-delete-btn:hover i {
+  color: #ff6b6b !important;
 }
 
 /* Note Color Dropdown */
@@ -9541,17 +9895,20 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: var(--space-0-5);
-  background: rgba(0, 0, 0, 0.9);
+  margin-top: 4px;
+  background: rgba(15, 18, 26, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1);
+  border-radius: 10px;
+  padding: 6px;
   display: none;
-  gap: var(--space-1);
+  gap: 5px;
   flex-wrap: wrap;
-  width: 120px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  width: 130px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 1000;
+  animation: lcpFadeIn 0.15s ease;
 }
 
 .note-color-menu.show {
@@ -9561,52 +9918,24 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .note-color-btn {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
 
 .note-color-btn:hover {
   transform: scale(1.2);
-  border-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .note-color-btn.active {
   border-color: white;
   border-width: 3px;
   transform: scale(1.15);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-.note-item:hover .note-actions {
-  opacity: 1;
-}
-
-.note-action-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: var(--space-0-5) var(--space-1);
-  font-size: 0.9rem;
-  transition: color 0.2s;
-  border-radius: 4px;
-}
-
-.note-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.note-action-btn[data-action="delete"]:hover {
-  color: #ff5555;
-}
-
-.note-action-btn[data-action="toggle-content"]:hover {
-  color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
 .note-content-wrapper {
@@ -9641,31 +9970,36 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2);
-  font-size: 0.9rem;
-  line-height: 1.6;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0 0 10px 10px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  letter-spacing: 0.1px;
   outline: none;
-  margin-top: var(--space-1);
+  margin: 0;
   box-sizing: border-box;
-  transition: all 0.3s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.note-item.edit-toolbar-hidden .note-content {
+  border-radius: 0 0 10px 10px;
 }
 
 .note-content:focus {
-  border-color: rgba(0, 0, 0, 0.2);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
 }
 
 .note-toolbar {
   display: flex;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-1);
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: none;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: rgba(0, 0, 0, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   flex-wrap: wrap;
 }
 
@@ -9679,24 +10013,27 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   border: 1px solid var(--note-toolbar-border, rgba(255, 255, 255, 0.1));
   color: var(--note-content-text, rgba(255, 255, 255, 0.75));
   cursor: pointer;
-  padding: var(--space-1) var(--space-1);
-  font-size: 0.78rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
+  padding: 0;
+  font-size: 0.74rem;
+  border-radius: 6px;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  min-height: 28px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
 }
 
 .toolbar-btn:hover {
   background: var(
     --note-toolbar-surface-hover,
-    rgba(255, 255, 255, 0.15)
+    rgba(255, 255, 255, 0.16)
   ) !important;
   color: var(--note-content-text, #ffffff) !important;
-  border-color: var(--note-toolbar-border, rgba(255, 255, 255, 0.3)) !important;
+  border-color: var(--note-toolbar-border, rgba(255, 255, 255, 0.35)) !important;
+  transform: translateY(-1px);
 }
 
 .toolbar-btn.active {
@@ -9705,8 +10042,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
     var(--note-content-text, #ffffff)
   ) !important;
   color: var(--note-content-bg, #000000) !important;
-  box-shadow: 0 0 0 2px var(--note-toolbar-border, rgba(255, 255, 255, 0.2))
-    inset;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
 }
 
 .toolbar-btn.active i,
@@ -9715,21 +10052,22 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 }
 
 .toolbar-btn:active {
-  background: var(--accent-color);
-  color: #1a1a2e;
-  transform: scale(0.95);
+  transform: scale(0.94);
 }
 
 .toolbar-divider {
   width: 1px;
+  height: 16px;
   background: var(--note-toolbar-border, rgba(255, 255, 255, 0.2));
-  margin: var(--space-0-5) var(--space-1);
+  margin: 3px 3px;
+  opacity: 0.6;
 }
 
 .toolbar-btn i,
 .toolbar-btn svg {
   color: var(--note-content-text, currentColor) !important;
   fill: currentColor !important;
+  font-size: 0.76rem;
 }
 
 .note-editor {
@@ -9744,9 +10082,9 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
   border: none;
-  padding: var(--space-2);
-  font-size: 0.9rem;
-  line-height: 1.6;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.65;
   outline: none;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -9757,14 +10095,42 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
 }
 
+.note-content ul,
+.note-content ol,
 .note-editor ul,
-.note-editor ol {
-  margin: 0.5rem 0;
-  padding-left: 1.5rem;
+.note-editor ol,
+.floating-note-content ul,
+.floating-note-content ol {
+  margin: 6px 0;
+  padding-left: 1.4rem;
 }
 
-.note-editor li {
-  margin: 0.3rem 0;
+.note-content li,
+.note-editor li,
+.floating-note-content li {
+  margin: 2px 0;
+  line-height: 1.55;
+}
+
+.note-content blockquote,
+.note-editor blockquote,
+.floating-note-content blockquote {
+  margin: 6px 0;
+  padding: 5px 12px;
+  border-left: 3px solid var(--accent-color, #a8c0ff);
+  background: rgba(127, 127, 127, 0.08);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+}
+
+.note-content code,
+.note-editor code,
+.floating-note-content code {
+  background: rgba(127, 127, 127, 0.15);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: monospace;
+  font-size: 0.84em;
 }
 
 .note-editor img {
@@ -9773,15 +10139,15 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   min-width: 0 !important;
   height: auto !important;
   box-sizing: border-box;
-  border-radius: 4px;
-  margin: var(--space-1) 0;
+  border-radius: 6px;
+  margin: 6px 0;
   display: block;
   object-fit: contain;
 }
 
 .note-content:empty:before,
 .note-editor:empty:before {
-  content: "Start typing...";
+  content: "Bắt đầu viết ghi chú...";
   color: var(--note-placeholder-text, rgba(255, 255, 255, 0.4));
   font-style: italic;
 }
@@ -9818,25 +10184,33 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 /* Floating Note Windows */
 .floating-note-window {
   position: fixed;
-  width: 420px;
-  min-width: 400px;
-  max-height: 550px;
-  min-height: 240px;
+  width: 430px;
+  min-width: 320px;
+  max-height: 600px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   z-index: 999;
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
+  background: rgba(15, 18, 26, 0.92);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   top: 152px;
   right: var(--space-4);
-  overflow: visible;
-  background: transparent;
+  overflow: hidden;
   resize: none;
+  box-sizing: border-box;
 }
 
 .floating-note-window.collapsed {
-  min-height: 0;
+  min-height: 0 !important;
   height: auto !important;
   resize: none;
 }
@@ -9847,123 +10221,165 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 }
 
 .floating-note-window:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-  transform: translateY(-4px);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) inset;
+  transform: translateY(-2px);
 }
 
 .floating-note-window.dragging {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65) !important;
+  transform: scale(1.015) !important;
   z-index: 2000 !important;
+  cursor: grabbing !important;
 }
 
 .floating-note-header {
   display: flex;
-  align-items: stretch;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-2) var(--space-2);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: default;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: grab;
   user-select: none;
-  transition: all 0.3s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .floating-note-window.collapsed .floating-note-header {
-  border-radius: var(--radius-md);
+  border-radius: 14px;
+  border-bottom: none;
 }
 
-.floating-note-title-row {
+.floating-note-header-left {
   display: flex;
   align-items: center;
+  gap: 6px;
   min-width: 0;
-  width: 100%;
+  flex: 1 1 auto;
 }
 
-.floating-note-header .icon-btn {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
+.floating-drag-grip-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: grab;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.floating-drag-grip-wrap:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.06);
+}
+
+.floating-drag-grip {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  color: var(--note-header-text, currentColor);
+  cursor: grab;
+}
+
+.floating-note-title-input {
+  flex: 1 1 auto;
+  min-width: 60px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 3px 6px;
+  color: var(--note-header-text, #ffffff);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-note-title-input:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.floating-note-title-input:focus {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: currentColor;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.floating-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.floating-note-header .icon-btn,
+.floating-note-header .note-action-btn {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
   padding: 0 !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: none;
   color: var(--note-header-text, currentColor) !important;
-  transition:
-    background 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.floating-note-header .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: none;
-  box-shadow: none;
+.floating-note-header .icon-btn:hover,
+.floating-note-header .note-action-btn:hover {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.08);
 }
 
-.floating-note-header .icon-btn i {
+.floating-note-header .icon-btn:active,
+.floating-note-header .note-action-btn:active {
+  transform: scale(0.95);
+}
+
+.floating-note-header .icon-btn i,
+.floating-note-header .note-action-btn i {
   font-size: 0.78rem;
+  color: var(--note-header-text, currentColor) !important;
+}
+
+.floating-note-close:hover {
+  background: rgba(239, 68, 68, 0.35) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.floating-note-close:hover i {
+  color: #ff6b6b !important;
 }
 
 .floating-note-window .note-color-menu {
   z-index: 2200;
 }
 
-.floating-note-title {
-  flex: 1 1 auto;
-  font-weight: 600;
-  color: white;
-  font-size: 0.92rem;
-  line-height: 1.35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-  width: 100%;
-}
-
-.floating-note-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-0-5);
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.floating-note-close {
-  margin-left: auto;
-  background: rgba(255, 255, 255, 1) !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-  box-shadow: none !important;
-}
-
-.floating-note-close i {
-  font-size: 0.88rem !important;
-  line-height: 1;
-}
-
-.floating-note-close:hover {
-  background: rgba(255, 77, 109, 0.14) !important;
-  border-color: rgba(255, 77, 109, 0.24) !important;
-  color: #fff !important;
-}
-
 .floating-note-toolbar {
   display: flex;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-1);
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-wrap: wrap;
-  background-color: var(--note-content-bg, #000000);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.floating-note-window.edit-toolbar-hidden .floating-note-toolbar {
+  display: none;
 }
 
 .floating-note-content {
@@ -9971,21 +10387,22 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   --note-image-offset-x: -14px;
   background: var(--note-content-bg, #ffffff);
   color: var(--note-content-text, #000000);
-  flex: 1;
+  flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
-  padding: var(--space-2);
+  padding: 12px 16px;
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.65;
   outline: none;
   white-space: pre-wrap;
   word-wrap: break-word;
-  border-radius: var(--radius-sm);
-  margin: var(--space-1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 14px 14px;
+  margin: 0;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .note-content *:not(img),
@@ -10044,10 +10461,9 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 
 .note-resize-handle {
   position: absolute;
-  z-index: 20;
-  width: 22px;
-  height: 22px;
-  opacity: 0;
+  z-index: 60;
+  width: 32px;
+  height: 32px;
   background: transparent;
 }
 
@@ -10073,6 +10489,27 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   right: 0;
   bottom: 0;
   cursor: nwse-resize;
+}
+
+.note-resize-se::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+  border-bottom-right-radius: 2px;
+  pointer-events: none;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.note-item:hover .note-resize-se::after,
+.floating-note-window:hover .note-resize-se::after {
+  border-color: rgba(255, 255, 255, 0.75);
 }
 
 .floating-note-content:empty:before {
@@ -10638,19 +11075,23 @@ body.bookmark-sidebar-mode .bookmark-widget {
   z-index: 1000;
 }
 
+body.bookmark-sidebar-mode #bookmarks-container,
 body.bookmark-sidebar-mode .bookmarks-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--bookmark-gap-y, var(--space-1));
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: var(--bookmark-gap-y, var(--space-1)) !important;
   background: rgba(0, 0, 0, 0.3) !important;
-  padding: var(--space-1);
-  border-radius: var(--radius-md);
+  padding: var(--space-1) !important;
+  border-radius: var(--radius-md) !important;
   backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  min-width: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  max-height: calc(100vh - 145px) !important;
+  min-width: 50px !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  box-sizing: border-box !important;
 }
 
 body.sidebar-m3-accent.bookmark-sidebar-mode .bookmarks-grid {
@@ -10661,7 +11102,7 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
   display: flex;
   flex-direction: column;
   align-items: flex-end; /* Align tabs to the right (towards the icons) */
-  max-height: 80vh;
+  max-height: calc(100vh - 145px);
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -12249,6 +12690,8 @@ body.bookmark-taskbar-left-mode .bookmarks-grid,
 body.bookmark-taskbar-right-mode .bookmarks-grid,
 body.bookmark-taskbar-right-mode .bookmarks-grid {
   flex-wrap: nowrap !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
 }
 /* Prevent bookmarks from shrinking so they trigger overflow logic */
 body.bookmark-sidebar-mode .bookmark,
@@ -12622,8 +13065,8 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
 
 /* Khi Show Google Apps & Avatar bật, tính toán lại vị trí giữa và giới hạn max-height để không đè vào nút Google */
 body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
-  top: calc(50vh + var(--space-4)) !important;
-  transform: translateY(-52%) !important;
+  top: calc(50vh + 25px) !important;
+  transform: translateY(-50%) !important;
 }
 
 body.bookmark-sidebar-mode .bookmark-widget {
@@ -12646,8 +13089,9 @@ body.bookmark-taskbar-right-mode .bookmark-widget {
     visibility 0.5s ease;
 }
 
-body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
-  max-height: calc(100vh - 100px) !important;
+body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid,
+body.has-top-right-controls.bookmark-sidebar-mode .bookmark-groups-container {
+  max-height: calc(100vh - 145px) !important;
 }
 
 /* --- BOOKMARK LAYOUT BACKGROUND STYLES --- */
@@ -13347,9 +13791,14 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
 }
 
 /* Sidebar bookmark alignment lock */
-body.bookmark-sidebar-mode .bookmark-widget,
+body.bookmark-sidebar-mode .bookmark-widget {
+  top: calc(50% + 22px) !important;
+  transform: translateY(-50%) !important;
+  align-items: center !important;
+}
+
 body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
-  top: 50% !important;
+  top: calc(50% + 28px) !important;
   transform: translateY(-50%) !important;
   align-items: center !important;
 }
@@ -13363,18 +13812,20 @@ body.flip-layout.bookmark-sidebar-mode .bookmark-widget {
   right: auto !important;
 }
 
+body.bookmark-sidebar-mode #bookmarks-container,
 body.bookmark-sidebar-mode .bookmarks-grid {
   align-items: center !important;
   flex-direction: column !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   margin: 0 !important;
-  max-height: min(88vh, calc(100vh - 96px)) !important;
+  margin-top: 0 !important;
+  max-height: calc(100vh - 145px) !important;
   max-width: max-content !important;
   min-width: calc(var(--bookmark-icon-size, 42px) + 16px) !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
   width: max-content !important;
+  box-sizing: border-box !important;
 }
+
 
 body.bookmark-sidebar-mode .bookmark-group-tab:hover,
 body.bookmark-taskbar-mode .bookmark-group-tab:hover,
@@ -17020,6 +17471,18 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
   background: var(--accent-color, rgba(168, 192, 255, 0.25)) !important;
   color: var(--accent-contrast-color, #fff) !important;
   border-color: var(--accent-color) !important;
+}
+
+/* === RESPONSIVE FIT (MAINTAINS FULL SIZES AT 90% & 100% ZOOM) === */
+@media (max-width: 768px) {
+  #bookmarks-container {
+    max-width: calc(100vw - 20px);
+    padding: 0 4px;
+  }
+
+  body.quick-access-horizontal .quick-access-bar {
+    max-width: calc(100vw - 70px);
+  }
 }
 
 
