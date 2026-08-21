@@ -1,7 +1,12 @@
-/**
- * Inline Segmented Button Option Groups for layout-controls-popup
- * with Collapsible / Expandable (Ẩn / Hiện) Section Headers.
- */
+import { geti18n } from "../services/i18n.js"
+import { getSettings } from "../services/state.js"
+
+function getShowLessText() {
+  const i18n = geti18n()
+  if (i18n && i18n.themes_show_less) return i18n.themes_show_less
+  const lang = getSettings()?.language || "en"
+  return lang === "vi" ? "Thu gọn" : "Show less"
+}
 
 export function initLcpCustomDropdowns() {
   const popup = document.getElementById("layout-controls-popup")
@@ -167,7 +172,7 @@ function setupLcpButtonGroup(select) {
     toggleMoreBtn.type = "button"
     toggleMoreBtn.className = "lcp-btn-chip lcp-toggle-more-btn"
     if (isChipsExpanded) {
-      toggleMoreBtn.innerHTML = `<span>Thu gọn</span> <i class="fa-solid fa-chevron-up"></i>`
+      toggleMoreBtn.innerHTML = `<span data-i18n="themes_show_less">${getShowLessText()}</span> <i class="fa-solid fa-chevron-up"></i>`
     } else {
       toggleMoreBtn.innerHTML = `<span>+ ${totalOptions - MAX_INITIAL}</span> <i class="fa-solid fa-chevron-down"></i>`
     }
@@ -178,7 +183,7 @@ function setupLcpButtonGroup(select) {
       if (isCollapsed) {
         toggleMoreBtn.innerHTML = `<span>+ ${totalOptions - MAX_INITIAL}</span> <i class="fa-solid fa-chevron-down"></i>`
       } else {
-        toggleMoreBtn.innerHTML = `<span>Thu gọn</span> <i class="fa-solid fa-chevron-up"></i>`
+        toggleMoreBtn.innerHTML = `<span data-i18n="themes_show_less">${getShowLessText()}</span> <i class="fa-solid fa-chevron-up"></i>`
       }
       if (selectId) {
         try {

@@ -6802,6 +6802,10 @@ export function setupGeneralEventHandlers(
     handleAudioReactiveToggle(e.target.checked)
   })
 
+  window.addEventListener("toggleMusicRealAudioReactive", (e) => {
+    handleAudioReactiveToggle(e.detail?.value)
+  })
+
   DOM.showQuotesCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showQuotes", DOM.showQuotesCheckbox.checked)
     window.dispatchEvent(
