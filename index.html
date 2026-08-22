@@ -722,7 +722,8 @@
                     title="Table of Contents">
                     <i class="fa-solid fa-list-ul"></i>
                 </button>
-                <h2 data-i18n="settings_title">Settings</h2>
+                <img src="./icon/logo.png" width="30px" alt="">
+                <h2 data-i18n="settings_title"> Settings</h2>
                 <span id="settings-version" class="settings-version" aria-label="Extension version"></span>
                 <a id="sidebar-update-link"
                     href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
@@ -760,28 +761,23 @@
                     <i class="fa-solid fa-palette"></i>
                     <span data-i18n="settings_tab_appearance">Appearance</span>
                 </button>
-                <button type="button" class="settings-tab-btn" data-tab="background" role="tab"
-                    aria-selected="false">
+                <button type="button" class="settings-tab-btn" data-tab="background" role="tab" aria-selected="false">
                     <i class="fa-solid fa-image"></i>
                     <span data-i18n="settings_tab_background">Background</span>
                 </button>
-                <button type="button" class="settings-tab-btn" data-tab="clock" role="tab"
-                    aria-selected="false">
+                <button type="button" class="settings-tab-btn" data-tab="clock" role="tab" aria-selected="false">
                     <i class="fa-solid fa-clock"></i>
                     <span data-i18n="settings_tab_clock">Clock & Date</span>
                 </button>
-                <button type="button" class="settings-tab-btn" data-tab="bookmarks" role="tab"
-                    aria-selected="false">
+                <button type="button" class="settings-tab-btn" data-tab="bookmarks" role="tab" aria-selected="false">
                     <i class="fa-solid fa-bookmark"></i>
                     <span data-i18n="settings_tab_bookmarks">Bookmarks</span>
                 </button>
-                <button type="button" class="settings-tab-btn" data-tab="widgets" role="tab"
-                    aria-selected="false">
+                <button type="button" class="settings-tab-btn" data-tab="widgets" role="tab" aria-selected="false">
                     <i class="fa-solid fa-cubes"></i>
                     <span data-i18n="settings_tab_widgets">Widgets</span>
                 </button>
-                <button type="button" class="settings-tab-btn" data-tab="system" role="tab"
-                    aria-selected="false">
+                <button type="button" class="settings-tab-btn" data-tab="system" role="tab" aria-selected="false">
                     <i class="fa-solid fa-gear"></i>
                     <span data-i18n="settings_tab_system">System</span>
                 </button>
@@ -796,8 +792,7 @@
                     <i class="fa-solid fa-palette"></i>
                     <span data-i18n="bg_subtab_colors">Colors & Gradients</span>
                 </button>
-                <button type="button" class="bg-subtab-btn" data-bg-subtab="animated" role="tab"
-                    aria-selected="false">
+                <button type="button" class="bg-subtab-btn" data-bg-subtab="animated" role="tab" aria-selected="false">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                     <span data-i18n="bg_subtab_animated">Live FX</span>
                 </button>
@@ -811,7 +806,8 @@
             <!-- Search empty state message -->
             <div id="settings-search-empty" class="settings-search-empty" style="display: none;">
                 <i class="fa-solid fa-magnifying-glass settings-search-empty-icon"></i>
-                <p id="settings-search-empty-text" data-msg-template="No settings matching &quot;{query}&quot;" data-i18n="settings_search_no_results">No settings found</p>
+                <p id="settings-search-empty-text" data-msg-template="No settings matching &quot;{query}&quot;"
+                    data-i18n="settings_search_no_results">No settings found</p>
                 <button type="button" id="settings-search-empty-reset" class="secondary-btn">
                     <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_search_clear">Clear search</span>
                 </button>
@@ -1003,12 +999,14 @@
                     <div style="margin-bottom: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <button id="save-current-theme-btn" class="secondary-btn"
                             style="height: 38px; justify-content: center; border-radius: 9px; border: 1px dashed var(--accent-color); font-size: 0.78rem; padding: 0 8px;">
-                            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span data-i18n="save_current_theme">Create Theme</span>
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
+                                data-i18n="save_current_theme">Create Theme</span>
                         </button>
                         <a class="secondary-btn" href="https://zero-theme.vercel.app/" target="_blank"
                             rel="noopener noreferrer"
                             style="height: 38px; justify-content: center; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.78rem; padding: 0 8px;">
-                            <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
+                            <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span
+                                data-i18n="theme_web_beta_link">Theme Store</span>
                         </a>
                     </div>
 
@@ -1329,10 +1327,13 @@
                 </div>
             </div>
 
-            <div data-settings-partial="background" data-src="partials/settings/background.html" data-settings-tab="background"></div>
-            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html" data-settings-tab="background">
+            <div data-settings-partial="background" data-src="partials/settings/background.html"
+                data-settings-tab="background"></div>
+            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html"
+                data-settings-tab="background">
             </div>
-            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html" data-settings-tab="background">
+            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html"
+                data-settings-tab="background">
             </div>
             <div class="settings-section" data-section-id="font" data-settings-tab="appearance">
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span
@@ -1438,7 +1439,8 @@
             </div>
 
 
-            <div data-settings-partial="date-clock" data-src="partials/settings/date-clock.html" data-settings-tab="clock"></div>
+            <div data-settings-partial="date-clock" data-src="partials/settings/date-clock.html"
+                data-settings-tab="clock"></div>
             <div class="settings-section" data-section-id="bookmark-custom" data-settings-tab="bookmarks">
                 <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
                     Custom Bookmark</h3>
@@ -2775,8 +2777,12 @@
                             </div>
                             <div class="setting-item-row">
                                 <div>
-                                    <label for="music-real-audio-reactive-checkbox" data-i18n="settings_music_real_audio_reactive">Real-time Audio Reactive (Beta)</label>
-                                    <div class="setting-help-text" data-i18n="settings_music_real_audio_reactive_hint" style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Capture tab audio in real-time so visualizer waves react to actual bass & beats.</div>
+                                    <label for="music-real-audio-reactive-checkbox"
+                                        data-i18n="settings_music_real_audio_reactive">Real-time Audio Reactive
+                                        (Beta)</label>
+                                    <div class="setting-help-text" data-i18n="settings_music_real_audio_reactive_hint"
+                                        style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Capture tab audio in
+                                        real-time so visualizer waves react to actual bass & beats.</div>
                                 </div>
                                 <input type="checkbox" id="music-real-audio-reactive-checkbox">
                             </div>
@@ -3027,7 +3033,8 @@
                                         style="list-style-type: none; padding: 0; margin: 0; font-family: monospace; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
                                         <li
                                             style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
-                                            <span style="color: #3b82f6; font-weight: bold;">v1.9.0 (Latest)</span></li>
+                                            <span style="color: #3b82f6; font-weight: bold;">v1.9.0 (Latest)</span>
+                                        </li>
                                         <li
                                             style="background: rgba(128,128,128,0.15); padding: 2px 6px; border-radius: 4px;">
                                             v1.8.2</li>
@@ -3187,8 +3194,8 @@
             </div>
 
             <form action="https://www.google.com/search" method="GET" target="_self">
-                <input type="text" id="search-input" aria-label="Search" name="q"
-                    placeholder="Search Google..." autocomplete="off">
+                <input type="text" id="search-input" aria-label="Search" name="q" placeholder="Search Google..."
+                    autocomplete="off">
             </form>
             <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>
             <i class="fa-solid fa-camera-viewfinder lens-btn" id="search-lens-btn"
