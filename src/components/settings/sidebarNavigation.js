@@ -657,33 +657,45 @@ export function initSidebarNavigation() {
 
   if (sidebarContent && navContainer) {
     let scrollIdleTimer = null
+    let scrollRafId = null
+
+    const handleScroll = () => {
+      scrollRafId = null
+      // If user manually hid the navigation, do not auto-reveal
+      if (isManuallyHidden) return
+
+      // If at the very top or search input is focused, stay visible
+      if (
+        sidebarContent.scrollTop <= 15 ||
+        (searchInput && searchInput === document.activeElement)
+      ) {
+        if (navContainer.classList.contains("nav-hidden")) {
+          navContainer.classList.remove("nav-hidden")
+        }
+        clearTimeout(scrollIdleTimer)
+        return
+      }
+
+      // Hide immediately when scrolling starts (only if not already hidden)
+      if (!navContainer.classList.contains("nav-hidden")) {
+        navContainer.classList.add("nav-hidden")
+      }
+
+      // 0.5s after user stops scrolling (idle), slide back down smoothly
+      clearTimeout(scrollIdleTimer)
+      scrollIdleTimer = setTimeout(() => {
+        if (!isManuallyHidden) {
+          navContainer.classList.remove("nav-hidden")
+        }
+      }, 500)
+    }
 
     sidebarContent.addEventListener(
       "scroll",
       () => {
-        // If user manually hid the navigation, do not auto-reveal
-        if (isManuallyHidden) return
-
-        // If at the very top or search input is focused, stay visible
-        if (
-          sidebarContent.scrollTop <= 15 ||
-          (searchInput && searchInput === document.activeElement)
-        ) {
-          navContainer.classList.remove("nav-hidden")
-          clearTimeout(scrollIdleTimer)
-          return
+        if (!scrollRafId) {
+          scrollRafId = requestAnimationFrame(handleScroll)
         }
-
-        // Hide immediately when scrolling starts
-        navContainer.classList.add("nav-hidden")
-
-        // 0.5s after user stops scrolling (idle), slide back down smoothly
-        clearTimeout(scrollIdleTimer)
-        scrollIdleTimer = setTimeout(() => {
-          if (!isManuallyHidden) {
-            navContainer.classList.remove("nav-hidden")
-          }
-        }, 500)
       },
       { passive: true },
     )

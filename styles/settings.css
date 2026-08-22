@@ -142,7 +142,8 @@
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-1);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out;
+  contain: paint layout;
   text-align: center;
   position: relative;
   display: flex;
@@ -417,6 +418,10 @@ body.sidebar-m3-accent .settings-sidebar {
   padding: 165px var(--space-3) var(--space-4) var(--space-3);
   box-sizing: border-box;
   transition: padding-top 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(0);
+  will-change: scroll-position;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 @container settings-sidebar (min-width: 520px) {
@@ -445,7 +450,12 @@ body.sidebar-m3-accent .settings-sidebar {
   box-sizing: border-box !important;
   overflow-x: hidden;
   content-visibility: auto;
+  contain: content;
   contain-intrinsic-size: 0 350px;
+}
+
+.settings-section.collapsed {
+  contain-intrinsic-size: 0 52px;
 }
 
 /* Scroll Alignment Margin to clear sticky nav header */
@@ -514,7 +524,8 @@ body.sidebar-m3-accent .settings-sidebar {
   border: 1px solid var(--glass-border);
   border-top: 1px solid var(--glass-edge);
   box-shadow: var(--inner-glow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out;
+  contain: paint layout;
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -878,19 +889,56 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
 
 @keyframes tocRotate360 {
   0% {
-    transform: rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes tocIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 3px var(--accent-color, #4a80f0));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px var(--accent-color, #4a80f0)) drop-shadow(0 0 12px #ec4899);
+  }
+}
+
+@keyframes tocTitleShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
 .toc-item.toc-highlight-glow {
   position: relative;
-  border-radius: 8px;
+  border-radius: 9px;
   overflow: hidden;
   background: transparent;
-  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 100, 150, 255), 0.15);
+  box-shadow:
+    0 0 14px rgba(var(--accent-color-rgb, 100, 150, 255), 0.22),
+    0 0 28px rgba(var(--accent-color-rgb, 100, 150, 255), 0.08),
+    inset 0 0 10px rgba(var(--accent-color-rgb, 100, 150, 255), 0.06);
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 4px;
+}
+
+.toc-item.toc-highlight-glow:hover {
+  transform: translateX(4px) scale(1.015);
+  box-shadow:
+    0 0 20px rgba(var(--accent-color-rgb, 100, 150, 255), 0.45),
+    0 0 35px rgba(236, 72, 153, 0.25),
+    inset 0 0 12px rgba(var(--accent-color-rgb, 100, 150, 255), 0.15);
 }
 
 .toc-glow-mask {
@@ -904,36 +952,46 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
 
 .toc-glow-rotator {
   position: absolute;
-  top: -150%;
-  left: -50%;
-  width: 200%;
-  height: 400%;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    var(--accent-color, #4a80f0) 40deg,
-    transparent 80deg,
+    var(--accent-color, #4a80f0) 45deg,
+    #a855f7 90deg,
+    #ec4899 135deg,
+    #06b6d4 180deg,
+    var(--accent-color, #4a80f0) 225deg,
+    transparent 280deg,
     transparent 360deg
   );
-  animation: tocRotate360 6s linear infinite;
+  animation: tocRotate360 3.5s linear infinite;
   transform-origin: center center;
-  filter: blur(4px);
+  filter: blur(5px);
   opacity: 0.95;
+}
+
+.toc-item.toc-highlight-glow:hover .toc-glow-rotator {
+  animation-duration: 2.2s;
+  opacity: 1;
+  filter: blur(3.5px);
 }
 
 .toc-glow-mask::after {
   content: "";
   position: absolute;
   inset: 1.5px;
-  background: rgba(18, 20, 28, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 6.5px;
+  background: rgba(18, 20, 28, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 7.5px;
   z-index: 1;
 }
 
 body.sidebar-light .toc-glow-mask::after {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(248, 250, 252, 0.94);
 }
 
 .toc-highlight-glow i,
@@ -943,7 +1001,51 @@ body.sidebar-light .toc-glow-mask::after {
 }
 
 .toc-highlight-glow i {
-  color: var(--accent-color) !important;
+  color: var(--accent-color, #4a80f0) !important;
+  animation: tocIconPulse 2.5s ease-in-out infinite;
+}
+
+.toc-highlight-glow .toc-item-title {
+  font-weight: 600;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    var(--accent-color, #a8c0ff) 45%,
+    #f472b6 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: tocTitleShine 4s linear infinite;
+}
+
+body.sidebar-light .toc-highlight-glow .toc-item-title {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    var(--accent-color, #1a73e8) 45%,
+    #db2777 75%,
+    #1e293b 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: tocTitleShine 4s linear infinite;
+}
+
+.toc-highlight-glow .toc-item-badge {
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.18);
+  border-color: var(--accent-color, #4a80f0);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 100, 150, 255), 0.3);
+}
+
+body.sidebar-light .toc-highlight-glow .toc-item-badge {
+  background: var(--accent-color, #1a73e8);
+  color: #fff;
+  border-color: var(--accent-color, #1a73e8);
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 26, 115, 232), 0.3);
 }
 
 .toc-item:hover i {
@@ -1154,7 +1256,7 @@ body.sidebar-light .toc-glow-mask::after {
   font-size: 0.76rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out, box-shadow 0.14s ease-out;
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1164,7 +1266,7 @@ body.sidebar-light .toc-glow-mask::after {
 .settings-tab-btn i {
   font-size: 0.82rem;
   opacity: 0.85;
-  transition: transform 0.2s ease;
+  transition: transform 0.14s ease-out;
 }
 
 .settings-tab-btn span {
@@ -1230,7 +1332,7 @@ body.sidebar-light .toc-glow-mask::after {
   padding: 4px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.14s ease-out;
 }
 
 .bg-subtab-btn {
@@ -1248,7 +1350,7 @@ body.sidebar-light .toc-glow-mask::after {
   font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out;
   user-select: none;
   text-align: center;
   line-height: 1.2;
@@ -1929,7 +2031,8 @@ body.sidebar-light .section-live-badge {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out, box-shadow 0.14s ease-out;
+  contain: paint layout;
   box-sizing: border-box;
   width: 100%;
 }

@@ -1285,6 +1285,7 @@ export function setupGeneralEventHandlers(
   }
 
   let scrollSaveTimer = null
+  let btnRafId = null
   
   sidebarContent.addEventListener("scroll", () => {
     const top = sidebarContent.scrollTop
@@ -1294,10 +1295,16 @@ export function setupGeneralEventHandlers(
       sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
     }, 200)
     
-    if (sidebarScrollTopBtn) {
-      sidebarScrollTopBtn.classList.toggle("visible", top > 200)
+    if (sidebarScrollTopBtn && !btnRafId) {
+      btnRafId = requestAnimationFrame(() => {
+        btnRafId = null
+        const isVisible = top > 200
+        if (sidebarScrollTopBtn.classList.contains("visible") !== isVisible) {
+          sidebarScrollTopBtn.classList.toggle("visible", isVisible)
+        }
+      })
     }
-  })
+  }, { passive: true })
 
   if (sidebarScrollTopBtn) {
     sidebarScrollTopBtn.addEventListener("click", () => {
@@ -1662,13 +1669,17 @@ export function setupGeneralEventHandlers(
           if (isSubItem) {
             item.classList.add("sub-item")
           }
-          if (section.dataset.sectionId === "about-project") {
+          const isAboutProject =
+            section.dataset.sectionId === "about-project" ||
+            section.getAttribute("data-section-id") === "about-project" ||
+            section.id === "about-project"
+          if (isAboutProject) {
             item.classList.add("toc-highlight-glow")
             item.innerHTML = `
               <div class="toc-glow-mask">
                 <div class="toc-glow-rotator"></div>
               </div>
-              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i>
+              <i class="${iconClass || "fa-solid fa-circle-info"}"></i>
               <span class="toc-item-title">${title}</span>
               ${liveBadgeHtml}
               ${badgeHtml}
