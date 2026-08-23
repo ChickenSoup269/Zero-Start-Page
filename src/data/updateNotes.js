@@ -1,6 +1,6 @@
 export const updateNotes = {
   vi: {
-    changesTitle: "BIG UPDATE 1.9.0",
+    changesTitle: "BIG UPDATE 2.0.0",
     contributorsTitle: "Người góp công",
     changes: [
       "Lột xác giao diện & Hiệu ứng WebGL: Thêm hàng loạt hiệu ứng đồ họa đỉnh cao (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) và kho ảnh Picsum.",
@@ -35,7 +35,7 @@ export const updateNotes = {
     ],
   },
   en: {
-    changesTitle: "BIG UPDATE 1.9.0",
+    changesTitle: "BIG UPDATE 2.0.0",
     contributorsTitle: "Contributors",
     changes: [
       "Visual & WebGL Overhaul: Added stunning animated shaders (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) and Picsum wallpaper integration.",

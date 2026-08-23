@@ -9610,13 +9610,673 @@ body.sidebar-light .settings-advanced-toggle-btn {
   animation: none !important;
   transform: none !important;
 }
-/* Make about-project secondary buttons text white in light mode */
-body.sidebar-light
-  .settings-section[data-section-id="about-project"]
-  .secondary-btn,
-body.sidebar-light
-  .settings-section[data-section-id="about-project"]
-  .secondary-btn
-  * {
+/* ==========================================================================
+   About Project Modern UI Styling
+   ========================================================================== */
+.about-project-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+/* Hero Branding Card */
+.about-hero-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero-icon-wrap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-hero-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.about-hero-card:hover .about-hero-logo {
+  transform: scale(1.05) rotate(3deg);
+}
+
+.about-hero-glow {
+  position: absolute;
+  inset: -4px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(8px);
+  z-index: 1;
+}
+
+.about-hero-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-hero-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.about-hero-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.about-version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #93c5fd;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.about-version-tag {
+  background: #3b82f6;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 10px;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.about-hero-subtitle {
+  margin: 3px 0 0 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.3;
+}
+
+/* Action Buttons Grid */
+.about-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.about-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.about-btn-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.about-btn-star .about-btn-icon-wrap {
+  background: rgba(241, 196, 15, 0.12);
+  color: #f1c40f;
+}
+
+.about-btn-star:hover .about-btn-icon-wrap i {
+  transform: scale(1.15) rotate(15deg);
+  transition: transform 0.25s ease;
+}
+
+.about-btn-releases .about-btn-icon-wrap {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}
+
+.about-btn-donate {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  border: none;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+}
+
+.about-btn-donate .about-btn-icon-wrap {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.about-btn-donate:hover {
+  box-shadow: 0 6px 20px rgba(255, 75, 43, 0.45);
+}
+
+.about-btn-donate:hover .about-btn-icon-wrap i {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+
+.about-btn-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.about-btn-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.about-star-badge {
+  background: rgba(241, 196, 15, 0.18);
+  color: #f6e05e;
+  padding: 1px 7px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+}
+
+.about-btn-arrow {
+  font-size: 0.75rem;
+  opacity: 0.45;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.about-action-btn:hover .about-btn-arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+.about-btn-donate:hover .about-btn-arrow {
+  transform: translateX(3px);
+}
+
+/* General About Glass Card */
+.about-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+/* Update Card & Status Guide */
+.about-update-card {
+  padding: 12px 14px;
+}
+
+.about-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.about-card-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.01em;
+}
+
+.about-card-title i {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.75rem;
+}
+
+.about-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-status-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.76rem;
+}
+
+.about-status-item:last-child {
+  border-bottom: none;
+}
+
+.about-status-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.85;
+}
+
+.dot-active {
+  background: #10b981;
+}
+
+.dot-maintained {
+  background: #f59e0b;
+}
+
+.dot-stable {
+  background: #64748b;
+}
+
+.status-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.badge-active {
+  color: #34d399;
+}
+
+.badge-maintained {
+  color: #fbbf24;
+}
+
+.badge-stable {
+  color: #94a3b8;
+}
+
+/* Release History Accordion */
+.about-history-accordion {
+  margin-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 6px;
+}
+
+.about-history-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  list-style: none;
+  padding: 2px 0;
+  transition: color 0.15s ease;
+}
+
+.about-history-summary:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.about-history-summary::-webkit-details-marker {
+  display: none;
+}
+
+.about-history-summary-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.about-history-arrow {
+  font-size: 0.65rem;
+  transition: transform 0.2s ease;
+  opacity: 0.5;
+}
+
+details[open] .about-history-arrow {
+  transform: rotate(180deg);
+}
+
+.about-history-content {
+  margin-top: 6px;
+  padding: 2px 0;
+}
+
+.about-version-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ver-chip {
+  font-family: var(--font-mono, "SF Mono", monospace);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.15s ease;
+}
+
+.ver-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ver-chip-latest {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+/* Available Platforms */
+.about-platforms-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-platforms-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.about-store-badges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.about-store-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+.about-store-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.about-store-btn i {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.chrome-store-btn i {
+  color: #4285f4;
+}
+
+.firefox-store-btn i {
+  color: #ff7139;
+}
+
+.store-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.store-btn-text small {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.store-btn-text strong {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+/* Footer / Copyright */
+.about-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 2px;
+}
+
+.about-footer-sep {
+  opacity: 0.4;
+}
+
+.about-footer-love {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.about-footer-love i {
+  color: #ff4d6d;
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Light Mode Support for About Project
+   ========================================================================== */
+body.sidebar-light .about-hero-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.01));
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+body.sidebar-light .about-hero-title {
+  color: #1e293b;
+}
+
+body.sidebar-light .about-hero-subtitle {
+  color: #64748b;
+}
+
+body.sidebar-light .about-version-badge {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+  border-color: rgba(37, 99, 235, 0.25);
+  color: #2563eb;
+}
+
+body.sidebar-light .about-action-btn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1e293b !important;
+}
+
+body.sidebar-light .about-action-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.sidebar-light .about-btn-icon-wrap {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.sidebar-light .about-btn-star .about-btn-icon-wrap {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+}
+
+body.sidebar-light .about-btn-star .about-star-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+body.sidebar-light .about-btn-releases .about-btn-icon-wrap {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1e293b;
+}
+
+body.sidebar-light .about-btn-donate {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
   color: #fff !important;
 }
+
+body.sidebar-light .about-btn-donate * {
+  color: #fff !important;
+}
+
+body.sidebar-light .about-card {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.sidebar-light .about-card-title {
+  color: #475569;
+}
+
+body.sidebar-light .about-card-title i {
+  color: #94a3b8;
+}
+
+body.sidebar-light .about-status-item {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+body.sidebar-light .about-status-time {
+  color: #475569;
+}
+
+body.sidebar-light .badge-active {
+  background: transparent;
+  color: #059669;
+}
+
+body.sidebar-light .badge-maintained {
+  background: transparent;
+  color: #d97706;
+}
+
+body.sidebar-light .badge-stable {
+  background: transparent;
+  color: #64748b;
+}
+
+body.sidebar-light .about-history-accordion {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.sidebar-light .about-history-summary {
+  color: #64748b;
+}
+
+body.sidebar-light .about-history-summary:hover {
+  color: #1e293b;
+}
+
+body.sidebar-light .ver-chip {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #475569;
+}
+
+body.sidebar-light .ver-chip:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #0f172a;
+}
+
+body.sidebar-light .ver-chip-latest {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #2563eb;
+}
+
+body.sidebar-light .about-platforms-label {
+  color: #64748b;
+}
+
+body.sidebar-light .about-store-btn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1e293b;
+}
+
+body.sidebar-light .about-store-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.sidebar-light .store-btn-text small {
+  color: #64748b;
+}
+
+body.sidebar-light .store-btn-text strong {
+  color: #0f172a;
+}
+
+body.sidebar-light .about-footer {
+  color: #94a3b8;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
