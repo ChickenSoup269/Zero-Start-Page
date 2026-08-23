@@ -87,6 +87,7 @@ const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "space-concentric": "#00ff66",
   "split-pill": "#111111",
   "clock-3d": "#ffffff",
+  "macos-vintage": "#ffffff",
 }
 
 const CLOCK_STYLE_ACCENT_STYLES = Object.keys(CLOCK_STYLE_ACCENT_DEFAULTS)
@@ -2606,6 +2607,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-audio-wave",
       "date-clock-style-split-pill",
       "date-clock-style-clock-3d",
+      "date-clock-style-macos-vintage",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -2735,6 +2737,7 @@ function createApplySettings(effectInstances) {
       "pixel-hud",
       "split-pill",
       "clock-3d",
+      "macos-vintage",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -3788,6 +3791,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "pixel-hud",
       "split-pill",
       "clock-3d",
+      "macos-vintage",
     ]
 
     // Show style-specific container if current style has special settings

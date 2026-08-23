@@ -386,6 +386,10 @@ function applyHueMode(settings) {
     } else if (style === "glass-float") {
       clockTargets.push(clockElement.querySelector(".gf-time"))
       clockTargets.push(clockElement.querySelector(".gf-text"))
+    } else if (style === "macos-vintage") {
+      clockTargets.push(clockElement.querySelector(".omp-time-digits"))
+      clockTargets.push(clockElement.querySelector(".omp-t-ampm"))
+      clockTargets.push(clockElement.querySelector(".omp-t-cursor"))
     }
   }
 
@@ -464,6 +468,9 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".aw-date"))
       } else if (style === "glass-float") {
         dateTargets.push(clockElement.querySelector(".gf-date"))
+      } else if (style === "macos-vintage") {
+        dateTargets.push(clockElement.querySelector(".omp-date-line"))
+        dateTargets.push(clockElement.querySelector(".omp-sys-info"))
       }
     }
   }
@@ -2714,9 +2721,125 @@ export function updateTime() {
         </div>
       </div>
     `
+  } else if (dateClockStyle === "macos-vintage") {
+    const showSec = !settings.hideSeconds
+    let rawDate = ""
+    if (isTimer) {
+      rawDate = countdownLabel
+    } else {
+      rawDate = getCustomDateString(now, langCode, tz, settings, "full")
+    }
+    const formattedDateFull = (rawDate || "").replace(/<[^>]*>?/gm, "").trim()
+
+    const shouldShowClock =
+      displayMode === "all" || displayMode === "clock"
+    const shouldShowDate =
+      (displayMode === "all" || displayMode === "date" || displayMode === "weekday") &&
+      settings.showGregorian !== false
+
+    const existingCard = clockElement.querySelector(".omp-terminal-window")
+    if (existingCard) {
+      const hhEl = existingCard.querySelector(".omp-t-hh")
+      const mmEl = existingCard.querySelector(".omp-t-mm")
+      const ssEl = existingCard.querySelector(".omp-t-ss")
+      const ssColonEl = existingCard.querySelector(".omp-t-ss-colon")
+      const ampmEl = existingCard.querySelector(".omp-t-ampm")
+      const dateEl = existingCard.querySelector(".omp-date-text")
+      const clockOutput = existingCard.querySelector(".omp-clock-output")
+      const metaOutput = existingCard.querySelector(".omp-meta-output")
+
+      if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh
+      if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
+      if (ssEl) {
+        if (showSec && ss) {
+          if (ssEl.textContent !== ss) ssEl.textContent = ss
+          ssEl.style.display = "inline"
+          if (ssColonEl) ssColonEl.style.display = "inline"
+        } else {
+          ssEl.style.display = "none"
+          if (ssColonEl) ssColonEl.style.display = "none"
+        }
+      }
+      if (ampmEl) {
+        if (ampm) {
+          if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+          ampmEl.style.display = "inline"
+        } else {
+          ampmEl.style.display = "none"
+        }
+      }
+      if (dateEl && dateEl.textContent !== formattedDateFull) {
+        dateEl.textContent = formattedDateFull
+      }
+      if (clockOutput) clockOutput.style.display = shouldShowClock ? "flex" : "none"
+      if (metaOutput) metaOutput.style.display = shouldShowDate ? "flex" : "none"
+    } else {
+      clockElement.innerHTML = `
+        <div class="omp-terminal-window">
+          <!-- Terminal Titlebar (Windows Terminal / WezTerm style) -->
+          <div class="omp-terminal-titlebar">
+            <div class="omp-term-tabs">
+              <div class="omp-term-tab active">
+                <i class="fa-solid fa-terminal omp-tab-icon"></i>
+                <span class="omp-tab-title">pwsh (oh-my-posh)</span>
+                <span class="omp-tab-close">×</span>
+              </div>
+              <div class="omp-term-newtab">+</div>
+            </div>
+            <div class="omp-term-controls">
+              <span class="omp-win-btn omp-win-min">─</span>
+              <span class="omp-win-btn omp-win-max">□</span>
+              <span class="omp-win-btn omp-win-close">✕</span>
+            </div>
+          </div>
+
+          <!-- Terminal Body Screen -->
+          <div class="omp-terminal-screen">
+            <!-- Prompt Line 1: Oh My Posh Powerline Segments -->
+            <div class="omp-prompt-top">
+              <span class="omp-p-segment omp-p-os"><i class="fa-brands fa-windows"></i> dev<span class="omp-arrow"></span></span>
+              <span class="omp-p-segment omp-p-path"><i class="fa-regular fa-folder-open"></i> ~/startpage<span class="omp-arrow"></span></span>
+              <span class="omp-p-segment omp-p-git"><i class="fa-solid fa-code-branch"></i> main<span class="omp-arrow"></span></span>
+              <span class="omp-p-segment omp-p-time"><i class="fa-solid fa-bolt"></i> 1ms<span class="omp-arrow"></span></span>
+            </div>
+
+            <!-- Prompt Line 2: CLI Command -->
+            <div class="omp-prompt-bottom">
+              <span class="omp-prompt-char">❯</span>
+              <span class="omp-command-text">clock --live</span>
+            </div>
+
+            <!-- Authentic Terminal Clock Output -->
+            <div class="omp-clock-output" style="${shouldShowClock ? "" : "display: none;"}">
+              <div class="omp-time-digits">
+                <span class="omp-t-hh">${hh}</span>
+                <span class="omp-t-colon">:</span>
+                <span class="omp-t-mm">${mm}</span>
+                <span class="omp-t-colon omp-t-ss-colon" style="${showSec && ss ? "" : "display: none;"}">:</span>
+                <span class="omp-t-ss" style="${showSec && ss ? "" : "display: none;"}">${ss || "00"}</span>
+              </div>
+              <span class="omp-t-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
+              <span class="omp-t-cursor">█</span>
+            </div>
+
+            <!-- Terminal Date & Metadata Output -->
+            <div class="omp-meta-output" style="${shouldShowDate ? "" : "display: none;"}">
+              <div class="omp-date-line">
+                <span class="omp-prefix">➜ [DATE]</span>
+                <span class="omp-date-text">${formattedDateFull}</span>
+              </div>
+              <div class="omp-sys-info">
+                <span class="omp-sys-tag"><i class="fa-brands fa-node-js"></i> v22</span>
+                <span class="omp-sys-tag">UTF-8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    }
   } else if (dateClockStyle === "clock-3d") {
     const showSec = !settings.hideSeconds
-    const is12Hour = settings.clockTimeFormat === "12"
+    const is12Hour = settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
     let displayHH = hh
     if (is12Hour) {
       let hNum = parseInt(hh, 10)
@@ -2861,6 +2984,7 @@ export function updateTime() {
       "code",
       "split-pill",
       "clock-3d",
+      "macos-vintage",
     ].includes(dateClockStyle) || isCustomAngleShowingInternalDate
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")

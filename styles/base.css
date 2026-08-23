@@ -1669,7 +1669,7 @@ body.clock-style-transparent-bg.date-clock-style-split-pill .split-pill-card:hov
 }
 
 /* ==========================================================================
-   3D Clock (Isometric 3D Segments & Floor Reflection)
+   3D Clock (Isometric 3D Segments, Slanted Perspective & Floor Reflection)
    ========================================================================== */
 body.date-clock-style-clock-3d .clock-date-wrap {
   width: fit-content !important;
@@ -1685,7 +1685,7 @@ body.date-clock-style-clock-3d .clock-date-wrap {
   border: none !important;
   box-shadow: none !important;
   overflow: visible !important;
-  perspective: 1000px !important;
+  perspective: 1200px !important;
 }
 
 body.date-clock-style-clock-3d .date-fade-wrapper,
@@ -1717,9 +1717,9 @@ body.date-clock-style-clock-3d #clock {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  perspective: 900px;
+  perspective: 1100px;
   transform-style: preserve-3d;
-  padding: 1rem 2rem 2.5rem;
+  padding: 1.2rem 2.5rem 2.8rem;
   user-select: none;
   font-family: var(--font-clock);
 }
@@ -1731,7 +1731,7 @@ body.date-clock-style-clock-3d #clock {
   justify-content: center;
   transform-style: preserve-3d;
   color: var(--clock-color, #ffffff);
-  animation: clock3DCameraRotate 32s ease-in-out infinite alternate;
+  animation: clock3DCameraRotate 18s ease-in-out infinite alternate;
   will-change: transform;
   transform: translateZ(0);
 }
@@ -1747,30 +1747,46 @@ body.date-clock-style-clock-3d #clock {
 
 .clock-3d-time-val {
   font-family: var(--font-clock);
-  font-size: clamp(3.4rem, calc(var(--clock-size, 6rem) * 1.25), 14rem);
-  font-weight: 750;
+  font-size: clamp(3.6rem, calc(var(--clock-size, 6rem) * 1.3), 14rem);
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: var(--clock-color, #ffffff);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+  /* Multi-layered 3D Extrusion Depth + Specular Rim */
   text-shadow:
-    0 0 14px rgba(255, 255, 255, 0.45),
-    0 0 28px rgba(255, 255, 255, 0.22),
-    0 2px 10px rgba(0, 0, 0, 0.5);
+    0 1px 0 rgba(255, 255, 255, 0.45),
+    1px 1px 0 rgba(0, 0, 0, 0.35),
+    2px 2px 0 rgba(0, 0, 0, 0.32),
+    3px 3px 0 rgba(0, 0, 0, 0.28),
+    4px 4px 0 rgba(0, 0, 0, 0.24),
+    5px 5px 0 rgba(0, 0, 0, 0.2),
+    6px 6px 0 rgba(0, 0, 0, 0.16),
+    7px 7px 0 rgba(0, 0, 0, 0.12),
+    8px 8px 1px rgba(0, 0, 0, 0.08),
+    0 0 20px rgba(var(--clock-color-rgb, 255, 255, 255), 0.25),
+    8px 14px 26px rgba(0, 0, 0, 0.5);
   font-variant-numeric: tabular-nums;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
 }
 
 .clock-3d-ampm {
   font-family: var(--font-clock);
   font-size: calc(var(--clock-size, 6rem) * 0.26);
-  font-weight: 700;
+  font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--clock-color, #ffffff);
   align-self: flex-start;
   margin-top: calc(var(--clock-size, 6rem) * 0.06);
-  margin-left: 0.6rem;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  margin-left: 0.65rem;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35),
+    1px 1px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 rgba(0, 0, 0, 0.25),
+    3px 3px 0 rgba(0, 0, 0, 0.2),
+    0 0 12px rgba(255, 255, 255, 0.35),
+    4px 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* 3D Floor Reflection & Ground Ambient Lighting */
@@ -1780,7 +1796,7 @@ body.date-clock-style-clock-3d #clock {
   right: 0;
   position: absolute;
   transform-origin: 50% 0%;
-  transform: scaleY(-1) translateY(2px) translateZ(-2px) rotateX(15deg);
+  transform: scaleY(-0.75) translateY(2px) translateZ(-6px) rotateX(26deg);
   pointer-events: none;
   user-select: none;
 }
@@ -1789,61 +1805,65 @@ body.date-clock-style-clock-3d #clock {
   text-shadow: none !important;
   color: var(--clock-color, #ffffff) !important;
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+  filter: none !important;
 }
 
 .clock-3d-reflection .clock-3d-ampm {
   text-shadow: none !important;
   color: var(--clock-color, #ffffff) !important;
+  filter: none !important;
 }
 
 /* Sharp Glossy Mirror Reflection */
 .clock-3d-reflection-sharp {
-  opacity: 0.38;
-  filter: blur(1.2px);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 35%, transparent 75%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 35%, transparent 75%);
+  opacity: 0.32;
+  filter: blur(1px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 80%);
 }
 
 /* Diffuse Atmospheric Glow Reflection */
 .clock-3d-reflection-blur {
-  opacity: 0.25;
-  filter: blur(8px);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
+  opacity: 0.2;
+  filter: blur(7px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 45%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 45%, transparent 85%);
 }
 
 /* Ambient Ground Light Disc under 3D numbers */
 .clock-3d-floor-glow {
   position: absolute;
-  bottom: -4px;
+  bottom: -6px;
   left: 50%;
-  transform: translateX(-50%) rotateX(80deg) translateZ(-6px);
-  width: 110%;
-  height: calc(var(--clock-size, 6rem) * 0.4);
-  background: radial-gradient(ellipse at center, rgba(var(--clock-color-rgb, 255, 255, 255), 0.22) 0%, rgba(var(--clock-color-rgb, 255, 255, 255), 0.05) 55%, transparent 75%);
+  transform: translateX(-50%) rotateX(82deg) translateZ(-8px);
+  width: 112%;
+  height: calc(var(--clock-size, 6rem) * 0.5);
+  background: radial-gradient(ellipse at center, rgba(var(--clock-color-rgb, 255, 255, 255), 0.26) 0%, rgba(var(--clock-color-rgb, 255, 255, 255), 0.06) 55%, transparent 75%);
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(4px);
+  filter: blur(5px);
 }
 
-/* Date Pill */
+/* Date Badge (Subtle Squircle Border Radius & Premium Glass Background) */
 .clock-3d-date {
-  margin-top: calc(var(--clock-size, 6rem) * 0.38);
+  margin-top: calc(var(--clock-size, 6rem) * 0.36);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-date, var(--font-clock));
+  transform-style: preserve-3d;
+  transform: translateZ(8px);
 }
 
 .clock-3d-date-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 20px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   font-size: clamp(0.82rem, calc(var(--date-size, 1.5rem) * 0.68), 1.15rem);
@@ -1852,24 +1872,31 @@ body.date-clock-style-clock-3d #clock {
   text-transform: none;
   color: var(--date-color, var(--clock-color, #ffffff));
   -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.clock-3d-date-pill i {
+  font-size: 0.88em;
+  opacity: 0.75;
 }
 
 .clock-3d-date-pill:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
 }
 
+/* Smooth 3D Isometric Slanted Camera Rotation */
 @keyframes clock3DCameraRotate {
   0% {
-    transform: rotateY(-11deg) rotateX(5deg);
+    transform: rotateY(-18deg) rotateX(12deg) rotateZ(1.5deg);
   }
   50% {
-    transform: rotateY(11deg) rotateX(1deg);
+    transform: rotateY(18deg) rotateX(12deg) rotateZ(-1.5deg);
   }
   100% {
-    transform: rotateY(-11deg) rotateX(5deg);
+    transform: rotateY(-18deg) rotateX(12deg) rotateZ(1.5deg);
   }
 }
 
@@ -1886,12 +1913,22 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-scene {
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-time-val,
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-ampm {
   color: var(--clock-color, #111111) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    1px 1px 0 rgba(0, 0, 0, 0.12),
+    2px 2px 0 rgba(0, 0, 0, 0.1),
+    3px 3px 0 rgba(0, 0, 0, 0.08),
+    4px 4px 0 rgba(0, 0, 0, 0.06),
+    5px 5px 0 rgba(0, 0, 0, 0.04),
+    6px 10px 20px rgba(0, 0, 0, 0.15) !important;
+  filter: none !important;
 }
 
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-date-pill {
-  background: rgba(0, 0, 0, 0.06) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02)) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   color: var(--date-color, #111111) !important;
 }
 
@@ -1942,6 +1979,424 @@ body.clock-style-transparent-bg.date-clock-style-clock-3d .clock-3d-scene {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+/* ==========================================================================
+   Oh My Posh Clock (Authentic Windows Terminal / Developer Console)
+   ========================================================================== */
+body.date-clock-style-macos-vintage {
+  --omp-card-bg: #0c0c0c;
+  --omp-card-border: rgba(255, 255, 255, 0.12);
+  --omp-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  --omp-titlebar-bg: #181818;
+  --omp-tab-bg: #0c0c0c;
+  --omp-clock-color: var(--clock-color, #38bdf8);
+  --omp-date-color: var(--date-color, #cbd5e1);
+}
+
+body.clock-style-bg-dark.date-clock-style-macos-vintage {
+  --omp-card-bg: #0a0e17;
+  --omp-card-border: rgba(255, 255, 255, 0.14);
+  --omp-card-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  --omp-titlebar-bg: #111726;
+  --omp-tab-bg: #0a0e17;
+  --omp-clock-color: var(--clock-color, #38bdf8);
+  --omp-date-color: var(--date-color, #cbd5e1);
+}
+
+body.clock-style-bg-accent.date-clock-style-macos-vintage {
+  --omp-card-bg:
+    linear-gradient(135deg, rgba(var(--accent-color-rgb, var(--global-accent-color-rgb, 56, 189, 248)), 0.2), rgba(12, 16, 26, 0.96)),
+    #0c101a;
+  --omp-card-border: rgba(var(--accent-color-rgb, var(--global-accent-color-rgb, 56, 189, 248)), 0.38);
+  --omp-card-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(var(--accent-color-rgb, var(--global-accent-color-rgb, 56, 189, 248)), 0.2);
+  --omp-titlebar-bg: rgba(var(--accent-color-rgb, var(--global-accent-color-rgb, 56, 189, 248)), 0.15);
+  --omp-tab-bg: rgba(12, 16, 26, 0.9);
+  --omp-clock-color: var(--clock-color, #ffffff);
+  --omp-date-color: var(--date-color, #ffffff);
+}
+
+body.clock-style-bg-light.date-clock-style-macos-vintage {
+  --omp-card-bg: #f8fafc;
+  --omp-card-border: rgba(0, 0, 0, 0.12);
+  --omp-card-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  --omp-titlebar-bg: #e2e8f0;
+  --omp-tab-bg: #f8fafc;
+  --omp-clock-color: var(--clock-color, #0284c7);
+  --omp-date-color: var(--date-color, #334155);
+}
+
+body.clock-style-bg-custom.date-clock-style-macos-vintage {
+  --omp-card-bg: var(--clock-style-custom-bg-color, #1f2937);
+  --omp-card-border: rgba(255, 255, 255, 0.18);
+  --omp-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --omp-titlebar-bg: rgba(0, 0, 0, 0.25);
+  --omp-tab-bg: var(--clock-style-custom-bg-color, #1f2937);
+  --omp-clock-color: var(--clock-color, #ffffff);
+  --omp-date-color: var(--date-color, #ffffff);
+}
+
+body.clock-style-transparent-bg.date-clock-style-macos-vintage {
+  --omp-card-bg: transparent;
+  --omp-card-border: transparent;
+  --omp-card-shadow: none;
+  --omp-titlebar-bg: transparent;
+  --omp-tab-bg: transparent;
+  --omp-clock-color: var(--clock-color, #38bdf8);
+  --omp-date-color: var(--date-color, #e0f2fe);
+}
+
+body.date-clock-style-macos-vintage .clock-date-wrap {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 auto var(--space-4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+body.date-clock-style-macos-vintage .date-fade-wrapper,
+body.date-clock-style-macos-vintage #date {
+  display: none !important;
+}
+
+body.date-clock-style-macos-vintage .clock-fade-wrapper,
+body.date-clock-style-macos-vintage #clock {
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  font-size: 1rem !important;
+  letter-spacing: normal !important;
+  line-height: normal !important;
+  overflow: visible !important;
+}
+
+/* Terminal Window Frame */
+.omp-terminal-window {
+  position: relative;
+  min-width: min(94vw, 480px);
+  width: fit-content;
+  border-radius: 8px;
+  background: var(--omp-card-bg) !important;
+  border: 1px solid var(--omp-card-border) !important;
+  box-shadow: var(--omp-card-shadow) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  user-select: none;
+  transition: all 0.25s ease;
+  font-family: "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+.omp-terminal-window:hover {
+  transform: translateY(-2px);
+}
+
+/* Terminal Titlebar */
+.omp-terminal-titlebar {
+  height: 34px;
+  background: var(--omp-titlebar-bg) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.omp-term-tabs {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.omp-term-tab.active {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 12px;
+  background: var(--omp-tab-bg) !important;
+  border-top: 2px solid #38bdf8;
+  font-size: 0.72rem;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.omp-tab-icon {
+  font-size: 0.75rem;
+  color: #38bdf8;
+}
+
+.omp-tab-title {
+  letter-spacing: 0.02em;
+}
+
+.omp-tab-close {
+  font-size: 0.8rem;
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
+.omp-term-newtab {
+  padding: 0 10px;
+  font-size: 0.9rem;
+  color: #64748b;
+  cursor: default;
+}
+
+.omp-term-controls {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.omp-win-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 100%;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  transition: background 0.15s;
+  cursor: default;
+}
+
+.omp-win-close:hover {
+  background: #e81123;
+  color: #ffffff;
+}
+
+.omp-win-min:hover,
+.omp-win-max:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Terminal Screen Body */
+.omp-terminal-screen {
+  padding: 14px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* Prompt Line 1 (Powerline Segments) */
+.omp-prompt-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  line-height: 1;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.omp-p-segment {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px 3px 8px;
+  color: #ffffff;
+}
+
+.omp-p-os {
+  background: #0078d4;
+}
+
+.omp-p-path {
+  background: #0284c7;
+}
+
+.omp-p-git {
+  background: #059669;
+}
+
+.omp-p-time {
+  background: #d97706;
+}
+
+.omp-arrow {
+  font-family: inherit;
+  font-size: 1.1em;
+  line-height: 0;
+  margin-left: 6px;
+  margin-right: -6px;
+  user-select: none;
+}
+
+.omp-p-os .omp-arrow { color: #0078d4; }
+.omp-p-path .omp-arrow { color: #0284c7; }
+.omp-p-git .omp-arrow { color: #059669; }
+.omp-p-time .omp-arrow { color: #d97706; }
+
+/* Prompt Line 2 */
+.omp-prompt-bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.omp-prompt-char {
+  color: #22c55e;
+  font-weight: 900;
+}
+
+.omp-command-text {
+  color: #f1f5f9;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Clock Output */
+.omp-clock-output {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px;
+  width: 100%;
+  margin: 6px 0 2px;
+}
+
+.omp-time-digits {
+  font-family: var(--font-clock, var(--font-mono, monospace));
+  font-size: clamp(3.2rem, calc(var(--clock-size, 6rem) * 1.25), 10rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--omp-clock-color) !important;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+  text-shadow:
+    0 0 20px rgba(56, 189, 248, 0.3),
+    0 2px 10px rgba(0, 0, 0, 0.5);
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.omp-t-colon {
+  display: inline-block;
+  margin: 0 1px;
+  animation: termColonPulse 2s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+.omp-t-ss-colon {
+  font-size: 0.65em;
+  opacity: 0.6;
+}
+
+.omp-t-ss {
+  font-size: 0.52em;
+  font-weight: 700;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+.omp-t-ampm {
+  font-family: var(--font-clock, var(--font-mono, monospace));
+  font-size: calc(var(--clock-size, 6rem) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #38bdf8;
+  padding: 2px 6px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+  background: rgba(56, 189, 248, 0.1);
+  margin-left: 4px;
+  align-self: flex-start;
+  margin-top: 3px;
+}
+
+.omp-t-cursor {
+  font-size: clamp(2.4rem, calc(var(--clock-size, 6rem) * 0.95), 7.5rem);
+  color: var(--omp-clock-color) !important;
+  opacity: 0.85;
+  animation: termBlockCursor 1s step-end infinite;
+  line-height: 0.8;
+  margin-left: 4px;
+  align-self: center;
+}
+
+/* Meta Output */
+.omp-meta-output {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 2px;
+  font-size: 0.76rem;
+}
+
+.omp-date-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--omp-date-color) !important;
+  font-family: var(--font-date, var(--font-mono, monospace));
+  font-weight: 600;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+.omp-prefix {
+  color: #34d399;
+  font-weight: 800;
+}
+
+.omp-sys-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.omp-sys-tag {
+  padding: 1px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Theme modes adjustments */
+body.clock-style-bg-light.date-clock-style-macos-vintage .omp-term-tab.active {
+  color: #0f172a;
+}
+
+body.clock-style-bg-light.date-clock-style-macos-vintage .omp-command-text {
+  color: #0f172a;
+}
+
+body.clock-style-bg-light.date-clock-style-macos-vintage .omp-t-ampm {
+  color: #0284c7;
+  border-color: rgba(2, 132, 199, 0.3);
+  background: rgba(2, 132, 199, 0.08);
+}
+
+body.clock-style-bg-light.date-clock-style-macos-vintage .omp-win-btn {
+  color: #475569;
+}
+
+body.clock-style-transparent-bg.date-clock-style-macos-vintage .omp-terminal-titlebar {
+  display: none !important;
 }
 
 @media (max-width: 640px) {
