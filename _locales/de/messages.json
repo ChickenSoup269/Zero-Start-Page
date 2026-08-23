@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Zero Startpage - Neuer Tab Ersatz",
+    "description": "Name der Erweiterung."
+  },
+  "extDesc": {
+    "message": "Ein schöner und einfacher Ersatz für die Startseite.",
+    "description": "Beschreibung der Erweiterung."
+  }
+}
