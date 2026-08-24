@@ -632,11 +632,20 @@ export function setupGeneralEventHandlers(
       Array.from(DOM.languageSelect.options).forEach((opt) => {
         const btn = document.createElement("div")
         btn.className = "clock-style-card compact-style-card"
+        btn.dataset.value = opt.value
         if (opt.value === currentLang) btn.classList.add("active")
         
         const textSpan = document.createElement("span")
+        textSpan.className = "clock-style-name"
         textSpan.textContent = opt.textContent
         btn.appendChild(textSpan)
+
+        if (opt.dataset.badge) {
+          const badge = document.createElement("span")
+          badge.className = "lang-demo-badge"
+          badge.textContent = opt.dataset.badge
+          btn.appendChild(badge)
+        }
         
         btn.onclick = () => {
           if (btn.classList.contains("active")) return

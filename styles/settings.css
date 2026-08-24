@@ -5862,6 +5862,23 @@ body.sidebar-light .settings-select option {
   flex-shrink: 0;
 }
 
+.lang-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  margin-left: auto;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
 /* ==========================================================================
    Themes Grid & Card Design (Ultra-Premium Compact 3-Column UI)
    ========================================================================== */

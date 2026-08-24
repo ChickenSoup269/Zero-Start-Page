@@ -21,8 +21,8 @@ export async function loadLanguage(lang) {
   const customLanguage = settings.customLanguages?.[language]
 
   try {
+    const english = await loadEnglishTranslations()
     if (customLanguage?.translations) {
-      const english = await loadEnglishTranslations()
       i18n = {
         ...english,
         ...customLanguage.translations,
@@ -33,7 +33,12 @@ export async function loadLanguage(lang) {
 
     const response = await fetch(`./locales/${language}.json?v=2`)
     if (!response.ok) throw new Error("File not found")
-    i18n = await response.json()
+    const translations = await response.json()
+    i18n = {
+      ...english,
+      ...translations,
+      language,
+    }
   } catch (e) {
     console.error(
       `Could not load ${language}.json, falling back to English.`,

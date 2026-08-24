@@ -4246,12 +4246,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
 
     if (DOM.languageSelect) {
-      DOM.languageSelect.value = settings.language || "en"
+      const curLang = settings.language || "en"
+      DOM.languageSelect.value = curLang
       const btnGroup = document.getElementById("language-button-group")
       if (btnGroup) {
-        const selectedText = DOM.languageSelect.options[DOM.languageSelect.selectedIndex]?.textContent
         Array.from(btnGroup.children).forEach(btn => {
-          btn.classList.toggle("active", btn.textContent === selectedText)
+          btn.classList.toggle("active", btn.dataset.value === curLang)
         })
       }
     }
