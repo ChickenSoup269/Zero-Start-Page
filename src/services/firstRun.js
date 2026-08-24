@@ -583,6 +583,12 @@ async function promptFirstRunLanguage() {
         description: "Deutsche Benutzeroberfläche verwenden.",
         icon: "fa-solid fa-language",
       },
+      {
+        key: "sv",
+        label: "Svenska (Demo)",
+        description: "Använd det svenska gränssnittet.",
+        icon: "fa-solid fa-language",
+      },
     ],
     "Chọn ngôn ngữ / Choose Language",
     "Chọn ngôn ngữ trước khi bắt đầu. You can change this later in Settings.",

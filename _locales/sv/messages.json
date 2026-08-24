@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Zero Startpage - Ny flik",
+    "description": "Tilläggets namn."
+  },
+  "extDesc": {
+    "message": "En vacker och enkel startsida för din webbläsare.",
+    "description": "Beskrivning av tillägget."
+  }
+}
