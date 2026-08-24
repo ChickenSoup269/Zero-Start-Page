@@ -2737,8 +2737,191 @@ export function updateTime() {
       (displayMode === "all" || displayMode === "date" || displayMode === "weekday") &&
       settings.showGregorian !== false
 
+    const promptTheme = settings.ompPromptTheme || "powerline"
+    const windowStyle = settings.ompWindowStyle || "windows"
+    const userHost = settings.ompUserHost !== undefined ? settings.ompUserHost : "dev@startpage"
+    const promptPath = settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
+    const gitBranch = settings.ompBranch !== undefined ? settings.ompBranch : "main"
+    const showGit = settings.ompShowGit !== false
+    const showBattery = settings.ompShowBattery !== false
+    const showOs = settings.ompShowOs !== false
+    const cursorStyle = settings.ompCursorStyle || "block"
+    const cursorChar = cursorStyle === "line" ? "|" : cursorStyle === "underline" ? "_" : "█"
+
+    // OS Icon helper
+    let osIconHtml = '<i class="fa-brands fa-windows"></i>'
+    const osChoice = settings.ompOsIcon || "auto"
+    if (osChoice === "windows") osIconHtml = '<i class="fa-brands fa-windows"></i>'
+    else if (osChoice === "apple") osIconHtml = '<i class="fa-brands fa-apple"></i>'
+    else if (osChoice === "linux") osIconHtml = '<i class="fa-brands fa-linux"></i>'
+    else if (osChoice === "ubuntu") osIconHtml = '<i class="fa-brands fa-ubuntu"></i>'
+    else if (osChoice === "arch") osIconHtml = '<i class="fa-solid fa-gem"></i>'
+    else if (osChoice === "posh") osIconHtml = '<i class="fa-solid fa-bolt"></i>'
+    else {
+      const ua = (navigator.userAgent || "").toLowerCase()
+      if (ua.includes("mac") || ua.includes("darwin")) osIconHtml = '<i class="fa-brands fa-apple"></i>'
+      else if (ua.includes("linux") || ua.includes("android")) osIconHtml = '<i class="fa-brands fa-linux"></i>'
+    }
+
+    // Battery data
+    let batText = "100%"
+    let batIcon = "fa-solid fa-battery-full"
+    if (globalBatteryManager) {
+      const pct = Math.round((globalBatteryManager.level || 1) * 100)
+      batText = `${pct}%`
+      batIcon = globalBatteryManager.charging ? "fa-solid fa-bolt" : pct <= 25 ? "fa-solid fa-battery-quarter" : pct <= 65 ? "fa-solid fa-battery-half" : "fa-solid fa-battery-full"
+    }
+
+    const ARROW_SVG = `<svg class="omp-seg-arrow" viewBox="0 0 10 24" preserveAspectRatio="none"><path d="M0,0 L10,12 L0,24 Z" fill="currentColor"></path></svg>`
+
+    // Render Titlebar according to windowStyle
+    let titlebarHtml = ""
+    if (windowStyle === "macos") {
+      titlebarHtml = `
+        <div class="omp-terminal-titlebar omp-titlebar-macos">
+          <div class="omp-macos-controls">
+            <span class="omp-mac-dot omp-mac-close" title="Theme Toggle"></span>
+            <span class="omp-mac-dot omp-mac-min" title="Minimize Mode"></span>
+            <span class="omp-mac-dot omp-mac-max" title="Full Mode"></span>
+          </div>
+          <div class="omp-macos-title">
+            <i class="fa-solid fa-terminal"></i> ${escapeAttribute(userHost)}: ${escapeAttribute(promptPath)} (pwsh)
+          </div>
+          <div class="omp-macos-right-tag">zsh/pwsh</div>
+        </div>
+      `
+    } else if (windowStyle === "windows") {
+      titlebarHtml = `
+        <div class="omp-terminal-titlebar omp-titlebar-windows">
+          <div class="omp-term-tabs">
+            <div class="omp-term-tab active">
+              <i class="fa-solid fa-terminal omp-tab-icon"></i>
+              <span class="omp-tab-title">pwsh (oh-my-posh)</span>
+              <span class="omp-tab-close">×</span>
+            </div>
+            <div class="omp-term-newtab" title="New Tab">+</div>
+          </div>
+          <div class="omp-term-controls">
+            <span class="omp-win-btn omp-win-min" title="Minimize">─</span>
+            <span class="omp-win-btn omp-win-max" title="Maximize">□</span>
+            <span class="omp-win-btn omp-win-close" title="Glitch / Reset">✕</span>
+          </div>
+        </div>
+      `
+    }
+
+    // Render Prompt Segments based on promptTheme
+    let promptHtml = ""
+    if (promptTheme === "bubbles") {
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-bubbles">
+          <div class="omp-prompt-row-top">
+            <div class="omp-bubbles-group">
+              ${showOs ? `<span class="omp-bubble omp-bubble-os">${osIconHtml} ${escapeAttribute(userHost)}</span>` : ""}
+              <span class="omp-bubble omp-bubble-path"><i class="fa-regular fa-folder-open"></i> ${escapeAttribute(promptPath)}</span>
+              ${showGit ? `<span class="omp-bubble omp-bubble-git"><i class="fa-solid fa-code-branch"></i> ${escapeAttribute(gitBranch)}</span>` : ""}
+            </div>
+            <div class="omp-bubbles-right">
+              ${showBattery ? `<span class="omp-bubble omp-bubble-bat"><i class="${batIcon}"></i> ${batText}</span>` : ""}
+              <span class="omp-bubble omp-bubble-time"><i class="fa-solid fa-bolt"></i> 1ms</span>
+            </div>
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-line-corner">╰─</span>
+            <span class="omp-prompt-char">❯</span>
+            <span class="omp-command-text">clock --live</span>
+          </div>
+        </div>
+      `
+    } else if (promptTheme === "minimal") {
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-minimal">
+          <div class="omp-minimal-line1">
+            <span class="omp-min-prefix">╭─</span>
+            ${showOs ? `<span class="omp-min-os">${osIconHtml} ${escapeAttribute(userHost)}</span>` : ""}
+            <span class="omp-min-in">in</span>
+            <span class="omp-min-path"><i class="fa-regular fa-folder-open"></i> ${escapeAttribute(promptPath)}</span>
+            ${showGit ? `<span class="omp-min-on">on</span><span class="omp-min-git"><i class="fa-solid fa-code-branch"></i> ${escapeAttribute(gitBranch)}</span>` : ""}
+            ${showBattery ? `<span class="omp-min-bat">[<i class="${batIcon}"></i> ${batText}]</span>` : ""}
+            <span class="omp-min-time">[<i class="fa-solid fa-bolt"></i> 1ms]</span>
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-line-corner">╰─</span>
+            <span class="omp-prompt-char">❯</span>
+            <span class="omp-command-text">clock --live</span>
+          </div>
+        </div>
+      `
+    } else if (promptTheme === "kali") {
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-kali">
+          <div class="omp-kali-line1">
+            <span class="omp-kali-bracket">┌──(</span><span class="omp-kali-user">root㉿${escapeAttribute(userHost)}</span><span class="omp-kali-bracket">)-[</span><span class="omp-kali-path">${escapeAttribute(promptPath)}</span><span class="omp-kali-bracket">]</span>${showGit ? `<span class="omp-kali-bracket">-(</span><span class="omp-kali-git">${escapeAttribute(gitBranch)}</span><span class="omp-kali-bracket">)</span>` : ""}
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-line-corner">└─</span>
+            <span class="omp-prompt-char omp-kali-hash">#</span>
+            <span class="omp-command-text">clock --live</span>
+          </div>
+        </div>
+      `
+    } else if (promptTheme === "cyberpunk") {
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-cyberpunk">
+          <div class="omp-cyber-line1">
+            <span class="omp-cyber-tag">[SYS//${escapeAttribute(userHost).toUpperCase()}]</span>
+            <span class="omp-cyber-path">${escapeAttribute(promptPath)}</span>
+            ${showGit ? `<span class="omp-cyber-git">&lt;${escapeAttribute(gitBranch)}&gt;</span>` : ""}
+            ${showBattery ? `<span class="omp-cyber-bat">[PWR:${batText}]</span>` : ""}
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-char omp-cyber-char">&gt;&gt;</span>
+            <span class="omp-command-text">clock --live --matrix</span>
+          </div>
+        </div>
+      `
+    } else if (promptTheme === "pure") {
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-pure">
+          <div class="omp-pure-line1">
+            <span class="omp-pure-path">${escapeAttribute(promptPath)}</span>
+            ${showGit ? `<span class="omp-pure-git">git:(<span class="omp-pure-branch">${escapeAttribute(gitBranch)}</span>*)</span>` : ""}
+            ${showBattery ? `<span class="omp-pure-bat"><i class="${batIcon}"></i> ${batText}</span>` : ""}
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-char">❯</span>
+            <span class="omp-command-text">clock --live</span>
+          </div>
+        </div>
+      `
+    } else {
+      // Default: Classic Powerline (Agnoster)
+      promptHtml = `
+        <div class="omp-prompt-wrap omp-prompt-powerline">
+          <div class="omp-prompt-row-top">
+            <div class="omp-prompt-left-segments">
+              ${showOs ? `<span class="omp-p-segment omp-p-os">${osIconHtml} ${escapeAttribute(userHost)}${ARROW_SVG}</span>` : ""}
+              <span class="omp-p-segment omp-p-path"><i class="fa-regular fa-folder-open"></i> ${escapeAttribute(promptPath)}${ARROW_SVG}</span>
+              ${showGit ? `<span class="omp-p-segment omp-p-git"><i class="fa-solid fa-code-branch"></i> ${escapeAttribute(gitBranch)}${ARROW_SVG}</span>` : ""}
+            </div>
+            <div class="omp-prompt-right-segments">
+              ${showBattery ? `<span class="omp-p-segment omp-p-bat"><i class="${batIcon}"></i> ${batText}${ARROW_SVG}</span>` : ""}
+              <span class="omp-p-segment omp-p-time"><i class="fa-solid fa-bolt"></i> 1ms${ARROW_SVG}</span>
+            </div>
+          </div>
+          <div class="omp-prompt-bottom">
+            <span class="omp-prompt-char">❯</span>
+            <span class="omp-command-text">clock --live</span>
+          </div>
+        </div>
+      `
+    }
+
     const existingCard = clockElement.querySelector(".omp-terminal-window")
-    if (existingCard) {
+    const cardTheme = existingCard?.dataset?.theme
+    const cardWin = existingCard?.dataset?.win
+
+    if (existingCard && cardTheme === promptTheme && cardWin === windowStyle) {
       const hhEl = existingCard.querySelector(".omp-t-hh")
       const mmEl = existingCard.querySelector(".omp-t-mm")
       const ssEl = existingCard.querySelector(".omp-t-ss")
@@ -2747,6 +2930,7 @@ export function updateTime() {
       const dateEl = existingCard.querySelector(".omp-date-text")
       const clockOutput = existingCard.querySelector(".omp-clock-output")
       const metaOutput = existingCard.querySelector(".omp-meta-output")
+      const cursorEl = existingCard.querySelector(".omp-t-cursor")
 
       if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh
       if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
@@ -2768,6 +2952,9 @@ export function updateTime() {
           ampmEl.style.display = "none"
         }
       }
+      if (cursorEl && cursorEl.textContent !== cursorChar) {
+        cursorEl.textContent = cursorChar
+      }
       if (dateEl && dateEl.textContent !== formattedDateFull) {
         dateEl.textContent = formattedDateFull
       }
@@ -2775,39 +2962,12 @@ export function updateTime() {
       if (metaOutput) metaOutput.style.display = shouldShowDate ? "flex" : "none"
     } else {
       clockElement.innerHTML = `
-        <div class="omp-terminal-window">
-          <!-- Terminal Titlebar (Windows Terminal / WezTerm style) -->
-          <div class="omp-terminal-titlebar">
-            <div class="omp-term-tabs">
-              <div class="omp-term-tab active">
-                <i class="fa-solid fa-terminal omp-tab-icon"></i>
-                <span class="omp-tab-title">pwsh (oh-my-posh)</span>
-                <span class="omp-tab-close">×</span>
-              </div>
-              <div class="omp-term-newtab">+</div>
-            </div>
-            <div class="omp-term-controls">
-              <span class="omp-win-btn omp-win-min">─</span>
-              <span class="omp-win-btn omp-win-max">□</span>
-              <span class="omp-win-btn omp-win-close">✕</span>
-            </div>
-          </div>
+        <div class="omp-terminal-window omp-style-${escapeAttribute(windowStyle)} omp-theme-${escapeAttribute(promptTheme)}" data-theme="${escapeAttribute(promptTheme)}" data-win="${escapeAttribute(windowStyle)}">
+          ${titlebarHtml}
 
           <!-- Terminal Body Screen -->
           <div class="omp-terminal-screen">
-            <!-- Prompt Line 1: Oh My Posh Powerline Segments -->
-            <div class="omp-prompt-top">
-              <span class="omp-p-segment omp-p-os"><i class="fa-brands fa-windows"></i> dev<span class="omp-arrow"></span></span>
-              <span class="omp-p-segment omp-p-path"><i class="fa-regular fa-folder-open"></i> ~/startpage<span class="omp-arrow"></span></span>
-              <span class="omp-p-segment omp-p-git"><i class="fa-solid fa-code-branch"></i> main<span class="omp-arrow"></span></span>
-              <span class="omp-p-segment omp-p-time"><i class="fa-solid fa-bolt"></i> 1ms<span class="omp-arrow"></span></span>
-            </div>
-
-            <!-- Prompt Line 2: CLI Command -->
-            <div class="omp-prompt-bottom">
-              <span class="omp-prompt-char">❯</span>
-              <span class="omp-command-text">clock --live</span>
-            </div>
+            ${promptHtml}
 
             <!-- Authentic Terminal Clock Output -->
             <div class="omp-clock-output" style="${shouldShowClock ? "" : "display: none;"}">
@@ -2819,7 +2979,7 @@ export function updateTime() {
                 <span class="omp-t-ss" style="${showSec && ss ? "" : "display: none;"}">${ss || "00"}</span>
               </div>
               <span class="omp-t-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
-              <span class="omp-t-cursor">█</span>
+              <span class="omp-t-cursor omp-cursor-${escapeAttribute(cursorStyle)}">${cursorChar}</span>
             </div>
 
             <!-- Terminal Date & Metadata Output -->
@@ -2829,13 +2989,33 @@ export function updateTime() {
                 <span class="omp-date-text">${formattedDateFull}</span>
               </div>
               <div class="omp-sys-info">
+                <span class="omp-sys-tag omp-status-tag"><span class="omp-status-dot"></span> ONLINE</span>
                 <span class="omp-sys-tag"><i class="fa-brands fa-node-js"></i> v22</span>
                 <span class="omp-sys-tag">UTF-8</span>
+                <span class="omp-sys-tag omp-posh-tag">posh 19.2</span>
               </div>
             </div>
           </div>
+
+          <!-- CRT Scanlines Overlay (if enabled) -->
+          <div class="omp-crt-overlay"></div>
         </div>
       `
+
+      // Add interactive click listeners on window buttons
+      const termWindow = clockElement.querySelector(".omp-terminal-window")
+      if (termWindow) {
+        termWindow.querySelector(".omp-win-close, .omp-mac-close")?.addEventListener("click", () => {
+          termWindow.classList.add("omp-glitch-anim")
+          setTimeout(() => termWindow.classList.remove("omp-glitch-anim"), 800)
+        })
+        termWindow.querySelector(".omp-win-min, .omp-mac-min")?.addEventListener("click", () => {
+          termWindow.classList.toggle("omp-compact-mode")
+        })
+        termWindow.querySelector(".omp-win-max, .omp-mac-max")?.addEventListener("click", () => {
+          termWindow.classList.toggle("omp-expanded-mode")
+        })
+      }
     }
   } else if (dateClockStyle === "clock-3d") {
     const showSec = !settings.hideSeconds

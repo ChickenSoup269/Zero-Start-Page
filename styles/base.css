@@ -2040,6 +2040,7 @@ body.clock-style-transparent-bg.date-clock-style-macos-vintage {
   --omp-card-bg: transparent;
   --omp-card-border: transparent;
   --omp-card-shadow: none;
+  --omp-card-backdrop: none;
   --omp-titlebar-bg: transparent;
   --omp-tab-bg: transparent;
   --omp-clock-color: var(--clock-color, #38bdf8);
@@ -2090,32 +2091,78 @@ body.date-clock-style-macos-vintage #clock {
 /* Terminal Window Frame */
 .omp-terminal-window {
   position: relative;
-  min-width: min(94vw, 480px);
+  min-width: min(94vw, 520px);
   width: fit-content;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--omp-card-bg) !important;
   border: 1px solid var(--omp-card-border) !important;
   box-shadow: var(--omp-card-shadow) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: var(--omp-card-backdrop, blur(24px)) !important;
+  -webkit-backdrop-filter: var(--omp-card-backdrop, blur(24px)) !important;
   overflow: hidden;
   user-select: none;
-  transition: all 0.25s ease;
-  font-family: "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, monospace;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, max-height 0.3s ease;
+  font-family: "Cascadia Code", "JetBrains Mono", "Fira Code", "MesloLGS NF", Consolas, monospace;
+}
+
+body.clock-style-transparent-bg.date-clock-style-macos-vintage .omp-terminal-window {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-macos-vintage .omp-terminal-window:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .omp-terminal-window:hover {
   transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 20px rgba(56, 189, 248, 0.15) !important;
 }
 
-/* Terminal Titlebar */
+.omp-terminal-window.omp-compact-mode .omp-clock-output {
+  display: none !important;
+}
+
+.omp-terminal-window.omp-expanded-mode {
+  min-width: min(96vw, 680px);
+}
+
+.omp-terminal-window.omp-glitch-anim {
+  animation: ompGlitch 0.6s ease-in-out;
+}
+
+@keyframes ompGlitch {
+  0% { transform: translate(0); filter: hue-rotate(0deg); }
+  20% { transform: translate(-4px, 2px); filter: hue-rotate(90deg); }
+  40% { transform: translate(4px, -2px); filter: hue-rotate(180deg); }
+  60% { transform: translate(-2px, -2px); filter: hue-rotate(270deg); }
+  80% { transform: translate(2px, 2px); filter: hue-rotate(360deg); }
+  100% { transform: translate(0); filter: hue-rotate(0deg); }
+}
+
+/* Terminal Titlebar - General */
 .omp-terminal-titlebar {
-  height: 34px;
+  height: 36px;
   background: var(--omp-titlebar-bg) !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 8px;
+}
+
+.omp-style-minimal .omp-terminal-titlebar {
+  display: none !important;
+}
+
+/* Windows Terminal Titlebar */
+.omp-titlebar-windows {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .omp-term-tabs {
@@ -2129,12 +2176,13 @@ body.date-clock-style-macos-vintage #clock {
   align-items: center;
   gap: 8px;
   height: 100%;
-  padding: 0 12px;
+  padding: 0 14px;
   background: var(--omp-tab-bg) !important;
   border-top: 2px solid #38bdf8;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: #f1f5f9;
   font-weight: 600;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .omp-tab-icon {
@@ -2149,14 +2197,26 @@ body.date-clock-style-macos-vintage #clock {
 .omp-tab-close {
   font-size: 0.8rem;
   opacity: 0.5;
-  margin-left: 2px;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.omp-tab-close:hover {
+  opacity: 1;
+  color: #ef4444;
 }
 
 .omp-term-newtab {
-  padding: 0 10px;
-  font-size: 0.9rem;
+  padding: 0 12px;
+  font-size: 0.95rem;
   color: #64748b;
-  cursor: default;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.omp-term-newtab:hover {
+  color: #f1f5f9;
 }
 
 .omp-term-controls {
@@ -2169,23 +2229,86 @@ body.date-clock-style-macos-vintage #clock {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  width: 40px;
   height: 100%;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: #94a3b8;
-  transition: background 0.15s;
-  cursor: default;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
 }
 
 .omp-win-close:hover {
-  background: #e81123;
-  color: #ffffff;
+  background: #e81123 !important;
+  color: #ffffff !important;
 }
 
 .omp-win-min:hover,
 .omp-win-max:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
+}
+
+/* macOS Titlebar */
+.omp-titlebar-macos {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  padding: 0 12px;
+}
+
+.omp-macos-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.omp-mac-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.omp-mac-dot:hover {
+  transform: scale(1.15);
+}
+
+.omp-mac-close {
+  background: #ff5f56;
+  border: 1px solid #e0443e;
+}
+
+.omp-mac-min {
+  background: #ffbd2e;
+  border: 1px solid #dea123;
+}
+
+.omp-mac-max {
+  background: #27c93f;
+  border: 1px solid #1aab29;
+}
+
+.omp-macos-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.omp-macos-right-tag {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.65rem;
+  color: #64748b;
 }
 
 /* Terminal Screen Body */
@@ -2195,29 +2318,51 @@ body.date-clock-style-macos-vintage #clock {
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
+  position: relative;
+  z-index: 1;
 }
 
-/* Prompt Line 1 (Powerline Segments) */
-.omp-prompt-top {
+/* Prompt General Wrappers */
+.omp-prompt-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.omp-prompt-row-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Prompt Line 1: Powerline Classic Theme */
+.omp-prompt-powerline .omp-prompt-left-segments,
+.omp-prompt-powerline .omp-prompt-right-segments {
+  display: flex;
+  align-items: center;
   line-height: 1;
-  font-size: 0.74rem;
-  font-weight: 700;
 }
 
 .omp-p-segment {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 6px 3px 8px;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
   color: #ffffff;
+  z-index: 2;
 }
 
 .omp-p-os {
   background: #0078d4;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 .omp-p-path {
@@ -2228,36 +2373,173 @@ body.date-clock-style-macos-vintage #clock {
   background: #059669;
 }
 
-.omp-p-time {
+.omp-p-bat {
   background: #d97706;
 }
 
-.omp-arrow {
-  font-family: inherit;
-  font-size: 1.1em;
-  line-height: 0;
-  margin-left: 6px;
-  margin-right: -6px;
-  user-select: none;
+.omp-p-time {
+  background: #7c3aed;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
-.omp-p-os .omp-arrow { color: #0078d4; }
-.omp-p-path .omp-arrow { color: #0284c7; }
-.omp-p-git .omp-arrow { color: #059669; }
-.omp-p-time .omp-arrow { color: #d97706; }
+.omp-seg-arrow {
+  position: absolute;
+  right: -10px;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
 
-/* Prompt Line 2 */
-.omp-prompt-bottom {
+.omp-p-os .omp-seg-arrow { color: #0078d4; }
+.omp-p-path .omp-seg-arrow { color: #0284c7; }
+.omp-p-git .omp-seg-arrow { color: #059669; }
+.omp-p-bat .omp-seg-arrow { color: #d97706; }
+.omp-p-time .omp-seg-arrow { color: #7c3aed; }
+
+/* Prompt Bubbles Theme */
+.omp-prompt-bubbles .omp-bubbles-group,
+.omp-prompt-bubbles .omp-bubbles-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.omp-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.omp-bubble-os {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.omp-bubble-path {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+.omp-bubble-git {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.omp-bubble-bat {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.omp-bubble-time {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+}
+
+/* Prompt Minimal (Starship) Theme */
+.omp-prompt-minimal .omp-minimal-line1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  flex-wrap: wrap;
+}
+
+.omp-min-prefix { color: #64748b; font-weight: 900; }
+.omp-min-os { color: #38bdf8; }
+.omp-min-in, .omp-min-on { color: #94a3b8; font-weight: 400; font-style: italic; }
+.omp-min-path { color: #38bdf8; font-weight: 700; }
+.omp-min-git { color: #4ade80; }
+.omp-min-bat { color: #fbbf24; }
+.omp-min-time { color: #c084fc; font-size: 0.7rem; }
+
+/* Prompt Kali Theme */
+.omp-prompt-kali .omp-kali-line1 {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  flex-wrap: wrap;
+}
+
+.omp-kali-bracket { color: #ef4444; font-weight: 800; }
+.omp-kali-user { color: #ef4444; font-weight: 800; }
+.omp-kali-path { color: #38bdf8; font-weight: 700; }
+.omp-kali-git { color: #22c55e; }
+.omp-kali-hash { color: #ef4444 !important; font-weight: 900 !important; }
+
+/* Prompt Cyberpunk Theme */
+.omp-prompt-cyberpunk .omp-cyber-line1 {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  flex-wrap: wrap;
+}
+
+.omp-cyber-tag {
+  color: #22c55e;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+.omp-cyber-path {
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.omp-cyber-git {
+  color: #eab308;
+}
+
+.omp-cyber-bat {
+  color: #ec4899;
+}
+
+.omp-cyber-char {
+  color: #22c55e !important;
+  text-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+}
+
+/* Prompt Pure Theme */
+.omp-prompt-pure .omp-pure-line1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.omp-pure-path { color: #a855f7; font-weight: 700; }
+.omp-pure-git { color: #64748b; }
+.omp-pure-branch { color: #38bdf8; }
+.omp-pure-bat { color: #f59e0b; font-size: 0.7rem; }
+
+/* Prompt Bottom Line (Prompt Char + Command) */
+.omp-prompt-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.8rem;
   margin-top: 2px;
+}
+
+.omp-prompt-line-corner {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .omp-prompt-char {
   color: #22c55e;
   font-weight: 900;
+  font-size: 0.85rem;
 }
 
 .omp-command-text {
@@ -2285,7 +2567,7 @@ body.date-clock-style-macos-vintage #clock {
   color: var(--omp-clock-color) !important;
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
   text-shadow:
-    0 0 20px rgba(56, 189, 248, 0.3),
+    0 0 24px rgba(56, 189, 248, 0.35),
     0 2px 10px rgba(0, 0, 0, 0.5);
   font-variant-numeric: tabular-nums;
   display: inline-flex;
@@ -2326,14 +2608,38 @@ body.date-clock-style-macos-vintage #clock {
   margin-top: 3px;
 }
 
+/* Cursors */
 .omp-t-cursor {
   font-size: clamp(2.4rem, calc(var(--clock-size, 6rem) * 0.95), 7.5rem);
   color: var(--omp-clock-color) !important;
-  opacity: 0.85;
+  opacity: 0.9;
   animation: termBlockCursor 1s step-end infinite;
   line-height: 0.8;
   margin-left: 4px;
   align-self: center;
+}
+
+.omp-t-cursor.omp-cursor-line {
+  font-weight: 300;
+  opacity: 0.85;
+  animation: termLineCursor 0.9s ease-in-out infinite;
+}
+
+.omp-t-cursor.omp-cursor-underline {
+  font-weight: 900;
+  line-height: 0.4;
+  align-self: flex-end;
+  animation: termBlockCursor 1s step-end infinite;
+}
+
+@keyframes termLineCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes termBlockCursor {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0; }
 }
 
 /* Meta Output */
@@ -2342,8 +2648,10 @@ body.date-clock-style-macos-vintage #clock {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 2px;
+  margin-top: 4px;
   font-size: 0.76rem;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .omp-date-line {
@@ -2364,16 +2672,71 @@ body.date-clock-style-macos-vintage #clock {
 .omp-sys-info {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 0.7rem;
   color: #64748b;
+  flex-wrap: wrap;
 }
 
 .omp-sys-tag {
-  padding: 1px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
+  border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.omp-status-tag {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.25);
+  font-weight: 700;
+}
+
+.omp-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: termDotPulse 2s infinite;
+}
+
+@keyframes termDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.omp-posh-tag {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+/* CRT Scanlines Overlay */
+.omp-crt-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0px,
+    rgba(255, 255, 255, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+  z-index: 10;
+  opacity: 0.6;
+}
+
+body.omp-crt-enabled .omp-crt-overlay {
+  display: block;
 }
 
 /* Theme modes adjustments */
@@ -6491,9 +6854,12 @@ body.clock-style-transparent-bg.date-clock-style-media-orb .media-orb-clock,
 body.clock-style-transparent-bg.date-clock-style-aurora-ribbon
   .aurora-ribbon-clock,
 body.clock-style-transparent-bg.date-clock-style-lunar-orbit
-  .lunar-orbit-clock {
+  .lunar-orbit-clock,
+body.clock-style-transparent-bg.date-clock-style-macos-vintage
+  .omp-terminal-window {
   background: transparent !important;
   border-color: transparent !important;
+  border: none !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;

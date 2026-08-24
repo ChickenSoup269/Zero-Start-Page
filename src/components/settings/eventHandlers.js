@@ -5037,6 +5037,32 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  // Oh My Posh Terminal settings event handlers
+  const ompHandler = (key, isCheckbox = false) => (e) => {
+    const val = isCheckbox ? e.target.checked : e.target.value
+    handleSettingUpdate(key, val)
+    if (key === "ompCrtScanlines") {
+      document.body.classList.toggle("omp-crt-enabled", val === true)
+    }
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key, value: val },
+      }),
+    )
+  }
+
+  document.getElementById("omp-prompt-theme-select")?.addEventListener("change", ompHandler("ompPromptTheme"))
+  document.getElementById("omp-window-style-select")?.addEventListener("change", ompHandler("ompWindowStyle"))
+  document.getElementById("omp-os-icon-select")?.addEventListener("change", ompHandler("ompOsIcon"))
+  document.getElementById("omp-user-host-input")?.addEventListener("input", ompHandler("ompUserHost"))
+  document.getElementById("omp-path-input")?.addEventListener("input", ompHandler("ompPath"))
+  document.getElementById("omp-branch-input")?.addEventListener("input", ompHandler("ompBranch"))
+  document.getElementById("omp-cursor-style-select")?.addEventListener("change", ompHandler("ompCursorStyle"))
+  document.getElementById("omp-show-git-checkbox")?.addEventListener("change", ompHandler("ompShowGit", true))
+  document.getElementById("omp-show-battery-checkbox")?.addEventListener("change", ompHandler("ompShowBattery", true))
+  document.getElementById("omp-show-os-checkbox")?.addEventListener("change", ompHandler("ompShowOs", true))
+  document.getElementById("omp-crt-scanlines-checkbox")?.addEventListener("change", ompHandler("ompCrtScanlines", true))
+
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()
     const style = settings.dateClockStyle || "default"

@@ -3898,6 +3898,35 @@ function createUpdateSettingsInputs(effectInstances) {
       glassFloatSettings.style.display = settings.dateClockStyle === "glass-float" ? "block" : "none"
     }
 
+    const ompSettings = document.getElementById("omp-settings")
+    if (ompSettings) {
+      ompSettings.style.display = settings.dateClockStyle === "macos-vintage" ? "block" : "none"
+    }
+    const ompPromptThemeSelect = document.getElementById("omp-prompt-theme-select")
+    if (ompPromptThemeSelect) ompPromptThemeSelect.value = settings.ompPromptTheme || "powerline"
+    const ompWindowStyleSelect = document.getElementById("omp-window-style-select")
+    if (ompWindowStyleSelect) ompWindowStyleSelect.value = settings.ompWindowStyle || "windows"
+    const ompOsIconSelect = document.getElementById("omp-os-icon-select")
+    if (ompOsIconSelect) ompOsIconSelect.value = settings.ompOsIcon || "auto"
+    const ompUserHostInput = document.getElementById("omp-user-host-input")
+    if (ompUserHostInput) ompUserHostInput.value = settings.ompUserHost !== undefined ? settings.ompUserHost : "dev@startpage"
+    const ompPathInput = document.getElementById("omp-path-input")
+    if (ompPathInput) ompPathInput.value = settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
+    const ompBranchInput = document.getElementById("omp-branch-input")
+    if (ompBranchInput) ompBranchInput.value = settings.ompBranch !== undefined ? settings.ompBranch : "main"
+    const ompCursorStyleSelect = document.getElementById("omp-cursor-style-select")
+    if (ompCursorStyleSelect) ompCursorStyleSelect.value = settings.ompCursorStyle || "block"
+    const ompShowGitCheckbox = document.getElementById("omp-show-git-checkbox")
+    if (ompShowGitCheckbox) ompShowGitCheckbox.checked = settings.ompShowGit !== false
+    const ompShowBatteryCheckbox = document.getElementById("omp-show-battery-checkbox")
+    if (ompShowBatteryCheckbox) ompShowBatteryCheckbox.checked = settings.ompShowBattery !== false
+    const ompShowOsCheckbox = document.getElementById("omp-show-os-checkbox")
+    if (ompShowOsCheckbox) ompShowOsCheckbox.checked = settings.ompShowOs !== false
+    const ompCrtScanlinesCheckbox = document.getElementById("omp-crt-scanlines-checkbox")
+    if (ompCrtScanlinesCheckbox) ompCrtScanlinesCheckbox.checked = settings.ompCrtScanlines === true
+
+    document.body.classList.toggle("omp-crt-enabled", settings.dateClockStyle === "macos-vintage" && settings.ompCrtScanlines === true)
+
     const satelliteSettings = document.getElementById("satellite-settings")
     if (satelliteSettings) {
       satelliteSettings.style.display = settings.dateClockStyle === "satellite" ? "block" : "none"

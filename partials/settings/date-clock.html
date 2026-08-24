@@ -603,7 +603,90 @@
                                 <label for="gf-glow-color" data-i18n="settings_gf_glow_color">Glow Color</label>
                                 <input type="color" id="gf-glow-color" value="#ffffff" style="height: 30px; width: 60px; padding: 0; border: none; border-radius: 4px; cursor: pointer;">
                             </div>
+                        </div>
+
+                        <!-- Oh My Posh Terminal Settings -->
+                        <div id="omp-settings" class="setting-item no-margin-top" style="display: none;">
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-prompt-theme-select" data-i18n="settings_omp_prompt_theme">Prompt Theme</label>
+                                <select id="omp-prompt-theme-select">
+                                    <option value="powerline" data-i18n="settings_omp_theme_powerline">Agnoster (Powerline)</option>
+                                    <option value="bubbles" data-i18n="settings_omp_theme_bubbles">Bubbles (Rounded Pills)</option>
+                                    <option value="minimal" data-i18n="settings_omp_theme_minimal">Starship (Minimal)</option>
+                                    <option value="kali" data-i18n="settings_omp_theme_kali">Kali (Cyber Hacker)</option>
+                                    <option value="cyberpunk" data-i18n="settings_omp_theme_cyberpunk">Cyberpunk Matrix</option>
+                                    <option value="pure" data-i18n="settings_omp_theme_pure">Pure CLI</option>
+                                </select>
                             </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-window-style-select" data-i18n="settings_omp_window_style">Window Style</label>
+                                <select id="omp-window-style-select">
+                                    <option value="windows" data-i18n="settings_omp_win_windows">Windows Terminal (Tabs)</option>
+                                    <option value="macos" data-i18n="settings_omp_win_macos">macOS (Traffic Lights)</option>
+                                    <option value="minimal" data-i18n="settings_omp_win_minimal">Minimal (Borderless)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-os-icon-select" data-i18n="settings_omp_os_icon">OS Icon</label>
+                                <select id="omp-os-icon-select">
+                                    <option value="auto" data-i18n="settings_omp_os_auto">Auto Detect</option>
+                                    <option value="windows" data-i18n="settings_omp_os_windows">Windows</option>
+                                    <option value="apple" data-i18n="settings_omp_os_apple">macOS (Apple)</option>
+                                    <option value="linux" data-i18n="settings_omp_os_linux">Linux</option>
+                                    <option value="ubuntu" data-i18n="settings_omp_os_ubuntu">Ubuntu</option>
+                                    <option value="arch" data-i18n="settings_omp_os_arch">Arch Linux</option>
+                                    <option value="posh" data-i18n="settings_omp_os_posh">PowerShell / Posh</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-user-host-input" data-i18n="settings_omp_user_host">User / Hostname</label>
+                                <input type="text" id="omp-user-host-input" maxlength="25" placeholder="dev@startpage">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-path-input" data-i18n="settings_omp_path">Prompt Directory</label>
+                                <input type="text" id="omp-path-input" maxlength="30" placeholder="~/startpage">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-branch-input" data-i18n="settings_omp_branch">Git Branch</label>
+                                <input type="text" id="omp-branch-input" maxlength="20" placeholder="main">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-cursor-style-select" data-i18n="settings_omp_cursor_style">Cursor Style</label>
+                                <select id="omp-cursor-style-select">
+                                    <option value="block" data-i18n="settings_omp_cursor_block">Block (█)</option>
+                                    <option value="line" data-i18n="settings_omp_cursor_line">Line (|)</option>
+                                    <option value="underline" data-i18n="settings_omp_cursor_underline">Underline (_)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-show-git-checkbox" data-i18n="settings_omp_show_git">Show Git Segment</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="omp-show-git-checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-show-battery-checkbox" data-i18n="settings_omp_show_battery">Show Battery Segment</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="omp-show-battery-checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-show-os-checkbox" data-i18n="settings_omp_show_os">Show OS / Host Segment</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="omp-show-os-checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="omp-crt-scanlines-checkbox" data-i18n="settings_omp_crt_scanlines">CRT Scanlines Effect</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="omp-crt-scanlines-checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
 
 
 
