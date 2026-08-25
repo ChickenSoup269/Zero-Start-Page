@@ -830,8 +830,13 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       ? `${selectedCount}/${stack.items.length}`
       : `${stack.items.length}`
 
-    const isAllSelected = stack.items.length > 0 && selectedCount === stack.items.length
-    selectAllBtn.innerHTML = isAllSelected
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
+    const visibleIndices = stack.items
+      .map((item, idx) => ({ item, idx }))
+      .filter(({ item }) => !query || getBookmarkLabel(item).toLowerCase().includes(query))
+      .map(({ idx }) => idx)
+    const isAllVisibleSelected = visibleIndices.length > 0 && visibleIndices.every(idx => selectedStackIndices.has(idx))
+    selectAllBtn.innerHTML = isAllVisibleSelected
       ? `<i class="fa-regular fa-square"></i><span>${i18n.deselect_all || "Deselect"}</span>`
       : `<i class="fa-solid fa-check-square"></i><span>${i18n.select_all || "Select all"}</span>`
   }
@@ -1185,11 +1190,17 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   })
 
   selectAllBtn.addEventListener("click", () => {
-    if (selectedStackIndices.size === stack.items.length) {
-      selectedStackIndices.clear()
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
+    const visibleIndices = stack.items
+      .map((item, idx) => ({ item, idx }))
+      .filter(({ item }) => !query || getBookmarkLabel(item).toLowerCase().includes(query))
+      .map(({ idx }) => idx)
+
+    const allVisibleSelected = visibleIndices.length > 0 && visibleIndices.every(idx => selectedStackIndices.has(idx))
+    if (allVisibleSelected) {
+      visibleIndices.forEach(idx => selectedStackIndices.delete(idx))
     } else {
-      selectedStackIndices.clear()
-      stack.items.forEach((_, idx) => selectedStackIndices.add(idx))
+      visibleIndices.forEach(idx => selectedStackIndices.add(idx))
     }
     renderStackItems()
     syncStackSelectionUi()
@@ -1355,6 +1366,9 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   }
 
   const onDocumentClick = (event) => {
+    // If the clicked element was removed from the DOM during the click handler
+    // (e.g. because a button updated its own innerHTML), don't treat it as an outside click
+    if (!event.target.isConnected) return
     const contextMenu = document.getElementById("context-menu")
     if (
       !popup.contains(event.target) &&
