@@ -5866,17 +5866,23 @@ body.sidebar-light .settings-select option {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  padding: 1px 6px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
   border-radius: 4px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #ffffff;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
   margin-left: auto;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
   text-transform: uppercase;
   line-height: 1.2;
+}
+
+body.sidebar-light .lang-demo-badge {
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.2);
 }
 
 /* ==========================================================================
@@ -9708,25 +9714,29 @@ body.sidebar-light .settings-advanced-toggle-btn {
 .about-version-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-  border: 1px solid rgba(96, 165, 250, 0.4);
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #93c5fd;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  gap: 5px;
+  padding: 2px 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.about-version-num {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .about-version-tag {
-  background: #3b82f6;
-  color: #fff;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
   padding: 1px 5px;
-  border-radius: 10px;
-  font-size: 0.62rem;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 
 .about-hero-subtitle {
@@ -10158,8 +10168,17 @@ body.sidebar-light .about-hero-subtitle {
 }
 
 body.sidebar-light .about-version-badge {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
-  border-color: rgba(37, 99, 235, 0.25);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #475569;
+}
+
+body.sidebar-light .about-version-num {
+  color: #1e293b;
+}
+
+body.sidebar-light .about-version-tag {
+  background: rgba(37, 99, 235, 0.1);
   color: #2563eb;
 }
 
