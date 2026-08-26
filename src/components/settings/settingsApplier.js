@@ -5880,6 +5880,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.showCustomTitleCheckbox) {
       DOM.showCustomTitleCheckbox.checked = settings.showCustomTitle !== false
     }
+    document.body.classList.toggle("hide-custom-title", settings.showCustomTitle === false)
     if (DOM.freeMoveCustomTitleCheckbox) {
       DOM.freeMoveCustomTitleCheckbox.checked =
         settings.freeMoveCustomTitle === true

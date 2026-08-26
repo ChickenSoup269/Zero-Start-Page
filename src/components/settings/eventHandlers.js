@@ -8164,6 +8164,7 @@ export function setupGeneralEventHandlers(
   if (DOM.showCustomTitleCheckbox) {
     DOM.showCustomTitleCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("showCustomTitle", e.target.checked)
+      document.body.classList.toggle("hide-custom-title", !e.target.checked)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { key: "showCustomTitle", value: e.target.checked },
@@ -8331,7 +8332,7 @@ export function setupGeneralEventHandlers(
     })
     linePanels.forEach((panel, idx) => {
       if (panel) {
-        panel.style.display = (idx + 1 === lineNum) ? "block" : "none"
+        panel.style.display = (idx + 1 === lineNum) ? "flex" : "none"
         panel.classList.toggle("active", idx + 1 === lineNum)
       }
     })

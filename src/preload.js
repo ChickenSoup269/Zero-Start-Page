@@ -672,8 +672,9 @@
       }
       css += `body.hide-top-right-controls #top-right-controls { display: none !important; }\n`
       if (settings.showCustomTitle === false) {
-        css += `#custom-title-display { display: none !important; }\n`
+        document.body.classList.add("hide-custom-title")
       }
+      css += `body.hide-custom-title #custom-title-display { display: none !important; }\n`
 
       document.head.appendChild(styleEl)
       styleEl.textContent = css
