@@ -2068,363 +2068,6 @@ body.ghost-controls .side-controls:hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
 }
 
-/* === LIGHT MODE (White Background) === */
-.side-controls.light-mode #settings-toggle,
-.side-controls.light-mode .quick-access-bar {
-  background: rgba(255, 255, 255, 0.88) !important;
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.14),
-    0 0 0 1px rgba(0, 0, 0, 0.06) !important;
-}
-
-/* Base button and icon styling in light mode */
-.side-controls.light-mode .quick-btn,
-.side-controls.light-mode #settings-toggle,
-.side-controls.light-mode #settings-toggle i,
-.side-controls.light-mode .collapse-btn i,
-.side-controls.light-mode .quick-btn i {
-  color: #0f172a !important;
-}
-
-/* Active buttons adopt accent color */
-.side-controls.light-mode .quick-btn.active,
-.side-controls.light-mode #settings-toggle.active,
-body.sidebar-open .side-controls.light-mode #settings-toggle {
-  color: var(--accent-contrast-color, #ffffff) !important;
-  background: var(--accent-color) !important;
-  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
-  border-radius: var(--radius-md);
-}
-
-.side-controls.light-mode .quick-btn.active i,
-.side-controls.light-mode #settings-toggle.active i,
-body.sidebar-open .side-controls.light-mode #settings-toggle i {
-  color: var(--accent-contrast-color, #ffffff) !important;
-}
-
-.side-controls.light-mode .quick-btn:hover:not(.active),
-.side-controls.light-mode #settings-toggle:hover:not(.active) {
-  color: var(--accent-color, #a8c0ff) !important;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
-}
-
-.side-controls.light-mode .quick-btn:hover:not(.active) i,
-.side-controls.light-mode #settings-toggle:hover:not(.active) i,
-.side-controls.light-mode #quick-access-collapse:hover i {
-  color: var(--accent-color, #a8c0ff) !important;
-}
-
-.side-controls.light-mode .quick-access-divider {
-  background: rgba(0, 0, 0, 0.12) !important;
-}
-
-/* Layout Controls Popup Light Mode */
-.side-controls.light-mode .layout-controls-popup,
-body.quick-access-white .layout-controls-popup {
-  background: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14) !important;
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .lcp-title,
-body.quick-access-white .lcp-title {
-  color: #0f172a !important;
-  opacity: 1 !important;
-  font-weight: 700 !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
-.side-controls.light-mode .lcp-tabs,
-body.quick-access-white .lcp-tabs {
-  background: rgba(0, 0, 0, 0.04) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
-.side-controls.light-mode .lcp-tab,
-body.quick-access-white .lcp-tab {
-  color: #334155 !important;
-  font-weight: 500 !important;
-}
-
-.side-controls.light-mode .lcp-tab:hover,
-body.quick-access-white .lcp-tab:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
-  color: var(--accent-color, #a8c0ff) !important;
-}
-
-.side-controls.light-mode .lcp-tab.active,
-body.quick-access-white .lcp-tab.active {
-  background: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
-}
-
-.side-controls.light-mode .lcp-tab.active i,
-.side-controls.light-mode .lcp-tab.active span,
-body.quick-access-white .lcp-tab.active i,
-body.quick-access-white .lcp-tab.active span {
-  color: var(--accent-contrast-color, #ffffff) !important;
-}
-
-.side-controls.light-mode .lcp-row:hover,
-body.quick-access-white .lcp-row:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.08) !important;
-  border-radius: 8px;
-}
-
-.side-controls.light-mode .lcp-icon,
-body.quick-access-white .lcp-icon {
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .lcp-label,
-body.quick-access-white .lcp-label {
-  color: #0f172a !important;
-  font-weight: 550 !important;
-}
-
-.side-controls.light-mode .lcp-divider,
-body.quick-access-white .lcp-divider {
-  background: rgba(0, 0, 0, 0.08) !important;
-}
-
-.side-controls.light-mode #lcp-hide-chrome-bookmarks-row,
-body.quick-access-white #lcp-hide-chrome-bookmarks-row {
-  background: rgba(0, 0, 0, 0.035) !important;
-  border: 1px dashed rgba(0, 0, 0, 0.2) !important;
-}
-
-.side-controls.light-mode #lcp-hide-chrome-bookmarks-row i,
-body.quick-access-white #lcp-hide-chrome-bookmarks-row i {
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .range-val,
-body.quick-access-white .range-val {
-  color: #0f172a !important;
-  opacity: 0.95 !important;
-  font-weight: 600 !important;
-}
-
-.side-controls.light-mode .lcp-select,
-body.quick-access-white .lcp-select {
-  background-color: rgba(0, 0, 0, 0.04) !important;
-  border: 1px solid rgba(0, 0, 0, 0.14) !important;
-  color: #0f172a !important;
-  font-weight: 500 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 8px center !important;
-  background-size: 12px !important;
-}
-
-.side-controls.light-mode .lcp-select:focus,
-body.quick-access-white .lcp-select:focus {
-  border-color: var(--accent-color) !important;
-  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
-}
-
-.side-controls.light-mode .lcp-select option,
-body.quick-access-white .lcp-select option {
-  background: #ffffff !important;
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .lcp-row.lcp-slider-row,
-body.quick-access-white .lcp-row.lcp-slider-row {
-  background: transparent !important;
-  border: none !important;
-}
-
-.side-controls.light-mode .lcp-row.lcp-slider-row:hover,
-body.quick-access-white .lcp-row.lcp-slider-row:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.08) !important;
-}
-
-.side-controls.light-mode .lcp-slider-row .range-val,
-body.quick-access-white .lcp-slider-row .range-val {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
-  color: var(--accent-color, #0f172a) !important;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
-}
-
-.side-controls.light-mode .lcp-slider-row input[type="range"],
-body.quick-access-white .lcp-slider-row input[type="range"] {
-  background: rgba(0, 0, 0, 0.1) !important;
-  border: none !important;
-}
-
-.side-controls.light-mode .lcp-slider-row input[type="range"]::-webkit-slider-thumb,
-body.quick-access-white .lcp-slider-row input[type="range"]::-webkit-slider-thumb {
-  background: #ffffff !important;
-  border: 2.5px solid var(--accent-color) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
-}
-
-.side-controls.light-mode .lcp-slider-row input[type="range"]:active::-webkit-slider-thumb,
-body.quick-access-white .lcp-slider-row input[type="range"]:active::-webkit-slider-thumb {
-  background: var(--accent-color) !important;
-  border-color: #ffffff !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5) !important;
-}
-
-.side-controls.light-mode .lcp-preset-btn,
-body.quick-access-white .lcp-preset-btn,
-body.quick-access-light .lcp-preset-btn {
-  background: rgba(0, 0, 0, 0.04) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #334155 !important;
-}
-
-.side-controls.light-mode .lcp-preset-btn:hover,
-body.quick-access-white .lcp-preset-btn:hover,
-body.quick-access-light .lcp-preset-btn:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
-  border-color: var(--accent-color) !important;
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .lcp-preset-btn.active,
-body.quick-access-white .lcp-preset-btn.active,
-body.quick-access-light .lcp-preset-btn.active {
-  background: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  border-color: var(--accent-color) !important;
-  font-weight: 700 !important;
-}
-
-.side-controls.light-mode .lcp-preset-btn.active *,
-body.quick-access-white .lcp-preset-btn.active *,
-body.quick-access-light .lcp-preset-btn.active * {
-  color: var(--accent-contrast-color, #ffffff) !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip,
-body.quick-access-white .lcp-btn-chip,
-body.quick-access-light .lcp-btn-chip {
-  background: rgba(0, 0, 0, 0.04) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  color: #334155 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip:hover,
-body.quick-access-white .lcp-btn-chip:hover,
-body.quick-access-light .lcp-btn-chip:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15) !important;
-  border-color: var(--accent-color) !important;
-  color: #0f172a !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip.active,
-body.quick-access-white .lcp-btn-chip.active,
-body.quick-access-light .lcp-btn-chip.active {
-  background: var(--accent-color) !important;
-  border-color: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip.active *,
-body.quick-access-white .lcp-btn-chip.active *,
-body.quick-access-light .lcp-btn-chip.active * {
-  color: var(--accent-contrast-color, #ffffff) !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn,
-body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn,
-body.quick-access-light .lcp-btn-chip.lcp-toggle-more-btn {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1) !important;
-  border: 1px dashed var(--accent-color) !important;
-  color: var(--accent-color, #0f172a) !important;
-}
-
-.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn:hover,
-body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn:hover,
-body.quick-access-light .lcp-btn-chip.lcp-toggle-more-btn:hover {
-  background: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-}
-
-.side-controls.light-mode .lcp-selected-badge,
-body.quick-access-white .lcp-selected-badge,
-body.quick-access-light .lcp-selected-badge {
-  color: var(--accent-color, #2563eb) !important;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
-}
-
-.side-controls.light-mode .lcp-slider,
-body.quick-access-white .lcp-slider {
-  background: rgba(0, 0, 0, 0.14) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.side-controls.light-mode .lcp-slider::before,
-body.quick-access-white .lcp-slider::before {
-  background: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
-}
-
-.side-controls.light-mode .lcp-switch input:checked + .lcp-slider,
-body.quick-access-white .lcp-switch input:checked + .lcp-slider {
-  background: var(--accent-color) !important;
-  border-color: var(--accent-color) !important;
-}
-
-.side-controls.light-mode .lcp-switch input:checked + .lcp-slider::before,
-body.quick-access-white .lcp-switch input:checked + .lcp-slider::before {
-  background: #ffffff !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
-}
-
-/* Group Tabs White Mode Sync */
-body.quick-access-white .bookmark-group-tab {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  color: #0f172a !important;
-  font-weight: 500 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-}
-
-body.quick-access-white .bookmark-group-tab:hover {
-  background: #ffffff !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.5) !important;
-  color: var(--accent-color, #a8c0ff) !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.15) !important;
-}
-
-body.quick-access-white .bookmark-group-tab.active {
-  background: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  border-color: var(--accent-color) !important;
-  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
-  font-weight: 600 !important;
-}
-
-body.quick-access-white .bookmark-group-tab.add-group-tab {
-  border-style: dashed !important;
-  background: rgba(0, 0, 0, 0.03) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
-  color: #334155 !important;
-}
-
-body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1) !important;
-  border-color: var(--accent-color) !important;
-  color: var(--accent-color, #a8c0ff) !important;
-}
-
 #image-preview-thumb {
   height: 100px;
   width: auto;
@@ -2893,6 +2536,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   height: 24px;
   flex-shrink: 0;
   cursor: pointer;
+  align-items: center;
 }
 
 .lcp-switch input {
@@ -2905,9 +2549,10 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s;
+  box-sizing: border-box;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 /* Expand the clickable area for easier tapping */
@@ -2925,14 +2570,15 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
   position: absolute;
   width: 18px;
   height: 18px;
-  left: 3px;
-  top: 3px;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #fff;
   border-radius: 50%;
   transition:
-    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-    background-color 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .lcp-switch input:checked + .lcp-slider {
@@ -2940,7 +2586,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
 }
 
 .lcp-switch input:checked + .lcp-slider::before {
-  transform: translateX(20px);
+  transform: translate(20px, -50%);
   background: var(--accent-contrast-color, #ffffff);
 }
 
@@ -4536,23 +4182,17 @@ body.todo-fullscreen-active::before {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 12px;
+  padding: 4px 0;
   border-radius: 16px;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.35) 0%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.35),
-    0 1px 0 rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   box-sizing: border-box;
   transition: all 0.25s ease;
 }
 
 .timer-container:hover .timer-hero-card {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: transparent;
 }
 
 .timer-display {
@@ -4868,10 +4508,18 @@ body.todo-fullscreen-active::before {
 .weather-search-row {
   gap: 8px;
   min-height: 36px;
-  padding: 0 5px 0 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.08);
+  padding: 0 4px 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.weather-search-row:focus-within {
+  border-color: var(--accent-color, #6875f5);
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb, 104, 117, 245), 0.25);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .weather-search-row i {
@@ -4899,11 +4547,11 @@ body.todo-fullscreen-active::before {
   width: 28px;
   height: 28px;
   display: inline-flex;
-  flex: 0 0 auto;
+  flex: 0 0 28px;
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: calc(var(--radius-sm) - 2px);
+  border-radius: 50%;
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
   color: var(--accent-color, #a8c0ff);
   cursor: pointer;
@@ -4915,8 +4563,8 @@ body.todo-fullscreen-active::before {
 
 .weather-search-btn:hover {
   background: var(--accent-color, #a8c0ff);
-  color: var(--accent-contrast-color, #10131a);
-  transform: translateX(1px);
+  color: var(--accent-contrast-color, #ffffff);
+  transform: scale(1.08);
 }
 
 .weather-suggestions {
@@ -7847,10 +7495,10 @@ body.quick-access-white .timer-container .pomodoro-stats .pomodoro-icon {
 #context-menu,
 .calendar-context-menu {
   position: fixed;
-  padding: var(--space-1);
-  min-width: 220px;
+  padding: 5px;
+  min-width: 200px;
   z-index: 20000; /* Higher than hidden-bookmarks-popup (10000) and modals */
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   background: rgba(35, 35, 45, 0.85); /* Default dark background */
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -7891,12 +7539,15 @@ body.context-menu-light .calendar-context-menu {
 body.context-menu-light .context-menu-item,
 body.context-menu-light .menu-item {
   color: #1a1a1a !important; /* Chữ đen đậm dễ nhìn */
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 body.context-menu-light .context-menu-item i,
 body.context-menu-light .menu-item i {
   color: #444 !important;
+  width: 16px;
+  font-size: 12px;
   opacity: 0.8;
 }
 
@@ -7914,6 +7565,7 @@ body.context-menu-light .menu-item:hover i {
 
 body.context-menu-light .context-menu-divider {
   background: rgba(0, 0, 0, 0.08);
+  margin: 3px 4px;
 }
 
 body.context-menu-light .calendar-event-form-title {
@@ -7959,23 +7611,39 @@ body.context-menu-light .calendar-event-preview-desc {
 /* Common Item Styling */
 .context-menu-item,
 .menu-item {
-  padding: var(--space-1) var(--space-2);
+  min-height: 26px;
+  margin: 1px 0;
+  padding: 5px 9px;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0;
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: 5px;
   transition: none !important;
-  margin: 2px 0;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.context-menu-item i,
+.menu-item i {
+  width: 16px;
+  font-size: 12px;
+}
+
+.context-menu-divider,
+.context-menu-separator {
+  height: 1px;
+  margin: 3px 4px;
 }
 
 body.context-menu-dark .context-menu-item:hover,
 body.context-menu-dark .menu-item:hover {
   background: var(--accent-color, #6366f1) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
-  box-shadow: 0 3px 10px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4) !important;
+  box-shadow: none !important;
 }
 
 body.context-menu-dark .context-menu-item:hover i,
@@ -8006,13 +7674,12 @@ body.context-menu-dark .menu-item:hover i {
 
 /* macOS Graphite */
 body.context-menu-macos #context-menu,
-body.context-menu-macos .calendar-context-menu,
-body.context-menu-none #context-menu,
-body.context-menu-none .calendar-context-menu {
-  min-width: 232px;
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
-  background: rgba(246, 246, 248, 0.78) !important;
+body.context-menu-macos .context-menu,
+body.context-menu-macos .calendar-context-menu {
+  min-width: 200px;
+  padding: 5px !important;
+  border-radius: 8px !important;
+  background: rgba(246, 246, 248, 0.82) !important;
   backdrop-filter: blur(38px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(38px) saturate(190%) !important;
   border: 0.5px solid rgba(0, 0, 0, 0.14) !important;
@@ -8020,18 +7687,16 @@ body.context-menu-none .calendar-context-menu {
     0 0 0 0.5px rgba(255, 255, 255, 0.55) inset,
     0 9px 28px rgba(0, 0, 0, 0.18),
     0 30px 70px rgba(0, 0, 0, 0.18) !important;
-  color: rgba(15, 15, 18, 0.92);
+  color: rgba(15, 15, 18, 0.92) !important;
 }
 
 body.context-menu-macos .context-menu-item,
-body.context-menu-macos .menu-item,
-body.context-menu-none .context-menu-item,
-body.context-menu-none .menu-item {
-  min-height: 27px;
+body.context-menu-macos .menu-item {
+  min-height: 26px;
   margin: 1px 0;
-  padding: var(--space-1) var(--space-1);
-  border-radius: var(--radius-sm);
-  gap: var(--space-1);
+  padding: 5px 9px;
+  border-radius: 5px;
+  gap: 8px;
   color: rgba(20, 20, 24, 0.94) !important;
   font-size: 13px;
   line-height: 1.25;
@@ -8041,151 +7706,162 @@ body.context-menu-none .menu-item {
 }
 
 body.context-menu-macos .context-menu-item i,
-body.context-menu-macos .menu-item i,
-body.context-menu-none .context-menu-item i,
-body.context-menu-none .menu-item i {
-  width: 18px;
+body.context-menu-macos .menu-item i {
+  width: 16px;
   font-size: 12px;
   color: rgba(20, 20, 24, 0.62) !important;
   opacity: 1;
 }
 
 body.context-menu-macos .context-menu-divider,
-body.context-menu-macos .context-menu-separator,
-body.context-menu-none .context-menu-divider,
-body.context-menu-none .context-menu-separator {
+body.context-menu-macos .context-menu-separator {
   height: 1px;
-  margin: var(--space-1) var(--space-1);
+  margin: 3px 4px;
   background: rgba(60, 60, 67, 0.18) !important;
 }
 
 body.context-menu-macos .context-menu-item:hover,
-body.context-menu-macos .menu-item:hover,
-body.context-menu-none .context-menu-item:hover,
-body.context-menu-none .menu-item:hover {
-  background: rgba(0, 122, 255, 0.92) !important;
+body.context-menu-macos .menu-item:hover {
+  background: #007aff !important;
   color: #fff !important;
+  box-shadow: none !important;
 }
 
 body.context-menu-macos .context-menu-item:hover i,
-body.context-menu-macos .menu-item:hover i,
-body.context-menu-none .context-menu-item:hover i,
-body.context-menu-none .menu-item:hover i {
+body.context-menu-macos .menu-item:hover i {
   color: #fff !important;
   opacity: 1;
 }
 
 body.context-menu-macos .context-menu-item.danger,
 body.context-menu-macos .menu-item.danger,
-body.context-menu-macos #menu-delete,
-body.context-menu-none .context-menu-item.danger,
-body.context-menu-none .menu-item.danger,
-body.context-menu-none #menu-delete {
+body.context-menu-macos #menu-delete {
   color: #ff3b30 !important;
 }
 
 body.context-menu-macos .context-menu-item.danger i,
 body.context-menu-macos .menu-item.danger i,
-body.context-menu-macos #menu-delete i,
-body.context-menu-none .context-menu-item.danger i,
-body.context-menu-none .menu-item.danger i,
-body.context-menu-none #menu-delete i {
+body.context-menu-macos #menu-delete i {
   color: rgba(255, 59, 48, 0.82) !important;
 }
 
 body.context-menu-macos .context-menu-item.danger:hover,
 body.context-menu-macos .menu-item.danger:hover,
-body.context-menu-macos #menu-delete:hover,
-body.context-menu-none .context-menu-item.danger:hover,
-body.context-menu-none .menu-item.danger:hover,
-body.context-menu-none #menu-delete:hover {
+body.context-menu-macos #menu-delete:hover {
   background: #ff3b30 !important;
   color: #fff !important;
 }
 
 body.context-menu-macos .context-menu-item.danger:hover i,
 body.context-menu-macos .menu-item.danger:hover i,
-body.context-menu-macos #menu-delete:hover i,
-body.context-menu-none .context-menu-item.danger:hover i,
-body.context-menu-none .menu-item.danger:hover i,
-body.context-menu-none #menu-delete:hover i {
+body.context-menu-macos #menu-delete:hover i {
   color: #fff !important;
 }
 
 body.context-menu-macos .calendar-event-form-title,
 body.context-menu-none .calendar-event-form-title {
-  color: #111;
+  color: #ffffff;
 }
 
 /* Transparent context menu */
 body.context-menu-none #context-menu,
 body.context-menu-none .calendar-context-menu {
-  background: rgba(255, 255, 255, 0.54) !important;
-  border-color: rgba(255, 255, 255, 0.66) !important;
+  background: rgba(16, 20, 32, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   box-shadow:
-    0 0 0 0.5px rgba(255, 255, 255, 0.7) inset,
-    0 12px 36px rgba(15, 23, 42, 0.18) !important;
-  backdrop-filter: blur(24px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
+    0 16px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 body.context-menu-none .context-menu-item,
 body.context-menu-none .menu-item {
-  color: rgba(15, 23, 42, 0.88) !important;
-  text-shadow: none;
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  min-height: 26px !important;
+  margin: 1px 0 !important;
+  padding: 5px 9px !important;
+  border-radius: 5px !important;
+  gap: 8px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: none !important;
 }
 
 body.context-menu-none .context-menu-item i,
 body.context-menu-none .menu-item i {
-  color: rgba(15, 23, 42, 0.58) !important;
+  width: 16px !important;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  transition: none !important;
+}
+
+body.context-menu-none .context-menu-item:hover,
+body.context-menu-none .menu-item:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+body.context-menu-none .context-menu-item:hover i,
+body.context-menu-none .menu-item:hover i {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  transition: none !important;
 }
 
 body.context-menu-none .context-menu-divider,
 body.context-menu-none .context-menu-separator {
-  background: rgba(15, 23, 42, 0.12) !important;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.16) !important;
+  margin: 3px 4px !important;
 }
 
 body.context-menu-none .calendar-event-form-title {
-  color: rgba(15, 23, 42, 0.9);
+  color: #ffffff;
   text-shadow: none;
 }
 
 body.context-menu-macos .calendar-event-form label,
 body.context-menu-none .calendar-event-form label {
-  color: rgba(0, 0, 0, 0.72);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 body.context-menu-macos .calendar-event-form input,
 body.context-menu-macos .calendar-event-form textarea,
 body.context-menu-none .calendar-event-form input,
 body.context-menu-none .calendar-event-form textarea {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(0, 0, 0, 0.14);
-  color: #111;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 body.context-menu-macos .calendar-event-preview-title,
 body.context-menu-none .calendar-event-preview-title {
-  color: #111;
+  color: #ffffff;
 }
 
 body.context-menu-macos .calendar-event-preview-meta,
 body.context-menu-none .calendar-event-preview-meta {
-  color: rgba(0, 0, 0, 0.58);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 body.context-menu-macos .calendar-event-preview-desc,
 body.context-menu-none .calendar-event-preview-desc {
-  color: rgba(0, 0, 0, 0.82);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Material 3 context menu — :root --m3-* from applyAccentTokens(),
    fallback --safe-accent when accentColorMode is "default". */
 body.context-menu-m3 #context-menu,
+body.context-menu-m3 .context-menu,
 body.context-menu-m3 .calendar-context-menu {
-  min-width: 232px;
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
+  min-width: 200px;
+  padding: 5px !important;
+  border-radius: 8px !important;
   background:
     radial-gradient(
       circle at 18% 12%,
@@ -8222,26 +7898,23 @@ body.context-menu-m3 .calendar-context-menu {
 
 body.context-menu-m3 .context-menu-item,
 body.context-menu-m3 .menu-item {
-  min-height: 27px;
+  min-height: 26px;
   margin: 1px 0;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  gap: var(--space-2);
+  padding: 5px 9px !important;
+  border-radius: 5px !important;
+  gap: 8px !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
-  font-size: 14px;
+  font-size: 13px !important;
   line-height: 1.25;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
-  transition:
-    background-color 45ms linear,
-    color 45ms linear,
-    border-color 45ms linear;
+  transition: none !important;
 }
 
 body.context-menu-m3 .context-menu-item i,
 body.context-menu-m3 .menu-item i {
-  width: 18px;
-  font-size: 1rem;
+  width: 16px;
+  font-size: 12px;
   color: color-mix(
     in srgb,
     var(--m3-on-primary-container, var(--text-color)) 68%,
@@ -8255,7 +7928,7 @@ body.context-menu-m3 .context-menu-item:hover,
 body.context-menu-m3 .menu-item:hover {
   background: var(--m3-primary, var(--safe-accent)) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: none !important;
 }
 
 body.context-menu-m3 .context-menu-item:hover i,
@@ -8268,7 +7941,7 @@ body.context-menu-m3 .menu-item:hover i {
 body.context-menu-m3 .context-menu-divider,
 body.context-menu-m3 .context-menu-separator {
   height: 1px;
-  margin: var(--space-1) var(--space-1);
+  margin: 3px 4px !important;
   background: color-mix(
     in srgb,
     var(--m3-primary, var(--safe-accent)) 24%,
@@ -8294,7 +7967,7 @@ body.context-menu-m3 .menu-item.danger:hover,
 body.context-menu-m3 #menu-delete:hover {
   background: #ff3b30 !important;
   color: #fff !important;
-  box-shadow: 0 10px 22px rgba(255, 59, 48, 0.28) !important;
+  box-shadow: none !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger:hover i,
@@ -12388,33 +12061,70 @@ body.hide-bookmark-bg.bookmark-taskbar-left-mode
 /* High Contrast Quick Access Skin */
 body.quick-access-contrast #settings-toggle,
 body.quick-access-contrast .quick-access-bar {
-  background: #000 !important;
-  border: 2px solid #fff !important;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px #000000 !important;
 }
 
 body.quick-access-contrast .quick-access-bar .quick-btn,
 body.quick-access-contrast #settings-toggle {
-  color: #fff !important;
+  color: #ffffff !important;
   background: transparent !important;
+  border-radius: var(--radius-md, 8px) !important;
 }
 
 body.quick-access-contrast .quick-access-bar .quick-btn:hover,
 body.quick-access-contrast #settings-toggle:hover {
-  background: #fff !important;
-  color: #000 !important;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+  background: #222222 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
 }
 
-body.quick-access-contrast .quick-access-bar .quick-btn.active {
-  background: #fff !important;
-  color: #000 !important;
-  border: 2px solid #000 !important;
+body.quick-access-contrast .quick-access-bar .quick-btn.active,
+body.quick-access-contrast #settings-toggle.active {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  font-weight: bold !important;
+}
+
+body.quick-access-contrast .quick-access-bar .quick-btn.active i,
+body.quick-access-contrast #settings-toggle.active i {
+  color: #000000 !important;
 }
 
 body.quick-access-contrast .quick-access-bar .quick-access-divider {
-  background: #fff !important;
-  opacity: 1 !important;
+  background: #ffffff !important;
+  opacity: 0.8 !important;
+}
+
+body.quick-access-contrast .layout-controls-popup {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8) !important;
+  color: #ffffff !important;
+}
+
+body.quick-access-contrast .layout-controls-popup .lcp-title,
+body.quick-access-contrast .layout-controls-popup .lcp-label,
+body.quick-access-contrast .layout-controls-popup .lcp-icon {
+  color: #ffffff !important;
+}
+
+body.quick-access-contrast .layout-controls-popup .lcp-tab {
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+body.quick-access-contrast .layout-controls-popup .lcp-tab.active {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+body.quick-access-contrast .layout-controls-popup .lcp-tab.active * {
+  color: #000000 !important;
 }
 
 /* Quick Access skins */
@@ -15728,22 +15438,28 @@ body.bookmark-group-border-hidden
   color: var(--bookmark-group-icon-color) !important;
 }
 
-/* Keep every context-style menu feeling immediate. */
+/* Keep every context-style menu feeling immediate and lag-free */
 #context-menu .context-menu-item,
 #context-menu .menu-item,
 .context-menu .context-menu-item,
 .context-menu .menu-item,
 .calendar-context-menu .context-menu-item,
 .calendar-context-menu .menu-item,
+#context-menu .context-menu-item i,
+#context-menu .menu-item i,
+.context-menu .context-menu-item i,
+.context-menu .menu-item i,
+.calendar-context-menu .context-menu-item i,
+.calendar-context-menu .menu-item i {
+  transition: none !important;
+}
+
 .g-apps-context-menu .g-apps-menu-btn,
 .g-apps-context-menu .g-apps-menu-toggle,
 .quick-access-popup .quick-access-radius-chip,
 .quick-access-popup .quick-access-border-button,
 .quick-access-popup .lcp-row {
-  transition:
-    background-color 45ms linear,
-    color 45ms linear,
-    border-color 45ms linear !important;
+  transition: none !important;
 }
 
 #context-menu .context-menu-item:hover,
@@ -17912,5 +17628,6 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
     max-width: calc(100vw - 70px);
   }
 }
+
 
 
