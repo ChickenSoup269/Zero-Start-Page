@@ -3340,41 +3340,114 @@ export function initClock() {
     if (handled) event.preventDefault()
   })
 
+  const clockUpdateKeys = new Set([
+    "showGregorian",
+    "showDate",
+    "clockDisplayMode",
+    "clockTimerMode",
+    "hideSeconds",
+    "showTimer",
+    "timerIsRunning",
+    "clockDatePriority",
+    "dateFormat",
+    "dateClockStyle",
+    "timeFormat",
+    "timezone",
+    "language",
+    "clockDateLanguage",
+    "shortWeekday",
+    "shortMonth",
+    "fullDateDetails",
+    "clockFontSize",
+    "clockSize",
+    "dateSize",
+    "clockFont",
+    "clockFontTarget",
+    "font",
+    "clockStyleBackground",
+    "clockStyleTransparentBackground",
+    "clockStyleCustomBgColor",
+    "jpStyleLanguage",
+    "analogMarkerMode",
+    "analogShowNumbers",
+    "analogSmoothSeconds",
+    "analogBlurBackground",
+    "framedClockTheme",
+    "hueTextMode",
+    "sidestyleAlign",
+    "sidestyleNoBorder",
+    "fliqloZenMode",
+    "fliqloTransparent",
+    "fliqloTheme",
+    "terminalClockVariant",
+    "mediaOrbImageUrl",
+    "mediaOrbImageData",
+    "mediaOrbLayout",
+    "mediaOrbOverflowBorder",
+    "showClockLunarCalendar",
+    "showClockLunarMode",
+    "clockLunarMode",
+    "cartoonClockAnimation",
+    "audioWaveStyle",
+    "audioWavePosition",
+    "audioWaveFloat",
+    "audioWaveMirror",
+    "audioWaveCustomColor",
+    "audioWaveSpeed",
+    "pixelHudVariant",
+    "pixelHudBlink",
+    "spaceConcentricVariant",
+    "lunarOrbitVariant",
+    "auroraRibbonSpeed",
+    "metroPanelVariant",
+    "glassFloatVariant",
+    "macosVintageVariant",
+    "ompCrtScanlines",
+    "clock3dVariant",
+    "splitPillLayout",
+    "splitPillVariant",
+    "c4BombArmState",
+    "c4BombDefuseCode",
+    "freeMoveClock",
+  ])
+
   window.addEventListener("layoutUpdated", (e) => {
+    const key = e?.detail?.key
     if (
-      e.detail.key === "showGregorian" ||
-      e.detail.key === "clockDisplayMode" ||
-      e.detail.key === "clockTimerMode" ||
-      e.detail.key === "hideSeconds" ||
-      e.detail.key === "showTimer" ||
-      e.detail.key === "timerIsRunning" ||
-      e.detail.key === "clockDatePriority" ||
-      e.detail.key === "dateFormat" ||
-      e.detail.key === "dateClockStyle" ||
-      e.detail.key === "jpStyleLanguage" ||
-      e.detail.key === "analogMarkerMode" ||
-      e.detail.key === "hueTextMode" ||
-      e.detail.key === "sidestyleAlign" ||
-      e.detail.key === "sidestyleNoBorder" ||
-      e.detail.key === "fliqloZenMode" ||
-      e.detail.key === "fliqloTransparent" ||
-      e.detail.key === "fliqloTheme" ||
-      e.detail.key === "terminalClockVariant" ||
-      e.detail.key === "mediaOrbImageUrl" ||
-      e.detail.key === "mediaOrbImageData" ||
-      e.detail.key === "mediaOrbLayout" ||
-      e.detail.key === "showClockLunarCalendar" ||
-      e.detail.key === "showClockLunarMode" ||
-      (e.detail.key && e.detail.key.startsWith("customAngle"))
+      !key ||
+      clockUpdateKeys.has(key) ||
+      key.startsWith("clock") ||
+      key.startsWith("date") ||
+      key.startsWith("time") ||
+      key.startsWith("customAngle") ||
+      key.startsWith("audioWave") ||
+      key.startsWith("pixelHud") ||
+      key.startsWith("fliqlo") ||
+      key.startsWith("sidestyle") ||
+      key.startsWith("mediaOrb") ||
+      key.startsWith("omp") ||
+      key.startsWith("c4Bomb") ||
+      key.startsWith("analog")
     ) {
+      if (
+        key === "dateClockStyle" ||
+        key === "timeFormat" ||
+        key === "language" ||
+        key === "clockDateLanguage" ||
+        key === "spaceConcentricVariant"
+      ) {
+        spaceConcentricRingElements = null
+        spaceConcentricLastState = {}
+        spaceConcentricHtmlCache = null
+      }
       updateTime()
     }
-  })
-  window.addEventListener("layoutUpdated", (e) => {
     if (
-      e.detail.key.startsWith("customTitle") ||
-      e.detail.key === "showCustomTitle" ||
-      e.detail.key === "freeMoveCustomTitle"
+      !key ||
+      key.startsWith("customTitle") ||
+      key === "showCustomTitle" ||
+      key === "freeMoveCustomTitle" ||
+      key === "language"
     ) {
       updateCustomTitle()
     }
@@ -3386,11 +3459,13 @@ export function updateCustomTitle() {
   let el = document.getElementById("custom-title-display")
   if (!el) return
 
-  if (settings.showCustomTitle === false) {
-    fadeToggle(el, false, "block")
+  const isShow = settings.showCustomTitle !== false
+  document.body.classList.toggle("hide-custom-title", !isShow)
+  if (!isShow) {
+    el.style.display = "none"
     return
   } else {
-    fadeToggle(el, true, "block")
+    el.style.display = "block"
   }
 
   const currentLang = settings.language || "en"
