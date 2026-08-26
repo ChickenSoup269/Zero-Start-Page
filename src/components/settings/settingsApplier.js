@@ -2718,6 +2718,10 @@ function createApplySettings(effectInstances) {
     )
     const contextMenuStyle = settings.contextMenuStyle || "dark"
     document.body.classList.add(`context-menu-${contextMenuStyle}`)
+    document.body.classList.toggle(
+      "context-menu-mini",
+      settings.contextMenuMini === true,
+    )
 
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
@@ -3578,8 +3582,12 @@ function createUpdateSettingsInputs(effectInstances) {
     const contextMenuInputValue = settings.contextMenuStyle || "dark"
     if (DOM.contextMenuStyleSelect)
       DOM.contextMenuStyleSelect.value = contextMenuInputValue
+    if (DOM.contextMenuMiniCheckbox)
+      DOM.contextMenuMiniCheckbox.checked = settings.contextMenuMini === true
     if (DOM.lcpContextMenuStyle)
       DOM.lcpContextMenuStyle.value = contextMenuInputValue
+    if (DOM.lcpContextMenuMini)
+      DOM.lcpContextMenuMini.checked = settings.contextMenuMini === true
     if (DOM.hideSecondsCheckbox)
       DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     if (DOM.cursorTrailClickCheckbox)
@@ -6016,6 +6024,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.contextMenuStyleSelect) {
       DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
+    }
+    if (DOM.contextMenuMiniCheckbox) {
+      DOM.contextMenuMiniCheckbox.checked = settings.contextMenuMini === true
+    }
+    if (DOM.lcpContextMenuMini) {
+      DOM.lcpContextMenuMini.checked = settings.contextMenuMini === true
     }
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"

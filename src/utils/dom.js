@@ -1405,8 +1405,14 @@ export let showQuickAccessBgCheckbox = document.getElementById(
 export let contextMenuStyleSelect = document.getElementById(
   "context-menu-style-select",
 )
+export let contextMenuMiniCheckbox = document.getElementById(
+  "context-menu-mini-checkbox",
+)
 export let lcpContextMenuStyle = document.getElementById(
   "lcp-context-menu-style",
+)
+export let lcpContextMenuMini = document.getElementById(
+  "lcp-context-menu-mini",
 )
 export let showBookmarkGroupsCheckbox = document.getElementById(
   "show-bookmark-groups-checkbox",
@@ -3146,7 +3152,11 @@ export function refreshDOMReferences() {
     "show-quick-access-bg-checkbox",
   )
   contextMenuStyleSelect = document.getElementById("context-menu-style-select")
+  contextMenuMiniCheckbox = document.getElementById(
+    "context-menu-mini-checkbox",
+  )
   lcpContextMenuStyle = document.getElementById("lcp-context-menu-style")
+  lcpContextMenuMini = document.getElementById("lcp-context-menu-mini")
   showBookmarkGroupsCheckbox = document.getElementById(
     "show-bookmark-groups-checkbox",
   )

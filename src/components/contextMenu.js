@@ -2108,6 +2108,49 @@ export function showContextMenu(
       borderRow.appendChild(borderBtn)
       popup.appendChild(borderRow)
 
+      const sizeRow = document.createElement("div")
+      sizeRow.className = "lcp-row quick-access-border-row"
+      const sizeIcon = document.createElement("div")
+      sizeIcon.className = "lcp-icon"
+      let isMiniState = settings.contextMenuMini === true
+      sizeIcon.innerHTML = `<i class="fa-solid ${isMiniState ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i>`
+
+      const sizeLabel = document.createElement("div")
+      sizeLabel.className = "lcp-label"
+      sizeLabel.textContent = i18n.context_menu_size_toggle || "Context Menu Size"
+
+      const sizeBtn = document.createElement("button")
+      sizeBtn.type = "button"
+      sizeBtn.className =
+        "quick-access-radius-chip quick-access-border-button"
+      sizeBtn.textContent = isMiniState
+        ? i18n.context_menu_size_mini || "Mini"
+        : i18n.context_menu_size_enlarged || "Phóng to (Mặc định)"
+      sizeBtn.onclick = () => {
+        isMiniState = !isMiniState
+        updateSetting("contextMenuMini", isMiniState)
+        saveSettings(true)
+        document.body.classList.toggle("context-menu-mini", isMiniState)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "contextMenuMini", value: isMiniState },
+          }),
+        )
+        sizeIcon.innerHTML = `<i class="fa-solid ${isMiniState ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i>`
+        sizeBtn.textContent = isMiniState
+          ? i18n.context_menu_size_mini || "Mini"
+          : i18n.context_menu_size_enlarged || "Phóng to (Mặc định)"
+      }
+      sizeBtn.addEventListener("pointerdown", (event) => {
+        event.stopPropagation()
+      })
+      sizeBtn.addEventListener("click", keepQuickPopupOpen)
+
+      sizeRow.appendChild(sizeIcon)
+      sizeRow.appendChild(sizeLabel)
+      sizeRow.appendChild(sizeBtn)
+      popup.appendChild(sizeRow)
+
       popup.addEventListener("pointerdown", keepQuickPopupOpen)
       popup.addEventListener("click", keepQuickPopupOpen)
       popup.addEventListener("contextmenu", keepQuickPopupOpen)
@@ -2126,6 +2169,30 @@ export function showContextMenu(
         window.addEventListener("pointerdown", closeOnOutside)
       }, 0)
     }
+
+    const isMiniMenu = settings.contextMenuMini === true
+    const miniToggleBtn = createMenuItem(
+      isMiniMenu
+        ? i18n.context_menu_normal_size || "Phóng to Menu chuột phải"
+        : i18n.context_menu_mini_size || "Thu nhỏ Menu chuột phải (Mini)",
+      isMiniMenu
+        ? "fa-solid fa-up-right-and-down-left-from-center"
+        : "fa-solid fa-down-left-and-up-right-to-center",
+      () => {
+        const newVal = !isMiniMenu
+        updateSetting("contextMenuMini", newVal)
+        saveSettings(true)
+        document.body.classList.toggle("context-menu-mini", newVal)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "contextMenuMini", value: newVal },
+          }),
+        )
+        hideContextMenu()
+      },
+      "quick-access-root-item",
+    )
+    contextMenu.appendChild(miniToggleBtn)
 
     const menuText = createMenuItem(
       i18n.quick_access_settings || "Quick Access Settings",

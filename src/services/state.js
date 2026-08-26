@@ -359,6 +359,7 @@ export const defaultSettings = {
   showBookmarks: true,
   theme: null,
   contextMenuStyle: "macos",
+  contextMenuMini: false,
   todoSkin: "default",
   timerSkin: "default",
   calendarSkin: "default",

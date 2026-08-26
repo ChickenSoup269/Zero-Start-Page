@@ -6813,6 +6813,7 @@ export function setupGeneralEventHandlers(
     const val = DOM.contextMenuStyleSelect.value
     handleSettingUpdate("contextMenuStyle", val)
   })
+  setupLayoutCheckbox(DOM.contextMenuMiniCheckbox, "contextMenuMini", { defaultState: false })
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
   DOM.showMusicCheckbox.addEventListener("change", () => {
@@ -7182,6 +7183,15 @@ export function setupGeneralEventHandlers(
       if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = val
       handleSettingUpdate("contextMenuStyle", val)
     })
+  }
+  if (DOM.lcpContextMenuMini) {
+    DOM.lcpContextMenuMini.addEventListener("change", () =>
+      lcpToggle(
+        "contextMenuMini",
+        DOM.lcpContextMenuMini.checked,
+        DOM.contextMenuMiniCheckbox,
+      ),
+    )
   }
   DOM.lcpBookmarkGroups.addEventListener("change", () =>
     lcpToggle(
