@@ -661,12 +661,63 @@ export function initThemeManager(
   // Theme Category Filter Pills (Appearance 2.0)
   const categoryFilterBar = document.getElementById("theme-category-filter-bar")
   if (categoryFilterBar && DOM.themesGrid) {
+    // Enable horizontal scrolling via mouse wheel
+    categoryFilterBar.addEventListener(
+      "wheel",
+      (e) => {
+        if (e.deltaY !== 0) {
+          e.preventDefault()
+          categoryFilterBar.scrollLeft += e.deltaY
+        }
+      },
+      { passive: false }
+    )
+
+    // Enable drag-to-scroll (mouse drag & swipe)
+    let isDown = false
+    let startX = 0
+    let scrollLeft = 0
+    let hasDragged = false
+
+    categoryFilterBar.addEventListener("mousedown", (e) => {
+      isDown = true
+      hasDragged = false
+      startX = e.pageX - categoryFilterBar.offsetLeft
+      scrollLeft = categoryFilterBar.scrollLeft
+    })
+
+    categoryFilterBar.addEventListener("mouseleave", () => {
+      isDown = false
+    })
+
+    categoryFilterBar.addEventListener("mouseup", () => {
+      isDown = false
+    })
+
+    categoryFilterBar.addEventListener("mousemove", (e) => {
+      if (!isDown) return
+      const x = e.pageX - categoryFilterBar.offsetLeft
+      const walk = (x - startX) * 1.5
+      if (Math.abs(walk) > 5) {
+        hasDragged = true
+      }
+      categoryFilterBar.scrollLeft = scrollLeft - walk
+    })
+
     categoryFilterBar.addEventListener("click", (e) => {
+      if (hasDragged) {
+        hasDragged = false
+        return
+      }
+
       const pill = e.target.closest(".theme-filter-pill")
       if (!pill) return
 
       categoryFilterBar.querySelectorAll(".theme-filter-pill").forEach((p) => p.classList.remove("active"))
       pill.classList.add("active")
+
+      // Center clicked pill smoothly in the scroll container
+      pill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
 
       const filterCategory = pill.getAttribute("data-theme-filter") || "all"
       const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
