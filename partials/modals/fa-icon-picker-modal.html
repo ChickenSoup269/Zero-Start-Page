@@ -1,0 +1,35 @@
+<div id="fa-icon-picker-modal">
+    <div class="fa-picker-dialog">
+        <!-- Header -->
+        <div class="fa-picker-header">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-color,#a8c0ff);font-size:1.1rem;"></i>
+            <span class="fa-picker-header-title" data-i18n="fa_picker_title">Pick Font Awesome Icon</span>
+            <button id="fa-picker-close" class="fa-picker-close-btn" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <!-- Search -->
+        <div class="fa-picker-search-bar">
+            <div class="fa-picker-search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass fa-picker-search-icon"></i>
+                <input id="fa-picker-search" type="text" placeholder="Search icons..."
+                    data-i18n-placeholder="fa_picker_search" class="fa-picker-search-input">
+            </div>
+            <select id="fa-picker-category" class="fa-picker-cat-select">
+                <option value="all">All</option>
+                <option value="solid">Solid</option>
+                <option value="regular">Regular</option>
+                <option value="brands">Brands</option>
+            </select>
+        </div>
+        <!-- Grid -->
+        <div id="fa-picker-grid" class="fa-picker-grid">
+            <!-- Icons injected here by JS -->
+        </div>
+        <!-- Footer -->
+        <div class="fa-picker-footer">
+            <small id="fa-picker-count" class="fa-picker-count"></small>
+            <button id="fa-picker-clear" class="fa-picker-clear-btn" data-i18n="fa_picker_clear">Clear icon</button>
+        </div>
+    </div>
+</div>

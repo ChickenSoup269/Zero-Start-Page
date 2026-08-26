@@ -1,0 +1,49 @@
+<div class="setting-group" id="page-title-group" data-settings-tab="appearance">
+    <label data-i18n="settings_page_title" for="page-title-input"><i class="fa-solid fa-heading"></i> Page Title</label>
+    <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
+        placeholder="Enter custom page title" class="settings-page-title-input" />
+    <div class="quick-token-chips" style="margin-top: 6px; margin-bottom: 4px;">
+        <button type="button" class="token-chip" data-token="{time}"><i class="fa-regular fa-clock"></i> {time}</button>
+        <button type="button" class="token-chip" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
+        <button type="button" class="token-chip" data-token="{music}"><i class="fa-solid fa-music"></i> {music}</button>
+    </div>
+    <small class="setting-hint" data-i18n="settings_page_title_hint" style="margin-top: 0.25rem; display: block;">Appears in browser tab. Tap chips to insert dynamic tokens.</small>
+    <div class="settings-tab-icon-row">
+        <label class="settings-tab-icon-label" data-i18n="settings_tab_icon" for="tab-icon-input"><i
+                class="fa-solid fa-icons"></i> Tab Icon:</label>
+        <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
+            placeholder="SP" maxlength="2" class="settings-tab-icon-input" />
+        <input type="file" id="tab-icon-file-input"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
+        <button type="button" id="tab-icon-fa-btn" class="icon-btn tab-icon-action-btn"
+            title="Pick Font Awesome icon" data-i18n-title="settings_tab_icon_fa_pick">
+            <i class="fas fa-mouse-pointer"></i>
+        </button>
+        <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn"
+            title="Upload icon" data-i18n-title="settings_tab_icon_upload">
+            <i class="fa-solid fa-upload"></i>
+        </button>
+        <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn"
+            title="Remove icon" data-i18n-title="settings_tab_icon_remove" hidden>
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div id="tab-icon-preview" class="settings-tab-icon-preview">
+        </div>
+    </div>
+    <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-top: 0.25rem; display: block;">Max 2 letters or 1 emoji, or pick a Font Awesome icon (leave blank for default)</small>
+    <div class="settings-tab-icon-colors">
+        <div class="settings-tab-icon-color-item">
+            <label for="tab-icon-bg-color" data-i18n="settings_icon_bg">Icon BG</label>
+            <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker">
+        </div>
+        <div class="settings-tab-icon-color-item">
+            <label for="tab-icon-text-color" data-i18n="settings_icon_text">Icon Text</label>
+            <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker">
+        </div>
+        <div class="settings-tab-icon-color-item">
+            <input type="checkbox" id="tab-icon-transparent-bg" class="settings-tab-icon-checkbox">
+            <label style="cursor:pointer;" for="tab-icon-transparent-bg"
+                data-i18n="settings_icon_transparent_bg">Transparent BG</label>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,483 @@
+<div class="settings-section" data-section-id="layout" data-settings-tab="widgets">
+                <h3 class="section-toggle"><i class="fa-solid fa-layer-group"></i> <span
+                        data-i18n="settings_layout">Layout & Features</span></h3>
+                <div class="section-content">
+
+                    <!-- Interface & General -->
+                    <div class="setting-group collapsible-group" id="layout-group-interface">
+                        <div class="group-header">
+                            <i class="fa-solid fa-display group-icon"></i>
+                            <span data-i18n="settings_group_interface">Interface</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+
+                            <div style="margin-bottom: 10px;">
+                                <button type="button" id="replay-settings-guide-btn"
+                                    class="secondary-btn full-width-btn">
+                                    <i class="fa-solid fa-route"></i> <span data-i18n="settings_replay_guide">Replay
+                                        Settings Guide</span>
+                                </button>
+                            </div>
+
+                            <div class="setting-item-row">
+                                <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
+                                    Layout</label>
+                                <input type="checkbox" id="flip-layout-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings
+                                    Sidebar Width</label>
+                                <select id="settings-sidebar-width-input" class="settings-select">
+                                    <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)
+                                    </option>
+                                    <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)
+                                    </option>
+                                    <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)
+                                    </option>
+                                    <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
+                                    <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item-row">
+                                <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
+                                    controls</label>
+                                <input type="checkbox" id="ghost-controls-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth
+                                    Scrolling</label>
+                                <input type="checkbox" id="smooth-scroll-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin-top:15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                                <label for="snap-to-grid-checkbox" style="font-weight: 500;"
+                                    data-i18n="settings_snap_to_grid"><i class="fa-solid fa-border-all"></i> Snap to
+                                    Grid (Drag & Drop)</label>
+                                <input type="checkbox" id="snap-to-grid-checkbox">
+                            </div>
+                            <div class="setting-item-row" id="snap-grid-size-row"
+                                style="display: none; padding-left: 20px;">
+                                <label for="snap-grid-size-input" style="opacity: 0.8; font-size: 0.9em;"
+                                    data-i18n="settings_snap_grid_size">Grid Size (px)</label>
+                                <select id="snap-grid-size-input" class="settings-select" style="max-width: 120px;">
+                                    <option value="20">20px (Fine)</option>
+                                    <option value="30">30px</option>
+                                    <option value="40">40px</option>
+                                    <option value="50">50px (Medium)</option>
+                                    <option value="60">60px</option>
+                                    <option value="80">80px</option>
+                                    <option value="100">100px (Large)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
+                                    Google Apps & Avatar</label>
+                                <input type="checkbox" id="show-top-right-controls-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="allow-text-selection-checkbox"
+                                    data-i18n="settings_allow_text_selection">Allow
+                                    Text Selection</label>
+                                <input type="checkbox" id="allow-text-selection-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="context-menu-style-select" data-i18n="settings_context_menu_style">Context
+                                    Menu
+                                    Style</label>
+                                <select id="context-menu-style-select" class="settings-select">
+                                    <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
+                                    <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
+                                    <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
+                                    <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="setting-group collapsible-group" id="layout-group-search">
+                        <div class="group-header">
+                            <i class="fa-solid fa-magnifying-glass group-icon"></i>
+                            <span data-i18n="settings_group_search">Search Bar</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div class="setting-item-row">
+                                <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
+                                    Bar</label>
+                                <input type="checkbox" id="show-search-bar-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="free-move-search-bar-checkbox"
+                                    data-i18n="settings_free_move_search_bar">Free
+                                    move search bar</label>
+                                <input type="checkbox" id="free-move-search-bar-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="search-bar-hover-scale-checkbox"
+                                    data-i18n="settings_search_bar_hover_scale">Search bar hover scale</label>
+                                <input type="checkbox" id="search-bar-hover-scale-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show
+                                    Google AI Icon</label>
+                                <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="search-engine-select" data-i18n="settings_search_engine">Search
+                                    Engine</label>
+                                <select id="search-engine-select">
+                                    <option value="google">Google</option>
+                                    <option value="google-image">Google Images</option>
+                                    <option value="google-lens">Google Lens</option>
+                                    <option value="bing">Bing</option>
+                                    <option value="yahoo">Yahoo</option>
+                                    <option value="duckduckgo">DuckDuckGo</option>
+                                    <option value="ecosia">Ecosia</option>
+                                    <option value="brave">Brave</option>
+                                    <option value="startpage">Startpage</option>
+                                    <option value="perplexity">Perplexity</option>
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="gemini-image">Gemini Image</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="github">GitHub</option>
+
+                                    <option value="kagi">Kagi</option>
+                                    <option value="qwant">Qwant</option>
+                                    <option value="mojeek">Mojeek</option>
+                                    <option value="yep">Yep</option>
+                                    <option value="yandex">Yandex</option>
+                                    <option value="baidu">Baidu</option>
+                                    <option value="wikipedia">Wikipedia</option>
+                                    <option value="reddit">Reddit</option>
+                                    <option value="stackoverflow">Stack Overflow</option>
+                                    <option value="mdn">MDN</option>
+                                    <option value="npm">npm</option>
+                                    <option value="scholar">Google Scholar</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
+                                    Width</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10"
+                                        value="600">
+                                    <span class="range-val" id="search-bar-width-val">600px</span>
+                                </div>
+                                <div class="lcp-width-presets" role="group" aria-label="Search bar width presets">
+                                    <button type="button" class="lcp-preset-btn" data-width="450">450px</button>
+                                    <button type="button" class="lcp-preset-btn active" data-width="600">600px</button>
+                                    <button type="button" class="lcp-preset-btn" data-width="750">750px</button>
+                                    <button type="button" class="lcp-preset-btn" data-width="900">900px</button>
+                                    <button type="button" class="lcp-preset-btn" data-width="1100">1100px</button>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label for="search-bar-blur-slider" data-i18n="settings_search_bar_blur">Search Bar
+                                    Blur</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-blur-slider" min="0" max="80" step="1"
+                                        value="20">
+                                    <span class="range-val" id="search-bar-blur-val">20px</span>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label for="search-bar-radius-slider" data-i18n="settings_search_bar_radius">Search Bar
+                                    Radius</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="search-bar-radius-slider" min="0" max="100" step="1"
+                                        value="20">
+                                    <span class="range-val" id="search-bar-radius-val">20px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widgets -->
+                    <div class="setting-group collapsible-group" id="layout-group-widgets">
+                        <div class="group-header">
+                            <i class="fa-solid fa-cubes group-icon"></i>
+                            <span data-i18n="settings_group_widgets">Widgets</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div class="setting-item-row">
+                                <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
+                                <input type="checkbox" id="show-todo-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo
+                                    Checkboxes</label>
+                                <input type="checkbox" id="todo-show-checkboxes" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show
+                                    Notepad</label>
+                                <input type="checkbox" id="show-notepad-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-habits-checkbox" data-i18n="settings_show_habits">Show Habit
+                                    Tracker</label>
+                                <input type="checkbox" id="show-habits-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="habit-color-mode-select" data-i18n="settings_habit_color_mode">Habit Color
+                                    Mode</label>
+                                <select id="habit-color-mode-select">
+                                    <option value="custom" data-i18n="habit_color_custom">Custom per habit</option>
+                                    <option value="gradient" data-i18n="habit_color_gradient">Red to Green</option>
+                                    <option value="m3" data-i18n="habit_color_m3">Accent (M3)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
+                                <input type="checkbox" id="show-timer-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-weather-checkbox" data-i18n="settings_show_weather">Show
+                                    Weather</label>
+                                <input type="checkbox" id="show-weather-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="weather-unit-select" data-i18n="settings_weather_unit">Temperature
+                                    Unit</label>
+                                <select id="weather-unit-select">
+                                    <option value="celsius">Celsius (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="weather-api-mode-select" data-i18n="settings_weather_api_mode">Weather API
+                                    Source</label>
+                                <select id="weather-api-mode-select">
+                                    <option value="extension" data-i18n="settings_weather_api_extension">Extension
+                                        default
+                                    </option>
+                                    <option value="custom" data-i18n="settings_weather_api_custom">Custom endpoint
+                                    </option>
+                                </select>
+                                <small class="setting-hint" data-i18n="settings_weather_api_hint">Default source limits
+                                    manual refresh to 3 times per hour. Custom endpoints are not limited.</small>
+                            </div>
+                            <div class="setting-item" id="weather-custom-api-settings" style="display: none;">
+                                <div class="weather-api-presets" aria-label="Weather API presets">
+                                    <button type="button" class="secondary-btn weather-api-preset-btn"
+                                        data-weather-api-preset="open-meteo">
+                                        <i class="fa-solid fa-cloud-sun"></i>
+                                        <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
+                                    </button>
+                                </div>
+
+                                <div class="unsplash-links" style="margin-bottom: 15px;">
+                                    <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item"
+                                        title="Trang chủ và Link API đúng của Open-Meteo">
+                                        <i class="fa-solid fa-link"></i> <span
+                                            data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
+                                    </a>
+                                    <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api"
+                                        target="_blank" class="unsplash-link-item"
+                                        title="Video hướng dẫn lấy API thời tiết">
+                                        <i class="fa-brands fa-youtube"></i> <span
+                                            data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
+                                    </a>
+                                </div>
+
+                                <label for="weather-forecast-endpoint-input"
+                                    data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
+                                <input type="url" id="weather-forecast-endpoint-input"
+                                    aria-describedby="weather-forecast-endpoint-status"
+                                    placeholder="https://api.open-meteo.com/v1/forecast">
+                                <small class="weather-api-field-status" id="weather-forecast-endpoint-status"></small>
+                                <label for="weather-geocoding-endpoint-input"
+                                    data-i18n="settings_weather_geocoding_endpoint">Geocoding endpoint</label>
+                                <input type="url" id="weather-geocoding-endpoint-input"
+                                    aria-describedby="weather-geocoding-endpoint-status"
+                                    placeholder="https://geocoding-api.open-meteo.com/v1/search">
+                                <small class="weather-api-field-status" id="weather-geocoding-endpoint-status"></small>
+                                <div class="weather-api-test-row">
+                                    <button type="button" class="primary-btn" id="weather-api-test-btn">
+                                        <i class="fa-solid fa-plug-circle-check"></i>
+                                        <span data-i18n="settings_weather_test_connection">Test connection</span>
+                                    </button>
+                                    <div class="weather-api-connection-state" id="weather-api-connection-state"
+                                        role="status" aria-live="polite">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span data-i18n="settings_weather_test_idle">Not tested yet.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="hide-timer-alarm-dropdown-checkbox"
+                                    data-i18n="settings_hide_timer_alarm_dropdown">Hide alarm dropdown in Timer</label>
+                                <input type="checkbox" id="hide-timer-alarm-dropdown-checkbox">
+                            </div>
+                            <div class="setting-item">
+                                <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm
+                                    Sound</label>
+                                <select id="timer-alarm-sound-select"></select>
+                                <div class="timer-alarm-upload-row">
+                                    <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
+                                    <button type="button" id="timer-alarm-sound-upload-btn" class="secondary-btn">
+                                        <i class="fa-solid fa-upload"></i>
+                                        <span data-i18n="timer_alarm_upload">Upload Sound</span>
+                                    </button>
+                                    <button type="button" id="timer-alarm-sound-remove-btn"
+                                        class="secondary-btn timer-alarm-remove-btn" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span data-i18n="timer_alarm_remove">Remove</span>
+                                    </button>
+                                </div>
+                                <small id="timer-alarm-custom-name" class="timer-alarm-custom-name"
+                                    data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
+                                <small class="timer-alarm-source">
+                                    <span data-i18n="settings_timer_alarm_source">Ringtone sounds source:</span>
+                                    <a href="https://pixabay.com/users/universfield-28281460/" target="_blank"
+                                        rel="noopener noreferrer">Pixabay / universfield</a>
+                                </small>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-quick-access-bg-checkbox"
+                                    data-i18n="settings_show_quick_access_bg">Quick
+                                    Access Bar Background</label>
+                                <input type="checkbox" id="show-quick-access-bg-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show
+                                    Bookmarks</label>
+                                <input type="checkbox" id="show-bookmarks-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-bookmark-groups-checkbox"
+                                    data-i18n="settings_show_bookmark_groups">Show
+                                    Bookmark Folders</label>
+                                <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Music Player -->
+                    <div class="setting-group collapsible-group" id="layout-group-music">
+                        <div class="group-header">
+                            <i class="fa-solid fa-music group-icon"></i>
+                            <span data-i18n="settings_group_music">Music Player</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div class="setting-item-row">
+                                <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music
+                                    Player</label>
+                                <input type="checkbox" id="show-music-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <div>
+                                    <label for="music-real-audio-reactive-checkbox"
+                                        data-i18n="settings_music_real_audio_reactive">Real-time Audio Reactive
+                                        (Beta)</label>
+                                    <div class="setting-help-text" data-i18n="settings_music_real_audio_reactive_hint"
+                                        style="font-size: 11px; opacity: 0.7; margin-top: 2px;">Capture tab audio in
+                                        real-time so visualizer waves react to actual bass & beats.</div>
+                                </div>
+                                <input type="checkbox" id="music-real-audio-reactive-checkbox">
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
+                                <select id="music-style-select">
+                                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                                    <option value="apple" data-i18n="style_apple">Apple Music</option>
+                                    <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                                    <option value="overlap" data-i18n="style_overlap">Overlap</option>
+                                    <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
+                                    <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                                    <option value="moon8" data-i18n="style_moon8">Infinity</option>
+                                    <option value="beach" data-i18n="style_beach">Beach</option>
+                                    <option value="forest" data-i18n="style_forest">Forest</option>
+                                    <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
+                                    <option value="terminal" data-i18n="style_terminal">Terminal</option>
+                                    <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                                    <option value="square-thumb" data-i18n="style_square_thumb">Square Thumb</option>
+                                    <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                                    <option value="neon" data-i18n="style_neon">Neon</option>
+                                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-player-use-default-color-mode"
+                                    data-i18n="settings_music_use_default_color">Music Waves Color</label>
+                                <select id="music-player-use-default-color-mode">
+                                    <option value="true" data-i18n="music_player_color_brand">Skin Default</option>
+                                    <option value="false" data-i18n="music_player_color_global">Global Theme Color
+                                    </option>
+                                    <option value="thumbnail" data-i18n="music_player_color_thumb">Match Thumbnail Color
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="music-source-icon-color-mode"
+                                    data-i18n="settings_music_source_icon_color">Source Icon Color</label>
+                                <select id="music-source-icon-color-mode">
+                                    <option value="brand" data-i18n="music_source_icon_brand">Brand color</option>
+                                    <option value="accent" data-i18n="music_source_icon_accent">Accent color</option>
+                                    <option value="none" data-i18n="music_source_icon_none">No color</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="setting-group collapsible-group" id="layout-group-calendar">
+                        <div class="group-header">
+                            <i class="fa-solid fa-calendar-days group-icon"></i>
+                            <span data-i18n="settings_group_calendar">Calendar</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div class="setting-item-row">
+                                <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
+                                    Calendar</label>
+                                <input type="checkbox" id="show-gregorian-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-quotes-checkbox" data-i18n="settings_show_quotes">Show Daily
+                                    Quotes</label>
+                                <input type="checkbox" id="show-quotes-checkbox" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="quotes-update-freq-select" data-i18n="settings_quotes_update_freq">Quotes
+                                    Update Frequency</label>
+                                <select id="quotes-update-freq-select">
+                                    <option value="tab" data-i18n="settings_quotes_freq_tab">Every New Tab</option>
+                                    <option value="hour" data-i18n="settings_quotes_freq_hour">Every Hour</option>
+                                    <option value="day" data-i18n="settings_quotes_freq_day">Every Day</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show
+                                    Full
+                                    Calendar</label>
+                                <input type="checkbox" id="show-full-calendar-checkbox">
+                            </div>
+                            <div class="setting-item">
+                                <label for="calendar-display-mode-select"
+                                    data-i18n="settings_calendar_display_mode">Calendar Display</label>
+                                <select id="calendar-display-mode-select">
+                                    <option value="solar" data-i18n="settings_calendar_display_solar">Gregorian only
+                                    </option>
+                                    <option value="lunar" data-i18n="settings_calendar_display_lunar">Lunar only
+                                    </option>
+                                    <option value="both" data-i18n="settings_calendar_display_both">Gregorian + Lunar
+                                    </option>
+                                </select>
+                                <p class="setting-hint" data-i18n="settings_calendar_display_mode_hint"
+                                    style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the month
+                                    grid shows solar dates, lunar dates, or both.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

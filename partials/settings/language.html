@@ -1,0 +1,33 @@
+<div class="setting-group language-setting-group" data-settings-tab="system">
+    <label data-i18n="settings_language" for="language-select"><i class="fa-solid fa-language"></i> Language / Ngôn ngữ</label>
+    <select id="language-select" hidden>
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="de" data-badge="DEMO">Deutsch</option>
+        <option value="sv" data-badge="DEMO">Svenska</option>
+    </select>
+    <div id="language-button-group" class="clock-style-grid" style="margin-bottom: 12px; margin-top: 8px;">
+    </div>
+    <button type="button" id="language-tools-toggle-btn"
+        class="secondary-btn full-width language-tools-toggle" aria-expanded="false">
+        <i class="fa-solid fa-chevron-right"></i>
+        <span data-i18n="language_tools_toggle">Custom Language Tools</span>
+    </button>
+    <div id="language-tools-panel" class="language-tools-panel is-collapsed">
+        <div class="language-tools-content">
+            <div class="language-tools">
+                <button type="button" id="language-help-btn" class="secondary-btn language-guide-btn">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span data-i18n="language_help">Quick Guide</span>
+                </button>
+                <button type="button" id="delete-custom-language-btn"
+                    class="secondary-btn language-delete-btn" hidden>
+                    <i class="fa-solid fa-trash"></i>
+                    <span data-i18n="language_delete_custom">Delete Custom Language</span>
+                </button>
+            </div>
+            <small class="setting-hint language-tools-hint" data-i18n="language_custom_hint">Open Quick
+                Guide, copy the AI prompt, then paste the translated JSON back into the modal.</small>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,470 @@
+<div class="settings-section" data-section-id="custom-title" data-settings-tab="appearance">
+                <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
+                        data-i18n="settings_custom_title">Custom Title</span></h3>
+                <div class="section-content">
+                    <!-- Toggles & Basic Setup -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <div class="setting-item-row">
+                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i
+                                    class="fa-solid fa-eye"></i> Show Title</label>
+                            <input type="checkbox" id="show-custom-title-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i
+                                    class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-custom-title-checkbox">
+                        </div>
+                    </div>
+
+                    <!-- Text Input & Font Settings -->
+                    <div class="setting-group collapsible-group" id="custom-title-typography-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-pen-nib group-icon"></i>
+                            <span data-i18n="settings_custom_title_typography">Text Content & Typography</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <!-- Live Preview Box -->
+                            <div class="custom-title-live-preview" id="custom-title-live-preview">
+                                <span class="custom-title-live-preview-tag"><i class="fa-solid fa-eye"></i> Preview</span>
+                                <div id="custom-title-preview-render" style="font-weight: 600; font-size: 1.1rem; line-height: 1.3; text-align: center;"></div>
+                            </div>
+
+                            <div class="custom-title-presets">
+                                <button type="button" class="preset-pill-btn" data-preset-text="{greeting}, User!"><i class="fa-regular fa-sun"></i> Greeting</button>
+                                <button type="button" class="preset-pill-btn" data-preset-text="SYSTEM // ONLINE"><i class="fa-solid fa-terminal"></i> Cyberpunk</button>
+                                <button type="button" class="preset-pill-btn" data-preset-text="{time} — {date}"><i class="fa-regular fa-clock"></i> Time & Date</button>
+                                <button type="button" class="preset-pill-btn" data-preset-text="Stay Focused, Make It Happen."><i class="fa-solid fa-quote-left"></i> Quote</button>
+                            </div>
+
+                            <!-- Segmented Line Switcher -->
+                            <div class="custom-title-line-tabs-nav" id="custom-title-line-tabs">
+                                <button type="button" class="ct-tab-btn active" data-target-line="1">
+                                    <span>Dòng 1</span>
+                                    <span class="ct-line-status-dot"></span>
+                                </button>
+                                <button type="button" class="ct-tab-btn" data-target-line="2">
+                                    <span>Dòng 2</span>
+                                    <span class="ct-line-status-dot"></span>
+                                </button>
+                                <button type="button" class="ct-tab-btn" data-target-line="3">
+                                    <span>Dòng 3</span>
+                                    <span class="ct-line-status-dot"></span>
+                                </button>
+                                <button type="button" class="ct-tab-btn" data-target-line="4">
+                                    <span>Dòng 4</span>
+                                    <span class="ct-line-status-dot"></span>
+                                </button>
+                            </div>
+
+                            <div class="custom-title-lines-wrapper">
+                                <!-- Dòng 1 Panel -->
+                                <div class="custom-title-line-panel active" id="custom-title-line-1-panel">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                                        <label style="font-size: 0.85em; font-weight: 600; opacity: 0.9; margin-bottom: 0;"
+                                            data-i18n="settings_custom_title_line_1">Dòng 1</label>
+                                        <div class="quick-token-chips" style="margin: 0;">
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text" data-token="{greeting}"><i class="fa-regular fa-face-smile"></i> {greeting}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text" data-token="{time}"><i class="fa-regular fa-clock"></i> {time}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text" data-token="{weather}"><i class="fa-solid fa-cloud-sun"></i> {weather}</button>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                        <input type="text" id="custom-title-text" placeholder="Nội dung dòng 1..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder"
+                                            style="flex: 2; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 9px 12px; border-radius: 6px; font-size: 0.9rem;">
+                                        <select id="custom-title-font" class="settings-select"
+                                            style="flex: 1.2; padding: 9px; border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        </select>
+                                    </div>
+                                    <div class="ct-control-grid">
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span>
+                                                <span class="val-badge"><span id="custom-title-fontsize-val">24</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-font-size" min="10" max="200" value="24" style="width: 100%;">
+                                        </div>
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span>
+                                                <span class="val-badge"><span id="custom-title-letter-spacing-val">0</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                                        <label style="font-size: 0.8em; opacity: 0.75; margin-bottom: 0;" data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</label>
+                                        <select id="custom-title-orientation" class="settings-select" style="width: 48%; padding: 5px 8px; border-radius: 4px; font-size: 0.82em;">
+                                            <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
+                                            <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Dòng 2 Panel -->
+                                <div class="custom-title-line-panel" id="custom-title-line-2-panel">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                                        <label style="font-size: 0.85em; font-weight: 600; opacity: 0.9; margin-bottom: 0;"
+                                            data-i18n="settings_custom_title_line_2">Dòng 2</label>
+                                        <div class="quick-token-chips" style="margin: 0;">
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-2" data-token="{weekday}"><i class="fa-regular fa-calendar"></i> {weekday}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-2" data-token="{time}"><i class="fa-regular fa-clock"></i> {time}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-2" data-token="{weather}"><i class="fa-solid fa-cloud-sun"></i> {weather}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-2" data-token="{music}"><i class="fa-solid fa-music"></i> {music}</button>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                        <input type="text" id="custom-title-text-2" placeholder="Nội dung dòng 2..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_2"
+                                            style="flex: 2; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 9px 12px; border-radius: 6px; font-size: 0.9rem;">
+                                        <select id="custom-title-font-2" class="settings-select"
+                                            style="flex: 1.2; padding: 9px; border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        </select>
+                                    </div>
+                                    <div class="ct-control-grid">
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span>
+                                                <span class="val-badge"><span id="custom-title-fontsize-2-val">24</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-font-size-2" min="10" max="200" value="24" style="width: 100%;">
+                                        </div>
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span>
+                                                <span class="val-badge"><span id="custom-title-letter-spacing-2-val">0</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-letter-spacing-2" min="-10" max="50" value="0" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                                        <label style="font-size: 0.8em; opacity: 0.75; margin-bottom: 0;" data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</label>
+                                        <select id="custom-title-orientation-2" class="settings-select" style="width: 48%; padding: 5px 8px; border-radius: 4px; font-size: 0.82em;">
+                                            <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
+                                            <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Dòng 3 Panel -->
+                                <div class="custom-title-line-panel" id="custom-title-line-3-container">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <label style="font-size: 0.85em; font-weight: 600; opacity: 0.9; margin: 0;"
+                                                data-i18n="settings_custom_title_line_3">Dòng 3</label>
+                                            <button class="remove-line-btn" data-target="3" title="Xóa dòng 3"
+                                                style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.85em;"><i
+                                                    class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                        <div class="quick-token-chips" style="margin: 0;">
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-3" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-3" data-token="{weather}"><i class="fa-solid fa-cloud-sun"></i> {weather}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-3" data-token="{music}"><i class="fa-solid fa-music"></i> {music}</button>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                        <input type="text" id="custom-title-text-3" placeholder="Nội dung dòng 3..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_3"
+                                            style="flex: 2; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 9px 12px; border-radius: 6px; font-size: 0.9rem;">
+                                        <select id="custom-title-font-3" class="settings-select"
+                                            style="flex: 1.2; padding: 9px; border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        </select>
+                                    </div>
+                                    <div class="ct-control-grid">
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span>
+                                                <span class="val-badge"><span id="custom-title-fontsize-3-val">24</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-font-size-3" min="10" max="200" value="24" style="width: 100%;">
+                                        </div>
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span>
+                                                <span class="val-badge"><span id="custom-title-letter-spacing-3-val">0</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-letter-spacing-3" min="-10" max="50" value="0" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                                        <label style="font-size: 0.8em; opacity: 0.75; margin-bottom: 0;" data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</label>
+                                        <select id="custom-title-orientation-3" class="settings-select" style="width: 48%; padding: 5px 8px; border-radius: 4px; font-size: 0.82em;">
+                                            <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
+                                            <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Dòng 4 Panel -->
+                                <div class="custom-title-line-panel" id="custom-title-line-4-container">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <label style="font-size: 0.85em; font-weight: 600; opacity: 0.9; margin: 0;"
+                                                data-i18n="settings_custom_title_line_4">Dòng 4</label>
+                                            <button class="remove-line-btn" data-target="4" title="Xóa dòng 4"
+                                                style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.85em;"><i
+                                                    class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                        <div class="quick-token-chips" style="margin: 0;">
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-4" data-token="{time_12}"><i class="fa-regular fa-clock"></i> {time_12}</button>
+                                            <button type="button" class="token-chip" data-target-input="custom-title-text-4" data-token="{weather}"><i class="fa-solid fa-cloud-sun"></i> {weather}</button>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                        <input type="text" id="custom-title-text-4" placeholder="Nội dung dòng 4..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_4"
+                                            style="flex: 2; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 9px 12px; border-radius: 6px; font-size: 0.9rem;">
+                                        <select id="custom-title-font-4" class="settings-select"
+                                            style="flex: 1.2; padding: 9px; border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        </select>
+                                    </div>
+                                    <div class="ct-control-grid">
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span>
+                                                <span class="val-badge"><span id="custom-title-fontsize-4-val">24</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-font-size-4" min="10" max="200" value="24" style="width: 100%;">
+                                        </div>
+                                        <div class="ct-slider-card">
+                                            <label>
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span>
+                                                <span class="val-badge"><span id="custom-title-letter-spacing-4-val">0</span>px</span>
+                                            </label>
+                                            <input type="range" id="custom-title-letter-spacing-4" min="-10" max="50" value="0" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                                        <label style="font-size: 0.8em; opacity: 0.75; margin-bottom: 0;" data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</label>
+                                        <select id="custom-title-orientation-4" class="settings-select" style="width: 48%; padding: 5px 8px; border-radius: 4px; font-size: 0.82em;">
+                                            <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
+                                            <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 14px;">
+                                <label
+                                    style="display: flex; justify-content: space-between; font-size: 0.85em; opacity: 0.8; margin-bottom: 0;">
+                                    <span><i class="fa-solid fa-up-down"></i> <span
+                                            data-i18n="settings_custom_title_line_spacing">Khoảng cách giữa các
+                                            dòng</span></span>
+                                    <span style="font-family: monospace;"><span
+                                            id="custom-title-line-spacing-val">15</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-line-spacing" min="0" max="100" value="15"
+                                    style="width: 100%;">
+                            </div>
+
+                                <div
+                                    style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <label for="custom-title-direction"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-arrows-up-down-left-right"></i> <span
+                                                data-i18n="settings_custom_title_direction">Hướng chữ</span></label>
+                                        <select id="custom-title-direction" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="horizontal"
+                                                data-i18n="settings_custom_title_direction_horizontal">Ngang</option>
+                                            <option value="vertical"
+                                                data-i18n="settings_custom_title_direction_vertical">Dọc</option>
+                                        </select>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <label for="custom-title-order"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-sort"></i> <span
+                                                data-i18n="settings_custom_title_order">Thứ tự dòng</span></label>
+                                        <select id="custom-title-order" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="normal" data-i18n="settings_custom_title_order_normal">Bình
+                                                thường (1->4)</option>
+                                            <option value="reverse" data-i18n="settings_custom_title_order_reverse">Đảo
+                                                ngược (4->1)</option>
+                                        </select>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <label for="custom-title-word-wrap"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-turn-down"></i> <span
+                                                data-i18n="settings_custom_title_word_wrap">Xếp dọc từng ký
+                                                tự</span></label>
+                                        <label class="switch" style="margin-left: auto;">
+                                            <input type="checkbox" id="custom-title-word-wrap">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <label for="custom-title-animation"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                                data-i18n="settings_custom_title_animation_label">Hiệu
+                                                ứng</span></label>
+                                        <select id="custom-title-animation" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="none" data-i18n="settings_custom_title_animation_none">Không
+                                                có</option>
+                                            <option value="typing" data-i18n="settings_custom_title_animation_typing">Gõ
+                                                chữ (Typing)</option>
+                                            <option value="fade-loop" data-i18n="settings_custom_title_animation_fade">
+                                                Hiện/Ẩn (Fade)</option>
+                                            <option value="pulse" data-i18n="settings_custom_title_animation_pulse">Nhịp
+                                                đập (Pulse)</option>
+                                            <option value="bounce" data-i18n="settings_custom_title_animation_bounce">
+                                                Nảy (Bounce)</option>
+                                            <option value="wave" data-i18n="settings_custom_title_animation_wave">Lượn
+                                                sóng (Wave)</option>
+                                            <option value="glow" data-i18n="settings_custom_title_animation_glow">Phát
+                                                sáng (Glow)</option>
+                                            <option value="glitch" data-i18n="settings_custom_title_animation_glitch">
+                                                Nhiễu (Glitch)</option>
+                                            <option value="flip" data-i18n="settings_custom_title_animation_flip">Lật
+                                                (Flip)</option>
+                                            <option value="shake" data-i18n="settings_custom_title_animation_shake">Rung
+                                                lắc (Shake)</option>
+                                            <option value="float" data-i18n="settings_custom_title_animation_float">Lơ
+                                                lửng (Float)</option>
+                                            <option value="neon" data-i18n="settings_custom_title_animation_neon">Neon
+                                                (Neon)</option>
+                                            <option value="focus" data-i18n="settings_custom_title_animation_focus">Lấy
+                                                nét (Focus)</option>
+                                            <option value="shimmer" data-i18n="settings_custom_title_animation_shimmer">Ánh
+                                                kim (Shimmer)</option>
+                                            <option value="flame" data-i18n="settings_custom_title_animation_flame">Ngọn
+                                                lửa (Flame)</option>
+                                            <option value="pop-3d" data-i18n="settings_custom_title_animation_pop3d">Khối
+                                                3D (3D Pop)</option>
+                                        </select>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <label for="custom-title-animation-loop"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-repeat"></i> <span
+                                                data-i18n="settings_custom_title_animation_loop_label">Chế độ
+                                                lặp</span></label>
+                                        <select id="custom-title-animation-loop" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="infinite"
+                                                data-i18n="settings_custom_title_animation_loop_infinite">Lặp liên tục
+                                            </option>
+                                            <option value="once" data-i18n="settings_custom_title_animation_loop_once">
+                                                Chạy 1 lần</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Color Settings -->
+                    <div class="setting-group collapsible-group" id="custom-title-color-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-palette group-icon"></i>
+                            <span data-i18n="settings_custom_title_color">Title Color</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div id="custom-title-color-wrap"
+                                style="display: flex; flex-direction: column; margin-bottom: 15px;">
+                                <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;"
+                                    data-i18n="settings_solid_color">Solid Color</label>
+                                <div class="custom-color-input-group"
+                                    style="display: flex; align-items: center; height: 38px;">
+                                    <input type="color" id="custom-title-color" value="#ffffff"
+                                        style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="custom-title-multicolor"><i class="fa-solid fa-rainbow"></i> <span
+                                        data-i18n="settings_custom_title_multicolor">Rainbow Effect</span></label>
+                                <input type="checkbox" id="custom-title-multicolor">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Effects: Shadows & Borders -->
+                    <div class="setting-group collapsible-group" id="custom-title-effects-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
+                            <span data-i18n="settings_custom_title_effects">Effects: Shadows & Borders</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <h4 class="setting-sub-header"><i class="fa-solid fa-moon"></i> <span
+                                    data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
+                            <p class="setting-hint custom-title-effect-hint"
+                                data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical
+                                offset
+                                for cleaner Vietnamese text.</p>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <label for="custom-title-shadow-color"
+                                        style="font-size: 0.8rem; margin-bottom: 8px; display: block;"
+                                        data-i18n="settings_custom_title_shadow_color">Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; height: 38px;">
+                                        <input type="color" id="custom-title-shadow-color" value="#000000"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label for="custom-title-shadow-blur"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-shadow-blur-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0"
+                                        style="width: 100%;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label for="custom-title-shadow-y"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-shadow-y-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0"
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+
+                            <h4 class="setting-sub-header" style="margin-top: 20px;"><i
+                                    class="fa-solid fa-border-style"></i> <span
+                                    data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <p class="setting-hint custom-title-effect-hint"
+                                data-i18n="settings_custom_title_border_hint">Keep the outline thin so accents and long
+                                words stay readable.</p>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <label for="custom-title-border-color"
+                                        data-i18n="settings_custom_title_border_color"
+                                        style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; height: 38px;">
+                                        <input type="color" id="custom-title-border-color" value="#000000"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label for="custom-title-border-size"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_border_size">Thickness</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-border-size-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-border-size" min="0" max="10" value="0"
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

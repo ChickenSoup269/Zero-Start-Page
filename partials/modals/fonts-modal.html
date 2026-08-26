@@ -1,0 +1,24 @@
+<div id="local-fonts-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 data-i18n="modal_local_fonts_title">Select Local Font</h2>
+                <span id="close-local-fonts-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-input-group" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-magnifying-glass modal-input-icon"></i>
+                    <input type="text" id="local-fonts-search" data-i18n-placeholder="modal_local_fonts_search"
+                        placeholder="Search installed fonts...">
+                </div>
+                <div id="local-fonts-list" class="font-grid"
+                    style="max-height: 400px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 5px;">
+                    <!-- Local fonts will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer"
+                style="text-align: right; opacity: 0.7; font-size: 0.8rem; border-top: none; padding-top: 0;">
+                <p data-i18n="settings_local_fonts_hint" style="margin: 0; width: 100%;">Use fonts installed on your
+                    computer</p>
+            </div>
+        </div>
+    </div>

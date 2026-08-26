@@ -1,0 +1,27 @@
+<div id="bug-report-modal" class="bug-modal">
+        <div class="bug-modal-content">
+            <div class="bug-modal-header">
+                <h2 data-i18n="bug_report_title">System Information & Bug Report</h2>
+                <span id="close-bug-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <p class="bug-report-intro" data-i18n="bug_report_desc">
+                    If you encounter issues, please copy the configuration below and send it to the developer.
+                </p>
+                <div class="bug-config-container">
+                    <label class="bug-config-label" data-i18n="system_config">System Config (Auto-generated):</label>
+                    <textarea id="bug-config-data" readonly spellcheck="false"></textarea>
+                </div>
+            </div>
+            <div class="bug-modal-footer">
+                <button id="copy-bug-config-btn" class="bug-secondary-btn"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; flex: 1; height: 44px; border-radius: 10px;">
+                    <i class="fa-solid fa-copy"></i> <span data-i18n="copy">Copy Config</span>
+                </button>
+                <a id="bug-report-link" href="#" target="_blank" class="bug-primary-btn"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; flex: 1; height: 44px; border-radius: 10px;">
+                    <i class="fa-solid fa-paper-plane"></i> <span data-i18n="send_to_fb">Send Bug Report</span>
+                </a>
+            </div>
+        </div>
+    </div>

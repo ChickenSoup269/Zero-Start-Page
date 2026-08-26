@@ -1,0 +1,38 @@
+<div id="unsplash-explorer-modal" class="bug-modal">
+        <div class="bug-modal-content unsplash-explorer-shell">
+            <div class="bug-modal-header">
+                <div class="unsplash-explorer-title">
+                    <span class="unsplash-explorer-logo"><i class="fa-brands fa-unsplash"></i></span>
+                    <div>
+                        <h2 class="modal-title-text">Unsplash Explorer</h2>
+                        <small data-i18n="settings_unsplash_mini_hint">Open photo picker</small>
+                    </div>
+                </div>
+                <span id="close-unsplash-explorer-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <div id="unsplash-explorer-grid" class="unsplash-explorer-grid">
+                    <!-- Photos will be injected here -->
+                </div>
+                <div class="explorer-footer">
+                    <button id="unsplash-explorer-load-more" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="unsplash-explorer-mini" class="unsplash-explorer-mini" aria-hidden="true">
+        <button type="button" id="unsplash-explorer-mini-open" class="unsplash-explorer-mini-open">
+            <i class="fa-brands fa-unsplash"></i>
+            <span>
+                <strong id="unsplash-explorer-mini-title">Unsplash</strong>
+                <small data-i18n="settings_unsplash_mini_hint">Open photo picker</small>
+            </span>
+            <i class="fa-solid fa-up-right-from-square mini-open-icon" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="unsplash-explorer-mini-close" class="unsplash-explorer-mini-close"
+            data-i18n-title="close" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>

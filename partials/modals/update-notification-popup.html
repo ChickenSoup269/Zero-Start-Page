@@ -1,0 +1,32 @@
+<!-- Update Notification Popup -->
+<div id="update-notification-popup" class="update-notification-popup">
+    <div class="update-popup-header">
+        <div class="update-popup-icon">
+            <i class="fa-solid fa-circle-arrow-up"></i>
+        </div>
+        <div>
+            <h3 data-i18n="update_title">Cập nhật mới!</h3>
+            <span id="update-version-label" class="update-version-pill"></span>
+        </div>
+    </div>
+
+    <div class="update-popup-body">
+        <section class="update-popup-section">
+            <h4 id="update-changes-title"><i class="fa-solid fa-star"></i> Có gì mới</h4>
+            <ul id="update-change-list" class="update-change-list"></ul>
+        </section>
+
+        <section class="update-popup-section">
+            <h4 id="update-contributors-title"><i class="fa-solid fa-handshake"></i> Người góp công</h4>
+            <div id="update-contributor-list" class="update-contributor-list"></div>
+        </section>
+    </div>
+
+    <div class="update-popup-actions">
+        <button id="close-update-popup" class="secondary-btn update-popup-close-btn" data-i18n="cancel">Close</button>
+        <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
+            target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
+            <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
+        </a>
+    </div>
+</div>

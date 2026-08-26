@@ -1,0 +1,58 @@
+<div class="settings-section" data-section-id="data-sync" data-settings-tab="system">
+    <h3 class="section-toggle" data-i18n="settings_data_sync"><i class="fa-solid fa-cloud"></i> Data & Sync</h3>
+    <div class="section-content">
+        <div class="setting-group">
+            <div class="setting-item-row">
+                <label for="google-drive-sync-checkbox"><i class="fa-brands fa-google-drive"
+                        style="color: #34A853; margin-right: 4px;"></i>
+                    <span data-i18n="settings_google_drive_sync">Sync with Google Drive</span></label>
+                <input type="checkbox" id="google-drive-sync-checkbox">
+            </div>
+            <p class="setting-hint" data-i18n="settings_google_drive_sync_hint">Auto backup and restore settings & bookmarks via Google Drive.</p>
+
+            <!-- Google Drive Sync Test Notice -->
+            <div class="google-sync-test-notice">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span data-i18n-html="settings_google_sync_test_notice">Tính năng này đang trong quá trình thử nghiệm. Nếu bạn đăng nhập bị từ chối và muốn dùng thử, xin vui lòng điền thông tin vào <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0MVV6-Z7sxb-4Zpv5wRyBcKPsl8EbOqRAnntgrdBc_gOXpQ/viewform?usp=dialog" target="_blank">form đăng ký này</a>.</span>
+            </div>
+
+            <div id="drive-sync-options-wrapper" style="display: none;">
+                <div id="google-drive-sync-status" class="google-drive-sync-status-box">
+                    <img id="google-sync-avatar" src="" class="google-sync-avatar-img" alt="avatar">
+                    <span id="google-sync-email" class="google-sync-email-text"></span>
+                </div>
+
+                <div class="setting-item-row" style="margin-top: 12px;">
+                    <label for="drive-auto-backup-interval" data-i18n="settings_drive_auto_backup">Auto Backup Interval</label>
+                    <select id="drive-auto-backup-interval">
+                        <option value="none" data-i18n="settings_drive_auto_backup_none">None (Manual only)</option>
+                        <option value="daily" data-i18n="settings_drive_auto_backup_daily">Daily</option>
+                        <option value="weekly" data-i18n="settings_drive_auto_backup_weekly">Weekly</option>
+                        <option value="monthly" data-i18n="settings_drive_auto_backup_monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="data-sync-btn-row">
+                    <button type="button" id="force-drive-sync-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="settings_force_drive_sync">Upload</span>
+                    </button>
+                    <button type="button" id="force-drive-download-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> <span data-i18n="settings_force_drive_download">Download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="setting-group data-sync-group-divider">
+            <div style="margin-bottom: 8px; font-weight: 500;" data-i18n="settings_browser_sync_title">Browser Sync</div>
+            <div class="sidebar-footer-sync-row data-sync-btn-row" style="margin-bottom: 8px; margin-top: 0;">
+                <button id="sync-to-cloud-btn" class="secondary-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="footer_sync_backup">Backup Sync</span>
+                </button>
+                <button id="sync-from-cloud-btn" class="secondary-btn">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> <span data-i18n="footer_sync_restore">Restore Sync</span>
+                </button>
+            </div>
+            <p class="setting-hint" data-i18n="settings_browser_sync_hint">Note: This syncs with your browser account automatically without requiring login.</p>
+        </div>
+    </div>
+</div>

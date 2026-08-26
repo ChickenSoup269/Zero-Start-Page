@@ -1,0 +1,344 @@
+<!-- Layout Controls Popup -->
+<div id="layout-controls-popup" class="layout-controls-popup" style="display:none;">
+    <div class="lcp-title"><i class="fa-solid fa-sliders"></i> <span data-i18n="quick_layout_title">Layout Controls</span></div>
+
+    <div class="lcp-tabs" role="tablist" aria-label="Layout controls tabs">
+        <button type="button" class="lcp-tab active" data-lcp-tab="layout" role="tab" aria-selected="true">
+            <i class="fa-solid fa-layer-group"></i>
+            <span data-i18n="settings_layout">Layout</span>
+        </button>
+        <button type="button" class="lcp-tab" data-lcp-tab="quick-access" role="tab" aria-selected="false">
+            <i class="fa-solid fa-bolt"></i>
+            <span data-i18n="settings_quick_access">Quick Access</span>
+        </button>
+    </div>
+
+    <div class="lcp-tab-panel active" data-lcp-panel="layout" role="tabpanel">
+        <div class="lcp-row">
+            <i class="fa-solid fa-arrow-right-arrow-left lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_flip_layout">Flip Interface Layout</span>
+            <label class="lcp-switch" for="lcp-flip-layout">
+                <input type="checkbox" id="lcp-flip-layout">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-magnifying-glass lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_search_bar">Search Bar</span>
+            <label class="lcp-switch" for="lcp-search-bar">
+                <input type="checkbox" id="lcp-search-bar">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-bookmark lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_bookmarks">Bookmarks</span>
+            <label class="lcp-switch" for="lcp-bookmarks">
+                <input type="checkbox" id="lcp-bookmarks">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-folder lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_bookmark_groups">Bookmark Folders</span>
+            <label class="lcp-switch" for="lcp-bookmark-groups">
+                <input type="checkbox" id="lcp-bookmark-groups">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-moon lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
+            <label class="lcp-switch" for="lcp-lunar-calendar">
+                <input type="checkbox" id="lcp-lunar-calendar">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-square lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_quick_access_bg">Quick Access Background</span>
+            <label class="lcp-switch" for="lcp-quick-access-bg">
+                <input type="checkbox" id="lcp-quick-access-bg">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_quick_access_horizontal">Quick Access Horizontal</span>
+            <label class="lcp-switch" for="lcp-quick-access-horizontal">
+                <input type="checkbox" id="lcp-quick-access-horizontal">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+
+        <div class="lcp-row">
+            <i class="fa-solid fa-eye-slash lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
+            <label class="lcp-switch" for="lcp-ghost-controls">
+                <input type="checkbox" id="lcp-ghost-controls">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-grip lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_show_top_right">Google Apps</span>
+            <label class="lcp-switch" for="lcp-top-right-controls">
+                <input type="checkbox" id="lcp-top-right-controls">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-bolt-lightning lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_music_real_audio_reactive">Audio Reactive</span>
+            <label class="lcp-switch" for="lcp-music-real-audio-reactive">
+                <input type="checkbox" id="lcp-music-real-audio-reactive">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+
+        <div class="lcp-row lcp-hide-chrome-bookmarks-item" id="lcp-hide-chrome-bookmarks-row">
+            <i class="fa-solid fa-circle-info lcp-icon"></i>
+            <span class="lcp-label" data-i18n="lcp_hide_bookmark_bar" style="font-weight: 500;">Hide Chrome Bookmark Bar</span>
+            <i class="fa-solid fa-chevron-right" style="margin-left: auto; opacity: 0.4; font-size: 0.7rem;"></i>
+        </div>
+
+        <div class="lcp-divider lcp-divider-line"></div>
+
+        <div class="lcp-row lcp-slider-row">
+            <div class="lcp-slider-header">
+                <span class="lcp-slider-title-wrap">
+                    <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
+                </span>
+                <span class="range-val" id="lcp-search-bar-width-val">600px</span>
+            </div>
+            <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600">
+            <div class="lcp-width-presets" role="group" aria-label="Search bar width presets">
+                <button type="button" class="lcp-preset-btn" data-width="450">450px</button>
+                <button type="button" class="lcp-preset-btn active" data-width="600">600px</button>
+                <button type="button" class="lcp-preset-btn" data-width="750">750px</button>
+                <button type="button" class="lcp-preset-btn" data-width="900">900px</button>
+                <button type="button" class="lcp-preset-btn" data-width="1100">1100px</button>
+            </div>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-square-poll-vertical lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_context_menu_style">Context Menu Style</span>
+            <select id="lcp-context-menu-style" class="lcp-select">
+                <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
+                <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
+                <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
+                <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
+            </select>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-list lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_bookmark_layout">Bookmark Layout</span>
+            <select id="lcp-bookmark-layout" class="lcp-select">
+                <option value="default" data-i18n="layout_default">Default</option>
+                <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                <option value="taskbar" data-i18n="layout_taskbar">Taskbar (C)</option>
+                <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (T)</option>
+                <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (L)</option>
+                <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (R)</option>
+            </select>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-compact-disc lcp-icon"></i>
+            <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
+            <select id="lcp-music-style-select" class="lcp-select">
+                <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                <option value="apple" data-i18n="style_apple">Apple Music</option>
+                <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                <option value="overlap" data-i18n="style_overlap">Overlap</option>
+                <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
+                <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                <option value="moon8" data-i18n="style_moon8">Infinity</option>
+                <option value="beach" data-i18n="style_beach">Beach</option>
+                <option value="forest" data-i18n="style_forest">Forest</option>
+                <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
+                <option value="terminal" data-i18n="style_terminal">Terminal</option>
+                <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                <option value="square-thumb" data-i18n="style_square_thumb">Square Thumb</option>
+                <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                <option value="neon" data-i18n="style_neon">Neon</option>
+                <option value="minimal" data-i18n="style_minimal">Minimal</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
+        <div class="lcp-row">
+            <i class="fa-solid fa-border-all lcp-icon"></i>
+            <span class="lcp-label" data-i18n="quick_access_border_toggle">Border Visibility</span>
+            <label class="lcp-switch" for="lcp-quick-access-border-visible">
+                <input type="checkbox" id="lcp-quick-access-border-visible">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+
+        <div class="lcp-divider lcp-divider-line"></div>
+
+        <div class="lcp-row">
+            <i class="fa-solid fa-list-check lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_todo">Show Todo</span>
+            <label class="lcp-switch" for="lcp-qa-show-todo">
+                <input type="checkbox" id="lcp-qa-show-todo" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-note-sticky lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_notepad">Show Notepad</span>
+            <label class="lcp-switch" for="lcp-qa-show-notepad">
+                <input type="checkbox" id="lcp-qa-show-notepad" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-stopwatch lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_timer">Show Timer</span>
+            <label class="lcp-switch" for="lcp-qa-show-timer">
+                <input type="checkbox" id="lcp-qa-show-timer" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-calendar-days lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_calendar">Show Calendar</span>
+            <label class="lcp-switch" for="lcp-qa-show-calendar">
+                <input type="checkbox" id="lcp-qa-show-calendar" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-quote-left lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_quotes">Show Quotes</span>
+            <label class="lcp-switch" for="lcp-qa-show-quotes">
+                <input type="checkbox" id="lcp-qa-show-quotes" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-rss lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_rss">Show RSS News</span>
+            <label class="lcp-switch" for="lcp-qa-show-rss">
+                <input type="checkbox" id="lcp-qa-show-rss" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-bars-progress lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_habits">Show Habit Tracker</span>
+            <label class="lcp-switch" for="lcp-qa-show-habits">
+                <input type="checkbox" id="lcp-qa-show-habits">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-cloud-sun lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_weather">Show Weather</span>
+            <label class="lcp-switch" for="lcp-qa-show-weather">
+                <input type="checkbox" id="lcp-qa-show-weather" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-music lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_music">Show Music</span>
+            <label class="lcp-switch" for="lcp-qa-show-music">
+                <input type="checkbox" id="lcp-qa-show-music" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-clock lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_clock">Show Clock</span>
+            <label class="lcp-switch" for="lcp-qa-show-clock">
+                <input type="checkbox" id="lcp-qa-show-clock" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-calendar-check lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_show_gregorian">Show Gregorian Calendar</span>
+            <label class="lcp-switch" for="lcp-qa-show-gregorian">
+                <input type="checkbox" id="lcp-qa-show-gregorian" checked>
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+        <div class="lcp-row">
+            <i class="fa-solid fa-up-down-left-right lcp-icon"></i>
+            <span class="lcp-label" data-i18n="qa_allow_reorder">Allow Moving Icons</span>
+            <label class="lcp-switch" for="lcp-qa-allow-reorder">
+                <input type="checkbox" id="lcp-qa-allow-reorder">
+                <span class="lcp-slider"></span>
+            </label>
+        </div>
+
+        <div class="lcp-divider lcp-divider-line"></div>
+
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-circle-dot lcp-icon"></i>
+            <span class="lcp-label" data-i18n="quick_access_button_radius">Quick Access Button Radius</span>
+            <select id="lcp-quick-access-button-radius" class="lcp-select quick-access-radius-select">
+                <option value="0px">0px</option>
+                <option value="4px">4px</option>
+                <option value="5px">5px</option>
+                <option value="8px">8px</option>
+                <option value="10px">10px</option>
+                <option value="12px">12px</option>
+                <option value="14px">14px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+            </select>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-regular fa-window-maximize lcp-icon"></i>
+            <span class="lcp-label" data-i18n="quick_access_bar_radius">Quick Access Bar Radius</span>
+            <select id="lcp-quick-access-bar-radius" class="lcp-select quick-access-radius-select">
+                <option value="0px">0px</option>
+                <option value="4px">4px</option>
+                <option value="5px">5px</option>
+                <option value="8px">8px</option>
+                <option value="10px">10px</option>
+                <option value="12px">12px</option>
+                <option value="14px">14px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+            </select>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-gear lcp-icon"></i>
+            <span class="lcp-label" data-i18n="quick_access_toggle_radius">Settings Toggle Radius</span>
+            <select id="lcp-quick-access-toggle-radius" class="lcp-select quick-access-radius-select">
+                <option value="0px">0px</option>
+                <option value="4px">4px</option>
+                <option value="5px">5px</option>
+                <option value="8px">8px</option>
+                <option value="10px">10px</option>
+                <option value="12px">12px</option>
+                <option value="14px">14px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+            </select>
+        </div>
+        <div class="lcp-row lcp-row-select">
+            <i class="fa-solid fa-palette lcp-icon"></i>
+            <span class="lcp-label" data-i18n="quick_access_skin">Quick Access Skin</span>
+            <select id="lcp-quick-access-skin" class="lcp-select">
+                <option value="default" data-i18n="skin_default">Default</option>
+                <option value="light" data-i18n="skin_light">Light</option>
+                <option value="m3-accent" data-i18n="skin_m3_accent">M3 Accent</option>
+                <option value="light-transparent" data-i18n="skin_light_transparent">Light Transparent</option>
+                <option value="contrast" data-i18n="skin_contrast">Contrast</option>
+            </select>
+        </div>
+    </div>
+</div>

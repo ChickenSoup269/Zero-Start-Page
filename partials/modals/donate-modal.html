@@ -1,0 +1,76 @@
+<!-- Smooth Scroll Prompt Modal -->
+    <div id="smooth-scroll-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+                <h2 data-i18n="smooth_scroll_prompt_title">Smooth Scrolling</h2>
+            </div>
+            <div class="modal-body" style="padding-top: 10px; font-size: 0.95rem; opacity: 0.85;">
+                <p data-i18n="smooth_scroll_prompt_desc">Would you like to enable smooth scrolling for the settings
+                    sidebar?</p>
+            </div>
+            <div class="modal-footer" style="justify-content: center; gap: 10px; border-top: none; padding-top: 0;">
+                <button id="btn-smooth-scroll-disable" class="secondary-btn" data-i18n="smooth_scroll_disable">Use
+                    Default</button>
+                <button id="btn-smooth-scroll-enable" class="primary-btn"
+                    data-i18n="smooth_scroll_enable">Enable</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donate Modal -->
+    <div id="donate-modal" class="modal">
+        <div class="modal-content donate-modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="donate_title">Support Developer</h2>
+                <span id="close-donate-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p data-i18n="donate_desc" style="margin-bottom: 12px; font-size: 0.95rem; line-height: 1.5;">Choose a
+                    platform to support the development:</p>
+                <p data-i18n="donate_thank_you"
+                    style="margin-bottom: 24px; font-weight: 600; font-size: 0.9rem; color: var(--accent-color);">Cảm ơn
+                    bạn rất nhiều vì đã ủng hộ dự án!</p>
+
+                <div class="donate-btn-row">
+                    <a href="https://ko-fi.com/chickensoup269" target="_blank" class="primary-btn donate-kofi-btn">
+                        <i class="fa-solid fa-mug-hot"></i> <span>Ko-fi</span>
+                    </a>
+                    <button id="show-momo-qr-btn" class="primary-btn donate-momo-btn">
+                        <i class="fa-solid fa-qrcode"></i> <span>MoMo</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="secondary-btn" id="close-donate-modal"
+                    style="width: 100%; justify-content: center;" data-i18n="cancel">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="modal" style="justify-content: flex-end; padding-right: 30px;">
+        <div class="modal-content" style="max-width: 350px;">
+            <div class="modal-header">
+                <h2 data-i18n="qr_code_title">QR Code</h2>
+                <span id="close-qr-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body qr-modal-body-content">
+                <div style="position: relative; display: inline-block;">
+                    <img id="qr-code-img" src="" alt="QR Code" class="qr-code-img-styled">
+                    <div id="qr-code-icon-wrapper" class="qr-code-icon-badge">
+                        <img id="qr-code-icon" src="" alt="icon">
+                    </div>
+                </div>
+                <p id="qr-code-url"
+                    style="font-size: 0.9rem; color: var(--text-color); opacity: 0.8; word-break: break-all; margin: 0; user-select: text;">
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MoMo QR Popup (Moved outside to be on top of everything) -->
+    <div id="momo-qr-container" class="momo-qr-popup-container">
+        <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/momo_qr.png?raw=true"
+            alt="MoMo QR" class="momo-qr-popup-img">
+        <div class="momo-qr-popup-banner">Scan to support via MoMo</div>
+    </div>

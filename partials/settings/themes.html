@@ -1,0 +1,431 @@
+<div class="settings-section" data-section-id="themes" data-settings-tab="appearance">
+                <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
+                <div class="section-content">
+                    <!-- Styles Subsection -->
+                    <div class="settings-subsection-title">
+                        <span data-i18n="style_presets_title">Style Presets</span>
+                        <hr class="subsection-divider">
+                    </div>
+                    <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+                        <button id="save-current-style-btn" class="secondary-btn style-save-btn">
+                            <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom
+                                Style</span>
+                        </button>
+                    </div>
+                    <div class="setting-group style-preset-panel">
+                        <p class="setting-hint" data-i18n="style_presets_hint">
+                            One-click bundles for bookmark and music player styling.
+                        </p>
+                        <div class="style-preset-grid">
+                            <button type="button" class="style-preset-btn" data-style-preset="clean">
+                                <span class="style-preset-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_clean">Clean</span>
+                                <small data-i18n="style_preset_clean_hint">Soft glass, simple grid</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="dock">
+                                <span class="style-preset-icon"><i class="fa-solid fa-grip-lines"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_dock">Dock</span>
+                                <small data-i18n="style_preset_dock_hint">Taskbar bookmarks, pill music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="macos">
+                                <span class="style-preset-icon"><i class="fa-brands fa-apple"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_macos">macOS</span>
+                                <small data-i18n="style_preset_macos_hint">Large dock, Apple music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="glass">
+                                <span class="style-preset-icon"><i class="fa-regular fa-gem"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_glass">Glass</span>
+                                <small data-i18n="style_preset_glass_hint">Clear icons, soft vinyl</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="compact">
+                                <span class="style-preset-icon"><i class="fa-solid fa-grip"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_compact">Compact</span>
+                                <small data-i18n="style_preset_compact_hint">Small taskbar, minimal music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="sidebar">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bars-staggered"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_sidebar">Sidebar</span>
+                                <small data-i18n="style_preset_sidebar_hint">Vertical bookmarks, sidebar music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="neon">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bolt"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_neon">Neon</span>
+                                <small data-i18n="style_preset_neon_hint">Bright glow, neon music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="terminal">
+                                <span class="style-preset-icon"><i class="fa-solid fa-terminal"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_terminal">Terminal</span>
+                                <small data-i18n="style_preset_terminal_hint">Compact sidebar, mono vibe</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cassette">
+                                <span class="style-preset-icon"><i class="fa-solid fa-record-vinyl"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cassette">Cassette</span>
+                                <small data-i18n="style_preset_cassette_hint">Warm icons, cassette music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cozy">
+                                <span class="style-preset-icon"><i class="fa-solid fa-leaf"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cozy">Cozy</span>
+                                <small data-i18n="style_preset_cozy_hint">Warm icons, forest music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="vision">
+                                <span class="style-preset-icon"><i class="fa-solid fa-vr-cardboard"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_vision">Vision</span>
+                                <small data-i18n="style_preset_vision_hint">Spatial glass, pill player</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="material">
+                                <span class="style-preset-icon"><i class="fa-solid fa-layer-group"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_material">Material</span>
+                                <small data-i18n="style_preset_material_hint">Clean cards, solid colors</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="aura">
+                                <span class="style-preset-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_aura">Aura</span>
+                                <small data-i18n="style_preset_aura_hint">Glowing sidebar, ambient blur</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Themes Subsection -->
+                    <div class="settings-subsection-title" style="margin-top: 15px;">
+                        <span data-i18n="settings_themes">Themes</span>
+                        <hr class="subsection-divider">
+                    </div>
+                    <div class="theme-actions-grid">
+                        <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
+                            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
+                                data-i18n="save_current_theme">Create Theme</span>
+                        </button>
+                        <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span
+                                data-i18n="theme_web_beta_link">Theme Store</span>
+                        </a>
+                    </div>
+
+                    <!-- Theme Category Filter Pills -->
+                    <div class="theme-category-filter-bar" id="theme-category-filter-bar">
+                        <button type="button" class="theme-filter-pill active" data-theme-filter="all"><i class="fa-solid fa-layer-group"></i> <span data-i18n="theme_filter_all">All</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="code"><i class="fa-solid fa-code"></i> <span data-i18n="theme_filter_code">Code / IDE</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="minimal"><i class="fa-solid fa-circle-half-stroke"></i> <span data-i18n="theme_filter_minimal">Minimal</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="cyber"><i class="fa-solid fa-bolt"></i> <span data-i18n="theme_filter_cyber">Cyber & Neon</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="nature"><i class="fa-solid fa-leaf"></i> <span data-i18n="theme_filter_nature">Cozy & Nature</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="pastel"><i class="fa-solid fa-heart"></i> <span data-i18n="theme_filter_pastel">Pastel & Soft</span></button>
+                        <button type="button" class="theme-filter-pill" data-theme-filter="custom"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="theme_filter_custom">Custom</span></button>
+                    </div>
+
+                    <div class="themes-grid" id="themes-grid">
+                        <!-- Default -->
+                        <div class="theme-item" data-theme="default" data-category="minimal,default">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #00ff73;"></div>
+                                <i class="fa-solid fa-house-chimney preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_default">Default</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Christmas -->
+                        <div class="theme-item" data-theme="christmas" data-category="nature,cozy">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #00d4ff;"></div>
+                                <i class="fa-solid fa-snowflake preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_christmas">Christmas</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Cyberpunk -->
+                        <div class="theme-item" data-theme="cyberpunk" data-category="cyber">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffff00;"></div>
+                                <i class="fa-solid fa-user-ninja preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_cyberpunk">Cyberpunk</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Ocean -->
+                        <div class="theme-item" data-theme="ocean" data-category="nature">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #00d4ff;"></div>
+                                <i class="fa-solid fa-water preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_ocean">Ocean</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Sakura -->
+                        <div class="theme-item" data-theme="sakura" data-category="pastel,nature">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffb7c5;"></div>
+                                <i class="fa-solid fa-leaf preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_sakura">Sakura</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Space -->
+                        <div class="theme-item" data-theme="space" data-category="nature,minimal">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffffff;"></div>
+                                <i class="fa-solid fa-user-astronaut preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_space">Space</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Pure Bubbles -->
+                        <div class="theme-item" data-theme="bubbles" data-category="pastel,minimal">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffffff;"></div>
+                                <i class="fa-solid fa-circle-nodes preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_bubbles">Pure Bubbles</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Rainbow Vibe -->
+                        <div class="theme-item" data-theme="rainbow" data-category="cyber">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ff00ff;"></div>
+                                <i class="fa-solid fa-rainbow preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_rainbow">Rainbow Vibe</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Monochrome -->
+                        <div class="theme-item" data-theme="monochrome" data-category="minimal">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffffff;"></div>
+                                <i class="fa-solid fa-circle-half-stroke preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_monochrome">Monochrome</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Nature -->
+                        <div class="theme-item" data-theme="nature" data-category="nature,cozy">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ccff00;"></div>
+                                <i class="fa-solid fa-seedling preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_nature">Nature</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Aurora -->
+                        <div class="theme-item" data-theme="aurora" data-category="nature,cyber">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ccff00;"></div>
+                                <i class="fa-solid fa-wand-magic-sparkles preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_aurora">Aurora</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Arctic -->
+                        <div class="theme-item" data-theme="arctic" data-category="minimal">
+                            <div class="theme-preview">
+                                <div class="preview-sidebar"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffffff;"></div>
+                                <i class="fa-solid fa-clock preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_arctic">Flip Classic Style</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Catppuccin -->
+                        <div class="theme-item" data-theme="catppuccin" data-category="code,pastel">
+                            <div class="theme-preview" style="background: rgba(30, 30, 46, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(24, 24, 37, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #cba6f7;"></div>
+                                <i class="fa-solid fa-cat preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_catppuccin">Catppuccin</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Nord -->
+                        <div class="theme-item" data-theme="nord" data-category="code,minimal">
+                            <div class="theme-preview" style="background: rgba(59, 66, 82, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(46, 52, 64, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #88c0d0;"></div>
+                                <i class="fa-solid fa-snowflake preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_nord">Nord</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Night Owl -->
+                        <div class="theme-item" data-theme="night_owl" data-category="code">
+                            <div class="theme-preview" style="background: rgba(1, 22, 39, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(1, 22, 39, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #82aaff;"></div>
+                                <i class="fa-solid fa-moon preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_night_owl">Night Owl</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Monokai -->
+                        <div class="theme-item" data-theme="monokai" data-category="code">
+                            <div class="theme-preview" style="background: rgba(45, 46, 39, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(39, 40, 34, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #a6e22e;"></div>
+                                <i class="fa-solid fa-code preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_monokai">Monokai</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Tokyo Night -->
+                        <div class="theme-item" data-theme="tokyo_night" data-category="code">
+                            <div class="theme-preview" style="background: rgba(26, 27, 38, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(22, 22, 30, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #7aa2f7;"></div>
+                                <i class="fa-solid fa-city preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_tokyo_night">Tokyo Night</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- One Dark -->
+                        <div class="theme-item" data-theme="one_dark" data-category="code">
+                            <div class="theme-preview" style="background: rgba(40, 44, 52, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(33, 37, 43, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #61afef;"></div>
+                                <i class="fa-solid fa-atom preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_one_dark">One Dark</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Darcula -->
+                        <div class="theme-item" data-theme="darcula" data-category="code">
+                            <div class="theme-preview" style="background: rgba(60, 63, 65, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(43, 43, 43, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #cc7832;"></div>
+                                <i class="fa-brands fa-java preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_darcula">Darcula</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Winter is Coming -->
+                        <div class="theme-item" data-theme="winter_is_coming" data-category="code">
+                            <div class="theme-preview" style="background: rgba(1, 22, 39, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(1, 22, 39, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #569cd6;"></div>
+                                <i class="fa-regular fa-snowflake preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_winter_is_coming">Winter is Coming</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- GitHub Dark -->
+                        <div class="theme-item" data-theme="github_dark" data-category="code">
+                            <div class="theme-preview" style="background: rgba(22, 27, 34, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(13, 17, 23, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #58a6ff;"></div>
+                                <i class="fa-brands fa-github preview-icon"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_github_dark">GitHub Dark</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Dracula -->
+                        <div class="theme-item" data-theme="dracula" data-category="code">
+                            <div class="theme-preview" style="background: rgba(68, 71, 90, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(40, 42, 54, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #bd93f9;"></div>
+                                <i class="fa-solid fa-ghost preview-icon" style="color: #f8f8f2;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_dracula">Dracula</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Ayu Dark -->
+                        <div class="theme-item" data-theme="ayu_dark" data-category="code">
+                            <div class="theme-preview" style="background: rgba(15, 20, 25, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(10, 14, 20, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffb454;"></div>
+                                <i class="fa-solid fa-moon preview-icon" style="color: #bfbdb6;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_ayu_dark">Ayu Dark</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- SynthWave '84 -->
+                        <div class="theme-item" data-theme="synthwave84" data-category="code,cyber">
+                            <div class="theme-preview" style="background: rgba(43, 33, 58, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(38, 35, 53, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #f92aad;"></div>
+                                <i class="fa-solid fa-bolt preview-icon" style="color: #ffffff;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_synthwave84">SynthWave '84</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Gruvbox Dark -->
+                        <div class="theme-item" data-theme="gruvbox_dark" data-category="code,cozy">
+                            <div class="theme-preview" style="background: rgba(60, 56, 54, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(40, 40, 40, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #fe8019;"></div>
+                                <i class="fa-solid fa-box-open preview-icon" style="color: #ebdbb2;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_gruvbox_dark">Gruvbox Dark</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Palenight -->
+                        <div class="theme-item" data-theme="palenight" data-category="code">
+                            <div class="theme-preview" style="background: rgba(50, 55, 77, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(41, 45, 62, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #c792ea;"></div>
+                                <i class="fa-solid fa-star-and-crescent preview-icon" style="color: #bfc7d5;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_palenight">Palenight</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Cobalt2 -->
+                        <div class="theme-item" data-theme="cobalt2" data-category="code">
+                            <div class="theme-preview" style="background: rgba(30, 60, 82, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(25, 53, 73, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #ffc600;"></div>
+                                <i class="fa-solid fa-fire preview-icon" style="color: #ffffff;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_cobalt2">Cobalt2</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <!-- Solarized Dark -->
+                        <div class="theme-item" data-theme="solarized_dark" data-category="code">
+                            <div class="theme-preview" style="background: rgba(7, 54, 66, 0.75);">
+                                <div class="preview-sidebar" style="background: rgba(0, 43, 54, 0.85);"></div>
+                                <div class="preview-content"></div>
+                                <div class="preview-accent" style="color: #268bd2;"></div>
+                                <i class="fa-solid fa-sun preview-icon" style="color: #839496;"></i>
+                            </div>
+                            <span class="theme-name" data-i18n="theme_solarized_dark">Solarized Dark</span>
+                            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </div>
+                    <button type="button" id="themes-show-all-btn" class="themes-show-all-btn">
+                        <i class="fa-solid fa-chevron-down"></i>
+                        <span id="themes-show-all-text" data-i18n="themes_show_all">Show all</span>
+                    </button>
+                </div>
+            </div>

@@ -1,0 +1,60 @@
+<div class="sidebar-footer">
+    <div style="position: relative;">
+        <button id="sidebar-footer-toggle" class="sidebar-footer-toggle" title="Toggle panel">
+            <span class="sidebar-footer-toggle-circle">
+                <i class="fa-solid fa-chevron-down"></i>
+            </span>
+        </button>
+        <div class="sidebar-copyright sidebar-footer-export-label" data-i18n="footer_export_import">
+            Export / Import
+        </div>
+    </div>
+    <div id="sidebar-footer-content" class="sidebar-footer-content">
+        <div class="sidebar-footer-export-row">
+            <button id="export-settings-btn" class="footer-btn">
+                <i class="fa-solid fa-file-export"></i> <span data-i18n="settings_export">Export</span>
+            </button>
+            <button id="copy-settings-json-btn" class="footer-btn">
+                <i class="fa-solid fa-copy"></i> <span data-i18n="settings_copy_json">Copy JSON Code</span>
+            </button>
+            <button id="import-settings-btn" class="footer-btn">
+                <i class="fa-solid fa-file-import"></i> <span data-i18n="settings_import">Import</span>
+            </button>
+            <button id="paste-settings-json-btn" class="footer-btn">
+                <i class="fa-solid fa-code"></i> <span data-i18n="settings_paste_json">Paste JSON Code</span>
+            </button>
+            <input type="file" id="import-settings-input" accept=".json" style="display:none">
+        </div>
+        <div class="sidebar-footer-reset-row">
+            <button id="reset-settings" class="footer-btn reset-btn">
+                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset">Reset All</span>
+            </button>
+            <button id="reset-layout" class="footer-btn reset-btn">
+                <i class="fa-solid fa-arrows-to-dot"></i> <span data-i18n="settings_reset_layout">Reset Layout</span>
+            </button>
+        </div>
+        <div class="sidebar-footer-hint" data-i18n="settings_reset_layout_hint">
+            (Resets widget positions & effect colors to default)
+        </div>
+        <div class="sidebar-copyright" id="sidebar-copyright">
+            &copy; 2026 ChickenSoup269
+        </div>
+    </div>
+</div>
+<div id="sidebar-quick-actions" class="sidebar-quick-actions">
+    <button type="button" id="sidebar-quick-actions-toggle" class="sidebar-quick-actions-toggle"
+        data-i18n-title="sidebar_quick_actions_toggle" title="Toggle Actions" aria-label="Toggle Actions">
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="sidebar-quick-actions-menu">
+        <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+        <button id="sidebar-hotkeys-btn" class="sidebar-hotkeys-btn" title="Mở bảng phím tắt (Ctrl + K)">
+            <i class="fa-solid fa-keyboard"></i>
+        </button>
+        <button id="bug-report-btn" class="sidebar-bug-btn" title="Report Bug / Get Config">
+            <i class="fa-solid fa-bug"></i>
+        </button>
+    </div>
+</div>
