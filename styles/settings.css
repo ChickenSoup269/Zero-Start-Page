@@ -3217,17 +3217,18 @@ body.sidebar-light .preset-code-line-value {
 .setting-item-row input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 48px !important;
-  height: 26px !important;
-  flex: 0 0 48px !important;
+  width: 44px !important;
+  height: 24px !important;
+  flex: 0 0 44px !important;
+  box-sizing: border-box !important;
   background-color: rgba(255, 255, 255, 0.16);
   border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 26px !important;
+  border-radius: 999px !important;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.28s ease;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s ease;
   margin: 0;
   flex-shrink: 0;
   align-self: center;
@@ -3248,30 +3249,23 @@ body.sidebar-light .preset-code-line-value {
 .setting-item-row input[type="checkbox"]::before {
   content: "";
   position: absolute;
-  width: 20px !important;
-  height: 20px !important;
+  width: 18px !important;
+  height: 18px !important;
   border-radius: 50% !important;
   top: 50% !important;
-  left: 3px !important;
+  left: 2px !important;
   transform: translateY(-50%) !important;
   background-color: #ffffff;
-  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
   z-index: 2;
 }
 
 .setting-item-row input[type="checkbox"]:checked::before {
-  left: 25px !important;
+  left: 2px !important;
+  transform: translate(20px, -50%) !important;
   background-color: var(--accent-contrast-color, #ffffff);
   box-shadow: -1px 2px 5px rgba(0, 0, 0, 0.35);
-}
-
-.setting-item-row input[type="checkbox"]:active::before {
-  width: 24px !important;
-}
-
-.setting-item-row input[type="checkbox"]:checked:active::before {
-  left: 21px !important;
 }
 
 /* Dropdown Select Controls */
@@ -8850,13 +8844,9 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 }
 
 body.sidebar-light .settings-sidebar {
-  --glass-bg: color-mix(in srgb, var(--m3-inverse-surface) 82%, white);
-  --glass-border: color-mix(
-    in srgb,
-    var(--m3-outline-variant) 44%,
-    transparent
-  );
-  --glass-edge: color-mix(in srgb, var(--m3-outline) 24%, transparent);
+  --glass-bg: #ffffff;
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --glass-edge: rgba(0, 0, 0, 0.08);
 }
 
 /* Cleaner, deterministic style preset cards */
@@ -9306,29 +9296,25 @@ body.sidebar-light
 
 .settings-sidebar .setting-item-row input[type="checkbox"] {
   align-self: center !important;
-  flex: 0 0 48px !important;
-  width: 48px !important;
-  height: 26px !important;
-  border-radius: 26px !important;
+  flex: 0 0 44px !important;
+  width: 44px !important;
+  height: 24px !important;
+  border-radius: 999px !important;
+  box-sizing: border-box !important;
 }
 
 .settings-sidebar .setting-item-row input[type="checkbox"]::before {
-  width: 20px !important;
-  height: 20px !important;
+  width: 18px !important;
+  height: 18px !important;
   border-radius: 50% !important;
   top: 50% !important;
-  left: 3px !important;
+  left: 2px !important;
   transform: translateY(-50%) !important;
 }
 
 .settings-sidebar .setting-item-row input[type="checkbox"]:checked::before {
-  left: 25px !important;
-}
-
-.settings-sidebar
-  .setting-item-row
-  input[type="checkbox"]:checked:active::before {
-  left: 21px !important;
+  left: 2px !important;
+  transform: translate(20px, -50%) !important;
 }
 
 /* Unsplash Explorer restore/refinement. Keep this late so it wins over older Explorer rules. */
@@ -10845,40 +10831,97 @@ body.sidebar-light .about-footer {
 /* Page Title and Tab Icon Setting Styles */
 .settings-page-title-input {
   width: 100%;
-  padding: 0.5rem;
+  height: 36px;
+  padding: 0 10px;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
-  border-radius: 8px;
+  border-radius: 5px !important;
   color: var(--text-color);
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-page-title-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb), 0.25);
+  outline: none;
 }
 
 .settings-tab-icon-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.6rem;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: nowrap;
 }
 
 .settings-tab-icon-label {
   white-space: nowrap;
-  font-size: 0.8rem;
-  opacity: 0.85;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.9;
 }
 
 .settings-tab-icon-input {
-  flex: 1;
-  padding: 0.4rem 0.5rem;
+  flex: 1 !important;
+  min-width: 90px !important;
+  max-width: none !important;
+  height: 36px !important;
+  padding: 0 12px !important;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
-  border-radius: 8px;
+  border-radius: 10px !important;
   color: var(--text-color);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-tab-icon-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb), 0.25);
+  outline: none;
+}
+
+.tab-icon-action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  flex: 0 0 36px !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.85rem !important;
+  background: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--text-color) !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.tab-icon-action-btn:hover {
+  background: var(--hover-bg) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  transform: translateY(-1px);
+}
+
+.tab-icon-action-btn:active {
+  transform: scale(0.95);
 }
 
 .settings-tab-icon-preview {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 6px;
+  width: 36px !important;
+  height: 36px !important;
+  flex: 0 0 36px !important;
+  border-radius: 10px !important;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--input-border);
   display: flex;
@@ -10887,34 +10930,41 @@ body.sidebar-light .about-footer {
   font-size: 13px;
   font-weight: 700;
   overflow: hidden;
+  box-sizing: border-box;
+  margin-left: 2px;
 }
 
 .settings-tab-icon-colors {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.8rem;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   flex-wrap: wrap;
 }
 
 .settings-tab-icon-color-item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 6px;
 }
 
 .settings-tab-icon-color-item label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   opacity: 0.85;
 }
 
 .settings-tab-icon-color-picker {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
   cursor: pointer;
   background: transparent;
+  padding: 1px;
+  box-sizing: border-box;
 }
 
 .settings-tab-icon-checkbox {
@@ -11130,6 +11180,7 @@ body.sidebar-light .about-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 15px;
 }
+
 
 
 

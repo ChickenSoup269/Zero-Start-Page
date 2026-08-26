@@ -1,0 +1,1356 @@
+/**
+ * ==============================================================================
+ * WHITE ACCESS MODE & LIGHT SIDEBAR - DEDICATED STYLESHEET
+ * ==============================================================================
+ * Tệp stylesheet độc lập quản lý toàn bộ giao diện White Access Mode / Light Sidebar.
+ * Chuyển đổi toàn bộ logic từ theme default sang Light Glassmorphism tương phản cao:
+ * - Kính mờ siêu mượt (Frosted Light Glass)
+ * - Hệ màu chữ chuẩn phân cấp: Primary (#0f172a), Secondary (#475569), Muted (#64748b)
+ * - Nền thẻ card sáng (#ffffff & #f8fafc) không bị đen, không bị chìm
+ * - Viền tinh tế tương phản rõ ràng với hiệu ứng Hover/Active phản hồi theo Accent Color
+ * ==============================================================================
+ */
+
+/* ------------------------------------------------------------------------------
+   0. LIGHT THEME DESIGN TOKENS
+   ------------------------------------------------------------------------------ */
+body.quick-access-white,
+body.sidebar-light {
+  --light-text-primary: #0f172a;
+  --light-text-secondary: #475569;
+  --light-text-muted: #64748b;
+  --light-bg-glass: rgba(255, 255, 255, 0.94);
+  --light-bg-card: #ffffff;
+  --light-bg-subtle: #f8fafc;
+  --light-bg-hover: #f1f5f9;
+  --light-border: rgba(0, 0, 0, 0.12);
+  --light-border-subtle: rgba(0, 0, 0, 0.08);
+  --light-shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
+  --light-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --light-shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ------------------------------------------------------------------------------
+   1. QUICK ACCESS BAR & SIDE CONTROLS
+   ------------------------------------------------------------------------------ */
+.side-controls.light-mode #settings-toggle,
+.side-controls.light-mode .quick-access-bar,
+body.quick-access-white .side-controls #settings-toggle,
+body.quick-access-white .side-controls .quick-access-bar,
+body.quick-access-light #settings-toggle,
+body.quick-access-light .quick-access-bar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.side-controls.light-mode .quick-btn,
+.side-controls.light-mode #settings-toggle,
+.side-controls.light-mode #settings-toggle i,
+.side-controls.light-mode .collapse-btn i,
+.side-controls.light-mode .quick-btn i,
+body.quick-access-white .side-controls .quick-btn,
+body.quick-access-white .side-controls #settings-toggle i,
+body.quick-access-white .side-controls .collapse-btn i,
+body.quick-access-white .side-controls .quick-btn i {
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .quick-btn.active,
+.side-controls.light-mode #settings-toggle.active,
+body.sidebar-open .side-controls.light-mode #settings-toggle,
+body.quick-access-white .side-controls .quick-btn.active,
+body.quick-access-white .side-controls #settings-toggle.active,
+body.sidebar-open body.quick-access-white .side-controls #settings-toggle {
+  color: var(--accent-contrast-color, #ffffff) !important;
+  background: var(--accent-color) !important;
+  box-shadow:
+    0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.38),
+    0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  border-radius: var(--radius-md, 10px);
+}
+
+.side-controls.light-mode .quick-btn.active i,
+.side-controls.light-mode #settings-toggle.active i,
+body.sidebar-open .side-controls.light-mode #settings-toggle i,
+body.quick-access-white .side-controls .quick-btn.active i,
+body.quick-access-white .side-controls #settings-toggle.active i,
+body.sidebar-open body.quick-access-white .side-controls #settings-toggle i {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active),
+.side-controls.light-mode #settings-toggle:hover:not(.active),
+body.quick-access-white .side-controls .quick-btn:hover:not(.active),
+body.quick-access-white .side-controls #settings-toggle:hover:not(.active) {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active) i,
+.side-controls.light-mode #settings-toggle:hover:not(.active) i,
+.side-controls.light-mode #quick-access-collapse:hover i,
+body.quick-access-white .side-controls .quick-btn:hover:not(.active) i,
+body.quick-access-white .side-controls #settings-toggle:hover:not(.active) i,
+body.quick-access-white .side-controls #quick-access-collapse:hover i {
+  color: #000000 !important;
+}
+
+.side-controls.light-mode .quick-access-divider,
+body.quick-access-white .side-controls .quick-access-divider {
+  background: rgba(0, 0, 0, 0.14) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   2. LAYOUT CONTROLS POPUP (LCP)
+   ------------------------------------------------------------------------------ */
+.side-controls.light-mode .layout-controls-popup,
+body.quick-access-white .layout-controls-popup,
+body.sidebar-light .layout-controls-popup {
+  --text-color: #0f172a;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(36px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(200%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.16),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .lcp-title,
+body.quick-access-white .lcp-title {
+  color: #0f172a !important;
+  opacity: 1 !important;
+  font-weight: 750 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .lcp-title i,
+body.quick-access-white .lcp-title i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.side-controls.light-mode .lcp-tabs,
+body.quick-access-white .lcp-tabs {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.side-controls.light-mode .lcp-tab,
+body.quick-access-white .lcp-tab {
+  color: #475569 !important;
+  font-weight: 600 !important;
+  border-radius: 8px;
+}
+
+.side-controls.light-mode .lcp-tab:hover,
+body.quick-access-white .lcp-tab:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .lcp-tab.active,
+body.quick-access-white .lcp-tab.active {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+}
+
+.side-controls.light-mode .lcp-tab.active i,
+.side-controls.light-mode .lcp-tab.active span,
+body.quick-access-white .lcp-tab.active i,
+body.quick-access-white .lcp-tab.active span {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-row:hover,
+body.quick-access-white .lcp-row:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 8px;
+}
+
+.side-controls.light-mode .lcp-icon,
+body.quick-access-white .lcp-icon {
+  color: #1e293b !important;
+}
+
+.side-controls.light-mode .lcp-label,
+body.quick-access-white .lcp-label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+.side-controls.light-mode .lcp-divider,
+body.quick-access-white .lcp-divider {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode #lcp-hide-chrome-bookmarks-row,
+body.quick-access-white #lcp-hide-chrome-bookmarks-row {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px dashed rgba(0, 0, 0, 0.22) !important;
+  border-radius: 8px;
+}
+
+.side-controls.light-mode #lcp-hide-chrome-bookmarks-row i,
+body.quick-access-white #lcp-hide-chrome-bookmarks-row i {
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .range-val,
+body.quick-access-white .range-val {
+  color: #0f172a !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.side-controls.light-mode .lcp-select,
+body.quick-access-white .lcp-select {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  border-radius: 8px;
+}
+
+.side-controls.light-mode .lcp-select:focus,
+body.quick-access-white .lcp-select:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
+  background-color: #ffffff !important;
+}
+
+.side-controls.light-mode .lcp-select option,
+body.quick-access-white .lcp-select option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .lcp-slider-row .range-val,
+body.quick-access-white .lcp-slider-row .range-val {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+}
+
+.side-controls.light-mode .lcp-slider-row input[type="range"],
+body.quick-access-white .lcp-slider-row input[type="range"] {
+  background: rgba(0, 0, 0, 0.14) !important;
+  border: none !important;
+}
+
+.side-controls.light-mode .lcp-slider-row input[type="range"]::-webkit-slider-thumb,
+body.quick-access-white .lcp-slider-row input[type="range"]::-webkit-slider-thumb {
+  background: #ffffff !important;
+  border: 2.5px solid var(--accent-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22) !important;
+}
+
+.side-controls.light-mode .lcp-preset-btn,
+body.quick-access-white .lcp-preset-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  border-radius: 6px;
+}
+
+.side-controls.light-mode .lcp-preset-btn:hover,
+body.quick-access-white .lcp-preset-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+}
+
+.side-controls.light-mode .lcp-preset-btn.active,
+body.quick-access-white .lcp-preset-btn.active {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.38) !important;
+}
+
+.side-controls.light-mode .lcp-preset-btn.active *,
+body.quick-access-white .lcp-preset-btn.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip,
+body.quick-access-white .lcp-btn-chip {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 6px;
+}
+
+.side-controls.light-mode .lcp-btn-chip:hover,
+body.quick-access-white .lcp-btn-chip:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.active,
+body.quick-access-white .lcp-btn-chip.active {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.38) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.active *,
+body.quick-access-white .lcp-btn-chip.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn,
+body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px dashed rgba(0, 0, 0, 0.25) !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+.side-controls.light-mode .lcp-btn-chip.lcp-toggle-more-btn:hover,
+body.quick-access-white .lcp-btn-chip.lcp-toggle-more-btn:hover {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   3. SETTINGS SIDEBAR CONTAINER & SCOPED VARIABLES
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .settings-sidebar,
+body.quick-access-white .settings-sidebar {
+  --text-color: #0f172a;
+  --glass-bg: #ffffff;
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --glass-edge: rgba(0, 0, 0, 0.08);
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, 0.18);
+  --hover-bg: rgba(0, 0, 0, 0.06);
+
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light .sidebar-header,
+body.quick-access-white .sidebar-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   4. SETTINGS GROUPS, SECTION CARDS & ITEMS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .setting-group,
+body.quick-access-white .setting-group {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: var(--radius-md, 12px) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group,
+body.quick-access-white .setting-group.collapsible-group {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group:hover,
+body.quick-access-white .setting-group.collapsible-group:hover {
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.4) !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group.expanded,
+body.quick-access-white .setting-group.collapsible-group.expanded {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.3) !important;
+}
+
+body.sidebar-light .group-header,
+body.quick-access-white .group-header {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.sidebar-light .group-icon,
+body.quick-access-white .group-icon {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.sidebar-light .group-chevron,
+body.quick-access-white .group-chevron {
+  color: #475569 !important;
+}
+
+body.sidebar-light .setting-item-row,
+body.quick-access-white .setting-item-row {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+  color: #0f172a !important;
+  border-radius: 8px !important;
+}
+
+body.sidebar-light .setting-item-row:hover,
+body.quick-access-white .setting-item-row:hover {
+  background: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+}
+
+body.sidebar-light .setting-item-row label,
+body.quick-access-white .setting-item-row label,
+body.sidebar-light .setting-item-row .setting-label,
+body.quick-access-white .setting-item-row .setting-label,
+body.sidebar-light .setting-item label,
+body.quick-access-white .setting-item label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.sidebar-light .setting-help-text,
+body.quick-access-white .setting-help-text,
+body.sidebar-light .setting-hint,
+body.quick-access-white .setting-hint {
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+
+/* ------------------------------------------------------------------------------
+   5. TOGGLE SWITCH BUTTONS (iOS-style Checkboxes & Sliders)
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .settings-sidebar input[type="checkbox"],
+body.quick-access-white .settings-sidebar input[type="checkbox"],
+body.sidebar-light .setting-item-row input[type="checkbox"],
+body.quick-access-white .setting-item-row input[type="checkbox"] {
+  background-color: #cbd5e1 !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-sizing: border-box !important;
+  width: 44px !important;
+  height: 24px !important;
+  flex: 0 0 44px !important;
+  border-radius: 999px !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="checkbox"]:hover,
+body.quick-access-white .settings-sidebar input[type="checkbox"]:hover,
+body.sidebar-light .setting-item-row input[type="checkbox"]:hover,
+body.quick-access-white .setting-item-row input[type="checkbox"]:hover {
+  background-color: #94a3b8 !important;
+  border-color: #64748b !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="checkbox"]:checked,
+body.quick-access-white .settings-sidebar input[type="checkbox"]:checked,
+body.sidebar-light .setting-item-row input[type="checkbox"]:checked,
+body.quick-access-white .setting-item-row input[type="checkbox"]:checked {
+  background-color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 74, 128, 240), 0.4) !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="checkbox"]::before,
+body.quick-access-white .settings-sidebar input[type="checkbox"]::before,
+body.sidebar-light .setting-item-row input[type="checkbox"]::before,
+body.quick-access-white .setting-item-row input[type="checkbox"]::before {
+  background-color: #ffffff !important;
+  width: 18px !important;
+  height: 18px !important;
+  top: 50% !important;
+  left: 2px !important;
+  transform: translateY(-50%) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="checkbox"]:checked::before,
+body.quick-access-white .settings-sidebar input[type="checkbox"]:checked::before,
+body.sidebar-light .setting-item-row input[type="checkbox"]:checked::before,
+body.quick-access-white .setting-item-row input[type="checkbox"]:checked::before {
+  background-color: var(--accent-contrast-color, #ffffff) !important;
+  left: 2px !important;
+  transform: translate(20px, -50%) !important;
+  box-shadow: -1px 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+.side-controls.light-mode .lcp-slider,
+body.quick-access-white .lcp-slider {
+  background: #cbd5e1 !important;
+  border: 1.5px solid #94a3b8 !important;
+}
+
+.side-controls.light-mode .lcp-slider::before,
+body.quick-access-white .lcp-slider::before {
+  background: #ffffff !important;
+  top: 50% !important;
+  left: 2px !important;
+  transform: translateY(-50%) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider,
+body.quick-access-white .lcp-switch input:checked + .lcp-slider {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider::before,
+body.quick-access-white .lcp-switch input:checked + .lcp-slider::before {
+  background: var(--accent-contrast-color, #ffffff) !important;
+  transform: translate(20px, -50%) !important;
+  box-shadow: -1px 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   6. DATE & CLOCK FORMAT CARDS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .clock-style-card,
+body.quick-access-white .clock-style-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.sidebar-light .clock-style-card:hover,
+body.quick-access-white .clock-style-card:hover {
+  background: #f8fafc !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .clock-style-card.active,
+body.quick-access-white .clock-style-card.active {
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.12) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 1.5px var(--accent-color), 0 4px 12px rgba(var(--accent-color-rgb, 100, 150, 255), 0.2) !important;
+}
+
+body.sidebar-light .clock-style-card i,
+body.quick-access-white .clock-style-card i {
+  color: #1e293b !important;
+}
+
+body.sidebar-light .clock-style-card:hover i,
+body.quick-access-white .clock-style-card:hover i {
+  color: var(--accent-color) !important;
+}
+
+body.sidebar-light .clock-style-card.active i,
+body.quick-access-white .clock-style-card.active i {
+  color: var(--accent-color) !important;
+}
+
+body.sidebar-light .clock-style-name,
+body.quick-access-white .clock-style-name {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.sidebar-light .clock-style-card:hover .clock-style-name,
+body.quick-access-white .clock-style-card:hover .clock-style-name {
+  color: #000000 !important;
+}
+
+body.sidebar-light .clock-style-card.active .clock-style-name,
+body.quick-access-white .clock-style-card.active .clock-style-name {
+  color: var(--accent-color, #0f172a) !important;
+  font-weight: 700 !important;
+}
+
+/* ------------------------------------------------------------------------------
+   7. THEMES & STYLE PRESETS CARDS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .style-preset-panel,
+body.quick-access-white .style-preset-panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: var(--radius-md, 12px) !important;
+}
+
+body.sidebar-light .style-preset-btn,
+body.quick-access-white .style-preset-btn {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .style-preset-btn .style-preset-icon,
+body.quick-access-white .style-preset-btn .style-preset-icon {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.sidebar-light .style-preset-btn > span:not(.style-preset-icon),
+body.quick-access-white .style-preset-btn > span:not(.style-preset-icon) {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.sidebar-light .style-preset-btn small,
+body.quick-access-white .style-preset-btn small {
+  color: #475569 !important;
+}
+
+body.sidebar-light .style-preset-btn:hover,
+body.quick-access-white .style-preset-btn:hover {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .style-preset-btn.active,
+body.quick-access-white .style-preset-btn.active {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+}
+
+body.sidebar-light .style-preset-btn.active .style-preset-icon,
+body.quick-access-white .style-preset-btn.active .style-preset-icon {
+  background: var(--accent-contrast-color, #ffffff) !important;
+  color: var(--accent-color) !important;
+}
+
+body.sidebar-light .style-preset-btn.active > span:not(.style-preset-icon),
+body.quick-access-white .style-preset-btn.active > span:not(.style-preset-icon),
+body.sidebar-light .style-preset-btn.active small,
+body.quick-access-white .style-preset-btn.active small {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   8. BACKGROUND & VISUAL EFFECTS CARDS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .bg-control-card,
+body.quick-access-white .bg-control-card,
+body.sidebar-light .gradient-config-card,
+body.quick-access-white .gradient-config-card,
+body.sidebar-light .accent-color-selector,
+body.quick-access-white .accent-color-selector,
+body.sidebar-light .preset-code-card,
+body.quick-access-white .preset-code-card,
+body.sidebar-light .performance-mode-card,
+body.quick-access-white .performance-mode-card,
+body.sidebar-light .custom-title-line-panel,
+body.quick-access-white .custom-title-line-panel,
+body.sidebar-light .ct-slider-card,
+body.quick-access-white .ct-slider-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: var(--radius-md, 12px) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .bg-control-title,
+body.quick-access-white .bg-control-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .bg-control-title i,
+body.quick-access-white .bg-control-title i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.sidebar-light .bg-control-title::after,
+body.quick-access-white .bg-control-title::after {
+  color: #64748b !important;
+}
+
+body.sidebar-light .preset-code-header strong,
+body.quick-access-white .preset-code-header strong {
+  color: #0f172a !important;
+}
+
+body.sidebar-light .preset-code-header small,
+body.quick-access-white .preset-code-header small {
+  color: #475569 !important;
+}
+
+body.sidebar-light .preset-code-line-label,
+body.quick-access-white .preset-code-line-label {
+  color: #475569 !important;
+}
+
+body.sidebar-light .preset-code-line-value,
+body.quick-access-white .preset-code-line-value {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light .local-bg-item,
+body.quick-access-white .local-bg-item {
+  border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.sidebar-light .local-bg-item:hover,
+body.quick-access-white .local-bg-item:hover {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.sidebar-light .local-bg-item.active,
+body.quick-access-white .local-bg-item.active {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px var(--accent-color), 0 4px 14px rgba(var(--accent-color-rgb, 100, 150, 255), 0.3) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   9. ABOUT PROJECT SECTION CARDS & ACTIONS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .about-hero-card,
+body.quick-access-white .about-hero-card {
+  background: linear-gradient(135deg, #ffffff, #f1f5f9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.sidebar-light .about-hero-title,
+body.quick-access-white .about-hero-title {
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-hero-subtitle,
+body.quick-access-white .about-hero-subtitle {
+  color: #475569 !important;
+}
+
+body.sidebar-light .about-version-badge,
+body.quick-access-white .about-version-badge {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-version-num,
+body.quick-access-white .about-version-num {
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-card,
+body.quick-access-white .about-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-card-title,
+body.quick-access-white .about-card-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.sidebar-light .about-card-title i,
+body.quick-access-white .about-card-title i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.sidebar-light .about-action-btn,
+body.quick-access-white .about-action-btn {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.sidebar-light .about-action-btn:hover,
+body.quick-access-white .about-action-btn:hover {
+  background: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  color: #000000 !important;
+}
+
+body.sidebar-light .about-btn-icon-wrap,
+body.quick-access-white .about-btn-icon-wrap {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.sidebar-light .about-btn-releases .about-btn-icon-wrap,
+body.quick-access-white .about-btn-releases .about-btn-icon-wrap {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-history-summary,
+body.quick-access-white .about-history-summary,
+body.sidebar-light .about-history-summary-text,
+body.quick-access-white .about-history-summary-text {
+  color: #0f172a !important;
+}
+
+body.sidebar-light .about-status-text,
+body.quick-access-white .about-status-text {
+  color: #334155 !important;
+}
+
+body.sidebar-light .about-platform-chip,
+body.quick-access-white .about-platform-chip {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+/* ------------------------------------------------------------------------------
+   10. INPUTS, DROPDOWNS & RANGE SLIDERS
+   ------------------------------------------------------------------------------ */
+body.sidebar-light .settings-sidebar select,
+body.quick-access-white .settings-sidebar select,
+body.sidebar-light .setting-item-row select,
+body.quick-access-white .setting-item-row select {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.sidebar-light .settings-sidebar select:focus,
+body.quick-access-white .settings-sidebar select:focus,
+body.sidebar-light .setting-item-row select:focus,
+body.quick-access-white .setting-item-row select:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="text"],
+body.quick-access-white .settings-sidebar input[type="text"],
+body.sidebar-light .settings-sidebar input[type="number"],
+body.quick-access-white .settings-sidebar input[type="number"],
+body.sidebar-light .settings-sidebar input[type="url"],
+body.quick-access-white .settings-sidebar input[type="url"] {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="text"]:focus,
+body.quick-access-white .settings-sidebar input[type="text"]:focus,
+body.sidebar-light .settings-sidebar input[type="number"]:focus,
+body.quick-access-white .settings-sidebar input[type="number"]:focus,
+body.sidebar-light .settings-sidebar input[type="url"]:focus,
+body.quick-access-white .settings-sidebar input[type="url"]:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="range"],
+body.quick-access-white .settings-sidebar input[type="range"] {
+  background: rgba(0, 0, 0, 0.14) !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="range"]::-webkit-slider-thumb,
+body.quick-access-white .settings-sidebar input[type="range"]::-webkit-slider-thumb {
+  background: #ffffff !important;
+  border: 2.5px solid var(--accent-color) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22) !important;
+}
+
+body.sidebar-light .settings-page-title-input,
+body.quick-access-white .settings-page-title-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+  border-radius: 5px !important;
+}
+
+body.sidebar-light .settings-page-title-input:focus,
+body.quick-access-white .settings-page-title-input:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.25) !important;
+}
+
+body.sidebar-light .settings-tab-icon-input,
+body.quick-access-white .settings-tab-icon-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+  border-radius: 10px !important;
+}
+
+body.sidebar-light .settings-tab-icon-input:focus,
+body.quick-access-white .settings-tab-icon-input:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb, 99, 102, 241), 0.25) !important;
+}
+
+body.sidebar-light .tab-icon-action-btn,
+body.quick-access-white .tab-icon-action-btn {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.sidebar-light .tab-icon-action-btn:hover,
+body.quick-access-white .tab-icon-action-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+}
+
+body.sidebar-light .settings-tab-icon-preview,
+body.quick-access-white .settings-tab-icon-preview {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  border-radius: 10px !important;
+}
+
+body.sidebar-light .settings-tab-icon-colors,
+body.quick-access-white .settings-tab-icon-colors {
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .settings-tab-icon-color-picker,
+body.quick-access-white .settings-tab-icon-color-picker {
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   11. BOOKMARK STACK POPUP & HIDDEN GROUPS POPUP
+   ------------------------------------------------------------------------------ */
+body.quick-access-white .bookmark-stack-popup {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .bookmark-stack-popup-header h3 {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .bookmark-stack-popup-header-count {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.quick-access-white .bookmark-stack-popup-search-input {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .bookmark-stack-popup-search-input::placeholder {
+  color: #64748b !important;
+}
+
+body.quick-access-white .bookmark-stack-popup-search-icon {
+  color: #64748b !important;
+}
+
+body.quick-access-white .bookmark-stack-item {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .bookmark-stack-item:hover {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.quick-access-white .bookmark-stack-item-title {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .bookmark-stack-item-url {
+  color: #64748b !important;
+}
+
+body.quick-access-white .hidden-groups-popup {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hidden-groups-popup-title {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hidden-groups-popup-close-btn {
+  color: #64748b !important;
+}
+
+body.quick-access-white .hidden-groups-popup-close-btn:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.quick-access-white .hidden-groups-popup-list .bookmark-group-tab {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hidden-groups-popup-list .bookmark-group-tab:hover {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.quick-access-white .bookmark-group-tab {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.quick-access-white .bookmark-group-tab:hover {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.quick-access-white .bookmark-group-tab.active {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
+  font-weight: 700 !important;
+}
+
+body.quick-access-white .bookmark-group-tab.add-group-tab {
+  border-style: dashed !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: #0f172a !important;
+  color: #000000 !important;
+}
+
+
+/* ------------------------------------------------------------------------------
+   12. CONTEXT MENU (MENU CHUỘT PHẢI KHI DÙNG WHITE ACCESS MODE MẶC ĐỊNH)
+   ------------------------------------------------------------------------------ */
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-header,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-header {
+  color: #0f172a !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  border-bottom: none !important;
+  padding: 4px 8px 2px 8px !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item {
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item i {
+  color: #334155 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item:hover {
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.14) !important;
+  color: #000000 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item:hover i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item:hover i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item:hover i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item:hover i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item.delete,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item.delete,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item.danger,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item.danger,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item.delete,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item.delete,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item.danger,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item.danger {
+  color: #dc2626 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item.delete i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item.delete i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item.delete i,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item.delete i {
+  color: #dc2626 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .menu-item.delete:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-item.delete:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .menu-item.delete:hover,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-item.delete:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #b91c1c !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu-divider,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu .context-menu-divider {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ------------------------------------------------------------------------------
+   13. MODALS & DIALOGS (Command Palette, Icon Picker, Hotkeys, Donate)
+   ------------------------------------------------------------------------------ */
+body.quick-access-white #command-palette-modal .bug-modal-content {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white #command-palette-search {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white #command-palette-search::placeholder {
+  color: #64748b !important;
+}
+
+body.quick-access-white .cp-item {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .cp-item:hover,
+body.quick-access-white .cp-item.active {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 100, 150, 255), 0.18) !important;
+}
+
+body.quick-access-white .cp-item-icon {
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.14) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+body.quick-access-white .cp-item-title {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.quick-access-white .cp-item-desc {
+  color: #64748b !important;
+}
+
+body.quick-access-white .cp-item-shortcut.muted {
+  color: #64748b !important;
+}
+
+body.quick-access-white .cp-shortcut-edit {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white #fa-icon-picker-modal .fa-picker-dialog,
+body.quick-access-white .fa-picker-dialog {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-header-title {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-search-input {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-search-input::placeholder {
+  color: #64748b !important;
+}
+
+body.quick-access-white .fa-picker-search-icon {
+  color: #64748b !important;
+}
+
+body.quick-access-white .fa-picker-cat-select {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-icon-btn,
+body.quick-access-white .fa-picker-grid button {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .fa-picker-icon-btn:hover,
+body.quick-access-white .fa-picker-grid button:hover {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.quick-access-white .fa-picker-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #64748b !important;
+}
+
+body.quick-access-white .donate-modal-content,
+body.quick-access-white .hotkeys-modal-content {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .donate-modal-title,
+body.quick-access-white .hotkeys-modal-title {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hotkey-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hotkey-name {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .hotkey-key {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+/* ------------------------------------------------------------------------------
+   14. UTILITY WIDGETS (Weather Search Bar, Timer Display)
+   ------------------------------------------------------------------------------ */
+body.quick-access-white .weather-container .weather-search-row {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  padding: 0 4px 0 12px !important;
+}
+
+body.quick-access-white .weather-container .weather-search-row:focus-within {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2.5px rgba(var(--accent-color-rgb, 100, 150, 255), 0.25) !important;
+}
+
+body.quick-access-white .weather-container .weather-search-row input {
+  color: #0f172a !important;
+}
+
+body.quick-access-white .weather-container .weather-search-row input::placeholder {
+  color: #64748b !important;
+}
+
+body.quick-access-white .weather-container .weather-search-row i {
+  color: #64748b !important;
+}
+
+body.quick-access-white .timer-container .timer-hero-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 4px 0 !important;
+}
+
+body.quick-access-white .timer-container .timer-display {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+body.quick-access-white .timer-container .timer-status {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white .timer-container .timer-controls {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: none !important;
+}
+
+body.quick-access-white .timer-container .timer-controls .icon-btn {
+  color: #334155 !important;
+}
+
+body.quick-access-white .timer-container .timer-controls .icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #000000 !important;
+}
