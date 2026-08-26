@@ -165,19 +165,26 @@ async function openSettingsSection(sectionId, targetSelector = null) {
     await window.ensureSettingsInitialized("context-menu-open-section")
   }
   const sidebar = document.getElementById("settings-sidebar")
-  const section = document.querySelector(`[data-section-id="${sectionId}"]`)
-  if (!sidebar || !section) return
+  if (!sidebar) return
 
   sidebar.classList.add("open")
+
+  const section =
+    document.querySelector(`[data-section-id="${sectionId}"]`) ||
+    document.querySelector(`[data-settings-tab="${sectionId}"]`) ||
+    document.getElementById(sectionId)
 
   let targetElement = null
   if (targetSelector) {
     targetElement =
-      section.querySelector(targetSelector) ||
+      (section ? section.querySelector(targetSelector) : null) ||
       document.querySelector(targetSelector)
   }
 
-  const scrollTarget = targetElement || section.querySelector(".section-toggle") || section
+  const scrollTarget =
+    targetElement || (section ? section.querySelector(".section-toggle") : null) || section
+
+  if (!scrollTarget) return
 
   // Ensure correct tab & subtab are activated and scrolled smoothly
   try {
@@ -192,7 +199,7 @@ async function openSettingsSection(sectionId, targetSelector = null) {
     console.warn("Could not switch settings tab via scrollToSidebarElement:", err)
   }
 
-  section.classList.remove("collapsed")
+  if (section) section.classList.remove("collapsed")
   if (targetElement) {
     const collGroup = targetElement.closest(".collapsible-group")
     if (collGroup) {
@@ -212,26 +219,26 @@ function getWidgetSettingsTarget(id) {
   const targets = {
     search: {
       section: "layout",
-      target: "#show-search-bar-checkbox",
+      target: "#layout-group-search",
       labelKey: "settings_group_search",
       fallback: "Search Bar",
     },
     clock: {
       section: "date-clock",
-      target: "#clock-style-setting-group",
+      target: ".settings-section[data-section-id='date-clock']",
       labelKey: "settings_date_format",
       fallback: "Clock",
     },
     "custom-title": {
       section: "custom-title",
-      target: "#custom-title-text",
-      labelKey: "settings_show_custom_title",
+      target: "#custom-title-typography-group",
+      labelKey: "settings_custom_title",
       fallback: "Custom Title",
     },
     customTitle: {
       section: "custom-title",
-      target: "#custom-title-text",
-      labelKey: "settings_show_custom_title",
+      target: "#custom-title-typography-group",
+      labelKey: "settings_custom_title",
       fallback: "Custom Title",
     },
     todo: {
@@ -297,9 +304,13 @@ function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
   if (!target) return
 
   const widgetName = i18n[target.labelKey] || target.fallback
-  const template = i18n.context_open_widget_settings || "Settings: {name}"
+  const rawTemplate = i18n.context_open_widget_settings || "Cài đặt: {name}"
+  const label = rawTemplate.includes("{name}")
+    ? rawTemplate.replace("{name}", widgetName)
+    : `${rawTemplate}: ${widgetName}`
+
   const settingsBtn = createCustomMenuItem(
-    template.replace("{name}", widgetName),
+    label,
     "fa-solid fa-gear",
     () => {
       hideContextMenu()
@@ -457,129 +468,16 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
     try {
       faviconUrl = `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64`
     } catch (e) {}
-  }
-
-  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
+  }  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
     const qrBtn = createCustomMenuItem(
-      i18n.context_generate_qr || "Generate QR Code",
+      i18n.context_generate_qr || "Tạo mã QR",
       "fa-solid fa-qrcode",
-      (e) => {
+      () => {
         hideContextMenu()
         showQrCodeModal(url, faviconUrl)
       },
       "context-settings-item qr-menu-item"
     )
-    
-    // MacOS hover logic
-    qrBtn.addEventListener("mouseenter", (e) => {
-       let popover = document.getElementById("qr-hover-popover");
-       if (!popover) {
-          popover = document.createElement("div");
-          popover.id = "qr-hover-popover";
-          popover.style.position = "fixed";
-          popover.style.zIndex = "21000";
-          popover.style.background = "white";
-          popover.style.padding = "10px";
-          popover.style.borderRadius = "12px";
-          popover.style.boxShadow = "0 10px 40px rgba(0,0,0,0.4)";
-          popover.style.pointerEvents = "none";
-          popover.style.opacity = "0";
-          popover.style.transition = "opacity 0.2s ease-in-out, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
-          popover.style.transform = "scale(0.8) translateY(10px)";
-          
-          const qrContainer = document.createElement("div");
-          qrContainer.style.position = "relative";
-          qrContainer.style.width = "180px";
-          qrContainer.style.height = "180px";
-          
-          const img = document.createElement("img");
-          img.id = "qr-hover-img";
-          img.style.width = "100%";
-          img.style.height = "100%";
-          img.style.display = "block";
-          img.style.borderRadius = "6px";
-          qrContainer.appendChild(img);
-          
-          const iconWrapper = document.createElement("div");
-          iconWrapper.style.position = "absolute";
-          iconWrapper.style.top = "50%";
-          iconWrapper.style.left = "50%";
-          iconWrapper.style.transform = "translate(-50%, -50%)";
-          iconWrapper.style.background = "white";
-          iconWrapper.style.padding = "4px";
-          iconWrapper.style.borderRadius = "50%";
-          iconWrapper.style.display = "flex";
-          iconWrapper.style.alignItems = "center";
-          iconWrapper.style.justifyContent = "center";
-          iconWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
-          
-          const icon = document.createElement("img");
-          icon.id = "qr-hover-icon";
-          icon.style.width = "32px";
-          icon.style.height = "32px";
-          icon.style.borderRadius = "50%";
-          icon.style.objectFit = "cover";
-          iconWrapper.appendChild(icon);
-          
-          qrContainer.appendChild(iconWrapper);
-          popover.appendChild(qrContainer);
-          document.body.appendChild(popover);
-       }
-       
-       const img = popover.querySelector("#qr-hover-img");
-       const icon = popover.querySelector("#qr-hover-icon");
-       const encodedUrl = encodeURIComponent(url);
-       img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodedUrl}&ecc=H`;
-       
-       if (faviconUrl) {
-         icon.src = faviconUrl;
-         icon.parentElement.style.display = "flex";
-       } else {
-         icon.parentElement.style.display = "none";
-       }
-       
-       const rect = qrBtn.getBoundingClientRect();
-       
-       // Display on the right side of the context menu item
-       let left = rect.right + 10;
-       let top = rect.top + rect.height / 2 - 100; // center vertically (assuming 200px height)
-       
-       // Adjust if off screen horizontally
-       if (left + 200 > window.innerWidth) {
-         // Show on the left side if not enough space on the right
-         left = rect.left - 210;
-         popover.style.transformOrigin = "center right";
-       } else {
-         popover.style.transformOrigin = "center left";
-       }
-       
-       // Adjust if off screen vertically
-       if (top < 10) top = 10;
-       if (top + 200 > window.innerHeight) top = window.innerHeight - 210;
-       
-       popover.style.left = `${left}px`;
-       popover.style.top = `${top}px`;
-       popover.style.display = "block";
-       
-       requestAnimationFrame(() => {
-         popover.style.opacity = "1";
-         popover.style.transform = "scale(1) translateY(0)";
-       });
-    });
-    
-    qrBtn.addEventListener("mouseleave", () => {
-       const popover = document.getElementById("qr-hover-popover");
-       if (popover) {
-          popover.style.opacity = "0";
-          popover.style.transform = "scale(0.8) translateY(10px)";
-          setTimeout(() => {
-            if (popover.style.opacity === "0") {
-               popover.style.display = "none";
-            }
-          }, 200);
-       }
-    });
-
     contextMenu.insertBefore(qrBtn, menuEdit)
   }
 }
@@ -1221,9 +1119,9 @@ export function showContextMenu(
         
         const colorMode = settings.habitColorMode || "custom"
         const modes = [
-           { id: "custom", label: i18n.habit_color_custom || "Color: Custom per habit" },
-           { id: "gradient", label: i18n.habit_color_gradient || "Color: Red to Green" },
-           { id: "m3", label: i18n.habit_color_m3 || "Color: Accent (M3)" }
+           { id: "custom", label: i18n.habit_color_custom || "Màu riêng" },
+           { id: "gradient", label: i18n.habit_color_gradient || "Đỏ sang Xanh" },
+           { id: "m3", label: i18n.habit_color_m3 || "Màu Accent" }
         ]
         
         modes.forEach(mode => {
@@ -1248,8 +1146,8 @@ export function showContextMenu(
         miniBtn.className = "context-menu-item custom-music-item"
         
         const labels = {
-          weather: { mini: i18n.weather_mini_size || "Mini Weather", normal: i18n.weather_normal_size || "Normal Weather", expand: i18n.weather_expand || "Enlarge Weather", collapse: i18n.weather_collapse || "Shrink Weather" },
-          rss: { mini: "Thu nhỏ RSS", normal: "Kích thước mặc định", expand: "Phóng to RSS", collapse: "Thu nhỏ lại" }
+          weather: { mini: i18n.weather_mini_size || "Thu nhỏ", normal: i18n.weather_normal_size || "Kích thước chuẩn", expand: i18n.weather_expand || "Phóng to", collapse: i18n.weather_collapse || "Thu gọn" },
+          rss: { mini: "Thu nhỏ", normal: "Kích thước chuẩn", expand: "Phóng to", collapse: "Thu gọn" }
         }
         
         miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-compress" : "fa-compress-arrows-alt"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`

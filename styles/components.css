@@ -1056,30 +1056,38 @@ body.context-menu-macos .bookmark-edit-field {
 .context-menu {
   display: none;
   position: fixed;
-  width: 192px;
+  min-width: 165px;
+  width: max-content;
+  max-width: 260px;
   padding: 5px;
   z-index: 10001;
   overflow: clip;
-  animation: contextMenuIn 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: contextMenuIn 0.05s ease-out;
   transform-origin: top left;
   transform: translateZ(0);
-  will-change: opacity, transform;
+  will-change: auto;
   contain: layout style paint;
+  isolation: isolate;
 
-  /* Default: Dark Glass */
+  /* Modern Dark Glass infused with Accent Color */
   background: linear-gradient(
-    160deg,
-    rgba(22, 24, 34, 0.97) 0%,
-    rgba(12, 14, 22, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.11);
+    165deg,
+    rgba(20, 24, 34, 0.97) 0%,
+    rgba(12, 14, 20, 0.98) 100%
+  ) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.35) !important;
   border-radius: 12px;
   box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.55),
-    0 4px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    0 18px 44px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.18),
+    0 0 20px rgba(var(--accent-color-rgb, 99, 102, 241), 0.1) !important;
+}
+
+.context-menu *,
+.menu-item,
+.context-menu-item,
+.custom-music-item {
+  transition: none !important;
 }
 
 .bookmark-stack-popup {
@@ -1090,7 +1098,7 @@ body.context-menu-macos .bookmark-edit-field {
   overflow-x: hidden;
   padding: 16px;
   z-index: 10020;
-  animation: contextMenuIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: contextMenuIn 0.1s ease-out;
   border-radius: 20px;
   transform: translateZ(0);
   will-change: transform, opacity;
@@ -1099,12 +1107,14 @@ body.context-menu-macos .bookmark-edit-field {
 
 /* Header inside context menu */
 .context-menu-header {
-  padding: 8px 12px 6px 12px;
+  padding: 6px 10px 6px 10px;
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--accent-color, #818cf8) !important;
+  border-bottom: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
+  margin-bottom: 3px;
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
@@ -1114,7 +1124,8 @@ body.context-menu-macos .bookmark-edit-field {
 }
 
 body.context-menu-light .context-menu-header {
-  color: rgba(20, 22, 35, 0.85);
+  color: var(--accent-color, #4f46e5) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 body.context-menu-macos .context-menu-header {
@@ -1135,95 +1146,144 @@ body.context-menu-none .context-menu-header {
 /* Divider inside context menu */
 .context-menu-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 4px 6px;
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.18) !important;
+  margin: 4px 5px;
 }
 
-.menu-item {
-  padding: 8px 12px;
+.menu-item,
+.context-menu-item {
+  padding: 7px 11px;
   cursor: pointer;
-  font-size: 0.855rem;
-  font-weight: 450;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.835rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
   display: flex;
   align-items: center;
   gap: 9px;
   border-radius: 8px;
   line-height: 1.25;
   letter-spacing: 0.01em;
-  transition:
-    background-color 65ms ease-out,
-    color 65ms ease-out;
+  white-space: nowrap;
+  transition: none !important;
   position: relative;
 }
 
-.menu-item i {
-  width: 15px;
+.menu-item span,
+.context-menu-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-item i,
+.context-menu-item i {
+  width: 16px;
   text-align: center;
-  font-size: 0.82rem;
-  opacity: 0.75;
+  font-size: 0.84rem;
+  color: var(--accent-color, #818cf8) !important;
+  opacity: 0.92;
   flex-shrink: 0;
-  transition: opacity 65ms ease-out;
+  transition: none !important;
 }
 
-.menu-item:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
-  color: #fff;
+#context-menu .menu-item:hover,
+#context-menu .context-menu-item:hover,
+.context-menu .menu-item:hover,
+.context-menu .context-menu-item:hover,
+.menu-item:hover,
+.context-menu-item:hover {
+  background: var(--accent-color, #6366f1) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 3px 10px rgba(var(--accent-color-rgb, 99, 102, 241), 0.4) !important;
+  transition: none !important;
 }
 
-.menu-item:hover i {
-  opacity: 1;
+#context-menu .menu-item:hover i,
+#context-menu .context-menu-item:hover i,
+.context-menu .menu-item:hover i,
+.context-menu .context-menu-item:hover i,
+.menu-item:hover i,
+.context-menu-item:hover i {
+  color: var(--accent-contrast-color, #ffffff) !important;
+  opacity: 1 !important;
+  transition: none !important;
 }
 
-.menu-item:active {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.26);
+.menu-item:active,
+.context-menu-item:active {
+  filter: brightness(0.9);
 }
 
-.menu-item.delete {
-  color: rgba(255, 130, 130, 0.9);
+.menu-item.delete,
+.context-menu-item.delete,
+.context-menu-item.danger,
+#menu-delete {
+  color: #ff6b6b !important;
 }
 
-.menu-item.delete i {
-  color: rgba(255, 100, 100, 0.8);
+.menu-item.delete i,
+.context-menu-item.delete i,
+.context-menu-item.danger i,
+#menu-delete i {
+  color: #ff6b6b !important;
 }
 
-.menu-item.delete:hover {
-  background: rgba(255, 80, 80, 0.15);
-  color: #ffb3b3;
+.menu-item.delete:hover,
+.context-menu-item.delete:hover,
+.context-menu-item.danger:hover,
+#menu-delete:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.4) !important;
+}
+
+.menu-item.delete:hover i,
+.context-menu-item.delete:hover i,
+.context-menu-item.danger:hover i,
+#menu-delete:hover i {
+  color: #ffffff !important;
 }
 
 /* ── Light Glass variant ── */
 body.context-menu-light .context-menu,
+body.context-menu-light .context-menu {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.16),
+    0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
 body.context-menu-light .bookmark-stack-popup {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(240, 242, 248, 0.92) 100%
-  );
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.18),
-    0 4px 16px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-body.context-menu-light .menu-item {
+body.context-menu-light .menu-item,
+body.context-menu-light .context-menu-item {
   color: rgba(20, 22, 35, 0.88);
+  transition: none !important;
 }
 
-body.context-menu-light .menu-item i {
+body.context-menu-light .menu-item i,
+body.context-menu-light .context-menu-item i {
   color: rgba(20, 22, 35, 0.6);
+  transition: none !important;
 }
 
-body.context-menu-light .menu-item:hover {
-  background: rgba(var(--accent-color-rgb, 100, 140, 255), 0.14);
-  color: rgba(10, 12, 25, 1);
+body.context-menu-light .menu-item:hover,
+body.context-menu-light .context-menu-item:hover {
+  background: rgba(var(--accent-color-rgb, 100, 140, 255), 0.16) !important;
+  color: rgba(10, 12, 25, 1) !important;
+  transition: none !important;
 }
 
-body.context-menu-light .menu-item:active {
-  background: rgba(var(--accent-color-rgb, 100, 140, 255), 0.22);
+body.context-menu-light .menu-item:active,
+body.context-menu-light .context-menu-item:active {
+  background: rgba(var(--accent-color-rgb, 100, 140, 255), 0.24) !important;
 }
 
 body.context-menu-light .menu-item.delete {
@@ -1231,8 +1291,8 @@ body.context-menu-light .menu-item.delete {
 }
 
 body.context-menu-light .menu-item.delete:hover {
-  background: rgba(220, 50, 50, 0.1);
-  color: rgba(180, 20, 20, 1);
+  background: rgba(220, 50, 50, 0.1) !important;
+  color: rgba(180, 20, 20, 1) !important;
 }
 
 body.context-menu-light .context-menu-divider {
@@ -1240,46 +1300,51 @@ body.context-menu-light .context-menu-divider {
 }
 
 /* ── macOS variant ── */
-body.context-menu-macos .context-menu,
-body.context-menu-macos .bookmark-stack-popup {
-  background: rgba(30, 30, 32, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.13);
+body.context-menu-macos .context-menu {
+  background: #1e1e24 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 10px;
   box-shadow:
-    0 24px 56px rgba(0, 0, 0, 0.6),
-    0 2px 8px rgba(0, 0, 0, 0.35),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    0 20px 48px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.35) !important;
   padding: 4px;
 }
 
 body.context-menu-macos .bookmark-stack-popup {
+  background: #1e1e24;
+  border: 1px solid rgba(255, 255, 255, 0.13);
   padding: var(--space-2);
   border-radius: var(--radius-md);
 }
 
-body.context-menu-macos .menu-item {
+body.context-menu-macos .menu-item,
+body.context-menu-macos .context-menu-item {
   border-radius: 6px;
   font-size: 0.84rem;
   padding: 6px 12px;
   color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0;
+  transition: none !important;
 }
 
-body.context-menu-macos .menu-item:hover {
-  background: rgba(var(--accent-color-rgb, 10, 132, 255), 0.85);
-  color: #fff;
+body.context-menu-macos .menu-item:hover,
+body.context-menu-macos .context-menu-item:hover {
+  background: rgba(var(--accent-color-rgb, 10, 132, 255), 0.85) !important;
+  color: #fff !important;
   transform: none;
+  transition: none !important;
 }
 
-body.context-menu-macos .menu-item:hover i {
+body.context-menu-macos .menu-item:hover i,
+body.context-menu-macos .context-menu-item:hover i {
   transform: none;
-  opacity: 1;
+  opacity: 1 !important;
+  transition: none !important;
 }
 
-body.context-menu-macos .menu-item:active {
-  background: rgba(var(--accent-color-rgb, 10, 132, 255), 0.7);
+body.context-menu-macos .menu-item:active,
+body.context-menu-macos .context-menu-item:active {
+  background: rgba(var(--accent-color-rgb, 10, 132, 255), 0.7) !important;
   transform: none;
 }
 
@@ -1288,8 +1353,8 @@ body.context-menu-macos .menu-item.delete {
 }
 
 body.context-menu-macos .menu-item.delete:hover {
-  background: rgba(255, 59, 48, 0.85);
-  color: #fff;
+  background: rgba(255, 59, 48, 0.85) !important;
+  color: #fff !important;
 }
 
 body.context-menu-macos .context-menu-divider {
@@ -1298,24 +1363,23 @@ body.context-menu-macos .context-menu-divider {
 }
 
 /* Transparent variant */
-body.context-menu-none .context-menu,
-body.context-menu-none .bookmark-stack-popup {
-  background: rgba(255, 255, 255, 0.54);
-  border-color: rgba(255, 255, 255, 0.66);
-  box-shadow:
-    0 0 0 0.5px rgba(255, 255, 255, 0.7) inset,
-    0 12px 36px rgba(15, 23, 42, 0.18);
-  backdrop-filter: blur(24px) saturate(170%);
-  -webkit-backdrop-filter: blur(24px) saturate(170%);
+body.context-menu-none .context-menu {
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.18) !important;
 }
 
-body.context-menu-none .menu-item {
+body.context-menu-none .menu-item,
+body.context-menu-none .context-menu-item {
   color: rgba(15, 23, 42, 0.88);
   text-shadow: none;
+  transition: none !important;
 }
 
-body.context-menu-none .menu-item:hover {
-  background: rgba(255, 255, 255, 0.46);
+body.context-menu-none .menu-item:hover,
+body.context-menu-none .context-menu-item:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  transition: none !important;
 }
 
 body.context-menu-none .context-menu-divider {
