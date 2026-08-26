@@ -5720,11 +5720,58 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  const updateResolvedDocumentTitle = (rawTitle) => {
+    let resolved = rawTitle || "Start Page"
+    if (resolved.includes("{time}")) {
+      const now = new Date()
+      resolved = resolved.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+    }
+    if (resolved.includes("{date}")) {
+      const now = new Date()
+      resolved = resolved.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+    }
+    if (resolved.includes("{music}")) {
+      const musicTitle = window._currentPlayingTrackTitle || ""
+      resolved = resolved.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "")
+    }
+    document.title = resolved
+  }
+
   DOM.pageTitleInput?.addEventListener("input", () => {
     const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)
     saveSettings()
-    document.title = newTitle
+    updateResolvedDocumentTitle(newTitle)
+  })
+
+  // Delegated handler for quick token chips & custom title presets
+  document.getElementById("settings-sidebar")?.addEventListener("click", (e) => {
+    const tokenChip = e.target.closest(".token-chip")
+    if (tokenChip) {
+      const token = tokenChip.getAttribute("data-token")
+      const targetInputId = tokenChip.getAttribute("data-target-input") || "page-title-input"
+      const targetInput = document.getElementById(targetInputId)
+      if (targetInput && token) {
+        const start = targetInput.selectionStart || targetInput.value.length
+        const end = targetInput.selectionEnd || targetInput.value.length
+        const currentVal = targetInput.value
+        targetInput.value = currentVal.substring(0, start) + (start > 0 && currentVal[start - 1] !== " " ? " " : "") + token + currentVal.substring(end)
+        targetInput.focus()
+        targetInput.dispatchEvent(new Event("input", { bubbles: true }))
+      }
+      return
+    }
+
+    const presetBtn = e.target.closest(".preset-pill-btn")
+    if (presetBtn) {
+      const presetText = presetBtn.getAttribute("data-preset-text")
+      const titleInput1 = document.getElementById("custom-title-text")
+      if (titleInput1 && presetText) {
+        titleInput1.value = presetText
+        titleInput1.dispatchEvent(new Event("input", { bubbles: true }))
+      }
+      return
+    }
   })
 
   DOM.pageTitleColorInput?.addEventListener("change", () => {
@@ -8270,28 +8317,112 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  const currentSettings = getSettings()
-  if (line3Container) line3Container.style.display = currentSettings.customTitleText3 ? "block" : "none"
-  if (line4Container) line4Container.style.display = currentSettings.customTitleText4 ? "block" : "none"
-  updateLineVisibility()
+  const lineTabs = document.querySelectorAll("#custom-title-line-tabs .ct-tab-btn")
+  const linePanels = [
+    document.getElementById("custom-title-line-1-panel"),
+    document.getElementById("custom-title-line-2-panel"),
+    document.getElementById("custom-title-line-3-container"),
+    document.getElementById("custom-title-line-4-container"),
+  ]
 
-  if (addLineBtn) {
-    addLineBtn.addEventListener("click", () => {
-      if (line3Container.style.display === "none") {
-        line3Container.style.display = "block"
-      } else if (line4Container.style.display === "none") {
-        line4Container.style.display = "block"
+  const switchLineTab = (lineNum) => {
+    lineTabs.forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.targetLine === String(lineNum))
+    })
+    linePanels.forEach((panel, idx) => {
+      if (panel) {
+        panel.style.display = (idx + 1 === lineNum) ? "block" : "none"
+        panel.classList.toggle("active", idx + 1 === lineNum)
       }
-      updateLineVisibility()
     })
   }
+
+  lineTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const lineNum = parseInt(tab.dataset.targetLine || "1")
+      switchLineTab(lineNum)
+    })
+  })
+
+  const updateCustomTitleLivePreview = () => {
+    const previewEl = document.getElementById("custom-title-preview-render")
+    if (!previewEl) return
+    const s = getSettings()
+    
+    const inputs = [
+      document.getElementById("custom-title-text")?.value,
+      document.getElementById("custom-title-text-2")?.value,
+      document.getElementById("custom-title-text-3")?.value,
+      document.getElementById("custom-title-text-4")?.value,
+    ]
+    lineTabs.forEach((tab, i) => {
+      tab.classList.toggle("has-content", !!(inputs[i] && inputs[i].trim()))
+    })
+
+    const resolvePreviewTokens = (str) => {
+      if (!str) return ""
+      let res = str
+      const now = new Date()
+      const currentLang = s.language || "en"
+      const hr = now.getHours()
+      const greeting = currentLang === "vi" ? (hr < 12 ? "Chào buổi sáng" : hr < 18 ? "Chào buổi chiều" : "Chào buổi tối") : (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening")
+      res = res.replace(/{greeting}/gi, greeting)
+      res = res.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+      res = res.replace(/{time_12}/gi, `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, "0")} ${now.getHours() >= 12 ? "PM" : "AM"}`)
+      res = res.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+      res = res.replace(/{day}/gi, String(now.getDate()))
+      res = res.replace(/{month}/gi, String(now.getMonth() + 1).padStart(2, "0"))
+      res = res.replace(/{year}/gi, String(now.getFullYear()))
+      const viDays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
+      const enDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      res = res.replace(/{weekday}/gi, currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()])
+      
+      try {
+        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null")
+        if (cache && cache.data && cache.data.current && cache.data.current.temperature_2m !== undefined) {
+          res = res.replace(/{weather}/gi, `${Math.round(cache.data.current.temperature_2m)}°C`)
+        } else {
+          res = res.replace(/{weather}/gi, "28°C")
+        }
+      } catch(e) {
+        res = res.replace(/{weather}/gi, "28°C")
+      }
+
+      let musicTitle = window._currentPlayingTrackTitle || ""
+      if (!musicTitle) {
+        const mEl = document.querySelector("#music-title")
+        if (mEl && mEl.textContent && !mEl.textContent.includes("No Media") && !mEl.textContent.includes("Không phát nhạc")) {
+          musicTitle = mEl.textContent.trim()
+        }
+      }
+      res = res.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "🎵 Music Track")
+      return res
+    }
+
+    const t1 = resolvePreviewTokens(inputs[0] || "")
+    const t2 = resolvePreviewTokens(inputs[1] || "")
+    const t3 = resolvePreviewTokens(inputs[2] || "")
+    const t4 = resolvePreviewTokens(inputs[3] || "")
+
+    if (!t1 && !t2 && !t3 && !t4) {
+      previewEl.innerHTML = `<span style="opacity: 0.4; font-size: 0.85rem; font-style: italic;">Chưa có nội dung tiêu đề...</span>`
+      return
+    }
+
+    const lines = [t1, t2, t3, t4].filter(Boolean)
+    previewEl.innerHTML = lines.map(line => `<div>${line}</div>`).join("")
+    if (s.customTitleColor) previewEl.style.color = s.customTitleColor
+  }
+
+  // Initial preview render & tab state
+  switchLineTab(1)
+  updateCustomTitleLivePreview()
 
   if (removeLineBtns.length) {
     removeLineBtns.forEach(btn => {
       btn.addEventListener("click", (e) => {
         const target = e.currentTarget.dataset.target
         if (target === "3") {
-          line3Container.style.display = "none"
           const input = document.getElementById("custom-title-text-3")
           if (input) {
              input.value = ""
@@ -8299,7 +8430,6 @@ export function setupGeneralEventHandlers(
              window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText3", value: "" } }))
           }
         } else if (target === "4") {
-          line4Container.style.display = "none"
           const input = document.getElementById("custom-title-text-4")
           if (input) {
              input.value = ""
@@ -8307,10 +8437,14 @@ export function setupGeneralEventHandlers(
              window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText4", value: "" } }))
           }
         }
-        updateLineVisibility()
+        updateCustomTitleLivePreview()
       })
     })
   }
+
+  window.addEventListener("musicTrackChange", () => {
+    updateCustomTitleLivePreview()
+  })
 
   customTitleFields.forEach((field) => {
     if (field.dom) {
@@ -8325,6 +8459,7 @@ export function setupGeneralEventHandlers(
           if (disp) disp.textContent = val
         }
         updateSetting(field.key, val)
+        updateCustomTitleLivePreview()
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
             detail: { key: field.key, value: val },

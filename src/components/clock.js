@@ -3270,6 +3270,9 @@ export function updateTime() {
     }
   }
 
+  if (settings.showCustomTitle) {
+    updateCustomTitle()
+  }
 }
 
 export function initClock() {
@@ -3390,10 +3393,76 @@ export function updateCustomTitle() {
     fadeToggle(el, true, "block")
   }
 
-  const text = settings.customTitleText || ""
-  const text2 = settings.customTitleText2 || ""
-  const text3 = settings.customTitleText3 || ""
-  const text4 = settings.customTitleText4 || ""
+  const currentLang = settings.language || "en"
+  const getGreeting = (lang) => {
+    const hr = new Date().getHours()
+    if (lang === "vi") {
+      return hr < 12 ? "Chào buổi sáng" : hr < 18 ? "Chào buổi chiều" : "Chào buổi tối"
+    } else if (lang === "de") {
+      return hr < 12 ? "Guten Morgen" : hr < 18 ? "Guten Tag" : "Guten Abend"
+    } else if (lang === "sv") {
+      return hr < 12 ? "God morgon" : hr < 18 ? "God eftermiddag" : "God kväll"
+    }
+    return hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening"
+  }
+
+  const resolveTokens = (str) => {
+    if (!str) return ""
+    let s = str
+    const now = new Date()
+
+    if (s.includes("{greeting}")) s = s.replace(/{greeting}/gi, getGreeting(currentLang))
+    if (s.includes("{time}")) {
+      s = s.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+    }
+    if (s.includes("{time_12}")) {
+      const hours = now.getHours()
+      const hh = hours % 12 || 12
+      const ampm = hours >= 12 ? "PM" : "AM"
+      s = s.replace(/{time_12}/gi, `${hh}:${String(now.getMinutes()).padStart(2, "0")} ${ampm}`)
+    }
+    if (s.includes("{date}")) {
+      s = s.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+    }
+    if (s.includes("{day}")) {
+      s = s.replace(/{day}/gi, String(now.getDate()))
+    }
+    if (s.includes("{month}")) {
+      s = s.replace(/{month}/gi, String(now.getMonth() + 1).padStart(2, "0"))
+    }
+    if (s.includes("{year}")) {
+      s = s.replace(/{year}/gi, String(now.getFullYear()))
+    }
+    if (s.includes("{weekday}")) {
+      const viDays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
+      const enDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      const dayName = currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()]
+      s = s.replace(/{weekday}/gi, dayName)
+    }
+    if (s.includes("{weather}")) {
+      try {
+        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null")
+        if (cache && cache.data && cache.data.current && cache.data.current.temperature_2m !== undefined) {
+          const temp = Math.round(cache.data.current.temperature_2m)
+          s = s.replace(/{weather}/gi, `${temp}°C`)
+        } else {
+          s = s.replace(/{weather}/gi, "")
+        }
+      } catch (e) {
+        s = s.replace(/{weather}/gi, "")
+      }
+    }
+    if (s.includes("{music}")) {
+      const musicTitle = window._currentPlayingTrackTitle || ""
+      s = s.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "")
+    }
+    return s
+  }
+
+  const text = resolveTokens(settings.customTitleText || "")
+  const text2 = resolveTokens(settings.customTitleText2 || "")
+  const text3 = resolveTokens(settings.customTitleText3 || "")
+  const text4 = resolveTokens(settings.customTitleText4 || "")
 
   if (!text && !text2 && !text3 && !text4) {
     el.style.display = "none"
@@ -3478,7 +3547,7 @@ export function updateCustomTitle() {
         div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus", "shimmer", "flame", "pop-3d"]
         const hasCharAnim = charAnimations.includes(animation)
 
         if (wordWrap) {
@@ -3552,7 +3621,7 @@ export function updateCustomTitle() {
         // Horizontal mode
         div.style.textOrientation = "mixed"
         
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus", "shimmer", "flame", "pop-3d"]
         if (charAnimations.includes(animation)) {
           const words = content.split(" ")
           words.forEach((word, wordIndex) => {

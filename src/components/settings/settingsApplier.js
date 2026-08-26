@@ -849,7 +849,20 @@ function createApplySettings(effectInstances) {
     let shouldUseSplashCursor = false
 
     // 1. Page Title & Layout Preset
-    document.title = settings.pageTitle || "Start Page"
+    let resolvedPageTitle = settings.pageTitle || "Start Page"
+    if (resolvedPageTitle.includes("{time}")) {
+      const now = new Date()
+      resolvedPageTitle = resolvedPageTitle.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+    }
+    if (resolvedPageTitle.includes("{date}")) {
+      const now = new Date()
+      resolvedPageTitle = resolvedPageTitle.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+    }
+    if (resolvedPageTitle.includes("{music}")) {
+      const musicTitle = window._currentPlayingTrackTitle || ""
+      resolvedPageTitle = resolvedPageTitle.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "")
+    }
+    document.title = resolvedPageTitle
     document.body.setAttribute("data-layout-preset", settings.layoutPreset || "default")
     if (typeof effectInstances.applyTabIcon === "function") {
       effectInstances.applyTabIcon(

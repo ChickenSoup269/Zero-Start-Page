@@ -543,11 +543,11 @@ export function initSidebarNavigation() {
     })
   })
 
-  // Setup Delegated Background Sub-Tab Clicks
+  // Setup Delegated Background & Appearance Sub-Tab Clicks
   sidebar.addEventListener("click", (e) => {
-    const subTabBtn = e.target.closest(".bg-subtab-btn")
-    if (subTabBtn) {
-      const subTabId = subTabBtn.getAttribute("data-bg-subtab")
+    const bgSubTabBtn = e.target.closest(".bg-subtab-btn")
+    if (bgSubTabBtn) {
+      const subTabId = bgSubTabBtn.getAttribute("data-bg-subtab")
       if (subTabId) {
         switchBgSubTab(subTabId)
       }

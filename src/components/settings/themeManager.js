@@ -636,7 +636,7 @@ export function initThemeManager(
   const showAllThemesBtn = document.getElementById("themes-show-all-btn")
   const updateShowAllButtonText = () => {
     if (!showAllThemesBtn || !DOM.themesGrid) return
-    const allCount = DOM.themesGrid.querySelectorAll(".theme-item").length
+    const allCount = DOM.themesGrid.querySelectorAll(".theme-item:not(.theme-filter-hidden)").length
     const isExpanded = DOM.themesGrid.classList.contains("show-all")
     const icon = showAllThemesBtn.querySelector("i")
     const textSpan = showAllThemesBtn.querySelector("span")
@@ -656,6 +656,40 @@ export function initThemeManager(
         textSpan.textContent = template.replace("{count}", allCount)
       }
     }
+  }
+
+  // Theme Category Filter Pills (Appearance 2.0)
+  const categoryFilterBar = document.getElementById("theme-category-filter-bar")
+  if (categoryFilterBar && DOM.themesGrid) {
+    categoryFilterBar.addEventListener("click", (e) => {
+      const pill = e.target.closest(".theme-filter-pill")
+      if (!pill) return
+
+      categoryFilterBar.querySelectorAll(".theme-filter-pill").forEach((p) => p.classList.remove("active"))
+      pill.classList.add("active")
+
+      const filterCategory = pill.getAttribute("data-theme-filter") || "all"
+      const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
+
+      themeItems.forEach((item) => {
+        if (filterCategory === "all") {
+          item.classList.remove("theme-filter-hidden")
+        } else if (filterCategory === "custom") {
+          const isCustom = item.dataset.theme?.startsWith("user-")
+          item.classList.toggle("theme-filter-hidden", !isCustom)
+        } else {
+          const itemCategories = (item.getAttribute("data-category") || "").split(",").map((c) => c.trim())
+          const matches = itemCategories.includes(filterCategory)
+          item.classList.toggle("theme-filter-hidden", !matches)
+        }
+      })
+
+      // When filtering, automatically show all matching items in the filtered category
+      if (filterCategory !== "all") {
+        DOM.themesGrid.classList.add("show-all")
+      }
+      updateShowAllButtonText()
+    })
   }
 
   if (showAllThemesBtn) {
