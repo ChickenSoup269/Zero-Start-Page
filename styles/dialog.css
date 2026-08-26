@@ -1876,3 +1876,259 @@ kbd {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* Font Awesome Icon Picker Modal */
+#fa-icon-picker-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+}
+
+.fa-picker-dialog {
+  background: var(--settings-bg, #1a1a2e);
+  border: 1px solid var(--input-border, rgba(255, 255, 255, 0.12));
+  border-radius: 18px;
+  padding: 0;
+  width: min(520px, 94vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.fa-picker-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fa-picker-header-title {
+  font-size: 1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.fa-picker-close-btn {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.fa-picker-search-bar {
+  padding: 12px 20px 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.fa-picker-search-input-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.fa-picker-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.fa-picker-search-input {
+  width: 100%;
+  padding: 0.45rem 0.5rem 0.45rem 2rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #e8e8f0;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.fa-picker-cat-select {
+  padding: 0.4rem 0.6rem;
+  background: #1e1e38;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  color: #e8e8f0;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  max-width: 130px;
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+.fa-picker-grid {
+  overflow-y: auto;
+  padding: 10px 16px 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 6px;
+  flex: 1;
+  min-height: 200px;
+  scrollbar-width: thin;
+}
+
+.fa-picker-footer {
+  padding: 10px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fa-picker-count {
+  opacity: 0.5;
+  font-size: 0.78rem;
+}
+
+.fa-picker-clear-btn {
+  background: rgba(255, 60, 60, 0.15);
+  border: 1px solid rgba(255, 60, 60, 0.25);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  transition: background 0.2s;
+}
+
+/* Donate and QR Modals */
+.donate-modal-content {
+  max-width: 420px;
+}
+
+.donate-btn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.donate-kofi-btn {
+  flex: 1 1 0;
+  width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  background: #29abe0;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.donate-momo-btn {
+  flex: 1 1 0;
+  width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #a50064;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.momo-qr-popup-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 0;
+  border-radius: 20px;
+  box-shadow: 0 30px 120px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  z-index: 100100;
+  max-height: 90vh;
+  overflow: hidden;
+  width: 320px;
+  animation: dialogSlideIn 0.3s ease;
+}
+
+.momo-qr-popup-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.momo-qr-popup-banner {
+  background: #a50064;
+  color: #fff;
+  padding: 14px 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.qr-modal-body-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+}
+
+.qr-code-img-styled {
+  width: 250px;
+  height: 250px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.qr-code-icon-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 6px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.qr-code-icon-badge img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
