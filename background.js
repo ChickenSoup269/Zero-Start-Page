@@ -463,8 +463,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (tabs.length > 0) {
         const tab = tabs[0]
         rememberKnownMediaTab(tab)
-        if (mediaStates[tab.id]) {
-          sendResponse({ audible: true, ...mediaStates[tab.id] })
+        const cached = mediaStates[tab.id]
+        if (cached && Date.now() - (cached.lastUpdated || 0) < 1500) {
+          sendResponse({ audible: true, ...cached })
           return
         }
         getMediaFromTab(tab.id, sendResponse)
@@ -521,8 +522,9 @@ function getKnownMediaTabPriority(tab, preferredSource = "") {
 function getMediaFromAnyKnownTab(sendResponse) {
   getRememberedKnownMediaTab((cachedTab) => {
     if (cachedTab) {
-      if (mediaStates[cachedTab.id]) {
-        sendResponse({ audible: true, ...mediaStates[cachedTab.id] })
+      const cached = mediaStates[cachedTab.id]
+      if (cached && Date.now() - (cached.lastUpdated || 0) < 1500) {
+        sendResponse({ audible: true, ...cached })
         return
       }
       getMediaFromTab(cachedTab.id, sendResponse)
@@ -537,8 +539,9 @@ function getMediaFromAnyKnownTab(sendResponse) {
         )[0]
       if (tab) {
         rememberKnownMediaTab(tab)
-        if (mediaStates[tab.id]) {
-          sendResponse({ audible: true, ...mediaStates[tab.id] })
+        const cached = mediaStates[tab.id]
+        if (cached && Date.now() - (cached.lastUpdated || 0) < 1500) {
+          sendResponse({ audible: true, ...cached })
           return
         }
         getMediaFromTab(tab.id, sendResponse)
@@ -923,18 +926,25 @@ function getMediaFromTab(tabId, sendResponse) {
                 spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
                 navigator.mediaSession?.playbackState === "playing"),
           )
+          const zingPlayButton = document.querySelector(
+            ".player-controls__container .btn-play, .zm-btn.btn-play",
+          )
+          const soundCloudPlayButton = document.querySelector(
+            ".playControl, .playControls__play, button[title*='Play' i], button[title*='Pause' i]",
+          )
           const paused =
             isSpotify
               ? !spotifyIsPlaying
-              : mediaState === "playing"
+              : navigator.mediaSession?.playbackState === "playing"
                 ? false
-                : mediaState === "paused"
+                : navigator.mediaSession?.playbackState === "paused"
                   ? true
                   : isZing
                     ? !zingPlayButton?.classList.contains("is-playing") &&
                       !zingPlayButton?.classList.contains("playing")
                     : isSoundCloud
-                      ? !soundCloudPlayButton?.classList.contains("playing")
+                      ? !soundCloudPlayButton?.classList.contains("playing") &&
+                        !soundCloudPlayButton?.classList.contains("playControls__play--playing")
                       : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()

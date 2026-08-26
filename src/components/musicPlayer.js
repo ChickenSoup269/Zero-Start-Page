@@ -154,13 +154,11 @@ export class MusicPlayer {
     this._messageListener = (request, sender, sendResponse) => {
       if (this._destroyed) return
       if (request.action === "mediaStateUpdatedBroadcast") {
-        if (this.showPlayer && this.isVisible) {
-          if (request.state && request.state.url) {
-            this.inactivePollCount = 0
-            this.updateUI(request.state)
-          } else {
-            this.setInactive()
-          }
+        if (request.state && (request.state.title || request.state.url)) {
+          this.inactivePollCount = 0
+          this.updateUI(request.state)
+        } else {
+          this.setInactive()
         }
       }
     }
@@ -871,7 +869,6 @@ export class MusicPlayer {
         if (
           !this._destroyed &&
           this.showPlayer &&
-          this.isVisible &&
           document.visibilityState === "visible"
         ) {
           this.syncMediaState()
@@ -890,7 +887,6 @@ export class MusicPlayer {
 
   syncMediaState() {
     if (this._destroyed) return
-    if (!this.showPlayer || !this.isVisible) return
     if (document.visibilityState === "hidden") return
     if (this._mediaStatePending) return
     this._mediaStatePending = true
@@ -903,7 +899,7 @@ export class MusicPlayer {
           this.setInactive()
           return
         }
-        if (response && response.audible) {
+        if (response && (response.audible || response.title || (response.url && !response.paused))) {
           this.inactivePollCount = 0
           this.updateUI(response)
         } else {
@@ -945,6 +941,8 @@ export class MusicPlayer {
     this.titleElement.textContent =
       data.title || i18n.music_unknown_title || "Unknown Title"
 
+    window._currentPlayingTrackTitle = data.title || ""
+
     // Update artist text and platform icon
     const artist = data.artist || i18n.music_unknown_artist || "Unknown Artist"
     this.artistText.textContent = artist
@@ -957,6 +955,7 @@ export class MusicPlayer {
     this.isPlaying = !data.paused
     localStorage.setItem("musicPlayerLastIsPlaying", this.isPlaying ? "true" : "false")
     window.dispatchEvent(new CustomEvent("musicPlayingStateChange", { detail: this.isPlaying }))
+    window.dispatchEvent(new CustomEvent("musicTrackChange", { detail: { title: data.title || "", artist: artist, isPlaying: this.isPlaying } }))
 
     const btn = document.getElementById("play-pause-btn")
     if (btn) {
@@ -1128,7 +1127,10 @@ export class MusicPlayer {
     this.platformIcon.style.display = "none"
     this.lastSourceMeta = null
     this.isPlaying = false
+    window._currentPlayingTrackTitle = ""
     localStorage.setItem("musicPlayerLastIsPlaying", "false")
+    window.dispatchEvent(new CustomEvent("musicPlayingStateChange", { detail: false }))
+    window.dispatchEvent(new CustomEvent("musicTrackChange", { detail: { title: "", artist: "", isPlaying: false } }))
     this.disc.classList.remove("playing")
     this.disc.style.backgroundImage = "none"
     this.currentThumbnail = ""

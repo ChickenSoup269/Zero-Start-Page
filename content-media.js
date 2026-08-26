@@ -114,18 +114,22 @@
             spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
             navigator.mediaSession?.playbackState === "playing"),
       )
+      const soundCloudPlayButton = document.querySelector(
+        ".playControl, .playControls__play, button[title*='Play' i], button[title*='Pause' i]",
+      )
       const paused =
         isSpotify
           ? !spotifyIsPlaying
-          : mediaState === "playing"
+          : navigator.mediaSession?.playbackState === "playing"
             ? false
-            : mediaState === "paused"
+            : navigator.mediaSession?.playbackState === "paused"
               ? true
               : isZing
                 ? !zingPlayButton?.classList.contains("is-playing") &&
                   !zingPlayButton?.classList.contains("playing")
                 : isSoundCloud
-                  ? !soundCloudPlayButton?.classList.contains("playing")
+                  ? !soundCloudPlayButton?.classList.contains("playing") &&
+                    !soundCloudPlayButton?.classList.contains("playControls__play--playing")
                   : playPauseLabel.includes("play")
       return { currentTime, duration, paused }
     })()
@@ -496,7 +500,7 @@
     setTimeout(() => sendStateUpdate(true), 150)
   })
 
-  // Hook into MediaSession metadata setter if available
+  // Hook into MediaSession metadata and playbackState setter if available
   if ("mediaSession" in navigator) {
     try {
       let origMetadata = navigator.mediaSession.metadata
@@ -506,13 +510,62 @@
         },
         set(v) {
           origMetadata = v
-          setTimeout(() => sendStateUpdate(true), 100)
+          setTimeout(() => sendStateUpdate(true), 50)
+        },
+        configurable: true,
+        enumerable: true,
+      })
+
+      let origPlaybackState = navigator.mediaSession.playbackState
+      Object.defineProperty(navigator.mediaSession, "playbackState", {
+        get() {
+          return origPlaybackState
+        },
+        set(v) {
+          origPlaybackState = v
+          setTimeout(() => sendStateUpdate(true), 50)
         },
         configurable: true,
         enumerable: true,
       })
     } catch (_) {}
   }
+
+  // Observe active player container elements for SPA track changes (Spotify, Zing, SoundCloud, YouTube Music)
+  let domObserverTimeout = null
+  const scheduleDOMCheck = () => {
+    if (domObserverTimeout) return
+    domObserverTimeout = setTimeout(() => {
+      domObserverTimeout = null
+      sendStateUpdate(false)
+    }, 200)
+  }
+
+  const observePlayerContainers = () => {
+    const playerSelectors = [
+      '[data-testid="now-playing-widget"]',
+      ".player-controls__container",
+      ".now-playing",
+      ".playControls",
+      ".playbackSoundBadge",
+      "ytmusic-player-bar",
+      "h1.ytd-watch-metadata",
+      "#movie_player",
+      ".web-chrome-playback-lcd",
+      ".box_playing",
+    ]
+    playerSelectors.forEach((sel) => {
+      const el = document.querySelector(sel)
+      if (el && !el._extObserved) {
+        el._extObserved = true
+        const obs = new MutationObserver(() => scheduleDOMCheck())
+        obs.observe(el, { childList: true, subtree: true, characterData: true, attributes: true })
+      }
+    })
+  }
+
+  observePlayerContainers()
+  setInterval(observePlayerContainers, 3000)
 
   // Listen for control commands from background script
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
