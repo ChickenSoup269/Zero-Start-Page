@@ -6913,27 +6913,26 @@ body.quick-access-white .timer-container .pomodoro-stats .pomodoro-icon {
 }
 
 .context-menu-item {
-  padding: 6px 10px;
+  min-height: 30px;
+  padding: 6px 11px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 13.5px;
   cursor: pointer;
   border-radius: 6px;
-  transition: none !important;
+  transition: background-color 0.06s ease, color 0.06s ease;
 }
 
 .context-menu-item:hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
   color: var(--accent-color) !important;
-  transition: none !important;
 }
 
 .context-menu-item.danger:hover {
   background: rgba(255, 80, 80, 0.2) !important;
   color: #ff5555 !important;
-  transition: none !important;
 }
 
 .context-menu-divider {
@@ -15438,7 +15437,7 @@ body.bookmark-group-border-hidden
   color: var(--bookmark-group-icon-color) !important;
 }
 
-/* Keep every context-style menu feeling immediate and lag-free */
+/* Keep every context-style menu feeling immediate and snappy */
 #context-menu .context-menu-item,
 #context-menu .menu-item,
 .context-menu .context-menu-item,
@@ -15451,7 +15450,7 @@ body.bookmark-group-border-hidden
 .context-menu .menu-item i,
 .calendar-context-menu .context-menu-item i,
 .calendar-context-menu .menu-item i {
-  transition: none !important;
+  transition: background-color 0.06s ease, color 0.06s ease;
 }
 
 .g-apps-context-menu .g-apps-menu-btn,

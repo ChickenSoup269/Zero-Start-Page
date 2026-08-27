@@ -3560,6 +3560,7 @@ export function initMacosHoverForBookmarks(isEnabled) {
 let mouseX = 0,
   mouseY = 0
 let isHoveringContainer = false
+let wasHoveringContainer = false
 let rafId = null
 
 let cachedMacosItems = null
@@ -3567,13 +3568,22 @@ let horizontalScrollCache = new WeakMap()
 
 function updateMacosHover() {
   if (!macosHoverEnabled || !isHoveringContainer) {
-    const bookmarks = document.querySelectorAll(".bookmark")
-    bookmarks.forEach((item) => {
-      if (item.style.transform !== "") {
-        item.style.removeProperty("transform")
-        item.style.zIndex = ""
-      }
-    })
+    if (cachedMacosItems && cachedMacosItems.length > 0) {
+      cachedMacosItems.forEach(({ item }) => {
+        if (item && item.style.transform !== "") {
+          item.style.removeProperty("transform")
+          item.style.zIndex = ""
+        }
+      })
+    } else {
+      const bookmarks = document.querySelectorAll(".bookmark")
+      bookmarks.forEach((item) => {
+        if (item.style.transform !== "") {
+          item.style.removeProperty("transform")
+          item.style.zIndex = ""
+        }
+      })
+    }
     const globalTooltip = document.getElementById("macos-global-tooltip")
     if (globalTooltip) {
       globalTooltip.classList.remove("show")
@@ -3774,9 +3784,11 @@ document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX
     mouseY = e.clientY
     isHoveringContainer = true
+    wasHoveringContainer = true
     if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
-  } else {
+  } else if (wasHoveringContainer) {
     isHoveringContainer = false
+    wasHoveringContainer = false
     if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   }
 }, { passive: true })

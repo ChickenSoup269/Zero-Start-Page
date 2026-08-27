@@ -1056,10 +1056,10 @@ body.context-menu-macos .bookmark-edit-field {
 .context-menu {
   display: none;
   position: fixed;
-  min-width: 200px;
+  min-width: 225px;
   width: max-content;
-  max-width: 260px;
-  padding: 5px;
+  max-width: 320px;
+  padding: 6px 7px;
   z-index: 10001;
   overflow: clip;
   animation: contextMenuIn 0.05s ease-out;
@@ -1076,18 +1076,17 @@ body.context-menu-macos .bookmark-edit-field {
     rgba(12, 14, 20, 0.98) 100%
   ) !important;
   border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.35) !important;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.65),
     0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.18),
     0 0 20px rgba(var(--accent-color-rgb, 99, 102, 241), 0.1) !important;
 }
 
-.context-menu *,
-.menu-item,
 .context-menu-item,
+.menu-item,
 .custom-music-item {
-  transition: none !important;
+  transition: background-color 0.06s ease, color 0.06s ease;
 }
 
 .bookmark-stack-popup {
@@ -1107,8 +1106,8 @@ body.context-menu-macos .bookmark-edit-field {
 
 /* Header inside context menu */
 .context-menu-header {
-  padding: 4px 8px 2px 8px;
-  font-size: 0.68rem;
+  padding: 6px 10px 4px 10px;
+  font-size: 0.74rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1125,58 +1124,57 @@ body.context-menu-macos .bookmark-edit-field {
 
 body.context-menu-light .context-menu-header,
 body.context-menu-light #context-menu .context-menu-header {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #0f172a !important;
   letter-spacing: 0.05em;
   border-bottom: none !important;
-  padding: 4px 8px 2px 8px !important;
+  padding: 6px 10px 4px 10px !important;
 }
 
 body.context-menu-macos .context-menu-header,
 body.context-menu-macos #context-menu .context-menu-header {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: rgba(20, 20, 24, 0.5) !important;
   letter-spacing: 0.05em;
   border-bottom: none !important;
-  padding: 4px 8px 2px 8px !important;
+  padding: 6px 10px 4px 10px !important;
 }
 
 body.context-menu-none .context-menu-header,
 body.context-menu-none #context-menu .context-menu-header {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: rgba(15, 23, 42, 0.85);
   letter-spacing: 0.05em;
   border-bottom: none !important;
-  padding: 4px 8px 2px 8px !important;
+  padding: 6px 10px 4px 10px !important;
 }
 
 /* Divider inside context menu */
 .context-menu-divider {
   height: 1px;
   background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.18) !important;
-  margin: 3px 4px;
+  margin: 4px 6px;
 }
 
 .menu-item,
 .context-menu-item {
-  min-height: 26px;
-  margin: 1px 0;
-  padding: 5px 9px;
+  min-height: 30px;
+  margin: 1.5px 0;
+  padding: 6px 11px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.92);
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 5px;
+  gap: 9px;
+  border-radius: 6px;
   line-height: 1.25;
   letter-spacing: 0;
   white-space: nowrap;
-  transition: none !important;
   position: relative;
 }
 
@@ -1189,13 +1187,13 @@ body.context-menu-none #context-menu .context-menu-header {
 
 .menu-item i,
 .context-menu-item i {
-  width: 16px;
+  width: 18px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--accent-color, #818cf8) !important;
   opacity: 0.92;
   flex-shrink: 0;
-  transition: none !important;
+  transition: color 0.06s ease;
 }
 
 #context-menu .menu-item:hover,
@@ -1207,7 +1205,6 @@ body.context-menu-none #context-menu .context-menu-header {
   background: var(--accent-color, #6366f1) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   box-shadow: none !important;
-  transition: none !important;
 }
 
 #context-menu .menu-item:hover i,
@@ -1218,7 +1215,6 @@ body.context-menu-none #context-menu .context-menu-header {
 .context-menu-item:hover i {
   color: var(--accent-contrast-color, #ffffff) !important;
   opacity: 1 !important;
-  transition: none !important;
 }
 
 .menu-item:active,
@@ -1260,9 +1256,10 @@ body.context-menu-none #context-menu .context-menu-header {
 body.context-menu-light .context-menu,
 body.context-menu-light #context-menu,
 body.context-menu-light .calendar-context-menu {
-  min-width: 200px;
-  padding: 5px !important;
-  border-radius: 8px !important;
+  min-width: 225px;
+  max-width: 320px;
+  padding: 6px 7px !important;
+  border-radius: 10px !important;
   background: rgba(255, 255, 255, 0.96) !important;
   backdrop-filter: blur(28px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
@@ -1285,27 +1282,26 @@ body.context-menu-light .menu-item,
 body.context-menu-light .context-menu-item,
 body.context-menu-light #context-menu .menu-item,
 body.context-menu-light #context-menu .context-menu-item {
-  min-height: 26px;
-  margin: 1px 0;
-  padding: 5px 9px !important;
-  border-radius: 5px !important;
+  min-height: 30px;
+  margin: 1.5px 0;
+  padding: 6px 11px !important;
+  border-radius: 6px !important;
   color: #0f172a !important;
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   line-height: 1.25;
   font-weight: 400;
   letter-spacing: 0;
-  gap: 8px !important;
-  transition: none !important;
+  gap: 9px !important;
 }
 
 body.context-menu-light .menu-item i,
 body.context-menu-light .context-menu-item i,
 body.context-menu-light #context-menu .menu-item i,
 body.context-menu-light #context-menu .context-menu-item i {
-  width: 16px;
-  font-size: 12px;
+  width: 18px;
+  font-size: 13px;
   color: #475569 !important;
-  transition: none !important;
+  transition: color 0.06s ease;
 }
 
 /* Light Glass: Auto hover bg đen (#0f172a), chữ trắng (#ffffff), icon trắng (#ffffff) */
@@ -1316,7 +1312,6 @@ body.context-menu-light #context-menu .context-menu-item:hover {
   background: #0f172a !important;
   color: #ffffff !important;
   box-shadow: none !important;
-  transition: none !important;
 }
 
 body.context-menu-light .menu-item:hover i,
@@ -1325,7 +1320,6 @@ body.context-menu-light #context-menu .menu-item:hover i,
 body.context-menu-light #context-menu .context-menu-item:hover i {
   color: #ffffff !important;
   opacity: 1 !important;
-  transition: none !important;
 }
 
 body.context-menu-light .menu-item:active,
@@ -1385,16 +1379,17 @@ body.context-menu-light #context-menu .context-menu-divider,
 body.context-menu-light .context-menu-separator {
   height: 1px;
   background: rgba(0, 0, 0, 0.1) !important;
-  margin: 3px 4px !important;
+  margin: 4px 6px !important;
 }
 
 /* ── macOS variant ── */
 body.context-menu-macos .context-menu,
 body.context-menu-macos #context-menu,
 body.context-menu-macos .calendar-context-menu {
-  min-width: 200px;
-  padding: 5px !important;
-  border-radius: 8px !important;
+  min-width: 225px;
+  max-width: 320px;
+  padding: 6px 7px !important;
+  border-radius: 10px !important;
   background: rgba(246, 246, 248, 0.82) !important;
   backdrop-filter: blur(38px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(38px) saturate(190%) !important;
@@ -1434,27 +1429,26 @@ body.context-menu-macos .menu-item,
 body.context-menu-macos .context-menu-item,
 body.context-menu-macos #context-menu .menu-item,
 body.context-menu-macos #context-menu .context-menu-item {
-  min-height: 26px;
-  margin: 1px 0;
-  padding: 5px 9px !important;
-  border-radius: 5px !important;
+  min-height: 30px;
+  margin: 1.5px 0;
+  padding: 6px 11px !important;
+  border-radius: 6px !important;
   color: rgba(20, 20, 24, 0.94) !important;
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   line-height: 1.25;
   font-weight: 400;
   letter-spacing: 0;
-  gap: 8px !important;
-  transition: none !important;
+  gap: 9px !important;
 }
 
 body.context-menu-macos .menu-item i,
 body.context-menu-macos .context-menu-item i,
 body.context-menu-macos #context-menu .menu-item i,
 body.context-menu-macos #context-menu .context-menu-item i {
-  width: 16px;
-  font-size: 12px;
+  width: 18px;
+  font-size: 13px;
   color: rgba(20, 20, 24, 0.62) !important;
-  transition: none !important;
+  transition: color 0.06s ease;
 }
 
 /* macOS: Hover xanh dương đặc trưng (#007aff), chữ trắng (#ffffff), icon trắng (#ffffff) */
@@ -1466,7 +1460,6 @@ body.context-menu-macos #context-menu .context-menu-item:hover {
   color: #ffffff !important;
   box-shadow: none !important;
   transform: none;
-  transition: none !important;
 }
 
 body.context-menu-macos .menu-item:hover i,
@@ -1476,7 +1469,6 @@ body.context-menu-macos #context-menu .context-menu-item:hover i {
   color: #ffffff !important;
   transform: none;
   opacity: 1 !important;
-  transition: none !important;
 }
 
 body.context-menu-macos .menu-item:active,
@@ -1537,16 +1529,17 @@ body.context-menu-macos #context-menu .context-menu-divider,
 body.context-menu-macos .context-menu-separator {
   height: 1px;
   background: rgba(60, 60, 67, 0.18) !important;
-  margin: 3px 4px !important;
+  margin: 4px 6px !important;
 }
 
 /* Transparent variant */
 body.context-menu-none .context-menu,
 body.context-menu-none #context-menu,
 body.context-menu-none .calendar-context-menu {
-  min-width: 200px;
-  padding: 5px !important;
-  border-radius: 8px !important;
+  min-width: 225px;
+  max-width: 320px;
+  padding: 6px 7px !important;
+  border-radius: 10px !important;
   background: rgba(16, 20, 32, 0.72) !important;
   backdrop-filter: blur(28px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
@@ -1572,28 +1565,27 @@ body.context-menu-none .menu-item,
 body.context-menu-none .context-menu-item,
 body.context-menu-none #context-menu .menu-item,
 body.context-menu-none #context-menu .context-menu-item {
-  min-height: 26px;
-  margin: 1px 0;
-  padding: 5px 9px !important;
-  border-radius: 5px !important;
+  min-height: 30px;
+  margin: 1.5px 0;
+  padding: 6px 11px !important;
+  border-radius: 6px !important;
   color: rgba(255, 255, 255, 0.92) !important;
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   line-height: 1.25;
   font-weight: 400;
   letter-spacing: 0;
-  gap: 8px !important;
+  gap: 9px !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: none !important;
 }
 
 body.context-menu-none .menu-item i,
 body.context-menu-none .context-menu-item i,
 body.context-menu-none #context-menu .menu-item i,
 body.context-menu-none #context-menu .context-menu-item i {
-  width: 16px;
-  font-size: 12px;
+  width: 18px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.75) !important;
-  transition: none !important;
+  transition: color 0.06s ease;
 }
 
 body.context-menu-none .menu-item:hover,
@@ -1603,7 +1595,6 @@ body.context-menu-none #context-menu .context-menu-item:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;
   box-shadow: none !important;
-  transition: none !important;
 }
 
 body.context-menu-none .menu-item:hover i,
@@ -1612,7 +1603,6 @@ body.context-menu-none #context-menu .menu-item:hover i,
 body.context-menu-none #context-menu .context-menu-item:hover i {
   color: #ffffff !important;
   opacity: 1 !important;
-  transition: none !important;
 }
 
 body.context-menu-none .menu-item:active,
