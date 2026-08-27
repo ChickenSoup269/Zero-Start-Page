@@ -599,11 +599,61 @@ export function initSidebarNavigation() {
     })
   }
 
-  // Global Keyboard Shortcuts when Sidebar is Open
+  // Global Keyboard Shortcuts for Settings Sidebar
   document.addEventListener("keydown", (e) => {
+    // 1. Ctrl+, / Cmd+, or Alt+S toggles sidebar globally
+    if (
+      ((e.ctrlKey || e.metaKey) && (e.key === "," || e.key === "<")) ||
+      (e.altKey && (e.key.toLowerCase() === "s" || e.key === "đ"))
+    ) {
+      e.preventDefault()
+      const toggleBtn = document.getElementById("settings-toggle")
+      if (toggleBtn) toggleBtn.click()
+      return
+    }
+
     if (!sidebar.classList.contains("open")) return
 
-    // Ctrl+F or Cmd+F inside settings sidebar focuses search
+    // 2. Escape closes sidebar if no active modal / dialog
+    if (e.key === "Escape") {
+      const activeModal = document.querySelector(
+        ".modal.show, .custom-dialog-overlay.active, .lcp-dropdown.open",
+      )
+      if (activeModal) return // Let modal's own escape handler close modal first
+
+      if (
+        searchInput &&
+        searchInput.value.trim() !== "" &&
+        document.activeElement === searchInput
+      ) {
+        searchInput.value = ""
+        exitSearchMode()
+        return
+      }
+
+      e.preventDefault()
+      const closeBtn = document.getElementById("close-settings")
+      if (closeBtn) closeBtn.click()
+      else sidebar.classList.remove("open")
+      return
+    }
+
+    // 3. / focuses search if not in another text input
+    if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const activeTag = document.activeElement?.tagName?.toLowerCase()
+      const isTyping =
+        activeTag === "input" ||
+        activeTag === "textarea" ||
+        document.activeElement?.isContentEditable
+      if (!isTyping && searchInput) {
+        e.preventDefault()
+        searchInput.focus()
+        searchInput.select()
+        return
+      }
+    }
+
+    // 4. Ctrl+F or Cmd+F inside settings sidebar focuses search
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
       const isTargetInsideSidebar = sidebar.contains(document.activeElement)
       if (isTargetInsideSidebar || document.activeElement === document.body) {
@@ -655,61 +705,7 @@ export function initSidebarNavigation() {
     observer.observe(sidebarContent, { childList: true })
   }
 
-  if (sidebarContent && navContainer) {
-    let scrollIdleTimer = null
-    let scrollRafId = null
 
-    const handleScroll = () => {
-      scrollRafId = null
-      // If user manually hid the navigation, do not auto-reveal
-      if (isManuallyHidden) return
-
-      // If at the very top or search input is focused, stay visible
-      if (
-        sidebarContent.scrollTop <= 15 ||
-        (searchInput && searchInput === document.activeElement)
-      ) {
-        if (navContainer.classList.contains("nav-hidden")) {
-          navContainer.classList.remove("nav-hidden")
-        }
-        clearTimeout(scrollIdleTimer)
-        return
-      }
-
-      // Hide immediately when scrolling starts (only if not already hidden)
-      if (!navContainer.classList.contains("nav-hidden")) {
-        navContainer.classList.add("nav-hidden")
-      }
-
-      // 0.5s after user stops scrolling (idle), slide back down smoothly
-      clearTimeout(scrollIdleTimer)
-      scrollIdleTimer = setTimeout(() => {
-        if (!isManuallyHidden) {
-          navContainer.classList.remove("nav-hidden")
-        }
-      }, 500)
-    }
-
-    sidebarContent.addEventListener(
-      "scroll",
-      () => {
-        if (!scrollRafId) {
-          scrollRafId = requestAnimationFrame(handleScroll)
-        }
-      },
-      { passive: true },
-    )
-
-    // Hovering over the header or top area reveals the nav immediately (if not manually hidden)
-    if (sidebarHeader) {
-      sidebarHeader.addEventListener("mouseenter", () => {
-        if (!isManuallyHidden) {
-          navContainer.classList.remove("nav-hidden")
-          clearTimeout(scrollIdleTimer)
-        }
-      })
-    }
-  }
 
   // Setup Manual Toggle Button (Chevron Icon)
   const navToggleBtn = document.getElementById("settings-nav-toggle")

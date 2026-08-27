@@ -394,7 +394,7 @@
   backdrop-filter: blur(30px) saturate(160%);
   -webkit-backdrop-filter: blur(30px) saturate(160%);
   box-shadow: 10px 0 40px rgba(0, 0, 0, 0.6);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10000;
   color: #fff;
   display: flex;
@@ -403,7 +403,8 @@
   box-sizing: border-box;
   overflow: hidden;
   will-change: transform;
-  content-visibility: auto;
+  isolation: isolate;
+  contain: paint;
 }
 
 body.sidebar-m3-accent .settings-sidebar {
@@ -419,7 +420,6 @@ body.sidebar-m3-accent .settings-sidebar {
   box-sizing: border-box;
   transition: padding-top 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateZ(0);
-  will-change: scroll-position;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -449,13 +449,6 @@ body.sidebar-m3-accent .settings-sidebar {
   width: 100% !important;
   box-sizing: border-box !important;
   overflow-x: hidden;
-  content-visibility: auto;
-  contain: content;
-  contain-intrinsic-size: 0 350px;
-}
-
-.settings-section.collapsed {
-  contain-intrinsic-size: 0 52px;
 }
 
 /* Scroll Alignment Margin to clear sticky nav header */
@@ -1097,7 +1090,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
 }
 
 .settings-sidebar.nav-collapsed .sidebar-nav-toggle-btn i,
-.settings-sidebar:has(.settings-nav-container.nav-hidden) .sidebar-nav-toggle-btn i {
+.settings-sidebar.nav-hidden .sidebar-nav-toggle-btn i {
   transform: rotate(180deg);
   color: var(--accent-color, #a8c0ff);
 }
@@ -4111,7 +4104,74 @@ body.sidebar-light .settings-select option {
   text-decoration: none;
 }
 
-.custom-font-action-btn,
+.custom-font-btn-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.custom-font-action-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+  transition:
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.custom-font-action-btn i {
+  font-size: 0.85rem;
+}
+
+.custom-font-load-btn {
+  background: var(--accent-color);
+  color: #000;
+  font-weight: 600;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+}
+
+.custom-font-load-btn:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--accent-color) 88%, white) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+}
+
+.custom-font-load-btn:active {
+  transform: translateY(0);
+}
+
+.custom-font-save-btn {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
+  color: var(--text-color, #fff);
+  border: 1px solid var(--input-border, rgba(255, 255, 255, 0.15));
+}
+
+.custom-font-save-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.36) !important;
+  color: var(--accent-color) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.custom-font-save-btn:active {
+  transform: translateY(0);
+}
+
 .browse-local-fonts-action-btn {
   transition:
     transform 0.2s ease,
@@ -4121,20 +4181,27 @@ body.sidebar-light .settings-select option {
     color 0.2s ease;
 }
 
-.custom-font-action-btn:hover,
 .browse-local-fonts-action-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-}
-
-.custom-font-load-btn:hover {
-  background: color-mix(in srgb, var(--accent-color) 88%, white) !important;
-}
-
-.custom-font-save-btn:hover,
-.browse-local-fonts-action-btn:hover {
   background: rgba(var(--accent-color-rgb), 0.14) !important;
   border-color: rgba(var(--accent-color-rgb), 0.36) !important;
+  color: var(--accent-color) !important;
+}
+
+body.sidebar-light .custom-font-load-btn {
+  color: #fff !important;
+}
+
+body.sidebar-light .custom-font-save-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #222;
+}
+
+body.sidebar-light .custom-font-save-btn:hover {
+  background: rgba(var(--accent-color-rgb, 90, 100, 240), 0.1) !important;
+  border-color: var(--accent-color) !important;
   color: var(--accent-color) !important;
 }
 
@@ -4545,10 +4612,9 @@ body.sidebar-light .settings-select option {
   cursor: pointer;
   border: 2px solid transparent;
   transition:
-    transform 0.34s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.28s ease,
-    box-shadow 0.28s ease,
-    filter 0.28s ease;
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -4556,10 +4622,9 @@ body.sidebar-light .settings-select option {
   background-position: center;
   background-color: rgba(255, 255, 255, 0.05);
   box-sizing: border-box;
-  backface-visibility: hidden;
   contain: paint;
-  transform: translateZ(0);
-  will-change: transform;
+  content-visibility: auto;
+  contain-intrinsic-size: 150px 84px;
 }
 
 .local-bg-thumb {
@@ -4570,13 +4635,10 @@ body.sidebar-light .settings-select option {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: inherit;
-  transform: translateZ(0) scale(1.001);
   opacity: 0.96;
   transition:
-    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s ease;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease;
 }
 
 .local-bg-item:hover {
@@ -7962,10 +8024,12 @@ body.sidebar-light .remove-bg-btn:hover i {
   background-position: center;
   border-radius: var(--radius-md);
   cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: 180px 112px;
   transition:
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
   border: 2px solid transparent;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: relative;

@@ -21,6 +21,7 @@ import {
   getEnglishLanguageTemplate,
   normalizeLanguageCode,
   validateCustomLanguagePayload,
+  fetchRemoteLanguage,
 } from "../../services/i18n.js"
 import {
   getLanguageGuideOption,
@@ -1878,6 +1879,41 @@ export function setupGeneralEventHandlers(
     } catch (e) {
       showAlert(
         `${geti18n().language_invalid_json || "Invalid language JSON."}\n${e.message || ""}`,
+      )
+    }
+  })
+
+  DOM.downloadLanguageGithubBtn?.addEventListener("click", async () => {
+    const guide = getSelectedLanguageGuide()
+    const code = normalizeLanguageCode(
+      DOM.languageCodeInput?.value || guide.code,
+    )
+    if (!code) {
+      showAlert(geti18n().language_invalid_code || "Please select a language.")
+      return
+    }
+
+    const btn = DOM.downloadLanguageGithubBtn
+    const originalText = btn.innerHTML
+    try {
+      btn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+      btn.disabled = true
+
+      const remoteData = await fetchRemoteLanguage(code)
+      btn.innerHTML = originalText
+      btn.disabled = false
+
+      if (remoteData) {
+        await installCustomLanguage(remoteData)
+      }
+    } catch (e) {
+      if (btn) {
+        btn.innerHTML = originalText
+        btn.disabled = false
+      }
+      showAlert(
+        `${geti18n().language_download_error || "Could not download language file from GitHub."}\n\n${e.message || e}`,
       )
     }
   })

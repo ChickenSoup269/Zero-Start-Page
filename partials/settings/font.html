@@ -48,11 +48,17 @@
                 <input type="text" id="custom-font-input"
                     data-i18n-placeholder="settings_custom_font_placeholder"
                     placeholder="Enter font name (e.g., Pacifico)" class="custom-font-input" />
-                <div style="display: flex; gap: 0.5rem;">
+                <div class="custom-font-btn-row">
                     <button id="load-custom-font-btn" class="custom-font-action-btn custom-font-load-btn"
-                        data-i18n="settings_load_font">Load</button>
+                        data-i18n="settings_load_font">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                        <span>Load</span>
+                    </button>
                     <button id="save-font-btn" class="custom-font-action-btn custom-font-save-btn"
-                        data-i18n="settings_save_font">Save</button>
+                        data-i18n="settings_save_font">
+                        <i class="fa-solid fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
                 </div>
             </div>
             <small class="setting-hint" data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
