@@ -1213,12 +1213,15 @@ export function setupGeneralEventHandlers(
 
 
   // Sidebar toggle and close
-  DOM.settingsToggle.addEventListener("click", () =>
-    DOM.settingsSidebar.classList.add("open"),
-  )
-  DOM.closeSettings.addEventListener("click", () =>
-    DOM.settingsSidebar.classList.remove("open"),
-  )
+  DOM.settingsToggle.addEventListener("click", () => {
+    DOM.settingsSidebar.classList.add("open")
+    document.body.classList.add("sidebar-open")
+    document.getElementById("g-apps-dropdown")?.classList.remove("show")
+  })
+  DOM.closeSettings.addEventListener("click", () => {
+    DOM.settingsSidebar.classList.remove("open")
+    document.body.classList.remove("sidebar-open")
+  })
 
   const btnDonate = document.getElementById("donate-trigger-btn")
   const modDonate = document.getElementById("donate-modal")

@@ -119,6 +119,8 @@ export function setupLazyInitTriggers() {
       await ensureSettingsInitialized("open-settings")
       settingsToggle.classList.remove("is-loading")
       settingsSidebar?.classList.add("open")
+      document.body.classList.add("sidebar-open")
+      document.getElementById("g-apps-dropdown")?.classList.remove("show")
     },
     { capture: true },
   )
