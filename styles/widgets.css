@@ -1064,7 +1064,30 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
-  padding: 0 var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  max-height: min(440px, 52vh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+#bookmarks-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+#bookmarks-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#bookmarks-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+#bookmarks-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .bookmark,
@@ -17618,15 +17641,223 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
 
 /* === RESPONSIVE FIT (MAINTAINS FULL SIZES AT 90% & 100% ZOOM) === */
 @media (max-width: 768px) {
+  .search-container {
+    width: 100% !important;
+    max-width: min(92vw, 520px) !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .top-right-controls {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    right: max(8px, env(safe-area-inset-right, 8px));
+    gap: 4px;
+  }
+
+  .g-apps-dropdown {
+    width: min(320px, calc(100vw - 20px));
+    max-height: 75vh;
+  }
+
+  .side-controls {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    left: max(8px, env(safe-area-inset-left, 8px));
+  }
+
+  .bookmark-widget {
+    max-width: 100%;
+    width: 100%;
+  }
+
   #bookmarks-container {
     max-width: calc(100vw - 20px);
-    padding: 0 4px;
+    max-height: min(220px, 30vh) !important;
+    padding: 4px 6px;
+    gap: 6px 8px;
+    margin-top: 6px !important;
+  }
+
+  .bookmark-groups-container {
+    max-width: calc(100vw - 20px) !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    padding: 4px 8px !important;
+    margin-top: 6px !important;
+    margin-bottom: 8px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bookmark-groups-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .bookmark-group-tab {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   body.quick-access-horizontal .quick-access-bar {
     max-width: calc(100vw - 70px);
   }
 }
+
+@media (max-width: 600px) {
+  .side-controls {
+    top: max(8px, env(safe-area-inset-top, 8px)) !important;
+    left: max(8px, env(safe-area-inset-left, 8px)) !important;
+    z-index: 10040 !important;
+  }
+
+  .quick-access-bar:not(.collapsed) {
+    position: fixed !important;
+    top: max(58px, calc(env(safe-area-inset-top, 8px) + 50px)) !important;
+    left: max(8px, env(safe-area-inset-left, 8px)) !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    background: rgba(15, 18, 25, 0.94) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+    max-width: min(280px, calc(100vw - 24px)) !important;
+    max-height: min(440px, 75vh) !important;
+    overflow-y: auto !important;
+    z-index: 10045 !important;
+  }
+
+  .quick-access-bar:not(.collapsed) .quick-btn {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.25rem !important;
+  }
+
+  .quick-access-bar:not(.collapsed) .quick-btn:active {
+    transform: scale(0.92) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .quick-access-bar:not(.collapsed) .quick-btn.active {
+    background: var(--accent-color, #a8c0ff) !important;
+    color: var(--accent-contrast-color, #000) !important;
+  }
+
+  .quick-access-bar:not(.collapsed) .quick-access-divider {
+    display: none !important;
+  }
+
+  .quick-access-bar:not(.collapsed) #quick-access-collapse {
+    grid-column: span 3 !important;
+    width: 100% !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    max-width: calc(100vw - 20px) !important;
+    padding: 5px 10px;
+    border-radius: 16px;
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  #search-input {
+    font-size: 0.92rem;
+  }
+
+  .search-engine-selector .selected-engine {
+    width: 28px;
+    height: 28px;
+  }
+
+  .search-camera-btn,
+  .search-lens-btn,
+  .ai-btn,
+  .search-submit-btn,
+  .clear-btn {
+    padding: 4px;
+    font-size: 0.95rem;
+  }
+
+  #bookmark-selection-toolbar {
+    position: fixed !important;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    z-index: 10050 !important;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .selection-actions {
+    gap: 6px;
+  }
+
+  .selection-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+
+  .todo-container,
+  .weather-container,
+  .notepad-container,
+  .timer-container,
+  .rss-container,
+  .habit-tracker-container,
+  .quotes-container {
+    max-width: calc(100vw - 20px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    margin: 0 auto !important;
+    max-height: 80vh !important;
+  }
+
+  #bookmarks-container {
+    max-height: min(180px, 26vh) !important;
+    gap: 4px 6px !important;
+    margin-top: 4px !important;
+  }
+
+  .bookmark-groups-container {
+    margin-top: 4px !important;
+    margin-bottom: 6px !important;
+    padding: 3px 4px !important;
+  }
+
+  .bookmark {
+    width: calc(var(--bookmark-icon-size, 36px) + 12px) !important;
+  }
+
+  .bookmark-item {
+    min-height: 44px;
+    padding: 4px 2px;
+  }
+
+  .bookmark-item:active {
+    transform: scale(0.94);
+  }
+}
+
+
+
+
 
 
 

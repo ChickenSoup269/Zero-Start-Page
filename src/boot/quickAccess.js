@@ -245,7 +245,19 @@ export function setupQuickAccessCollapse() {
     : settings.language === "vi"
       ? "Thu gọn"
       : "Collapse"
+
+  // Auto-close on mobile when clicking outside
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 600 && !quickAccessBar.classList.contains("collapsed")) {
+      if (!quickAccessBar.contains(e.target) && !e.target.closest("#settings-toggle") && !e.target.closest("#quick-access-collapse")) {
+        quickAccessBar.classList.add("collapsed")
+        updateSetting("quickAccessCollapsed", true)
+        saveSettings()
+      }
+    }
+  })
 }
+
 
 // ── Drag & Drop reorder ──────────────────────────────────────────────────────
 function getAnchor(quickAccessBar) {
