@@ -2879,7 +2879,7 @@ function handleLock() {
 }
 
 export function initContextMenu() {
-  menuSelect.addEventListener("click", (e) => {
+  menuSelect?.addEventListener("click", (e) => {
     e.stopPropagation()
     if (contextMenuCallbacks && contextMenuCallbacks.onSelect) {
       contextMenuCallbacks.onSelect()
@@ -2892,22 +2892,22 @@ export function initContextMenu() {
     hideContextMenu()
   })
 
-  menuEdit.addEventListener("click", (e) => {
+  menuEdit?.addEventListener("click", (e) => {
     e.stopPropagation()
     handleEdit()
   })
 
-  menuDelete.addEventListener("click", (e) => {
+  menuDelete?.addEventListener("click", (e) => {
     e.stopPropagation()
     handleDelete()
   })
 
-  menuFavorite.addEventListener("click", (e) => {
+  menuFavorite?.addEventListener("click", (e) => {
     e.stopPropagation()
     handleFavorite()
   })
 
-  menuLock.addEventListener("click", (e) => {
+  menuLock?.addEventListener("click", (e) => {
     e.stopPropagation()
     handleLock()
   })
@@ -2924,7 +2924,7 @@ export function initContextMenu() {
 
   window.addEventListener("click", (e) => {
     if (
-      !contextMenu.contains(e.target) &&
+      !contextMenu?.contains(e.target) &&
       !e.target.closest?.(".quick-access-popup")
     ) {
       hideContextMenu()

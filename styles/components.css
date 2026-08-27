@@ -2220,3 +2220,25 @@ body.context-menu-mini .context-menu-separator {
   display: inline-flex;
   opacity: 1;
 }
+
+/* =========================================
+   MOBILE & TABLET RESPONSIVE (COMPONENTS & MODALS)
+========================================= */
+@media (max-width: 600px) {
+  .modal-content {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    margin: 10px auto;
+    border-radius: var(--radius-md);
+  }
+
+  .modal-actions {
+    flex-direction: column !important;
+  }
+
+  .modal-actions button {
+    width: 100% !important;
+    flex: none !important;
+  }
+}
+

@@ -1156,9 +1156,9 @@ export function initModal() {
       saveBookmark()
     }
   }
-  bookmarkTitleInput.addEventListener("keydown", handleEnterSave)
-  bookmarkUrlInput.addEventListener("keydown", handleEnterSave)
-  bookmarkIconInput.addEventListener("keydown", handleEnterSave)
+  bookmarkTitleInput?.addEventListener("keydown", handleEnterSave)
+  bookmarkUrlInput?.addEventListener("keydown", handleEnterSave)
+  bookmarkIconInput?.addEventListener("keydown", handleEnterSave)
 
   // Expand/Collapse Folders Toggle in Import Browser
   const toggleFoldersBtn = document.getElementById("import-toggle-folders-btn")
@@ -1166,8 +1166,8 @@ export function initModal() {
     let isAllExpanded = false
     toggleFoldersBtn.addEventListener("click", () => {
       isAllExpanded = !isAllExpanded
-      const folders = browserBookmarksList.querySelectorAll(".folder-wrapper")
-      folders.forEach((f) => {
+      const folders = browserBookmarksList?.querySelectorAll(".folder-wrapper")
+      folders?.forEach((f) => {
         if (isAllExpanded) {
           f.classList.remove("collapsed")
         } else {
@@ -1177,14 +1177,14 @@ export function initModal() {
     })
   }
 
-  saveBookmarkBtn.addEventListener("click", saveBookmark)
-  closeModalBtn.addEventListener("click", closeModal)
+  saveBookmarkBtn?.addEventListener("click", saveBookmark)
+  closeModalBtn?.addEventListener("click", closeModal)
 
   window.addEventListener("click", (e) => {
     if (e.target === modal) closeModal()
   })
 
-  showImportBtn.addEventListener("click", () => {
+  showImportBtn?.addEventListener("click", () => {
     if (chrome && chrome.bookmarks) {
       _showImportForm()
       loadBrowserBookmarks()
@@ -1193,14 +1193,14 @@ export function initModal() {
     }
   })
 
-  backToManualBtn.addEventListener("click", () => {
+  backToManualBtn?.addEventListener("click", () => {
     _showManualForm()
     if (editingIndex !== null || editingTarget !== null) {
-      modalTitle.textContent = i18n.modal_edit_title
+      if (modalTitle) modalTitle.textContent = i18n.modal_edit_title
     }
   })
 
-  confirmImportBtn.addEventListener("click", confirmImport)
+  confirmImportBtn?.addEventListener("click", confirmImport)
 
   // Search filter
   const searchInput = document.getElementById("import-search")
@@ -1214,12 +1214,12 @@ export function initModal() {
   const selectAllCb = document.getElementById("import-select-all")
   if (selectAllCb) {
     selectAllCb.addEventListener("change", () => {
-      const visible = browserBookmarksList.querySelectorAll(
+      const visible = browserBookmarksList?.querySelectorAll(
         ".bookmark-tree-item:not(.hidden) input[type='checkbox']",
       )
-      visible.forEach((cb) => {
+      visible?.forEach((cb) => {
         cb.checked = selectAllCb.checked
-        cb.closest(".bookmark-tree-item").classList.toggle(
+        cb.closest(".bookmark-tree-item")?.classList.toggle(
           "selected",
           selectAllCb.checked,
         )
