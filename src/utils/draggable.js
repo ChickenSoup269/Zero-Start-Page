@@ -372,76 +372,94 @@ export function makeDraggable(
     }
   }
 
-  function elementDrag(e) {
-    e.preventDefault()
+    let dragRafId = null
+    let pendingClientX = 0
+    let pendingClientY = 0
 
-    let targetScreenLeft = e.clientX - offsetX
-    let targetScreenTop = e.clientY - offsetY
+    function updateDragPosition() {
+      dragRafId = null
+      let targetScreenLeft = pendingClientX - offsetX
+      let targetScreenTop = pendingClientY - offsetY
 
-    const vw = document.documentElement.clientWidth
-    const vh = document.documentElement.clientHeight
+      const vw = document.documentElement.clientWidth
+      const vh = document.documentElement.clientHeight
 
-    // Smart clamping for both small and large widgets
-    if (initialWidth <= vw) {
-      targetScreenLeft = Math.max(
-        0,
-        Math.min(targetScreenLeft, vw - initialWidth),
-      )
-    } else {
-      targetScreenLeft = Math.max(
-        vw - initialWidth,
-        Math.min(targetScreenLeft, 0),
-      )
-    }
-
-    if (initialHeight <= vh) {
-      targetScreenTop = Math.max(
-        0,
-        Math.min(targetScreenTop, vh - initialHeight),
-      )
-    } else {
-      targetScreenTop = Math.max(
-        vh - initialHeight,
-        Math.min(targetScreenTop, 0),
-      )
-    }
-
-    const currentSettings = getSettings()
-    if (currentSettings.snapToGrid) {
-      const grid = parseInt(currentSettings.snapGridSize, 10) || 20
-      targetScreenLeft = Math.round(targetScreenLeft / grid) * grid
-      targetScreenTop = Math.round(targetScreenTop / grid) * grid
-
+      // Smart clamping for both small and large widgets
       if (initialWidth <= vw) {
         targetScreenLeft = Math.max(
           0,
           Math.min(targetScreenLeft, vw - initialWidth),
         )
+      } else {
+        targetScreenLeft = Math.max(
+          vw - initialWidth,
+          Math.min(targetScreenLeft, 0),
+        )
       }
+
       if (initialHeight <= vh) {
         targetScreenTop = Math.max(
           0,
           Math.min(targetScreenTop, vh - initialHeight),
         )
+      } else {
+        targetScreenTop = Math.max(
+          vh - initialHeight,
+          Math.min(targetScreenTop, 0),
+        )
+      }
+
+      const currentSettings = getSettings()
+      if (currentSettings.snapToGrid) {
+        const grid = parseInt(currentSettings.snapGridSize, 10) || 20
+        targetScreenLeft = Math.round(targetScreenLeft / grid) * grid
+        targetScreenTop = Math.round(targetScreenTop / grid) * grid
+
+        if (initialWidth <= vw) {
+          targetScreenLeft = Math.max(
+            0,
+            Math.min(targetScreenLeft, vw - initialWidth),
+          )
+        }
+        if (initialHeight <= vh) {
+          targetScreenTop = Math.max(
+            0,
+            Math.min(targetScreenTop, vh - initialHeight),
+          )
+        }
+      }
+
+      // Use cached zoom to avoid forced synchronous layout on every mousemove
+      const zoom = cachedZoom
+
+      element.style.left = (targetScreenLeft - magicOffsetX) / zoom + "px"
+      element.style.top = (targetScreenTop - magicOffsetY) / zoom + "px"
+    }
+
+    function elementDrag(e) {
+      e.preventDefault()
+      pendingClientX = e.clientX
+      pendingClientY = e.clientY
+
+      if (!dragRafId) {
+        dragRafId = requestAnimationFrame(updateDragPosition)
       }
     }
 
-    // Use cached zoom to avoid forced synchronous layout on every mousemove
-    const zoom = cachedZoom
-
-    element.style.left = (targetScreenLeft - magicOffsetX) / zoom + "px"
-    element.style.top = (targetScreenTop - magicOffsetY) / zoom + "px"
-  }
-
-  function closeDragElement() {
-    document.onmouseup = null
-    document.onmousemove = null
-    element.classList.remove("dragging")
-    document.body.classList.remove("show-snap-grid")
-    element.style.transition = ""
-    element.style.right = "auto"
-    element.style.bottom = "auto"
-    element.classList.add("has-position")
+    function closeDragElement() {
+      if (dragRafId) {
+        cancelAnimationFrame(dragRafId)
+        dragRafId = null
+        updateDragPosition()
+      }
+      document.onmouseup = null
+      document.onmousemove = null
+      element.classList.remove("dragging")
+      document.body.classList.remove("show-snap-grid")
+      element.style.transition = ""
+      element.style.right = "auto"
+      element.style.bottom = "auto"
+      element.classList.add("has-position")
 
     saveComponentPosition(componentId, {
       top: element.style.top,

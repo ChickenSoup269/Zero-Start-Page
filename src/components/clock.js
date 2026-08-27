@@ -3288,19 +3288,35 @@ export function initClock() {
   updateTime()
   updateCustomTitle()
 
-  // Pause clock interval when tab is hidden to save CPU/battery
-  let _clockIntervalId = setInterval(updateTime, 1000)
+  // Smart clock interval: pauses when hidden, throttles to 10s when seconds are hidden
+  let _clockIntervalId = null
+  const startClockInterval = () => {
+    if (_clockIntervalId) clearInterval(_clockIntervalId)
+    const settings = getSettings()
+    const intervalMs =
+      settings.hideSeconds && !c4BombArmed && !c4BombDetonateAt ? 10000 : 1000
+    _clockIntervalId = setInterval(updateTime, intervalMs)
+  }
+
+  startClockInterval()
+
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      clearInterval(_clockIntervalId)
-      _clockIntervalId = null
+      if (_clockIntervalId) {
+        clearInterval(_clockIntervalId)
+        _clockIntervalId = null
+      }
       clearC4BombFastTick()
     } else {
-      // Resume: call immediately so there's no 1s lag on tab focus
+      // Resume: call immediately so there's no lag on tab focus
       updateTime()
-      if (!_clockIntervalId) {
-        _clockIntervalId = setInterval(updateTime, 1000)
-      }
+      startClockInterval()
+    }
+  })
+
+  window.addEventListener("settingsUpdated", (e) => {
+    if (e.detail?.key === "hideSeconds") {
+      startClockInterval()
     }
   })
 
