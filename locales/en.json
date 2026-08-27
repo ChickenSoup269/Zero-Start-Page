@@ -107,6 +107,8 @@
   "language_name_placeholder": "Español, 日本語...",
   "language_json_placeholder": "Paste translated JSON here. Accepted: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} or raw {\"settings_title\":\"...\"}",
   "language_copy_ai_prompt": "Copy AI Prompt",
+  "language_download_github": "Download from GitHub",
+  "language_download_error": "Could not download language file from GitHub.",
   "language_install": "Install Language",
   "language_prompt_copied": "AI translation prompt copied. Send it to AI, then paste the translated JSON here.",
   "language_import_success": "Language installed successfully!",

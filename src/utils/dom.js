@@ -178,6 +178,9 @@ export let installLanguageJsonBtn = document.getElementById(
 export let copyLanguagePromptBtn = document.getElementById(
   "copy-language-prompt-btn",
 )
+export let downloadLanguageGithubBtn = document.getElementById(
+  "download-language-github-btn",
+)
 export let effectGrid = document.getElementById("effect-grid")
 export let effectSearch = document.getElementById("effect-search")
 export let activeEffectSettingsContainer = document.getElementById(
@@ -2299,6 +2302,9 @@ export function refreshDOMReferences() {
   languageJsonInput = document.getElementById("language-json-input")
   installLanguageJsonBtn = document.getElementById("install-language-json-btn")
   copyLanguagePromptBtn = document.getElementById("copy-language-prompt-btn")
+  downloadLanguageGithubBtn = document.getElementById(
+    "download-language-github-btn",
+  )
   effectGrid = document.getElementById("effect-grid")
   effectSearch = document.getElementById("effect-search")
   activeEffectSettingsContainer = document.getElementById(

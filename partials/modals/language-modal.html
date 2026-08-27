@@ -1,88 +1,92 @@
 <div id="language-modal" class="modal">
-        <div class="modal-content language-modal-content">
-            <div class="modal-header">
-                <h2 data-i18n="language_modal_title">Add Custom Language</h2>
-                <span id="close-language-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
-            </div>
-            <div class="modal-body">
-                <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the AI prompt below, ask AI to
-                    translate the included English JSON into your language, then paste the translated JSON here.</p>
-                <div class="language-guide-box">
-                    <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
-                    <p class="language-ai-provider-hint" data-i18n="language_modal_ai_hint">You can use ChatGPT or
-                        Gemini AI Studio to translate the prompt.</p>
-                    <div class="language-ai-links">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-comments"></i>
-                            <span>ChatGPT</span>
-                        </a>
-                        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span>Gemini AI Studio</span>
-                        </a>
-                        <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-brain"></i>
-                            <span>Claude</span>
-                        </a>
-                        <a href="https://chat.qwen.ai/" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-layer-group"></i>
-                            <span>Qwen Chat</span>
-                        </a>
-                        <a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-compass"></i>
-                            <span>DeepSeek</span>
-                        </a>
-                    </div>
-                    <ol>
-                        <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON
-                            template.</li>
-                        <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping
-                            every JSON key unchanged.</li>
-                        <li data-i18n="language_modal_step_3">Paste the result below, then install it.</li>
-                    </ol>
+    <div class="modal-content language-modal-content">
+        <div class="modal-header">
+            <h2 data-i18n="language_modal_title">Add Custom Language</h2>
+            <span id="close-language-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="modal-body">
+            <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the AI prompt below, ask AI to
+                translate the included English JSON into your language, or download existing language files directly from GitHub.</p>
+            <div class="language-guide-box">
+                <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
+                <p class="language-ai-provider-hint" data-i18n="language_modal_ai_hint">You can use ChatGPT or
+                    Gemini AI Studio to translate the prompt.</p>
+                <div class="language-ai-links">
+                    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-comments"></i>
+                        <span>ChatGPT</span>
+                    </a>
+                    <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Gemini AI Studio</span>
+                    </a>
+                    <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Claude</span>
+                    </a>
+                    <a href="https://chat.qwen.ai/" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Qwen Chat</span>
+                    </a>
+                    <a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>DeepSeek</span>
+                    </a>
                 </div>
-                <div class="language-modal-grid">
-                    <label>
-                        <span data-i18n="language_target_label">Guide language</span>
-                        <select id="language-guide-target-select">
-                            <option value="en">English - English</option>
-                            <option value="vi">Tiếng Việt - Vietnamese</option>
-                            <option value="de">Deutsch - German</option>
-                            <option value="sv">Svenska - Swedish</option>
-                            <option value="ja">日本語 - Japanese</option>
-                            <option value="zh">中文 - Chinese</option>
-                            <option value="ko">한국어 - Korean</option>
-                            <option value="th">ไทย - Thai</option>
-                            <option value="ru">Русский - Russian</option>
-                            <option value="es">Español - Spanish</option>
-                            <option value="fr">Français - French</option>
-                            <option value="id">Bahasa Indonesia - Indonesian</option>
-                        </select>
-                    </label>
-                    <label>
-                        <span data-i18n="language_code_label">Language code</span>
-                        <input type="text" id="language-code-input" placeholder="es, ja, fr, id..."
-                            data-i18n-placeholder="language_code_placeholder">
-                    </label>
-                    <label>
-                        <span data-i18n="language_name_label">Language name</span>
-                        <input type="text" id="language-name-input" placeholder="Español, 日本語..."
-                            data-i18n-placeholder="language_name_placeholder">
-                    </label>
-                </div>
-                <textarea id="language-json-input" class="language-json-input" spellcheck="false"
-                    data-i18n-placeholder="language_json_placeholder"
-                    placeholder='Paste translated JSON here. Accepted: {"code":"es","name":"Español","translations":{...}} or raw {"settings_title":"..."}'></textarea>
+                <ol>
+                    <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON
+                        template.</li>
+                    <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping
+                        every JSON key unchanged.</li>
+                    <li data-i18n="language_modal_step_3">Paste the result below, then install it.</li>
+                </ol>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="copy-language-prompt-btn" class="secondary-btn">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span data-i18n="language_copy_ai_prompt">Copy AI Prompt</span>
-                </button>
-                <button type="button" id="install-language-json-btn" class="primary-btn">
-                    <i class="fa-solid fa-check"></i>
-                    <span data-i18n="language_install">Install Language</span>
-                </button>
+            <div class="language-modal-grid">
+                <label>
+                    <span data-i18n="language_target_label">Guide language</span>
+                    <select id="language-guide-target-select">
+                        <option value="en">English - English</option>
+                        <option value="vi">Tiếng Việt - Vietnamese</option>
+                        <option value="de">Deutsch - German</option>
+                        <option value="sv">Svenska - Swedish</option>
+                        <option value="ja">日本語 - Japanese</option>
+                        <option value="zh">中文 - Chinese</option>
+                        <option value="ko">한국어 - Korean</option>
+                        <option value="th">ไทย - Thai</option>
+                        <option value="ru">Русский - Russian</option>
+                        <option value="es">Español - Spanish</option>
+                        <option value="fr">Français - French</option>
+                        <option value="id">Bahasa Indonesia - Indonesian</option>
+                    </select>
+                </label>
+                <label>
+                    <span data-i18n="language_code_label">Language code</span>
+                    <input type="text" id="language-code-input" placeholder="es, ja, fr, id..."
+                        data-i18n-placeholder="language_code_placeholder">
+                </label>
+                <label>
+                    <span data-i18n="language_name_label">Language name</span>
+                    <input type="text" id="language-name-input" placeholder="Español, 日本語..."
+                        data-i18n-placeholder="language_name_placeholder">
+                </label>
             </div>
+            <textarea id="language-json-input" class="language-json-input" spellcheck="false"
+                data-i18n-placeholder="language_json_placeholder"
+                placeholder='Paste translated JSON here. Accepted: {"code":"es","name":"Español","translations":{...}} or raw {"settings_title":"..."}'></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="download-language-github-btn" class="secondary-btn">
+                <i class="fa-brands fa-github"></i>
+                <span data-i18n="language_download_github">Download from GitHub</span>
+            </button>
+            <button type="button" id="copy-language-prompt-btn" class="secondary-btn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span data-i18n="language_copy_ai_prompt">Copy AI Prompt</span>
+            </button>
+            <button type="button" id="install-language-json-btn" class="primary-btn">
+                <i class="fa-solid fa-check"></i>
+                <span data-i18n="language_install">Install Language</span>
+            </button>
         </div>
     </div>
+</div>

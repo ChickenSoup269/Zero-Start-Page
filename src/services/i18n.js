@@ -6,13 +6,62 @@ let englishI18n = null
 
 async function loadEnglishTranslations() {
   if (englishI18n) return englishI18n
+  try {
+    const cached = sessionStorage.getItem("startpageCachedI18n_v2_en")
+    if (cached) {
+      englishI18n = JSON.parse(cached)
+      return englishI18n
+    }
+  } catch {}
+
   const response = await fetch("./locales/en.json?v=2")
   englishI18n = await response.json()
+  try {
+    sessionStorage.setItem(
+      "startpageCachedI18n_v2_en",
+      JSON.stringify(englishI18n),
+    )
+  } catch {}
   return englishI18n
 }
 
 export function geti18n() {
   return i18n
+}
+
+export const GITHUB_LOCALES_BASE_URL =
+  "https://raw.githubusercontent.com/ChickenSoup269/Zero-Start-Page/main/locales"
+export const CDN_LOCALES_BASE_URL =
+  "https://cdn.jsdelivr.net/gh/ChickenSoup269/Zero-Start-Page@main/locales"
+
+export async function fetchRemoteLanguage(language) {
+  const cleanLang = normalizeLanguageCode(language)
+  if (!cleanLang) throw new Error("Invalid language code")
+
+  const urls = [
+    `${GITHUB_LOCALES_BASE_URL}/${cleanLang}.json`,
+    `${CDN_LOCALES_BASE_URL}/${cleanLang}.json`,
+  ]
+
+  let lastError = null
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, { cache: "no-cache" })
+      if (response.ok) {
+        const data = await response.json()
+        if (data && typeof data === "object") {
+          return data
+        }
+      }
+    } catch (err) {
+      lastError = err
+    }
+  }
+
+  throw (
+    lastError ||
+    new Error(`Could not download ${cleanLang}.json from GitHub repository`)
+  )
 }
 
 export async function loadLanguage(lang) {
@@ -31,9 +80,64 @@ export async function loadLanguage(lang) {
       return
     }
 
-    const response = await fetch(`./locales/${language}.json?v=2`)
-    if (!response.ok) throw new Error("File not found")
-    const translations = await response.json()
+    // 1. Try local bundle first (e.g. bundled en.json, vi.json)
+    let translations = null
+    try {
+      const cached = sessionStorage.getItem(
+        `startpageCachedI18n_v2_${language}`,
+      )
+      if (cached) {
+        translations = JSON.parse(cached)
+      }
+    } catch {}
+
+    if (!translations) {
+      try {
+        const response = await fetch(`./locales/${language}.json?v=2`)
+        if (response.ok) {
+          translations = await response.json()
+          try {
+            sessionStorage.setItem(
+              `startpageCachedI18n_v2_${language}`,
+              JSON.stringify(translations),
+            )
+          } catch {}
+        }
+      } catch {
+        translations = null
+      }
+    }
+
+    // 2. If not found in local package, fetch from GitHub raw and cache in customLanguages
+    if (!translations && language !== "en") {
+      try {
+        const remoteData = await fetchRemoteLanguage(language)
+        if (remoteData) {
+          translations = remoteData?.translations || remoteData
+          const langName =
+            language === "de"
+              ? "Deutsch"
+              : language === "sv"
+                ? "Svenska"
+                : language.toUpperCase()
+          const customLanguages = {
+            ...(settings.customLanguages || {}),
+            [language]: {
+              name: langName,
+              translations,
+              updatedAt: new Date().toISOString(),
+            },
+          }
+          updateSetting("customLanguages", customLanguages)
+          saveSettings(true)
+        }
+      } catch (remoteErr) {
+        console.warn(`Remote language fetch failed for ${language}:`, remoteErr)
+      }
+    }
+
+    if (!translations) throw new Error("File not found")
+
     i18n = {
       ...english,
       ...translations,

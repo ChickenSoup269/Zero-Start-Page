@@ -107,6 +107,8 @@
   "language_name_placeholder": "Español, 日本語...",
   "language_json_placeholder": "Dán JSON đã dịch tại đây. Hỗ trợ: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} hoặc raw {\"settings_title\":\"...\"}",
   "language_copy_ai_prompt": "Copy prompt AI",
+  "language_download_github": "Tải từ GitHub",
+  "language_download_error": "Không thể tải file ngôn ngữ từ GitHub.",
   "language_install": "Cài ngôn ngữ",
   "language_prompt_copied": "Đã copy prompt dịch bằng AI. Gửi cho AI rồi dán JSON đã dịch vào đây.",
   "language_import_success": "Đã cài ngôn ngữ thành công!",
