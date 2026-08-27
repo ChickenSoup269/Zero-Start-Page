@@ -68,18 +68,25 @@ export function revealApp({
     isRevealed = true
     const revealNow = () => {
       const overlay = document.getElementById("startup-overlay")
-      if (overlay) overlay.style.opacity = "0"
+      if (overlay) {
+        overlay.style.opacity = "0"
+        overlay.style.pointerEvents = "none"
+        overlay.classList.add("fading-out")
+      }
       localStorage.setItem("startpageHasOpened", "1")
       localStorage.removeItem("startpageShowStartupLoader")
       document.body.classList.remove("loading-state")
+      document.body.classList.remove("is-booting")
       window.setTimeout(() => {
-        if (overlay) overlay.classList.add("overlay-hidden")
-        document.body.classList.remove("is-booting")
+        if (overlay) {
+          overlay.classList.add("overlay-hidden")
+          overlay.style.display = "none"
+        }
         requestAnimationFrame(() => {
           if (mainContainer) mainContainer.classList.add("ready")
         })
         window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
-      }, 430)
+      }, 300)
     }
     const elapsed = performance.now() - bootStartedAt
     const remaining = skipStartupLoader
@@ -231,16 +238,19 @@ export function fastRevealSkipStartup(skipStartupLoader) {
     const overlay = document.getElementById("startup-overlay")
     if (overlay) {
       overlay.style.opacity = "0"
-      setTimeout(() => overlay.classList.add("overlay-hidden"), 450)
+      overlay.style.pointerEvents = "none"
+      overlay.classList.add("overlay-hidden")
+      overlay.style.display = "none"
     }
     try {
       localStorage.setItem("startpageHasOpened", "1")
       localStorage.removeItem("startpageShowStartupLoader")
     } catch {}
     document.body.classList.remove("loading-state")
+    document.body.classList.remove("is-booting")
     requestAnimationFrame(() => {
-      document.body.classList.remove("is-booting")
       document.querySelector(".main-container")?.classList.add("ready")
+      window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
     })
   }
 

@@ -1,4 +1,3 @@
-/* Custom Dialog System */
 .custom-dialog-overlay {
   position: fixed;
   top: 0;
@@ -10,7 +9,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 30000; /* Increased to be above all modals (10005) */
+  z-index: 1000000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s ease;
 }
 
 /* Unified Modal Display System */
@@ -189,16 +192,10 @@
   transition: all 0.2s;
 }
 
-/* Restore Custom Dialog Styles */
-.custom-dialog-overlay {
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .custom-dialog-overlay.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto !important;
 }
 
 .custom-dialog {
@@ -463,7 +460,7 @@
 .first-run-tour-overlay {
   position: fixed;
   inset: 0;
-  z-index: 30050;
+  z-index: 1000010;
   pointer-events: auto;
   background: transparent;
 }

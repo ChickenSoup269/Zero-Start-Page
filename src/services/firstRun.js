@@ -197,13 +197,16 @@ function isUpdateNoticeVisible() {
   return style.display !== "none" && style.visibility !== "hidden"
 }
 
-function waitForStartupOverlayHidden(timeout = 6000) {
+function waitForStartupOverlayHidden(timeout = 4000) {
   const isHidden = () => {
     const overlay = document.getElementById("startup-overlay")
     if (!overlay) return true
+    if (overlay.classList.contains("overlay-hidden") || overlay.classList.contains("fading-out")) return true
     const style = window.getComputedStyle(overlay)
     return (
       style.visibility === "hidden" ||
+      style.display === "none" ||
+      style.pointerEvents === "none" ||
       Number.parseFloat(style.opacity || "1") <= 0.01
     )
   }

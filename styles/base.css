@@ -26,7 +26,10 @@ body.loading-state {
   transform: translateZ(0);
 }
 
-#startup-overlay.overlay-hidden {
+#startup-overlay.overlay-hidden,
+#startup-overlay.fading-out,
+#startup-overlay[style*="opacity: 0"],
+body:not(.loading-state):not(.is-booting) #startup-overlay.overlay-hidden {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;

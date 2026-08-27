@@ -10,12 +10,14 @@ function createDialogContainer() {
       clearTimeout(clearDialogTimer)
       clearDialogTimer = null
     }
+    dialogContainer.style.pointerEvents = "auto"
     return dialogContainer
   }
 
   dialogContainer = document.createElement("div")
   dialogContainer.id = "custom-dialog-overlay"
   dialogContainer.className = "custom-dialog-overlay"
+  dialogContainer.style.pointerEvents = "auto"
   document.body.appendChild(dialogContainer)
 
   return dialogContainer
@@ -24,13 +26,16 @@ function createDialogContainer() {
 function closeDialog() {
   if (dialogContainer) {
     dialogContainer.classList.remove("active")
+    dialogContainer.style.pointerEvents = "none"
     if (clearDialogTimer) {
       clearTimeout(clearDialogTimer)
     }
     clearDialogTimer = setTimeout(() => {
-      dialogContainer.innerHTML = ""
+      if (dialogContainer && !dialogContainer.classList.contains("active")) {
+        dialogContainer.innerHTML = ""
+      }
       clearDialogTimer = null
-    }, 300)
+    }, 250)
   }
 }
 
