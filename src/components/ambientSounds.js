@@ -20,10 +20,15 @@ export class AmbientSounds {
 
     this.tracks = [
       { id: "rain", name: "Rain", i18nKey: "ambient_rain", icon: "fa-cloud-rain" },
+      { id: "thunder", name: "Thunder", i18nKey: "ambient_thunder", icon: "fa-cloud-bolt" },
       { id: "waves", name: "Waves", i18nKey: "ambient_waves", icon: "fa-water" },
       { id: "wind", name: "Wind", i18nKey: "ambient_wind", icon: "fa-wind" },
       { id: "fire", name: "Campfire", i18nKey: "ambient_fire", icon: "fa-fire" },
+      { id: "birds", name: "Forest Birds", i18nKey: "ambient_birds", icon: "fa-dove" },
+      { id: "crickets", name: "Night Crickets", i18nKey: "ambient_crickets", icon: "fa-moon" },
       { id: "stream", name: "Stream", i18nKey: "ambient_stream", icon: "fa-water-ladder" },
+      { id: "cafe", name: "Cozy Cafe", i18nKey: "ambient_cafe", icon: "fa-mug-hot" },
+      { id: "space", name: "Cosmic Drone", i18nKey: "ambient_space", icon: "fa-meteor" },
       { id: "brownnoise", name: "Brown Noise", i18nKey: "ambient_brown_noise", icon: "fa-brain" },
       { id: "pinknoise", name: "Pink Noise", i18nKey: "ambient_pink_noise", icon: "fa-wave-square" },
       { id: "whitenoise", name: "White Noise", i18nKey: "ambient_white_noise", icon: "fa-bars-staggered" },
@@ -447,6 +452,161 @@ export class AmbientSounds {
         filter.connect(destinationGain)
         source.start()
         return [source, filter]
+      }
+
+      case "thunder": {
+        const source = ctx.createBufferSource()
+        source.buffer = buffer
+        source.loop = true
+
+        const filter = ctx.createBiquadFilter()
+        filter.type = "lowpass"
+        filter.frequency.value = 130
+
+        const lfo = ctx.createOscillator()
+        lfo.frequency.value = 0.08 // slow deep rolling thunder
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 0.6
+
+        const rumbleGain = ctx.createGain()
+        rumbleGain.gain.value = 0.8
+
+        lfo.connect(lfoGain)
+        lfoGain.connect(rumbleGain.gain)
+
+        source.connect(filter)
+        filter.connect(rumbleGain)
+        rumbleGain.connect(destinationGain)
+
+        source.start()
+        lfo.start()
+        return [source, filter, rumbleGain, lfo, lfoGain]
+      }
+
+      case "birds": {
+        // Nature forest birds chirping
+        const osc = ctx.createOscillator()
+        osc.type = "sine"
+        osc.frequency.setValueAtTime(2800, ctx.currentTime)
+
+        // Frequency modulation for bird chirps
+        const lfo = ctx.createOscillator()
+        lfo.type = "sine"
+        lfo.frequency.value = 3.5
+
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 600
+
+        lfo.connect(lfoGain)
+        lfoGain.connect(osc.frequency)
+
+        // Periodic volume envelope
+        const tremolo = ctx.createOscillator()
+        tremolo.frequency.value = 0.8
+        const tremoloGain = ctx.createGain()
+        tremoloGain.gain.value = 0.35
+
+        const mainGain = ctx.createGain()
+        mainGain.gain.value = 0.3
+
+        tremolo.connect(tremoloGain)
+        tremoloGain.connect(mainGain.gain)
+
+        osc.connect(mainGain)
+        mainGain.connect(destinationGain)
+
+        osc.start()
+        lfo.start()
+        tremolo.start()
+        return [osc, lfo, lfoGain, tremolo, tremoloGain, mainGain]
+      }
+
+      case "crickets": {
+        // Night crickets
+        const osc1 = ctx.createOscillator()
+        osc1.type = "triangle"
+        osc1.frequency.value = 4600
+
+        const osc2 = ctx.createOscillator()
+        osc2.type = "sine"
+        osc2.frequency.value = 4850
+
+        const lfo = ctx.createOscillator()
+        lfo.type = "square"
+        lfo.frequency.value = 14
+
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 0.25
+
+        const cricketGain = ctx.createGain()
+        cricketGain.gain.value = 0.2
+
+        lfo.connect(lfoGain)
+        lfoGain.connect(cricketGain.gain)
+
+        osc1.connect(cricketGain)
+        osc2.connect(cricketGain)
+        cricketGain.connect(destinationGain)
+
+        osc1.start()
+        osc2.start()
+        lfo.start()
+        return [osc1, osc2, lfo, lfoGain, cricketGain]
+      }
+
+      case "cafe": {
+        // Warm cafe ambience murmur
+        const source = ctx.createBufferSource()
+        source.buffer = buffer
+        source.loop = true
+
+        const filter1 = ctx.createBiquadFilter()
+        filter1.type = "bandpass"
+        filter1.frequency.value = 500
+        filter1.Q.value = 1.8
+
+        const filter2 = ctx.createBiquadFilter()
+        filter2.type = "lowpass"
+        filter2.frequency.value = 1200
+
+        source.connect(filter1)
+        filter1.connect(filter2)
+        filter2.connect(destinationGain)
+        source.start()
+        return [source, filter1, filter2]
+      }
+
+      case "space": {
+        // Deep cosmic meditative drone (432Hz harmonic root & fifths)
+        const osc1 = ctx.createOscillator()
+        osc1.type = "sine"
+        osc1.frequency.value = 108 // Root bass
+
+        const osc2 = ctx.createOscillator()
+        osc2.type = "sine"
+        osc2.frequency.value = 162 // Fifth
+
+        const osc3 = ctx.createOscillator()
+        osc3.type = "triangle"
+        osc3.frequency.value = 216 // Octave
+
+        const filter = ctx.createBiquadFilter()
+        filter.type = "lowpass"
+        filter.frequency.value = 350
+
+        const droneGain = ctx.createGain()
+        droneGain.gain.value = 0.35
+
+        osc1.connect(filter)
+        osc2.connect(filter)
+        osc3.connect(filter)
+        filter.connect(droneGain)
+        droneGain.connect(destinationGain)
+
+        osc1.start()
+        osc2.start()
+        osc3.start()
+        return [osc1, osc2, osc3, filter, droneGain]
       }
 
       case "pinknoise": {
