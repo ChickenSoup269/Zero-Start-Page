@@ -1035,7 +1035,9 @@ function createApplySettings(effectInstances) {
       quotes: "daily-quotes",
       musicPlayer: "music-player-container",
       visualizer: "visualizer-container",
-      habitTracker: "habit-tracker-container"
+      habitTracker: "habit-tracker-container",
+      ambientSounds: "ambient-sounds-container",
+      aiAssistant: "ai-assistant-container"
     }
 
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {

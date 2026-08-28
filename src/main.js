@@ -285,9 +285,14 @@ async function bootstrap() {
     ["#weather-container", "weather"],
     ["#rss-container", "rss"],
     ["#habit-tracker-container", "habitTracker"],
+    ["#ambient-sounds-container", "ambientSounds"],
+    ["#ai-assistant-container", "aiAssistant"],
   ]
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return
+    if (event.target.closest("#ai-user-input") || event.target.closest(".ai-msg-text")) {
+      return
+    }
     const match = widgetContextTargets.find(([sel]) =>
       event.target.closest?.(sel),
     )

@@ -8145,7 +8145,9 @@ body.is-dragging-widget .dragging * {
 .calendar-card.skin-white-blur,
 .weather-container.skin-white-blur,
 .notepad-container.skin-white-blur,
-.quotes-container.skin-white-blur {
+.quotes-container.skin-white-blur,
+.ambient-sounds-container.skin-white-blur,
+.ai-assistant-container.skin-white-blur {
   background: rgba(255, 255, 255, 0.55) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
@@ -8429,7 +8431,9 @@ body.is-dragging-widget .dragging * {
 .calendar-card.skin-light-transparent,
 .weather-container.skin-light-transparent,
 .notepad-container.skin-light-transparent,
-.quotes-container.skin-light-transparent {
+.quotes-container.skin-light-transparent,
+.ambient-sounds-container.skin-light-transparent,
+.ai-assistant-container.skin-light-transparent {
   color: var(--text-color);
   background: var(--glass-bg) !important;
   border-color: var(--glass-border) !important;
@@ -8482,6 +8486,55 @@ body.is-dragging-widget .dragging * {
   color: var(--accent-contrast-color, #000000) !important;
 }
 
+/* Ambient & AI specific White Blur styling */
+.ambient-sounds-container.skin-white-blur,
+.ai-assistant-container.skin-white-blur {
+  color: #0f172a !important;
+}
+
+.ambient-sounds-container.skin-white-blur .ambient-header-title,
+.ai-assistant-container.skin-white-blur .ai-header-title {
+  color: #0f172a !important;
+}
+
+.ambient-sounds-container.skin-white-blur .ambient-track-item,
+.ai-assistant-container.skin-white-blur .ai-select,
+.ai-assistant-container.skin-white-blur .ai-chip-btn,
+.ai-assistant-container.skin-white-blur .ai-input {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+.ai-assistant-container.skin-white-blur .ai-empty-title {
+  color: #0f172a !important;
+}
+
+.ai-assistant-container.skin-white-blur .ai-empty-desc {
+  color: #475569 !important;
+}
+
+.ai-assistant-container.skin-white-blur .ai-msg-assistant .ai-msg-body {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+/* Transparent skin & border hidden for ambient and AI */
+.ambient-sounds-container.skin-transparent,
+.ai-assistant-container.skin-transparent {
+  background: rgba(15, 18, 26, 0.25) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+.ambient-sounds-container.widget-border-hidden,
+.ai-assistant-container.widget-border-hidden {
+  border: none !important;
+}
+
 /* === M3 ACCENT SKIN FOR WIDGETS === */
 body.widgets-m3-accent .todo-container,
 body.widgets-m3-accent .timer-container,
@@ -8496,7 +8549,9 @@ body.widgets-m3-accent .quotes-container,
 .calendar-card.skin-m3-accent,
 .weather-container.skin-m3-accent,
 .notepad-container.skin-m3-accent,
-.quotes-container.skin-m3-accent {
+.quotes-container.skin-m3-accent,
+.ambient-sounds-container.skin-m3-accent,
+.ai-assistant-container.skin-m3-accent {
   background: linear-gradient(
     135deg,
     color-mix(

@@ -295,6 +295,18 @@ function getWidgetSettingsTarget(id) {
       labelKey: "settings_group_widgets",
       fallback: "Widgets",
     },
+    ambientSounds: {
+      section: "layout",
+      target: "#qa-show-ambient",
+      labelKey: "qa_show_ambient",
+      fallback: "Ambient Sounds",
+    },
+    aiAssistant: {
+      section: "layout",
+      target: "#qa-show-ai-assistant",
+      labelKey: "qa_show_ai_assistant",
+      fallback: "AI Assistant",
+    },
   }
   return targets[id] || null
 }
@@ -723,6 +735,8 @@ function getContextMenuTargetName(type, id, index, i18n) {
       if (widgetId === "daily-quotes") return i18n.context_header_widget_quotes || "Daily Quotes"
       if (widgetId === "rss") return i18n.context_header_widget_rss || "RSS Reader"
       if (widgetId === "habitTracker") return i18n.context_header_widget_habitTracker || "Habit Tracker"
+      if (widgetId === "ambientSounds") return i18n.quick_access_ambient_sounds || "Ambient Sounds"
+      if (widgetId === "aiAssistant") return i18n.quick_access_ai_assistant || "AI Assistant"
       if (widgetId === "custom-title") return i18n.context_header_widget_custom_title || "Custom Title"
       return widgetId
     }
@@ -906,7 +920,9 @@ export function showContextMenu(
       "notepad",
       "daily-quotes",
       "rss",
-      "habitTracker"
+      "habitTracker",
+      "ambientSounds",
+      "aiAssistant"
     ]
 
     if (skinnableWidgets.includes(id)) {
@@ -942,6 +958,8 @@ export function showContextMenu(
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
           habitTracker: "habit-tracker-container",
+          ambientSounds: "ambient-sounds-container",
+          aiAssistant: "ai-assistant-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -980,6 +998,8 @@ export function showContextMenu(
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
           habitTracker: "habit-tracker-container",
+          ambientSounds: "ambient-sounds-container",
+          aiAssistant: "ai-assistant-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1018,6 +1038,8 @@ export function showContextMenu(
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
           habitTracker: "habit-tracker-container",
+          ambientSounds: "ambient-sounds-container",
+          aiAssistant: "ai-assistant-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1033,7 +1055,7 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer" || id === "habitTracker") {
+      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer" || id === "habitTracker" || id === "ambientSounds" || id === "aiAssistant") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -1055,6 +1077,8 @@ export function showContextMenu(
             habitTracker: "habit-tracker-container",
             todo: "todo-container",
             timer: "timer-component",
+            ambientSounds: "ambient-sounds-container",
+            aiAssistant: "ai-assistant-container",
           }
           const el = document.getElementById(widgetIdMap[id] || id)
           if (el) {
@@ -1318,6 +1342,8 @@ export function showContextMenu(
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
           habitTracker: "habit-tracker-container",
+          ambientSounds: "ambient-sounds-container",
+          aiAssistant: "ai-assistant-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -2860,6 +2886,8 @@ function handleLock() {
       "daily-quotes": "daily-quotes",
       rss: "rss-container",
       habitTracker: "habit-tracker-container",
+      ambientSounds: "ambient-sounds-container",
+      aiAssistant: "ai-assistant-container",
       searchBar: "search-container",
       customTitle: "custom-title-display",
     }
