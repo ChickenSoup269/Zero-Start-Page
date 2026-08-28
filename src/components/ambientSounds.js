@@ -7,6 +7,7 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { fadeToggle } from "../utils/dom.js"
+import { showContextMenu } from "./contextMenu.js"
 
 export class AmbientSounds {
   constructor() {
@@ -224,6 +225,12 @@ export class AmbientSounds {
 
     this.container.querySelector("#ambient-stop-all-btn")?.addEventListener("click", () => {
       this.stopAllTracks()
+    })
+
+    this.container.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      showContextMenu(e.clientX, e.clientY, -1, "widget", "ambientSounds")
     })
 
     window.addEventListener("startpage:languageChanged", () => this.updateLanguage())

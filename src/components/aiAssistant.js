@@ -7,6 +7,7 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { fadeToggle } from "../utils/dom.js"
+import { showContextMenu } from "./contextMenu.js"
 
 const GEMINI_API_KEY_STORAGE = "gemini_api_key"
 const GEMINI_MODEL_STORAGE = "gemini_ai_model"
@@ -218,6 +219,16 @@ export class AiAssistant {
     })
 
     sendBtn?.addEventListener("click", () => this.sendMessage())
+
+    this.container.addEventListener("contextmenu", (e) => {
+      // Allow native text selection inside textarea or selectable message text
+      if (e.target.closest("#ai-user-input") || e.target.closest(".ai-msg-text")) {
+        return
+      }
+      e.preventDefault()
+      e.stopPropagation()
+      showContextMenu(e.clientX, e.clientY, -1, "widget", "aiAssistant")
+    })
 
     window.addEventListener("startpage:languageChanged", () => this.updateLanguage())
     window.addEventListener("languageChanged", () => this.updateLanguage())
