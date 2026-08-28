@@ -225,6 +225,42 @@ export class AmbientSounds {
     this.container.querySelector("#ambient-stop-all-btn")?.addEventListener("click", () => {
       this.stopAllTracks()
     })
+
+    window.addEventListener("startpage:languageChanged", () => this.updateLanguage())
+    window.addEventListener("languageChanged", () => this.updateLanguage())
+  }
+
+  updateLanguage() {
+    const i18n = geti18n()
+    if (!this.container) return
+
+    const titleEl = this.container.querySelector(".ambient-header-title")
+    if (titleEl) titleEl.textContent = i18n.ambient_title || "Ambient Sounds"
+
+    const muteBtn = this.container.querySelector("#ambient-mute-all")
+    if (muteBtn) muteBtn.title = i18n.ambient_mute_all || "Mute"
+
+    const closeBtn = this.container.querySelector("#ambient-close-btn")
+    if (closeBtn) closeBtn.title = i18n.close || "Close"
+
+    const masterLabel = this.container.querySelector(".ambient-master-row .ambient-label")
+    if (masterLabel) masterLabel.innerHTML = `<i class="fa-solid fa-sliders"></i> ${i18n.ambient_master_volume || "Volume"}`
+
+    const syncLabel = this.container.querySelector(".ambient-toggle-label span")
+    if (syncLabel) syncLabel.textContent = i18n.ambient_sync_pomodoro || "Sync with Timer"
+
+    const stopAllBtn = this.container.querySelector("#ambient-stop-all-btn")
+    if (stopAllBtn) stopAllBtn.innerHTML = `<i class="fa-solid fa-stop"></i> ${i18n.ambient_stop_all || "Stop All"}`
+
+    this.tracks.forEach((track) => {
+      const trackSpan = this.container.querySelector(`.ambient-track-item[data-track-id="${track.id}"] .ambient-track-btn span`)
+      if (trackSpan) {
+        trackSpan.textContent = i18n[track.i18nKey] || track.name
+      }
+    })
+
+    const quickBtn = document.querySelector('.quick-btn[data-toggle="ambientSounds"]')
+    if (quickBtn) quickBtn.title = i18n.quick_access_ambient_sounds || "Ambient Sounds"
   }
 
   setupTimerSync() {
@@ -347,17 +383,25 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 1000
+        filter.frequency.value = 900
 
         const hp = ctx.createBiquadFilter()
         hp.type = "highpass"
-        hp.frequency.value = 200
+        hp.frequency.value = 160
+
+        // Gentle resonant droplet texture
+        const dropletFilter = ctx.createBiquadFilter()
+        dropletFilter.type = "peaking"
+        dropletFilter.frequency.value = 2400
+        dropletFilter.gain.value = 4
+        dropletFilter.Q.value = 1.5
 
         source.connect(filter)
         filter.connect(hp)
-        hp.connect(destinationGain)
+        hp.connect(dropletFilter)
+        dropletFilter.connect(destinationGain)
         source.start()
-        return [source, filter, hp]
+        return [source, filter, hp, dropletFilter]
       }
 
       case "waves": {
@@ -367,26 +411,34 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 380
+        filter.frequency.value = 420
 
         const lfo = ctx.createOscillator()
-        lfo.frequency.value = 0.12 // 8-second wave cycle
+        lfo.frequency.value = 0.1 // 10-second ocean wave cycle
         const lfoGain = ctx.createGain()
-        lfoGain.gain.value = 0.5
+        lfoGain.gain.value = 0.55
 
         const waveGain = ctx.createGain()
-        waveGain.gain.value = 0.6
+        waveGain.gain.value = 0.65
+
+        // Sweeping filter for authentic wave surf
+        const sweepFilter = ctx.createBiquadFilter()
+        sweepFilter.type = "peaking"
+        sweepFilter.frequency.value = 650
+        sweepFilter.Q.value = 1.8
+        sweepFilter.gain.value = 6
 
         lfo.connect(lfoGain)
         lfoGain.connect(waveGain.gain)
 
         source.connect(filter)
-        filter.connect(waveGain)
+        filter.connect(sweepFilter)
+        sweepFilter.connect(waveGain)
         waveGain.connect(destinationGain)
 
         source.start()
         lfo.start()
-        return [source, filter, waveGain, lfo, lfoGain]
+        return [source, filter, sweepFilter, waveGain, lfo, lfoGain]
       }
 
       case "wind": {
@@ -396,13 +448,23 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "bandpass"
-        filter.frequency.value = 400
-        filter.Q.value = 2.5
+        filter.frequency.value = 420
+        filter.Q.value = 2.8
+
+        const lfo = ctx.createOscillator()
+        lfo.frequency.value = 0.14
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 180 // Sweeps filter center between 240Hz and 600Hz
+
+        lfo.connect(lfoGain)
+        lfoGain.connect(filter.frequency)
 
         source.connect(filter)
         filter.connect(destinationGain)
+
         source.start()
-        return [source, filter]
+        lfo.start()
+        return [source, filter, lfo, lfoGain]
       }
 
       case "fire": {
@@ -412,13 +474,20 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "bandpass"
-        filter.frequency.value = 250
-        filter.Q.value = 1.2
+        filter.frequency.value = 280
+        filter.Q.value = 1.4
+
+        const crackleFilter = ctx.createBiquadFilter()
+        crackleFilter.type = "peaking"
+        crackleFilter.frequency.value = 1600
+        crackleFilter.gain.value = 5
+        crackleFilter.Q.value = 3.0
 
         source.connect(filter)
-        filter.connect(destinationGain)
+        filter.connect(crackleFilter)
+        crackleFilter.connect(destinationGain)
         source.start()
-        return [source, filter]
+        return [source, filter, crackleFilter]
       }
 
       case "stream": {
@@ -428,13 +497,18 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "bandpass"
-        filter.frequency.value = 750
-        filter.Q.value = 2.0
+        filter.frequency.value = 850
+        filter.Q.value = 1.8
+
+        const sparkle = ctx.createBiquadFilter()
+        sparkle.type = "highpass"
+        sparkle.frequency.value = 500
 
         source.connect(filter)
-        filter.connect(destinationGain)
+        filter.connect(sparkle)
+        sparkle.connect(destinationGain)
         source.start()
-        return [source, filter]
+        return [source, filter, sparkle]
       }
 
       case "brownnoise": {
@@ -444,7 +518,7 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 220
+        filter.frequency.value = 200
 
         source.connect(filter)
         filter.connect(destinationGain)
@@ -459,79 +533,93 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 130
+        filter.frequency.value = 110
 
-        const lfo = ctx.createOscillator()
-        lfo.frequency.value = 0.08 // slow deep rolling thunder
-        const lfoGain = ctx.createGain()
-        lfoGain.gain.value = 0.6
+        const lfo1 = ctx.createOscillator()
+        lfo1.frequency.value = 0.06
+        const lfo2 = ctx.createOscillator()
+        lfo2.frequency.value = 0.095
+
+        const lfoGain1 = ctx.createGain()
+        lfoGain1.gain.value = 0.45
+        const lfoGain2 = ctx.createGain()
+        lfoGain2.gain.value = 0.35
 
         const rumbleGain = ctx.createGain()
-        rumbleGain.gain.value = 0.8
+        rumbleGain.gain.value = 0.85
 
-        lfo.connect(lfoGain)
-        lfoGain.connect(rumbleGain.gain)
+        lfo1.connect(lfoGain1)
+        lfo2.connect(lfoGain2)
+        lfoGain1.connect(rumbleGain.gain)
+        lfoGain2.connect(rumbleGain.gain)
 
         source.connect(filter)
         filter.connect(rumbleGain)
         rumbleGain.connect(destinationGain)
 
         source.start()
-        lfo.start()
-        return [source, filter, rumbleGain, lfo, lfoGain]
+        lfo1.start()
+        lfo2.start()
+        return [source, filter, rumbleGain, lfo1, lfo2, lfoGain1, lfoGain2]
       }
 
       case "birds": {
         // Nature forest birds chirping
-        const osc = ctx.createOscillator()
-        osc.type = "sine"
-        osc.frequency.setValueAtTime(2800, ctx.currentTime)
+        const osc1 = ctx.createOscillator()
+        osc1.type = "sine"
+        osc1.frequency.setValueAtTime(2600, ctx.currentTime)
 
-        // Frequency modulation for bird chirps
+        const osc2 = ctx.createOscillator()
+        osc2.type = "sine"
+        osc2.frequency.setValueAtTime(3200, ctx.currentTime)
+
+        // Chirp frequency modulation
         const lfo = ctx.createOscillator()
         lfo.type = "sine"
-        lfo.frequency.value = 3.5
-
+        lfo.frequency.value = 4.2
         const lfoGain = ctx.createGain()
-        lfoGain.gain.value = 600
+        lfoGain.gain.value = 480
 
         lfo.connect(lfoGain)
-        lfoGain.connect(osc.frequency)
+        lfoGain.connect(osc1.frequency)
+        lfoGain.connect(osc2.frequency)
 
-        // Periodic volume envelope
+        // Tremolo envelope for natural bird song cadence
         const tremolo = ctx.createOscillator()
-        tremolo.frequency.value = 0.8
+        tremolo.frequency.value = 0.65
         const tremoloGain = ctx.createGain()
-        tremoloGain.gain.value = 0.35
+        tremoloGain.gain.value = 0.3
 
         const mainGain = ctx.createGain()
-        mainGain.gain.value = 0.3
+        mainGain.gain.value = 0.25
 
         tremolo.connect(tremoloGain)
         tremoloGain.connect(mainGain.gain)
 
-        osc.connect(mainGain)
+        osc1.connect(mainGain)
+        osc2.connect(mainGain)
         mainGain.connect(destinationGain)
 
-        osc.start()
+        osc1.start()
+        osc2.start()
         lfo.start()
         tremolo.start()
-        return [osc, lfo, lfoGain, tremolo, tremoloGain, mainGain]
+        return [osc1, osc2, lfo, lfoGain, tremolo, tremoloGain, mainGain]
       }
 
       case "crickets": {
         // Night crickets
         const osc1 = ctx.createOscillator()
         osc1.type = "triangle"
-        osc1.frequency.value = 4600
+        osc1.frequency.value = 4500
 
         const osc2 = ctx.createOscillator()
         osc2.type = "sine"
-        osc2.frequency.value = 4850
+        osc2.frequency.value = 4800
 
         const lfo = ctx.createOscillator()
         lfo.type = "square"
-        lfo.frequency.value = 14
+        lfo.frequency.value = 12
 
         const lfoGain = ctx.createGain()
         lfoGain.gain.value = 0.25
@@ -560,12 +648,12 @@ export class AmbientSounds {
 
         const filter1 = ctx.createBiquadFilter()
         filter1.type = "bandpass"
-        filter1.frequency.value = 500
-        filter1.Q.value = 1.8
+        filter1.frequency.value = 450
+        filter1.Q.value = 2.0
 
         const filter2 = ctx.createBiquadFilter()
         filter2.type = "lowpass"
-        filter2.frequency.value = 1200
+        filter2.frequency.value = 1100
 
         source.connect(filter1)
         filter1.connect(filter2)
@@ -575,22 +663,34 @@ export class AmbientSounds {
       }
 
       case "space": {
-        // Deep cosmic meditative drone (432Hz harmonic root & fifths)
+        // 432Hz Pythagorean pure meditative harmonics
         const osc1 = ctx.createOscillator()
         osc1.type = "sine"
-        osc1.frequency.value = 108 // Root bass
+        osc1.frequency.value = 108 // Root (C)
 
         const osc2 = ctx.createOscillator()
         osc2.type = "sine"
-        osc2.frequency.value = 162 // Fifth
+        osc2.frequency.value = 216 // Octave (C)
 
         const osc3 = ctx.createOscillator()
-        osc3.type = "triangle"
-        osc3.frequency.value = 216 // Octave
+        osc3.type = "sine"
+        osc3.frequency.value = 324 // Fifth (G)
+
+        const osc4 = ctx.createOscillator()
+        osc4.type = "sine"
+        osc4.frequency.value = 432 // Concert A Harmonic
+
+        // Gentle chorusing detune for deep rich soundscape
+        const lfo = ctx.createOscillator()
+        lfo.frequency.value = 0.08
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 1.2
+        lfo.connect(lfoGain)
+        lfoGain.connect(osc2.frequency)
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 350
+        filter.frequency.value = 500
 
         const droneGain = ctx.createGain()
         droneGain.gain.value = 0.35
@@ -598,13 +698,16 @@ export class AmbientSounds {
         osc1.connect(filter)
         osc2.connect(filter)
         osc3.connect(filter)
+        osc4.connect(filter)
         filter.connect(droneGain)
         droneGain.connect(destinationGain)
 
         osc1.start()
         osc2.start()
         osc3.start()
-        return [osc1, osc2, osc3, filter, droneGain]
+        osc4.start()
+        lfo.start()
+        return [osc1, osc2, osc3, osc4, lfo, lfoGain, filter, droneGain]
       }
 
       case "pinknoise": {
@@ -614,7 +717,7 @@ export class AmbientSounds {
 
         const filter = ctx.createBiquadFilter()
         filter.type = "lowpass"
-        filter.frequency.value = 600
+        filter.frequency.value = 550
 
         source.connect(filter)
         filter.connect(destinationGain)
