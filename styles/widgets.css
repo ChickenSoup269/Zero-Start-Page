@@ -2031,7 +2031,8 @@ body.ghost-controls .side-controls:hover {
   border-radius: var(--quick-access-toggle-radius, 50%);
   color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.14s ease, color 0.14s ease, background-color 0.14s ease;
+  will-change: transform;
 }
 
 #settings-toggle.no-border {
@@ -2042,8 +2043,8 @@ body.ghost-controls .side-controls:hover {
 }
 
 #settings-toggle:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  transform: scale(1.06);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   color: #fff;
   border-color: rgba(255, 255, 255, 0.25);
 }
@@ -2064,7 +2065,7 @@ body.ghost-controls .side-controls:hover {
   border-radius: var(--quick-access-bar-radius, var(--radius-lg));
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
   transform-origin: top;
   position: relative;
   max-height: calc(100vh - 90px);
@@ -2322,7 +2323,8 @@ body.ghost-controls .side-controls:hover {
   min-height: 36px;
   padding: 8px 7px;
   border-radius: var(--radius-sm);
-  transition: background 0.15s;
+  transition: background-color 0.1s ease;
+  will-change: background-color;
 }
 
 .lcp-row:hover {
@@ -2591,7 +2593,7 @@ body.ghost-controls .side-controls:hover {
   border-radius: 999px;
   cursor: pointer;
   box-sizing: border-box;
-  transition: background 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.14s ease;
 }
 
 /* Expand the clickable area for easier tapping */
@@ -2614,10 +2616,9 @@ body.ghost-controls .side-controls:hover {
   transform: translateY(-50%);
   background: #fff;
   border-radius: 50%;
-  transition:
-    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-    background-color 0.25s ease;
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.14s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  will-change: transform;
 }
 
 .lcp-switch input:checked + .lcp-slider {
@@ -3072,14 +3073,12 @@ body.ghost-controls .side-controls:hover {
   font-size: 0.82rem;
   font-weight: 650;
   cursor: pointer;
-  transition:
-    background 0.16s ease,
-    color 0.16s ease,
-    transform 0.16s ease;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  will-change: background-color, color;
 }
 
 .lcp-tab:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.09);
   color: #fff;
 }
 
