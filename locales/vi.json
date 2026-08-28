@@ -2195,6 +2195,9 @@
   "ai_welcome_title": "Tôi có thể giúp gì cho bạn hôm nay?",
   "ai_welcome_desc": "Đặt câu hỏi, viết ghi chú, tóm tắt bài viết hoặc sửa lỗi code.",
   "ai_api_key_help": "Lấy API key hoàn toàn miễn phí tại",
+  "ai_open_web_title": "Mở tab Google Gemini đầy đủ",
+  "ai_demo_notice": "Đây là tiện ích AI demo mini. Mở trực tiếp tab Google Gemini sẽ nhanh, thông minh và đầy đủ tính năng hơn!",
+  "ai_open_gemini_tab_btn": "Mở tab Gemini",
   "qa_show_ambient": "Hiển thị Âm thanh tập trung",
   "qa_show_ai_assistant": "Hiển thị Trợ lý AI"
 }

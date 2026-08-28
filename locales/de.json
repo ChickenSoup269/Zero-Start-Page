@@ -2194,6 +2194,9 @@
   "ai_welcome_title": "Wie kann ich heute helfen?",
   "ai_welcome_desc": "Stellen Sie Fragen, verfassen Sie Notizen oder beheben Sie Code-Fehler.",
   "ai_api_key_help": "Kostenlosen API-Schlüssel erhalten bei",
+  "ai_open_web_title": "Google Gemini im neuen Tab öffnen",
+  "ai_demo_notice": "Dies ist ein Mini-Demo-Assistent. Das Öffnen des offiziellen Gemini-Tabs ist noch schneller und intelligenter!",
+  "ai_open_gemini_tab_btn": "Gemini-Tab öffnen",
   "qa_show_ambient": "Umgebungsgeräusche anzeigen",
   "qa_show_ai_assistant": "KI-Assistent anzeigen"
 }

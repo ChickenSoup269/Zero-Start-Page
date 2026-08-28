@@ -2196,6 +2196,9 @@
   "ai_welcome_title": "How can I help you today?",
   "ai_welcome_desc": "Ask questions, write notes, summarize articles, or debug code.",
   "ai_api_key_help": "Get a free API key at",
+  "ai_open_web_title": "Open full Google Gemini tab",
+  "ai_demo_notice": "This is a mini demo assistant. Opening the official Gemini tab is even faster, smarter, and feature-complete!",
+  "ai_open_gemini_tab_btn": "Open Gemini Tab",
   "qa_show_ambient": "Show Ambient Sounds",
   "qa_show_ai_assistant": "Show AI Assistant"
 }

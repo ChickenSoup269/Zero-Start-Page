@@ -2194,6 +2194,10 @@
   "ai_prompt_ideas": "Idéer",
   "ai_prompt_code": "Förklara kod",
   "ai_welcome_title": "Hur kan jag hjälpa dig idag?",
-  "ai_welcome_desc": "Ställ frågor, skriv anteckningar eller felsök kod.",
-  "ai_api_key_help": "Skaffa gratis API-nyckel på"
+  "ai_api_key_help": "Skaffa gratis API-nyckel på",
+  "ai_open_web_title": "Öppna Google Gemini i ny flik",
+  "ai_demo_notice": "Detta är en mini-demoassistent. Att öppna den officiella Gemini-fliken är ännu snabbare och smartare!",
+  "ai_open_gemini_tab_btn": "Öppna Gemini-flik",
+  "qa_show_ambient": "Visa bakgrundsljud",
+  "qa_show_ai_assistant": "Visa AI-assistent"
 }

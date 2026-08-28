@@ -90,6 +90,9 @@ export class AiAssistant {
           <button class="ai-tool-btn" id="ai-key-btn" title="${i18n.ai_api_key_settings || "API Key"}">
             <i class="fa-solid fa-key"></i>
           </button>
+          <a href="https://gemini.google.com" target="_blank" class="ai-tool-btn" id="ai-open-tab-btn" title="${i18n.ai_open_web_title || "Open full Gemini in new tab"}">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
           <button class="ai-tool-btn" id="ai-clear-btn" title="${i18n.ai_clear_chat || "Clear"}">
             <i class="fa-solid fa-trash-can"></i>
           </button>
@@ -326,6 +329,10 @@ export class AiAssistant {
           <i class="fa-solid fa-robot ai-empty-icon"></i>
           <div class="ai-empty-title">${i18n.ai_welcome_title || "How can I help you?"}</div>
           <div class="ai-empty-desc">${i18n.ai_welcome_desc || "Ask questions, generate ideas, summarize text, or debug code."}</div>
+          <div class="ai-demo-note">
+            <span><i class="fa-solid fa-lightbulb"></i> ${i18n.ai_demo_notice || "This is a mini demo assistant. Opening the official Gemini tab is even faster & smarter for complex tasks!"}</span>
+            <a href="https://gemini.google.com" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.ai_open_gemini_tab_btn || "Open Gemini Tab"}</a>
+          </div>
         </div>
       `
       return
