@@ -609,6 +609,23 @@ function submitSearch() {
   // Default to text search
   if (!query) return
 
+  // Direct AI Assistant query trigger from search bar
+  if (/^(@ai|ai:|\/ai|\?ai)\s+/i.test(query)) {
+    const aiPrompt = query.replace(/^(@ai|ai:|\/ai|\?ai)\s+/i, "").trim()
+    import("../boot/widgetManager.js").then(({ initWidget }) => {
+      initWidget("aiAssistant").then((widget) => {
+        if (widget) {
+          widget.toggleVisibility(true)
+          if (aiPrompt) {
+            widget.sendMessage(aiPrompt)
+          }
+        }
+      })
+    })
+    searchInput.value = ""
+    return
+  }
+
   // Custom CLI commands
   if (query.toLowerCase() === "/test performance" || query.toLowerCase() === "/perf") {
     if (window.perfHUD) {
