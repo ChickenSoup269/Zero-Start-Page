@@ -1,0 +1,258 @@
+/* styles/ambient-sounds.css */
+.ambient-sounds-container {
+  position: fixed;
+  top: 104px;
+  right: 60px;
+  width: 290px;
+  max-width: calc(100vw - 40px);
+  background: rgba(15, 18, 26, 0.92);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-color, #f1f1f1);
+  font-family: inherit;
+  user-select: none;
+  overflow: hidden;
+  padding: 14px;
+  gap: 10px;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.ambient-sounds-container:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.65);
+}
+
+.ambient-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: grab;
+}
+
+.ambient-header:active {
+  cursor: grabbing;
+}
+
+.ambient-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ambient-header-icon {
+  font-size: 1rem;
+  color: var(--accent-color, #4facfe);
+}
+
+.ambient-header-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ambient-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ambient-tool-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.15s ease;
+}
+
+.ambient-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ambient-tool-btn.muted {
+  color: #ff5252;
+}
+
+.ambient-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ambient-master-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.ambient-label {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.ambient-vol-text {
+  font-size: 0.72rem;
+  color: var(--accent-color, #4facfe);
+  font-weight: 600;
+  width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ambient-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ambient-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-color, #4facfe);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(var(--accent-color-rgb, 79, 172, 254), 0.5);
+}
+
+.ambient-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.ambient-tracks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ambient-tracks-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+.ambient-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 5px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.ambient-track-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ambient-track-item.active {
+  background: rgba(var(--accent-color-rgb, 79, 172, 254), 0.15);
+  border-color: var(--accent-color, #4facfe);
+}
+
+.ambient-track-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  flex: 1;
+  text-align: left;
+  padding: 0;
+}
+
+.ambient-track-item.active .ambient-track-btn {
+  color: #fff;
+  font-weight: 500;
+}
+
+.ambient-track-btn i {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  width: 16px;
+  text-align: center;
+}
+
+.ambient-track-item.active .ambient-track-btn i {
+  color: var(--accent-color, #4facfe);
+}
+
+.ambient-item-slider {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.ambient-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ambient-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+}
+
+.ambient-toggle-label input {
+  accent-color: var(--accent-color, #4facfe);
+  cursor: pointer;
+}
+
+.ambient-btn-danger {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.25);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.74rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.ambient-btn-danger:hover {
+  background: rgba(255, 82, 82, 0.2);
+}

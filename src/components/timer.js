@@ -617,6 +617,7 @@ export class Timer {
     this.saveState()
     this.updateTimerStatus()
     this._updateMiniIndicatorVisibility()
+    window.dispatchEvent(new CustomEvent("timerStarted"))
 
     this.timerId = setInterval(() => {
       const remaining = Math.ceil((this.endTime - Date.now()) / 1000)
@@ -648,6 +649,7 @@ export class Timer {
     this.saveState()
     this.updateTimerStatus()
     this._updateMiniIndicatorVisibility()
+    window.dispatchEvent(new CustomEvent("timerPaused"))
   }
 
   resetTimer() {
@@ -658,6 +660,7 @@ export class Timer {
     this.stopAlarm()
     this.saveState()
     this.updateTimerStatus()
+    window.dispatchEvent(new CustomEvent("timerStopped"))
   }
 
   enterFocusMode() {
