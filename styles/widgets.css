@@ -8095,11 +8095,31 @@ body.context-menu-m3 .calendar-event-preview-desc {
 }
 
 /* Draggable helper */
+body.is-dragging-widget {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: grabbing !important;
+}
+
+body.is-dragging-widget * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: grabbing !important;
+  pointer-events: none !important;
+}
+
+body.is-dragging-widget .dragging,
+body.is-dragging-widget .dragging * {
+  pointer-events: auto !important;
+}
+
 .dragging {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
   border: 1px solid var(--accent-color) !important;
   z-index: 2000 !important;
   transition: none !important;
+  animation: none !important;
+  will-change: left, top;
 }
 
 /* === WHITE BLUR SKIN FOR WIDGETS === */
