@@ -138,6 +138,12 @@ body.quick-access-white .lcp-title i {
   color: var(--accent-color, #2563eb) !important;
 }
 
+.side-controls.light-mode .lcp-header-sticky,
+body.quick-access-white .lcp-header-sticky {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
 .side-controls.light-mode .lcp-tabs,
 body.quick-access-white .lcp-tabs {
   background: rgba(0, 0, 0, 0.06) !important;
