@@ -31,6 +31,7 @@ export class AmbientSounds {
       { id: "stream", name: "Stream", i18nKey: "ambient_stream", icon: "fa-water-ladder" },
       { id: "cafe", name: "Cozy Cafe", i18nKey: "ambient_cafe", icon: "fa-mug-hot" },
       { id: "space", name: "Cosmic Drone", i18nKey: "ambient_space", icon: "fa-meteor" },
+      { id: "traffic", name: "City Traffic", i18nKey: "ambient_traffic", icon: "fa-car-side" },
       { id: "brownnoise", name: "Brown Noise", i18nKey: "ambient_brown_noise", icon: "fa-brain" },
       { id: "pinknoise", name: "Pink Noise", i18nKey: "ambient_pink_noise", icon: "fa-wave-square" },
       { id: "whitenoise", name: "White Noise", i18nKey: "ambient_white_noise", icon: "fa-bars-staggered" },
@@ -715,6 +716,44 @@ export class AmbientSounds {
         osc4.start()
         lfo.start()
         return [osc1, osc2, osc3, osc4, lfo, lfoGain, filter, droneGain]
+      }
+
+      case "traffic": {
+        // Distant city traffic & passing cars
+        const source = ctx.createBufferSource()
+        source.buffer = buffer
+        source.loop = true
+
+        const lowRumble = ctx.createBiquadFilter()
+        lowRumble.type = "lowpass"
+        lowRumble.frequency.value = 240
+
+        // Modulated bandpass for Doppler passing vehicle swoosh
+        const tireFilter = ctx.createBiquadFilter()
+        tireFilter.type = "bandpass"
+        tireFilter.frequency.value = 420
+        tireFilter.Q.value = 2.0
+
+        const lfo = ctx.createOscillator()
+        lfo.frequency.value = 0.07 // 14s smooth passing cycle
+        const lfoGain = ctx.createGain()
+        lfoGain.gain.value = 180 // Sweeps between 240Hz and 600Hz
+
+        lfo.connect(lfoGain)
+        lfoGain.connect(tireFilter.frequency)
+
+        const trafficGain = ctx.createGain()
+        trafficGain.gain.value = 0.7
+
+        source.connect(lowRumble)
+        source.connect(tireFilter)
+        lowRumble.connect(trafficGain)
+        tireFilter.connect(trafficGain)
+        trafficGain.connect(destinationGain)
+
+        source.start()
+        lfo.start()
+        return [source, lowRumble, tireFilter, lfo, lfoGain, trafficGain]
       }
 
       case "pinknoise": {
