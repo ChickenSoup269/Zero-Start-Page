@@ -34,6 +34,8 @@
     <link rel="stylesheet" href="styles/music-player.css?v=4">
     <link rel="stylesheet" href="styles/dialog.css">
     <link rel="stylesheet" href="styles/rss.css">
+    <link rel="stylesheet" href="styles/ambient-sounds.css">
+    <link rel="stylesheet" href="styles/ai-assistant.css">
     <link rel="stylesheet" href="styles/white-access-mode.css">
 </head>
 
@@ -106,6 +108,10 @@
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
+            <button class="quick-btn" data-toggle="ambientSounds" style="display: none;" data-i18n-title="quick_access_ambient_sounds"
+                title="Ambient Sounds"><i class="fa-solid fa-headphones-simple"></i></button>
+            <button class="quick-btn" data-toggle="aiAssistant" style="display: none;" data-i18n-title="quick_access_ai_assistant"
+                title="Gemini Assistant"><i class="fa-solid fa-robot"></i></button>
             <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
                     class="fa-solid fa-clock"></i></button>
             <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
@@ -464,6 +470,8 @@
     <div id="rss-container" class="rss-container glass-panel drag-handle" style="display: none;"></div>
     <div id="habit-tracker-container" class="habit-tracker-container glass-panel drag-handle" style="display: none;">
     </div>
+    <div id="ambient-sounds-container" class="ambient-sounds-container glass-panel drag-handle" style="display: none;"></div>
+    <div id="ai-assistant-container" class="ai-assistant-container glass-panel drag-handle" style="display: none;"></div>
 
     <script type="module" src="src/bootstrap.js?v=perf-lazy-v17"></script>
 

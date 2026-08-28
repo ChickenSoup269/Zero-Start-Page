@@ -16,6 +16,8 @@ const widgets = {
   notepad: null,
   rss: null,
   habitTracker: null,
+  ambientSounds: null,
+  aiAssistant: null,
 }
 
 const widgetModuleLoaders = {
@@ -28,6 +30,8 @@ const widgetModuleLoaders = {
   notepad:      () => import("../components/notepad.js").then((m) => m.Notepad),
   rss:          () => import("../components/rss.js").then((m) => m.RssReader),
   habitTracker: () => import("../components/habitTracker.js").then((m) => m.HabitTracker),
+  ambientSounds: () => import("../components/ambientSounds.js").then((m) => m.AmbientSounds),
+  aiAssistant:   () => import("../components/aiAssistant.js").then((m) => m.AiAssistant),
 }
 
 const widgetClassPromises = {}
@@ -100,6 +104,20 @@ export async function initWidget(type) {
       makeDraggable(widgets.habitTracker.container, "habitTracker")
       return widgets.habitTracker
     }
+    case "ambientSounds": {
+      const AmbientSounds = await loadWidgetClass("ambientSounds")
+      widgets.ambientSounds = new AmbientSounds()
+      window.activeAmbientSounds = widgets.ambientSounds
+      makeDraggable(widgets.ambientSounds.container, "ambientSounds", null, ".ambient-header")
+      return widgets.ambientSounds
+    }
+    case "aiAssistant": {
+      const AiAssistant = await loadWidgetClass("aiAssistant")
+      widgets.aiAssistant = new AiAssistant()
+      window.activeAiAssistant = widgets.aiAssistant
+      makeDraggable(widgets.aiAssistant.container, "aiAssistant", null, ".ai-header")
+      return widgets.aiAssistant
+    }
     default:
       return null
   }
@@ -132,6 +150,16 @@ export function initVisibleWidgets() {
   if (settings.showHabits === true) void initWidget("habitTracker")
   if (settings.showFullCalendar === true) void initWidget("calendar")
   if (settings.musicPlayerEnabled === true) void initWidget("music")
+  if (settings.showAmbientSounds === true) {
+    void initWidget("ambientSounds").then((w) => {
+      if (w) w.container.style.display = "flex"
+    })
+  }
+  if (settings.showAiAssistant === true) {
+    void initWidget("aiAssistant").then((w) => {
+      if (w) w.container.style.display = "flex"
+    })
+  }
   if (settings.showRss === true) {
     void initWidget("rss").then((w) => {
       if (w) w.container.style.display = "flex"

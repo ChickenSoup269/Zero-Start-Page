@@ -7098,6 +7098,8 @@ export function setupGeneralEventHandlers(
     { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" },
     { el: DOM.lcpQaShowRss, key: "qaShowRss" },
     { el: DOM.lcpQaShowHabits, key: "qaShowHabits" },
+    { el: DOM.lcpQaShowAmbient, key: "qaShowAmbient" },
+    { el: DOM.lcpQaShowAiAssistant, key: "qaShowAiAssistant" },
     { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" }
   ];
 

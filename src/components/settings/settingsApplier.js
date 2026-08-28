@@ -982,6 +982,8 @@ function createApplySettings(effectInstances) {
     qaToggleDisplay("gregorian", settings.qaShowGregorian)
     qaToggleDisplay("rss", settings.qaShowRss)
     qaToggleDisplay("habitTracker", settings.qaShowHabits)
+    qaToggleDisplay("ambientSounds", settings.qaShowAmbient === true)
+    qaToggleDisplay("aiAssistant", settings.qaShowAiAssistant === true)
     document.body.classList.toggle(
       "quick-access-light-transparent",
       settings.quickAccessSkin === "light-transparent",
@@ -5734,8 +5736,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
     if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
     if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
-    if (DOM.lcpQaShowRss) DOM.lcpQaShowRss.checked = settings.qaShowRss !== false
-    if (DOM.lcpQaShowHabits) DOM.lcpQaShowHabits.checked = settings.qaShowHabits !== false
+    if (DOM.lcpQaShowRss) DOM.lcpQaShowRss.checked = settings.qaShowRss === true
+    if (DOM.lcpQaShowHabits) DOM.lcpQaShowHabits.checked = settings.qaShowHabits === true
+    if (DOM.lcpQaShowAmbient) DOM.lcpQaShowAmbient.checked = settings.qaShowAmbient === true
+    if (DOM.lcpQaShowAiAssistant) DOM.lcpQaShowAiAssistant.checked = settings.qaShowAiAssistant === true
     if (DOM.lcpQaAllowReorder) DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20

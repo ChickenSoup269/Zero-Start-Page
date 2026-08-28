@@ -64,8 +64,58 @@ export function syncQuickButtons() {
       case "habitTracker":
         isActive = settings.showHabits === true
         break
+      case "ambientSounds":
+        isActive = settings.showAmbientSounds === true
+        break
+      case "aiAssistant":
+        isActive = settings.showAiAssistant === true
+        break
     }
     btn.classList.toggle("active", isActive)
+
+    let isVisible = true
+    switch (type) {
+      case "todo":
+        isVisible = settings.qaShowTodo !== false
+        break
+      case "notepad":
+        isVisible = settings.qaShowNotepad !== false
+        break
+      case "timer":
+        isVisible = settings.qaShowTimer !== false
+        break
+      case "calendar":
+        isVisible = settings.qaShowCalendar !== false
+        break
+      case "quotes":
+        isVisible = settings.qaShowQuotes !== false
+        break
+      case "weather":
+        isVisible = settings.qaShowWeather !== false
+        break
+      case "music":
+        isVisible = settings.qaShowMusic !== false
+        break
+      case "clock":
+        isVisible = settings.qaShowClock !== false
+        break
+      case "gregorian":
+        isVisible = settings.qaShowGregorian !== false
+        break
+      case "rss":
+        isVisible = settings.qaShowRss === true
+        break
+      case "habitTracker":
+        isVisible = settings.qaShowHabits === true
+        break
+      case "ambientSounds":
+        isVisible = settings.qaShowAmbient === true
+        break
+      case "aiAssistant":
+        isVisible = settings.qaShowAiAssistant === true
+        break
+    }
+    btn.style.display = isVisible ? "" : "none"
   })
 }
 
@@ -145,6 +195,24 @@ export function setupQuickAccessClickHandlers() {
             }),
           )
           btn.classList.toggle("active", nextRss)
+          break
+        }
+        case "ambientSounds": {
+          const nextAmbient = !(getSettings().showAmbientSounds === true)
+          const widget = await initWidget("ambientSounds")
+          if (widget) {
+            widget.toggleVisibility(nextAmbient)
+          }
+          btn.classList.toggle("active", nextAmbient)
+          break
+        }
+        case "aiAssistant": {
+          const nextAi = !(getSettings().showAiAssistant === true)
+          const widget = await initWidget("aiAssistant")
+          if (widget) {
+            widget.toggleVisibility(nextAi)
+          }
+          btn.classList.toggle("active", nextAi)
           break
         }
       }

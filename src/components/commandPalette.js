@@ -268,6 +268,32 @@ export function initCommandPalette(options = {}) {
                 if (window.perfHUD) window.perfHUD.toggle();
             }
         },
+        {
+            id: 'toggle-ambient-sounds',
+            title: 'Bật/Tắt: Âm thanh tập trung & White Noise',
+            desc: 'Mở bảng điều khiển âm thanh thư giãn (mưa, sóng biển, cafe, white noise)',
+            icon: '<i class="fa-solid fa-headphones-simple"></i>',
+            shortcut: '',
+            keywords: 'ambient sound white noise mua mua rao bien song bien song cafe campfire focus thu gian',
+            action: async () => {
+                const { initWidget } = await import('../boot/widgetManager.js');
+                const widget = await initWidget('ambientSounds');
+                if (widget) widget.toggleVisibility();
+            }
+        },
+        {
+            id: 'toggle-ai-assistant',
+            title: 'Mở/Đóng: Trợ lý AI Gemini',
+            desc: 'Mở cửa sổ trò chuyện với trợ lý AI Gemini thông minh',
+            icon: '<i class="fa-solid fa-wand-magic-sparkles"></i>',
+            shortcut: 'Alt + A',
+            keywords: 'ai gemini assistant tro ly chat bot gpt hoi dap dich thuat',
+            action: async () => {
+                const { initWidget } = await import('../boot/widgetManager.js');
+                const widget = await initWidget('aiAssistant');
+                if (widget) widget.toggleVisibility();
+            }
+        },
 
         // --- Các lệnh tiện ích khác ---
         {

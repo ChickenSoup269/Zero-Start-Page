@@ -286,7 +286,7 @@ export function makeDraggable(
       return
     if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar)
       return
-    if (componentId === "bookmarkWidget") return
+    if (componentId === "bookmarkWidget" || componentId === "ambientSounds" || componentId === "aiAssistant") return
     e.preventDefault()
     e.stopPropagation()
     // searchBar uses the "search" context menu type so lock/unlock logic works correctly

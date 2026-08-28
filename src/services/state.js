@@ -227,6 +227,8 @@ export const defaultSettings = {
   bookmarkShadowBlur: 8,
   qaShowRss: false,
   qaShowHabits: false,
+  qaShowAmbient: false,
+  qaShowAiAssistant: false,
   showRss: false,
   rssHiddenMigrated: false,
 
@@ -555,6 +557,8 @@ if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   settingsState.showRss = false
   settingsState.qaShowRss = false
   settingsState.qaShowHabits = false
+  settingsState.qaShowAmbient = false
+  settingsState.qaShowAiAssistant = false
   settingsState.rssHiddenMigrated = true
   localStorage.setItem("pageSettings", JSON.stringify(settingsState))
 } else if (!storedSettingsRaw) {
