@@ -1097,7 +1097,7 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   align-items: center;
   text-decoration: none;
   color: var(--text-color);
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease, filter 0.15s ease;
   cursor: pointer;
   flex-shrink: 0;
   width: calc(
@@ -1105,11 +1105,12 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   );
   text-align: center;
   position: relative;
+  will-change: transform;
 }
 
 .bookmark:hover,
 .add-bookmark-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
 .bookmark.dragging {
@@ -2150,7 +2151,7 @@ body.ghost-controls .side-controls:hover {
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2158,6 +2159,7 @@ body.ghost-controls .side-controls:hover {
   height: 38px;
   border-radius: 50%;
   padding: 0;
+  will-change: transform;
 }
 
 .quick-btn i {
@@ -2166,18 +2168,18 @@ body.ghost-controls .side-controls:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .quick-btn:hover {
   color: var(--accent-color);
   background: var(--accent-contrast-color, rgba(255, 255, 255, 0.15));
-  transform: scale(1.12);
+  transform: scale(1.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .quick-btn:hover i {
-  transform: scale(1.1);
+  transform: none;
 }
 
 .quick-btn.active {
