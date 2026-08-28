@@ -6,6 +6,7 @@
 
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
+import { fadeToggle } from "../utils/dom.js"
 
 const GEMINI_API_KEY_STORAGE = "gemini_api_key"
 const GEMINI_MODEL_STORAGE = "gemini_ai_model"
@@ -452,17 +453,17 @@ export class AiAssistant {
   }
 
   toggleVisibility(show) {
-    const isVisible = this.container.style.display !== "none" && this.container.style.display !== ""
+    const isVisible =
+      this.container.style.display !== "none" &&
+      this.container.style.display !== ""
     const target = show !== undefined ? show : !isVisible
 
+    fadeToggle(this.container, target, "flex")
+
     if (target) {
-      this.container.style.display = "flex"
-      this.container.style.opacity = "1"
       setTimeout(() => {
         this.container.querySelector("#ai-user-input")?.focus()
-      }, 50)
-    } else {
-      this.container.style.display = "none"
+      }, 60)
     }
 
     updateSetting("showAiAssistant", target)

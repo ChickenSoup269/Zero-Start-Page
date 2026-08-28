@@ -3676,27 +3676,84 @@ export function refreshDOMReferences() {
 
 export function fadeToggle(el, show, displayStyle = "flex") {
   if (!el) return
-  const isHidden = window.getComputedStyle(el).display === "none"
-  if (show) {
-    if (!isHidden) return
-    el.style.opacity = 0
-    el.style.display = displayStyle
-    const anim = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 300,
-      easing: "ease-out",
+  const isCurrentlyVisible =
+    el.style.display !== "none" &&
+    el.style.display !== "" &&
+    el.style.visibility !== "hidden" &&
+    el.offsetWidth > 0
+
+  const shouldShow = show !== undefined ? Boolean(show) : !isCurrentlyVisible
+
+  if (el._fadeAnim) {
+    try {
+      el._fadeAnim.cancel()
+    } catch {}
+    el._fadeAnim = null
+  }
+
+  const effectiveDisplay = displayStyle || "flex"
+
+  if (shouldShow) {
+    if (isCurrentlyVisible && el.style.opacity === "1") return
+    el.style.display = effectiveDisplay
+    el.style.willChange = "opacity, transform"
+
+    const baseTransform =
+      el.style.transform && el.style.transform !== "none"
+        ? el.style.transform
+        : ""
+    const keyframes = baseTransform
+      ? [
+          { opacity: 0, transform: `${baseTransform} scale(0.97)` },
+          { opacity: 1, transform: `${baseTransform} scale(1)` },
+        ]
+      : [
+          { opacity: 0, transform: "scale(0.97) translateY(4px)" },
+          { opacity: 1, transform: "scale(1) translateY(0)" },
+        ]
+
+    el._fadeAnim = el.animate(keyframes, {
+      duration: 160,
+      easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+      fill: "both",
     })
-    anim.onfinish = () => {
+
+    el._fadeAnim.onfinish = () => {
+      el._fadeAnim = null
+      el.style.willChange = ""
       el.style.opacity = ""
+      el.style.transform = baseTransform
     }
   } else {
-    if (isHidden) return
-    const anim = el.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 300,
-      easing: "ease-in",
+    if (!isCurrentlyVisible && el.style.display === "none") return
+    el.style.willChange = "opacity, transform"
+
+    const baseTransform =
+      el.style.transform && el.style.transform !== "none"
+        ? el.style.transform
+        : ""
+    const keyframes = baseTransform
+      ? [
+          { opacity: 1, transform: `${baseTransform} scale(1)` },
+          { opacity: 0, transform: `${baseTransform} scale(0.98)` },
+        ]
+      : [
+          { opacity: 1, transform: "scale(1)" },
+          { opacity: 0, transform: "scale(0.98)" },
+        ]
+
+    el._fadeAnim = el.animate(keyframes, {
+      duration: 120,
+      easing: "cubic-bezier(0.4, 0, 1, 1)",
+      fill: "both",
     })
-    anim.onfinish = () => {
+
+    el._fadeAnim.onfinish = () => {
+      el._fadeAnim = null
       el.style.display = "none"
+      el.style.willChange = ""
       el.style.opacity = ""
+      el.style.transform = baseTransform
     }
   }
 }

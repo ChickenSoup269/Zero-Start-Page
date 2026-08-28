@@ -6,6 +6,7 @@
 
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
+import { fadeToggle } from "../utils/dom.js"
 
 export class AmbientSounds {
   constructor() {
@@ -319,15 +320,12 @@ export class AmbientSounds {
   }
 
   toggleVisibility(show) {
-    const isVisible = this.container.style.display !== "none" && this.container.style.display !== ""
+    const isVisible =
+      this.container.style.display !== "none" &&
+      this.container.style.display !== ""
     const target = show !== undefined ? show : !isVisible
 
-    if (target) {
-      this.container.style.display = "flex"
-      this.container.style.opacity = "1"
-    } else {
-      this.container.style.display = "none"
-    }
+    fadeToggle(this.container, target, "flex")
 
     updateSetting("showAmbientSounds", target)
     saveSettings()
