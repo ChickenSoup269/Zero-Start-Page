@@ -218,6 +218,68 @@ export class AiAssistant {
     })
 
     sendBtn?.addEventListener("click", () => this.sendMessage())
+
+    window.addEventListener("startpage:languageChanged", () => this.updateLanguage())
+    window.addEventListener("languageChanged", () => this.updateLanguage())
+  }
+
+  updateLanguage() {
+    const i18n = geti18n()
+    if (!this.container) return
+
+    const titleEl = this.container.querySelector(".ai-header-title")
+    if (titleEl) titleEl.textContent = i18n.ai_assistant_title || "Gemini Assistant"
+
+    const modelSelect = this.container.querySelector("#ai-model-select")
+    if (modelSelect) modelSelect.title = i18n.ai_select_model || "Select Model"
+
+    const keyBtn = this.container.querySelector("#ai-key-btn")
+    if (keyBtn) keyBtn.title = i18n.ai_api_key_settings || "API Key"
+
+    const openTabBtn = this.container.querySelector("#ai-open-tab-btn")
+    if (openTabBtn) openTabBtn.title = i18n.ai_open_web_title || "Open full Gemini tab"
+
+    const clearBtn = this.container.querySelector("#ai-clear-btn")
+    if (clearBtn) clearBtn.title = i18n.ai_clear_chat || "Clear"
+
+    const closeBtn = this.container.querySelector("#ai-close-btn")
+    if (closeBtn) closeBtn.title = i18n.close || "Close"
+
+    const input = this.container.querySelector("#ai-user-input")
+    if (input) input.placeholder = i18n.ai_input_placeholder || "Ask Gemini... (Enter to send, Shift+Enter for newline)"
+
+    const sendBtn = this.container.querySelector("#ai-send-btn")
+    if (sendBtn) sendBtn.title = i18n.send || "Send"
+
+    const bannerText = this.container.querySelector("#ai-key-notice .ai-banner-content span")
+    if (bannerText) bannerText.textContent = i18n.ai_key_required_desc || "Enter your Google Gemini API key to start chatting."
+
+    const setupKeyBtn = this.container.querySelector("#ai-setup-key-btn")
+    if (setupKeyBtn) setupKeyBtn.innerHTML = `<i class="fa-solid fa-key"></i> ${i18n.ai_enter_key || "Set Key"}`
+
+    const modalTitle = this.container.querySelector("#ai-key-modal .ai-modal-title span")
+    if (modalTitle) modalTitle.textContent = i18n.ai_api_key_settings || "Gemini API Key"
+
+    const cancelModalBtn = this.container.querySelector("#ai-cancel-key-btn")
+    if (cancelModalBtn) cancelModalBtn.textContent = i18n.cancel || "Cancel"
+
+    const saveModalBtn = this.container.querySelector("#ai-save-key-btn")
+    if (saveModalBtn) saveModalBtn.textContent = i18n.save || "Save"
+
+    const prompts = this.container.querySelectorAll(".ai-prompts-bar .ai-chip-btn")
+    if (prompts.length >= 4) {
+      prompts[0].innerHTML = `<i class="fa-solid fa-language"></i> ${i18n.ai_prompt_translate || "Translate"}`
+      prompts[1].innerHTML = `<i class="fa-solid fa-file-lines"></i> ${i18n.ai_prompt_summarize || "Summarize"}`
+      prompts[2].innerHTML = `<i class="fa-solid fa-lightbulb"></i> ${i18n.ai_prompt_ideas || "Ideas"}`
+      prompts[3].innerHTML = `<i class="fa-solid fa-code"></i> ${i18n.ai_prompt_code || "Code"}`
+    }
+
+    if (this.messages.length === 0) {
+      this.renderMessages()
+    }
+
+    const quickBtn = document.querySelector('.quick-btn[data-toggle="aiAssistant"]')
+    if (quickBtn) quickBtn.title = i18n.quick_access_ai_assistant || "Gemini AI Assistant"
   }
 
   autoResizeInput(el) {
