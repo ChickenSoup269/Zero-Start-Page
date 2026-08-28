@@ -437,10 +437,35 @@ export function setupQuickAccessContextMenu() {
   const settingsToggle = document.getElementById("settings-toggle")
   quickAccessBar?.addEventListener("contextmenu", (e) => {
     e.preventDefault()
+    e.stopPropagation()
+
+    const btn = e.target.closest(".quick-btn")
+    if (btn && btn.dataset.toggle) {
+      const toggle = btn.dataset.toggle
+      const widgetMap = {
+        todo: "todo",
+        timer: "timer",
+        notepad: "notepad",
+        fullCalendar: "calendar",
+        calendar: "calendar",
+        weather: "weather",
+        musicPlayer: "music",
+        quotes: "daily-quotes",
+        habitTracker: "habitTracker",
+        rss: "rss",
+        ambientSounds: "ambientSounds",
+        aiAssistant: "aiAssistant",
+      }
+      const widgetId = widgetMap[toggle] || toggle
+      showContextMenu(e.clientX, e.clientY, -1, "widget", widgetId)
+      return
+    }
+
     showContextMenu(e.clientX, e.clientY, -1, "quick-access-bar")
   })
   settingsToggle?.addEventListener("contextmenu", (e) => {
     e.preventDefault()
+    e.stopPropagation()
     showContextMenu(e.clientX, e.clientY, -1, "quick-access-toggle")
   })
 }
