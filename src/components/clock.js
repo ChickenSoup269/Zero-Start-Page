@@ -1832,48 +1832,85 @@ export function updateTime() {
       settings.mediaOrbImageData ||
       settings.mediaOrbImageUrl ||
       DEFAULT_MEDIA_ORB_IMAGE_URL
-    const mediaHtml = mediaSrc
-      ? `<img class="media-orb-image" src="${escapeAttribute(mediaSrc)}" alt="">`
-      : `<div class="media-orb-placeholder"><i class="fa-solid fa-image"></i></div>`
     const mediaLayout = ["left", "right", "center"].includes(
       settings.mediaOrbLayout,
     )
       ? settings.mediaOrbLayout
       : "left"
-    const mediaVisualHtml = `
-        <div class="media-orb-visual">
-          ${mediaHtml}
-          <span class="media-orb-ring"></span>
-        </div>`
-    const mediaTimeHtml =
-      mediaLayout === "center"
-        ? `
-          <div class="media-orb-time">
-            <span class="media-orb-hour">${hh}</span>
-            ${mediaVisualHtml}
-            <span class="media-orb-minute">${mm}</span>
-            ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
-            ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
-          </div>`
-        : `
-          <div class="media-orb-time">
-            <span class="media-orb-hour">${hh}</span>
-            <span class="media-orb-separator">:</span>
-            <span class="media-orb-minute">${mm}</span>
-            ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
-            ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
-          </div>`
 
-    clockElement.innerHTML = `
-      <div class="media-orb-clock media-orb-layout-${mediaLayout}">
-        ${mediaLayout === "center" ? "" : mediaVisualHtml}
-        <div class="media-orb-main">
-          <div class="media-orb-weekday">${weekday}</div>
-          ${mediaTimeHtml}
-          ${isTimer ? `<div class="media-orb-date">${countdownLabel}</div>` : dateStr ? `<div class="media-orb-date">${dateStr}</div>` : ""}
+    const existingOrb = clockElement.querySelector(".media-orb-clock")
+    const currentLayout = existingOrb?.getAttribute("data-layout")
+    const currentSrc = existingOrb?.getAttribute("data-src")
+
+    if (existingOrb && currentLayout === mediaLayout && currentSrc === mediaSrc) {
+      // Fast path: update text nodes in-place so GIF never restarts
+      const hourEl = existingOrb.querySelector(".media-orb-hour")
+      if (hourEl && hourEl.textContent !== hh) hourEl.textContent = hh
+
+      const minEl = existingOrb.querySelector(".media-orb-minute")
+      if (minEl && minEl.textContent !== mm) minEl.textContent = mm
+
+      const secEl = existingOrb.querySelector(".media-orb-second")
+      if (secEl) {
+        if (secEl.textContent !== (ss || "")) secEl.textContent = ss || ""
+        secEl.style.display = ss ? "inline" : "none"
+      }
+
+      const ampmEl = existingOrb.querySelector(".media-orb-ampm")
+      if (ampmEl) {
+        if (ampmEl.textContent !== (ampm || "")) ampmEl.textContent = ampm || ""
+        ampmEl.style.display = ampm ? "inline" : "none"
+      }
+
+      const weekdayEl = existingOrb.querySelector(".media-orb-weekday")
+      if (weekdayEl && weekdayEl.textContent !== weekday) weekdayEl.textContent = weekday
+
+      const dateEl = existingOrb.querySelector(".media-orb-date")
+      const dTxt = isTimer ? countdownLabel : dateStr
+      if (dateEl) {
+        if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
+        dateEl.style.display = dTxt ? "block" : "none"
+      }
+    } else {
+      const mediaHtml = mediaSrc
+        ? `<img class="media-orb-image" src="${escapeAttribute(mediaSrc)}" alt="">`
+        : `<div class="media-orb-placeholder"><i class="fa-solid fa-image"></i></div>`
+
+      const mediaVisualHtml = `
+          <div class="media-orb-visual">
+            ${mediaHtml}
+            <span class="media-orb-ring"></span>
+          </div>`
+      const mediaTimeHtml =
+        mediaLayout === "center"
+          ? `
+            <div class="media-orb-time">
+              <span class="media-orb-hour">${hh}</span>
+              ${mediaVisualHtml}
+              <span class="media-orb-minute">${mm}</span>
+              ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
+              ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+            </div>`
+          : `
+            <div class="media-orb-time">
+              <span class="media-orb-hour">${hh}</span>
+              <span class="media-orb-separator">:</span>
+              <span class="media-orb-minute">${mm}</span>
+              ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
+              ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+            </div>`
+
+      clockElement.innerHTML = `
+        <div class="media-orb-clock media-orb-layout-${mediaLayout}" data-layout="${mediaLayout}" data-src="${escapeAttribute(mediaSrc)}">
+          ${mediaLayout === "center" ? "" : mediaVisualHtml}
+          <div class="media-orb-main">
+            <div class="media-orb-weekday">${weekday}</div>
+            ${mediaTimeHtml}
+            ${isTimer ? `<div class="media-orb-date">${countdownLabel}</div>` : dateStr ? `<div class="media-orb-date">${dateStr}</div>` : ""}
+          </div>
         </div>
-      </div>
-    `
+      `
+    }
   } else if (dateClockStyle === "prism-stack") {
     const weekday = isTimer
       ? timerLabel
