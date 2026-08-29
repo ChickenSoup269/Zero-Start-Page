@@ -5933,8 +5933,9 @@ body.date-clock-style-media-orb .media-orb-date {
 }
 
 body.date-clock-style-media-orb .media-orb-time {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
+  gap: 0.06em;
   font-family: var(--font-clock, "Inter", sans-serif);
   font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.86), 7.6rem);
   font-weight: 850;
@@ -5950,6 +5951,7 @@ body.date-clock-style-media-orb .media-orb-time {
 body.date-clock-style-media-orb .media-orb-layout-center .media-orb-time {
   align-items: center;
   justify-content: center;
+  gap: 0.1em;
 }
 
 body.date-clock-style-media-orb .media-orb-layout-center .media-orb-hour,
@@ -5958,23 +5960,27 @@ body.date-clock-style-media-orb .media-orb-layout-center .media-orb-minute {
 }
 
 body.date-clock-style-media-orb .media-orb-separator {
-  padding: 0 0.08em;
+  padding: 0 0.06em;
   color: var(--accent-color, #a8c0ff);
 }
 
 body.date-clock-style-media-orb .media-orb-second {
-  margin-left: 0.26em;
-  font-size: 0.34em;
+  margin-left: 0.22em;
+  font-size: 0.38em;
   font-weight: 750;
   color: var(--accent-color, #a8c0ff);
+  display: inline-flex;
+  align-self: flex-start;
 }
 
 body.date-clock-style-media-orb .media-orb-ampm {
-  margin-left: 0.34em;
-  font-size: 0.2em;
+  margin-left: 0.3em;
+  font-size: 0.24em;
   font-weight: 850;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  display: inline-flex;
+  align-self: flex-start;
 }
 
 /* --- Prism Stack Clock (Layered Dimensional Acrylic Glass) --- */

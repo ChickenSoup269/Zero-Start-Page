@@ -1853,13 +1853,13 @@ export function updateTime() {
       const secEl = existingOrb.querySelector(".media-orb-second")
       if (secEl) {
         if (secEl.textContent !== (ss || "")) secEl.textContent = ss || ""
-        secEl.style.display = ss ? "inline" : "none"
+        secEl.style.display = ss ? "inline-flex" : "none"
       }
 
       const ampmEl = existingOrb.querySelector(".media-orb-ampm")
       if (ampmEl) {
         if (ampmEl.textContent !== (ampm || "")) ampmEl.textContent = ampm || ""
-        ampmEl.style.display = ampm ? "inline" : "none"
+        ampmEl.style.display = ampm ? "inline-flex" : "none"
       }
 
       const weekdayEl = existingOrb.querySelector(".media-orb-weekday")
@@ -1888,16 +1888,16 @@ export function updateTime() {
               <span class="media-orb-hour">${hh}</span>
               ${mediaVisualHtml}
               <span class="media-orb-minute">${mm}</span>
-              ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
-              ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+              <span class="media-orb-second" style="${ss ? "" : "display: none;"}">${ss || ""}</span>
+              <span class="media-orb-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
             </div>`
           : `
             <div class="media-orb-time">
               <span class="media-orb-hour">${hh}</span>
               <span class="media-orb-separator">:</span>
               <span class="media-orb-minute">${mm}</span>
-              ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
-              ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+              <span class="media-orb-second" style="${ss ? "" : "display: none;"}">${ss || ""}</span>
+              <span class="media-orb-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
             </div>`
 
       clockElement.innerHTML = `
