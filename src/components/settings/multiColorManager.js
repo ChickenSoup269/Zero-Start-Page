@@ -804,6 +804,20 @@ export function setupMultiColorManager(applySettings) {
     applyRandomizedColors(generateCrazyColors(count))
   })
 
+  const multiColorResetBtn = document.getElementById("multi-color-reset-btn")
+  multiColorResetBtn?.addEventListener("click", () => {
+    if (DOM.multiColorCountSelect) DOM.multiColorCountSelect.value = "2"
+    if (DOM.multiColorTypeSelect) DOM.multiColorTypeSelect.value = "linear"
+    if (DOM.multiGradientAngleInput) DOM.multiGradientAngleInput.value = 135
+    if (DOM.multiGradientAngleValue) DOM.multiGradientAngleValue.textContent = "135"
+    if (DOM.multiColorRepeatingToggle) DOM.multiColorRepeatingToggle.checked = false
+    if (DOM.multiColorLineWidth) {
+      DOM.multiColorLineWidth.value = 1.2
+      if (DOM.multiColorLineWidthValue) DOM.multiColorLineWidthValue.textContent = "1.2"
+    }
+    applyRandomizedColors(["#FF6B6B", "#4ECDC4"])
+  })
+
 
   function setupMultiSelect() {
     const updateMultiColorSelectCount = () => {

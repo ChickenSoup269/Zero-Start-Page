@@ -433,6 +433,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   maybeShowLocalBackgroundPerformanceWarning(
     Array.isArray(settings.userBackgrounds) ? settings.userBackgrounds.length : 0,
   )
+  updateActiveWallpaperBanner(handleSettingUpdate)
 
   // Clear all galleries
   if (DOM.localBackgroundGallery) DOM.localBackgroundGallery.innerHTML = ""
@@ -909,116 +910,367 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   return { enterBgSelectMode, exitBgSelectMode }
 }
 
-function setupFileUploads(DOM, handleSettingUpdate) {
-  DOM.uploadLocalImageBtn.addEventListener("click", () =>
-    DOM.localImageUpload.click(),
-  )
-  DOM.uploadLocalVideoBtn.addEventListener("click", () =>
-    DOM.localVideoUpload.click(),
-  )
+async function updateActiveWallpaperBanner(handleSettingUpdate) {
+  const thumb = document.getElementById("bg-active-thumb-preview")
+  const nameLabel = document.getElementById("bg-active-name-label")
+  const copyBtn = document.getElementById("bg-quick-copy-url-btn")
+  const resetBtn = document.getElementById("bg-quick-reset-btn")
+  if (!thumb && !nameLabel) return
 
-  DOM.localVideoUpload.addEventListener("change", async (e) => {
-    const files = Array.from(e.target.files || [])
-    if (!files.length) return
-    let lastSavedId = null
-    try {
-      for (const file of files) {
-        const id = await saveVideo(file)
-        getSettings().userBackgrounds.push(id)
-        lastSavedId = id
+  const settings = getSettings()
+  const bg = settings.background
+
+  if (copyBtn && !copyBtn.dataset.bound) {
+    copyBtn.dataset.bound = "true"
+    copyBtn.addEventListener("click", () => {
+      const curBg = getSettings().background
+      if (!curBg) {
+        showAlert("No custom wallpaper URL to copy.")
+        return
       }
-      maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
-      if (lastSavedId) handleSettingUpdate("background", lastSavedId)
-      renderLocalBackgrounds(DOM, handleSettingUpdate)
-    } catch (err) {
-      console.error("Failed to save video:", err)
-      showAlert("Failed to save one or more videos. They might be too large or storage is full.")
+      navigator.clipboard?.writeText(curBg).then(() => {
+        showAlert("Wallpaper URL / ID copied to clipboard!")
+      }).catch(() => {})
+    })
+  }
+
+  if (resetBtn && !resetBtn.dataset.bound) {
+    resetBtn.dataset.bound = "true"
+    resetBtn.addEventListener("click", () => {
+      updateSetting("activeBgUid", null)
+      if (handleSettingUpdate) handleSettingUpdate("background", null)
+    })
+  }
+
+  if (!bg) {
+    if (thumb) {
+      thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+      thumb.style.backgroundImage = "none"
+      thumb.style.backgroundColor = "transparent"
     }
-    e.target.value = null
-  })
+    if (nameLabel) nameLabel.textContent = "Default Wallpaper"
+    return
+  }
 
-  DOM.localImageUpload.addEventListener("change", async (e) => {
-    const files = Array.from(e.target.files || [])
-    if (!files.length) return
-    let lastSavedId = null
+  if (isIdbVideo(bg)) {
+    if (nameLabel) nameLabel.textContent = "Local Video Wallpaper"
+    if (thumb) {
+      try {
+        const url = await getSavedVideo(bg)
+        if (url) {
+          thumb.innerHTML = `<video src="${url}" autoplay muted loop playsinline></video>`
+          thumb.style.backgroundImage = "none"
+        } else {
+          thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
+        }
+      } catch (_) {
+        thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
+      }
+    }
+  } else if (isIdbMedia(bg)) {
+    if (nameLabel) nameLabel.textContent = isIdbGif(bg) ? "Local GIF Wallpaper" : "Local Image Wallpaper"
+    if (thumb) {
+      try {
+        const url = await getSavedImage(bg)
+        if (url) {
+          thumb.innerHTML = ""
+          thumb.style.backgroundImage = `url("${url}")`
+        } else {
+          thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+        }
+      } catch (_) {
+        thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+      }
+    }
+  } else if (bg.startsWith("#") || bg.startsWith("rgb")) {
+    if (nameLabel) nameLabel.textContent = `Solid Color (${bg})`
+    if (thumb) {
+      thumb.innerHTML = ""
+      thumb.style.backgroundImage = "none"
+      thumb.style.backgroundColor = bg
+    }
+  } else {
+    // URL or Unsplash
+    if (nameLabel) {
+      const isUnsplash = bg.includes("unsplash.com")
+      nameLabel.textContent = isUnsplash ? "Unsplash Wallpaper" : "Custom Web URL"
+    }
+    if (thumb) {
+      thumb.innerHTML = ""
+      thumb.style.backgroundImage = `url("${bg}")`
+    }
+  }
+}
 
-    for (const file of files) {
-      const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
-      if (isGif) {
+function setupFileUploads(DOM, handleSettingUpdate) {
+  if (DOM.uploadLocalImageBtn) {
+    DOM.uploadLocalImageBtn.addEventListener("click", () =>
+      DOM.localImageUpload?.click(),
+    )
+  }
+  if (DOM.uploadLocalVideoBtn) {
+    DOM.uploadLocalVideoBtn.addEventListener("click", () =>
+      DOM.localVideoUpload?.click(),
+    )
+  }
+
+  // Modern Dropzone handler
+  const dropzone = document.getElementById("local-bg-dropzone")
+  if (dropzone) {
+    dropzone.addEventListener("click", () => {
+      DOM.localImageUpload?.click()
+    })
+
+    const handleDragOver = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      dropzone.classList.add("dragover")
+    }
+
+    const handleDragLeave = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      dropzone.classList.remove("dragover")
+    }
+
+    const handleDrop = async (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      dropzone.classList.remove("dragover")
+      const files = Array.from(e.dataTransfer?.files || [])
+      if (!files.length) return
+      
+      const videoFiles = files.filter(f => f.type.startsWith("video/"))
+      const imageFiles = files.filter(f => f.type.startsWith("image/") || /\.gif$/i.test(f.name || ""))
+
+      let lastSavedId = null
+      for (const file of videoFiles) {
         try {
-          const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
-          getSettings().userBackgrounds.push({
-            uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
-            id,
-            type: "gif",
-            name: file.name || "GIF background",
-            date: new Date().toISOString(),
-          })
+          const id = await saveVideo(file)
+          getSettings().userBackgrounds.push(id)
           lastSavedId = id
         } catch (err) {
-          console.error("Failed to save GIF:", err)
-          showAlert("Failed to save GIF image.")
+          console.error("Failed to save video:", err)
         }
-        continue
       }
 
-      try {
-        const id = await new Promise((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = (event) => {
-            const dataUrl = event.target.result
-            const img = new Image()
-            img.onload = () => {
-              const canvas = document.createElement("canvas")
-              const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
-              let { width, height } = img
-              if (width > height) {
-                if (width > MAX_SIZE) {
-                  height = Math.round((height * MAX_SIZE) / width)
-                  width = MAX_SIZE
-                }
-              } else {
-                if (height > MAX_SIZE) {
-                  width = Math.round((width * MAX_SIZE) / height)
-                  height = MAX_SIZE
-                }
-              }
-              canvas.width = width
-              canvas.height = height
-              canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-              canvas.toBlob(
-                (blob) => {
-                  if (blob) {
-                    saveImage(blob).then(resolve).catch(reject)
-                  } else {
-                    reject(new Error("Failed to process image blob"))
-                  }
-                },
-                "image/jpeg",
-                quality
-              )
-            }
-            img.onerror = reject
-            img.src = dataUrl
+      for (const file of imageFiles) {
+        const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+        if (isGif) {
+          try {
+            const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
+            getSettings().userBackgrounds.push({
+              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+              id,
+              type: "gif",
+              name: file.name || "GIF background",
+              date: new Date().toISOString(),
+            })
+            lastSavedId = id
+          } catch (err) {
+            console.error("Failed to save GIF:", err)
           }
-          reader.onerror = reject
-          reader.readAsDataURL(file)
-        })
-        getSettings().userBackgrounds.push(id)
-        lastSavedId = id
-      } catch (err) {
-        console.error("Failed to save image:", err)
-        showAlert("Failed to read or save the selected file.")
+          continue
+        }
+
+        try {
+          const id = await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+              const dataUrl = event.target.result
+              const img = new Image()
+              img.onload = () => {
+                const canvas = document.createElement("canvas")
+                const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
+                let { width, height } = img
+                if (width > height) {
+                  if (width > MAX_SIZE) {
+                    height = Math.round((height * MAX_SIZE) / width)
+                    width = MAX_SIZE
+                  }
+                } else {
+                  if (height > MAX_SIZE) {
+                    width = Math.round((width * MAX_SIZE) / height)
+                    height = MAX_SIZE
+                  }
+                }
+                canvas.width = width
+                canvas.height = height
+                canvas.getContext("2d").drawImage(img, 0, 0, width, height)
+                canvas.toBlob(
+                  (blob) => {
+                    if (blob) {
+                      saveImage(blob).then(resolve).catch(reject)
+                    } else {
+                      reject(new Error("Failed to process image blob"))
+                    }
+                  },
+                  "image/jpeg",
+                  quality
+                )
+              }
+              img.onerror = reject
+              img.src = dataUrl
+            }
+            reader.onerror = reject
+            reader.readAsDataURL(file)
+          })
+          getSettings().userBackgrounds.push(id)
+          lastSavedId = id
+        } catch (err) {
+          console.error("Failed to save image:", err)
+        }
+      }
+
+      if (lastSavedId) {
+        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        handleSettingUpdate("background", lastSavedId)
+        renderLocalBackgrounds(DOM, handleSettingUpdate)
       }
     }
 
-    if (lastSavedId) {
-      maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
-      handleSettingUpdate("background", lastSavedId)
-      renderLocalBackgrounds(DOM, handleSettingUpdate)
-    }
-    e.target.value = null
+    dropzone.addEventListener("dragover", handleDragOver)
+    dropzone.addEventListener("dragenter", handleDragOver)
+    dropzone.addEventListener("dragleave", handleDragLeave)
+    dropzone.addEventListener("drop", handleDrop)
+  }
+
+  // Filter pills setup
+  const filterPills = document.querySelectorAll(".bg-gallery-filter-pill")
+  filterPills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      filterPills.forEach(p => p.classList.remove("active"))
+      pill.classList.add("active")
+      const filter = pill.getAttribute("data-gallery-filter")
+      const imgSec = document.getElementById("local-images-section")
+      const gifSec = document.getElementById("local-gifs-section")
+      const vidSec = document.getElementById("local-videos-section")
+      if (filter === "all") {
+        if (imgSec) imgSec.style.display = ""
+        if (gifSec) gifSec.style.display = ""
+        if (vidSec) vidSec.style.display = ""
+      } else if (filter === "images") {
+        if (imgSec) imgSec.style.display = ""
+        if (gifSec) gifSec.style.display = "none"
+        if (vidSec) vidSec.style.display = "none"
+      } else if (filter === "gifs") {
+        if (imgSec) imgSec.style.display = "none"
+        if (gifSec) gifSec.style.display = ""
+        if (vidSec) vidSec.style.display = "none"
+      } else if (filter === "videos") {
+        if (imgSec) imgSec.style.display = "none"
+        if (gifSec) gifSec.style.display = "none"
+        if (vidSec) vidSec.style.display = ""
+      }
+    })
   })
+
+  if (DOM.localVideoUpload) {
+    DOM.localVideoUpload.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || [])
+      if (!files.length) return
+      let lastSavedId = null
+      try {
+        for (const file of files) {
+          const id = await saveVideo(file)
+          getSettings().userBackgrounds.push(id)
+          lastSavedId = id
+        }
+        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        if (lastSavedId) handleSettingUpdate("background", lastSavedId)
+        renderLocalBackgrounds(DOM, handleSettingUpdate)
+      } catch (err) {
+        console.error("Failed to save video:", err)
+        showAlert("Failed to save one or more videos. They might be too large or storage is full.")
+      }
+      e.target.value = null
+    })
+  }
+
+  if (DOM.localImageUpload) {
+    DOM.localImageUpload.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || [])
+      if (!files.length) return
+      let lastSavedId = null
+
+      for (const file of files) {
+        const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+        if (isGif) {
+          try {
+            const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
+            getSettings().userBackgrounds.push({
+              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+              id,
+              type: "gif",
+              name: file.name || "GIF background",
+              date: new Date().toISOString(),
+            })
+            lastSavedId = id
+          } catch (err) {
+            console.error("Failed to save GIF:", err)
+            showAlert("Failed to save GIF image.")
+          }
+          continue
+        }
+
+        try {
+          const id = await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+              const dataUrl = event.target.result
+              const img = new Image()
+              img.onload = () => {
+                const canvas = document.createElement("canvas")
+                const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
+                let { width, height } = img
+                if (width > height) {
+                  if (width > MAX_SIZE) {
+                    height = Math.round((height * MAX_SIZE) / width)
+                    width = MAX_SIZE
+                  }
+                } else {
+                  if (height > MAX_SIZE) {
+                    width = Math.round((width * MAX_SIZE) / height)
+                    height = MAX_SIZE
+                  }
+                }
+                canvas.width = width
+                canvas.height = height
+                canvas.getContext("2d").drawImage(img, 0, 0, width, height)
+                canvas.toBlob(
+                  (blob) => {
+                    if (blob) {
+                      saveImage(blob).then(resolve).catch(reject)
+                    } else {
+                      reject(new Error("Failed to process image blob"))
+                    }
+                  },
+                  "image/jpeg",
+                  quality
+                )
+              }
+              img.onerror = reject
+              img.src = dataUrl
+            }
+            reader.onerror = reject
+            reader.readAsDataURL(file)
+          })
+          getSettings().userBackgrounds.push(id)
+          lastSavedId = id
+        } catch (err) {
+          console.error("Failed to save image:", err)
+          showAlert("Failed to read or save the selected file.")
+        }
+      }
+
+      if (lastSavedId) {
+        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        handleSettingUpdate("background", lastSavedId)
+        renderLocalBackgrounds(DOM, handleSettingUpdate)
+      }
+      e.target.value = null
+    })
+  }
 }
 
 export {
@@ -1029,4 +1281,5 @@ export {
   setupFileUploads,
   recompressSavedBackgroundImages,
   maybeShowLocalBackgroundPerformanceWarning,
+  updateActiveWallpaperBanner,
 }

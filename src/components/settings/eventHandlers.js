@@ -1782,6 +1782,7 @@ export function setupGeneralEventHandlers(
 
   // Card collapse/expand logic
   document.addEventListener("click", (e) => {
+    if (e.target.closest("button, input, select, a, .bg-card-reset-btn, .bg-step-btn, .bg-9grid-btn")) return
     const title = e.target.closest(".bg-control-title, .gradient-v2-section-title, .setting-group-title")
     if (title) {
       const card = title.closest(".bg-control-card, .gradient-v2-panel, .setting-group-collapsible")
@@ -2764,6 +2765,23 @@ export function setupGeneralEventHandlers(
       DOM.bgSizeSelect.value === "custom" ? "block" : "none"
   }
 
+  const syncBgPositionUI = (x, y) => {
+    const numX = Math.round(Number(x ?? 50))
+    const numY = Math.round(Number(y ?? 50))
+    if (DOM.bgPositionPadHandle) {
+      DOM.bgPositionPadHandle.style.left = `${numX}%`
+      DOM.bgPositionPadHandle.style.top = `${numY}%`
+    }
+    if (DOM.bgPositionPadCoords) {
+      DOM.bgPositionPadCoords.textContent = `${numX}%, ${numY}%`
+    }
+    document.querySelectorAll(".bg-9grid-btn").forEach((btn) => {
+      const bx = Number(btn.dataset.posX)
+      const by = Number(btn.dataset.posY)
+      btn.classList.toggle("active", bx === numX && by === numY)
+    })
+  }
+
   DOM.bgSizeSelect.addEventListener("change", () => {
     syncBgImageScaleVisibility()
     applyBackgroundVisualPreview({ bgSize: DOM.bgSizeSelect.value })
@@ -2778,15 +2796,221 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.bgPosXInput.addEventListener("input", () => {
-    DOM.bgPosXValue.textContent = `${DOM.bgPosXInput.value}%`
-    applyBackgroundVisualPreview({ bgPositionX: DOM.bgPosXInput.value })
-    throttleSettingUpdate("bgPositionX", Number(DOM.bgPosXInput.value))
+    const val = Number(DOM.bgPosXInput.value)
+    DOM.bgPosXValue.textContent = `${val}%`
+    syncBgPositionUI(val, DOM.bgPosYInput.value)
+    applyBackgroundVisualPreview({ bgPositionX: val })
+    throttleSettingUpdate("bgPositionX", val)
   })
 
   DOM.bgPosYInput.addEventListener("input", () => {
-    DOM.bgPosYValue.textContent = `${DOM.bgPosYInput.value}%`
-    applyBackgroundVisualPreview({ bgPositionY: DOM.bgPosYInput.value })
-    throttleSettingUpdate("bgPositionY", Number(DOM.bgPosYInput.value))
+    const val = Number(DOM.bgPosYInput.value)
+    DOM.bgPosYValue.textContent = `${val}%`
+    syncBgPositionUI(DOM.bgPosXInput.value, val)
+    applyBackgroundVisualPreview({ bgPositionY: val })
+    throttleSettingUpdate("bgPositionY", val)
+  })
+
+  // Position Pad Drag & Click Interaction
+  if (DOM.bgPositionPad) {
+    let isDraggingPad = false
+
+    const handlePadPointerMove = (e) => {
+      if (!isDraggingPad) return
+      const rect = DOM.bgPositionPad.getBoundingClientRect()
+      if (!rect.width || !rect.height) return
+      const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX)
+      const clientY = e.clientY ?? (e.touches && e.touches[0]?.clientY)
+      if (clientX === undefined || clientY === undefined) return
+
+      let posX = Math.round(((clientX - rect.left) / rect.width) * 100)
+      let posY = Math.round(((clientY - rect.top) / rect.height) * 100)
+      posX = Math.max(0, Math.min(100, posX))
+      posY = Math.max(0, Math.min(100, posY))
+
+      DOM.bgPosXInput.value = posX
+      DOM.bgPosXValue.textContent = `${posX}%`
+      DOM.bgPosYInput.value = posY
+      DOM.bgPosYValue.textContent = `${posY}%`
+
+      syncBgPositionUI(posX, posY)
+      applyBackgroundVisualPreview({ bgPositionX: posX, bgPositionY: posY })
+      throttleSettingUpdate("bgPositionX", posX)
+      throttleSettingUpdate("bgPositionY", posY)
+    }
+
+    const stopPadDrag = (e) => {
+      if (!isDraggingPad) return
+      isDraggingPad = false
+      DOM.bgPositionPad.classList.remove("is-dragging")
+      window.removeEventListener("pointermove", handlePadPointerMove)
+      window.removeEventListener("pointerup", stopPadDrag)
+      window.removeEventListener("pointercancel", stopPadDrag)
+    }
+
+    DOM.bgPositionPad.addEventListener("pointerdown", (e) => {
+      isDraggingPad = true
+      DOM.bgPositionPad.classList.add("is-dragging")
+      DOM.bgPositionPad.setPointerCapture?.(e.pointerId)
+      window.addEventListener("pointermove", handlePadPointerMove)
+      window.addEventListener("pointerup", stopPadDrag)
+      window.addEventListener("pointercancel", stopPadDrag)
+      handlePadPointerMove(e)
+    })
+
+    // Mouse wheel over position pad (scrolls Y by default, Shift+scroll adjusts X)
+    DOM.bgPositionPad.addEventListener("wheel", (e) => {
+      e.preventDefault()
+      const delta = Math.sign(e.deltaY || e.deltaX) * -5
+      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        let posX = Number(DOM.bgPosXInput.value || 50) + delta
+        posX = Math.max(0, Math.min(100, posX))
+        DOM.bgPosXInput.value = posX
+        DOM.bgPosXValue.textContent = `${posX}%`
+        syncBgPositionUI(posX, DOM.bgPosYInput.value)
+        applyBackgroundVisualPreview({ bgPositionX: posX })
+        throttleSettingUpdate("bgPositionX", posX)
+      } else {
+        let posY = Number(DOM.bgPosYInput.value || 50) + delta
+        posY = Math.max(0, Math.min(100, posY))
+        DOM.bgPosYInput.value = posY
+        DOM.bgPosYValue.textContent = `${posY}%`
+        syncBgPositionUI(DOM.bgPosXInput.value, posY)
+        applyBackgroundVisualPreview({ bgPositionY: posY })
+        throttleSettingUpdate("bgPositionY", posY)
+      }
+    }, { passive: false })
+  }
+
+  // 9-Grid Quick Alignment buttons
+  document.querySelectorAll(".bg-9grid-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const posX = Number(btn.dataset.posX)
+      const posY = Number(btn.dataset.posY)
+      DOM.bgPosXInput.value = posX
+      DOM.bgPosXValue.textContent = `${posX}%`
+      DOM.bgPosYInput.value = posY
+      DOM.bgPosYValue.textContent = `${posY}%`
+      syncBgPositionUI(posX, posY)
+      applyBackgroundVisualPreview({ bgPositionX: posX, bgPositionY: posY })
+      handleSettingUpdate("bgPositionX", posX)
+      handleSettingUpdate("bgPositionY", posY)
+    })
+  })
+
+  // Stepper buttons (- / +) for fine adjustments on range sliders
+  document.querySelectorAll(".bg-step-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const targetId = btn.dataset.stepTarget
+      if (!targetId) return
+      const targetInput = document.getElementById(targetId)
+      if (!targetInput) return
+      const step = Number(btn.dataset.step) || Number(targetInput.step) || 1
+      const min = Number(targetInput.min !== "" ? targetInput.min : 0)
+      const max = Number(targetInput.max !== "" ? targetInput.max : 100)
+      let nextVal = Number(targetInput.value) + step
+      nextVal = Math.max(min, Math.min(max, nextVal))
+      targetInput.value = nextVal
+      targetInput.dispatchEvent(new Event("input", { bubbles: true }))
+    })
+  })
+
+  // Wheel scrolling support for all .bg-wheel-scrollable range inputs
+  document.querySelectorAll(".bg-wheel-scrollable").forEach((slider) => {
+    slider.addEventListener("wheel", (e) => {
+      e.preventDefault()
+      const step = Number(slider.step) || 1
+      const min = Number(slider.min !== "" ? slider.min : 0)
+      const max = Number(slider.max !== "" ? slider.max : 100)
+      const delta = Math.sign(-e.deltaY) * (step > 1 ? step : 2)
+      let nextVal = Number(slider.value) + delta
+      nextVal = Math.max(min, Math.min(max, nextVal))
+      if (slider.value != nextVal) {
+        slider.value = nextVal
+        slider.dispatchEvent(new Event("input", { bubbles: true }))
+      }
+    }, { passive: false })
+  })
+
+  // Reset Position Button
+  DOM.resetBgPositionBtn?.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const icon = DOM.resetBgPositionBtn.querySelector("i")
+    if (icon) {
+      icon.style.transform = "rotate(-360deg)"
+      setTimeout(() => { if (icon) icon.style.transform = "" }, 400)
+    }
+
+    const defaultX = 50
+    const defaultY = 50
+    const defaultFit = "cover"
+    const defaultScale = 100
+
+    DOM.bgPosXInput.value = defaultX
+    DOM.bgPosXValue.textContent = `${defaultX}%`
+    DOM.bgPosYInput.value = defaultY
+    DOM.bgPosYValue.textContent = `${defaultY}%`
+    DOM.bgSizeSelect.value = defaultFit
+    if (DOM.bgImageScaleInput) DOM.bgImageScaleInput.value = defaultScale
+    if (DOM.bgImageScaleValue) DOM.bgImageScaleValue.textContent = `${defaultScale}%`
+
+    syncBgImageScaleVisibility()
+    syncBgPositionUI(defaultX, defaultY)
+
+    applyBackgroundVisualPreview({
+      bgPositionX: defaultX,
+      bgPositionY: defaultY,
+      bgSize: defaultFit,
+      bgImageScale: defaultScale,
+    })
+
+    handleSettingUpdate("bgPositionX", defaultX)
+    handleSettingUpdate("bgPositionY", defaultY)
+    handleSettingUpdate("bgSize", defaultFit)
+    handleSettingUpdate("bgImageScale", defaultScale)
+  })
+
+  // Reset Visual Effects Button
+  DOM.resetBgEffectsBtn?.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const icon = DOM.resetBgEffectsBtn.querySelector("i")
+    if (icon) {
+      icon.style.transform = "rotate(-360deg)"
+      setTimeout(() => { if (icon) icon.style.transform = "" }, 400)
+    }
+
+    DOM.bgBlurInput.value = 0
+    DOM.bgBlurValue.textContent = "0px"
+    if (DOM.bgBlurDirectionSelect) DOM.bgBlurDirectionSelect.value = "none"
+    if (DOM.bgBlurColorInput) DOM.bgBlurColorInput.value = "#000000"
+    if (DOM.bgBlurColorOpacityInput) DOM.bgBlurColorOpacityInput.value = 0
+    if (DOM.bgBlurColorOpacityValue) DOM.bgBlurColorOpacityValue.textContent = "0%"
+    DOM.bgBrightnessInput.value = 100
+    DOM.bgBrightnessValue.textContent = "100%"
+    if (DOM.bgContrastInput) DOM.bgContrastInput.value = 100
+    if (DOM.bgContrastValue) DOM.bgContrastValue.textContent = "100%"
+    if (DOM.bgSaturationInput) DOM.bgSaturationInput.value = 100
+    if (DOM.bgSaturationValue) DOM.bgSaturationValue.textContent = "100%"
+
+    applyBackgroundVisualPreview({
+      bgBlur: 0,
+      bgBlurDirection: "none",
+      bgBlurColor: "#000000",
+      bgBlurColorOpacity: 0,
+      bgBrightness: 100,
+      bgContrast: 100,
+      bgSaturation: 100,
+    })
+
+    handleSettingUpdate("bgBlur", 0)
+    handleSettingUpdate("bgBlurDirection", "none")
+    handleSettingUpdate("bgBlurColor", "#000000")
+    handleSettingUpdate("bgBlurColorOpacity", 0)
+    handleSettingUpdate("bgBrightness", 100)
+    handleSettingUpdate("bgContrast", 100)
+    handleSettingUpdate("bgSaturation", 100)
   })
 
   DOM.bgBlurInput.addEventListener("input", () => {
@@ -4355,6 +4579,22 @@ export function setupGeneralEventHandlers(
     updateCurrentGradient()
   })
 
+  const gradientResetBtn = document.getElementById("gradient-reset-btn")
+  gradientResetBtn?.addEventListener("click", () => {
+    DOM.gradientStartPicker.value = "#a8c0ff"
+    DOM.gradientEndPicker.value = "#3f2b96"
+    DOM.gradientAngleInput.value = 135
+    DOM.gradientAngleValue.textContent = "135°"
+    if (DOM.gradientTypeSelect) DOM.gradientTypeSelect.value = "linear"
+    if (DOM.gradientRepeatingToggle) DOM.gradientRepeatingToggle.checked = false
+    if (DOM.gradientExtraColorCount) DOM.gradientExtraColorCount.value = "0"
+    if (DOM.gradientCustomColors) DOM.gradientCustomColors.value = ""
+    if (DOM.gradientPositionSelect) DOM.gradientPositionSelect.value = "center"
+    if (DOM.gradientRadialShapeSelect) DOM.gradientRadialShapeSelect.value = "circle"
+    renderGradientExtraColorPickers()
+    updateCurrentGradient()
+  })
+
   DOM.saveGradientBtn.addEventListener("click", () => {
     const settings = getSettings()
     const newGradient = {
@@ -4395,6 +4635,32 @@ export function setupGeneralEventHandlers(
       renderUserGradients(DOM)
       updateSettingsInputs()
     }
+  })
+
+  // SVG Wave Reset
+  const svgWaveResetBtn = document.getElementById("svg-wave-reset-btn")
+  svgWaveResetBtn?.addEventListener("click", () => {
+    updateSetting("svgWaveLines", 5)
+    updateSetting("svgWaveAmplitudeX", 200)
+    updateSetting("svgWaveAmplitudeY", 80)
+    updateSetting("svgWaveOffsetX", 0)
+    updateSetting("svgWaveSmoothness", 0.5)
+    updateSetting("svgWaveFill", true)
+    updateSetting("svgWaveCraziness", 30)
+    updateSetting("svgWaveAngle", 0)
+    updateSetting("svgWaveStartHue", 200)
+    updateSetting("svgWaveStartSaturation", 70)
+    updateSetting("svgWaveStartLightness", 40)
+    updateSetting("svgWaveEndHue", 280)
+    updateSetting("svgWaveEndSaturation", 70)
+    updateSetting("svgWaveEndLightness", 30)
+    saveSettings()
+    updateSettingsInputs()
+    const defParams = getSvgWaveParams(getSettings())
+    if (effects.svgWaveEffect.active) {
+      effects.svgWaveEffect.update(defParams)
+    }
+    window.appScheduleAutoAccentUpdate?.()
   })
 
   // User gradient gallery

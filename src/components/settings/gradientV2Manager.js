@@ -133,6 +133,11 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       updateSetting(prop.id, value)
       if (handleUpdateCallback) handleUpdateCallback(prop.id, value)
       
+      if (prop.id === "gradientV2CenterX" || prop.id === "gradientV2CenterY") {
+        const curSettings = getSettings()
+        syncGradientV2PositionUI(curSettings.gradientV2CenterX ?? 0, curSettings.gradientV2CenterY ?? 0)
+      }
+
       // Live update effect
       const instance = getGradientV2Instance()
       if (instance) {
@@ -141,6 +146,243 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       }
     })
   })
+
+  // --- 2D Interactive Pad & Quick Align Grid for Gradient V2 ---
+  const pad = dom.gradientV2PositionPad || document.getElementById("gradient-v2-position-pad")
+  const padHandle = dom.gradientV2PositionPadHandle || document.getElementById("gradient-v2-position-pad-handle")
+  const padCoords = dom.gradientV2PositionPadCoords || document.getElementById("gradient-v2-position-pad-coords")
+  const nineGridBtns = document.querySelectorAll(".gradient-v2-9grid-btn")
+
+  function syncGradientV2PositionUI(cx, cy) {
+    const clampedX = Math.max(-1, Math.min(1, parseFloat(cx) || 0))
+    const clampedY = Math.max(-1, Math.min(1, parseFloat(cy) || 0))
+
+    if (padHandle) {
+      const pctX = ((clampedX + 1) / 2) * 100
+      const pctY = ((clampedY + 1) / 2) * 100
+      padHandle.style.left = `${pctX}%`
+      padHandle.style.top = `${pctY}%`
+    }
+
+    if (padCoords) {
+      padCoords.textContent = `${clampedX.toFixed(2)}, ${clampedY.toFixed(2)}`
+    }
+
+    nineGridBtns.forEach((btn) => {
+      const btnX = parseFloat(btn.getAttribute("data-pos-x"))
+      const btnY = parseFloat(btn.getAttribute("data-pos-y"))
+      const match = Math.abs(btnX - clampedX) < 0.25 && Math.abs(btnY - clampedY) < 0.25
+      btn.classList.toggle("active", match)
+    })
+  }
+
+  // Initial sync of pad
+  const initialSettings = getSettings()
+  syncGradientV2PositionUI(initialSettings.gradientV2CenterX ?? 0, initialSettings.gradientV2CenterY ?? 0)
+
+  if (pad) {
+    let isDragging = false
+
+    const updateFromPointer = (e) => {
+      const rect = pad.getBoundingClientRect()
+      if (rect.width <= 0 || rect.height <= 0) return
+      const rawX = (e.clientX - rect.left) / rect.width
+      const rawY = (e.clientY - rect.top) / rect.height
+      const clampedPctX = Math.max(0, Math.min(1, rawX))
+      const clampedPctY = Math.max(0, Math.min(1, rawY))
+      
+      const cx = parseFloat((clampedPctX * 2 - 1).toFixed(2))
+      const cy = parseFloat((clampedPctY * 2 - 1).toFixed(2))
+
+      const centerInput = dom.gradientV2CenterX || document.getElementById("gradient-v2-center")
+      const centerYInput = dom.gradientV2CenterY || document.getElementById("gradient-v2-center-y")
+      const centerXVal = dom.gradientV2CenterXValue || document.getElementById("gradient-v2-center-x-value")
+      const centerYVal = dom.gradientV2CenterYValue || document.getElementById("gradient-v2-center-y-value")
+
+      if (centerInput) centerInput.value = cx
+      if (centerYInput) centerYInput.value = cy
+      if (centerXVal) centerXVal.textContent = cx.toFixed(2)
+      if (centerYVal) centerYVal.textContent = cy.toFixed(2)
+
+      syncGradientV2PositionUI(cx, cy)
+      updateSetting("gradientV2CenterX", cx)
+      updateSetting("gradientV2CenterY", cy)
+
+      if (handleUpdateCallback) {
+        handleUpdateCallback("gradientV2CenterX", cx)
+        handleUpdateCallback("gradientV2CenterY", cy)
+      }
+
+      const instance = getGradientV2Instance()
+      if (instance) {
+        instance.setOptions({ centerX: cx, centerY: cy })
+      }
+    }
+
+    pad.addEventListener("pointerdown", (e) => {
+      isDragging = true
+      pad.setPointerCapture?.(e.pointerId)
+      updateFromPointer(e)
+    })
+
+    pad.addEventListener("pointermove", (e) => {
+      if (!isDragging) return
+      updateFromPointer(e)
+    })
+
+    const stopDragging = (e) => {
+      if (isDragging) {
+        isDragging = false
+        try {
+          if (e && pad.hasPointerCapture?.(e.pointerId)) {
+            pad.releasePointerCapture(e.pointerId)
+          }
+        } catch (_) {}
+        saveSettings()
+      }
+    }
+
+    pad.addEventListener("pointerup", stopDragging)
+    pad.addEventListener("pointercancel", stopDragging)
+
+    // Wheel support on 2D pad
+    pad.addEventListener("wheel", (e) => {
+      e.preventDefault()
+      const step = 0.05
+      const cur = getSettings()
+      let cx = cur.gradientV2CenterX ?? 0
+      let cy = cur.gradientV2CenterY ?? 0
+
+      if (e.shiftKey) {
+        cx += e.deltaY < 0 ? step : -step
+      } else {
+        cy += e.deltaY < 0 ? -step : step
+      }
+
+      cx = Math.max(-1, Math.min(1, parseFloat(cx.toFixed(2))))
+      cy = Math.max(-1, Math.min(1, parseFloat(cy.toFixed(2))))
+
+      const centerInput = dom.gradientV2CenterX || document.getElementById("gradient-v2-center")
+      const centerYInput = dom.gradientV2CenterY || document.getElementById("gradient-v2-center-y")
+      const centerXVal = dom.gradientV2CenterXValue || document.getElementById("gradient-v2-center-x-value")
+      const centerYVal = dom.gradientV2CenterYValue || document.getElementById("gradient-v2-center-y-value")
+
+      if (centerInput) centerInput.value = cx
+      if (centerYInput) centerYInput.value = cy
+      if (centerXVal) centerXVal.textContent = cx.toFixed(2)
+      if (centerYVal) centerYVal.textContent = cy.toFixed(2)
+
+      syncGradientV2PositionUI(cx, cy)
+      updateSetting("gradientV2CenterX", cx)
+      updateSetting("gradientV2CenterY", cy)
+
+      if (handleUpdateCallback) {
+        handleUpdateCallback("gradientV2CenterX", cx)
+        handleUpdateCallback("gradientV2CenterY", cy)
+      }
+
+      const instance = getGradientV2Instance()
+      if (instance) {
+        instance.setOptions({ centerX: cx, centerY: cy })
+      }
+      saveSettings()
+    }, { passive: false })
+  }
+
+  // 9-Grid alignment presets for Gradient V2
+  nineGridBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cx = parseFloat(btn.getAttribute("data-pos-x") || "0")
+      const cy = parseFloat(btn.getAttribute("data-pos-y") || "0")
+
+      const centerInput = dom.gradientV2CenterX || document.getElementById("gradient-v2-center")
+      const centerYInput = dom.gradientV2CenterY || document.getElementById("gradient-v2-center-y")
+      const centerXVal = dom.gradientV2CenterXValue || document.getElementById("gradient-v2-center-x-value")
+      const centerYVal = dom.gradientV2CenterYValue || document.getElementById("gradient-v2-center-y-value")
+
+      if (centerInput) centerInput.value = cx
+      if (centerYInput) centerYInput.value = cy
+      if (centerXVal) centerXVal.textContent = cx.toFixed(2)
+      if (centerYVal) centerYVal.textContent = cy.toFixed(2)
+
+      syncGradientV2PositionUI(cx, cy)
+      updateSetting("gradientV2CenterX", cx)
+      updateSetting("gradientV2CenterY", cy)
+      saveSettings()
+
+      if (handleUpdateCallback) {
+        handleUpdateCallback("gradientV2CenterX", cx)
+        handleUpdateCallback("gradientV2CenterY", cy)
+      }
+
+      const instance = getGradientV2Instance()
+      if (instance) {
+        instance.setOptions({ centerX: cx, centerY: cy })
+      }
+    })
+  })
+
+  // Reset Default button for Gradient V2
+  const resetBtn = dom.gradientV2ResetBtn || document.getElementById("gradient-v2-reset-btn")
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      const defaultProps = {
+        gradientV2Color1: "#FF9FFC",
+        gradientV2Color2: "#5227FF",
+        gradientV2Color3: "#B497CF",
+        gradientV2TimeSpeed: 0.25,
+        gradientV2ColorBalance: 0.0,
+        gradientV2WarpStrength: 1.0,
+        gradientV2WarpFrequency: 5.0,
+        gradientV2WarpSpeed: 2.0,
+        gradientV2WarpAmplitude: 50.0,
+        gradientV2BlendAngle: 0.0,
+        gradientV2BlendSoftness: 0.05,
+        gradientV2RotationAmount: 500.0,
+        gradientV2NoiseScale: 2.0,
+        gradientV2GrainAmount: 0.1,
+        gradientV2GrainScale: 2.0,
+        gradientV2GrainAnimated: false,
+        gradientV2Contrast: 1.5,
+        gradientV2Gamma: 1.0,
+        gradientV2Saturation: 1.0,
+        gradientV2CenterX: 0.0,
+        gradientV2CenterY: 0.0,
+        gradientV2Zoom: 0.9,
+      }
+
+      Object.entries(defaultProps).forEach(([id, val]) => {
+        updateSetting(id, val)
+        const propConfig = propsMap.find(p => p.id === id)
+        if (propConfig && propConfig.dom) {
+          if (propConfig.type === "checkbox") propConfig.dom.checked = val
+          else propConfig.dom.value = val
+          if (propConfig.val) propConfig.val.textContent = val + (propConfig.suffix || "")
+        }
+        if (handleUpdateCallback) handleUpdateCallback(id, val)
+      })
+
+      syncGradientV2PositionUI(0.0, 0.0)
+      saveSettings()
+
+      const instance = getGradientV2Instance()
+      if (instance) {
+        const options = {}
+        Object.entries(defaultProps).forEach(([id, val]) => {
+          const optionKey = id.replace("gradientV2", "").charAt(0).toLowerCase() + id.replace("gradientV2", "").slice(1)
+          options[optionKey] = val
+        })
+        instance.setOptions(options)
+      }
+
+      // Animate reset button icon
+      const icon = resetBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
+      }
+    })
+  }
 
   // Randomize button
   const randomizeBtn = dom.gradientV2RandomizeBtn || document.getElementById("gradient-v2-randomize-btn")

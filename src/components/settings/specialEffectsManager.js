@@ -149,6 +149,44 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     })
   }
 
+  const silkResetBtn = document.getElementById("silk-reset-btn")
+  if (silkResetBtn) {
+    silkResetBtn.addEventListener("click", () => {
+      const defaultSilk = {
+        silkColor: "#7B7481",
+        silkSpeed: 5.0,
+        silkScale: 1.0,
+        silkNoise: 1.5,
+        silkRotation: 0.0,
+      }
+      Object.entries(defaultSilk).forEach(([id, val]) => {
+        updateSetting(id, val)
+        const propConfig = silkProps.find(p => p.id === id)
+        if (propConfig && propConfig.dom) {
+          propConfig.dom.value = val
+          if (propConfig.val) propConfig.val.textContent = val.toFixed(1)
+        }
+      })
+      if (silkColorPicker) silkColorPicker.value = "#7B7481"
+      saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
+      if (getSettings().silkActive && effects.silkEffect) {
+        effects.silkEffect.setOptions({
+          color: defaultSilk.silkColor,
+          speed: defaultSilk.silkSpeed,
+          scale: defaultSilk.silkScale,
+          noise: defaultSilk.silkNoise,
+          rotation: defaultSilk.silkRotation,
+        })
+      }
+      const icon = silkResetBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
+      }
+    })
+  }
+
   // --- Light Pillar UI Setup ---
   const lightPillarActive = document.getElementById("light-pillar-active")
   if (lightPillarActive) {
@@ -222,12 +260,12 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const randomProps = {
         lightPillarTopColor: randomHex(),
         lightPillarBottomColor: randomHex(),
-        lightPillarIntensity: parseFloat((Math.random() * 3 + 0.5).toFixed(1)),
+        lightPillarIntensity: parseFloat((Math.random() * 2 + 0.5).toFixed(1)),
         lightPillarRotationSpeed: parseFloat((Math.random() * 1.5 + 0.1).toFixed(1)),
         lightPillarGlowAmount: parseFloat((Math.random() * 0.02 + 0.001).toFixed(3)),
         lightPillarWidth: parseFloat((Math.random() * 5 + 1).toFixed(1)),
         lightPillarHeight: parseFloat((Math.random() * 0.8 + 0.1).toFixed(1)),
-        lightPillarNoiseIntensity: parseFloat((Math.random() * 1.5 + 0.1).toFixed(1)),
+        lightPillarNoiseIntensity: parseFloat((Math.random() * 1 + 0.1).toFixed(1)),
         lightPillarRotation: Math.floor(Math.random() * 360)
       }
       Object.entries(randomProps).forEach(([id, val]) => {
@@ -254,6 +292,53 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
           noiseIntensity: randomProps.lightPillarNoiseIntensity,
           pillarRotation: randomProps.lightPillarRotation
         })
+      }
+    })
+  }
+
+  const lpResetBtn = document.getElementById("light-pillar-reset-btn")
+  if (lpResetBtn) {
+    lpResetBtn.addEventListener("click", () => {
+      const defaultLP = {
+        lightPillarTopColor: "#5227FF",
+        lightPillarBottomColor: "#FF9FFC",
+        lightPillarIntensity: 1.0,
+        lightPillarRotationSpeed: 0.3,
+        lightPillarGlowAmount: 0.005,
+        lightPillarWidth: 3.0,
+        lightPillarHeight: 0.4,
+        lightPillarNoiseIntensity: 0.5,
+        lightPillarRotation: 0,
+      }
+      Object.entries(defaultLP).forEach(([id, val]) => {
+        updateSetting(id, val)
+        const propConfig = lightPillarProps.find(p => p.id === id)
+        if (propConfig && propConfig.dom) {
+          propConfig.dom.value = val
+          if (propConfig.val) propConfig.val.textContent = val.toFixed(propConfig.toFixed)
+        }
+      })
+      if (lpTopColorPicker) lpTopColorPicker.value = defaultLP.lightPillarTopColor
+      if (lpBottomColorPicker) lpBottomColorPicker.value = defaultLP.lightPillarBottomColor
+      saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
+      if (getSettings().lightPillarActive && effects.lightPillarEffect) {
+        effects.lightPillarEffect.setOptions({
+          topColor: defaultLP.lightPillarTopColor,
+          bottomColor: defaultLP.lightPillarBottomColor,
+          intensity: defaultLP.lightPillarIntensity,
+          rotationSpeed: defaultLP.lightPillarRotationSpeed,
+          glowAmount: defaultLP.lightPillarGlowAmount,
+          pillarWidth: defaultLP.lightPillarWidth,
+          pillarHeight: defaultLP.lightPillarHeight,
+          noiseIntensity: defaultLP.lightPillarNoiseIntensity,
+          pillarRotation: defaultLP.lightPillarRotation,
+        })
+      }
+      const icon = lpResetBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
       }
     })
   }
@@ -369,6 +454,34 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       scheduleAutoAccentFromGeneratedBg()
       if (getSettings().liquidEtherActive && effects.liquidEtherEffect) {
         effects.liquidEtherEffect.updateSettings({ colors, glowWidth })
+      }
+    })
+  }
+
+  const leResetBtn = document.getElementById("liquid-ether-reset-btn")
+  if (leResetBtn) {
+    leResetBtn.addEventListener("click", () => {
+      const colors = ["#5227FF", "#FF9FFC", "#B497CF"]
+      const glowWidth = 5.5
+      updateSetting("liquidEtherColors", colors)
+      updateSetting("liquidEtherColor1", colors[0])
+      updateSetting("liquidEtherColor2", colors[1])
+      updateSetting("liquidEtherColor3", colors[2])
+      updateSetting("liquidEtherGlowWidth", glowWidth)
+      if (leColor1) leColor1.value = colors[0]
+      if (leColor2) leColor2.value = colors[1]
+      if (leColor3) leColor3.value = colors[2]
+      if (leGlowWidth) leGlowWidth.value = glowWidth
+      if (leGlowWidthVal) leGlowWidthVal.textContent = glowWidth.toFixed(1)
+      saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
+      if (getSettings().liquidEtherActive && effects.liquidEtherEffect) {
+        effects.liquidEtherEffect.updateSettings({ colors, glowWidth })
+      }
+      const icon = leResetBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
       }
     })
   }
@@ -565,6 +678,133 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     })
     slider.addEventListener("change", () => saveSettings())
   })
+
+  const scResetBtn = document.getElementById("splash-cursor-reset-btn")
+  if (scResetBtn) {
+    scResetBtn.addEventListener("click", () => {
+      const defaultSC = {
+        splashCursorSimResolution: 128,
+        splashCursorDyeResolution: 512,
+        splashCursorDensityDissipation: 3.5,
+        splashCursorVelocityDissipation: 2,
+        splashCursorPressure: 0.1,
+        splashCursorPressureIterations: 20,
+        splashCursorCurl: 3,
+        splashCursorSplatRadius: 0.2,
+        splashCursorSplatForce: 6000,
+        splashCursorShading: true,
+        splashCursorColorUpdateSpeed: 10,
+        splashCursorRainbowMode: true,
+        splashCursorColor: "#ff0000",
+        splashCursorDarkBg: false,
+      }
+      Object.entries(defaultSC).forEach(([key, val]) => {
+        updateSetting(key, val)
+      })
+      applySplashCursorDarkBg(false)
+      if (scRainbow) scRainbow.checked = true
+      if (scColorWrap) scColorWrap.style.display = "none"
+      if (scColor) scColor.value = "#ff0000"
+      if (scShading) scShading.checked = true
+      scSliders.forEach(({ el, val, key, decimals }) => {
+        const slider = document.getElementById(el)
+        const valEl = document.getElementById(val)
+        if (slider && defaultSC[key] !== undefined) {
+          slider.value = defaultSC[key]
+          if (valEl) valEl.textContent = decimals > 0 ? defaultSC[key].toFixed(decimals) : String(defaultSC[key])
+        }
+      })
+      saveSettings()
+      applySplashCursorLive()
+      const icon = scResetBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
+      }
+    })
+  }
+
+  // --- Reset Active Effect Settings Button ---
+  const resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
+  if (resetActiveEffectBtn) {
+    resetActiveEffectBtn.addEventListener("click", () => {
+      // Animate reset button icon
+      const icon = resetActiveEffectBtn.querySelector("i")
+      if (icon) {
+        icon.classList.add("fa-spin")
+        setTimeout(() => icon.classList.remove("fa-spin"), 400)
+      }
+
+      // Reset values in active effect settings container
+      const dvdTitle = document.getElementById("dvd-title-input")
+      const dvdColorMode = document.getElementById("dvd-color-mode-select")
+      const dvdSpeed = document.getElementById("dvd-speed-slider")
+      const dvdSpeedVal = document.getElementById("dvd-speed-val")
+      const dvdClone = document.getElementById("dvd-clone-slider")
+      const dvdCloneVal = document.getElementById("dvd-clone-val")
+      const dvdTrail = document.getElementById("dvd-trail-checkbox")
+      const dvdGlitch = document.getElementById("dvd-glitch-checkbox")
+      if (dvdTitle) dvdTitle.value = "DVD"
+      if (dvdColorMode) dvdColorMode.value = "random"
+      if (dvdSpeed) { dvdSpeed.value = 3; if (dvdSpeedVal) dvdSpeedVal.textContent = "3"; }
+      if (dvdClone) { dvdClone.value = 1; if (dvdCloneVal) dvdCloneVal.textContent = "1"; }
+      if (dvdTrail) dvdTrail.checked = false
+      if (dvdGlitch) dvdGlitch.checked = false
+
+      // Aurora wave
+      const awColor = document.getElementById("aurora-wave-color-picker")
+      const awBright = document.getElementById("aurora-wave-brightness-slider")
+      const awBrightVal = document.getElementById("aurora-wave-brightness-val")
+      const awSpeed = document.getElementById("aurora-wave-speed-slider")
+      const awSpeedVal = document.getElementById("aurora-wave-speed-val")
+      const awAmp = document.getElementById("aurora-wave-amplitude-slider")
+      const awAmpVal = document.getElementById("aurora-wave-amplitude-val")
+      const awTrans = document.getElementById("aurora-wave-transparent")
+      const awBgColor = document.getElementById("aurora-wave-bg-color-picker")
+      const awBgOp = document.getElementById("aurora-wave-bg-opacity-slider")
+      const awBgOpVal = document.getElementById("aurora-wave-bg-opacity-val")
+      if (awColor) { awColor.value = "#00bcd4"; updateSetting("auroraWaveColor", "#00bcd4"); }
+      if (awBright) { awBright.value = 0.65; if (awBrightVal) awBrightVal.textContent = "0.65"; updateSetting("auroraWaveBrightness", 0.65); }
+      if (awSpeed) { awSpeed.value = 1.0; if (awSpeedVal) awSpeedVal.textContent = "1.0"; updateSetting("auroraWaveSpeed", 1.0); }
+      if (awAmp) { awAmp.value = 70; if (awAmpVal) awAmpVal.textContent = "70"; updateSetting("auroraWaveAmplitude", 70); }
+      if (awTrans) { awTrans.checked = true; updateSetting("auroraWaveTransparent", true); }
+      if (awBgColor) { awBgColor.value = "#000000"; updateSetting("auroraWaveBgColor", "#000000"); }
+      if (awBgOp) { awBgOp.value = 0.15; if (awBgOpVal) awBgOpVal.textContent = "0.15"; updateSetting("auroraWaveBgOpacity", 0.15); }
+
+      // Northern Lights
+      const nlColor = document.getElementById("northern-lights-color-picker")
+      const nlStyle = document.getElementById("northern-lights-style-select")
+      const nlBright = document.getElementById("northern-lights-brightness-slider")
+      const nlBrightVal = document.getElementById("northern-lights-brightness-val")
+      if (nlColor) { nlColor.value = "#00ffcc"; updateSetting("northernLightsColor", "#00ffcc"); }
+      if (nlStyle) { nlStyle.value = "classic"; updateSetting("northernLightsStyle", "classic"); }
+      if (nlBright) { nlBright.value = 0.8; if (nlBrightVal) nlBrightVal.textContent = "0.8"; updateSetting("northernLightsBrightness", 0.8); }
+
+      // Pixel Weather
+      const pwRes = document.getElementById("pixel-weather-resolution-slider")
+      const pwSpeed = document.getElementById("pixel-weather-speed-slider")
+      const pwSize = document.getElementById("pixel-weather-size-slider")
+      const pwDensity = document.getElementById("pixel-weather-density-slider")
+      if (pwRes) { pwRes.value = 1; updateSetting("pixelWeatherResolution", 1); }
+      if (pwSpeed) { pwSpeed.value = 1.0; updateSetting("pixelWeatherSpeed", 1.0); }
+      if (pwSize) { pwSize.value = 1.0; updateSetting("pixelWeatherSize", 1.0); }
+      if (pwDensity) { pwDensity.value = 1.0; updateSetting("pixelWeatherDensity", 1.0); }
+
+      // Reset all color pickers in the active settings container to their HTML default value attribute
+      const container = document.getElementById("active-effect-settings-body")
+      if (container) {
+        container.querySelectorAll('input[type="color"]').forEach(input => {
+          const def = input.getAttribute("value")
+          if (def) {
+            input.value = def
+            input.dispatchEvent(new Event("change", { bubbles: true }))
+          }
+        })
+      }
+
+      saveSettings()
+    })
+  }
 
   // Setup multi-select
   setupEffectMultiSelect('silk', handleSettingUpdate)
