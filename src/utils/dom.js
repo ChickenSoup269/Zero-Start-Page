@@ -96,6 +96,13 @@ export let bgPosXInput = document.getElementById("bg-pos-x-input")
 export let bgPosXValue = document.getElementById("bg-pos-x-value")
 export let bgPosYInput = document.getElementById("bg-pos-y-input")
 export let bgPosYValue = document.getElementById("bg-pos-y-value")
+export let bgPositionPad = document.getElementById("bg-position-pad")
+export let bgPositionPadHandle = document.getElementById("bg-position-pad-handle")
+export let bgPositionPadCoords = document.getElementById("bg-position-pad-coords")
+export let bgPositionPadPreview = document.getElementById("bg-position-pad-preview")
+export let bg9GridBtns = document.querySelectorAll(".bg-9grid-btn")
+export let resetBgPositionBtn = document.getElementById("reset-bg-position-btn")
+export let resetBgEffectsBtn = document.getElementById("reset-bg-effects-btn")
 
 export let accentColorPicker = document.getElementById("accent-color-picker")
 export let accentColorHexInput = document.getElementById(
@@ -186,6 +193,7 @@ export let effectSearch = document.getElementById("effect-search")
 export let activeEffectSettingsContainer = document.getElementById(
   "active-effect-settings-container",
 )
+export let resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
 export let performanceModeBtns = document.querySelectorAll(
   ".performance-mode-btn",
 )
@@ -250,6 +258,7 @@ export let generateModernGradientBtn = document.getElementById(
   "generate-modern-gradient-btn",
 )
 export let saveGradientBtn = document.getElementById("save-gradient-btn")
+export let gradientResetBtn = document.getElementById("gradient-reset-btn")
 export let gradientCopyCodeBtn = document.getElementById(
   "gradient-copy-code-btn",
 )
@@ -264,6 +273,7 @@ export let userGradientsGallery = document.getElementById(
 )
 
 // Multi-Color Split Background
+export let multiColorResetBtn = document.getElementById("multi-color-reset-btn")
 export let multiColorCountSelect = document.getElementById(
   "multi-color-count-select",
 )
@@ -1551,6 +1561,7 @@ export let svgWaveEndPreview = document.getElementById("svg-wave-end-preview")
 export let svgWaveRandomizeBtn = document.getElementById(
   "svg-wave-randomize-btn",
 )
+export let svgWaveResetBtn = document.getElementById("svg-wave-reset-btn")
 export let svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
 export let svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
 export let svgWaveCopyCodeBtn = document.getElementById(
@@ -1685,6 +1696,11 @@ export let gradientV2RandomizeBtn = document.getElementById(
   "gradient-v2-randomize-btn",
 )
 export let gradientV2SaveBtn = document.getElementById("gradient-v2-save-btn")
+export let gradientV2ResetBtn = document.getElementById("gradient-v2-reset-btn")
+export let gradientV2PositionPad = document.getElementById("gradient-v2-position-pad")
+export let gradientV2PositionPadHandle = document.getElementById("gradient-v2-position-pad-handle")
+export let gradientV2PositionPadCoords = document.getElementById("gradient-v2-position-pad-coords")
+export let gradientV29GridBtns = document.querySelectorAll(".gradient-v2-9grid-btn")
 export let userGradientV2sGallery = document.getElementById(
   "user-gradient-v2s-gallery",
 )
@@ -1795,6 +1811,7 @@ export let silkNoiseValue = document.getElementById("silk-noise-value")
 export let silkRotation = document.getElementById("silk-rotation")
 export let silkRotationValue = document.getElementById("silk-rotation-value")
 export let silkRandomBtn = document.getElementById("silk-random-btn")
+export let silkResetBtn = document.getElementById("silk-reset-btn")
 export let silkSaveBtn = document.getElementById("silk-save-btn")
 export let userSilksGallery = document.getElementById("user-silks-gallery")
 export let userSilksGalleryWrap = document.getElementById(
@@ -1814,6 +1831,9 @@ export let lightPillarSettings = document.getElementById(
 export let lightPillarActive = document.getElementById("light-pillar-active")
 export let lightPillarRandomBtn = document.getElementById(
   "light-pillar-random-btn",
+)
+export let lightPillarResetBtn = document.getElementById(
+  "light-pillar-reset-btn",
 )
 export let lightPillarTopColor = document.getElementById(
   "light-pillar-top-color",
@@ -1876,6 +1896,9 @@ export let liquidEtherSettings = document.getElementById(
 export let liquidEtherActive = document.getElementById("liquid-ether-active")
 export let liquidEtherRandomBtn = document.getElementById(
   "liquid-ether-random-btn",
+)
+export let liquidEtherResetBtn = document.getElementById(
+  "liquid-ether-reset-btn",
 )
 export let liquidEtherColor1 = document.getElementById("liquid-ether-color1")
 export let liquidEtherColor2 = document.getElementById("liquid-ether-color2")
@@ -1957,6 +1980,7 @@ export let splashCursorDyeRes = document.getElementById("splash-cursor-dye-res")
 export let splashCursorDyeResValue = document.getElementById(
   "splash-cursor-dye-res-value",
 )
+export let splashCursorResetBtn = document.getElementById("splash-cursor-reset-btn")
 
 export let softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",
@@ -2250,6 +2274,13 @@ export function refreshDOMReferences() {
   bgPosXValue = document.getElementById("bg-pos-x-value")
   bgPosYInput = document.getElementById("bg-pos-y-input")
   bgPosYValue = document.getElementById("bg-pos-y-value")
+  bgPositionPad = document.getElementById("bg-position-pad")
+  bgPositionPadHandle = document.getElementById("bg-position-pad-handle")
+  bgPositionPadCoords = document.getElementById("bg-position-pad-coords")
+  bgPositionPadPreview = document.getElementById("bg-position-pad-preview")
+  bg9GridBtns = document.querySelectorAll(".bg-9grid-btn")
+  resetBgPositionBtn = document.getElementById("reset-bg-position-btn")
+  resetBgEffectsBtn = document.getElementById("reset-bg-effects-btn")
   accentColorPicker = document.getElementById("accent-color-picker")
   accentColorHexInput = document.getElementById("accent-color-hex-input")
   accentColorToggleBtn = document.getElementById("accent-color-toggle-btn")
@@ -2312,6 +2343,7 @@ export function refreshDOMReferences() {
   activeEffectSettingsContainer = document.getElementById(
     "active-effect-settings-container",
   )
+  resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
   performanceModeBtns = document.querySelectorAll(".performance-mode-btn")
   rainbowDirectionSetting = document.getElementById("rainbow-direction-setting")
   rainbowDirLeftBtn = document.getElementById("rainbow-dir-left")
@@ -2355,12 +2387,14 @@ export function refreshDOMReferences() {
     "generate-modern-gradient-btn",
   )
   saveGradientBtn = document.getElementById("save-gradient-btn")
+  gradientResetBtn = document.getElementById("gradient-reset-btn")
   gradientCopyCodeBtn = document.getElementById("gradient-copy-code-btn")
   gradientApplyCodeBtn = document.getElementById("gradient-apply-code-btn")
   gradientPresetCodeInput = document.getElementById(
     "gradient-preset-code-input",
   )
   userGradientsGallery = document.getElementById("user-gradients-gallery")
+  multiColorResetBtn = document.getElementById("multi-color-reset-btn")
   multiColorCountSelect = document.getElementById("multi-color-count-select")
   multiColorTypeSelect = document.getElementById("multi-color-type-select")
   multiColorRepeatingToggle = document.getElementById(
@@ -3263,6 +3297,7 @@ export function refreshDOMReferences() {
   svgWaveEndLightValue = document.getElementById("svg-wave-end-light-value")
   svgWaveEndPreview = document.getElementById("svg-wave-end-preview")
   svgWaveRandomizeBtn = document.getElementById("svg-wave-randomize-btn")
+  svgWaveResetBtn = document.getElementById("svg-wave-reset-btn")
   svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
   svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
   svgWaveCopyCodeBtn = document.getElementById("svg-wave-copy-code-btn")
@@ -3354,6 +3389,11 @@ export function refreshDOMReferences() {
   gradientV2Zoom = document.getElementById("gradient-v2-zoom")
   gradientV2ZoomValue = document.getElementById("gradient-v2-zoom-value")
   gradientV2RandomizeBtn = document.getElementById("gradient-v2-randomize-btn")
+  gradientV2ResetBtn = document.getElementById("gradient-v2-reset-btn")
+  gradientV2PositionPad = document.getElementById("gradient-v2-position-pad")
+  gradientV2PositionPadHandle = document.getElementById("gradient-v2-position-pad-handle")
+  gradientV2PositionPadCoords = document.getElementById("gradient-v2-position-pad-coords")
+  gradientV29GridBtns = document.querySelectorAll(".gradient-v2-9grid-btn")
   gradientV2SaveBtn = document.getElementById("gradient-v2-save-btn")
   userGradientV2sGallery = document.getElementById("user-gradient-v2s-gallery")
   gradientV2GalleryWrap = document.getElementById(
@@ -3437,6 +3477,7 @@ export function refreshDOMReferences() {
   silkRotation = document.getElementById("silk-rotation")
   silkRotationValue = document.getElementById("silk-rotation-value")
   silkRandomBtn = document.getElementById("silk-random-btn")
+  silkResetBtn = document.getElementById("silk-reset-btn")
   silkSaveBtn = document.getElementById("silk-save-btn")
   userSilksGallery = document.getElementById("user-silks-gallery")
   userSilksGalleryWrap = document.getElementById("user-silks-gallery-wrap")
@@ -3445,6 +3486,7 @@ export function refreshDOMReferences() {
   lightPillarSettings = document.getElementById("light-pillar-settings")
   lightPillarActive = document.getElementById("light-pillar-active")
   lightPillarRandomBtn = document.getElementById("light-pillar-random-btn")
+  lightPillarResetBtn = document.getElementById("light-pillar-reset-btn")
   lightPillarTopColor = document.getElementById("light-pillar-top-color")
   lightPillarBottomColor = document.getElementById("light-pillar-bottom-color")
   lightPillarIntensity = document.getElementById("light-pillar-intensity")
@@ -3481,6 +3523,7 @@ export function refreshDOMReferences() {
   liquidEtherSettings = document.getElementById("liquid-ether-settings")
   liquidEtherActive = document.getElementById("liquid-ether-active")
   liquidEtherRandomBtn = document.getElementById("liquid-ether-random-btn")
+  liquidEtherResetBtn = document.getElementById("liquid-ether-reset-btn")
   liquidEtherColor1 = document.getElementById("liquid-ether-color1")
   liquidEtherColor2 = document.getElementById("liquid-ether-color2")
   liquidEtherColor3 = document.getElementById("liquid-ether-color3")
@@ -3535,6 +3578,7 @@ export function refreshDOMReferences() {
   splashCursorDyeResValue = document.getElementById(
     "splash-cursor-dye-res-value",
   )
+  splashCursorResetBtn = document.getElementById("splash-cursor-reset-btn")
   softAuroraScaleSlider = document.getElementById("soft-aurora-scale-slider")
   softAuroraScaleVal = document.getElementById("soft-aurora-scale-val")
   softAuroraBrightnessSlider = document.getElementById(

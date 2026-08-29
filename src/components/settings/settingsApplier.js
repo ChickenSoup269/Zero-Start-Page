@@ -4583,6 +4583,30 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bgPosYInput.value = settings.bgPositionY || 50
     DOM.bgPosYValue.textContent = `${DOM.bgPosYInput.value}%`
 
+    const curPosX = Math.round(Number(settings.bgPositionX ?? 50))
+    const curPosY = Math.round(Number(settings.bgPositionY ?? 50))
+    if (DOM.bgPositionPadHandle) {
+      DOM.bgPositionPadHandle.style.left = `${curPosX}%`
+      DOM.bgPositionPadHandle.style.top = `${curPosY}%`
+    }
+    if (DOM.bgPositionPadCoords) {
+      DOM.bgPositionPadCoords.textContent = `${curPosX}%, ${curPosY}%`
+    }
+    if (DOM.bgPositionPadPreview) {
+      const bgLayer = document.getElementById("bg-layer")
+      if (bgLayer && bgLayer.style.backgroundImage) {
+        DOM.bgPositionPadPreview.style.backgroundImage = bgLayer.style.backgroundImage
+        DOM.bgPositionPadPreview.style.display = "block"
+      } else {
+        DOM.bgPositionPadPreview.style.display = "none"
+      }
+    }
+    document.querySelectorAll(".bg-9grid-btn").forEach((btn) => {
+      const bx = Number(btn.dataset.posX)
+      const by = Number(btn.dataset.posY)
+      btn.classList.toggle("active", bx === curPosX && by === curPosY)
+    })
+
     DOM.unsplashCategorySelect.value =
       settings.unsplashCategory || "spring-wallpapers"
     if (DOM.unsplashAutoRandomSelect) {
