@@ -3111,7 +3111,61 @@ export function setupGeneralEventHandlers(
       }
     })
 
-  // Custom Bookmark listeners
+  // Custom Bookmark listeners & Live Preview
+  function updateBookmarkLivePreview() {
+    const previewTab = document.getElementById("bookmark-preview-tab")
+    const previewItem = document.getElementById("bookmark-preview-item")
+    const previewIconBox = document.getElementById("bookmark-preview-icon-box")
+    const previewTitle = document.getElementById("bookmark-preview-title")
+    if (!previewItem || !previewTab) return
+
+    const fontSize = DOM.bookmarkFontSizeInput ? `${DOM.bookmarkFontSizeInput.value}px` : "10px"
+    const iconSize = DOM.bookmarkIconSizeInput ? `${DOM.bookmarkIconSizeInput.value}px` : "42px"
+    const gap = DOM.bookmarkGapInput ? `${DOM.bookmarkGapInput.value}px` : "8px"
+    const textColor = DOM.bookmarkTextColorPicker?.value || "#ffffff"
+    const bgColor = DOM.bookmarkBgColorPicker?.value || "#ffffff"
+    const bgOpacity = DOM.bookmarkBgOpacityInput ? Number(DOM.bookmarkBgOpacityInput.value) / 100 : 1
+    const shadowColor = DOM.bookmarkShadowColorPicker?.value || "#000000"
+    const shadowOpacity = DOM.bookmarkShadowOpacityInput ? Number(DOM.bookmarkShadowOpacityInput.value) / 100 : 0.24
+    const shadowBlur = DOM.bookmarkShadowBlurInput ? `${DOM.bookmarkShadowBlurInput.value}px` : "8px"
+
+    const groupBg = DOM.bookmarkGroupBgColorPicker?.value || "#ffffff"
+    const groupBgOpacity = DOM.bookmarkGroupBgOpacityInput ? Number(DOM.bookmarkGroupBgOpacityInput.value) / 100 : 0
+    const groupText = DOM.bookmarkGroupTextColorPicker?.value || "#ffffff"
+    const groupFontSize = DOM.bookmarkGroupFontSizeInput ? `${DOM.bookmarkGroupFontSizeInput.value}px` : "14px"
+    const groupRadius = DOM.bookmarkGroupBorderRadiusInput ? `${DOM.bookmarkGroupBorderRadiusInput.value}px` : "8px"
+
+    const hexToRgba = (hex, alpha) => {
+      let c = (hex || "#ffffff").replace("#", "")
+      if (c.length === 3) c = c.split("").map((x) => x + x).join("")
+      const num = parseInt(c, 16) || 0
+      return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`
+    }
+
+    // Apply to item preview
+    previewItem.style.fontSize = fontSize
+    previewItem.style.gap = gap
+    previewItem.style.color = textColor
+    previewItem.style.backgroundColor = hexToRgba(bgColor, bgOpacity)
+    previewItem.style.boxShadow = `0 4px ${shadowBlur} ${hexToRgba(shadowColor, shadowOpacity)}`
+
+    if (previewIconBox) {
+      previewIconBox.style.width = iconSize
+      previewIconBox.style.height = iconSize
+      previewIconBox.style.fontSize = `calc(${iconSize} * 0.55)`
+    }
+
+    if (previewTitle && DOM.hideBookmarkText) {
+      previewTitle.style.display = DOM.hideBookmarkText.checked ? "none" : "block"
+    }
+
+    // Apply to group tab preview
+    previewTab.style.fontSize = groupFontSize
+    previewTab.style.borderRadius = groupRadius
+    previewTab.style.backgroundColor = hexToRgba(groupBg, groupBgOpacity)
+    previewTab.style.color = groupText
+  }
+
   if (DOM.bookmarkFontSizeInput) {
     DOM.bookmarkFontSizeInput.addEventListener("input", () => {
       DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
@@ -3119,6 +3173,7 @@ export function setupGeneralEventHandlers(
         "bookmarkFontSize",
         Number(DOM.bookmarkFontSizeInput.value),
       )
+      updateBookmarkLivePreview()
     })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
@@ -3127,6 +3182,7 @@ export function setupGeneralEventHandlers(
         "bookmarkIconSize",
         Number(DOM.bookmarkIconSizeInput.value),
       )
+      updateBookmarkLivePreview()
     })
 
     if (DOM.bookmarkFaviconRes) {
@@ -3144,15 +3200,18 @@ export function setupGeneralEventHandlers(
         "bookmarkGroupTextWidth",
         Number(DOM.bookmarkGroupTextWidthInput.value),
       )
+      updateBookmarkLivePreview()
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
       DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
       throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
+      updateBookmarkLivePreview()
     })
 
     DOM.bookmarkBgColorPicker.addEventListener("change", () => {
       throttleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
+      updateBookmarkLivePreview()
     })
 
     DOM.bookmarkBgOpacityInput.addEventListener("input", () => {
@@ -3160,6 +3219,7 @@ export function setupGeneralEventHandlers(
         "bookmarkBgOpacity",
         Number(DOM.bookmarkBgOpacityInput.value),
       )
+      updateBookmarkLivePreview()
     })
 
     DOM.resetBookmarkBgBtn.addEventListener("click", () => {
@@ -3167,6 +3227,7 @@ export function setupGeneralEventHandlers(
       DOM.bookmarkBgOpacityInput.value = 100
       throttleSettingUpdate("bookmarkBgColor", "#ffffff")
       throttleSettingUpdate("bookmarkBgOpacity", 100)
+      updateBookmarkLivePreview()
     })
 
     if (DOM.bookmarkGroupBgColorPicker) {
@@ -3175,6 +3236,7 @@ export function setupGeneralEventHandlers(
           "bookmarkGroupBgColor",
           DOM.bookmarkGroupBgColorPicker.value,
         )
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.bookmarkGroupBgOpacityInput) {
@@ -3183,6 +3245,7 @@ export function setupGeneralEventHandlers(
           "bookmarkGroupBgOpacity",
           Number(DOM.bookmarkGroupBgOpacityInput.value),
         )
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.resetBookmarkGroupBgBtn) {
@@ -3191,6 +3254,7 @@ export function setupGeneralEventHandlers(
         DOM.bookmarkGroupBgOpacityInput.value = 0
         throttleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
         throttleSettingUpdate("bookmarkGroupBgOpacity", 0)
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.bookmarkGroupTextColorPicker) {
@@ -3199,12 +3263,14 @@ export function setupGeneralEventHandlers(
           "bookmarkGroupTextColor",
           DOM.bookmarkGroupTextColorPicker.value,
         )
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.resetBookmarkGroupTextColorBtn) {
       DOM.resetBookmarkGroupTextColorBtn.addEventListener("click", () => {
         DOM.bookmarkGroupTextColorPicker.value = "#ffffff"
         throttleSettingUpdate("bookmarkGroupTextColor", null)
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.bookmarkGroupAutoTextContrast) {
@@ -3225,6 +3291,7 @@ export function setupGeneralEventHandlers(
           "bookmarkGroupFontSize",
           Number(DOM.bookmarkGroupFontSizeInput.value),
         )
+        updateBookmarkLivePreview()
       })
     }
     if (DOM.bookmarkGroupBorderRadiusInput) {
@@ -3235,6 +3302,7 @@ export function setupGeneralEventHandlers(
           "bookmarkGroupBorderRadius",
           Number(DOM.bookmarkGroupBorderRadiusInput.value),
         )
+        updateBookmarkLivePreview()
       })
     }
 
@@ -3330,6 +3398,7 @@ export function setupGeneralEventHandlers(
           "bookmarkTextColor",
           DOM.bookmarkTextColorPicker.value,
         )
+        updateBookmarkLivePreview()
       })
     }
 
@@ -3337,6 +3406,7 @@ export function setupGeneralEventHandlers(
       DOM.resetBookmarkTextColorBtn.addEventListener("click", () => {
         DOM.bookmarkTextColorPicker.value = "#ffffff"
         throttleSettingUpdate("bookmarkTextColor", null)
+        updateBookmarkLivePreview()
       })
     }
 
@@ -3344,6 +3414,7 @@ export function setupGeneralEventHandlers(
       DOM.hideBookmarkText.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkHideText")
         throttleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
+        updateBookmarkLivePreview()
       })
     }
 
@@ -3365,10 +3436,9 @@ export function setupGeneralEventHandlers(
       DOM.hideBookmarkBg.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkHideBg")
         throttleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
+        updateBookmarkLivePreview()
       })
     }
-
-
 
     if (DOM.bookmarkHideScrollbarCheckbox) {
       DOM.bookmarkHideScrollbarCheckbox.addEventListener("change", () => {
@@ -3428,6 +3498,188 @@ export function setupGeneralEventHandlers(
         throttleSettingUpdate("settingsSidebarWidth", DOM.settingsSidebarWidthInput.value)
       })
     }
+
+    // Section Reset Handlers
+    const resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
+    resetBookmarkSizesBtn?.addEventListener("click", () => {
+      if (DOM.bookmarkFontSizeInput) {
+        DOM.bookmarkFontSizeInput.value = 10
+        DOM.bookmarkFontSizeValue.textContent = "10px"
+        throttleSettingUpdate("bookmarkFontSize", 10)
+      }
+      if (DOM.bookmarkIconSizeInput) {
+        DOM.bookmarkIconSizeInput.value = 42
+        DOM.bookmarkIconSizeValue.textContent = "42px"
+        throttleSettingUpdate("bookmarkIconSize", 42)
+      }
+      if (DOM.bookmarkFaviconRes) {
+        DOM.bookmarkFaviconRes.value = "32"
+        handleSettingUpdate("bookmarkFaviconRes", 32)
+      }
+      if (DOM.bookmarkGapInput) {
+        DOM.bookmarkGapInput.value = 8
+        DOM.bookmarkGapValue.textContent = "8px"
+        throttleSettingUpdate("bookmarkGap", 8)
+      }
+      updateBookmarkLivePreview()
+      renderBookmarks()
+    })
+
+    const resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
+    resetBookmarkAppearanceBtn?.addEventListener("click", () => {
+      if (DOM.bookmarkTextColorPicker) {
+        DOM.bookmarkTextColorPicker.value = "#ffffff"
+        throttleSettingUpdate("bookmarkTextColor", null)
+      }
+      if (DOM.bookmarkBgColorPicker) {
+        DOM.bookmarkBgColorPicker.value = "#ffffff"
+        throttleSettingUpdate("bookmarkBgColor", "#ffffff")
+      }
+      if (DOM.bookmarkBgOpacityInput) {
+        DOM.bookmarkBgOpacityInput.value = 100
+        throttleSettingUpdate("bookmarkBgOpacity", 100)
+      }
+      if (DOM.bookmarkShadowColorPicker) {
+        DOM.bookmarkShadowColorPicker.value = "#000000"
+        throttleSettingUpdate("bookmarkShadowColor", "#000000")
+      }
+      if (DOM.bookmarkShadowOpacityInput) {
+        DOM.bookmarkShadowOpacityInput.value = 24
+        throttleSettingUpdate("bookmarkShadowOpacity", 24)
+      }
+      if (DOM.bookmarkShadowBlurInput) {
+        DOM.bookmarkShadowBlurInput.value = 8
+        if (DOM.bookmarkShadowBlurValue) DOM.bookmarkShadowBlurValue.textContent = "8px"
+        throttleSettingUpdate("bookmarkShadowBlur", 8)
+      }
+      updateBookmarkLivePreview()
+      renderBookmarks()
+    })
+
+    const resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
+    resetBookmarkTabsBtn?.addEventListener("click", () => {
+      if (DOM.bookmarkGroupBgColorPicker) {
+        DOM.bookmarkGroupBgColorPicker.value = "#ffffff"
+        throttleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
+      }
+      if (DOM.bookmarkGroupBgOpacityInput) {
+        DOM.bookmarkGroupBgOpacityInput.value = 0
+        throttleSettingUpdate("bookmarkGroupBgOpacity", 0)
+      }
+      if (DOM.bookmarkGroupTextColorPicker) {
+        DOM.bookmarkGroupTextColorPicker.value = "#ffffff"
+        throttleSettingUpdate("bookmarkGroupTextColor", null)
+      }
+      if (DOM.bookmarkGroupAutoTextContrast) {
+        DOM.bookmarkGroupAutoTextContrast.checked = false
+        document.body.classList.remove("bookmark-group-auto-text-contrast")
+        throttleSettingUpdate("bookmarkGroupAutoTextContrast", false)
+      }
+      if (DOM.bookmarkGroupFontSizeInput) {
+        DOM.bookmarkGroupFontSizeInput.value = 14
+        if (DOM.bookmarkGroupFontSizeValue) DOM.bookmarkGroupFontSizeValue.textContent = "14px"
+        throttleSettingUpdate("bookmarkGroupFontSize", 14)
+      }
+      if (DOM.bookmarkGroupTextWidthInput) {
+        DOM.bookmarkGroupTextWidthInput.value = 120
+        if (DOM.bookmarkGroupTextWidthValue) DOM.bookmarkGroupTextWidthValue.textContent = "120px"
+        throttleSettingUpdate("bookmarkGroupTextWidth", 120)
+      }
+      if (DOM.bookmarkGroupBorderRadiusInput) {
+        DOM.bookmarkGroupBorderRadiusInput.value = 8
+        if (DOM.bookmarkGroupBorderRadiusValue) DOM.bookmarkGroupBorderRadiusValue.textContent = "8px"
+        throttleSettingUpdate("bookmarkGroupBorderRadius", 8)
+      }
+      if (DOM.bookmarkGroupShowCount) {
+        DOM.bookmarkGroupShowCount.checked = true
+        document.body.classList.remove("bookmark-group-count-hidden")
+        throttleSettingUpdate("bookmarkGroupShowCount", true)
+      }
+      if (DOM.bookmarkGroupUseAccent) {
+        DOM.bookmarkGroupUseAccent.checked = false
+        document.body.classList.remove("bookmark-group-accent-enabled")
+        throttleSettingUpdate("bookmarkGroupUseAccent", false)
+      }
+      if (DOM.bookmarkGroupKeepBgOnInteraction) {
+        DOM.bookmarkGroupKeepBgOnInteraction.checked = true
+        document.body.classList.add("bookmark-group-keep-bg-on-interaction")
+        throttleSettingUpdate("bookmarkGroupKeepBgOnInteraction", true)
+      }
+      if (DOM.bookmarkGroupContainerBgHidden) {
+        DOM.bookmarkGroupContainerBgHidden.checked = false
+        document.body.classList.remove("bookmark-group-container-bg-hidden")
+        throttleSettingUpdate("bookmarkGroupContainerBgHidden", false)
+      }
+      if (DOM.bookmarkGroupBorderHidden) {
+        DOM.bookmarkGroupBorderHidden.checked = false
+        document.body.classList.remove("bookmark-group-border-hidden")
+        throttleSettingUpdate("bookmarkGroupBorderHidden", false)
+      }
+      if (DOM.bookmarkHideScrollbarCheckbox) {
+        DOM.bookmarkHideScrollbarCheckbox.checked = false
+        throttleSettingUpdate("bookmarkHideScrollbar", false)
+      }
+      updateBookmarkLivePreview()
+      renderBookmarks()
+    })
+
+    const resetBookmarkLayoutBtn = document.getElementById("reset-bookmark-layout-btn")
+    resetBookmarkLayoutBtn?.addEventListener("click", () => {
+      if (DOM.bookmarkLayout) {
+        DOM.bookmarkLayout.value = "default"
+        throttleSettingUpdate("bookmarkLayout", "default")
+      }
+      if (DOM.bookmarkItemStyle) {
+        DOM.bookmarkItemStyle.value = "default"
+        throttleSettingUpdate("bookmarkItemStyle", "default")
+      }
+      if (DOM.hideBookmarkText) {
+        DOM.hideBookmarkText.checked = false
+        throttleSettingUpdate("bookmarkHideText", false)
+      }
+      if (DOM.bookmarkLongText) {
+        DOM.bookmarkLongText.checked = false
+        throttleSettingUpdate("bookmarkLongText", false)
+      }
+      if (DOM.bookmarkFullText) {
+        DOM.bookmarkFullText.checked = false
+        throttleSettingUpdate("bookmarkFullText", false)
+      }
+      if (DOM.hideBookmarkBg) {
+        DOM.hideBookmarkBg.checked = false
+        throttleSettingUpdate("bookmarkHideBg", false)
+      }
+      if (DOM.bookmarkMacosHover) {
+        DOM.bookmarkMacosHover.checked = false
+        throttleSettingUpdate("bookmarkMacosHover", false)
+      }
+      if (DOM.bookmarkLimit20) {
+        DOM.bookmarkLimit20.checked = true
+        throttleSettingUpdate("bookmarkLimit20", true)
+      }
+      if (DOM.showAddBookmarkButton) {
+        DOM.showAddBookmarkButton.checked = true
+        handleSettingUpdate("showAddBookmarkButton", true)
+      }
+      if (DOM.enableBookmarkDrag) {
+        DOM.enableBookmarkDrag.checked = true
+        throttleSettingUpdate("bookmarkEnableDrag", true)
+      }
+      if (DOM.bookmarkKeepNestedFolders) {
+        DOM.bookmarkKeepNestedFolders.checked = false
+        handleSettingUpdate("bookmarkKeepNestedFolders", false)
+      }
+      if (DOM.bookmarkOpenInNewTab) {
+        DOM.bookmarkOpenInNewTab.checked = false
+        handleSettingUpdate("bookmarkOpenInNewTab", false)
+      }
+      updateBookmarkLivePreview()
+      renderBookmarks()
+    })
+
+    // Initial update of preview
+    setTimeout(updateBookmarkLivePreview, 100)
+
     if (DOM.lcpBookmarkLayout) {
       DOM.lcpBookmarkLayout.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkLayout")
@@ -3681,30 +3933,9 @@ export function setupGeneralEventHandlers(
     )
   }
 
-  const hexToRgb = (hex) => {
-    const normalized = String(hex || "").replace("#", "")
-    const full =
-      normalized.length === 3
-        ? normalized
-            .split("")
-            .map((c) => c + c)
-            .join("")
-        : normalized
-
-    const value = Number.parseInt(full, 16)
-    if (!Number.isFinite(value) || full.length !== 6) {
-      return { r: 128, g: 128, b: 128 }
-    }
-    return {
-      r: (value >> 16) & 255,
-      g: (value >> 8) & 255,
-      b: value & 255,
-    }
-  }
-
   const mixHex = (a, b, t) => {
-    const c1 = hexToRgb(a)
-    const c2 = hexToRgb(b)
+    const c1 = hexToRgb(a) || { r: 128, g: 128, b: 128 }
+    const c2 = hexToRgb(b) || { r: 128, g: 128, b: 128 }
     const ratio = Math.min(1, Math.max(0, Number(t) || 0))
     const toHex = (n) => Math.round(n).toString(16).padStart(2, "0")
     return `#${toHex(c1.r + (c2.r - c1.r) * ratio)}${toHex(c1.g + (c2.g - c1.g) * ratio)}${toHex(c1.b + (c2.b - c1.b) * ratio)}`
@@ -8793,6 +9024,106 @@ export function setupGeneralEventHandlers(
         handleSettingUpdate(field.key, val)
       })
     }
+  })
+
+  // Custom Title Reset Handlers
+  const resetCustomTitleTypoBtn = document.getElementById("reset-custom-title-typography-btn")
+  resetCustomTitleTypoBtn?.addEventListener("click", () => {
+    const defaultSizes = {
+      "custom-title-font-size": { val: 24, key: "customTitleFontSize", valId: "custom-title-fontsize-val" },
+      "custom-title-font-size-2": { val: 24, key: "customTitleFontSize2", valId: "custom-title-fontsize-2-val" },
+      "custom-title-font-size-3": { val: 24, key: "customTitleFontSize3", valId: "custom-title-fontsize-3-val" },
+      "custom-title-font-size-4": { val: 24, key: "customTitleFontSize4", valId: "custom-title-fontsize-4-val" },
+      "custom-title-letter-spacing": { val: 0, key: "customTitleLetterSpacing", valId: "custom-title-letter-spacing-val" },
+      "custom-title-letter-spacing-2": { val: 0, key: "customTitleLetterSpacing2", valId: "custom-title-letter-spacing-2-val" },
+      "custom-title-letter-spacing-3": { val: 0, key: "customTitleLetterSpacing3", valId: "custom-title-letter-spacing-3-val" },
+      "custom-title-letter-spacing-4": { val: 0, key: "customTitleLetterSpacing4", valId: "custom-title-letter-spacing-4-val" },
+      "custom-title-line-spacing": { val: 15, key: "customTitleLineSpacing", valId: "custom-title-line-spacing-val" },
+    }
+    Object.entries(defaultSizes).forEach(([id, item]) => {
+      const input = document.getElementById(id)
+      if (input) input.value = item.val
+      const valEl = document.getElementById(item.valId)
+      if (valEl) valEl.textContent = item.val
+      throttleSettingUpdate(item.key, item.val)
+    })
+    const dirSelect = document.getElementById("custom-title-direction")
+    if (dirSelect) {
+      dirSelect.value = "horizontal"
+      throttleSettingUpdate("customTitleDirection", "horizontal")
+    }
+    const orderSelect = document.getElementById("custom-title-order")
+    if (orderSelect) {
+      orderSelect.value = "normal"
+      throttleSettingUpdate("customTitleOrder", "normal")
+    }
+    const wrapCb = document.getElementById("custom-title-word-wrap")
+    if (wrapCb) {
+      wrapCb.checked = false
+      throttleSettingUpdate("customTitleWordWrap", false)
+    }
+    const animSelect = document.getElementById("custom-title-animation")
+    if (animSelect) {
+      animSelect.value = "none"
+      throttleSettingUpdate("customTitleAnimation", "none")
+    }
+    const loopSelect = document.getElementById("custom-title-animation-loop")
+    if (loopSelect) {
+      loopSelect.value = "infinite"
+      throttleSettingUpdate("customTitleAnimationLoop", "infinite")
+    }
+    updateCustomTitleLivePreview()
+  })
+
+  const resetCustomTitleColorBtn = document.getElementById("reset-custom-title-color-btn")
+  resetCustomTitleColorBtn?.addEventListener("click", () => {
+    const colorInput = document.getElementById("custom-title-color")
+    if (colorInput) {
+      colorInput.value = "#ffffff"
+      throttleSettingUpdate("customTitleColor", "#ffffff")
+    }
+    const rainbowCb = document.getElementById("custom-title-multicolor")
+    if (rainbowCb) {
+      rainbowCb.checked = false
+      throttleSettingUpdate("customTitleMulticolor", false)
+    }
+    updateCustomTitleLivePreview()
+  })
+
+  const resetCustomTitleEffectsBtn = document.getElementById("reset-custom-title-effects-btn")
+  resetCustomTitleEffectsBtn?.addEventListener("click", () => {
+    const shadowColor = document.getElementById("custom-title-shadow-color")
+    if (shadowColor) {
+      shadowColor.value = "#000000"
+      throttleSettingUpdate("customTitleShadowColor", "#000000")
+    }
+    const shadowBlur = document.getElementById("custom-title-shadow-blur")
+    if (shadowBlur) {
+      shadowBlur.value = 0
+      const blurVal = document.getElementById("custom-title-shadow-blur-val")
+      if (blurVal) blurVal.textContent = "0"
+      throttleSettingUpdate("customTitleShadowBlur", 0)
+    }
+    const shadowY = document.getElementById("custom-title-shadow-y")
+    if (shadowY) {
+      shadowY.value = 0
+      const yVal = document.getElementById("custom-title-shadow-y-val")
+      if (yVal) yVal.textContent = "0"
+      throttleSettingUpdate("customTitleShadowY", 0)
+    }
+    const borderColor = document.getElementById("custom-title-border-color")
+    if (borderColor) {
+      borderColor.value = "#000000"
+      throttleSettingUpdate("customTitleBorderColor", "#000000")
+    }
+    const borderSize = document.getElementById("custom-title-border-size")
+    if (borderSize) {
+      borderSize.value = 0
+      const sizeVal = document.getElementById("custom-title-border-size-val")
+      if (sizeVal) sizeVal.textContent = "0"
+      throttleSettingUpdate("customTitleBorderSize", 0)
+    }
+    updateCustomTitleLivePreview()
   })
 
   // Google Drive Sync
