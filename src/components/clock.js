@@ -1863,7 +1863,7 @@ export function updateTime() {
       }
 
       const weekdayEl = existingOrb.querySelector(".media-orb-weekday")
-      if (weekdayEl && weekdayEl.textContent !== weekday) weekdayEl.textContent = weekday
+      if (weekdayEl && weekdayEl.innerHTML !== weekday) weekdayEl.innerHTML = weekday
 
       const dateEl = existingOrb.querySelector(".media-orb-date")
       const dTxt = isTimer ? countdownLabel : dateStr
