@@ -1,11 +1,13 @@
 export const updateNotes = {
   vi: {
-    changesTitle: "BIG UPDATE 2.0.0",
+    changesTitle: "BẢN CẬP NHẬT 2.0.0",
     contributorsTitle: "Người góp công",
     changes: [
-      "Lột xác giao diện & Hiệu ứng WebGL: Thêm hàng loạt hiệu ứng đồ họa đỉnh cao (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) và kho ảnh Picsum.",
-      "Đồng hồ & Widget mới: Ra mắt các kiểu đồng hồ Audio Wave, Glass Float, Space Concentric cùng 2 Widget mới là Theo dõi Thói quen (Habit Tracker) và Đọc tin RSS.",
-      "Siêu tối ưu hiệu năng & Sửa lỗi: Khắc phục triệt để lỗi chớp đen màn hình khi tải trang, tối ưu bộ nhớ RAM/CPU, sửa lỗi mất icon bookmark và bổ sung tính năng hiển thị đầy đủ văn bản folder.",
+      "Nâng cấp giao diện Settings & Micro-steppers: Bổ sung các nút bấm vi bước (- / +) và hỗ trợ cuộn chuột (Mouse Wheel) cho tất cả thanh trượt cài đặt, giúp tùy chỉnh chính xác từng pixel.",
+      "Khung xem trước trực tiếp (Live Previews): Xem trước tức thì giao diện Dấu trang (Bookmark Item) & Thẻ thư mục (Group Tab) cùng bảng Custom Title Studio trong cài đặt.",
+      "Tối ưu căn chỉnh vị trí & Đồ họa WebGL: Sắp xếp 2D Drag Pad & Quick Align 9-Grid nằm ngang cùng hàng, tinh giản hiệu ứng bóng đổ và viền chữ.",
+      "Nút Khôi phục Mặc định (Reset to Defaults): Bổ sung các nút Reset riêng cho từng phân mục (Sizes, Appearance, Tabs, Layout, Typography, Effects) giúp khôi phục dễ dàng.",
+      "Hiệu ứng & Widget mới: Tích hợp đầy đủ các hiệu ứng WebGL đỉnh cao (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) cùng Widget Habit Tracker và RSS Reader.",
     ],
     contributors: [
       {
@@ -38,9 +40,11 @@ export const updateNotes = {
     changesTitle: "BIG UPDATE 2.0.0",
     contributorsTitle: "Contributors",
     changes: [
-      "Visual & WebGL Overhaul: Added stunning animated shaders (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) and Picsum wallpaper integration.",
-      "New Clock Styles & Widgets: Introduced Audio Wave, Glass Float, Space Concentric clock styles, alongside brand new Habit Tracker and RSS Reader widgets.",
-      "Performance Supercharge & Bug Fixes: Completely eliminated screen flicker on load, optimized RAM/CPU usage, fixed missing bookmark icons, and enhanced full text displays for folders.",
+      "Settings Modernization & Micro-Steppers: Added tactile (- / +) stepper buttons and smooth mouse wheel scrolling across all range sliders for pixel-perfect adjustments.",
+      "Live Interactive Previews: Instant live previews for Bookmark Cards, Folder Group Tabs, and Custom Title Studio directly inside the settings panel.",
+      "Optimized Controls & Side-by-Side Alignment: Upgraded the 2D Drag Pad and Quick Align 9-Grid into a clean side-by-side layout, and eliminated redundant nested boxes.",
+      "Dedicated Reset-to-Default Buttons: Added individual Reset buttons for each settings group (Sizes, Appearance, Tabs, Layout, Typography, Effects).",
+      "New Shaders & Widgets: Complete suite of WebGL shaders (Interactive Fluid, Black Hole, Frosted Glass Orbs, Neon Grid 3D) alongside Habit Tracker and RSS Reader widgets.",
     ],
     contributors: [
       {
