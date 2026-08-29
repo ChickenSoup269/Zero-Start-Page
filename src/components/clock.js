@@ -810,6 +810,58 @@ function getCachedFormatter(locale, options) {
   return _intlCache.get(key)
 }
 
+let is3DClockTiltBound = false
+function init3DClockInteractiveTilt() {
+  if (is3DClockTiltBound || typeof window === "undefined") return
+  is3DClockTiltBound = true
+
+  let currentTargetX = 14
+  let currentTargetY = -12
+  let currentRotX = 14
+  let currentRotY = -12
+  let animFrameId = null
+
+  const updateTilt = () => {
+    const scene = document.querySelector(".clock-3d-scene")
+    const stage = scene?.querySelector(".clock-3d-stage")
+    if (stage) {
+      currentRotX += (currentTargetX - currentRotX) * 0.1
+      currentRotY += (currentTargetY - currentRotY) * 0.1
+      stage.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) translateZ(0)`
+    }
+    if (animFrameId) {
+      animFrameId = requestAnimationFrame(updateTilt)
+    }
+  }
+
+  window.addEventListener(
+    "mousemove",
+    (e) => {
+      const scene = document.querySelector(".clock-3d-scene")
+      if (!scene) {
+        if (animFrameId) {
+          cancelAnimationFrame(animFrameId)
+          animFrameId = null
+        }
+        return
+      }
+
+      if (!animFrameId) {
+        animFrameId = requestAnimationFrame(updateTilt)
+      }
+
+      const rect = scene.getBoundingClientRect()
+      const sceneCenterX = rect.left + rect.width / 2
+      const sceneCenterY = rect.top + rect.height / 2
+      const deltaX = (e.clientX - sceneCenterX) / (window.innerWidth * 0.5)
+      const deltaY = (e.clientY - sceneCenterY) / (window.innerHeight * 0.5)
+
+      currentTargetY = Math.max(-26, Math.min(26, deltaX * 26))
+      currentTargetX = Math.max(-4, Math.min(24, 14 - deltaY * 18))
+    },
+    { passive: true },
+  )
+}
 
 export function updateTime() {
   if (!clockElement) return
@@ -3017,63 +3069,7 @@ export function updateTime() {
         })
       }
     }
-  }
-
-  let is3DClockTiltBound = false
-  function init3DClockInteractiveTilt() {
-    if (is3DClockTiltBound || typeof window === "undefined") return
-    is3DClockTiltBound = true
-
-    let currentTargetX = 14
-    let currentTargetY = -12
-    let currentRotX = 14
-    let currentRotY = -12
-    let animFrameId = null
-
-    const updateTilt = () => {
-      const scene = document.querySelector(".clock-3d-scene")
-      const stage = scene?.querySelector(".clock-3d-stage")
-      if (stage) {
-        currentRotX += (currentTargetX - currentRotX) * 0.1
-        currentRotY += (currentTargetY - currentRotY) * 0.1
-        stage.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) translateZ(0)`
-      }
-      if (animFrameId) {
-        animFrameId = requestAnimationFrame(updateTilt)
-      }
-    }
-
-    window.addEventListener(
-      "mousemove",
-      (e) => {
-        const scene = document.querySelector(".clock-3d-scene")
-        if (!scene) {
-          if (animFrameId) {
-            cancelAnimationFrame(animFrameId)
-            animFrameId = null
-          }
-          return
-        }
-
-        if (!animFrameId) {
-          animFrameId = requestAnimationFrame(updateTilt)
-        }
-
-        const rect = scene.getBoundingClientRect()
-        const sceneCenterX = rect.left + rect.width / 2
-        const sceneCenterY = rect.top + rect.height / 2
-        const deltaX = (e.clientX - sceneCenterX) / (window.innerWidth * 0.5)
-        const deltaY = (e.clientY - sceneCenterY) / (window.innerHeight * 0.5)
-
-        currentTargetY = Math.max(-26, Math.min(26, deltaX * 26))
-        currentTargetX = Math.max(-4, Math.min(24, 14 - deltaY * 18))
-      },
-      { passive: true },
-    )
-  }
-
-  if (dateClockStyle === "clock-3d") {
-
+  } else if (dateClockStyle === "clock-3d") {
     const showSec = !settings.hideSeconds
     const is12Hour = settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
     let displayHH = hh
