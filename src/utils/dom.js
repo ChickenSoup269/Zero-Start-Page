@@ -1196,6 +1196,10 @@ export let bookmarkBgColorPicker = document.getElementById(
 export let bookmarkBgOpacityInput = document.getElementById(
   "bookmark-bg-opacity-input",
 )
+export let resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
+export let resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
+export let resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
+export let resetBookmarkLayoutBtn = document.getElementById("reset-bookmark-layout-btn")
 export let resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
 export let bookmarkShadowColorPicker = document.getElementById(
   "bookmark-shadow-color-picker",
@@ -3023,6 +3027,10 @@ export function refreshDOMReferences() {
   )
   bookmarkBgColorPicker = document.getElementById("bookmark-bg-color-picker")
   bookmarkBgOpacityInput = document.getElementById("bookmark-bg-opacity-input")
+  resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
+  resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
+  resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
+  resetBookmarkLayoutBtn = document.getElementById("reset-bookmark-layout-btn")
   resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
   bookmarkShadowColorPicker = document.getElementById(
     "bookmark-shadow-color-picker",
