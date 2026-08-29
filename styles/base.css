@@ -1997,11 +1997,12 @@ body.date-clock-style-clock-3d #clock {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  perspective: 1100px;
+  perspective: 1000px;
   transform-style: preserve-3d;
-  padding: 1.2rem 2.5rem 2.8rem;
+  padding: 1.5rem 3rem 3.2rem;
   user-select: none;
   font-family: var(--font-clock);
+  cursor: default;
 }
 
 .clock-3d-stage {
@@ -2011,9 +2012,10 @@ body.date-clock-style-clock-3d #clock {
   justify-content: center;
   transform-style: preserve-3d;
   color: var(--clock-color, #ffffff);
-  animation: clock3DCameraRotate 18s ease-in-out infinite alternate;
+  animation: clock3DCameraRotate 12s ease-in-out infinite alternate;
   will-change: transform;
-  transform: translateZ(0);
+  transform: rotateX(14deg) rotateY(-12deg) translateZ(0);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .clock-3d-text-layer {
@@ -2027,56 +2029,66 @@ body.date-clock-style-clock-3d #clock {
 
 .clock-3d-time-val {
   font-family: var(--font-clock);
-  font-size: clamp(3.6rem, calc(var(--clock-size, 6rem) * 1.3), 14rem);
-  font-weight: 800;
+  font-size: clamp(4rem, calc(var(--clock-size, 6rem) * 1.38), 14.5rem);
+  font-weight: 900;
   line-height: 1;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: var(--clock-color, #ffffff);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
-  /* Multi-layered 3D Extrusion Depth + Specular Rim */
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.45),
-    1px 1px 0 rgba(0, 0, 0, 0.35),
-    2px 2px 0 rgba(0, 0, 0, 0.32),
-    3px 3px 0 rgba(0, 0, 0, 0.28),
-    4px 4px 0 rgba(0, 0, 0, 0.24),
-    5px 5px 0 rgba(0, 0, 0, 0.2),
-    6px 6px 0 rgba(0, 0, 0, 0.16),
-    7px 7px 0 rgba(0, 0, 0, 0.12),
-    8px 8px 1px rgba(0, 0, 0, 0.08),
-    0 0 20px rgba(var(--clock-color-rgb, 255, 255, 255), 0.25),
-    8px 14px 26px rgba(0, 0, 0, 0.5);
   font-variant-numeric: tabular-nums;
-  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
+  display: inline-block;
+  transform-style: preserve-3d;
+  /* Deep 3D Volumetric Extrusion with Directional Lighting & Ambient Bevels */
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 0 rgba(255, 255, 255, 0.65),
+    1px 2px 0 color-mix(in srgb, var(--clock-color, #ffffff) 82%, #000000),
+    2px 3px 0 color-mix(in srgb, var(--clock-color, #ffffff) 74%, #000000),
+    2px 4px 0 color-mix(in srgb, var(--clock-color, #ffffff) 65%, #000000),
+    3px 5px 0 color-mix(in srgb, var(--clock-color, #ffffff) 56%, #000000),
+    3px 6px 0 color-mix(in srgb, var(--clock-color, #ffffff) 48%, #000000),
+    4px 7px 0 color-mix(in srgb, var(--clock-color, #ffffff) 40%, #000000),
+    4px 8px 0 color-mix(in srgb, var(--clock-color, #ffffff) 32%, #000000),
+    5px 9px 0 color-mix(in srgb, var(--clock-color, #ffffff) 24%, #000000),
+    5px 10px 0 color-mix(in srgb, var(--clock-color, #ffffff) 18%, #000000),
+    6px 11px 0 color-mix(in srgb, var(--clock-color, #ffffff) 12%, #000000),
+    6px 12px 1px rgba(0, 0, 0, 0.7),
+    7px 14px 4px rgba(0, 0, 0, 0.5),
+    8px 18px 12px rgba(0, 0, 0, 0.45),
+    12px 26px 32px rgba(0, 0, 0, 0.55),
+    0 0 32px rgba(var(--clock-color-rgb, 255, 255, 255), 0.3);
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.4));
 }
 
 .clock-3d-ampm {
   font-family: var(--font-clock);
-  font-size: calc(var(--clock-size, 6rem) * 0.26);
-  font-weight: 750;
+  font-size: calc(var(--clock-size, 6rem) * 0.28);
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--clock-color, #ffffff);
   align-self: flex-start;
   margin-top: calc(var(--clock-size, 6rem) * 0.06);
-  margin-left: 0.65rem;
+  margin-left: 0.75rem;
+  transform-style: preserve-3d;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.35),
-    1px 1px 0 rgba(0, 0, 0, 0.3),
-    2px 2px 0 rgba(0, 0, 0, 0.25),
-    3px 3px 0 rgba(0, 0, 0, 0.2),
-    0 0 12px rgba(255, 255, 255, 0.35),
-    4px 6px 12px rgba(0, 0, 0, 0.4);
+    0 1px 0 rgba(255, 255, 255, 0.85),
+    1px 1px 0 color-mix(in srgb, var(--clock-color, #ffffff) 70%, #000000),
+    1px 2px 0 color-mix(in srgb, var(--clock-color, #ffffff) 50%, #000000),
+    2px 3px 0 color-mix(in srgb, var(--clock-color, #ffffff) 30%, #000000),
+    2px 4px 0 color-mix(in srgb, var(--clock-color, #ffffff) 15%, #000000),
+    3px 6px 1px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(var(--clock-color-rgb, 255, 255, 255), 0.35);
 }
 
 /* 3D Floor Reflection & Ground Ambient Lighting */
 .clock-3d-reflection {
-  top: 100%;
+  top: 96%;
   left: 0;
   right: 0;
   position: absolute;
   transform-origin: 50% 0%;
-  transform: scaleY(-0.75) translateY(2px) translateZ(-6px) rotateX(26deg);
+  transform: scaleY(-0.7) translateY(4px) translateZ(-12px) rotateX(30deg);
   pointer-events: none;
   user-select: none;
 }
@@ -2096,87 +2108,90 @@ body.date-clock-style-clock-3d #clock {
 
 /* Sharp Glossy Mirror Reflection */
 .clock-3d-reflection-sharp {
-  opacity: 0.32;
-  filter: blur(1px);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 80%);
+  opacity: 0.38;
+  filter: blur(1.2px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 38%, transparent 75%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 38%, transparent 75%);
 }
 
 /* Diffuse Atmospheric Glow Reflection */
 .clock-3d-reflection-blur {
-  opacity: 0.2;
-  filter: blur(7px);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 45%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 45%, transparent 85%);
+  opacity: 0.26;
+  filter: blur(8px);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 85%);
 }
 
 /* Ambient Ground Light Disc under 3D numbers */
 .clock-3d-floor-glow {
   position: absolute;
-  bottom: -6px;
+  bottom: -10px;
   left: 50%;
-  transform: translateX(-50%) rotateX(82deg) translateZ(-8px);
-  width: 112%;
-  height: calc(var(--clock-size, 6rem) * 0.5);
-  background: radial-gradient(ellipse at center, rgba(var(--clock-color-rgb, 255, 255, 255), 0.26) 0%, rgba(var(--clock-color-rgb, 255, 255, 255), 0.06) 55%, transparent 75%);
+  transform: translateX(-50%) rotateX(85deg) translateZ(-15px);
+  width: 120%;
+  height: calc(var(--clock-size, 6rem) * 0.7);
+  background: radial-gradient(ellipse at center, rgba(var(--clock-color-rgb, 255, 255, 255), 0.35) 0%, rgba(var(--clock-color-rgb, 255, 255, 255), 0.08) 50%, transparent 75%);
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(5px);
+  filter: blur(8px);
 }
 
-/* Date Badge (Subtle Squircle Border Radius & Premium Glass Background) */
+/* Date Badge (Elevated 3D Capsule with Premium Gloss) */
 .clock-3d-date {
-  margin-top: calc(var(--clock-size, 6rem) * 0.36);
+  margin-top: calc(var(--clock-size, 6rem) * 0.38);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-date, var(--font-clock));
   transform-style: preserve-3d;
-  transform: translateZ(8px);
+  transform: translateZ(28px) rotateX(10deg);
+  transition: transform 0.3s ease;
 }
 
 .clock-3d-date-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  font-size: clamp(0.82rem, calc(var(--date-size, 1.5rem) * 0.68), 1.15rem);
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  font-size: clamp(0.85rem, calc(var(--date-size, 1.5rem) * 0.72), 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: none;
   color: var(--date-color, var(--clock-color, #ffffff));
   -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .clock-3d-date-pill i {
   font-size: 0.88em;
-  opacity: 0.75;
+  opacity: 0.85;
+  color: var(--accent-color, inherit);
 }
 
 .clock-3d-date-pill:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08));
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transform: translateY(-3px) translateZ(10px);
 }
 
 /* Smooth 3D Isometric Slanted Camera Rotation */
 @keyframes clock3DCameraRotate {
   0% {
-    transform: rotateY(-18deg) rotateX(12deg) rotateZ(1.5deg);
+    transform: rotateX(14deg) rotateY(-18deg) rotateZ(1.5deg) translateY(0);
   }
   50% {
-    transform: rotateY(18deg) rotateX(12deg) rotateZ(-1.5deg);
+    transform: rotateX(18deg) rotateY(0deg) rotateZ(0deg) translateY(-6px);
   }
   100% {
-    transform: rotateY(-18deg) rotateX(12deg) rotateZ(1.5deg);
+    transform: rotateX(14deg) rotateY(18deg) rotateZ(-1.5deg) translateY(0);
   }
 }
 
@@ -2194,20 +2209,20 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-time-val,
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-ampm {
   color: var(--clock-color, #111111) !important;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8),
-    1px 1px 0 rgba(0, 0, 0, 0.12),
-    2px 2px 0 rgba(0, 0, 0, 0.1),
-    3px 3px 0 rgba(0, 0, 0, 0.08),
-    4px 4px 0 rgba(0, 0, 0, 0.06),
-    5px 5px 0 rgba(0, 0, 0, 0.04),
-    6px 10px 20px rgba(0, 0, 0, 0.15) !important;
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    1px 2px 0 #cbd5e1,
+    2px 3px 0 #94a3b8,
+    3px 4px 0 #64748b,
+    4px 5px 0 #475569,
+    5px 7px 0 #334155,
+    6px 12px 18px rgba(0, 0, 0, 0.25) !important;
   filter: none !important;
 }
 
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-date-pill {
-  border-radius: 8px !important;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02)) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.02)) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   color: var(--date-color, #111111) !important;
 }
