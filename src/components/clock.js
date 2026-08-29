@@ -373,10 +373,8 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".sc-core-time-main"))
     } else if (style === "split-pill") {
       clockTargets.push(clockElement.querySelector(".split-pill-digits"))
-      clockTargets.push(clockElement.querySelector(".split-pill-ampm"))
     } else if (style === "clock-3d") {
-      clockTargets.push(clockElement.querySelector(".clock-3d-text-main .clock-3d-time-val"))
-      clockTargets.push(clockElement.querySelector(".clock-3d-ampm"))
+      clockElement.querySelectorAll(".clock-3d-cube-digit, .clock-3d-ampm-cube span").forEach((el) => clockTargets.push(el))
     } else if (style === "satellite") {
       clockTargets.push(clockElement.querySelector(".sat-time"))
       clockTargets.push(clockElement.querySelector(".sat-ampm"))
@@ -3080,7 +3078,13 @@ export function updateTime() {
       displayHH = String(hNum).padStart(2, "0")
     }
 
-    const timeMainText = `${displayHH}:${mm}${showSec ? `:${ss || "00"}` : ""}`
+    const d1 = displayHH[0] || "0"
+    const d2 = displayHH[1] || "0"
+    const d3 = mm[0] || "0"
+    const d4 = mm[1] || "0"
+    const ssStr = ss || "00"
+    const d5 = ssStr[0] || "0"
+    const d6 = ssStr[1] || "0"
 
     // Date formatting respecting all settings (format, timezone, language)
     let formattedDate = ""
@@ -3099,21 +3103,25 @@ export function updateTime() {
       displayMode === "all" || displayMode === "clock"
 
     const existingScene = clockElement.querySelector(".clock-3d-scene")
-    const existingVal = existingScene?.querySelector(".clock-3d-text-main .clock-3d-time-val")
+    const existingSec = existingScene?.querySelector(".clock-3d-cube-sec")
+    const hasSecMatch = showSec ? Boolean(existingSec) : !existingSec
 
-    if (existingScene && existingVal) {
-      // Fast path: update text directly across all reflection and main layers
-      const allVals = existingScene.querySelectorAll(".clock-3d-time-val")
-      allVals.forEach((valEl) => {
-        if (valEl.textContent !== timeMainText) valEl.textContent = timeMainText
-      })
+    if (existingScene && hasSecMatch) {
+      // Fast path: update each digit
+      const digits = [d1, d2, d3, d4]
+      if (showSec) digits.push(d5, d6)
 
-      const allAmpms = existingScene.querySelectorAll(".clock-3d-ampm")
-      allAmpms.forEach((ampmEl) => {
-        if (ampmEl.textContent !== (ampm || "")) {
-          ampmEl.textContent = ampm || ""
+      const cubeDigits = existingScene.querySelectorAll(".clock-3d-cube-digit")
+      cubeDigits.forEach((el, idx) => {
+        if (digits[idx] !== undefined && el.textContent !== digits[idx]) {
+          el.textContent = digits[idx]
         }
       })
+
+      const ampmEl = existingScene.querySelector(".clock-3d-ampm-cube span")
+      if (ampmEl && ampmEl.textContent !== (ampm || "")) {
+        ampmEl.textContent = ampm || ""
+      }
 
       const datePill = existingScene.querySelector(".clock-3d-date-pill-text")
       if (datePill && datePill.textContent !== formattedDate) {
@@ -3133,24 +3141,89 @@ export function updateTime() {
       clockElement.innerHTML = `
         <div class="clock-3d-scene">
           <div class="clock-3d-stage" style="${shouldShowClock ? "" : "display: none;"}">
-            <!-- Main 3D Text Layer -->
-            <div class="clock-3d-text-layer clock-3d-text-main">
-              <span class="clock-3d-time-val">${timeMainText}</span>
-              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
+            <div class="clock-3d-cubes-row">
+              <!-- Hours Cube 1 -->
+              <div class="clock-3d-cube-box" data-digit-idx="0">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d1}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+              <!-- Hours Cube 2 -->
+              <div class="clock-3d-cube-box" data-digit-idx="1">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d2}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+
+              <!-- 3D Glowing Colon Separator -->
+              <div class="clock-3d-colon-separator">
+                <span class="clock-3d-orb clock-3d-orb-top"></span>
+                <span class="clock-3d-orb clock-3d-orb-bottom"></span>
+              </div>
+
+              <!-- Minutes Cube 1 -->
+              <div class="clock-3d-cube-box" data-digit-idx="2">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d3}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+              <!-- Minutes Cube 2 -->
+              <div class="clock-3d-cube-box" data-digit-idx="3">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d4}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+
+              ${showSec ? `
+              <!-- Seconds Separator -->
+              <div class="clock-3d-colon-separator clock-3d-colon-sec">
+                <span class="clock-3d-orb clock-3d-orb-top"></span>
+                <span class="clock-3d-orb clock-3d-orb-bottom"></span>
+              </div>
+              <!-- Seconds Cube 1 -->
+              <div class="clock-3d-cube-box clock-3d-cube-sec" data-digit-idx="4">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d5}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+              <!-- Seconds Cube 2 -->
+              <div class="clock-3d-cube-box clock-3d-cube-sec" data-digit-idx="5">
+                <div class="clock-3d-cube-card">
+                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d6}</span></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
+                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
+                </div>
+                <div class="clock-3d-cube-shadow"></div>
+              </div>
+              ` : ""}
+
+              ${ampm ? `
+              <!-- 3D AM/PM Badge -->
+              <div class="clock-3d-ampm-cube">
+                <span>${ampm}</span>
+              </div>
+              ` : ""}
             </div>
-            <!-- Ambient Ground Light Disc -->
+
+            <!-- Ambient 3D Stage Floor Glow -->
             <div class="clock-3d-floor-glow" aria-hidden="true"></div>
-            <!-- 3D Glossy Mirror Floor Reflection -->
-            <div class="clock-3d-text-layer clock-3d-reflection clock-3d-reflection-sharp" aria-hidden="true">
-              <span class="clock-3d-time-val">${timeMainText}</span>
-              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
-            </div>
-            <!-- 3D Diffuse Atmospheric Glow Reflection -->
-            <div class="clock-3d-text-layer clock-3d-reflection clock-3d-reflection-blur" aria-hidden="true">
-              <span class="clock-3d-time-val">${timeMainText}</span>
-              ${ampm ? `<span class="clock-3d-ampm">${ampm}</span>` : ""}
-            </div>
           </div>
+
           <div class="clock-3d-date" style="${shouldShowDate ? "" : "display: none;"}">
             <span class="clock-3d-date-pill">
               <i class="fa-solid fa-calendar-day"></i>
