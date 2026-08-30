@@ -57,12 +57,9 @@ function formatChangeItem(rawText) {
   if (colonIdx > 0 && colonIdx < 60) {
     const title = rest.slice(0, colonIdx).trim()
     const desc = rest.slice(colonIdx + 1).trim()
-    const tagBadge =
-      type === "fix"
-        ? `<span class="update-chip chip-fix"><i class="fa-solid fa-wrench"></i> FIX</span>`
-        : `<span class="update-chip chip-feat"><i class="fa-solid fa-sparkles"></i> FEAT</span>`
+    const tagBadge = `<span class="update-chip">${escapeHtml(type.toUpperCase())}</span>`
 
-    return `<li class="update-change-item ${type}">
+    return `<li class="update-change-item">
       <div class="update-change-head">
         ${tagBadge}
         <strong class="update-change-title">${escapeHtml(title)}</strong>
@@ -71,12 +68,9 @@ function formatChangeItem(rawText) {
     </li>`
   }
 
-  const tagBadge =
-    type === "fix"
-      ? `<span class="update-chip chip-fix"><i class="fa-solid fa-wrench"></i> FIX</span>`
-      : `<span class="update-chip chip-feat"><i class="fa-solid fa-sparkles"></i> FEAT</span>`
+  const tagBadge = `<span class="update-chip">${escapeHtml(type.toUpperCase())}</span>`
 
-  return `<li class="update-change-item ${type}">
+  return `<li class="update-change-item">
     <div class="update-change-head">
       ${tagBadge}
       <span class="update-change-desc inline-desc">${escapeHtml(rest)}</span>
@@ -93,9 +87,9 @@ async function renderUpdateNotes() {
   const contributorList = document.getElementById("update-contributor-list")
 
   if (changesTitle)
-    changesTitle.innerHTML = `<i class="fa-solid fa-sparkles"></i> ${escapeHtml(updateNotes.changesTitle)}`
+    changesTitle.textContent = updateNotes.changesTitle
   if (contributorsTitle)
-    contributorsTitle.innerHTML = `<i class="fa-solid fa-heart"></i> ${escapeHtml(updateNotes.contributorsTitle)}`
+    contributorsTitle.textContent = updateNotes.contributorsTitle
   const contributorsSection = contributorsTitle?.closest(".update-popup-section")
   const hasContributors = Array.isArray(updateNotes.contributors) && updateNotes.contributors.length > 0
 
@@ -124,12 +118,12 @@ async function renderUpdateNotes() {
                 <strong class="update-contributor-name">${escapeHtml(item.name)}</strong>
                 <div class="update-contributor-tags">
                   <span class="contrib-project">${escapeHtml(item.project || "Zero Startpage")}</span>
-                  <span class="contrib-role"><i class="fa-solid fa-shield-halved"></i> ${escapeHtml(item.role || "Contributor")}</span>
+                  <span class="contrib-role">${escapeHtml(item.role || "Contributor")}</span>
                 </div>
               </div>
               ${stats}
             </div>
-            ${item.note ? `<div class="update-contributor-quote"><i class="fa-solid fa-quote-left"></i><p>${escapeHtml(item.note)}</p></div>` : ""}
+            ${item.note ? `<div class="update-contributor-quote"><p>${escapeHtml(item.note)}</p></div>` : ""}
           </article>`
         })
         .join("")
