@@ -244,11 +244,13 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   display: none;
   flex-direction: column;
   z-index: 10021;
-  animation: fadeInMenu 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top right;
+  will-change: transform, opacity;
 }
 
 .g-apps-dropdown.show {
   display: flex;
+  animation: fadeInMenu 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .g-apps-dropdown.g-apps-large-popup {
@@ -264,13 +266,28 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   align-items: center;
   gap: 8px;
   margin: 0 0 var(--space-2);
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 11, 18, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 16, 24, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.g-apps-mini-search:focus-within {
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.5);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.3);
+  background: rgba(16, 20, 30, 0.95);
+}
+
+.g-apps-search-icon {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+  color: var(--accent-color, #818cf8);
 }
 
 .g-apps-mini-search input {
@@ -279,13 +296,43 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   border: 0;
   outline: 0;
   background: transparent;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.95);
   font: inherit;
   font-size: 0.82rem;
+  padding: 0;
 }
 
 .g-apps-mini-search input::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.g-apps-search-clear-btn,
+.g-apps-search-gear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.g-apps-search-clear-btn:hover,
+.g-apps-search-gear-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.08);
+}
+
+.g-apps-search-gear-btn:active {
+  transform: rotate(45deg) scale(0.95);
 }
 
 /* Lunar date styles for Clock */
@@ -428,6 +475,11 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   }
 }
 
+.g-apps-section:not(.is-favorites) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 110px;
+}
+
 .g-apps-section h4 {
   margin: var(--space-2) 0 var(--space-1) var(--space-1);
   color: rgba(255, 255, 255, 0.4);
@@ -496,14 +548,15 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-2) var(--space-0-5);
-  border-radius: var(--radius-md);
+  padding: 10px 6px;
+  border-radius: 12px;
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, box-shadow 0.18s ease;
   gap: var(--space-1);
   cursor: default;
   user-select: none;
   position: relative;
+  touch-action: pan-y;
 }
 
 .g-app-item.drag-insert-before::before {
@@ -533,9 +586,10 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
 }
 
 .g-app-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.09);
   cursor: pointer;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .g-apps-drag-enabled .g-app-item {
@@ -694,26 +748,34 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
 .g-apps-context-menu {
   position: fixed;
   z-index: 10060;
-  min-width: 214px;
-  padding: 7px;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(18, 21, 28, 0.96);
-  backdrop-filter: blur(18px) saturate(170%);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  min-width: 224px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(16, 20, 28, 0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow:
-    0 18px 42px rgba(0, 0, 0, 0.54),
-    0 0 0 1px rgba(255, 255, 255, 0.045) inset;
+    0 22px 50px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  animation: fadeInMenu 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top left;
 }
 
 .g-apps-menu-title {
-  padding: 7px 9px 8px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 0.72rem;
+  padding: 8px 10px 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
   font-weight: 800;
   line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
+}
+
+.g-apps-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 2px;
 }
 
 .g-apps-menu-btn,
@@ -723,38 +785,50 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 9px;
+  padding: 7px 10px;
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .g-apps-menu-btn:hover,
 .g-apps-menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .g-apps-menu-btn i {
-  width: 15px;
-  color: rgba(255, 255, 255, 0.68);
+  width: 16px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
+  flex-shrink: 0;
 }
 
 .g-apps-menu-btn.danger {
-  color: #ffb8b8;
+  color: #ff9b9b;
+}
+
+.g-apps-menu-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ffc4c4;
+}
+
+.g-apps-menu-btn.danger i {
+  color: inherit;
 }
 
 .g-apps-menu-list {
-  margin: 5px 0;
-  padding: 5px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 2px 0;
+  padding: 0;
+  border: none;
 }
 
 .g-apps-menu-toggle input {
@@ -764,23 +838,25 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
 }
 
 .g-apps-menu-check {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
   color: transparent;
-  font-size: 0.62rem;
+  font-size: 0.65rem;
+  transition: all 0.15s ease;
 }
 
 .g-apps-menu-toggle input:checked + .g-apps-menu-check {
-  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.82);
-  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.82);
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.9);
+  background: var(--accent-color, #818cf8);
   color: #fff;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 129, 140, 248), 0.5);
 }
 
 .g-apps-icon-popover {

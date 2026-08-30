@@ -663,7 +663,7 @@ export function initGoogleApps() {
   })
 
   const render = () => {
-    root.innerHTML = ""
+    const fragment = document.createDocumentFragment()
     const previousLargeFavorites = state.options?.largeFavorites === true
     state = {
       sectionApps: getSectionApps(state),
@@ -687,20 +687,57 @@ export function initGoogleApps() {
     if (state.options.showMiniSearch) {
       const searchWrap = document.createElement("div")
       searchWrap.className = "g-apps-mini-search"
-      searchWrap.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>'
+      
+      const searchIcon = document.createElement("i")
+      searchIcon.className = "fa-solid fa-magnifying-glass g-apps-search-icon"
+      searchWrap.appendChild(searchIcon)
+
       const searchInput = document.createElement("input")
       searchInput.type = "search"
       searchInput.value = searchQuery
       searchInput.placeholder =
         geti18n().g_apps_search_placeholder || "Search apps..."
       searchInput.autocomplete = "off"
+      searchInput.spellcheck = false
       searchInput.addEventListener("input", () => {
         searchQuery = searchInput.value.trim().toLowerCase()
         render()
-        document.querySelector(".g-apps-mini-search input")?.focus()
+        const newInput = document.querySelector(".g-apps-mini-search input")
+        if (newInput) {
+          newInput.focus()
+          newInput.setSelectionRange(newInput.value.length, newInput.value.length)
+        }
       })
       searchWrap.appendChild(searchInput)
-      root.appendChild(searchWrap)
+
+      if (searchQuery) {
+        const clearBtn = document.createElement("button")
+        clearBtn.type = "button"
+        clearBtn.className = "g-apps-search-clear-btn"
+        clearBtn.setAttribute("aria-label", "Clear search")
+        clearBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+        clearBtn.addEventListener("click", () => {
+          searchQuery = ""
+          render()
+          document.querySelector(".g-apps-mini-search input")?.focus()
+        })
+        searchWrap.appendChild(clearBtn)
+      }
+
+      const gearBtn = document.createElement("button")
+      gearBtn.type = "button"
+      gearBtn.className = "g-apps-search-gear-btn"
+      gearBtn.title = geti18n().settings_title || "Options"
+      gearBtn.setAttribute("aria-label", "Google Apps Options")
+      gearBtn.innerHTML = '<i class="fa-solid fa-gear"></i>'
+      gearBtn.addEventListener("click", (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        showGoogleAppsMenu(event, null)
+      })
+      searchWrap.appendChild(gearBtn)
+
+      fragment.appendChild(searchWrap)
     }
 
     const favoritesGrid = createGrid("favorites")
@@ -714,7 +751,7 @@ export function initGoogleApps() {
       .forEach((item) =>
         favoritesGrid.appendChild(createItem(item, state, showGoogleAppsMenu)),
       )
-    root.appendChild(
+    fragment.appendChild(
       createSection(
         geti18n().g_apps_favorites || "Your favorites",
         favoritesGrid,
@@ -725,7 +762,7 @@ export function initGoogleApps() {
     sections.forEach((section) => {
       const divider = document.createElement("div")
       divider.className = "g-apps-divider"
-      root.appendChild(divider)
+      fragment.appendChild(divider)
 
       const grid = createGrid(section.key)
       state.sectionApps[section.key]
@@ -737,9 +774,10 @@ export function initGoogleApps() {
         .forEach((item) =>
           grid.appendChild(createItem(item, state, showGoogleAppsMenu)),
         )
-      root.appendChild(createSection(getSectionTitle(section), grid))
+      fragment.appendChild(createSection(getSectionTitle(section), grid))
     })
 
+    root.replaceChildren(fragment)
     bindDropTargets()
     persist()
   }
@@ -1275,7 +1313,8 @@ export function initGoogleApps() {
 
   function showGoogleAppsMenu(event, item) {
     hideGoogleAppsMenu()
-    const labels = getMenuLabels(item)
+    const fallbackItem = item || appMap.get(state.favorites[0] || "search") || apps[0]
+    const labels = getMenuLabels(fallbackItem)
     const menu = document.createElement("div")
     menu.className = "g-apps-context-menu"
     menu.addEventListener("click", (menuEvent) => menuEvent.stopPropagation())
@@ -1286,31 +1325,39 @@ export function initGoogleApps() {
       menuEvent.preventDefault()
       menuEvent.stopPropagation()
     })
-    menu.innerHTML = `<div class="g-apps-menu-title">${labels.currentApp}</div>`
-    menu.appendChild(
-      createMenuButton("fa-solid fa-up-right-from-square", labels.open, () => {
-        window.open(item.url, "_blank", "noopener")
-        hideGoogleAppsMenu()
-      }),
-    )
-    menu.appendChild(
-      createMenuButton("fa-solid fa-image", labels.editIcon, () => {
-        hideGoogleAppsMenu()
-        openIconPicker(item, event)
-      }),
-    )
-    menu.appendChild(
-      createMenuButton("fa-solid fa-upload", labels.uploadIcon, () => {
-        hideGoogleAppsMenu()
-        uploadIcon(item)
-      }),
-    )
-    menu.appendChild(
-      createMenuButton("fa-solid fa-rotate-left", labels.resetIcon, () => {
-        hideGoogleAppsMenu()
-        resetIcon(item)
-      }),
-    )
+
+    if (item) {
+      menu.innerHTML = `<div class="g-apps-menu-title">${labels.currentApp}</div>`
+      menu.appendChild(
+        createMenuButton("fa-solid fa-up-right-from-square", labels.open, () => {
+          window.open(item.url, "_blank", "noopener")
+          hideGoogleAppsMenu()
+        }),
+      )
+      menu.appendChild(
+        createMenuButton("fa-solid fa-image", labels.editIcon, () => {
+          hideGoogleAppsMenu()
+          openIconPicker(item, event)
+        }),
+      )
+      menu.appendChild(
+        createMenuButton("fa-solid fa-upload", labels.uploadIcon, () => {
+          hideGoogleAppsMenu()
+          uploadIcon(item)
+        }),
+      )
+      menu.appendChild(
+        createMenuButton("fa-solid fa-rotate-left", labels.resetIcon, () => {
+          hideGoogleAppsMenu()
+          resetIcon(item)
+        }),
+      )
+      const divider1 = document.createElement("div")
+      divider1.className = "g-apps-menu-divider"
+      menu.appendChild(divider1)
+    } else {
+      menu.innerHTML = `<div class="g-apps-menu-title">${geti18n().settings_title || "Options"}</div>`
+    }
 
     const list = document.createElement("div")
     list.className = "g-apps-menu-list"
@@ -1322,6 +1369,11 @@ export function initGoogleApps() {
       createMenuToggle("largePopup", labels.largePopup),
     )
     menu.appendChild(list)
+
+    const divider2 = document.createElement("div")
+    divider2.className = "g-apps-menu-divider"
+    menu.appendChild(divider2)
+
     menu.appendChild(
       createMenuButton(
         "fa-solid fa-rotate-left",
@@ -1333,9 +1385,28 @@ export function initGoogleApps() {
 
     document.body.appendChild(menu)
     const rect = menu.getBoundingClientRect()
-    const padding = 8
-    menu.style.left = `${Math.min(event.clientX, window.innerWidth - rect.width - padding)}px`
-    menu.style.top = `${Math.min(event.clientY, window.innerHeight - rect.height - padding)}px`
+    const padding = 10
+
+    let clientX = event.clientX
+    let clientY = event.clientY
+
+    if (clientX === undefined || clientY === undefined) {
+      const targetEl = event.currentTarget || event.target
+      if (targetEl && targetEl.getBoundingClientRect) {
+        const targetRect = targetEl.getBoundingClientRect()
+        clientX = targetRect.left
+        clientY = targetRect.bottom + 6
+      } else {
+        clientX = window.innerWidth / 2
+        clientY = window.innerHeight / 2
+      }
+    }
+
+    const posX = Math.max(padding, Math.min(clientX, window.innerWidth - rect.width - padding))
+    const posY = Math.max(padding, Math.min(clientY, window.innerHeight - rect.height - padding))
+
+    menu.style.left = `${posX}px`
+    menu.style.top = `${posY}px`
   }
 
   function ensureScrollTopButton() {

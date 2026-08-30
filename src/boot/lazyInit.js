@@ -126,6 +126,22 @@ export function setupLazyInitTriggers() {
   )
 
   googleAppsBtn?.addEventListener(
+    "pointerenter",
+    () => {
+      void ensureGoogleAppsInitialized("hover")
+    },
+    { once: true, passive: true },
+  )
+
+  googleAppsBtn?.addEventListener(
+    "touchstart",
+    () => {
+      void ensureGoogleAppsInitialized("touch")
+    },
+    { once: true, passive: true },
+  )
+
+  googleAppsBtn?.addEventListener(
     "click",
     async (event) => {
       if (googleAppsInitialized) return
@@ -136,6 +152,19 @@ export function setupLazyInitTriggers() {
     },
     { capture: true },
   )
+
+  if (typeof requestIdleCallback !== "undefined") {
+    requestIdleCallback(
+      () => {
+        void ensureGoogleAppsInitialized("idle")
+      },
+      { timeout: 2500 },
+    )
+  } else {
+    setTimeout(() => {
+      void ensureGoogleAppsInitialized("idle")
+    }, 1200)
+  }
 
   window.addEventListener(
     "keydown",
