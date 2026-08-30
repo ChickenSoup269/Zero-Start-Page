@@ -1367,12 +1367,12 @@
 .update-notification-popup {
   display: none;
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  margin: auto;
   width: min(540px, calc(100vw - 32px));
+  height: fit-content;
   max-height: min(780px, calc(100vh - 36px));
-  background: rgba(14, 17, 24, 0.92);
+  background: rgba(14, 17, 24, 0.94);
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1382,29 +1382,20 @@
     0 25px 60px -10px rgba(0, 0, 0, 0.75),
     0 0 0 1px rgba(255, 255, 255, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  z-index: 10000;
-  animation: updatePopupIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100000;
   color: #fff;
-}
-
-@keyframes updatePopupIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -46%) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+  box-sizing: border-box;
 }
 
 .update-notification-popup::before {
   content: "";
   position: fixed;
-  inset: -100vmax;
-  background: rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   pointer-events: none;
   z-index: -1;
 }
@@ -1884,10 +1875,8 @@
 
 @media (max-width: 480px) {
   #update-notification-popup {
-    left: 50% !important;
-    top: 50% !important;
-    right: auto !important;
-    bottom: auto !important;
+    inset: 0 !important;
+    margin: auto !important;
     width: calc(100vw - 28px) !important;
     padding: 16px;
     border-radius: 16px;
