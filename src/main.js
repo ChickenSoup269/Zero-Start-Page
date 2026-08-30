@@ -228,7 +228,6 @@ async function bootstrap() {
   // ── 11. Draggable UI elements ─────────────────────────────────────────────
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
   makeDraggable(document.getElementById("search-container"), "searchBar")
-  makeDraggable(document.getElementById("bookmark-widget"), "bookmarkWidget")
 
   // ── 12. Context menus ─────────────────────────────────────────────────────
   const backgroundContextExclusions = [

@@ -1136,7 +1136,7 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   margin-top: var(--space-3);
   gap: var(--bookmark-gap, var(--space-3));
   max-width: min(880px, calc(100vw - 32px));
-  width: fit-content;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
@@ -1147,6 +1147,22 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   -webkit-overflow-scrolling: touch;
+}
+
+body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-widget {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmarks-grid {
+  justify-content: center !important;
 }
 
 #bookmarks-container::-webkit-scrollbar {

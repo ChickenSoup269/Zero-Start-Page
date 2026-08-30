@@ -159,7 +159,7 @@ export const defaultSettings = {
   multiColorCount: 2,
   multiColors: ["#FF6B6B", "#4ECDC4"],
   multiGradientAngle: 135,
-  smoothScrollEnabled: null,
+  smoothScrollEnabled: true,
   multiColorType: "linear",
   multiColorRepeating: false,
   multiColorPosition: "center",
@@ -563,6 +563,12 @@ if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   localStorage.setItem("pageSettings", JSON.stringify(settingsState))
 } else if (!storedSettingsRaw) {
   settingsState.rssHiddenMigrated = true
+}
+
+// Migration: clean up any accidental bookmarkWidget position
+if (settingsState.componentPositions?.bookmarkWidget) {
+  delete settingsState.componentPositions.bookmarkWidget
+  localStorage.setItem("pageSettings", JSON.stringify(settingsState))
 }
 
 const MODULE_RESET_KEYS = {

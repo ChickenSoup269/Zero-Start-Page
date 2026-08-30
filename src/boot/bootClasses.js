@@ -9,6 +9,9 @@ export function applyBootBodyClasses(settings) {
   const body = document.body
   const root = document.documentElement
 
+  // ── Layout Preset ───────────────────────────────────────
+  body.setAttribute("data-layout-preset", settings.layoutPreset || "default")
+
   // ── Bookmark Layout ─────────────────────────────────────
   let layout = settings.bookmarkLayout || "default"
   if (settings.bookmarkSidebarMode === true && layout === "default")

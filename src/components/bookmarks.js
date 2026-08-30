@@ -2118,6 +2118,15 @@ export function updateBookmarkGroupsToggleIcon() {
 
 export function renderBookmarks() {
   const settings = getSettings()
+  const bw = document.getElementById("bookmark-widget")
+  if (bw && (!settings.bookmarkLayout || settings.bookmarkLayout === "default")) {
+    bw.style.removeProperty("top")
+    bw.style.removeProperty("left")
+    bw.style.removeProperty("right")
+    bw.style.removeProperty("bottom")
+    bw.style.removeProperty("position")
+    bw.classList.remove("has-position")
+  }
   document.body.classList.toggle(
     "groups-hidden",
     settings.groupsHidden === true,

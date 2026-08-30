@@ -141,7 +141,7 @@ export function makeDraggable(
   onDragEndCallback = null,
   handleSelector = ".drag-handle",
 ) {
-  if (!element) return
+  if (!element || componentId === "bookmarkWidget") return
 
   let offsetX = 0,
     offsetY = 0,
