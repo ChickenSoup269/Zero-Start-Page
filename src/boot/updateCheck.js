@@ -57,7 +57,7 @@ function formatChangeItem(rawText) {
   if (colonIdx > 0 && colonIdx < 60) {
     const title = rest.slice(0, colonIdx).trim()
     const desc = rest.slice(colonIdx + 1).trim()
-    const tagBadge = `<span class="update-chip">${escapeHtml(type.toUpperCase())}</span>`
+    const tagBadge = `<span class="update-chip chip-${type}">${escapeHtml(type.toUpperCase())}</span>`
 
     return `<li class="update-change-item">
       <div class="update-change-head">
@@ -68,7 +68,7 @@ function formatChangeItem(rawText) {
     </li>`
   }
 
-  const tagBadge = `<span class="update-chip">${escapeHtml(type.toUpperCase())}</span>`
+  const tagBadge = `<span class="update-chip chip-${type}">${escapeHtml(type.toUpperCase())}</span>`
 
   return `<li class="update-change-item">
     <div class="update-change-head">

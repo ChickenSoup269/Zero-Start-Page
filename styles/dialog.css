@@ -1569,16 +1569,25 @@
 .update-chip {
   display: inline-flex;
   align-items: center;
-  font-size: 0.64rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  font-weight: 750;
   letter-spacing: 0.04em;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #cbd5e1;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 5px;
   line-height: 1.35;
   text-transform: uppercase;
+}
+
+.update-chip.chip-feat {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.update-chip.chip-fix {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.28);
 }
 
 .update-change-title {
