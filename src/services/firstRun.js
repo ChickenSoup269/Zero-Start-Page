@@ -23,9 +23,7 @@ import {
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
-const FIRST_RUN_STYLE_KEY = "startpageFirstRunStyleV1"
 const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
-const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomTipV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const FIRST_RUN_SETTINGS_GUIDE_KEY = "startpageFirstRunSettingsGuideV1"
@@ -92,9 +90,7 @@ export function prepareFirstRunDefaults() {
   const firstRunKeys = [
     FIRST_RUN_BG_KEY,
     FIRST_RUN_LANGUAGE_KEY,
-    FIRST_RUN_STYLE_KEY,
     FIRST_RUN_NAME_KEY,
-    FIRST_RUN_ZOOM_KEY,
     FIRST_RUN_OPEN_SOURCE_KEY,
     FIRST_RUN_IMPORT_KEY,
     FIRST_RUN_SETTINGS_GUIDE_KEY,
@@ -267,86 +263,7 @@ function waitForUpdateNoticeSettled(timeout = 8000) {
   })
 }
 
-const FIRST_RUN_STYLE_PRESETS = {
-  dock: {
-    bookmarkLayout: "taskbar",
-    bookmarkLayoutBgStyle: "default",
-    bookmarkItemStyle: "default",
-    bookmarkHideText: true,
-    bookmarkHideBg: false,
-    bookmarkHideScrollbar: false,
-    bookmarkMacosHover: true,
-    bookmarkFontSize: 10,
-    bookmarkIconSize: 46,
-    bookmarkGroupTextWidth: 120,
-    bookmarkGap: 8,
-    bookmarkBgColor: "#ffffff",
-    bookmarkBgOpacity: 92,
-    bookmarkGroupBgColor: "#ffffff",
-    bookmarkGroupBgOpacity: 0,
-    bookmarkGroupTextColor: null,
-    bookmarkGroupAutoTextContrast: false,
-    bookmarkGroupFontSize: 13,
-    bookmarkGroupContainerBgHidden: true,
-    bookmarkShadowColor: "#000000",
-    bookmarkShadowOpacity: 22,
-    bookmarkShadowBlur: 10,
-    musicBarStyle: "pill",
-    musicPlayerSkin: "white-blur",
-  },
-  clean: {
-    bookmarkLayout: "default",
-    bookmarkLayoutBgStyle: "default",
-    bookmarkItemStyle: "default",
-    bookmarkHideText: false,
-    bookmarkHideBg: true,
-    bookmarkHideScrollbar: false,
-    bookmarkMacosHover: false,
-    bookmarkFontSize: 10,
-    bookmarkIconSize: 42,
-    bookmarkGroupTextWidth: 120,
-    bookmarkGap: 10,
-    bookmarkBgColor: "#ffffff",
-    bookmarkBgOpacity: 0,
-    bookmarkGroupBgColor: "#ffffff",
-    bookmarkGroupBgOpacity: 0,
-    bookmarkGroupTextColor: null,
-    bookmarkGroupAutoTextContrast: false,
-    bookmarkGroupFontSize: 14,
-    bookmarkGroupContainerBgHidden: true,
-    bookmarkShadowColor: "#000000",
-    bookmarkShadowOpacity: 14,
-    bookmarkShadowBlur: 6,
-    musicBarStyle: "minimal",
-    musicPlayerSkin: "white-blur",
-  },
-  sidebar: {
-    bookmarkLayout: "sidebar",
-    bookmarkLayoutBgStyle: "default",
-    bookmarkItemStyle: "default",
-    bookmarkHideText: false,
-    bookmarkHideBg: false,
-    bookmarkHideScrollbar: false,
-    bookmarkMacosHover: false,
-    bookmarkFontSize: 10,
-    bookmarkIconSize: 38,
-    bookmarkGroupTextWidth: 120,
-    bookmarkGap: 7,
-    bookmarkBgColor: "#ffffff",
-    bookmarkBgOpacity: 56,
-    bookmarkGroupBgColor: "#ffffff",
-    bookmarkGroupBgOpacity: 0,
-    bookmarkGroupTextColor: null,
-    bookmarkGroupAutoTextContrast: false,
-    bookmarkGroupFontSize: 14,
-    bookmarkGroupContainerBgHidden: true,
-    bookmarkShadowColor: "#000000",
-    bookmarkShadowOpacity: 20,
-    bookmarkShadowBlur: 8,
-    musicBarStyle: "sidebar",
-    musicPlayerSkin: "white-blur",
-  },
-}
+
 
 const getChromeBookmarkTree = () =>
   new Promise((resolve, reject) => {
@@ -650,126 +567,7 @@ async function promptFirstRunUserName() {
   localStorage.setItem(FIRST_RUN_NAME_KEY, name)
 }
 
-function applyFirstRunStyleToBody(layout) {
-  document.body.classList.remove(
-    "bookmark-sidebar-mode",
-    "bookmark-taskbar-mode",
-    "bookmark-taskbar-top-mode",
-    "bookmark-taskbar-left-mode",
-  )
 
-  if (layout === "sidebar") {
-    document.body.classList.add("bookmark-sidebar-mode")
-  } else if (layout === "taskbar") {
-    document.body.classList.add("bookmark-taskbar-mode")
-  } else if (layout === "taskbar-top") {
-    document.body.classList.add("bookmark-taskbar-top-mode")
-  } else if (layout === "taskbar-left") {
-    document.body.classList.add("bookmark-taskbar-left-mode")
-  }
-}
-
-async function promptFirstRunStyle(renderBookmarks) {
-  if (localStorage.getItem(FIRST_RUN_STYLE_KEY)) return
-
-  const i18n = geti18n()
-  const selectedStyle = await showChoiceConfirm(
-    [
-      {
-        key: "dock",
-        label: i18n.first_run_style_dock || "Dock",
-        description:
-          i18n.first_run_style_dock_desc ||
-          "Bottom dock, compact icons, easy for new tabs.",
-        icon: "fa-solid fa-grip",
-      },
-      {
-        key: "clean",
-        label: i18n.first_run_style_clean || "Clean",
-        description:
-          i18n.first_run_style_clean_desc ||
-          "Simple centered bookmarks with minimal background.",
-        icon: "fa-solid fa-wand-magic-sparkles",
-      },
-      {
-        key: "sidebar",
-        label: i18n.first_run_style_sidebar || "Sidebar",
-        description:
-          i18n.first_run_style_sidebar_desc ||
-          "Vertical folder list for heavier bookmark use.",
-        icon: "fa-solid fa-table-columns",
-      },
-    ],
-    i18n.first_run_style_title || "Choose a start style",
-    i18n.first_run_style_prompt ||
-      "Pick a layout to start with. You can change it later in Settings.",
-  )
-
-  if (selectedStyle && FIRST_RUN_STYLE_PRESETS[selectedStyle]) {
-    const preset = FIRST_RUN_STYLE_PRESETS[selectedStyle]
-    Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
-    updateSetting("interfaceStylePreset", selectedStyle)
-    saveSettings(true)
-    applyFirstRunStyleToBody(preset.bookmarkLayout)
-    if (typeof window.appApplySettings === "function") {
-      window.appApplySettings()
-    }
-    renderBookmarks?.()
-    window.dispatchEvent(
-      new CustomEvent("settingsUpdated", {
-        detail: { key: "musicBarStyle", value: preset.musicBarStyle },
-      }),
-    )
-  }
-
-  localStorage.setItem(FIRST_RUN_STYLE_KEY, selectedStyle || "skipped")
-}
-
-async function promptFirstRunZoomTip() {
-  if (localStorage.getItem(FIRST_RUN_ZOOM_KEY)) return
-
-  const i18n = geti18n()
-  await showAlert(
-    `
-      <div class="first-run-zoom-tip">
-        <p class="first-run-zoom-lead">
-          ${
-            i18n.first_run_zoom_prompt ||
-            "For the best spacing on the start page, try one of these browser zoom levels:"
-          }
-        </p>
-        <div class="first-run-zoom-options" aria-label="Recommended zoom levels">
-          <div class="first-run-zoom-card">
-            <span class="zoom-percent">90%</span>
-            <span>${i18n.first_run_zoom_balanced || "Balanced"}</span>
-          </div>
-          <div class="first-run-zoom-card recommended">
-            <span class="zoom-percent">80%</span>
-            <span>${i18n.recommended || "Recommended"}</span>
-          </div>
-          <div class="first-run-zoom-card">
-            <span class="zoom-percent">75%</span>
-            <span>${i18n.first_run_zoom_compact || "Compact"}</span>
-          </div>
-        </div>
-        <div class="first-run-zoom-shortcuts">
-          <span class="zoom-key"><kbd>Ctrl</kbd><kbd>-</kbd></span>
-          <span class="zoom-key"><kbd>Ctrl</kbd><span class="zoom-wheel">${i18n.first_run_zoom_wheel || "Mouse wheel"}</span></span>
-          <span class="zoom-key zoom-key-icon"><i class="fa-solid fa-magnifying-glass-minus"></i></span>
-        </div>
-        <small class="first-run-zoom-note">
-          ${
-            i18n.first_run_zoom_note ||
-            "You can change this anytime from the browser zoom menu. The page will still work at 100%, but 80% usually shows more widgets without crowding."
-          }
-        </small>
-      </div>
-    `,
-    i18n.first_run_zoom_title || "Recommended browser zoom",
-  )
-
-  localStorage.setItem(FIRST_RUN_ZOOM_KEY, "shown")
-}
 
 function getFirstRunSettingsGuideSteps(i18n) {
   return [
@@ -1377,8 +1175,6 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   }
   await promptFirstRunLanguage()
   await promptFirstRunUserName()
-  await promptFirstRunStyle(renderBookmarks)
-  await promptFirstRunZoomTip()
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(
