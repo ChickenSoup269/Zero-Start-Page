@@ -1343,9 +1343,8 @@ export function setupGeneralEventHandlers(
   if (smoothScrollCheckbox) {
     smoothScrollCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("smoothScrollEnabled", e.target.checked)
-      if (!e.target.checked) {
-        if (rafScrollId) cancelAnimationFrame(rafScrollId)
-        rafScrollId = null
+      if (sidebarContent) {
+        sidebarContent.style.scrollBehavior = e.target.checked ? "smooth" : "auto"
       }
     })
   }
@@ -1369,102 +1368,6 @@ export function setupGeneralEventHandlers(
       handleSettingUpdate("snapGridSize", val)
     })
   }
-
-  let sidebarTargetScroll = sidebarContent.scrollTop
-  let hasPromptedSmoothScroll = false
-  let smoothScrollTimeout = null
-  let rafScrollId = null
-  let lastSetScrollTop = -1
-
-  const smoothScrollModal = document.getElementById("smooth-scroll-modal")
-  const btnSmoothScrollEnable = document.getElementById("btn-smooth-scroll-enable")
-  const btnSmoothScrollDisable = document.getElementById("btn-smooth-scroll-disable")
-
-  if (smoothScrollModal) {
-    btnSmoothScrollEnable.addEventListener("click", () => {
-      handleSettingUpdate("smoothScrollEnabled", true)
-      if (smoothScrollCheckbox) smoothScrollCheckbox.checked = true
-      smoothScrollModal.classList.remove("open")
-    })
-    btnSmoothScrollDisable.addEventListener("click", () => {
-      handleSettingUpdate("smoothScrollEnabled", false)
-      if (smoothScrollCheckbox) smoothScrollCheckbox.checked = false
-      smoothScrollModal.classList.remove("open")
-      if (rafScrollId) cancelAnimationFrame(rafScrollId)
-      rafScrollId = null
-    })
-  }
-
-  sidebarContent.addEventListener("wheel", (e) => {
-    const settings = getSettings()
-    
-    // First time ask
-    if (settings.smoothScrollEnabled === null || settings.smoothScrollEnabled === undefined) {
-      if (!hasPromptedSmoothScroll && smoothScrollModal) {
-        hasPromptedSmoothScroll = true
-        smoothScrollModal.classList.add("open")
-      }
-      return
-    }
-
-    if (settings.smoothScrollEnabled === false) return
-
-    if (e.shiftKey) return
-    // Allow trackpads to use native scrolling (usually have deltaY < 40)
-    if (Math.abs(e.deltaY) < 40) return
-    
-    e.preventDefault()
-
-    // Sync target scroll if user hasn't scrolled for a bit (e.g. dragged scrollbar)
-    if (!smoothScrollTimeout) {
-      sidebarTargetScroll = sidebarContent.scrollTop
-    }
-    clearTimeout(smoothScrollTimeout)
-    smoothScrollTimeout = setTimeout(() => {
-      smoothScrollTimeout = null
-    }, 150)
-    
-    sidebarTargetScroll += e.deltaY * 0.8
-    sidebarTargetScroll = Math.max(0, Math.min(
-      sidebarTargetScroll,
-      sidebarContent.scrollHeight - sidebarContent.clientHeight
-    ))
-    
-    if (!rafScrollId) {
-      const animateSidebarScroll = () => {
-        const current = sidebarContent.scrollTop
-        
-        // If user manually scrolled (dragged scrollbar), stop animating
-        if (lastSetScrollTop !== -1 && Math.abs(current - lastSetScrollTop) > 1) {
-          rafScrollId = null
-          sidebarTargetScroll = current
-          return
-        }
-        
-        const diff = sidebarTargetScroll - current
-        if (Math.abs(diff) < 0.5) {
-          rafScrollId = null
-          lastSetScrollTop = -1
-          return
-        }
-        
-        const nextScroll = current + diff * 0.12
-        sidebarContent.scrollTop = nextScroll
-        lastSetScrollTop = sidebarContent.scrollTop
-        
-        // Stop if we hit the scroll boundaries and can't go further
-        if (Math.abs(current - sidebarContent.scrollTop) < 0.5) {
-          rafScrollId = null
-          lastSetScrollTop = -1
-          sidebarTargetScroll = sidebarContent.scrollTop
-          return
-        }
-        
-        rafScrollId = requestAnimationFrame(animateSidebarScroll)
-      }
-      rafScrollId = requestAnimationFrame(animateSidebarScroll)
-    }
-  }, { passive: false })
 
   // Bug Report / Config Logic
   const bugReportBtn = document.getElementById("bug-report-btn")
