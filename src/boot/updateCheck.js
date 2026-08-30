@@ -3,7 +3,7 @@
  * Update notification: version comparison, modal display, update notes rendering.
  * Runs deferred (setTimeout 100ms) so it never blocks the critical boot path.
  */
-import { geti18n } from "../services/i18n.js"
+import { applyTranslations, geti18n } from "../services/i18n.js"
 import { getSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
 
@@ -31,6 +31,59 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;")
 }
 
+function getInitials(name) {
+  if (!name) return "U"
+  const parts = name.trim().split(/\s+/)
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function formatChangeItem(rawText) {
+  const text = String(rawText || "").trim()
+  let type = "feat"
+  let rest = text
+
+  if (/^\[FEAT\]/i.test(rest) || /^FEAT:/i.test(rest)) {
+    type = "feat"
+    rest = rest.replace(/^\[FEAT\]\s*|^FEAT:\s*/i, "").trim()
+  } else if (/^\[FIX\]/i.test(rest) || /^FIX:/i.test(rest)) {
+    type = "fix"
+    rest = rest.replace(/^\[FIX\]\s*|^FIX:\s*/i, "").trim()
+  } else if (/^(performance|ui\/ux|fix|bug|sửa lỗi|tối ưu)/i.test(rest)) {
+    type = "fix"
+  }
+
+  const colonIdx = rest.indexOf(":")
+  if (colonIdx > 0 && colonIdx < 60) {
+    const title = rest.slice(0, colonIdx).trim()
+    const desc = rest.slice(colonIdx + 1).trim()
+    const tagBadge =
+      type === "fix"
+        ? `<span class="update-chip chip-fix"><i class="fa-solid fa-wrench"></i> FIX</span>`
+        : `<span class="update-chip chip-feat"><i class="fa-solid fa-sparkles"></i> FEAT</span>`
+
+    return `<li class="update-change-item ${type}">
+      <div class="update-change-head">
+        ${tagBadge}
+        <strong class="update-change-title">${escapeHtml(title)}</strong>
+      </div>
+      <p class="update-change-desc">${escapeHtml(desc)}</p>
+    </li>`
+  }
+
+  const tagBadge =
+    type === "fix"
+      ? `<span class="update-chip chip-fix"><i class="fa-solid fa-wrench"></i> FIX</span>`
+      : `<span class="update-chip chip-feat"><i class="fa-solid fa-sparkles"></i> FEAT</span>`
+
+  return `<li class="update-change-item ${type}">
+    <div class="update-change-head">
+      ${tagBadge}
+      <span class="update-change-desc inline-desc">${escapeHtml(rest)}</span>
+    </div>
+  </li>`
+}
+
 async function renderUpdateNotes() {
   const { getUpdateNotes } = await import("../data/updateNotes.js")
   const updateNotes = getUpdateNotes(getSettings().language)
@@ -40,31 +93,50 @@ async function renderUpdateNotes() {
   const contributorList = document.getElementById("update-contributor-list")
 
   if (changesTitle)
-    changesTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${escapeHtml(updateNotes.changesTitle)}`
+    changesTitle.innerHTML = `<i class="fa-solid fa-sparkles"></i> ${escapeHtml(updateNotes.changesTitle)}`
   if (contributorsTitle)
-    contributorsTitle.innerHTML = `<i class="fa-solid fa-handshake"></i> ${escapeHtml(updateNotes.contributorsTitle)}`
+    contributorsTitle.innerHTML = `<i class="fa-solid fa-heart"></i> ${escapeHtml(updateNotes.contributorsTitle)}`
+  const contributorsSection = contributorsTitle?.closest(".update-popup-section")
+  const hasContributors = Array.isArray(updateNotes.contributors) && updateNotes.contributors.length > 0
+
+  if (contributorsSection) {
+    contributorsSection.style.display = hasContributors ? "" : "none"
+  }
+
   if (changesList)
     changesList.innerHTML = updateNotes.changes
-      .map((item) => `<li>${escapeHtml(item)}</li>`)
+      .map((item) => formatChangeItem(item))
       .join("")
-  if (contributorList)
-    contributorList.innerHTML = updateNotes.contributors
-      .map((item) => {
-        const stats =
-          item.badge || item.badgeLabel
-            ? `<div class="update-contributor-stats"><span>${escapeHtml(item.badge)}</span><small>${escapeHtml(item.badgeLabel)}</small></div>`
-            : ""
-        return `<article class="update-contributor ${stats ? "" : "compact"}">
-          <div class="update-contributor-main">
-            <strong>${escapeHtml(item.name)}</strong>
-            <span>${escapeHtml(item.project)}</span>
-            <em>${escapeHtml(item.role)}</em>
-          </div>
-          ${stats}
-          <p>${escapeHtml(item.note)}</p>
-        </article>`
-      })
-      .join("")
+
+  if (contributorList) {
+    if (hasContributors) {
+      contributorList.innerHTML = updateNotes.contributors
+        .map((item) => {
+          const initials = getInitials(item.name)
+          const stats =
+            item.badge || item.badgeLabel
+              ? `<div class="update-contributor-stats"><span class="contrib-badge">${escapeHtml(item.badge)}</span><small>${escapeHtml(item.badgeLabel)}</small></div>`
+              : ""
+          return `<article class="update-contributor-card">
+            <div class="update-contributor-head">
+              <div class="update-contributor-avatar">${escapeHtml(initials)}</div>
+              <div class="update-contributor-meta">
+                <strong class="update-contributor-name">${escapeHtml(item.name)}</strong>
+                <div class="update-contributor-tags">
+                  <span class="contrib-project">${escapeHtml(item.project || "Zero Startpage")}</span>
+                  <span class="contrib-role"><i class="fa-solid fa-shield-halved"></i> ${escapeHtml(item.role || "Contributor")}</span>
+                </div>
+              </div>
+              ${stats}
+            </div>
+            ${item.note ? `<div class="update-contributor-quote"><i class="fa-solid fa-quote-left"></i><p>${escapeHtml(item.note)}</p></div>` : ""}
+          </article>`
+        })
+        .join("")
+    } else {
+      contributorList.innerHTML = ""
+    }
+  }
 }
 
 function showUpdateUI(currentVersion, showModal, showArrow) {
@@ -77,23 +149,42 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
       Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k])),
   }
 
+  let onKeyDown = null
+
   const acknowledgeUpdate = () => {
     if (popup) fadeToggle(popup, false, "block")
     storage.set({ updateModalAcknowledged: true })
     setUpdateNoticePending(false)
+    if (onKeyDown) {
+      document.removeEventListener("keydown", onKeyDown)
+      onKeyDown = null
+    }
   }
 
   const showUpdateModal = async () => {
     if (!popup || !verLabel) return
     verLabel.textContent = `v${currentVersion}`
+    try {
+      applyTranslations(popup)
+    } catch (_) {}
     await renderUpdateNotes()
     fadeToggle(popup, true, "block")
     document
       .getElementById("close-update-popup")
-      ?.addEventListener("click", acknowledgeUpdate)
+      ?.addEventListener("click", acknowledgeUpdate, { once: true })
+    document
+      .getElementById("close-update-popup-x")
+      ?.addEventListener("click", acknowledgeUpdate, { once: true })
     document
       .getElementById("github-update-link")
-      ?.addEventListener("click", acknowledgeUpdate)
+      ?.addEventListener("click", acknowledgeUpdate, { once: true })
+
+    onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        acknowledgeUpdate()
+      }
+    }
+    document.addEventListener("keydown", onKeyDown)
   }
 
   if (showModal && popup && verLabel) {

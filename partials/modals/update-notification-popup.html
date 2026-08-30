@@ -1,23 +1,40 @@
 <!-- Update Notification Popup -->
-<div id="update-notification-popup" class="update-notification-popup">
+<div id="update-notification-popup" class="update-notification-popup" role="dialog" aria-modal="true" aria-labelledby="update-popup-main-title">
+    <button id="close-update-popup-x" class="update-popup-x-btn" aria-label="Close" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    
     <div class="update-popup-header">
-        <div class="update-popup-icon">
-            <i class="fa-solid fa-circle-arrow-up"></i>
+        <div class="update-popup-icon-wrap">
+            <div class="update-popup-icon">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+            <div class="update-popup-icon-glow"></div>
         </div>
-        <div>
-            <h3 data-i18n="update_title">Cập nhật mới!</h3>
-            <span id="update-version-label" class="update-version-pill"></span>
+        <div class="update-popup-titles">
+            <div class="update-popup-title-row">
+                <h3 id="update-popup-main-title" data-i18n="update_title">Cập nhật mới!</h3>
+                <div class="update-version-badge">
+                    <span id="update-version-label" class="update-version-pill">v2.0.0</span>
+                    <span class="update-version-tag">Latest</span>
+                </div>
+            </div>
+            <p class="update-popup-subtitle" data-i18n="update_desc">Zero Startpage đã được nâng cấp lên phiên bản mới.</p>
         </div>
     </div>
 
     <div class="update-popup-body">
-        <section class="update-popup-section">
-            <h4 id="update-changes-title"><i class="fa-solid fa-star"></i> Có gì mới</h4>
+        <section class="update-popup-section update-changes-section">
+            <div class="update-section-header">
+                <h4 id="update-changes-title"><i class="fa-solid fa-sparkles"></i> Có gì mới</h4>
+            </div>
             <ul id="update-change-list" class="update-change-list"></ul>
         </section>
 
-        <section class="update-popup-section">
-            <h4 id="update-contributors-title"><i class="fa-solid fa-handshake"></i> Người góp công</h4>
+        <section class="update-popup-section update-contributors-section">
+            <div class="update-section-header">
+                <h4 id="update-contributors-title"><i class="fa-solid fa-heart"></i> Người góp công</h4>
+            </div>
             <div id="update-contributor-list" class="update-contributor-list"></div>
         </section>
     </div>
