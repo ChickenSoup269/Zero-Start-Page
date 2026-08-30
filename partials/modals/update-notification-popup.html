@@ -1,43 +1,45 @@
 <!-- Update Notification Popup -->
 <div id="update-notification-popup" class="update-notification-popup" role="dialog" aria-modal="true" aria-labelledby="update-popup-main-title">
-    <button id="close-update-popup-x" class="update-popup-x-btn" aria-label="Close" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-    </button>
-    
-    <div class="update-popup-header">
-        <div class="update-popup-icon">
-            <i class="fa-solid fa-rocket"></i>
+    <div class="update-popup-card">
+        <button id="close-update-popup-x" class="update-popup-x-btn" aria-label="Close" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <div class="update-popup-header">
+            <div class="update-popup-icon">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+            <div class="update-popup-titles">
+                <div class="update-popup-title-row">
+                    <h3 id="update-popup-main-title" data-i18n="update_title">Cập nhật mới!</h3>
+                    <span id="update-version-label" class="update-version-pill">v2.0.0</span>
+                </div>
+                <p class="update-popup-subtitle" data-i18n="update_desc">Zero Startpage đã được nâng cấp lên phiên bản mới.</p>
+            </div>
         </div>
-        <div class="update-popup-titles">
-            <div class="update-popup-title-row">
-                <h3 id="update-popup-main-title" data-i18n="update_title">Cập nhật mới!</h3>
-                <span id="update-version-label" class="update-version-pill">v2.0.0</span>
-            </div>
-            <p class="update-popup-subtitle" data-i18n="update_desc">Zero Startpage đã được nâng cấp lên phiên bản mới.</p>
+
+        <div class="update-popup-body">
+            <section class="update-popup-section update-changes-section">
+                <div class="update-section-header">
+                    <h4 id="update-changes-title">Có gì mới</h4>
+                </div>
+                <ul id="update-change-list" class="update-change-list"></ul>
+            </section>
+
+            <section class="update-popup-section update-contributors-section">
+                <div class="update-section-header">
+                    <h4 id="update-contributors-title">Người góp công</h4>
+                </div>
+                <div id="update-contributor-list" class="update-contributor-list"></div>
+            </section>
         </div>
-    </div>
 
-    <div class="update-popup-body">
-        <section class="update-popup-section update-changes-section">
-            <div class="update-section-header">
-                <h4 id="update-changes-title">Có gì mới</h4>
-            </div>
-            <ul id="update-change-list" class="update-change-list"></ul>
-        </section>
-
-        <section class="update-popup-section update-contributors-section">
-            <div class="update-section-header">
-                <h4 id="update-contributors-title">Người góp công</h4>
-            </div>
-            <div id="update-contributor-list" class="update-contributor-list"></div>
-        </section>
-    </div>
-
-    <div class="update-popup-actions">
-        <button id="close-update-popup" class="secondary-btn update-popup-close-btn" data-i18n="cancel">Close</button>
-        <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
-            target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
-            <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
-        </a>
+        <div class="update-popup-actions">
+            <button id="close-update-popup" class="secondary-btn update-popup-close-btn" data-i18n="cancel">Close</button>
+            <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
+                target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
+                <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
+            </a>
+        </div>
     </div>
 </div>

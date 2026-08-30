@@ -1368,9 +1368,21 @@
   display: none;
   position: fixed;
   inset: 0;
-  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.update-popup-card {
+  position: relative;
   width: min(520px, calc(100vw - 32px));
-  height: fit-content;
   max-height: min(740px, calc(100vh - 40px));
   background: #111318;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1379,22 +1391,10 @@
   box-shadow:
     0 24px 64px -12px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(255, 255, 255, 0.05);
-  z-index: 100000;
   color: #fff;
   box-sizing: border-box;
-}
-
-.update-notification-popup::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  pointer-events: none;
-  z-index: -1;
+  display: flex;
+  flex-direction: column;
 }
 
 .update-popup-x-btn {
@@ -1776,12 +1776,10 @@
 }
 
 @media (max-width: 480px) {
-  #update-notification-popup {
-    inset: 0 !important;
-    margin: auto !important;
-    width: calc(100vw - 28px) !important;
+  .update-popup-card {
+    width: 100% !important;
     padding: 16px;
-    border-radius: 16px;
+    border-radius: 14px;
   }
 
   .update-popup-actions {

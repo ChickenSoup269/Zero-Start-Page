@@ -146,7 +146,7 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
   let onKeyDown = null
 
   const acknowledgeUpdate = () => {
-    if (popup) fadeToggle(popup, false, "block")
+    if (popup) fadeToggle(popup, false, "flex")
     storage.set({ updateModalAcknowledged: true })
     setUpdateNoticePending(false)
     if (onKeyDown) {
@@ -162,7 +162,7 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
       applyTranslations(popup)
     } catch (_) {}
     await renderUpdateNotes()
-    fadeToggle(popup, true, "block")
+    fadeToggle(popup, true, "flex")
     document
       .getElementById("close-update-popup")
       ?.addEventListener("click", acknowledgeUpdate, { once: true })
@@ -172,6 +172,12 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
     document
       .getElementById("github-update-link")
       ?.addEventListener("click", acknowledgeUpdate, { once: true })
+
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) {
+        acknowledgeUpdate()
+      }
+    })
 
     onKeyDown = (e) => {
       if (e.key === "Escape") {
