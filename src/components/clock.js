@@ -813,40 +813,54 @@ function init3DClockInteractiveTilt() {
   if (is3DClockTiltBound || typeof window === "undefined") return
   is3DClockTiltBound = true
 
-  let currentTargetX = 14
-  let currentTargetY = -12
-  let currentRotX = 14
-  let currentRotY = -12
+  let currentRotX = 10
+  let currentRotY = -6
+  let targetRotX = 10
+  let targetRotY = -6
+  let isMoving = false
+  let idleTimer = null
   let animFrameId = null
 
-  const updateTilt = () => {
-    const scene = document.querySelector(".clock-3d-scene")
-    const stage = scene?.querySelector(".clock-3d-stage")
-    if (stage) {
-      currentRotX += (currentTargetX - currentRotX) * 0.1
-      currentRotY += (currentTargetY - currentRotY) * 0.1
-      stage.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) translateZ(0)`
+  const updateLoop = () => {
+    const stage = document.querySelector(".clock-3d-stage")
+    if (!stage) {
+      animFrameId = null
+      return
     }
-    if (animFrameId) {
-      animFrameId = requestAnimationFrame(updateTilt)
+
+    const diffX = targetRotX - currentRotX
+    const diffY = targetRotY - currentRotY
+    currentRotX += diffX * 0.12
+    currentRotY += diffY * 0.12
+
+    stage.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`
+
+    if (!isMoving && Math.abs(diffX) < 0.05 && Math.abs(diffY) < 0.05) {
+      stage.classList.add("clock-3d-idle-floating")
+      stage.style.transform = ""
+      animFrameId = null
+      return
     }
+
+    animFrameId = requestAnimationFrame(updateLoop)
   }
 
   window.addEventListener(
     "mousemove",
     (e) => {
       const scene = document.querySelector(".clock-3d-scene")
-      if (!scene) {
-        if (animFrameId) {
-          cancelAnimationFrame(animFrameId)
-          animFrameId = null
-        }
-        return
-      }
+      if (!scene) return
 
-      if (!animFrameId) {
-        animFrameId = requestAnimationFrame(updateTilt)
-      }
+      const stage = scene.querySelector(".clock-3d-stage")
+      if (stage) stage.classList.remove("clock-3d-idle-floating")
+
+      isMoving = true
+      clearTimeout(idleTimer)
+      idleTimer = setTimeout(() => {
+        isMoving = false
+        targetRotX = 10
+        targetRotY = -6
+      }, 1500)
 
       const rect = scene.getBoundingClientRect()
       const sceneCenterX = rect.left + rect.width / 2
@@ -854,8 +868,22 @@ function init3DClockInteractiveTilt() {
       const deltaX = (e.clientX - sceneCenterX) / (window.innerWidth * 0.5)
       const deltaY = (e.clientY - sceneCenterY) / (window.innerHeight * 0.5)
 
-      currentTargetY = Math.max(-26, Math.min(26, deltaX * 26))
-      currentTargetX = Math.max(-4, Math.min(24, 14 - deltaY * 18))
+      targetRotY = Math.max(-28, Math.min(28, deltaX * 28))
+      targetRotX = Math.max(-10, Math.min(26, 10 - deltaY * 18))
+
+      if (!animFrameId) {
+        animFrameId = requestAnimationFrame(updateLoop)
+      }
+    },
+    { passive: true },
+  )
+
+  window.addEventListener(
+    "mouseleave",
+    () => {
+      isMoving = false
+      targetRotX = 10
+      targetRotY = -6
     },
     { passive: true },
   )
@@ -1564,9 +1592,9 @@ export function updateTime() {
           <span class="terminal-dot terminal-dot-yellow"></span>
           <span class="terminal-dot terminal-dot-green"></span>`
         : `
-          <span class="terminal-window-btn" aria-hidden="true">-</span>
-          <span class="terminal-window-btn" aria-hidden="true">□</span>
-          <span class="terminal-window-btn terminal-window-close" aria-hidden="true">×</span>`
+          <span class="terminal-window-btn" aria-hidden="true"><i class="fa-solid fa-minus"></i></span>
+          <span class="terminal-window-btn" aria-hidden="true"><i class="fa-regular fa-square"></i></span>
+          <span class="terminal-window-btn terminal-window-close" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>`
     clockElement.innerHTML = `
       <div class="terminal-clock terminal-clock-${terminalVariant}">
         <div class="terminal-clock-bar">
@@ -2884,14 +2912,14 @@ export function updateTime() {
             <div class="omp-term-tab active">
               <i class="fa-solid fa-terminal omp-tab-icon"></i>
               <span class="omp-tab-title">pwsh (oh-my-posh)</span>
-              <span class="omp-tab-close">×</span>
+              <span class="omp-tab-close"><i class="fa-solid fa-xmark"></i></span>
             </div>
-            <div class="omp-term-newtab" title="New Tab">+</div>
+            <div class="omp-term-newtab" title="New Tab"><i class="fa-solid fa-plus"></i></div>
           </div>
           <div class="omp-term-controls">
-            <span class="omp-win-btn omp-win-min" title="Minimize">─</span>
-            <span class="omp-win-btn omp-win-max" title="Maximize">□</span>
-            <span class="omp-win-btn omp-win-close" title="Glitch / Reset">✕</span>
+            <span class="omp-win-btn omp-win-min" title="Minimize"><i class="fa-solid fa-minus"></i></span>
+            <span class="omp-win-btn omp-win-max" title="Maximize"><i class="fa-regular fa-square"></i></span>
+            <span class="omp-win-btn omp-win-close" title="Glitch / Reset"><i class="fa-solid fa-xmark"></i></span>
           </div>
         </div>
       `
@@ -3144,7 +3172,7 @@ export function updateTime() {
     const hasSecMatch = showSec ? Boolean(existingSec) : !existingSec
 
     if (existingScene && hasSecMatch) {
-      // Fast path: update each digit
+      // Fast path: update each digit with smooth GPU tick animation
       const digits = [d1, d2, d3, d4]
       if (showSec) digits.push(d5, d6)
 
@@ -3152,6 +3180,10 @@ export function updateTime() {
       cubeDigits.forEach((el, idx) => {
         if (digits[idx] !== undefined && el.textContent !== digits[idx]) {
           el.textContent = digits[idx]
+          el.classList.remove("clock-3d-digit-tick")
+          // Re-trigger CSS animation
+          void el.offsetWidth
+          el.classList.add("clock-3d-digit-tick")
         }
       })
 
@@ -3175,53 +3207,31 @@ export function updateTime() {
         stageContainer.style.display = shouldShowClock ? "inline-flex" : "none"
       }
     } else {
+      const renderCube = (digit, idx, isSec = false) => `
+        <div class="clock-3d-cube-box${isSec ? " clock-3d-cube-sec" : ""}" data-digit-idx="${idx}">
+          <div class="clock-3d-cube-card">
+            <span class="clock-3d-cube-digit">${digit}</span>
+          </div>
+        </div>
+      `
+
       clockElement.innerHTML = `
         <div class="clock-3d-scene">
-          <div class="clock-3d-stage" style="${shouldShowClock ? "" : "display: none;"}">
+          <div class="clock-3d-stage clock-3d-idle-floating" style="${shouldShowClock ? "" : "display: none;"}">
             <div class="clock-3d-cubes-row">
-              <!-- Hours Cube 1 -->
-              <div class="clock-3d-cube-box" data-digit-idx="0">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d1}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
-              <!-- Hours Cube 2 -->
-              <div class="clock-3d-cube-box" data-digit-idx="1">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d2}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
+              <!-- Hours Cubes -->
+              ${renderCube(d1, 0)}
+              ${renderCube(d2, 1)}
 
-              <!-- 3D Glowing Colon Separator -->
+              <!-- 3D Glowing Crystal Colon Separator -->
               <div class="clock-3d-colon-separator">
                 <span class="clock-3d-orb clock-3d-orb-top"></span>
                 <span class="clock-3d-orb clock-3d-orb-bottom"></span>
               </div>
 
-              <!-- Minutes Cube 1 -->
-              <div class="clock-3d-cube-box" data-digit-idx="2">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d3}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
-              <!-- Minutes Cube 2 -->
-              <div class="clock-3d-cube-box" data-digit-idx="3">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d4}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
+              <!-- Minutes Cubes -->
+              ${renderCube(d3, 2)}
+              ${renderCube(d4, 3)}
 
               ${showSec ? `
               <!-- Seconds Separator -->
@@ -3229,24 +3239,9 @@ export function updateTime() {
                 <span class="clock-3d-orb clock-3d-orb-top"></span>
                 <span class="clock-3d-orb clock-3d-orb-bottom"></span>
               </div>
-              <!-- Seconds Cube 1 -->
-              <div class="clock-3d-cube-box clock-3d-cube-sec" data-digit-idx="4">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d5}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
-              <!-- Seconds Cube 2 -->
-              <div class="clock-3d-cube-box clock-3d-cube-sec" data-digit-idx="5">
-                <div class="clock-3d-cube-card">
-                  <div class="clock-3d-cube-face clock-3d-cube-front"><span class="clock-3d-cube-digit">${d6}</span></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-top"></div>
-                  <div class="clock-3d-cube-face clock-3d-cube-right"></div>
-                </div>
-                <div class="clock-3d-cube-shadow"></div>
-              </div>
+              <!-- Seconds Cubes -->
+              ${renderCube(d5, 4, true)}
+              ${renderCube(d6, 5, true)}
               ` : ""}
 
               ${ampm ? `
@@ -3256,9 +3251,6 @@ export function updateTime() {
               </div>
               ` : ""}
             </div>
-
-            <!-- Ambient 3D Stage Floor Glow -->
-            <div class="clock-3d-floor-glow" aria-hidden="true"></div>
           </div>
 
           <div class="clock-3d-date" style="${shouldShowDate ? "" : "display: none;"}">
