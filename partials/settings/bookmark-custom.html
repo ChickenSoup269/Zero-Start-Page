@@ -6,26 +6,41 @@
         <!-- Live Interactive Bookmark Preview Card -->
         <div class="bookmark-live-preview-card" style="margin-bottom: 16px;">
             <div class="bookmark-preview-header">
-                <span class="bookmark-preview-badge"><i class="fa-solid fa-eye"></i> <span data-i18n="settings_bookmark_preview_title">Live Bookmark Preview</span></span>
-                <span class="bookmark-preview-hint" data-i18n="settings_bookmark_preview_desc">Folder tab & bookmark card</span>
+                <span class="bookmark-preview-badge">
+                    <span class="bookmark-preview-live-dot"></span>
+                    <span data-i18n="settings_bookmark_preview_title">Live Preview</span>
+                </span>
+                <span class="bookmark-preview-hint" data-i18n="settings_bookmark_preview_desc">Thay đổi settings bên dưới → xem ngay ở đây</span>
             </div>
             <div class="bookmark-preview-stage" id="bookmark-preview-stage">
                 <!-- Sample Folder Group Tab -->
-                <div class="bookmark-preview-tab-wrap">
-                    <div class="bookmark-preview-tab" id="bookmark-preview-tab">
-                        <i class="fa-solid fa-folder"></i>
-                        <span id="bookmark-preview-tab-text">Favorites</span>
-                        <span class="bookmark-preview-tab-count" id="bookmark-preview-tab-count">4</span>
-                    </div>
-                </div>
-                <!-- Sample Bookmark Item -->
-                <div class="bookmark-preview-item-wrap">
-                    <div class="bookmark-preview-item" id="bookmark-preview-item">
-                        <div class="bookmark-preview-icon-box" id="bookmark-preview-icon-box">
-                            <i class="fa-brands fa-google" id="bookmark-preview-icon"></i>
+                <div class="bookmark-preview-col">
+                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-folder"></i> Folder Tab</span>
+                    <div class="bookmark-preview-tab-wrap">
+                        <div class="bookmark-preview-tab" id="bookmark-preview-tab">
+                            <i class="fa-solid fa-folder"></i>
+                            <span id="bookmark-preview-tab-text">Favorites</span>
+                            <span class="bookmark-preview-tab-count" id="bookmark-preview-tab-count">4</span>
                         </div>
-                        <span class="bookmark-preview-title" id="bookmark-preview-title">Google</span>
                     </div>
+                    <span class="bookmark-preview-col-caption">Group Tabs Interface</span>
+                </div>
+
+                <!-- Divider -->
+                <div class="bookmark-preview-divider"></div>
+
+                <!-- Sample Bookmark Item -->
+                <div class="bookmark-preview-col">
+                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-bookmark"></i> Bookmark Item</span>
+                    <div class="bookmark-preview-item-wrap">
+                        <div class="bookmark-preview-item" id="bookmark-preview-item">
+                            <div class="bookmark-preview-icon-box" id="bookmark-preview-icon-box">
+                                <i class="fa-brands fa-google" id="bookmark-preview-icon"></i>
+                            </div>
+                            <span class="bookmark-preview-title" id="bookmark-preview-title">Google</span>
+                        </div>
+                    </div>
+                    <span class="bookmark-preview-col-caption">Sizes & Appearance</span>
                 </div>
             </div>
         </div>

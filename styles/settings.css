@@ -9765,7 +9765,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .bookmark-preview-badge {
@@ -9776,26 +9776,78 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   color: var(--accent-color, #a8c0ff);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+}
+
+/* Pulsing green live dot */
+.bookmark-preview-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.7);
+  animation: bm-live-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes bm-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
 }
 
 .bookmark-preview-hint {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
 }
 
 .bookmark-preview-stage {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 14px 16px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-sm, 8px);
-  min-height: 90px;
+  min-height: 110px;
   position: relative;
   overflow: hidden;
+}
+
+/* Two-column annotation layout */
+.bookmark-preview-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.bookmark-preview-col-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bookmark-preview-col-caption {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Vertical divider between columns */
+.bookmark-preview-divider {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+  flex-shrink: 0;
 }
 
 .bookmark-preview-tab-wrap,
@@ -9874,6 +9926,17 @@ body.sidebar-light .bookmark-preview-stage {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
 }
+
+body.sidebar-light .bookmark-preview-hint,
+body.sidebar-light .bookmark-preview-col-label,
+body.sidebar-light .bookmark-preview-col-caption {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+body.sidebar-light .bookmark-preview-divider {
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.15), transparent);
+}
+
 
 /* Appearance Tab Modernization */
 .page-title-card-wrap {
