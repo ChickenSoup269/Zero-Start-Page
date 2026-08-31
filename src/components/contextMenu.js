@@ -406,41 +406,81 @@ function showQrCodeModal(url, faviconUrl = "") {
   img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}&ecc=H`
   text.textContent = url
   
-  if (faviconUrl && iconWrapper && icon) {
-    icon.src = faviconUrl
+  // Verify faviconUrl is a valid image URL and not a FontAwesome icon class
+  const isValidImageUrl =
+    typeof faviconUrl === "string" &&
+    (faviconUrl.startsWith("http://") ||
+      faviconUrl.startsWith("https://") ||
+      faviconUrl.startsWith("data:image/") ||
+      faviconUrl.startsWith("blob:") ||
+      faviconUrl.startsWith("chrome-extension://"))
+
+  let resolvedFavicon = isValidImageUrl ? faviconUrl : ""
+  if (!resolvedFavicon && url) {
+    try {
+      const hostname = new URL(url).hostname
+      if (hostname) {
+        resolvedFavicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`
+      }
+    } catch {}
+  }
+
+  if (resolvedFavicon && iconWrapper && icon) {
+    icon.src = resolvedFavicon
+    icon.onerror = () => {
+      if (iconWrapper) iconWrapper.style.display = "none"
+    }
     iconWrapper.style.display = "flex"
   } else if (iconWrapper) {
     iconWrapper.style.display = "none"
   }
 
   modal.classList.add("show")
+  modal.classList.add("open")
 
   const closeModal = () => {
     modal.classList.remove("show")
-    setTimeout(() => { img.src = "" }, 300)
+    modal.classList.remove("open")
+    setTimeout(() => {
+      img.src = ""
+    }, 300)
     if (closeBtn) closeBtn.removeEventListener("click", closeModal)
+    window.removeEventListener("keydown", onKeyDown)
+    modal.onclick = null
   }
-  
+
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") {
+      closeModal()
+    }
+  }
+
   if (closeBtn) {
     closeBtn.addEventListener("click", closeModal)
   }
-  
-  window.addEventListener("click", (event) => {
+
+  window.addEventListener("keydown", onKeyDown)
+
+  modal.onclick = (event) => {
     if (event.target === modal) {
       closeModal()
     }
-  }, { once: true })
+  }
 }
 
 function addGenerateQrCodeItem(i18n, type, index, id) {
   let url = ""
-
   let faviconUrl = ""
+
   if (type === "bookmark" || type === "bookmarkStackItem") {
     if (contextMenuCallbacks && contextMenuCallbacks.anchor) {
       const anchor = contextMenuCallbacks.anchor
-      if (anchor.tagName === "A") {
+      if (anchor.tagName === "A" && anchor.href) {
         url = anchor.href
+        const imgEl = anchor.querySelector("img")
+        if (imgEl && imgEl.src) faviconUrl = imgEl.src
+      } else if (anchor.dataset && anchor.dataset.url) {
+        url = anchor.dataset.url
         const imgEl = anchor.querySelector("img")
         if (imgEl && imgEl.src) faviconUrl = imgEl.src
       } else {
@@ -455,32 +495,26 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
 
   if (!url) {
     const bookmarks = getBookmarks()
-    if (type === "bookmark") {
+    if (type === "bookmark" && typeof index === "number" && bookmarks[index]) {
       const bookmark = bookmarks[index]
       if (bookmark && bookmark.url) {
         url = bookmark.url
         if (bookmark.icon) faviconUrl = bookmark.icon
       }
-    } else if (type === "bookmarkStackItem") {
-      if (id && id.includes(":")) {
-        const [stackIndex, itemIndex] = id.split(":").map(Number)
-        const stack = bookmarks[stackIndex]
-        if (stack && stack.items) {
-          const item = stack.items[itemIndex]
-          if (item && item.url) {
-            url = item.url
-            if (item.icon) faviconUrl = item.icon
-          }
+    } else if (type === "bookmarkStackItem" && id && id.includes(":")) {
+      const [stackIndex, itemIndex] = id.split(":").map(Number)
+      const stack = bookmarks[stackIndex]
+      if (stack && stack.items) {
+        const item = stack.items[itemIndex]
+        if (item && item.url) {
+          url = item.url
+          if (item.icon) faviconUrl = item.icon
         }
       }
     }
   }
   
-  if (!faviconUrl && url) {
-    try {
-      faviconUrl = `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64`
-    } catch (e) {}
-  }  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
+  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
     const qrBtn = createCustomMenuItem(
       i18n.context_generate_qr || "Tạo mã QR",
       "fa-solid fa-qrcode",
@@ -493,6 +527,7 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
     contextMenu.insertBefore(qrBtn, menuEdit)
   }
 }
+
 
 function openExternalUrl(url) {
   if (window.chrome?.tabs?.create) {
