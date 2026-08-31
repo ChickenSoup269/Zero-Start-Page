@@ -9982,29 +9982,153 @@ body.sidebar-light .bookmark-preview-divider {
 }
 
 .custom-title-live-preview {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 14px;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.06) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 1px solid rgba(74, 222, 128, 0.28);
+  border-radius: 12px;
+  padding: 12px 14px 14px;
   position: relative;
-  min-height: 54px;
+  min-height: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.08);
+}
+
+/* Header row inside preview card */
+.ct-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.ct-preview-hint {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
 }
 
 .custom-title-live-preview-tag {
-  position: absolute;
-  top: 6px;
-  left: 10px;
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--accent-color, #a8c0ff);
-  opacity: 0.85;
+  letter-spacing: 0.7px;
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+
+/* Pulsing green live dot */
+.ct-preview-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.7);
+  animation: ct-live-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ct-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.7); }
+}
+
+/* ct-panel-badge: line indicator badge inside each Dòng panel */
+.ct-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 6px;
+  padding: 3px 9px;
+}
+
+.ct-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ct-field-group & ct-field-label: form group inside line panels */
+.ct-field-group {
+  margin-bottom: 10px;
+}
+
+.ct-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 7px;
+}
+
+.ct-text-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-color, #ffffff);
+  font-size: 0.85rem;
+  transition: border-color 0.2s;
+}
+
+.ct-text-input:focus {
+  outline: none;
+  border-color: rgba(74, 222, 128, 0.4);
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.08);
+}
+
+/* Light theme overrides */
+body.sidebar-light .custom-title-live-preview {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(0, 0, 0, 0.03) 100%);
+  border-color: rgba(22, 163, 74, 0.3);
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.06);
+}
+
+body.sidebar-light .custom-title-live-preview-tag {
+  color: #16a34a;
+}
+
+body.sidebar-light .ct-preview-live-dot {
+  background: #16a34a;
+  box-shadow: 0 0 5px rgba(22, 163, 74, 0.6);
+}
+
+body.sidebar-light .ct-panel-badge {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+  border-color: rgba(22, 163, 74, 0.22);
+}
+
+body.sidebar-light .ct-text-input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text-color, #111111);
+}
+
+body.sidebar-light .ct-text-input:focus {
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.08);
+}
+
 
 .preset-pill-btn {
   display: inline-flex;
