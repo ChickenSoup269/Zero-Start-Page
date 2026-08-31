@@ -1,7 +1,10 @@
 /**
- * Picsum Photos Fetcher Module
- * Provides random high-quality wallpapers from picsum.photos — NO API key required.
- * Uses Lorem Picsum (https://picsum.photos) by David Marby & Nijiko Yonskai.
+ * Free Random Photo Fetcher Module
+ * Supports two providers — both completely free, no API key required:
+ *  • Lorem Picsum  (https://picsum.photos)   — seed-based, curated themes
+ *  • LoremFlickr   (https://loremflickr.com) — tag-based, Flickr CC photos
+ *
+ * Use getFreeRandomBackground(themeKey, provider) as the main entry point.
  */
 
 import { getSettings } from "../../services/state.js"
@@ -197,6 +200,134 @@ function getPicsumGalleryPage(themeKey = "random", count = 20, page = 1) {
   return results
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LoremFlickr Provider (https://loremflickr.com) — always free, no API key
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Maps Picsum theme keys → LoremFlickr search tags.
+ * Multiple tags can be comma-joined (e.g. "space,stars").
+ */
+const FLICKR_TAG_MAP = {
+  random:       "",              // no tag = truly random
+  nature:       "nature",
+  city:         "city",
+  abstract:     "abstract",
+  architecture: "architecture",
+  minimal:      "minimal",
+  technology:   "technology",
+  dark:         "dark",
+  animals:      "animals",
+  food:         "food",
+  space:        "space,stars",
+  vehicles:     "car",
+}
+
+const FLICKR_RECENT_PREFIX = "startpageFlickrRecent:"
+const FLICKR_RECENT_LIMIT  = 30
+
+function getFlickrRecentUrls(themeKey) {
+  try {
+    const raw = localStorage.getItem(`${FLICKR_RECENT_PREFIX}${themeKey}`)
+    const parsed = JSON.parse(raw || "[]")
+    return Array.isArray(parsed) ? parsed.filter(Boolean) : []
+  } catch {
+    return []
+  }
+}
+
+function rememberFlickrUrl(themeKey, url) {
+  if (!url) return
+  const recent = getFlickrRecentUrls(themeKey).filter((u) => u !== url)
+  recent.unshift(url)
+  try {
+    localStorage.setItem(
+      `${FLICKR_RECENT_PREFIX}${themeKey}`,
+      JSON.stringify(recent.slice(0, FLICKR_RECENT_LIMIT)),
+    )
+  } catch {}
+}
+
+/**
+ * Build LoremFlickr image URL for the given tag and dimensions.
+ * LoremFlickr appends a cache-busting random param automatically via redirect.
+ * @param {string} tag - Flickr search tag (empty = random)
+ * @param {number} width
+ * @param {number} height
+ * @returns {string}
+ */
+function buildFlickrUrl(tag, width, height) {
+  const w = Math.min(3840, Math.max(640, Math.round(width)))
+  const h = Math.min(2160, Math.max(480, Math.round(height)))
+  const base = `https://loremflickr.com/${w}/${h}`
+  return tag ? `${base}/${encodeURIComponent(tag)}` : base
+}
+
+/**
+ * Fetch LoremFlickr JSON metadata for a given tag + dimensions.
+ * Returns { file, rawFileUrl, owner, license } or null on error.
+ */
+async function fetchFlickrPhotoInfo(tag, width, height) {
+  try {
+    const w = Math.min(3840, Math.max(640, Math.round(width)))
+    const h = Math.min(2160, Math.max(480, Math.round(height)))
+    const base = `https://loremflickr.com/json/${w}/${h}`
+    const url = tag ? `${base}/${encodeURIComponent(tag)}` : base
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
+    if (!res.ok) return null
+    return await res.json()
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Main LoremFlickr entry point.
+ * Returns { imageUrl, seed: null, info } matching the same shape as getPicsumRandomBackground.
+ * @param {string} themeKey
+ */
+async function getLoremFlickrRandomBackground(themeKey = "random") {
+  const { width, height } = getPicsumTargetDimensions()
+  const tag = FLICKR_TAG_MAP[themeKey] ?? ""
+
+  // Fetch JSON first — it resolves to a specific photo, giving us the canonical URL
+  const info = await fetchFlickrPhotoInfo(tag, width, height)
+
+  // Use the resolved file URL if available, otherwise use the redirect URL
+  const imageUrl = info?.file || buildFlickrUrl(tag, width, height)
+
+  rememberFlickrUrl(themeKey, imageUrl)
+
+  // Normalise info to match Picsum shape: { author, url }
+  const normalisedInfo = info
+    ? {
+        author: info.owner || "Flickr",
+        url: info.rawFileUrl
+          ? `https://www.flickr.com/search/?text=${encodeURIComponent(tag || "random")}`
+          : "https://loremflickr.com",
+      }
+    : null
+
+  return { imageUrl, seed: null, info: normalisedInfo, themeKey }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Universal dispatcher
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Unified entry point for free random photo.
+ * @param {string} themeKey  - One of the PICSUM_THEMES keys
+ * @param {string} provider  - "picsum" | "loremflickr" (default "loremflickr")
+ * @returns {Promise<{imageUrl, seed, info, themeKey}>}
+ */
+async function getFreeRandomBackground(themeKey = "random", provider = "loremflickr") {
+  if (provider === "picsum") {
+    return getPicsumRandomBackground(themeKey)
+  }
+  return getLoremFlickrRandomBackground(themeKey)
+}
+
 export {
   getPicsumRandomBackground,
   preloadPicsumImage,
@@ -204,4 +335,8 @@ export {
   getPicsumGalleryPage,
   buildPicsumUrl,
   buildPicsumThumbUrl,
+  getLoremFlickrRandomBackground,
+  getFreeRandomBackground,
+  FLICKR_TAG_MAP,
 }
+

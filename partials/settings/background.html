@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <!-- Picsum Photos Card (No API Key Required) -->
+        <!-- Free Random Photos Card (No API Key Required) -->
         <div class="bg-control-card" data-bg-subtab="media">
             <div class="bg-control-title">
                 <i class="fa-solid fa-images"></i> <span data-i18n="bg_free_random_photos">Free Random Photos</span>
@@ -150,8 +150,20 @@
             </div>
             <p data-i18n-html="bg_free_random_photos_desc"
                 style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
-                High-quality photos from <strong>Picsum</strong> — completely free, no signup needed.
+                High-quality photos from <strong>LoremFlickr</strong> or <strong>Lorem Picsum</strong> — completely free, no signup needed.
             </p>
+
+            <!-- Provider Selector -->
+            <div class="setting-item" style="margin-bottom: 10px;">
+                <label data-i18n="bg_photo_provider"
+                    style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;">
+                    Photo Provider
+                </label>
+                <select id="picsum-provider-select" class="full-width">
+                    <option value="loremflickr" data-i18n="bg_provider_loremflickr">LoremFlickr (Flickr CC) ✓</option>
+                    <option value="picsum" data-i18n="bg_provider_picsum">Lorem Picsum</option>
+                </select>
+            </div>
 
             <div class="setting-item" style="margin-bottom: 14px;">
                 <label data-i18n="bg_theme"
@@ -161,16 +173,16 @@
                 <select id="picsum-category-select" class="full-width">
                     <option value="random" data-i18n="bg_theme_random">Random</option>
                     <option value="nature" data-i18n="bg_theme_nature">Nature</option>
-                    <option value="city" data-i18n="bg_theme_city">City & Urban</option>
+                    <option value="city" data-i18n="bg_theme_city">City &amp; Urban</option>
                     <option value="abstract" data-i18n="bg_theme_abstract">Abstract</option>
                     <option value="architecture" data-i18n="bg_theme_architecture">Architecture</option>
                     <option value="minimal" data-i18n="bg_theme_minimal">Minimal</option>
                     <option value="technology" data-i18n="bg_theme_technology">Technology</option>
-                    <option value="dark" data-i18n="bg_theme_dark">Dark & Moody</option>
+                    <option value="dark" data-i18n="bg_theme_dark">Dark &amp; Moody</option>
                     <option value="animals" data-i18n="bg_theme_animals">Animals</option>
-                    <option value="food" data-i18n="bg_theme_food">Food & Drink</option>
-                    <option value="space" data-i18n="bg_theme_space">Space & Night Sky</option>
-                    <option value="vehicles" data-i18n="bg_theme_vehicles">Vehicles & Cars</option>
+                    <option value="food" data-i18n="bg_theme_food">Food &amp; Drink</option>
+                    <option value="space" data-i18n="bg_theme_space">Space &amp; Night Sky</option>
+                    <option value="vehicles" data-i18n="bg_theme_vehicles">Vehicles &amp; Cars</option>
                 </select>
             </div>
 
