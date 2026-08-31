@@ -1024,6 +1024,10 @@ function createApplySettings(effectInstances) {
       "bookmark-group-border-hidden",
       settings.bookmarkGroupBorderHidden === true,
     )
+    document.body.classList.toggle(
+      "perf-hover-mode",
+      settings.perfHoverMode === true,
+    )
 
     // Apply Widget Skins
     const widgetSkinsMap = {
@@ -5827,6 +5831,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (smoothScrollCheckbox) {
       smoothScrollCheckbox.checked = settings.smoothScrollEnabled !== false
     }
+    const perfHoverModeCheckbox = document.getElementById("perf-hover-mode-checkbox")
+    if (perfHoverModeCheckbox) {
+      perfHoverModeCheckbox.checked = settings.perfHoverMode === true
+    }
+    const picsumProviderSelect = document.getElementById("picsum-provider-select")
+    if (picsumProviderSelect) {
+      picsumProviderSelect.value = settings.freePhotosProvider || "loremflickr"
+    }
+
 
     const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
     const snapGridSizeRow = document.getElementById("snap-grid-size-row")

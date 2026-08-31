@@ -160,6 +160,8 @@ export const defaultSettings = {
   multiColors: ["#FF6B6B", "#4ECDC4"],
   multiGradientAngle: 135,
   smoothScrollEnabled: true,
+  perfHoverMode: false,
+  freePhotosProvider: "loremflickr",
   multiColorType: "linear",
   multiColorRepeating: false,
   multiColorPosition: "center",

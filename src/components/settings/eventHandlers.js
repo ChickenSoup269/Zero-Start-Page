@@ -65,7 +65,9 @@ import {
 import {
   getPicsumRandomBackground,
   preloadPicsumImage,
+  getFreeRandomBackground,
 } from "./picsumFetcher.js"
+
 import {
   renderUserColors,
   renderLocalBackgrounds,
@@ -1349,6 +1351,14 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  const perfHoverModeCheckbox = document.getElementById("perf-hover-mode-checkbox")
+  if (perfHoverModeCheckbox) {
+    perfHoverModeCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("perfHoverMode", e.target.checked)
+      document.body.classList.toggle("perf-hover-mode", e.target.checked)
+    })
+  }
+
   const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
   const snapGridSizeRow = document.getElementById("snap-grid-size-row")
   const snapGridSizeInput = document.getElementById("snap-grid-size-input")
@@ -2017,42 +2027,59 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  // ─── Picsum Photos (No API Key) ─────────────────────────────────────────
+  // ─── Free Random Photos (Picsum / LoremFlickr — No API Key) ──────────────
   const picsumRandomBtn = document.getElementById("picsum-random-btn")
   const picsumSaveBtn = document.getElementById("picsum-save-btn")
   const picsumCreditEl = document.getElementById("picsum-credit")
   const picsumCategorySelect = document.getElementById("picsum-category-select")
+  const picsumProviderSelect = document.getElementById("picsum-provider-select")
   let _lastPicsumResult = null
+
+  // Restore saved provider preference
+  if (picsumProviderSelect) {
+    const saved = getSettings().freePhotosProvider || "loremflickr"
+    picsumProviderSelect.value = saved
+    picsumProviderSelect.addEventListener("change", () => {
+      updateSetting("freePhotosProvider", picsumProviderSelect.value)
+      saveSettings()
+    })
+  }
 
   if (picsumRandomBtn) {
     picsumRandomBtn.addEventListener("click", async () => {
       const themeKey = picsumCategorySelect?.value || "random"
+      const provider = picsumProviderSelect?.value || "loremflickr"
       const originalHtml = picsumRandomBtn.innerHTML
       picsumRandomBtn.disabled = true
       picsumRandomBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Loading...</span>`
       if (picsumCreditEl) picsumCreditEl.textContent = ""
       try {
-        const result = await getPicsumRandomBackground(themeKey)
+        const result = await getFreeRandomBackground(themeKey, provider)
         await preloadPicsumImage(result.imageUrl)
         _lastPicsumResult = result
 
         // Apply as background
         await handleSettingUpdate("background", result.imageUrl)
 
-        // Show credit info
+        // Show credit info with correct provider attribution
         if (picsumCreditEl) {
           const info = result.info
+          const isFlickr = provider === "loremflickr"
+          const providerName = isFlickr ? "LoremFlickr" : "picsum.photos"
+          const providerHref = isFlickr ? "https://loremflickr.com" : "https://picsum.photos"
           if (info) {
-            const authorLink = info.url ? `<a href="${info.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${info.author || "Unknown"}</a>` : (info.author || "Unknown")
-            picsumCreditEl.innerHTML = `📷 ${authorLink} · <a href="https://picsum.photos" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">picsum.photos</a>`
+            const authorLink = info.url
+              ? `<a href="${info.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${info.author || "Unknown"}</a>`
+              : (info.author || "Unknown")
+            picsumCreditEl.innerHTML = `📷 ${authorLink} · <a href="${providerHref}" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">${providerName}</a>`
           } else {
-            picsumCreditEl.innerHTML = `Photo via <a href="https://picsum.photos" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">picsum.photos</a>`
+            picsumCreditEl.innerHTML = `Photo via <a href="${providerHref}" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">${providerName}</a>`
           }
         }
 
         if (picsumSaveBtn) picsumSaveBtn.disabled = false
       } catch (err) {
-        console.error("Picsum fetch failed:", err)
+        console.error("Free photo fetch failed:", err)
         showAlert("Failed to load free photo. Check your internet connection.")
       } finally {
         picsumRandomBtn.disabled = false
@@ -2060,6 +2087,7 @@ export function setupGeneralEventHandlers(
       }
     })
   }
+
 
   if (picsumSaveBtn) {
     picsumSaveBtn.addEventListener("click", async () => {

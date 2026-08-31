@@ -92,3 +92,27 @@ body.bg-loading {
 .fa-spin {
   animation: spinnerRotate 1s linear infinite;
 }
+
+/* ─── Performance & Accessibility ───────────────────────────────────────────
+ * 1. OS-level "Reduce motion" preference — honour it automatically.
+ * 2. body.perf-hover-mode — user-toggled in Settings for snappier interactions.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Performance mode: cap all hover transitions to 50 ms for snappier UI */
+body.perf-hover-mode *,
+body.perf-hover-mode *::before,
+body.perf-hover-mode *::after {
+  transition-duration: 50ms !important;
+}
+

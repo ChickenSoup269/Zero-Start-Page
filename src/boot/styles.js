@@ -358,4 +358,7 @@ export function applyBasicStyles(settings) {
     "--bookmark-group-font-size",
     `${settings.bookmarkGroupFontSize ?? 10}px`,
   )
+
+  // Performance hover mode — reduces all transition durations to 50 ms
+  document.body.classList.toggle("perf-hover-mode", Boolean(settings.perfHoverMode))
 }
