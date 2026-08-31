@@ -25,6 +25,40 @@ async function resolveTimerAlarmUrl(soundKey) {
   return getTimerAlarmUrl(soundKey)
 }
 
+/**
+ * Fallback beep using Web Audio API — works completely offline, no files needed.
+ * Plays a double-beep pattern at 880 Hz to mimic an alarm.
+ */
+function playFallbackBeep() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext
+    if (!AudioCtx) return
+    const ctx = new AudioCtx()
+
+    const beep = (startTime, duration = 0.18) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = "sine"
+      osc.frequency.setValueAtTime(880, startTime)
+      gain.gain.setValueAtTime(0.4, startTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration)
+      osc.start(startTime)
+      osc.stop(startTime + duration)
+    }
+
+    const now = ctx.currentTime
+    beep(now)
+    beep(now + 0.25)
+    // Auto-close context after beeps finish to avoid resource leak
+    setTimeout(() => ctx.close().catch(() => {}), 800)
+  } catch {
+    // Web Audio API not available — silent fallback
+  }
+}
+
+
 export class Timer {
   constructor() {
     this.container = null
@@ -492,8 +526,15 @@ export class Timer {
     this.alarm.src = await resolveTimerAlarmUrl(nextSound)
     this.alarm.currentTime = 0
     this.alarm.loop = true
+    // Detect load failure early (e.g. remote file 404, no network)
+    this.alarm.onerror = () => {
+      console.warn("Alarm audio file failed to load, will use fallback beep on next ring.")
+    }
     if (wasPlaying) {
-      this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
+      this.alarm.play().catch((e) => {
+        console.warn("Alarm play failed, using fallback beep:", e)
+        playFallbackBeep()
+      })
     }
   }
 
@@ -953,7 +994,15 @@ export class Timer {
   playAlarm() {
     this.isExpired = true
     this._updateMiniIndicatorVisibility()
-    this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
+    // If the audio file hasn't loaded (e.g. no internet / CDN down), fall back to Web Audio beep
+    if (this.alarm.readyState < 2 /* HAVE_ENOUGH_DATA */) {
+      playFallbackBeep()
+    } else {
+      this.alarm.play().catch((e) => {
+        console.warn("Alarm play failed, using fallback beep:", e)
+        playFallbackBeep()
+      })
+    }
     this.container.querySelector("#alarm-control-container").style.display =
       "block"
     this.updateExpiredIndicator(true)
