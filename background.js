@@ -478,9 +478,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "mediaControl") {
+    const cmdName = typeof request.command === "string" ? request.command : request.command?.name
+    // Invalidate cached state immediately when changing tracks so the next
+    // poll always fetches fresh title/artist from the page
+    const isTrackChange = cmdName === "next" || cmdName === "prev" || cmdName === "playPause"
+
     chrome.tabs.query({ audible: true }, (tabs) => {
       if (tabs[0]) {
         rememberKnownMediaTab(tabs[0])
+        // Clear stale cache so next getMediaState fetches live data
+        if (isTrackChange && mediaStates[tabs[0].id]) {
+          delete mediaStates[tabs[0].id]
+        }
         controlMediaTab(tabs[0].id, request.command, sendResponse)
         return
       }
@@ -490,6 +499,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true
   }
 })
+
 
 function isKnownMediaTab(tab) {
   return (

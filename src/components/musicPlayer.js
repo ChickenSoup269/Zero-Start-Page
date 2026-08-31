@@ -1160,7 +1160,14 @@ export class MusicPlayer {
       action: "mediaControl",
       command: commandPayload,
     })
-    ;[120, 450].forEach((delay) => {
+
+    const cmdName = typeof command === "string" ? command : command?.name
+    const isTrackChange = cmdName === "next" || cmdName === "prev"
+
+    // For next/prev: poll at multiple intervals to catch when the new track
+    // title/artist has fully loaded in the media page
+    const delays = isTrackChange ? [120, 500, 1000, 1800] : [120, 450]
+    delays.forEach((delay) => {
       const timeoutId = setTimeout(() => {
         this._controlRefreshTimeouts.delete(timeoutId)
         this.fetchMediaState()
@@ -1168,6 +1175,7 @@ export class MusicPlayer {
       this._controlRefreshTimeouts.add(timeoutId)
     })
   }
+
 
   togglePlayer() {
     this.isVisible = !this.isVisible

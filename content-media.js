@@ -755,8 +755,14 @@
           }
         }
 
-        // Immediately sync back
-        setTimeout(sendStateUpdate, 150)
+        // Immediately sync back — reset dedup state for track changes so new
+        // title/artist is always broadcast even if it matches the previous value
+        const isTrackChange = cmdName === "next" || cmdName === "prev"
+        if (isTrackChange) {
+          lastBroadcastTitle = ""
+          lastBroadcastThumb = ""
+        }
+        setTimeout(() => sendStateUpdate(isTrackChange), 150)
         sendResponse({ ok: true })
       } catch (e) {
         sendResponse({ ok: false, error: e.message })
