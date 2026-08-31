@@ -6989,22 +6989,22 @@ body.sidebar-light .bg-9grid-btn.active {
   align-items: center;
   justify-content: center;
   font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 1px 5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.28);
   margin-left: auto;
   text-transform: uppercase;
   line-height: 1.2;
 }
 
 body.sidebar-light .lang-demo-badge {
-  background: rgba(217, 119, 6, 0.1);
-  color: #b45309;
-  border-color: rgba(217, 119, 6, 0.2);
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  border-color: rgba(22, 163, 74, 0.25);
 }
 
 /* ==========================================================================
@@ -9946,6 +9946,112 @@ body.sidebar-light .bookmark-preview-divider {
   padding: 16px !important;
   margin-bottom: 16px !important;
 }
+
+/* Card header row: title + badge */
+.pt-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pt-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color, #ffffff);
+}
+
+.pt-card-title i {
+  color: var(--accent-color, #a8c0ff);
+  font-size: 1rem;
+}
+
+/* "Browser Tab" badge in the header */
+.pt-card-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  color: var(--accent-color, #a8c0ff);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
+}
+
+/* Individual sub-section block */
+.pt-section {
+  margin-bottom: 4px;
+}
+
+/* Section label (mini sub-header) */
+.pt-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 10px;
+}
+
+/* Divider between the two sections */
+.pt-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 14px 0;
+}
+
+/* Favicon row: input + action buttons + preview */
+.pt-favicon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Color row at the bottom of favicon section */
+.pt-icon-colors {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pt-color-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+/* Light theme overrides */
+body.sidebar-light .pt-card-header {
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+
+body.sidebar-light .pt-section-label {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+body.sidebar-light .pt-divider {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+body.sidebar-light .pt-icon-colors {
+  border-top-color: rgba(0, 0, 0, 0.07);
+}
+
 
 .quick-token-chips {
   display: flex;

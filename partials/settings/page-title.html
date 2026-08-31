@@ -1,32 +1,41 @@
 <div class="setting-group page-title-card-wrap" id="page-title-group" data-settings-tab="appearance">
-    <div class="group-header no-collapse" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-heading group-icon" style="color: var(--accent-color);"></i>
-        <span style="font-weight: 600; font-size: 0.95rem;" data-i18n="settings_page_title">Page Title & Tab Icon</span>
+    <!-- Card Header -->
+    <div class="pt-card-header">
+        <div class="pt-card-title">
+            <i class="fa-solid fa-heading"></i>
+            <span data-i18n="settings_page_title">Page Title & Tab Icon</span>
+        </div>
+        <span class="pt-card-badge">Browser Tab</span>
     </div>
 
-    <!-- Page Title Text Input -->
-    <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
-        <label for="page-title-input" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_page_title">Page Title</span>
-        </label>
+    <!-- Section 1: Page Title Text -->
+    <div class="pt-section">
+        <div class="pt-section-label">
+            <i class="fa-solid fa-pen-nib"></i>
+            <span data-i18n="settings_page_title">Page Title</span>
+        </div>
         <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
-            placeholder="Enter custom page title" class="settings-page-title-input" style="width: 100%; border-radius: 8px;" />
-        
-        <div class="quick-token-chips" style="margin-top: 8px; margin-bottom: 4px; display: flex; flex-wrap: wrap; gap: 6px;">
+            placeholder="Enter custom page title" class="settings-page-title-input" style="width: 100%; border-radius: 8px; margin-bottom: 8px;" />
+
+        <div class="quick-token-chips" style="margin-bottom: 6px;">
             <button type="button" class="token-chip" data-token="{time}"><i class="fa-regular fa-clock"></i> {time}</button>
             <button type="button" class="token-chip" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
             <button type="button" class="token-chip" data-token="{music}"><i class="fa-solid fa-music"></i> {music}</button>
         </div>
-        <small class="setting-hint" data-i18n="settings_page_title_hint" style="margin-top: 4px; display: block; font-size: 0.8rem; opacity: 0.75;">Appears in browser tab. Tap chips to insert dynamic tokens.</small>
+        <small class="setting-hint" data-i18n="settings_page_title_hint">Appears in browser tab. Tap chips to insert dynamic tokens.</small>
     </div>
 
-    <!-- Tab Icon / Favicon Controls -->
-    <div class="setting-item no-margin-top">
-        <label class="settings-tab-icon-label" data-i18n="settings_tab_icon" for="tab-icon-input" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-icons"></i> <span>Tab Favicon</span>
-        </label>
-        
-        <div class="settings-tab-icon-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+    <!-- Divider -->
+    <div class="pt-divider"></div>
+
+    <!-- Section 2: Tab Icon / Favicon -->
+    <div class="pt-section">
+        <div class="pt-section-label">
+            <i class="fa-solid fa-icons"></i>
+            <span data-i18n="settings_tab_icon">Tab Favicon</span>
+        </div>
+
+        <div class="pt-favicon-row">
             <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
                 placeholder="SP" maxlength="2" class="settings-tab-icon-input" style="flex: 1; border-radius: 8px; height: 36px;" />
             <input type="file" id="tab-icon-file-input"
@@ -45,25 +54,25 @@
             </button>
             <div id="tab-icon-preview" class="settings-tab-icon-preview"></div>
         </div>
-        <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-bottom: 10px; display: block; font-size: 0.8rem; opacity: 0.75;">Max 2 letters, 1 emoji, or Font Awesome icon (leave blank for default)</small>
+        <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-bottom: 10px; display: block;">Max 2 letters, 1 emoji, or Font Awesome icon (leave blank for default)</small>
 
         <!-- Color Customization -->
-        <div class="settings-tab-icon-colors" style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
-            <div class="settings-tab-icon-color-item" style="display: flex; align-items: center; gap: 8px;">
-                <label for="tab-icon-bg-color" data-i18n="settings_icon_bg" style="font-size: 0.82rem; font-weight: 500;">Icon BG</label>
+        <div class="pt-icon-colors">
+            <div class="pt-color-item">
+                <label for="tab-icon-bg-color" data-i18n="settings_icon_bg">Icon BG</label>
                 <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
                     <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker" style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                 </div>
             </div>
-            <div class="settings-tab-icon-color-item" style="display: flex; align-items: center; gap: 8px;">
-                <label for="tab-icon-text-color" data-i18n="settings_icon_text" style="font-size: 0.82rem; font-weight: 500;">Icon Text</label>
+            <div class="pt-color-item">
+                <label for="tab-icon-text-color" data-i18n="settings_icon_text">Icon Text</label>
                 <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
                     <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker" style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                 </div>
             </div>
-            <div class="settings-tab-icon-color-item" style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+            <div class="pt-color-item" style="margin-left: auto;">
                 <input type="checkbox" id="tab-icon-transparent-bg" class="settings-tab-icon-checkbox">
-                <label style="cursor:pointer; font-size: 0.82rem; font-weight: 500;" for="tab-icon-transparent-bg"
+                <label style="cursor:pointer;" for="tab-icon-transparent-bg"
                     data-i18n="settings_icon_transparent_bg">Transparent BG</label>
             </div>
         </div>
