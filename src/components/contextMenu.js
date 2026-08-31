@@ -519,14 +519,153 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
       i18n.context_generate_qr || "Tạo mã QR",
       "fa-solid fa-qrcode",
       () => {
+        const popover = document.getElementById("qr-hover-popover")
+        if (popover) popover.style.display = "none"
         hideContextMenu()
         showQrCodeModal(url, faviconUrl)
       },
       "context-settings-item qr-menu-item"
     )
+
+    // Live QR hover popover preview
+    qrBtn.addEventListener("mouseenter", () => {
+      let popover = document.getElementById("qr-hover-popover")
+      if (!popover) {
+        popover = document.createElement("div")
+        popover.id = "qr-hover-popover"
+        popover.style.position = "fixed"
+        popover.style.zIndex = "21000"
+        popover.style.background = "white"
+        popover.style.padding = "10px"
+        popover.style.borderRadius = "12px"
+        popover.style.boxShadow = "0 10px 40px rgba(0,0,0,0.4)"
+        popover.style.pointerEvents = "none"
+        popover.style.opacity = "0"
+        popover.style.transition =
+          "opacity 0.2s ease-in-out, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        popover.style.transform = "scale(0.8) translateY(10px)"
+
+        const qrContainer = document.createElement("div")
+        qrContainer.style.position = "relative"
+        qrContainer.style.width = "180px"
+        qrContainer.style.height = "180px"
+
+        const img = document.createElement("img")
+        img.id = "qr-hover-img"
+        img.style.width = "100%"
+        img.style.height = "100%"
+        img.style.display = "block"
+        img.style.borderRadius = "6px"
+        qrContainer.appendChild(img)
+
+        const iconWrapper = document.createElement("div")
+        iconWrapper.id = "qr-hover-icon-wrapper"
+        iconWrapper.style.position = "absolute"
+        iconWrapper.style.top = "50%"
+        iconWrapper.style.left = "50%"
+        iconWrapper.style.transform = "translate(-50%, -50%)"
+        iconWrapper.style.background = "white"
+        iconWrapper.style.padding = "4px"
+        iconWrapper.style.borderRadius = "50%"
+        iconWrapper.style.display = "none"
+        iconWrapper.style.alignItems = "center"
+        iconWrapper.style.justifyContent = "center"
+        iconWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)"
+
+        const icon = document.createElement("img")
+        icon.id = "qr-hover-icon"
+        icon.style.width = "32px"
+        icon.style.height = "32px"
+        icon.style.borderRadius = "50%"
+        icon.style.objectFit = "cover"
+        iconWrapper.appendChild(icon)
+
+        qrContainer.appendChild(iconWrapper)
+        popover.appendChild(qrContainer)
+        document.body.appendChild(popover)
+      }
+
+      const img = popover.querySelector("#qr-hover-img")
+      const icon = popover.querySelector("#qr-hover-icon")
+      const iconWrapper = popover.querySelector("#qr-hover-icon-wrapper")
+      const encodedUrl = encodeURIComponent(url)
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodedUrl}&ecc=H`
+
+      // Verify favicon is valid URL
+      const isValidImageUrl =
+        typeof faviconUrl === "string" &&
+        (faviconUrl.startsWith("http://") ||
+          faviconUrl.startsWith("https://") ||
+          faviconUrl.startsWith("data:image/") ||
+          faviconUrl.startsWith("blob:") ||
+          faviconUrl.startsWith("chrome-extension://"))
+
+      let resolvedFavicon = isValidImageUrl ? faviconUrl : ""
+      if (!resolvedFavicon && url) {
+        try {
+          const hostname = new URL(url).hostname
+          if (hostname) {
+            resolvedFavicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`
+          }
+        } catch {}
+      }
+
+      if (resolvedFavicon && icon && iconWrapper) {
+        icon.src = resolvedFavicon
+        icon.onerror = () => {
+          if (iconWrapper) iconWrapper.style.display = "none"
+        }
+        iconWrapper.style.display = "flex"
+      } else if (iconWrapper) {
+        iconWrapper.style.display = "none"
+      }
+
+      const rect = qrBtn.getBoundingClientRect()
+
+      // Display on the right side of the context menu item
+      let left = rect.right + 10
+      let top = rect.top + rect.height / 2 - 100 // center vertically (assuming 200px height)
+
+      // Adjust if off screen horizontally
+      if (left + 200 > window.innerWidth) {
+        // Show on the left side if not enough space on the right
+        left = rect.left - 210
+        popover.style.transformOrigin = "center right"
+      } else {
+        popover.style.transformOrigin = "center left"
+      }
+
+      // Adjust if off screen vertically
+      if (top < 10) top = 10
+      if (top + 200 > window.innerHeight) top = window.innerHeight - 210
+
+      popover.style.left = `${left}px`
+      popover.style.top = `${top}px`
+      popover.style.display = "block"
+
+      requestAnimationFrame(() => {
+        popover.style.opacity = "1"
+        popover.style.transform = "scale(1) translateY(0)"
+      })
+    })
+
+    qrBtn.addEventListener("mouseleave", () => {
+      const popover = document.getElementById("qr-hover-popover")
+      if (popover) {
+        popover.style.opacity = "0"
+        popover.style.transform = "scale(0.8) translateY(10px)"
+        setTimeout(() => {
+          if (popover.style.opacity === "0") {
+            popover.style.display = "none"
+          }
+        }, 200)
+      }
+    })
+
     contextMenu.insertBefore(qrBtn, menuEdit)
   }
 }
+
 
 
 function openExternalUrl(url) {
@@ -2470,10 +2609,13 @@ export function hideContextMenu() {
   contextMenuTargetType = "bookmark"
   contextMenuTargetId = null
   contextMenuCallbacks = null
+  const qrHover = document.getElementById("qr-hover-popover")
+  if (qrHover) qrHover.style.display = "none"
   // Remove any quick-access popup that may have been opened
   const old = document.querySelector(".quick-access-popup")
   if (old && old.parentElement) old.parentElement.removeChild(old)
 }
+
 
 async function handleFavorite() {
   const type = contextMenuTargetType
