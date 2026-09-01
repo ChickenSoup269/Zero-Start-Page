@@ -8777,19 +8777,14 @@ export function setupGeneralEventHandlers(
 
     const compareBlobs = async (blob1, blob2) => {
       if (blob1.size !== blob2.size || blob1.type !== blob2.type) return false
-      const chunkSize = 8192
-
-      for (let offset = 0; offset < blob1.size; offset += chunkSize) {
-        const end = Math.min(offset + chunkSize, blob1.size)
-        const [buf1, buf2] = await Promise.all([
-          blob1.slice(offset, end).arrayBuffer(),
-          blob2.slice(offset, end).arrayBuffer(),
-        ])
-        const arr1 = new Uint8Array(buf1)
-        const arr2 = new Uint8Array(buf2)
-        for (let i = 0; i < arr1.length; i += 1) {
-          if (arr1[i] !== arr2[i]) return false
-        }
+      const [buf1, buf2] = await Promise.all([
+        blob1.arrayBuffer(),
+        blob2.arrayBuffer(),
+      ])
+      const arr1 = new Uint8Array(buf1)
+      const arr2 = new Uint8Array(buf2)
+      for (let i = 0; i < arr1.length; i += 1) {
+        if (arr1[i] !== arr2[i]) return false
       }
       return true
     }

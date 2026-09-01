@@ -71,6 +71,7 @@ export class MusicPlayer {
     this.container = null
     this.isVisible = settings.musicPlayerExpanded === true
     this.isPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
+    this.lastPersistedIsPlaying = this.isPlaying
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
     this.useDefaultColor =
@@ -950,10 +951,13 @@ export class MusicPlayer {
     this.applySourceMeta(sourceMeta)
 
     this.isPlaying = !data.paused
-    localStorage.setItem(
-      "musicPlayerLastIsPlaying",
-      this.isPlaying ? "true" : "false",
-    )
+    if (this.isPlaying !== this.lastPersistedIsPlaying) {
+      localStorage.setItem(
+        "musicPlayerLastIsPlaying",
+        this.isPlaying ? "true" : "false",
+      )
+      this.lastPersistedIsPlaying = this.isPlaying
+    }
     window.dispatchEvent(
       new CustomEvent("musicPlayingStateChange", { detail: this.isPlaying }),
     )
