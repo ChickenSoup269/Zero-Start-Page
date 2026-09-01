@@ -1049,10 +1049,11 @@ export class FullCalendar {
       addItem.innerHTML = `<i class="fa-solid fa-plus"></i> <span>${i18n.calendar_add_event || "Add Event"}</span>`
       addItem.addEventListener("click", () => {
         const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-        // Capture the day context menu's real position before hiding it
+        // Capture the day context menu's position before hiding it.
+        // positionContextMenu("left") computes: safeX = x - formWidth - 12
+        // So passing menuRect.left means form.rightEdge = menuRect.left - 12 → no overlap.
         const menuRect = menu.getBoundingClientRect()
         this.hideContextMenu()
-        // Open form anchored to the left edge of the day context menu
         this.showEventFormMenu(menuRect.left, menuRect.top, { dateStr })
       })
       menu.appendChild(addItem)
@@ -1425,46 +1426,52 @@ export class FullCalendar {
   }
 
   positionContextMenu(menu, x, y, preferredSide = "auto") {
-    const rect = menu.getBoundingClientRect()
-    let safeX = x
-    let safeY = y
+    const doPosition = () => {
+      const rect = menu.getBoundingClientRect()
+      let safeX = x
+      let safeY = y
 
-    if (preferredSide === "left") {
-      safeX = x - rect.width - 12
-      // If overflowing left screen edge, flip to right
-      if (safeX < 10) {
-        if (x + 12 + rect.width <= window.innerWidth - 10) {
-          safeX = x + 12
-        } else {
-          safeX = 10
+      if (preferredSide === "left") {
+        safeX = x - rect.width - 12
+        // If overflowing left screen edge, flip to right
+        if (safeX < 10) {
+          if (x + 12 + rect.width <= window.innerWidth - 10) {
+            safeX = x + 12
+          } else {
+            safeX = 10
+          }
         }
-      }
-    } else if (preferredSide === "right") {
-      safeX = x + 12
-      // If overflowing right screen edge, flip to left
-      if (safeX + rect.width > window.innerWidth - 10) {
-        if (x - rect.width - 12 >= 10) {
-          safeX = x - rect.width - 12
-        } else {
-          safeX = Math.max(10, window.innerWidth - rect.width - 15)
+      } else if (preferredSide === "right") {
+        safeX = x + 12
+        // If overflowing right screen edge, flip to left
+        if (safeX + rect.width > window.innerWidth - 10) {
+          if (x - rect.width - 12 >= 10) {
+            safeX = x - rect.width - 12
+          } else {
+            safeX = Math.max(10, window.innerWidth - rect.width - 15)
+          }
         }
-      }
-    } else {
-      if (x + rect.width > window.innerWidth - 10) {
-        safeX = Math.max(10, window.innerWidth - rect.width - 15)
       } else {
-        safeX = Math.max(10, x)
+        if (x + rect.width > window.innerWidth - 10) {
+          safeX = Math.max(10, window.innerWidth - rect.width - 15)
+        } else {
+          safeX = Math.max(10, x)
+        }
       }
+
+      if (safeY + rect.height > window.innerHeight - 10) {
+        safeY = Math.max(10, window.innerHeight - rect.height - 15)
+      } else {
+        safeY = Math.max(10, y)
+      }
+
+      menu.style.left = `${safeX}px`
+      menu.style.top = `${safeY}px`
     }
 
-    if (safeY + rect.height > window.innerHeight - 10) {
-      safeY = Math.max(10, window.innerHeight - rect.height - 15)
-    } else {
-      safeY = Math.max(10, y)
-    }
-
-    menu.style.left = `${safeX}px`
-    menu.style.top = `${safeY}px`
+    // Use requestAnimationFrame so the browser has had a chance to layout
+    // the menu and getBoundingClientRect() returns the actual dimensions.
+    requestAnimationFrame(doPosition)
   }
 
   hideContextMenu() {
