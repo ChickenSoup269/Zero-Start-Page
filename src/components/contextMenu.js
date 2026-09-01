@@ -1925,7 +1925,11 @@ export function showContextMenu(
 
       const defaultColorBtn = document.createElement("div")
       defaultColorBtn.className = "context-menu-item custom-music-item"
-      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>Màu sóng nhạc: ${colorModeLabel}</span>`
+      const waveColorPrefix =
+        i18n.music_player_wave_color ||
+        i18n.settings_music_use_default_color ||
+        "Màu sóng nhạc"
+      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>${waveColorPrefix}: ${colorModeLabel}</span>`
       defaultColorBtn.onclick = () => {
         updateSetting("musicPlayerUseDefaultColor", nextColorMode)
         saveSettings()
@@ -1947,7 +1951,12 @@ export function showContextMenu(
       const isWaveBg = settings.musicPlayerWaveBgColor === true
       const waveBgBtn = document.createElement("div")
       waveBgBtn.className = "context-menu-item custom-music-item"
-      waveBgBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${isWaveBg ? i18n.on || "Bật" : i18n.off || "Tắt"}</span>`
+      const waveBgText = isWaveBg
+        ? i18n.music_player_wave_bg_on ||
+          `${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${i18n.status_on || i18n.on || "Bật"}`
+        : i18n.music_player_wave_bg_off ||
+          `${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${i18n.status_off || i18n.off || "Tắt"}`
+      waveBgBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${waveBgText}</span>`
       waveBgBtn.onclick = () => {
         const newVal = !isWaveBg
         updateSetting("musicPlayerWaveBgColor", newVal)
