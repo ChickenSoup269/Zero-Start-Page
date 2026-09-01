@@ -172,13 +172,13 @@ export class FrostedGlassOrbsBackground {
 
         float dToCol1 = min(length(p - p0), length(p - p2));
         float dToCol2 = min(length(p - p1), length(p - p3));
-        float colMix = smoothstep(-0.2, 0.4, dToCol2 - dToCol1);
+        float colMix = smoothstep(-0.25, 0.35, dToCol2 - dToCol1);
         vec3 orbBaseCol = mix(u_color1, u_color2, colMix);
 
-        // Ambient Background Caustic Glow (outside glass orbs)
-        float ambientDist = mapSDF(vec3(uv * 1.2, 0.0), t, mouseNorm);
-        float aura = exp(-max(ambientDist, 0.0) * 3.8) * 0.45;
-        vec3 auraCol = mix(u_color1, u_color2, sin(u_time * 0.4 + uv.x) * 0.5 + 0.5);
+        // Gentle, soft Ambient Background Caustic Glow (dịu mắt, không lóa)
+        float ambientDist = mapSDF(vec3(uv * 1.1, 0.0), t, mouseNorm);
+        float aura = exp(-max(ambientDist, 0.0) * 4.2) * 0.16;
+        vec3 auraCol = mix(u_color1, u_color2, sin(u_time * 0.3 + uv.x) * 0.5 + 0.5);
 
         vec3 finalCol = vec3(0.0);
         float alpha = 0.0;
@@ -187,56 +187,54 @@ export class FrostedGlassOrbsBackground {
           vec3 N = calcNormal(p, t, mouseNorm);
           vec3 V = -rd;
 
-          // 1. Apple VisionOS Fresnel Glass Reflection
-          float fresnel = pow(1.0 - max(dot(N, V), 0.0), 2.2);
+          // 1. Soft Fresnel Glass Reflection (Silky, velvety, non-glaring)
+          float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
           
-          // Chromatic Dispersion (Rainbow edge refraction)
-          float fresnelR = pow(1.0 - max(dot(N * 1.03, V), 0.0), 2.5);
-          float fresnelB = pow(1.0 - max(dot(N * 0.97, V), 0.0), 2.5);
+          // Delicate Chromatic Dispersion along rim
+          float fresnelR = pow(1.0 - max(dot(N * 1.02, V), 0.0), 3.2);
+          float fresnelB = pow(1.0 - max(dot(N * 0.98, V), 0.0), 3.2);
 
-          // 2. Multi-Light 3D Specular Sheen
-          vec3 L1 = normalize(vec3(0.6, 0.8, 1.0));
-          vec3 L2 = normalize(vec3(-0.7, -0.4, 0.7));
-          vec3 Lm = normalize(vec3(mouseNorm.x * 0.8, mouseNorm.y * 0.8, 1.2) - p);
+          // 2. Refined 3D Specular Highlights (Subtle & gentle)
+          vec3 L1 = normalize(vec3(0.5, 0.7, 0.9));
+          vec3 Lm = normalize(vec3(mouseNorm.x * 0.6, mouseNorm.y * 0.6, 1.2) - p);
 
-          float spec1 = pow(max(dot(reflect(-L1, N), V), 0.0), 36.0) * 0.9;
-          float spec2 = pow(max(dot(reflect(-L2, N), V), 0.0), 24.0) * 0.4;
-          float specM = pow(max(dot(reflect(-Lm, N), V), 0.0), 28.0) * 0.7;
-          float totalSpec = spec1 + spec2 + specM;
+          float spec1 = pow(max(dot(reflect(-L1, N), V), 0.0), 45.0) * 0.35;
+          float specM = pow(max(dot(reflect(-Lm, N), V), 0.0), 30.0) * 0.22;
+          float totalSpec = spec1 + specM;
 
-          // 3. Frosted Glass Subsurface Core
-          float coreDensity = smoothstep(0.45, 0.0, dist);
-          vec3 innerGlow = mix(orbBaseCol, vec3(1.0), 0.35);
+          // 3. Velvety Frosted Glass Core (Preserves rich, deep palette colors)
+          vec3 innerBody = orbBaseCol * 0.88;
 
-          // 4. Glass Edge Highlighting with Iridescent Dispersion
-          vec3 glassRim = orbBaseCol;
-          glassRim.r += fresnelR * 0.25;
-          glassRim.b += fresnelB * 0.25;
-          glassRim += vec3(1.0) * fresnel * 0.75;
+          // 4. Delicate Glass Rim Highlighting
+          vec3 glassRim = orbBaseCol * 1.08;
+          glassRim.r += fresnelR * 0.12;
+          glassRim.b += fresnelB * 0.12;
+          glassRim += vec3(0.85, 0.9, 0.98) * fresnel * 0.32;
 
-          // Composite Glass Orb
-          finalCol = mix(innerGlow * 0.85, glassRim, fresnel * 0.65);
-          finalCol += vec3(1.0) * totalSpec;
+          // Composite Glass Orb (Soft, luxurious Apple glassmorphism)
+          finalCol = mix(innerBody, glassRim, fresnel * 0.7);
+          finalCol += vec3(0.95, 0.98, 1.0) * totalSpec;
 
-          alpha = clamp(0.45 + fresnel * 0.5 + totalSpec * 0.5, 0.0, 1.0);
+          alpha = clamp(0.52 + fresnel * 0.38 + totalSpec * 0.3, 0.0, 1.0);
         }
 
-        // Add ambient aura
-        finalCol += auraCol * aura * (1.0 - alpha * 0.5);
-        alpha = clamp(alpha + aura * 0.6, 0.0, 1.0);
+        // Add soft ambient aura
+        finalCol += auraCol * aura * (1.0 - alpha * 0.6);
+        alpha = clamp(alpha + aura * 0.35, 0.0, 1.0);
 
         // Dark Background Handling
         if (u_darkBg > 0.5) {
-          vec3 darkBackdrop = vec3(0.018, 0.022, 0.035);
+          vec3 darkBackdrop = vec3(0.015, 0.018, 0.028);
           // Soft peripheral vignette
           vec2 vigUv = gl_FragCoord.xy / u_resolution.xy;
           vigUv *= (1.0 - vigUv.yx);
           float vig = clamp(vigUv.x * vigUv.y * 15.0, 0.0, 1.0);
-          darkBackdrop *= mix(0.7, 1.0, vig);
+          darkBackdrop *= mix(0.75, 1.0, vig);
 
           finalCol = mix(darkBackdrop, finalCol, alpha);
           alpha = 1.0;
         }
+
 
         gl_FragColor = vec4(finalCol, alpha);
       }
