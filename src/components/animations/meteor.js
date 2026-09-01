@@ -1,11 +1,12 @@
 /**
- * MeteorEffect — Ultra-Sleek & High-Performance Celestial Shooting Stars
+ * MeteorEffect — Ultra-Sleek, Atmospheric & High-Performance Celestial Shooting Stars
  *
- * Performance Optimizations:
- *  - 1x Hardware-Accelerated Native Canvas Surface (Zero GPU fillrate bottlenecks)
- *  - Batched Starfield Rendering (Zero per-star save/restore overhead)
- *  - Direct Efficient 2-Pass Shader-like Linear Gradients (Zero GC churn)
- *  - Clean Ambient Particle Systems with Object Pooling & Quick Pruning
+ * Highlights:
+ *  - Atmospheric Deep Space Vignette (Moody dark night sky overlay with rich contrast)
+ *  - Multi-Tier Twinkling Starfield with Diamond Diffraction Flares
+ *  - 3-Pass Ionized Plasma Meteor Streaks with Incandescent Core & Radiant Head Flares
+ *  - Trailing Stardust Embers & Drifting Nebula Puffs
+ *  - Zero-GC Object Pooling & High-Speed Hardware Accelerated Canvas Rendering
  */
 
 export class MeteorEffect {
@@ -29,8 +30,8 @@ export class MeteorEffect {
     this.stars = []
     this._acc = 0
     this._lastT = 0
-    this._nextBrightMeteor = 6000 + Math.random() * 7000
-    this._nextNebulaMeteor = 12000 + Math.random() * 15000
+    this._nextBrightMeteor = 5000 + Math.random() * 6000
+    this._nextNebulaMeteor = 10000 + Math.random() * 12000
     this.cssWidth = 0
     this.cssHeight = 0
 
@@ -123,12 +124,12 @@ export class MeteorEffect {
   _getRandomColor() {
     if (this.fullColor) {
       const palette = [
-        { r: 255, g: 170, b: 90, rgbStr: "255,170,90" },
-        { r: 120, g: 235, b: 255, rgbStr: "120,235,255" },
-        { r: 255, g: 140, b: 220, rgbStr: "255,140,220" },
-        { r: 180, g: 155, b: 255, rgbStr: "180,155,255" },
-        { r: 255, g: 240, b: 150, rgbStr: "255,240,150" },
-        { r: 130, g: 255, b: 210, rgbStr: "130,255,210" },
+        { r: 255, g: 180, b: 100, rgbStr: "255,180,100" }, // Amber Gold
+        { r: 120, g: 235, b: 255, rgbStr: "120,235,255" }, // Cyan Ice
+        { r: 255, g: 140, b: 230, rgbStr: "255,140,230" }, // Neon Magenta
+        { r: 180, g: 160, b: 255, rgbStr: "180,160,255" }, // Celestial Violet
+        { r: 255, g: 245, b: 160, rgbStr: "255,245,160" }, // Cosmic Starlight
+        { r: 110, g: 255, b: 205, rgbStr: "110,255,205" }, // Emerald Aurora
       ]
       return palette[Math.floor(Math.random() * palette.length)]
     }
@@ -141,17 +142,20 @@ export class MeteorEffect {
   _buildStars() {
     const W = this.cssWidth
     const H = this.cssHeight
-    const count = Math.max(50, Math.min(120, Math.floor((W * H) / 16000)))
+    const count = Math.max(65, Math.min(150, Math.floor((W * H) / 14000)))
 
     this.stars = Array.from({ length: count }, () => {
-      const tier = Math.random() < 0.75 ? 0 : 1
+      const rand = Math.random()
+      // Tier 0: 70% micro faint stars, Tier 1: 24% medium bright, Tier 2: 6% sparkling diamond stars
+      const tier = rand < 0.7 ? 0 : rand < 0.94 ? 1 : 2
       return {
         x: Math.random() * W,
         y: Math.random() * H,
-        r: tier === 0 ? 0.6 + Math.random() * 0.4 : 1.1 + Math.random() * 0.6,
-        baseAlpha: tier === 0 ? 0.2 + Math.random() * 0.3 : 0.6 + Math.random() * 0.3,
+        r: tier === 0 ? 0.6 + Math.random() * 0.4 : tier === 1 ? 1.1 + Math.random() * 0.5 : 1.8 + Math.random() * 0.6,
+        baseAlpha: tier === 0 ? 0.25 + Math.random() * 0.25 : tier === 1 ? 0.55 + Math.random() * 0.35 : 0.85 + Math.random() * 0.15,
         phase: Math.random() * Math.PI * 2,
-        speed: tier === 0 ? 0.0008 + Math.random() * 0.001 : 0.0018 + Math.random() * 0.002,
+        speed: tier === 0 ? 0.0007 + Math.random() * 0.001 : tier === 1 ? 0.0015 + Math.random() * 0.002 : 0.0025 + Math.random() * 0.002,
+        tier,
       }
     })
   }
@@ -176,24 +180,24 @@ export class MeteorEffect {
     const sinA = Math.sin(angle)
 
     const baseSpeed = isNebula
-      ? 22 + Math.random() * 8
+      ? 24 + Math.random() * 8
       : isBright
-        ? 26 + Math.random() * 10
-        : 20 + Math.random() * 14
+        ? 28 + Math.random() * 10
+        : 22 + Math.random() * 14
 
     const speed = baseSpeed * this.speedMult
 
     const len = isNebula
-      ? 340 + Math.random() * 160
+      ? 360 + Math.random() * 180
       : isBright
-        ? 200 + Math.random() * 120
-        : 110 + Math.random() * 120
+        ? 220 + Math.random() * 140
+        : 130 + Math.random() * 130
 
     const thickness = isNebula
-      ? 1.5 + Math.random() * 0.4
+      ? 1.8 + Math.random() * 0.5
       : isBright
-        ? 1.2 + Math.random() * 0.4
-        : 0.8 + Math.random() * 0.4
+        ? 1.4 + Math.random() * 0.4
+        : 0.9 + Math.random() * 0.4
 
     const color = this._getRandomColor()
 
@@ -223,10 +227,10 @@ export class MeteorEffect {
       thickness,
       progress: 0,
       decayRate: isNebula
-        ? 0.006 + Math.random() * 0.002
+        ? 0.005 + Math.random() * 0.002
         : isBright
-          ? 0.012 + Math.random() * 0.005
-          : 0.018 + Math.random() * 0.012,
+          ? 0.010 + Math.random() * 0.004
+          : 0.016 + Math.random() * 0.010,
       color,
       sparkTimer: 0,
       nebulaTimer: 0,
@@ -252,13 +256,13 @@ export class MeteorEffect {
     this._nextBrightMeteor -= dt
     if (this._nextBrightMeteor <= 0) {
       this._spawnMeteor("bright")
-      this._nextBrightMeteor = 6000 + Math.random() * 7000
+      this._nextBrightMeteor = 5500 + Math.random() * 6500
     }
 
     this._nextNebulaMeteor -= dt
     if (this._nextNebulaMeteor <= 0) {
       this._spawnMeteor("nebula")
-      this._nextNebulaMeteor = 14000 + Math.random() * 16000
+      this._nextNebulaMeteor = 12000 + Math.random() * 14000
     }
 
     // 2. Update Meteors
@@ -268,35 +272,37 @@ export class MeteorEffect {
       m.y += m.vy * s
       m.progress += m.decayRate * s
 
-      if (m.isNebula && m.progress > 0.08 && m.progress < 0.92) {
+      // Cosmic dust puffs on large nebula bolides
+      if (m.isNebula && m.progress > 0.06 && m.progress < 0.94) {
         m.nebulaTimer += dt
-        if (m.nebulaTimer >= 35 && this.nebulaPuffs.length < 30) {
+        if (m.nebulaTimer >= 30 && this.nebulaPuffs.length < 35) {
           m.nebulaTimer = 0
           this.nebulaPuffs.push({
             x: m.x,
             y: m.y,
-            vx: -m.cosA * 0.3,
-            vy: -m.sinA * 0.3,
+            vx: -m.cosA * 0.4 + (Math.random() - 0.5) * 0.3,
+            vy: -m.sinA * 0.4 + (Math.random() - 0.5) * 0.3,
             r: 10,
-            maxR: 35 + Math.random() * 15,
+            maxR: 38 + Math.random() * 18,
             life: 1.0,
-            decayRate: 0.007,
+            decayRate: 0.008,
             color: m.color,
           })
         }
       }
 
+      // Spark embers trailing behind bright shooting stars
       if (m.isBright) {
         m.sparkTimer += dt
-        if (m.sparkTimer > 50 && m.progress > 0.2 && m.progress < 0.8 && this.sparks.length < 25) {
+        if (m.sparkTimer > 40 && m.progress > 0.15 && m.progress < 0.85 && this.sparks.length < 30) {
           m.sparkTimer = 0
           this.sparks.push({
-            x: m.x - m.cosA * 15,
-            y: m.y - m.sinA * 15,
-            vx: -m.cosA * 0.8,
-            vy: -m.sinA * 0.8,
-            life: 0.4,
-            maxLife: 0.4,
+            x: m.x - m.cosA * (15 + Math.random() * 10),
+            y: m.y - m.sinA * (15 + Math.random() * 10),
+            vx: -m.cosA * (0.6 + Math.random() * 0.5) + (Math.random() - 0.5) * 0.4,
+            vy: -m.sinA * (0.6 + Math.random() * 0.5) + (Math.random() - 0.5) * 0.4,
+            life: 0.45,
+            maxLife: 0.45,
             color: m.color,
           })
         }
@@ -319,7 +325,7 @@ export class MeteorEffect {
       const p = this.nebulaPuffs[i]
       p.x += p.vx * s
       p.y += p.vy * s
-      p.r += (p.maxR - p.r) * 0.04 * s
+      p.r += (p.maxR - p.r) * 0.045 * s
       p.life -= p.decayRate * s
       if (p.life <= 0) this.nebulaPuffs.splice(i, 1)
     }
@@ -329,25 +335,67 @@ export class MeteorEffect {
       const sp = this.sparks[i]
       sp.x += sp.vx * s
       sp.y += sp.vy * s
-      sp.life -= 0.025 * s
+      sp.life -= 0.024 * s
       if (sp.life <= 0) this.sparks.splice(i, 1)
     }
   }
 
   // ─── OPTIMIZED DRAWING ────────────────────────────────────────
 
+  _drawAtmosphericBackdrop() {
+    const ctx = this.ctx
+    const W = this.cssWidth
+    const H = this.cssHeight
+
+    // Deep cosmic night sky vignette overlay
+    const bgGrad = ctx.createRadialGradient(
+      W * 0.5,
+      H * 0.45,
+      Math.min(W, H) * 0.1,
+      W * 0.5,
+      H * 0.5,
+      Math.max(W, H) * 0.85,
+    )
+    bgGrad.addColorStop(0, "rgba(5, 7, 15, 0.42)")
+    bgGrad.addColorStop(0.65, "rgba(3, 4, 10, 0.62)")
+    bgGrad.addColorStop(1, "rgba(1, 2, 6, 0.78)")
+
+    ctx.fillStyle = bgGrad
+    ctx.fillRect(0, 0, W, H)
+  }
+
   _drawStars(t) {
     const ctx = this.ctx
-    ctx.fillStyle = "rgba(255, 255, 255, 0.75)"
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
     ctx.beginPath()
 
     for (const s of this.stars) {
       const tw = 0.5 + Math.sin(t * s.speed + s.phase) * 0.45
-      if (s.baseAlpha * tw < 0.1) continue
+      const alpha = s.baseAlpha * tw
+      if (alpha < 0.08) continue
+
       ctx.moveTo(s.x + s.r, s.y)
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
     }
     ctx.fill()
+
+    // Diamond 4-point sparkle for the brightest prominent stars
+    for (const s of this.stars) {
+      if (s.tier !== 2) continue
+      const tw = 0.5 + Math.sin(t * s.speed + s.phase) * 0.5
+      if (tw < 0.65) continue
+      const flareLen = (s.r * 2.8) * tw
+      ctx.strokeStyle = `rgba(255, 255, 255, ${(tw - 0.65) * 2.0})`
+      ctx.lineWidth = 0.75
+      ctx.beginPath()
+      // Horizontal ray
+      ctx.moveTo(s.x - flareLen, s.y)
+      ctx.lineTo(s.x + flareLen, s.y)
+      // Vertical ray
+      ctx.moveTo(s.x, s.y - flareLen)
+      ctx.lineTo(s.x, s.y + flareLen)
+      ctx.stroke()
+    }
   }
 
   _drawMeteorStreak(m) {
@@ -355,55 +403,70 @@ export class MeteorEffect {
     const intensity = Math.sin(m.progress * Math.PI)
     if (intensity <= 0.02) return
 
-    const alpha = Math.pow(intensity, 1.2)
+    const alpha = Math.pow(intensity, 1.15)
     const hx = m.x
     const hy = m.y
     const tx = hx - m.cosA * m.len
     const ty = hy - m.sinA * m.len
     const { rgbStr } = m.color
 
-    // Single Optimized Linear Gradient for the entire streak
+    // Linear Gradient for streak with soft luminous fade
     const grad = ctx.createLinearGradient(tx, ty, hx, hy)
     grad.addColorStop(0, `rgba(${rgbStr},0)`)
-    grad.addColorStop(0.65, `rgba(${rgbStr},${0.3 * alpha})`)
-    grad.addColorStop(0.92, `rgba(${rgbStr},${0.75 * alpha})`)
-    grad.addColorStop(1.0, `rgba(255,255,255,${0.95 * alpha})`)
+    grad.addColorStop(0.55, `rgba(${rgbStr},${0.35 * alpha})`)
+    grad.addColorStop(0.88, `rgba(${rgbStr},${0.85 * alpha})`)
+    grad.addColorStop(1.0, `rgba(255,255,255,${0.98 * alpha})`)
 
-    // Pass 1: Luminous Halo Stroke
+    // Pass 1: Luminous Outer Plasma Glow Halo
     ctx.strokeStyle = grad
-    ctx.lineWidth = m.thickness * 2.8
+    ctx.lineWidth = m.thickness * 3.4
     ctx.lineCap = "round"
     ctx.beginPath()
     ctx.moveTo(tx, ty)
     ctx.lineTo(hx, hy)
     ctx.stroke()
 
-    // Pass 2: Sharp Incandescent Core
-    const coreX = hx - m.cosA * (m.len * 0.45)
-    const coreY = hy - m.sinA * (m.len * 0.45)
+    // Pass 2: High-Density Radiant Beam
+    ctx.strokeStyle = grad
+    ctx.lineWidth = m.thickness * 1.6
+    ctx.beginPath()
+    ctx.moveTo(tx, ty)
+    ctx.lineTo(hx, hy)
+    ctx.stroke()
+
+    // Pass 3: Ultra-White Incandescent Core
+    const coreLen = m.len * (m.isBright ? 0.5 : 0.35)
+    const coreX = hx - m.cosA * coreLen
+    const coreY = hy - m.sinA * coreLen
     ctx.strokeStyle = `rgba(255,255,255,${0.95 * alpha})`
-    ctx.lineWidth = Math.max(0.7, m.thickness * 0.7)
+    ctx.lineWidth = Math.max(0.75, m.thickness * 0.75)
     ctx.beginPath()
     ctx.moveTo(coreX, coreY)
     ctx.lineTo(hx, hy)
     ctx.stroke()
 
-    // Pinpoint Head Dot
-    ctx.fillStyle = `rgba(255,255,255,${alpha})`
+    // Radiant Head Flare / Comet Glow
+    const headRadius = m.thickness * (m.isBright ? 2.6 : 1.8)
+    const headGrad = ctx.createRadialGradient(hx, hy, 0, hx, hy, headRadius * 2.2)
+    headGrad.addColorStop(0, `rgba(255,255,255,${alpha})`)
+    headGrad.addColorStop(0.35, `rgba(${rgbStr},${0.8 * alpha})`)
+    headGrad.addColorStop(1, `rgba(${rgbStr},0)`)
+
+    ctx.fillStyle = headGrad
     ctx.beginPath()
-    ctx.arc(hx, hy, m.thickness * 1.4, 0, Math.PI * 2)
+    ctx.arc(hx, hy, headRadius * 2.2, 0, Math.PI * 2)
     ctx.fill()
   }
 
   _drawNebulaPuffs() {
     const ctx = this.ctx
     for (const p of this.nebulaPuffs) {
-      const alpha = p.life * 0.16
+      const alpha = p.life * 0.18
       if (alpha <= 0.01) continue
 
       const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r)
-      grad.addColorStop(0, `rgba(${p.color.rgbStr},${alpha * 1.5})`)
-      grad.addColorStop(0.6, `rgba(${p.color.rgbStr},${alpha * 0.6})`)
+      grad.addColorStop(0, `rgba(${p.color.rgbStr},${alpha * 1.6})`)
+      grad.addColorStop(0.55, `rgba(${p.color.rgbStr},${alpha * 0.7})`)
       grad.addColorStop(1, "rgba(0,0,0,0)")
 
       ctx.fillStyle = grad
@@ -420,29 +483,32 @@ export class MeteorEffect {
 
     ctx.clearRect(0, 0, W, H)
 
-    // 1. Crisp Starfield
+    // 1. Atmospheric Deep Cosmic Night Vignette
+    this._drawAtmosphericBackdrop()
+
+    // 2. Multi-tier Sparkling Starfield
     this._drawStars(t)
 
-    // 2. High-Performance Lighter Composite for Shooting Stars
+    // 3. High-Performance Additive Composite for Luminous Meteors
     ctx.globalCompositeOperation = "lighter"
 
-    // Nebula Puffs
+    // Trailing Nebula Puffs
     if (this.nebulaPuffs.length > 0) {
       this._drawNebulaPuffs()
     }
 
-    // Meteors
+    // Shooting Stars / Meteors
     for (const m of this.meteors) {
       this._drawMeteorStreak(m)
     }
 
-    // Micro Sparks
+    // Floating Stardust Sparks
     if (this.sparks.length > 0) {
       for (const sp of this.sparks) {
-        const alpha = (sp.life / sp.maxLife) * 0.8
+        const alpha = (sp.life / sp.maxLife) * 0.85
         ctx.fillStyle = `rgba(${sp.color.rgbStr},${alpha})`
         ctx.beginPath()
-        ctx.arc(sp.x, sp.y, 0.8, 0, Math.PI * 2)
+        ctx.arc(sp.x, sp.y, 1.0, 0, Math.PI * 2)
         ctx.fill()
       }
     }
