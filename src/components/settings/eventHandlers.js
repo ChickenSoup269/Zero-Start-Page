@@ -1013,7 +1013,35 @@ export function setupGeneralEventHandlers(
           `0px 2px ${Math.max(2, Math.round(blur / 2))}px ${rgbaStr}`,
         )
       } else if (k === "bookmarkLayoutBgColor") {
-        rootStyle.setProperty("--bookmark-layout-bg", v)
+        rootStyle.setProperty("--bookmark-layout-bg-color", v)
+        const textCol = getContrastYIQ(v) === "black" ? "#1e293b" : "#ffffff"
+        rootStyle.setProperty("--bookmark-layout-text-color", textCol)
+      } else if (k === "bookmarkLayoutBgStyle") {
+        document.body.classList.remove(
+          "bookmark-layout-bg-hidden",
+          "bookmark-layout-bg-white",
+          "bookmark-layout-bg-m3-accent",
+          "bookmark-layout-bg-colored",
+        )
+        if (v === "hidden") {
+          document.body.classList.add("bookmark-layout-bg-hidden")
+        } else if (v === "white") {
+          document.body.classList.add("bookmark-layout-bg-white")
+          rootStyle.setProperty(
+            "--bookmark-layout-bg-color",
+            "rgba(255, 255, 255, 0.85)",
+          )
+          rootStyle.setProperty("--bookmark-layout-text-color", "#1e293b")
+        } else if (v === "m3-accent") {
+          document.body.classList.add("bookmark-layout-bg-m3-accent")
+        } else if (v === "colored") {
+          document.body.classList.add("bookmark-layout-bg-colored")
+          const bgCol = settings.bookmarkLayoutBgColor || "#ffffff"
+          rootStyle.setProperty("--bookmark-layout-bg-color", bgCol)
+          const textCol =
+            getContrastYIQ(bgCol) === "black" ? "#1e293b" : "#ffffff"
+          rootStyle.setProperty("--bookmark-layout-text-color", textCol)
+        }
       }
     }
 
@@ -3267,6 +3295,14 @@ export function setupGeneralEventHandlers(
       updateBookmarkLivePreview()
     })
 
+    DOM.bookmarkBgColorPicker.addEventListener("input", () => {
+      throttleSettingUpdate(
+        "bookmarkBgColor",
+        DOM.bookmarkBgColorPicker.value,
+        true,
+      )
+      updateBookmarkLivePreview()
+    })
     DOM.bookmarkBgColorPicker.addEventListener("change", () => {
       throttleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
       updateBookmarkLivePreview()
@@ -3276,6 +3312,7 @@ export function setupGeneralEventHandlers(
       throttleSettingUpdate(
         "bookmarkBgOpacity",
         Number(DOM.bookmarkBgOpacityInput.value),
+        true,
       )
       updateBookmarkLivePreview()
     })
@@ -3289,6 +3326,14 @@ export function setupGeneralEventHandlers(
     })
 
     if (DOM.bookmarkGroupBgColorPicker) {
+      DOM.bookmarkGroupBgColorPicker.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkGroupBgColor",
+          DOM.bookmarkGroupBgColorPicker.value,
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
       DOM.bookmarkGroupBgColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkGroupBgColor",
@@ -3316,6 +3361,14 @@ export function setupGeneralEventHandlers(
       })
     }
     if (DOM.bookmarkGroupTextColorPicker) {
+      DOM.bookmarkGroupTextColorPicker.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkGroupTextColor",
+          DOM.bookmarkGroupTextColorPicker.value,
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
       DOM.bookmarkGroupTextColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkGroupTextColor",
@@ -3451,6 +3504,14 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkTextColorPicker) {
+      DOM.bookmarkTextColorPicker.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkTextColor",
+          DOM.bookmarkTextColorPicker.value,
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
       DOM.bookmarkTextColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkTextColor",
@@ -3805,6 +3866,13 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkLayoutBgColor) {
+      DOM.bookmarkLayoutBgColor.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkLayoutBgColor",
+          DOM.bookmarkLayoutBgColor.value,
+          true,
+        )
+      })
       DOM.bookmarkLayoutBgColor.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkLayoutBgColor",
@@ -3821,6 +3889,13 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkShadowColorPicker) {
+      DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkShadowColor",
+          DOM.bookmarkShadowColorPicker.value,
+          true,
+        )
+      })
       DOM.bookmarkShadowColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkShadowColor",
