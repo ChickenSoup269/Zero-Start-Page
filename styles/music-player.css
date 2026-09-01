@@ -3518,21 +3518,21 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper {
   background: linear-gradient(
     135deg,
-    rgba(28, 20, 16, 0.92) 0%,
-    rgba(45, 30, 22, 0.88) 45%,
-    rgba(22, 16, 12, 0.95) 100%
+    rgba(24, 16, 12, 0.95) 0%,
+    rgba(42, 28, 20, 0.92) 48%,
+    rgba(18, 12, 10, 0.97) 100%
   );
-  border: 1px solid rgba(223, 168, 92, 0.38);
+  border: 1px solid rgba(223, 168, 92, 0.42);
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(223, 168, 92, 0.12),
-    inset 0 1px 0 rgba(255, 235, 180, 0.22);
+    0 18px 45px rgba(0, 0, 0, 0.65),
+    0 0 30px rgba(223, 168, 92, 0.16),
+    inset 0 1px 1px rgba(255, 235, 190, 0.3);
   color: #f7e7ce;
   position: relative;
   overflow: hidden !important;
-  border-radius: 18px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
   animation: harpFloating 7s ease-in-out infinite;
 }
 
@@ -3543,8 +3543,8 @@ body.widgets-m3-accent
   inset: 0;
   background: radial-gradient(
     circle at 75% 30%,
-    rgba(223, 168, 92, 0.18) 0%,
-    transparent 60%
+    rgba(223, 168, 92, 0.2) 0%,
+    transparent 65%
   );
   pointer-events: none;
   z-index: 0;
@@ -3560,7 +3560,7 @@ body.widgets-m3-accent
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(223, 168, 92, 0.7) 50%,
+    rgba(255, 220, 140, 0.85) 50%,
     transparent 100%
   );
   pointer-events: none;
@@ -3587,89 +3587,114 @@ body.widgets-m3-accent
 }
 
 .music-style-harp .player-info h3 {
-  color: #fff6e5;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(223, 168, 92, 0.35);
+  color: #fff8eb;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(223, 168, 92, 0.4);
   font-weight: 700;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  font-size: 1.02rem;
 }
 
 .music-style-harp .player-info p {
-  color: rgba(247, 231, 206, 0.82);
+  color: #d9c2a7;
   font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .music-style-harp .disc-container {
-  border: 1px solid rgba(223, 168, 92, 0.45);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(223, 168, 92, 0.2);
-  background: rgba(20, 14, 10, 0.8);
+  border: 1px solid rgba(223, 168, 92, 0.5);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.55),
+    0 0 15px rgba(223, 168, 92, 0.22);
+  background: radial-gradient(
+    circle at center,
+    rgba(35, 24, 18, 0.9) 0%,
+    rgba(16, 11, 8, 0.95) 100%
+  );
+  transition: box-shadow 0.4s ease;
+}
+
+.music-style-harp .music-player-wrapper.playing .disc-container {
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(223, 168, 92, 0.4);
 }
 
 .music-style-harp .vinyl-disc {
-  box-shadow: inset 0 0 0 2px rgba(223, 168, 92, 0.3);
+  box-shadow: inset 0 0 0 2px rgba(223, 168, 92, 0.35);
 }
 
 .music-style-harp .vinyl-disc::before {
-  border-color: rgba(223, 168, 92, 0.4);
+  border-color: rgba(223, 168, 92, 0.45);
 }
 
 .music-style-harp .controls-row button,
 .music-style-harp .player-btn {
   color: #f7e7ce;
-  background: rgba(255, 235, 190, 0.08);
-  border: 1px solid rgba(223, 168, 92, 0.25);
+  background: rgba(255, 235, 190, 0.1);
+  border: 1px solid rgba(223, 168, 92, 0.3);
   border-radius: 50%;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .music-style-harp .controls-row button:hover,
 .music-style-harp .player-btn:hover {
   color: #ffffff;
-  background: rgba(223, 168, 92, 0.3);
-  border-color: rgba(255, 220, 140, 0.6);
-  box-shadow: 0 0 12px rgba(223, 168, 92, 0.4);
-  transform: scale(1.08);
+  background: rgba(223, 168, 92, 0.35);
+  border-color: rgba(255, 220, 140, 0.75);
+  box-shadow: 0 0 14px rgba(223, 168, 92, 0.5);
+  transform: scale(1.1);
 }
 
 .music-style-harp .controls-row button:active,
 .music-style-harp .player-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
 }
 
 .music-style-harp .play-pause-btn {
-  background: linear-gradient(135deg, #dfa85c 0%, #b88235 100%);
+  background: linear-gradient(135deg, #f3cf85 0%, #dfa85c 50%, #b87c2b 100%) !important;
   color: #1a1208 !important;
-  border: 1px solid rgba(255, 235, 180, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(223, 168, 92, 0.45) !important;
+  border: 1px solid rgba(255, 240, 200, 0.75) !important;
+  box-shadow:
+    0 4px 16px rgba(223, 168, 92, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
 .music-style-harp .play-pause-btn:hover {
-  background: linear-gradient(135deg, #eed088 0%, #d49845 100%) !important;
-  box-shadow: 0 6px 18px rgba(223, 168, 92, 0.65) !important;
+  background: linear-gradient(135deg, #ffe29e 0%, #eed088 50%, #d49845 100%) !important;
+  box-shadow:
+    0 6px 22px rgba(223, 168, 92, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
   color: #000000 !important;
+  transform: scale(1.12);
 }
 
 .music-style-harp .progress-time {
-  color: rgba(247, 231, 206, 0.85);
-  font-size: 0.75rem;
+  color: #d9c2a7;
+  font-size: 0.76rem;
+  font-weight: 500;
 }
 
 .music-style-harp .progress-bar-track {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(223, 168, 92, 0.3);
+  background: rgba(14, 10, 8, 0.5);
+  border: 1px solid rgba(223, 168, 92, 0.35);
   height: 5px;
   border-radius: 4px;
 }
 
 .music-style-harp .progress-bar-fill {
-  background: linear-gradient(90deg, #c99342 0%, #ffd885 100%);
-  box-shadow: 0 0 10px rgba(223, 168, 92, 0.65);
+  background: linear-gradient(90deg, #c99342 0%, #ffe49e 100%);
+  box-shadow: 0 0 12px rgba(223, 168, 92, 0.75);
   border-radius: 4px;
 }
 
 .music-style-harp .progress-bar-thumb {
-  background: #fff3d1;
+  background: #fff9e6;
   border: 2px solid #b88235;
-  box-shadow: 0 0 8px rgba(223, 168, 92, 0.8);
+  box-shadow:
+    0 0 10px rgba(223, 168, 92, 0.85),
+    0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .music-style-harp .music-visualizer {
@@ -3688,12 +3713,14 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper.skin-white-blur {
   background: linear-gradient(
     135deg,
-    rgba(255, 250, 242, 0.85) 0%,
-    rgba(247, 238, 222, 0.8) 50%,
-    rgba(240, 228, 208, 0.9) 100%
+    rgba(255, 250, 242, 0.88) 0%,
+    rgba(247, 238, 222, 0.84) 50%,
+    rgba(240, 228, 208, 0.92) 100%
   ) !important;
-  border: 1px solid rgba(184, 130, 53, 0.35) !important;
-  box-shadow: 0 12px 30px rgba(120, 80, 20, 0.15) !important;
+  border: 1px solid rgba(184, 130, 53, 0.4) !important;
+  box-shadow:
+    0 14px 35px rgba(120, 80, 20, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
   color: #3d2b14 !important;
 }
 
@@ -3709,13 +3736,13 @@ body.widgets-m3-accent
 
 .music-style-harp .music-player-wrapper.skin-white-blur .player-btn {
   color: #3d2b14 !important;
-  border-color: rgba(184, 130, 53, 0.3) !important;
-  background: rgba(184, 130, 53, 0.1) !important;
+  border-color: rgba(184, 130, 53, 0.35) !important;
+  background: rgba(184, 130, 53, 0.12) !important;
 }
 
 .music-style-harp .music-player-wrapper.skin-white-blur .progress-bar-track {
-  background: rgba(184, 130, 53, 0.15) !important;
-  border-color: rgba(184, 130, 53, 0.25) !important;
+  background: rgba(184, 130, 53, 0.18) !important;
+  border-color: rgba(184, 130, 53, 0.3) !important;
 }
 
 /* =========================================

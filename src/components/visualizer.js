@@ -408,7 +408,7 @@ class MusicVisualizer {
     ctx.restore()
   }
 
-  // ── Harp & Zither Visualizer ─────────────────────────────────────────────
+  // ── Harp & Zither Visualizer (Ultra-Smooth Multi-Harmonic Physics) ────────
 
   _startHarp() {
     this._stopHarp()
@@ -433,21 +433,34 @@ class MusicVisualizer {
     this._lastFrameTime = 0
     this._lastConfigCheck = performance.now()
     this._harpSimTime = 0
-    this._harpAmplitudes = new Float32Array(16).fill(0)
+    const numStrings = 16
+    this._harpAmplitudes = new Float32Array(numStrings).fill(0)
+    this._harpTargetAmps = new Float32Array(numStrings).fill(0)
+    this._harpVels = new Float32Array(numStrings).fill(0)
     this._harpPluckRipples = []
     this._harpPetals = []
+    this._lastPluckTimes = new Float32Array(numStrings).fill(0)
 
-    // Pre-seed floating stardust/petals
-    for (let i = 0; i < 20; i++) {
+    // Pre-seed 24 fluttering 3D lotus petals & twinkling stardust
+    const initW = this.cachedW || 276
+    const initH = this.cachedH || 60
+    for (let i = 0; i < 24; i++) {
+      const isPetal = i % 2 === 0
       this._harpPetals.push({
-        x: Math.random() * (this.cachedW || 276),
-        y: Math.random() * (this.cachedH || 60),
-        vx: (Math.random() - 0.5) * 8,
-        vy: -(6 + Math.random() * 14),
-        size: 1.2 + Math.random() * 2.2,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 2.5,
-        alpha: 0.25 + Math.random() * 0.55,
+        isPetal,
+        x: Math.random() * initW,
+        y: Math.random() * initH,
+        vx: (Math.random() - 0.5) * 6,
+        vy: -(5 + Math.random() * 12),
+        size: isPetal ? 1.8 + Math.random() * 2.4 : 0.8 + Math.random() * 1.5,
+        rotX: Math.random() * Math.PI * 2,
+        rotY: Math.random() * Math.PI * 2,
+        rotZ: Math.random() * Math.PI * 2,
+        rotSpeedX: (Math.random() - 0.5) * 3,
+        rotSpeedY: (Math.random() - 0.5) * 3.5,
+        rotSpeedZ: (Math.random() - 0.5) * 2,
+        alpha: 0.3 + Math.random() * 0.55,
+        twinklePhase: Math.random() * Math.PI * 2,
         life: Math.random(),
       })
     }
@@ -464,7 +477,7 @@ class MusicVisualizer {
 
       const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
-      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save mode
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
 
       if (ts - this._lastConfigCheck > 200) {
@@ -504,13 +517,15 @@ class MusicVisualizer {
   _harpFrame(dt) {
     const canvas = this.harpCanvas
     if (!canvas) return
-    const W = this.cachedW || this.container?.offsetWidth || 276
-    const H = this.cachedH || this.container?.offsetHeight || 60
+    const W = Math.max(160, this.cachedW || this.container?.offsetWidth || 276)
+    const H = Math.max(40, this.cachedH || this.container?.offsetHeight || 60)
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-    if (canvas.width !== Math.floor(W * dpr) || canvas.height !== Math.floor(H * dpr)) {
-      canvas.width = Math.floor(W * dpr)
-      canvas.height = Math.floor(H * dpr)
+    const targetW = Math.floor(W * dpr)
+    const targetH = Math.floor(H * dpr)
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW
+      canvas.height = targetH
     }
     const ctx = canvas.getContext("2d")
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -529,55 +544,64 @@ class MusicVisualizer {
     const numStrings = 16
     if (!this._harpAmplitudes || this._harpAmplitudes.length !== numStrings) {
       this._harpAmplitudes = new Float32Array(numStrings).fill(0)
+      this._harpTargetAmps = new Float32Array(numStrings).fill(0)
+      this._lastPluckTimes = new Float32Array(numStrings).fill(0)
     }
 
-    // Procedural beat timings if no real audio
+    // Procedural beat timings & acoustic strumming rhythm
     const bpm = 120
     const beatPhase = (simTime * (bpm / 60)) % 1
-    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
-    const arpeggioIdx = Math.floor((simTime * 4.5) % numStrings)
+    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.2), 2.4)
+    const sub = Math.sin(simTime * 8.0) * 0.5 + 0.5
+    const arpeggioIdx = Math.floor((simTime * 4.2) % numStrings)
+    const padX = 14
 
-    // Calculate energy and targets for each string
+    // 1. Calculate Target Energies & Spring Physics for All 16 Strings
     for (let i = 0; i < numStrings; i++) {
-      let target = 0.05
+      let target = 0.04
       if (this.isPlaying) {
         if (isReactive && hasRealAudio) {
-          const bandIdx = Math.min(bandsCount - 1, Math.floor((i / numStrings) * bandsCount))
+          const bandIdx = Math.min(
+            bandsCount - 1,
+            Math.floor((i / numStrings) * bandsCount),
+          )
           const val = this._realBands[bandIdx] || 0
-          target = Math.min(1.0, Math.pow(val, 0.42) * 1.8)
+          target = Math.min(1.0, Math.pow(val, 0.42) * 1.85)
         } else {
-          // Harp strum / arpeggio sweep + bass kicks
+          // Classical Harp / Guzheng glissando sweep + rhythmic bass plucks
           const distToArp = Math.abs(i - arpeggioIdx)
-          const arpStrum = distToArp === 0 ? 0.9 : distToArp === 1 ? 0.55 : 0.1
-          const bassBoost = i < 4 ? kick * 1.1 : 0
-          const harmonic = Math.sin(simTime * (5 + i * 0.8) + i * 0.7) * 0.5 + 0.5
-          target = Math.min(1.0, 0.15 + arpStrum * 0.65 + bassBoost * 0.7 + harmonic * 0.25)
+          const arpStrum = distToArp === 0 ? 0.95 : distToArp === 1 ? 0.55 : distToArp === 2 ? 0.25 : 0.08
+          const bassBoost = i < 4 ? kick * 1.15 + sub * 0.25 : 0
+          const midTrebleBreeze = i >= 4 ? Math.sin(simTime * (4.5 + i * 0.7) + i * 0.8) * 0.2 + 0.2 : 0
+          target = Math.min(1.0, 0.12 + arpStrum * 0.65 + bassBoost * 0.6 + midTrebleBreeze)
         }
       } else {
         target = 0
       }
 
-      // Fast attack for plucking, gentle organic decay
-      const attack = target > this._harpAmplitudes[i] ? 0.75 : 0.15
-      this._harpAmplitudes[i] += (target - this._harpAmplitudes[i]) * attack
+      // Smooth attack and natural organic decay
+      const attackSpeed = target > this._harpAmplitudes[i] ? 0.82 : 0.16
+      this._harpAmplitudes[i] += (target - this._harpAmplitudes[i]) * attackSpeed
 
-      // Trigger Pluck Ripple if high pluck transient
-      if (this.isPlaying && target > 0.6 && this._harpAmplitudes[i] > 0.55) {
-        if (!this._lastPluckTimes) this._lastPluckTimes = new Float32Array(numStrings).fill(0)
-        if (simTime - this._lastPluckTimes[i] > 0.22) {
+      const currentAmp = this._harpAmplitudes[i]
+
+      // Trigger Pluck Ripple Ring upon strong pluck transients
+      if (this.isPlaying && target > 0.52 && currentAmp > 0.48) {
+        if (simTime - this._lastPluckTimes[i] > 0.2) {
           this._lastPluckTimes[i] = simTime
           if (this._harpPluckRipples.length < 24) {
-            const padX = 14
-            const stringX = padX + (i / (numStrings - 1)) * (W - padX * 2)
-            const topArch = 6 + Math.pow(1 - i / (numStrings - 1), 1.6) * (H * 0.38)
-            const botArch = H - 6 - Math.sin((i / (numStrings - 1)) * Math.PI) * 4
-            const midY = (topArch + botArch) / 2
+            const u = i / (numStrings - 1)
+            const stringX = padX + u * (W - padX * 2)
+            const topArch = 6 + Math.pow(1 - u, 1.55) * (H * 0.38)
+            const botArch = H - 6 - Math.sin(u * Math.PI) * 4
+            const midY = (topArch + botArch) / 2 + (Math.random() - 0.5) * (H * 0.2)
+
             this._harpPluckRipples.push({
               x: stringX,
-              y: midY + (Math.random() - 0.5) * 10,
-              radius: 2,
-              maxRadius: 18 + this._harpAmplitudes[i] * 22,
-              alpha: 0.85,
+              y: midY,
+              radius: 1,
+              maxRadius: 16 + currentAmp * 24,
+              alpha: 0.9,
               color: accent,
             })
           }
@@ -585,42 +609,68 @@ class MusicVisualizer {
       }
     }
 
-    // 1. Draw Resonant Soundboard Ambient Glow Base
+    // 2. Dual-Layer Resonant Soundboard Glow Ribbons (Dải sóng âm cộng hưởng đáy đàn)
     ctx.save()
-    const soundboardGrad = ctx.createLinearGradient(0, H * 0.6, 0, H)
-    soundboardGrad.addColorStop(0, "transparent")
-    soundboardGrad.addColorStop(1, isWhiteBlur ? "rgba(138, 109, 59, 0.15)" : "rgba(223, 168, 92, 0.18)")
-    ctx.fillStyle = soundboardGrad
+    // Back deeper ambient wave
+    const deepSoundboardGrad = ctx.createLinearGradient(0, H * 0.55, 0, H)
+    deepSoundboardGrad.addColorStop(0, "transparent")
+    deepSoundboardGrad.addColorStop(
+      1,
+      isWhiteBlur ? "rgba(138, 109, 59, 0.12)" : "rgba(223, 168, 92, 0.15)",
+    )
+    ctx.fillStyle = deepSoundboardGrad
     ctx.beginPath()
     ctx.moveTo(0, H)
-    for (let x = 0; x <= W; x += 6) {
+    for (let x = 0; x <= W; x += 4) {
       const u = x / W
       const strIdx = Math.min(numStrings - 1, Math.floor(u * numStrings))
       const amp = this._harpAmplitudes[strIdx] || 0
-      const wave = Math.sin(x * 0.04 + simTime * 3.5) * (2 + amp * 5)
+      const wave = Math.sin(x * 0.035 + simTime * 2.8) * (3 + amp * 6) + Math.cos(x * 0.07 - simTime * 2.0) * 2
       ctx.lineTo(x, H - 4 - wave)
+    }
+    ctx.lineTo(W, H)
+    ctx.closePath()
+    ctx.fill()
+
+    // Forefront shimmering soundboard wave
+    const foreSoundboardGrad = ctx.createLinearGradient(0, H * 0.7, 0, H)
+    foreSoundboardGrad.addColorStop(0, "transparent")
+    foreSoundboardGrad.addColorStop(
+      1,
+      isWhiteBlur ? "rgba(138, 109, 59, 0.22)" : "rgba(255, 220, 140, 0.25)",
+    )
+    ctx.fillStyle = foreSoundboardGrad
+    ctx.beginPath()
+    ctx.moveTo(0, H)
+    for (let x = 0; x <= W; x += 4) {
+      const u = x / W
+      const strIdx = Math.min(numStrings - 1, Math.floor(u * numStrings))
+      const amp = this._harpAmplitudes[strIdx] || 0
+      const wave = Math.sin(x * 0.05 - simTime * 3.4) * (2 + amp * 5)
+      ctx.lineTo(x, H - 2 - wave)
     }
     ctx.lineTo(W, H)
     ctx.closePath()
     ctx.fill()
     ctx.restore()
 
-    // 2. Draw Top & Bottom Arch Bridge Lines (Cung đàn & Cầu đàn)
-    const padX = 14
+    // 3. Top Arch Crown & Bottom Bridge Lines (Cung Đàn Hạc & Cầu Đàn Tranh)
     ctx.save()
-    ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, 0.4)" : "rgba(223, 168, 92, 0.5)"
-    ctx.lineWidth = 1.2
-    // Top Arch
+    ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, 0.45)" : "rgba(223, 168, 92, 0.55)"
+    ctx.lineWidth = 1.4
+    ctx.lineCap = "round"
+
+    // Top Crown Arch
     ctx.beginPath()
     for (let i = 0; i < numStrings; i++) {
       const x = padX + (i / (numStrings - 1)) * (W - padX * 2)
-      const topY = 6 + Math.pow(1 - i / (numStrings - 1), 1.6) * (H * 0.38)
+      const topY = 6 + Math.pow(1 - i / (numStrings - 1), 1.55) * (H * 0.38)
       if (i === 0) ctx.moveTo(x, topY)
       else ctx.lineTo(x, topY)
     }
     ctx.stroke()
 
-    // Bottom Base Arch
+    // Bottom Resonator Arch
     ctx.beginPath()
     for (let i = 0; i < numStrings; i++) {
       const x = padX + (i / (numStrings - 1)) * (W - padX * 2)
@@ -631,55 +681,91 @@ class MusicVisualizer {
     ctx.stroke()
     ctx.restore()
 
-    // 3. Draw the 16 Vibrating Harp Strings
+    // 4. Draw the 16 Vibrating Harp Strings with Multi-Harmonic Physics
+    const stringPtsCount = 9
     for (let i = 0; i < numStrings; i++) {
       const u = i / (numStrings - 1)
       const baseX = padX + u * (W - padX * 2)
-      const topY = 6 + Math.pow(1 - u, 1.6) * (H * 0.38)
+      const topY = 6 + Math.pow(1 - u, 1.55) * (H * 0.38)
       const botY = H - 6 - Math.sin(u * Math.PI) * 4
       const amp = this._harpAmplitudes[i]
-      const vibFreq = 18 + (1 - u) * 22 // Bass strings vibrate lower, treble faster
-      const vibPhase = simTime * vibFreq
+      const stringLen = botY - topY
 
-      // Standing harmonic wave displacement at middle
-      const maxDisplace = this.isPlaying ? Math.sin(vibPhase) * (amp * 6.5) : 0
+      // Harmonic frequencies: fundamental + 2nd harmonic
+      const omega1 = 16 + (1 - u) * 20
+      const omega2 = omega1 * 2.04
+      const phase1 = simTime * omega1
+      const phase2 = simTime * omega2
 
       ctx.save()
       ctx.beginPath()
       ctx.moveTo(baseX, topY)
-      // Quadratic curve with middle control point displaced
-      const ctrlX = baseX + maxDisplace
-      const ctrlY = (topY + botY) / 2
-      ctx.quadraticCurveTo(ctrlX, ctrlY, baseX, botY)
 
-      // String color: Golden amber silk strings, with brighter luminescence when plucked
-      const stringAlpha = this.isPlaying ? 0.35 + amp * 0.65 : 0.3
+      for (let s = 1; s <= stringPtsCount; s++) {
+        const segFrac = s / stringPtsCount
+        const curY = topY + segFrac * stringLen
+
+        // Standing wave displacement: fundamental + 2nd harmonic
+        const standing1 = Math.sin(Math.PI * segFrac) * Math.sin(phase1)
+        const standing2 = Math.sin(Math.PI * 2 * segFrac) * Math.sin(phase2) * 0.32
+        const totalDisplace = this.isPlaying
+          ? (standing1 + standing2) * (amp * 7.2)
+          : 0
+
+        const curX = baseX + totalDisplace
+        ctx.lineTo(curX, curY)
+      }
+
+      // Golden amber silk string styling with dynamic luminance bloom
+      const stringAlpha = this.isPlaying ? 0.38 + amp * 0.62 : 0.32
       ctx.strokeStyle = isWhiteBlur
         ? `rgba(120, 80, 20, ${stringAlpha})`
         : accent
       ctx.globalAlpha = stringAlpha
-      ctx.lineWidth = 0.9 + (1 - u) * 0.7 + amp * 0.6 // Bass strings slightly thicker
-      if (!isWhiteBlur && amp > 0.25) {
+      ctx.lineWidth = 0.95 + (1 - u) * 0.65 + amp * 0.6
+
+      if (!isWhiteBlur && amp > 0.22) {
         ctx.shadowColor = accent
-        ctx.shadowBlur = Math.min(10, 2 + amp * 8)
+        ctx.shadowBlur = Math.min(12, 3 + amp * 9)
       }
       ctx.stroke()
 
-      // Top Tuning Peg & Bottom Bridge Pin (Chốt đàn & Nhạn đàn)
-      ctx.globalAlpha = 0.75 + amp * 0.25
-      ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffe4a0"
+      // Traveling Light Glint Shimmer along vibrating string
+      if (this.isPlaying && amp > 0.18) {
+        const glintPos = (simTime * (1.2 + u * 0.8)) % 1
+        const glintY = topY + glintPos * stringLen
+        const glintDisplace =
+          Math.sin(Math.PI * glintPos) * Math.sin(phase1) * (amp * 7.2)
+        const glintX = baseX + glintDisplace
+
+        ctx.save()
+        ctx.globalAlpha = Math.min(1.0, amp * 0.9)
+        ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffffff"
+        if (!isWhiteBlur) {
+          ctx.shadowColor = "#ffffff"
+          ctx.shadowBlur = 6
+        }
+        ctx.beginPath()
+        ctx.arc(glintX, glintY, 1.2 + amp * 0.8, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+
+      // Top Tuning Peg & Bottom Bridge Pin (Chốt đàn & Nhạn đàn ngọc bích/mạ vàng)
+      ctx.globalAlpha = 0.85 + amp * 0.15
+      ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffecb3"
       ctx.beginPath()
-      ctx.arc(baseX, topY, 1.3 + amp * 0.5, 0, Math.PI * 2)
-      ctx.arc(baseX, botY, 1.1 + amp * 0.4, 0, Math.PI * 2)
+      ctx.arc(baseX, topY, 1.4 + amp * 0.5, 0, Math.PI * 2)
+      ctx.arc(baseX, botY, 1.2 + amp * 0.4, 0, Math.PI * 2)
       ctx.fill()
       ctx.restore()
     }
 
-    // 4. Draw Expanding Pluck Ripples (Sóng âm elip phát quang)
+    // 5. Draw Expanding Dual-Ring Pluck Ripples (Sóng âm elip kép phát quang)
     ctx.save()
     for (let r = this._harpPluckRipples.length - 1; r >= 0; r--) {
       const rip = this._harpPluckRipples[r]
-      rip.radius += (rip.maxRadius - rip.radius) * 0.12 + 0.4
+      rip.radius += (rip.maxRadius - rip.radius) * 0.14 + 0.5
       rip.alpha *= 0.91
 
       if (rip.alpha <= 0.03 || rip.radius >= rip.maxRadius) {
@@ -687,9 +773,12 @@ class MusicVisualizer {
         continue
       }
 
-      ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, " + rip.alpha + ")" : rip.color
-      ctx.globalAlpha = rip.alpha
-      ctx.lineWidth = 1.2
+      // Outer ripple ring
+      ctx.strokeStyle = isWhiteBlur
+        ? `rgba(138, 109, 59, ${rip.alpha * 0.7})`
+        : rip.color
+      ctx.globalAlpha = rip.alpha * 0.7
+      ctx.lineWidth = 1.1
       if (!isWhiteBlur) {
         ctx.shadowColor = rip.color
         ctx.shadowBlur = 6
@@ -697,43 +786,74 @@ class MusicVisualizer {
       ctx.beginPath()
       ctx.ellipse(rip.x, rip.y, rip.radius * 0.55, rip.radius, 0, 0, Math.PI * 2)
       ctx.stroke()
+
+      // Inner bright core ring
+      if (rip.radius > 4) {
+        ctx.globalAlpha = rip.alpha * 0.9
+        ctx.lineWidth = 1.4
+        ctx.beginPath()
+        ctx.ellipse(rip.x, rip.y, rip.radius * 0.32, rip.radius * 0.58, 0, 0, Math.PI * 2)
+        ctx.stroke()
+      }
     }
     ctx.restore()
 
-    // 5. Draw Floating Stardust & Golden Lotus Petals
+    // 6. Draw 3D Fluttering Lotus Petals & Twinkling Golden Stardust
     ctx.save()
     this._harpPetals.forEach((p) => {
       if (this.isPlaying) {
         p.y += p.vy * dt
-        p.x += p.vx * dt + Math.sin(simTime * 2.5 + p.y * 0.05) * 0.5
-        p.rot += p.rotSpeed * dt
-        p.life -= dt * 0.35
+        p.x += p.vx * dt + Math.sin(simTime * 2.2 + p.y * 0.06) * 0.6
+        p.rotX += p.rotSpeedX * dt
+        p.rotY += p.rotSpeedY * dt
+        p.rotZ += p.rotSpeedZ * dt
+        p.life -= dt * 0.32
 
-        if (p.life <= 0 || p.y < 0) {
+        if (p.life <= 0 || p.y < -4) {
           p.x = padX + Math.random() * (W - padX * 2)
           const chosenStr = Math.floor(Math.random() * numStrings)
           const strAmp = this._harpAmplitudes[chosenStr] || 0.2
-          p.y = H - 8 - Math.random() * (H * 0.4)
-          p.vy = -(8 + Math.random() * 16 + strAmp * 14)
-          p.vx = (Math.random() - 0.5) * (8 + strAmp * 10)
+          p.y = H - 6 - Math.random() * (H * 0.4)
+          p.vy = -(6 + Math.random() * 14 + strAmp * 12)
+          p.vx = (Math.random() - 0.5) * (7 + strAmp * 8)
           p.life = 0.8 + Math.random() * 0.6
           p.alpha = 0.35 + Math.random() * 0.55
         }
       }
 
+      const fade = Math.min(1, p.life * 2.2)
+      const twinkle = 0.75 + 0.25 * Math.sin(simTime * 6 + p.twinklePhase)
+
       ctx.save()
       ctx.translate(p.x, p.y)
-      ctx.rotate(p.rot)
-      ctx.globalAlpha = p.alpha * Math.min(1, p.life * 2)
-      ctx.fillStyle = isWhiteBlur ? "#967232" : "#ffe89e"
-      if (!isWhiteBlur) {
-        ctx.shadowColor = accent
-        ctx.shadowBlur = 4
+
+      if (p.isPetal) {
+        // 3D Perspective Rotation for realistic petal flutter
+        ctx.rotate(p.rotZ)
+        const scaleX = Math.cos(p.rotY)
+        const scaleY = Math.cos(p.rotX)
+        ctx.scale(scaleX, scaleY)
+        ctx.globalAlpha = p.alpha * fade
+        ctx.fillStyle = isWhiteBlur ? "#967232" : "#ffe89e"
+        if (!isWhiteBlur) {
+          ctx.shadowColor = accent
+          ctx.shadowBlur = 4
+        }
+        ctx.beginPath()
+        ctx.ellipse(0, 0, p.size * 0.65, p.size * 1.35, 0, 0, Math.PI * 2)
+        ctx.fill()
+      } else {
+        // Twinkling golden stardust particle
+        ctx.globalAlpha = p.alpha * fade * twinkle
+        ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffffff"
+        if (!isWhiteBlur) {
+          ctx.shadowColor = accent
+          ctx.shadowBlur = 5
+        }
+        ctx.beginPath()
+        ctx.arc(0, 0, p.size * twinkle, 0, Math.PI * 2)
+        ctx.fill()
       }
-      // Petite petal shape
-      ctx.beginPath()
-      ctx.ellipse(0, 0, p.size * 0.6, p.size * 1.3, 0, 0, Math.PI * 2)
-      ctx.fill()
       ctx.restore()
     })
     ctx.restore()
