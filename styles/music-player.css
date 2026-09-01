@@ -3235,6 +3235,7 @@ body.widgets-m3-accent
   align-items: center;
   text-align: center;
   min-width: unset;
+  overflow: hidden;
   animation: musicFloating 6s ease-in-out infinite;
 }
 
@@ -5181,7 +5182,9 @@ body.widgets-m3-accent
   background-repeat: no-repeat !important;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.4s ease;
 }
 
 .music-style-square-thumb:hover .vinyl-disc {
@@ -5580,7 +5583,11 @@ body.widgets-m3-accent
   right: 0 !important;
   width: 60px !important;
   height: 100% !important;
-  background: linear-gradient(to right, transparent 0%, #0d0f18 100%) !important;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #0d0f18 100%
+  ) !important;
   pointer-events: none !important;
   z-index: 2 !important;
 }
@@ -5647,7 +5654,8 @@ body.widgets-m3-accent
 }
 
 /* Hide the blur background on square-thumb skins unless Thumbnail Background is active */
-.music-player-container.music-style-square-thumb:not(.skin-thumbnail-bg) .music-bg-blur {
+.music-player-container.music-style-square-thumb:not(.skin-thumbnail-bg)
+  .music-bg-blur {
   display: none !important;
 }
 
@@ -5695,7 +5703,9 @@ body.widgets-m3-accent
 /* Enhanced typography & contrast in Thumbnail Background mode */
 .music-player-wrapper.skin-thumbnail-bg #music-title {
   color: #ffffff !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.95);
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.85),
+    0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
 .music-player-wrapper.skin-thumbnail-bg #artist-text {
@@ -5729,8 +5739,11 @@ body.widgets-m3-accent
 }
 
 /* Support Thumbnail Background for Square Thumb style */
-.music-player-container.music-style-square-thumb.skin-thumbnail-bg .music-bg-blur,
-.music-player-container.music-style-square-thumb .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+.music-player-container.music-style-square-thumb.skin-thumbnail-bg
+  .music-bg-blur,
+.music-player-container.music-style-square-thumb
+  .music-player-wrapper.skin-thumbnail-bg
+  .music-bg-blur {
   display: block !important;
 }
 
@@ -5805,7 +5818,9 @@ body.widgets-m3-accent
 
 .music-style-beach .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
 .music-style-forest .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
-.music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg .music-visualizer {
+.music-style-heartbeat
+  .music-player-wrapper.skin-thumbnail-bg
+  .music-visualizer {
   display: block !important;
   z-index: 5 !important;
   overflow: visible !important;
@@ -5842,4 +5857,19 @@ body.widgets-m3-accent
   border-radius: inherit;
   pointer-events: none;
   background: var(--music-player-bg, #1a1a1a) !important;
+}
+
+/* Fix Heartbeat thumbnail-color-mode: thêm overflow:hidden để màu không tràn ra ngoài border-radius */
+.music-style-heartbeat .music-player-wrapper.thumbnail-color-mode {
+  overflow: hidden !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Fix Infinity (moon8) thumbnail-color-mode: ẩn hiệu ứng sao (::before) để không đè lên màu thumbnail */
+.music-style-moon8 .music-player-wrapper.thumbnail-color-mode::before {
+  display: none !important;
+}
+
+.music-style-moon8 .music-player-wrapper.thumbnail-color-mode {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }

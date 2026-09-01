@@ -1002,6 +1002,42 @@ export function showContextMenu(
   lastContextMenuX = x || 0
   lastContextMenuY = y || 0
 
+  // Sync CSS variables from music player if in thumbnail-color-mode
+  const musicContainer = document.querySelector(
+    ".music-player-container.thumbnail-color-mode",
+  )
+  if (musicContainer) {
+    const styles = musicContainer.style
+    const accentColor = styles.getPropertyValue("--accent-color")
+    const accentColorRgb = styles.getPropertyValue("--accent-color-rgb")
+    const accentContrastColor = styles.getPropertyValue(
+      "--accent-contrast-color",
+    )
+    const musicPlayerBg = styles.getPropertyValue("--music-player-bg")
+
+    if (accentColor)
+      contextMenu.style.setProperty("--accent-color", accentColor.trim())
+    if (accentColorRgb)
+      contextMenu.style.setProperty("--accent-color-rgb", accentColorRgb.trim())
+    if (accentContrastColor)
+      contextMenu.style.setProperty(
+        "--accent-contrast-color",
+        accentContrastColor.trim(),
+      )
+    if (musicPlayerBg)
+      contextMenu.style.setProperty("--music-player-bg", musicPlayerBg.trim())
+
+    // Apply thumbnail-color-mode styles to context menu
+    contextMenu.classList.add("context-menu-thumbnail-color-mode")
+  } else {
+    // Remove if no music player in thumbnail-color-mode
+    contextMenu.classList.remove("context-menu-thumbnail-color-mode")
+    contextMenu.style.removeProperty("--accent-color")
+    contextMenu.style.removeProperty("--accent-color-rgb")
+    contextMenu.style.removeProperty("--accent-contrast-color")
+    contextMenu.style.removeProperty("--music-player-bg")
+  }
+
   const menuManagerDivider = document.getElementById("menu-manager-divider")
   const menuBookmarkManager = document.getElementById("menu-bookmark-manager")
 
