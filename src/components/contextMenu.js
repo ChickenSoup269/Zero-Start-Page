@@ -1943,6 +1943,24 @@ export function showContextMenu(
       }
       itemsToInsert.push(defaultColorBtn)
 
+      // Wave Background Color Toggler ("Màu nền theo nhạc")
+      const isWaveBg = settings.musicPlayerWaveBgColor === true
+      const waveBgBtn = document.createElement("div")
+      waveBgBtn.className = "context-menu-item custom-music-item"
+      waveBgBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${isWaveBg ? i18n.on || "Bật" : i18n.off || "Tắt"}</span>`
+      waveBgBtn.onclick = () => {
+        const newVal = !isWaveBg
+        updateSetting("musicPlayerWaveBgColor", newVal)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerWaveBgColor", value: newVal },
+          }),
+        )
+        hideContextMenu()
+      }
+      itemsToInsert.push(waveBgBtn)
+
       // Source Icon Color Mode ("Icon nguồn")
       const sourceIconModes = ["brand", "accent", "none"]
       const currentIconMode = settings.musicSourceIconColorMode || "brand"

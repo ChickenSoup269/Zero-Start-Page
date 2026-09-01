@@ -59,6 +59,128 @@ const SOURCE_META = [
   },
 ]
 
+function upgradeThumbnailUrl(url, pageUrl = "") {
+  if (!url || typeof url !== "string") return ""
+  let upgraded = url.trim()
+
+  // 1. YouTube & YouTube Music
+  const ytImgMatch = upgraded.match(
+    /(?:i\.ytimg\.com|img\.youtube\.com)\/vi\/([a-zA-Z0-9_-]+)/i,
+  )
+  if (ytImgMatch && ytImgMatch[1]) {
+    return `https://i.ytimg.com/vi/${ytImgMatch[1]}/maxresdefault.jpg`
+  }
+
+  const fullContextUrl =
+    pageUrl || (typeof window !== "undefined" ? window.location.href : "")
+  if (
+    fullContextUrl &&
+    (fullContextUrl.includes("youtube.com") ||
+      fullContextUrl.includes("youtu.be"))
+  ) {
+    let videoId = ""
+    try {
+      const urlObj = new URL(fullContextUrl)
+      videoId = urlObj.searchParams.get("v") || ""
+      if (!videoId && urlObj.pathname.startsWith("/shorts/")) {
+        videoId = urlObj.pathname.split("/")[2] || ""
+      }
+      if (!videoId && fullContextUrl.includes("youtu.be/")) {
+        videoId = urlObj.pathname.slice(1).split(/[?#]/)[0] || ""
+      }
+    } catch (e) {}
+
+    if (
+      videoId &&
+      (upgraded.includes("ytimg.com") ||
+        upgraded.includes("googleusercontent.com") ||
+        !upgraded)
+    ) {
+      return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+    }
+  }
+
+  if (
+    upgraded.includes("googleusercontent.com") ||
+    upgraded.includes("yt3.ggpht.com")
+  ) {
+    if (/=[sw]\d+/i.test(upgraded)) {
+      upgraded = upgraded.replace(/=w\d+-h\d+[^?#]*/i, "=w1080-h1080-l90-rj")
+      upgraded = upgraded.replace(/=s\d+[^?#]*/i, "=s1200")
+      return upgraded
+    }
+  }
+
+  // 2. Spotify
+  if (
+    upgraded.includes("scdn.co") ||
+    upgraded.includes("spotifycdn.com") ||
+    upgraded.includes("spotify.com")
+  ) {
+    upgraded = upgraded.replace(
+      /ab67616d0000(?:1e02|4851)/g,
+      "ab67616d0000b273",
+    )
+    upgraded = upgraded.replace(
+      /ab6761610000(?:f68d|5174)/g,
+      "ab6761610000e5eb",
+    )
+    upgraded = upgraded.replace(
+      /ab6765630000(?:1e02|4851|f68d|5174)/g,
+      "ab6765630000b273",
+    )
+    upgraded = upgraded.replace(
+      /ab67706f0000(?:1e02|4851|f68d|5174)/g,
+      "ab67706f0000b273",
+    )
+    return upgraded
+  }
+
+  // 3. Apple Music
+  if (
+    upgraded.includes("mzstatic.com") ||
+    upgraded.includes("music.apple.com")
+  ) {
+    upgraded = upgraded.replace(
+      /\d+x\d+bb\.(jpe?g|png|webp)/i,
+      "1000x1000bb.$1",
+    )
+    upgraded = upgraded.replace(
+      /\/image\/thumb\/(.*?)\/\d+x\d+.*?\.(jpe?g|png|webp)/i,
+      "/image/thumb/$1/1000x1000bb.$2",
+    )
+    upgraded = upgraded.replace(/\{w\}x\{h\}/gi, "1000x1000")
+    return upgraded
+  }
+
+  // 4. SoundCloud
+  if (
+    upgraded.includes("sndcdn.com") ||
+    upgraded.includes("soundcloud.com")
+  ) {
+    upgraded = upgraded.replace(
+      /-(?:t(?:50x50|67x67|120x120|200x200|300x300)|large)\.([a-z0-9]+)/i,
+      "-t500x500.$1",
+    )
+    return upgraded
+  }
+
+  // 5. Zing MP3
+  if (upgraded.includes("zmdcdn.me") || upgraded.includes("zingmp3.vn")) {
+    upgraded = upgraded.replace(/w(?:94|240|360)_r1x1_jpeg/i, "w1024_r1x1_jpeg")
+    upgraded = upgraded.replace(/w(?:94|240|360)_r1x1_/i, "w1024_r1x1_")
+    return upgraded
+  }
+
+  // 6. NhacCuaTui
+  if (upgraded.includes("nhaccuatui.com") || upgraded.includes("nct.vn")) {
+    upgraded = upgraded.replace(/_(?:small|medium|130)\.(jpe?g|png)/i, "_600.$1")
+    return upgraded
+  }
+
+  return upgraded
+}
+
 function getSourceMeta(data = {}) {
   const url = (data.url || "").toLowerCase()
   const source = String(data.source || "").toLowerCase()
@@ -78,6 +200,7 @@ export class MusicPlayer {
       settings.musicPlayerUseDefaultColor !== undefined
         ? settings.musicPlayerUseDefaultColor
         : true
+    this.waveBgColor = settings.musicPlayerWaveBgColor === true
     this.sourceIconColorMode = settings.musicSourceIconColorMode || "brand"
     this.pollInterval = null
     this.pollTimeout = null
@@ -104,6 +227,10 @@ export class MusicPlayer {
         this.useDefaultColor = value
         this.applyMusicStyle(this.currentStyle)
         this.applySourceMeta(this.lastSourceMeta)
+      }
+      if (key === "musicPlayerWaveBgColor") {
+        this.waveBgColor = value === true
+        this._updateWaveBgMode()
       }
       if (key === "musicSourceIconColorMode") {
         this.sourceIconColorMode = value || "brand"
@@ -393,6 +520,54 @@ export class MusicPlayer {
     chrome.runtime.onMessage.addListener(this._messageListener)
   }
 
+  _updateWaveBgMode() {
+    const shouldApply =
+      this.waveBgColor === true &&
+      Boolean(
+        this.isPlaying ||
+          this.currentThumbnail ||
+          this.useDefaultColor === "rgb-flow" ||
+          this.useDefaultColor === "thumbnail" ||
+          this.useDefaultColor === "thumbnail-dynamic" ||
+          this.useDefaultColor === true ||
+          this.useDefaultColor === false,
+      )
+
+    if (this.container) {
+      this.container.classList.toggle("thumbnail-color-mode", shouldApply)
+      if (shouldApply) {
+        let rgb = this.container.style
+          .getPropertyValue("--accent-color-rgb")
+          ?.trim()
+        if (!rgb) {
+          const accent = this.container.style
+            .getPropertyValue("--accent-color")
+            ?.trim()
+          if (accent?.startsWith("#")) {
+            const r = parseInt(accent.slice(1, 3), 16) || 30
+            const g = parseInt(accent.slice(3, 5), 16) || 215
+            const b = parseInt(accent.slice(5, 7), 16) || 96
+            rgb = `${r}, ${g}, ${b}`
+          } else if (accent?.startsWith("rgb")) {
+            const m = accent.match(/\d+/g)
+            if (m && m.length >= 3) rgb = `${m[0]}, ${m[1]}, ${m[2]}`
+          }
+        }
+        if (!rgb) rgb = "30, 215, 96"
+        this.container.style.setProperty(
+          "--music-player-bg",
+          `linear-gradient(135deg, rgba(${rgb}, 0.45) 0%, rgba(${rgb}, 0.15) 100%)`,
+        )
+      } else {
+        this.container.style.removeProperty("--music-player-bg")
+      }
+    }
+    const wrapper = this.container?.querySelector(".music-player-wrapper")
+    if (wrapper) {
+      wrapper.classList.toggle("thumbnail-color-mode", shouldApply)
+    }
+  }
+
   applyMusicStyle(styleName) {
     // Remove old style class
     this.container.classList.remove(`music-style-${this.currentStyle}`)
@@ -405,6 +580,8 @@ export class MusicPlayer {
     // Determine accent color
     this.container.style.removeProperty("--music-player-bg")
     this.container.classList.remove("thumbnail-color-mode")
+    const currentWrapper = this.container.querySelector(".music-player-wrapper")
+    if (currentWrapper) currentWrapper.classList.remove("thumbnail-color-mode")
     if (
       this.useDefaultColor === "thumbnail" ||
       this.useDefaultColor === "thumbnail-dynamic"
@@ -415,11 +592,13 @@ export class MusicPlayer {
         this._stopDynamicColorLoop()
         this.container.style.removeProperty("--accent-color")
         this.container.style.removeProperty("--accent-color-rgb")
+        this._updateWaveBgMode()
       }
     } else if (this.useDefaultColor === "rgb-flow") {
       this._startRgbFlowLoop()
     } else if (this.useDefaultColor === true) {
       this._stopDynamicColorLoop()
+      this._updateWaveBgMode()
       let accentColor = ""
       switch (styleName) {
         case "spotify":
@@ -587,11 +766,13 @@ export class MusicPlayer {
       )
       this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
       this.container.style.setProperty("--accent-contrast-color", contrastColor)
-      this.container.style.setProperty(
-        "--music-player-bg",
-        `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.45) 0%, rgba(${r}, ${g}, ${b}, 0.15) 100%)`,
-      )
-      this.container.classList.add("thumbnail-color-mode")
+      if (this.waveBgColor) {
+        this.container.style.setProperty(
+          "--music-player-bg",
+          `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.45) 0%, rgba(${r}, ${g}, ${b}, 0.15) 100%)`,
+        )
+      }
+      this._updateWaveBgMode()
 
       if (this.visualizer) {
         this.visualizer.cachedAccent = `rgb(${r}, ${g}, ${b})`
@@ -655,11 +836,13 @@ export class MusicPlayer {
         `${curR}, ${curG}, ${curB}`,
       )
       this.container.style.setProperty("--accent-contrast-color", contrastColor)
-      this.container.style.setProperty(
-        "--music-player-bg",
-        `linear-gradient(135deg, rgba(${curR}, ${curG}, ${curB}, 0.45) 0%, rgba(${curR}, ${curG}, ${curB}, 0.15) 100%)`,
-      )
-      this.container.classList.add("thumbnail-color-mode")
+      if (this.waveBgColor) {
+        this.container.style.setProperty(
+          "--music-player-bg",
+          `linear-gradient(135deg, rgba(${curR}, ${curG}, ${curB}, 0.45) 0%, rgba(${curR}, ${curG}, ${curB}, 0.15) 100%)`,
+        )
+      }
+      this._updateWaveBgMode()
 
       if (this.visualizer) {
         this.visualizer.cachedAccent = `rgb(${curR}, ${curG}, ${curB})`
@@ -801,11 +984,13 @@ export class MusicPlayer {
             "--accent-contrast-color",
             contrastColor,
           )
-          this.container.style.setProperty(
-            "--music-player-bg",
-            `linear-gradient(135deg, rgba(${finalR}, ${finalG}, ${finalB}, 0.45) 0%, rgba(${finalR}, ${finalG}, ${finalB}, 0.15) 100%)`,
-          )
-          this.container.classList.add("thumbnail-color-mode")
+          if (this.waveBgColor) {
+            this.container.style.setProperty(
+              "--music-player-bg",
+              `linear-gradient(135deg, rgba(${finalR}, ${finalG}, ${finalB}, 0.45) 0%, rgba(${finalR}, ${finalG}, ${finalB}, 0.15) 100%)`,
+            )
+          }
+          this._updateWaveBgMode()
 
           if (this.visualizer) {
             this.visualizer.cachedAccent = `rgb(${finalR}, ${finalG}, ${finalB})`
@@ -1000,16 +1185,27 @@ export class MusicPlayer {
     }
 
     // Update thumbnail
-    if (data.thumbnail && data.thumbnail !== this.currentThumbnail) {
-      // Store the original URL before any fallback resolution
-      const originalThumbUrl = data.thumbnail
-      this.currentThumbnail = data.thumbnail
+    const rawThumb = data.thumbnail || ""
+    const upgradedThumb = upgradeThumbnailUrl(rawThumb, data.url)
+
+    if (upgradedThumb && upgradedThumb !== this.currentThumbnail) {
+      const requestId = (this._currentThumbRequestId =
+        (this._currentThumbRequestId || 0) + 1)
+      const originalThumbUrl = upgradedThumb
+      this.currentThumbnail = upgradedThumb
+
       const applyThumb = (url) => {
+        if (this._currentThumbRequestId !== requestId) return
         this.disc.style.backgroundImage = `url("${url}")`
         this.disc.style.backgroundSize = "cover"
         this.disc.style.backgroundPosition = "center"
+        this.disc.style.backgroundRepeat = "no-repeat"
         this.disc.classList.add("has-thumb")
-        if (this.bgBlur) this.bgBlur.style.backgroundImage = `url("${url}")`
+        if (this.bgBlur) {
+          this.bgBlur.style.backgroundImage = `url("${url}")`
+          this.bgBlur.style.backgroundSize = "cover"
+          this.bgBlur.style.backgroundPosition = "center"
+        }
         if (
           this.useDefaultColor === "thumbnail" ||
           this.useDefaultColor === "thumbnail-dynamic"
@@ -1017,38 +1213,59 @@ export class MusicPlayer {
           this.applyThumbnailColor(url)
         }
       }
-      applyThumb(data.thumbnail)
 
-      // Fallback for rare YouTube videos without maxresdefault
-      if (data.thumbnail.includes("maxresdefault.jpg")) {
+      applyThumb(upgradedThumb)
+
+      // Cascading fallback for YouTube videos if maxresdefault doesn't exist
+      if (upgradedThumb.includes("maxresdefault.jpg")) {
         const testImg = new Image()
-        testImg.onload = () => {
-          // Only apply fallback if thumbnail hasn't changed since this test started
-          if (this.currentThumbnail !== originalThumbUrl) return
-          if (testImg.naturalWidth === 120 && testImg.naturalHeight === 90) {
-            const fallback = originalThumbUrl.replace(
+        const handleMaxresFail = () => {
+          if (this._currentThumbRequestId !== requestId) return
+          // Try sddefault first (640x480 standard definition, much clearer than hqdefault)
+          const sdUrl = originalThumbUrl.replace(
+            "maxresdefault.jpg",
+            "sddefault.jpg",
+          )
+          const sdImg = new Image()
+          sdImg.onload = () => {
+            if (this._currentThumbRequestId !== requestId) return
+            if (sdImg.naturalWidth > 120) {
+              this.currentThumbnail = sdUrl
+              applyThumb(sdUrl)
+            } else {
+              const hqUrl = originalThumbUrl.replace(
+                "maxresdefault.jpg",
+                "hqdefault.jpg",
+              )
+              this.currentThumbnail = hqUrl
+              applyThumb(hqUrl)
+            }
+          }
+          sdImg.onerror = () => {
+            if (this._currentThumbRequestId !== requestId) return
+            const hqUrl = originalThumbUrl.replace(
               "maxresdefault.jpg",
               "hqdefault.jpg",
             )
-            // Update currentThumbnail so next poll won't re-apply maxresdefault
-            this.currentThumbnail = fallback
-            applyThumb(fallback)
+            this.currentThumbnail = hqUrl
+            applyThumb(hqUrl)
+          }
+          sdImg.src = sdUrl
+        }
+
+        testImg.onload = () => {
+          if (this._currentThumbRequestId !== requestId) return
+          if (testImg.naturalWidth === 120 && testImg.naturalHeight === 90) {
+            handleMaxresFail()
           }
         }
         testImg.onerror = () => {
-          // Only apply fallback if thumbnail hasn't changed since this test started
-          if (this.currentThumbnail !== originalThumbUrl) return
-          const fallback = originalThumbUrl.replace(
-            "maxresdefault.jpg",
-            "hqdefault.jpg",
-          )
-          // Update currentThumbnail so next poll won't re-apply maxresdefault
-          this.currentThumbnail = fallback
-          applyThumb(fallback)
+          handleMaxresFail()
         }
-        testImg.src = data.thumbnail
+        testImg.src = upgradedThumb
       }
-    } else if (!data.thumbnail) {
+    } else if (!upgradedThumb) {
+      this._currentThumbRequestId = (this._currentThumbRequestId || 0) + 1
       this.currentThumbnail = ""
       this.disc.style.backgroundImage = "none"
       this.disc.classList.remove("has-thumb")
@@ -1060,6 +1277,8 @@ export class MusicPlayer {
         this._stopDynamicColorLoop()
         this.container.style.removeProperty("--accent-color")
         this.container.style.removeProperty("--accent-color-rgb")
+        this.container.style.removeProperty("--music-player-bg")
+        this._updateWaveBgMode()
       }
     }
 
@@ -1166,6 +1385,16 @@ export class MusicPlayer {
     this.disc.classList.remove("playing")
     this.disc.style.backgroundImage = "none"
     this.currentThumbnail = ""
+    if (
+      this.useDefaultColor === "thumbnail" ||
+      this.useDefaultColor === "thumbnail-dynamic"
+    ) {
+      this._stopDynamicColorLoop()
+      this.container.style.removeProperty("--accent-color")
+      this.container.style.removeProperty("--accent-color-rgb")
+      this.container.style.removeProperty("--music-player-bg")
+      this._updateWaveBgMode()
+    }
     document.getElementById("play-pause-btn").innerHTML =
       '<i class="fa-solid fa-play"></i>'
     this.visualizer.stop()

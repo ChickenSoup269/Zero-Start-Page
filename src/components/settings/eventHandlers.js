@@ -7871,6 +7871,19 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.musicPlayerWaveBgColorCheckbox?.addEventListener("change", () => {
+    const isChecked = DOM.musicPlayerWaveBgColorCheckbox.checked
+    handleSettingUpdate("musicPlayerWaveBgColor", isChecked)
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "musicPlayerWaveBgColor",
+          value: isChecked,
+        },
+      }),
+    )
+  })
+
   DOM.mediaOrbImageUrlInput?.addEventListener("change", () => {
     handleSettingUpdate(
       "mediaOrbImageUrl",

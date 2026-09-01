@@ -1438,6 +1438,9 @@ export let musicStyleSelect = document.getElementById("music-style-select")
 export let musicPlayerUseDefaultColorMode = document.getElementById(
   "music-player-use-default-color-mode",
 )
+export let musicPlayerWaveBgColorCheckbox = document.getElementById(
+  "music-player-wave-bg-color-checkbox",
+)
 export let musicSourceIconColorModeSelect = document.getElementById(
   "music-source-icon-color-mode",
 )
@@ -3213,6 +3216,9 @@ export function refreshDOMReferences() {
   musicStyleSelect = document.getElementById("music-style-select")
   musicPlayerUseDefaultColorMode = document.getElementById(
     "music-player-use-default-color-mode",
+  )
+  musicPlayerWaveBgColorCheckbox = document.getElementById(
+    "music-player-wave-bg-color-checkbox",
   )
   musicSourceIconColorModeSelect = document.getElementById(
     "music-source-icon-color-mode",

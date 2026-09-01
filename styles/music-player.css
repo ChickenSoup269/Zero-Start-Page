@@ -460,6 +460,9 @@ body.widgets-m3-accent .music-player-wrapper .vinyl-disc,
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
   position: relative;
 }
 
@@ -5691,6 +5694,9 @@ body.widgets-m3-accent
   z-index: -1;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
   filter: blur(28px) saturate(190%) brightness(0.65) contrast(105%);
   transform: scale(1.25);
   opacity: 0.92;
@@ -5700,30 +5706,41 @@ body.widgets-m3-accent
 }
 
 /* Enhanced typography & contrast in Thumbnail Background mode */
-.music-player-wrapper.skin-thumbnail-bg #music-title {
+.music-player-container.skin-thumbnail-bg #music-title,
+.music-player-wrapper.skin-thumbnail-bg #music-title,
+.music-player-container.skin-thumbnail-bg .player-info h3,
+.music-player-wrapper.skin-thumbnail-bg .player-info h3 {
   color: #ffffff !important;
   text-shadow:
     0 2px 10px rgba(0, 0, 0, 0.85),
     0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
-.music-player-wrapper.skin-thumbnail-bg #artist-text {
-  color: rgba(255, 255, 255, 0.85) !important;
+.music-player-container.skin-thumbnail-bg #artist-text,
+.music-player-wrapper.skin-thumbnail-bg #artist-text,
+.music-player-container.skin-thumbnail-bg .player-info p,
+.music-player-wrapper.skin-thumbnail-bg .player-info p {
+  color: rgba(255, 255, 255, 0.9) !important;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
 }
 
+.music-player-container.skin-thumbnail-bg .progress-time,
 .music-player-wrapper.skin-thumbnail-bg .progress-time {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
+.music-player-container.skin-thumbnail-bg .progress-bar-track,
 .music-player-wrapper.skin-thumbnail-bg .progress-bar-track {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
+.music-player-container.skin-thumbnail-bg .player-btn,
+.music-player-wrapper.skin-thumbnail-bg .player-btn,
+.music-player-container.skin-thumbnail-bg .control-btn,
 .music-player-wrapper.skin-thumbnail-bg .control-btn {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
@@ -5785,36 +5802,22 @@ body.widgets-m3-accent
   z-index: 5 !important;
 }
 
-/* Fix Moon8 / Infinity visualizer in Thumbnail Background */
-.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg {
-  overflow: visible !important;
-}
-
-.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
-  clip-path: inset(0 round inherit);
-  z-index: 0 !important;
-}
-
-.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-visualizer {
-  display: block !important;
-  z-index: 5 !important;
-  overflow: visible !important;
-}
-
-/* Fix Beach, Forest, and Heartbeat visualizers in Thumbnail Background */
+/* Keep blur contained inside card for Moon8, Beach, Forest, and Heartbeat in Thumbnail Background */
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg,
 .music-style-beach .music-player-wrapper.skin-thumbnail-bg,
 .music-style-forest .music-player-wrapper.skin-thumbnail-bg,
 .music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg {
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-bg-blur,
 .music-style-beach .music-player-wrapper.skin-thumbnail-bg .music-bg-blur,
 .music-style-forest .music-player-wrapper.skin-thumbnail-bg .music-bg-blur,
 .music-style-heartbeat .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
-  clip-path: inset(0 round inherit);
   z-index: 0 !important;
 }
 
+.music-style-moon8 .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
 .music-style-beach .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
 .music-style-forest .music-player-wrapper.skin-thumbnail-bg .music-visualizer,
 .music-style-heartbeat
@@ -5822,7 +5825,6 @@ body.widgets-m3-accent
   .music-visualizer {
   display: block !important;
   z-index: 5 !important;
-  overflow: visible !important;
 }
 
 /* Fix overlap style cutting off the top card in skin-thumbnail-bg */
@@ -5839,16 +5841,21 @@ body.widgets-m3-accent
   z-index: 0 !important;
 }
 
-/* Thumbnail Color Background Mode */
-.music-player-wrapper.thumbnail-color-mode {
+/* Thumbnail Color Background Mode (chỉ áp dụng khi wrapper không dùng skin đặc biệt) */
+.music-player-container.thumbnail-color-mode .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card),
+.music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) {
   background: var(--music-player-bg, #1a1a1a) !important;
 }
 
-.music-style-overlap .music-player-wrapper.thumbnail-color-mode {
+.music-player-container.music-style-overlap.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card),
+.music-style-overlap .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) {
   background: transparent !important;
 }
 
-.music-style-overlap .music-player-wrapper.thumbnail-color-mode::after {
+.music-player-container.music-style-overlap.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::after,
+.music-style-overlap .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -5858,17 +5865,34 @@ body.widgets-m3-accent
   background: var(--music-player-bg, #1a1a1a) !important;
 }
 
-/* Fix Heartbeat thumbnail-color-mode: thêm overflow:hidden để màu không tràn ra ngoài border-radius */
-.music-style-heartbeat .music-player-wrapper.thumbnail-color-mode {
-  overflow: hidden !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+/* Fix Heartbeat thumbnail-color-mode */
+.music-player-container.music-style-heartbeat.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card),
+.music-style-heartbeat .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) {
+  background: var(--music-player-bg, rgba(14, 16, 22, 0.92)) !important;
+  border: 1px solid rgba(var(--accent-color-rgb), 0.35) !important;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(var(--accent-color-rgb), 0.08) inset !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
 
-/* Fix Infinity (moon8) thumbnail-color-mode: ẩn hiệu ứng sao (::before) để không đè lên màu thumbnail */
-.music-style-moon8 .music-player-wrapper.thumbnail-color-mode::before {
+/* Fix Infinity (moon8) thumbnail-color-mode */
+.music-player-container.music-style-moon8.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::before,
+.music-style-moon8 .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::before {
   display: none !important;
 }
 
-.music-style-moon8 .music-player-wrapper.thumbnail-color-mode {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+.music-player-container.music-style-moon8.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card),
+.music-style-moon8 .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) {
+  background: var(--music-player-bg, rgba(12, 14, 24, 0.92)) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 255, 249, 196), 0.35) !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(var(--accent-color-rgb, 255, 249, 196), 0.1) inset !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
