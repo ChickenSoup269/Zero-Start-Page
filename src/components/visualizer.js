@@ -548,53 +548,109 @@ class MusicVisualizer {
       this._lastPluckTimes = new Float32Array(numStrings).fill(0)
     }
 
-    // Procedural beat timings & acoustic strumming rhythm
-    const bpm = 120
-    const beatPhase = (simTime * (bpm / 60)) % 1
-    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.2), 2.4)
-    const sub = Math.sin(simTime * 8.0) * 0.5 + 0.5
-    const arpeggioIdx = Math.floor((simTime * 4.2) % numStrings)
     const padX = 14
+
+    // ── Musical Performance Phrasing Engine (Pentatonic Scale & Classical Phrases) ──
+    // 8-second musical cycle with 4 distinct traditional harp/zither playing techniques:
+    const phraseTime = simTime % 8.0
+    const phraseIdx = Math.floor(phraseTime / 2.0) // 0..3 (2s per musical phrase)
+    const localT = (phraseTime % 2.0) / 2.0 // 0..1 in current phrase
+
+    // Classical Andante tempo (~76-80 BPM) with natural human rubato breathing
+    const tempoBpm = 78 + Math.sin(simTime * 0.4) * 4
+    const measurePhase = (simTime * (tempoBpm / 60)) % 1
+    const downbeat = Math.pow(Math.max(0, 1 - measurePhase * 2.8), 2.5) // Deep resonant root bass pluck
+    const backbeat = Math.pow(Math.max(0, Math.sin(measurePhase * Math.PI * 2)), 2.8) * 0.5
 
     // 1. Calculate Target Energies & Spring Physics for All 16 Strings
     for (let i = 0; i < numStrings; i++) {
-      let target = 0.04
+      let target = 0.03
       if (this.isPlaying) {
         if (isReactive && hasRealAudio) {
+          // Logarithmic Bark/Mel frequency mapping from Bass (0) to Shimmering Treble (15)
+          const normIdx = Math.pow(i / (numStrings - 1), 1.22)
           const bandIdx = Math.min(
             bandsCount - 1,
-            Math.floor((i / numStrings) * bandsCount),
+            Math.floor(normIdx * bandsCount),
           )
-          const val = this._realBands[bandIdx] || 0
-          target = Math.min(1.0, Math.pow(val, 0.42) * 1.85)
+          const rawVal = this._realBands[bandIdx] || 0
+          // Musical sensitivity curve: bass punch + crisp treble definition
+          const freqBoost = i < 3 ? 1.9 : i < 8 ? 1.75 : 1.6
+          target = Math.min(1.0, Math.pow(rawVal, 0.43) * freqBoost)
         } else {
-          // Classical Harp / Guzheng glissando sweep + rhythmic bass plucks
-          const distToArp = Math.abs(i - arpeggioIdx)
-          const arpStrum = distToArp === 0 ? 0.95 : distToArp === 1 ? 0.55 : distToArp === 2 ? 0.25 : 0.08
-          const bassBoost = i < 4 ? kick * 1.15 + sub * 0.25 : 0
-          const midTrebleBreeze = i >= 4 ? Math.sin(simTime * (4.5 + i * 0.7) + i * 0.8) * 0.2 + 0.2 : 0
-          target = Math.min(1.0, 0.12 + arpStrum * 0.65 + bassBoost * 0.6 + midTrebleBreeze)
+          // 4 Authentic Traditional Musical Techniques:
+          let phraseEnergy = 0
+
+          if (phraseIdx === 0) {
+            // Phrase 1: Flowing Ascending & Cascading Glissando (Vuốt dải lụa ngũ cung / Water Ripple Glissando)
+            const sweepCenter = localT * (numStrings + 2) - 1
+            const dist = Math.abs(i - sweepCenter)
+            if (dist < 2.2) {
+              phraseEnergy = Math.pow(1 - dist / 2.2, 1.8) * 0.95
+            }
+            // Add subtle bass root anchor
+            if (i === 0 || i === 2) phraseEnergy += downbeat * 0.65
+          } else if (phraseIdx === 1) {
+            // Phrase 2: Cascading Arpeggio (Rải ngón đàn ngũ cung)
+            // Pattern: Bass(0) -> Mid(5) -> High(9) -> Shimmer(13) -> Mid(7) -> High(11) -> Bass(2) -> High(14)
+            const arpPattern = [0, 5, 9, 13, 7, 11, 2, 14]
+            const step = Math.floor(localT * arpPattern.length)
+            const activeString = arpPattern[step % arpPattern.length]
+            const stepFrac = (localT * arpPattern.length) % 1
+            const stepDecay = Math.pow(Math.max(0, 1 - stepFrac * 2.0), 2.0)
+            if (i === activeString) {
+              phraseEnergy = stepDecay * 0.92
+            } else if (Math.abs(i - activeString) === 1) {
+              phraseEnergy = stepDecay * 0.35 // Sympathetic string resonance (Cộng hưởng dây lân cận)
+            }
+          } else if (phraseIdx === 2) {
+            // Phrase 3: Tremolo & Melody Vibrato (Điệu rung ngón / Luyến láy phím ngọc)
+            const melodyStrings = [4, 7, 9, 12, 14]
+            const mIdx = melodyStrings[Math.floor(localT * melodyStrings.length) % melodyStrings.length]
+            if (i === mIdx) {
+              const tremolo = Math.sin(simTime * 22.0) * 0.2 + 0.8 // Fast tremolo rolling
+              phraseEnergy = tremolo * (0.65 + Math.sin(localT * Math.PI) * 0.35)
+            } else if (i === 1 || i === 3) {
+              phraseEnergy = downbeat * 0.75 + backbeat * 0.3 // Steady bass beat
+            }
+          } else {
+            // Phrase 4: Harmonic Chord Resonance (Hợp âm hòa tấu đồng vọng)
+            // Pentatonic chord voicing: strings 1, 5, 8, 12, 15
+            const chordTones = [1, 5, 8, 12, 15]
+            if (chordTones.includes(i)) {
+              const chordPulse = Math.sin(localT * Math.PI * 2) * 0.5 + 0.5
+              phraseEnergy = chordPulse * 0.8 + downbeat * 0.45
+            }
+          }
+
+          // Sympathetic Acoustic Air Shimmer (Âm vang nhẹ không gian)
+          const ambientShimmer =
+            Math.sin(simTime * (3.0 + i * 0.5) + i * 0.9) * 0.08 + 0.08
+          target = Math.min(1.0, 0.04 + phraseEnergy + ambientShimmer)
         }
       } else {
         target = 0
       }
 
-      // Smooth attack and natural organic decay
-      const attackSpeed = target > this._harpAmplitudes[i] ? 0.82 : 0.16
-      this._harpAmplitudes[i] += (target - this._harpAmplitudes[i]) * attackSpeed
+      // Smooth attack and natural organic decay (bass sustains longer, treble crisper)
+      const stringDecay = 0.12 + (i / numStrings) * 0.08
+      const attackSpeed = target > this._harpAmplitudes[i] ? 0.85 : stringDecay
+      this._harpAmplitudes[i] +=
+        (target - this._harpAmplitudes[i]) * attackSpeed
 
       const currentAmp = this._harpAmplitudes[i]
 
       // Trigger Pluck Ripple Ring upon strong pluck transients
       if (this.isPlaying && target > 0.52 && currentAmp > 0.48) {
-        if (simTime - this._lastPluckTimes[i] > 0.2) {
+        if (simTime - this._lastPluckTimes[i] > 0.22) {
           this._lastPluckTimes[i] = simTime
           if (this._harpPluckRipples.length < 24) {
             const u = i / (numStrings - 1)
             const stringX = padX + u * (W - padX * 2)
             const topArch = 6 + Math.pow(1 - u, 1.55) * (H * 0.38)
             const botArch = H - 6 - Math.sin(u * Math.PI) * 4
-            const midY = (topArch + botArch) / 2 + (Math.random() - 0.5) * (H * 0.2)
+            const midY =
+              (topArch + botArch) / 2 + (Math.random() - 0.5) * (H * 0.2)
 
             this._harpPluckRipples.push({
               x: stringX,
