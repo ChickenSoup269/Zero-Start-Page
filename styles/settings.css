@@ -11567,6 +11567,12 @@ body.sidebar-light .settings-advanced-toggle-btn {
   transform: translateX(3px);
 }
 
+/* Changelog Button */
+.about-btn-changelog .about-btn-icon-wrap {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+
 /* General About Glass Card */
 .about-card {
   background: rgba(255, 255, 255, 0.03);
