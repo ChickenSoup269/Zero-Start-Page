@@ -8775,27 +8775,54 @@ export function setupGeneralEventHandlers(
       // IndexedDB is not fully cleared here to avoid breaking concurrent operations.
     }
 
-    const compareBlobs = async (blob1, blob2) => {
-      if (blob1.size !== blob2.size || blob1.type !== blob2.type) return false
-      const [buf1, buf2] = await Promise.all([
-        blob1.arrayBuffer(),
-        blob2.arrayBuffer(),
-      ])
-      const arr1 = new Uint8Array(buf1)
-      const arr2 = new Uint8Array(buf2)
-      for (let i = 0; i < arr1.length; i += 1) {
-        if (arr1[i] !== arr2[i]) return false
-      }
-      return true
-    }
-
     const findExistingMediaId = async (incomingBlob) => {
+      // Cache incoming blob bytes once to avoid re-materialization for each candidate
+      if (incomingBlob.size === 0) return null
+      const incomingBuffer = await incomingBlob.arrayBuffer()
+      const incomingBytes = new Uint8Array(incomingBuffer)
+      const SLICE_SIZE = 32 * 1024 // Compare bounded 32KB slices
+
+      const compareWithCachedBytes = async (storedBlob) => {
+        // Fast path: size and type must match
+        if (
+          storedBlob.size !== incomingBlob.size ||
+          storedBlob.type !== incomingBlob.type
+        ) {
+          return false
+        }
+
+        // Compare first and last slices to catch most mismatches early
+        const sliceEnd = Math.min(SLICE_SIZE, storedBlob.size)
+        const firstSlice = storedBlob.slice(0, sliceEnd)
+        const firstBuf = await firstSlice.arrayBuffer()
+        const firstBytes = new Uint8Array(firstBuf)
+
+        for (let i = 0; i < firstBytes.length; i += 1) {
+          if (firstBytes[i] !== incomingBytes[i]) return false
+        }
+
+        // If blobs are large, also compare last slice
+        if (storedBlob.size > SLICE_SIZE) {
+          const lastStart = Math.max(SLICE_SIZE, storedBlob.size - SLICE_SIZE)
+          const incomingStart = lastStart
+          const lastSlice = storedBlob.slice(lastStart)
+          const lastBuf = await lastSlice.arrayBuffer()
+          const lastBytes = new Uint8Array(lastBuf)
+
+          for (let i = 0; i < lastBytes.length; i += 1) {
+            if (lastBytes[i] !== incomingBytes[incomingStart + i]) return false
+          }
+        }
+
+        return true
+      }
+
       const ids = collectLocalMediaIds(getSettings())
       for (const id of ids) {
         try {
           const blob = await getImageBlob(id)
           if (!blob) continue
-          if (await compareBlobs(blob, incomingBlob)) {
+          if (await compareWithCachedBytes(blob)) {
             return id
           }
         } catch (err) {
