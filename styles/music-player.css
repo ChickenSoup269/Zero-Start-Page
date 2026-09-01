@@ -3518,22 +3518,22 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper {
   background: linear-gradient(
     135deg,
-    rgba(24, 16, 12, 0.95) 0%,
-    rgba(42, 28, 20, 0.92) 48%,
-    rgba(18, 12, 10, 0.97) 100%
+    rgba(22, 16, 12, 0.94) 0%,
+    rgba(38, 26, 18, 0.9) 48%,
+    rgba(18, 12, 10, 0.96) 100%
   );
-  border: 1px solid rgba(223, 168, 92, 0.42);
+  border: 1px solid rgba(223, 168, 92, 0.35);
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.65),
-    0 0 30px rgba(223, 168, 92, 0.16),
-    inset 0 1px 1px rgba(255, 235, 190, 0.3);
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(223, 168, 92, 0.12),
+    inset 0 1px 1px rgba(255, 235, 190, 0.25);
   color: #f7e7ce;
   position: relative;
   overflow: hidden !important;
   border-radius: 20px;
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  animation: harpFloating 7s ease-in-out infinite;
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  animation: harpFloating 9s ease-in-out infinite;
 }
 
 /* Subtle wooden harp soundboard grain & silk aura */
@@ -3543,7 +3543,7 @@ body.widgets-m3-accent
   inset: 0;
   background: radial-gradient(
     circle at 75% 30%,
-    rgba(223, 168, 92, 0.2) 0%,
+    rgba(223, 168, 92, 0.14) 0%,
     transparent 65%
   );
   pointer-events: none;
@@ -3560,7 +3560,7 @@ body.widgets-m3-accent
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 220, 140, 0.85) 50%,
+    rgba(255, 225, 150, 0.7) 50%,
     transparent 100%
   );
   pointer-events: none;
@@ -3572,7 +3572,7 @@ body.widgets-m3-accent
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
   }
 }
 
@@ -3587,17 +3587,17 @@ body.widgets-m3-accent
 }
 
 .music-style-harp .player-info h3 {
-  color: #fff8eb;
+  color: #fffbf0;
   text-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.9),
-    0 0 12px rgba(223, 168, 92, 0.4);
+    0 2px 10px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(223, 168, 92, 0.3);
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.25px;
   font-size: 1.02rem;
 }
 
 .music-style-harp .player-info p {
-  color: #d9c2a7;
+  color: #cfb89d;
   font-size: 0.82rem;
   font-weight: 500;
 }
@@ -3607,41 +3607,42 @@ body.widgets-m3-accent
   height: 68px;
   min-width: 68px;
   border-radius: 50%;
-  border: 1.5px solid rgba(223, 168, 92, 0.6);
+  border: 1.5px solid rgba(223, 168, 92, 0.5);
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.6),
-    0 0 16px rgba(223, 168, 92, 0.25),
-    inset 0 0 10px rgba(0, 0, 0, 0.5);
+    0 8px 24px rgba(0, 0, 0, 0.55),
+    0 0 14px rgba(223, 168, 92, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.4);
   background: radial-gradient(
     circle at center,
-    rgba(45, 30, 20, 0.95) 0%,
-    rgba(22, 14, 10, 0.98) 100%
+    rgba(40, 28, 18, 0.95) 0%,
+    rgba(20, 14, 10, 0.98) 100%
   );
   padding: 3px;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
   z-index: 3;
 }
 
 .music-style-harp .music-player-wrapper.playing .disc-container {
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.7),
-    0 0 25px rgba(223, 168, 92, 0.45),
-    0 0 0 2px rgba(255, 220, 140, 0.35);
-  transform: scale(1.03);
+    0 8px 26px rgba(0, 0, 0, 0.65),
+    0 0 20px rgba(223, 168, 92, 0.35),
+    0 0 0 2px rgba(255, 220, 140, 0.25);
+  transform: scale(1.02);
 }
 
 .music-style-harp .vinyl-disc {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1.5px solid rgba(223, 168, 92, 0.5);
+  border: 1.5px solid rgba(223, 168, 92, 0.45);
+  animation-duration: 16s !important;
   background:
-    radial-gradient(circle at center, #352216 0%, #1e130c 55%, #100a06 100%),
-    repeating-radial-gradient(circle, transparent 0, transparent 3px, rgba(223, 168, 92, 0.15) 4px, transparent 5px);
+    radial-gradient(circle at center, #322014 0%, #1c120c 55%, #0f0a06 100%),
+    repeating-radial-gradient(circle, transparent 0, transparent 3px, rgba(223, 168, 92, 0.12) 4px, transparent 5px);
   box-shadow:
-    inset 0 0 0 2px rgba(223, 168, 92, 0.4),
-    inset 0 0 12px rgba(0, 0, 0, 0.8);
+    inset 0 0 0 2px rgba(223, 168, 92, 0.35),
+    inset 0 0 12px rgba(0, 0, 0, 0.7);
   position: relative;
   overflow: hidden;
   display: flex;
