@@ -959,7 +959,17 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
     resetBtn.dataset.bound = "true"
     resetBtn.addEventListener("click", () => {
       updateSetting("activeBgUid", null)
-      if (handleSettingUpdate) handleSettingUpdate("background", null)
+      if (typeof handleSettingUpdate === "function") {
+        handleSettingUpdate("background", null)
+      } else {
+        updateSetting("background", null)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "background", value: null },
+          }),
+        )
+      }
     })
   }
 
@@ -974,13 +984,30 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
     return
   }
 
-  if (isIdbVideo(bg)) {
-    if (nameLabel) nameLabel.textContent = "Local Video Wallpaper"
+  // Look for metadata in userBackgrounds
+  const userBgs = settings.userBackgrounds || []
+  const bgData = userBgs.find((b) => {
+    if (typeof b === "object" && b) {
+      return b.uid === settings.activeBgUid || b.id === bg || b.uid === bg
+    }
+    return b === bg
+  })
+
+  if (
+    isIdbVideo(bg) ||
+    (bgData && typeof bgData === "object" && bgData.type === "video")
+  ) {
+    if (nameLabel)
+      nameLabel.textContent = bgData?.name || "Local Video Wallpaper"
     if (thumb) {
       try {
-        const url = await getSavedVideo(bg)
-        if (url) {
-          thumb.innerHTML = `<video src="${url}" autoplay muted loop playsinline></video>`
+        const thumbUrl = await getThumbnailUrl(bg)
+        const videoUrl = !thumbUrl ? await getImageUrl(bg) : null
+        if (thumbUrl) {
+          thumb.innerHTML = ""
+          thumb.style.backgroundImage = `url("${thumbUrl}")`
+        } else if (videoUrl) {
+          thumb.innerHTML = `<video src="${videoUrl}" autoplay muted loop playsinline></video>`
           thumb.style.backgroundImage = "none"
         } else {
           thumb.innerHTML =
@@ -992,16 +1019,26 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
       }
     }
   } else if (isIdbMedia(bg)) {
-    if (nameLabel)
-      nameLabel.textContent = isIdbGif(bg)
-        ? "Local GIF Wallpaper"
-        : "Local Image Wallpaper"
+    if (nameLabel) {
+      if (bgData?.authorName) {
+        nameLabel.textContent = `Unsplash (${bgData.authorName})`
+      } else if (bgData?.name) {
+        nameLabel.textContent = bgData.name
+      } else {
+        nameLabel.textContent = isIdbGif(bg)
+          ? "Local GIF Wallpaper"
+          : "Local Image Wallpaper"
+      }
+    }
     if (thumb) {
       try {
-        const url = await getSavedImage(bg)
-        if (url) {
+        const thumbUrl =
+          (await getThumbnailUrl(bg)) ||
+          getBlobUrlSync(bg) ||
+          (await getImageUrl(bg))
+        if (thumbUrl) {
           thumb.innerHTML = ""
-          thumb.style.backgroundImage = `url("${url}")`
+          thumb.style.backgroundImage = `url("${thumbUrl}")`
         } else {
           thumb.innerHTML =
             '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
@@ -1021,10 +1058,14 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
   } else {
     // URL or Unsplash
     if (nameLabel) {
-      const isUnsplash = bg.includes("unsplash.com")
-      nameLabel.textContent = isUnsplash
-        ? "Unsplash Wallpaper"
-        : "Custom Web URL"
+      if (bgData?.authorName) {
+        nameLabel.textContent = `Unsplash (${bgData.authorName})`
+      } else {
+        const isUnsplash = bg.includes("unsplash.com")
+        nameLabel.textContent = isUnsplash
+          ? "Unsplash Wallpaper"
+          : "Custom Web URL"
+      }
     }
     if (thumb) {
       thumb.innerHTML = ""

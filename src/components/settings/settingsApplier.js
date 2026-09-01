@@ -34,6 +34,7 @@ import { splashCursorOptionsFromSettings } from "../animations/splashCursorOptio
 import {
   renderLocalBackgrounds,
   renderUserColors,
+  updateActiveWallpaperBanner,
 } from "./backgroundManager.js"
 import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
@@ -5035,6 +5036,8 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.bgPositionSetting.style.display =
         isImageBg || isVideoBg ? "block" : "none"
 
+    updateActiveWallpaperBanner()
+
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
     DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"
     setEffectActive(DOM.effectGrid, settings.effect)
@@ -6075,6 +6078,10 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.musicPlayerUseDefaultColorMode.value =
           settings.musicPlayerUseDefaultColor === true ? "true" : "false"
       }
+    }
+    if (DOM.musicPlayerWaveBgColorCheckbox) {
+      DOM.musicPlayerWaveBgColorCheckbox.checked =
+        settings.musicPlayerWaveBgColor === true
     }
     if (DOM.musicSourceIconColorModeSelect) {
       DOM.musicSourceIconColorModeSelect.value =
