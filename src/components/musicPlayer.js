@@ -637,6 +637,9 @@ export class MusicPlayer {
         case "beach":
           accentColor = "#b3e5fc"
           break
+        case "harp":
+          accentColor = "#dfa85c"
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }

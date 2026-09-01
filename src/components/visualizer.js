@@ -104,6 +104,7 @@ class MusicVisualizer {
     this._stopForest()
     this._stopBeach()
     this._stopOrbit()
+    this._stopHarp()
     if (this.container) {
       this.container.querySelectorAll("canvas").forEach((c) => c.remove())
       this.container.style.position = ""
@@ -134,7 +135,8 @@ class MusicVisualizer {
       style === "moon8" ||
       style === "forest" ||
       style === "beach" ||
-      style === "orbit"
+      style === "orbit" ||
+      style === "harp"
     )
       newBarCount = 0
     if (style === "square-thumb") newBarCount = 5
@@ -155,6 +157,7 @@ class MusicVisualizer {
       else if (style === "orbit") this._startOrbit()
       else if (style === "forest") this._startForest()
       else if (style === "beach") this._startBeach()
+      else if (style === "harp") this._startHarp()
       else this._startCSSLoop()
     }
   }
@@ -402,6 +405,337 @@ class MusicVisualizer {
     ctx.beginPath()
     ctx.arc(cx, cy, baseRadius - 8, 0, Math.PI * 2)
     ctx.stroke()
+    ctx.restore()
+  }
+
+  // ── Harp & Zither Visualizer ─────────────────────────────────────────────
+
+  _startHarp() {
+    this._stopHarp()
+    this.bars.forEach((b) => (b.style.display = "none"))
+    const canvas = document.createElement("canvas")
+    canvas.className = "harp-canvas"
+    canvas.style.cssText =
+      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"
+    this.harpCanvas = canvas
+    if (this.container) {
+      this.container.classList.add("is-canvas-mode")
+      this.container.style.position = "absolute"
+      this.container.style.top = "0"
+      this.container.style.left = "0"
+      this.container.style.width = "100%"
+      this.container.style.height = "100%"
+      this.container.appendChild(canvas)
+    }
+
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+    this._harpSimTime = 0
+    this._harpAmplitudes = new Float32Array(16).fill(0)
+    this._harpPluckRipples = []
+    this._harpPetals = []
+
+    // Pre-seed floating stardust/petals
+    for (let i = 0; i < 20; i++) {
+      this._harpPetals.push({
+        x: Math.random() * (this.cachedW || 276),
+        y: Math.random() * (this.cachedH || 60),
+        vx: (Math.random() - 0.5) * 8,
+        vy: -(6 + Math.random() * 14),
+        size: 1.2 + Math.random() * 2.2,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 2.5,
+        alpha: 0.25 + Math.random() * 0.55,
+        life: Math.random(),
+      })
+    }
+
+    const loop = (ts) => {
+      if (this.currentStyle !== "harp") return
+      this.harpAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = this._cpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 200) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
+      const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
+      this._lastTs = ts
+      this._harpFrame(dt)
+    }
+    this.harpAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopHarp() {
+    if (this.harpAnimId) {
+      cancelAnimationFrame(this.harpAnimId)
+      this.harpAnimId = null
+    }
+    if (this.harpCanvas) {
+      this.harpCanvas.remove()
+      this.harpCanvas = null
+    }
+    if (this.container) {
+      this.container.classList.remove("is-canvas-mode")
+      this.container.style.position = ""
+      this.container.style.top = ""
+      this.container.style.left = ""
+      this.container.style.width = ""
+      this.container.style.height = ""
+    }
+    this._harpPluckRipples = []
+    this._harpPetals = []
+    this.bars.forEach((b) => (b.style.display = ""))
+  }
+
+  _harpFrame(dt) {
+    const canvas = this.harpCanvas
+    if (!canvas) return
+    const W = this.cachedW || this.container?.offsetWidth || 276
+    const H = this.cachedH || this.container?.offsetHeight || 60
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+
+    if (canvas.width !== Math.floor(W * dpr) || canvas.height !== Math.floor(H * dpr)) {
+      canvas.width = Math.floor(W * dpr)
+      canvas.height = Math.floor(H * dpr)
+    }
+    const ctx = canvas.getContext("2d")
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    ctx.clearRect(0, 0, W, H)
+
+    this._harpSimTime = (this._harpSimTime || 0) + dt
+    const simTime = this._harpSimTime
+
+    const isWhiteBlur = this.isWhiteBlurCached
+    const accent = isWhiteBlur ? "#8a6d3b" : this.cachedAccent || "#dfa85c"
+
+    const isReactive = getSettings().musicRealAudioReactive === true
+    const bandsCount = this._realBands?.length || 0
+    const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
+
+    const numStrings = 16
+    if (!this._harpAmplitudes || this._harpAmplitudes.length !== numStrings) {
+      this._harpAmplitudes = new Float32Array(numStrings).fill(0)
+    }
+
+    // Procedural beat timings if no real audio
+    const bpm = 120
+    const beatPhase = (simTime * (bpm / 60)) % 1
+    const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+    const arpeggioIdx = Math.floor((simTime * 4.5) % numStrings)
+
+    // Calculate energy and targets for each string
+    for (let i = 0; i < numStrings; i++) {
+      let target = 0.05
+      if (this.isPlaying) {
+        if (isReactive && hasRealAudio) {
+          const bandIdx = Math.min(bandsCount - 1, Math.floor((i / numStrings) * bandsCount))
+          const val = this._realBands[bandIdx] || 0
+          target = Math.min(1.0, Math.pow(val, 0.42) * 1.8)
+        } else {
+          // Harp strum / arpeggio sweep + bass kicks
+          const distToArp = Math.abs(i - arpeggioIdx)
+          const arpStrum = distToArp === 0 ? 0.9 : distToArp === 1 ? 0.55 : 0.1
+          const bassBoost = i < 4 ? kick * 1.1 : 0
+          const harmonic = Math.sin(simTime * (5 + i * 0.8) + i * 0.7) * 0.5 + 0.5
+          target = Math.min(1.0, 0.15 + arpStrum * 0.65 + bassBoost * 0.7 + harmonic * 0.25)
+        }
+      } else {
+        target = 0
+      }
+
+      // Fast attack for plucking, gentle organic decay
+      const attack = target > this._harpAmplitudes[i] ? 0.75 : 0.15
+      this._harpAmplitudes[i] += (target - this._harpAmplitudes[i]) * attack
+
+      // Trigger Pluck Ripple if high pluck transient
+      if (this.isPlaying && target > 0.6 && this._harpAmplitudes[i] > 0.55) {
+        if (!this._lastPluckTimes) this._lastPluckTimes = new Float32Array(numStrings).fill(0)
+        if (simTime - this._lastPluckTimes[i] > 0.22) {
+          this._lastPluckTimes[i] = simTime
+          if (this._harpPluckRipples.length < 24) {
+            const padX = 14
+            const stringX = padX + (i / (numStrings - 1)) * (W - padX * 2)
+            const topArch = 6 + Math.pow(1 - i / (numStrings - 1), 1.6) * (H * 0.38)
+            const botArch = H - 6 - Math.sin((i / (numStrings - 1)) * Math.PI) * 4
+            const midY = (topArch + botArch) / 2
+            this._harpPluckRipples.push({
+              x: stringX,
+              y: midY + (Math.random() - 0.5) * 10,
+              radius: 2,
+              maxRadius: 18 + this._harpAmplitudes[i] * 22,
+              alpha: 0.85,
+              color: accent,
+            })
+          }
+        }
+      }
+    }
+
+    // 1. Draw Resonant Soundboard Ambient Glow Base
+    ctx.save()
+    const soundboardGrad = ctx.createLinearGradient(0, H * 0.6, 0, H)
+    soundboardGrad.addColorStop(0, "transparent")
+    soundboardGrad.addColorStop(1, isWhiteBlur ? "rgba(138, 109, 59, 0.15)" : "rgba(223, 168, 92, 0.18)")
+    ctx.fillStyle = soundboardGrad
+    ctx.beginPath()
+    ctx.moveTo(0, H)
+    for (let x = 0; x <= W; x += 6) {
+      const u = x / W
+      const strIdx = Math.min(numStrings - 1, Math.floor(u * numStrings))
+      const amp = this._harpAmplitudes[strIdx] || 0
+      const wave = Math.sin(x * 0.04 + simTime * 3.5) * (2 + amp * 5)
+      ctx.lineTo(x, H - 4 - wave)
+    }
+    ctx.lineTo(W, H)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+
+    // 2. Draw Top & Bottom Arch Bridge Lines (Cung đàn & Cầu đàn)
+    const padX = 14
+    ctx.save()
+    ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, 0.4)" : "rgba(223, 168, 92, 0.5)"
+    ctx.lineWidth = 1.2
+    // Top Arch
+    ctx.beginPath()
+    for (let i = 0; i < numStrings; i++) {
+      const x = padX + (i / (numStrings - 1)) * (W - padX * 2)
+      const topY = 6 + Math.pow(1 - i / (numStrings - 1), 1.6) * (H * 0.38)
+      if (i === 0) ctx.moveTo(x, topY)
+      else ctx.lineTo(x, topY)
+    }
+    ctx.stroke()
+
+    // Bottom Base Arch
+    ctx.beginPath()
+    for (let i = 0; i < numStrings; i++) {
+      const x = padX + (i / (numStrings - 1)) * (W - padX * 2)
+      const botY = H - 6 - Math.sin((i / (numStrings - 1)) * Math.PI) * 4
+      if (i === 0) ctx.moveTo(x, botY)
+      else ctx.lineTo(x, botY)
+    }
+    ctx.stroke()
+    ctx.restore()
+
+    // 3. Draw the 16 Vibrating Harp Strings
+    for (let i = 0; i < numStrings; i++) {
+      const u = i / (numStrings - 1)
+      const baseX = padX + u * (W - padX * 2)
+      const topY = 6 + Math.pow(1 - u, 1.6) * (H * 0.38)
+      const botY = H - 6 - Math.sin(u * Math.PI) * 4
+      const amp = this._harpAmplitudes[i]
+      const vibFreq = 18 + (1 - u) * 22 // Bass strings vibrate lower, treble faster
+      const vibPhase = simTime * vibFreq
+
+      // Standing harmonic wave displacement at middle
+      const maxDisplace = this.isPlaying ? Math.sin(vibPhase) * (amp * 6.5) : 0
+
+      ctx.save()
+      ctx.beginPath()
+      ctx.moveTo(baseX, topY)
+      // Quadratic curve with middle control point displaced
+      const ctrlX = baseX + maxDisplace
+      const ctrlY = (topY + botY) / 2
+      ctx.quadraticCurveTo(ctrlX, ctrlY, baseX, botY)
+
+      // String color: Golden amber silk strings, with brighter luminescence when plucked
+      const stringAlpha = this.isPlaying ? 0.35 + amp * 0.65 : 0.3
+      ctx.strokeStyle = isWhiteBlur
+        ? `rgba(120, 80, 20, ${stringAlpha})`
+        : accent
+      ctx.globalAlpha = stringAlpha
+      ctx.lineWidth = 0.9 + (1 - u) * 0.7 + amp * 0.6 // Bass strings slightly thicker
+      if (!isWhiteBlur && amp > 0.25) {
+        ctx.shadowColor = accent
+        ctx.shadowBlur = Math.min(10, 2 + amp * 8)
+      }
+      ctx.stroke()
+
+      // Top Tuning Peg & Bottom Bridge Pin (Chốt đàn & Nhạn đàn)
+      ctx.globalAlpha = 0.75 + amp * 0.25
+      ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffe4a0"
+      ctx.beginPath()
+      ctx.arc(baseX, topY, 1.3 + amp * 0.5, 0, Math.PI * 2)
+      ctx.arc(baseX, botY, 1.1 + amp * 0.4, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    }
+
+    // 4. Draw Expanding Pluck Ripples (Sóng âm elip phát quang)
+    ctx.save()
+    for (let r = this._harpPluckRipples.length - 1; r >= 0; r--) {
+      const rip = this._harpPluckRipples[r]
+      rip.radius += (rip.maxRadius - rip.radius) * 0.12 + 0.4
+      rip.alpha *= 0.91
+
+      if (rip.alpha <= 0.03 || rip.radius >= rip.maxRadius) {
+        this._harpPluckRipples.splice(r, 1)
+        continue
+      }
+
+      ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, " + rip.alpha + ")" : rip.color
+      ctx.globalAlpha = rip.alpha
+      ctx.lineWidth = 1.2
+      if (!isWhiteBlur) {
+        ctx.shadowColor = rip.color
+        ctx.shadowBlur = 6
+      }
+      ctx.beginPath()
+      ctx.ellipse(rip.x, rip.y, rip.radius * 0.55, rip.radius, 0, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+    ctx.restore()
+
+    // 5. Draw Floating Stardust & Golden Lotus Petals
+    ctx.save()
+    this._harpPetals.forEach((p) => {
+      if (this.isPlaying) {
+        p.y += p.vy * dt
+        p.x += p.vx * dt + Math.sin(simTime * 2.5 + p.y * 0.05) * 0.5
+        p.rot += p.rotSpeed * dt
+        p.life -= dt * 0.35
+
+        if (p.life <= 0 || p.y < 0) {
+          p.x = padX + Math.random() * (W - padX * 2)
+          const chosenStr = Math.floor(Math.random() * numStrings)
+          const strAmp = this._harpAmplitudes[chosenStr] || 0.2
+          p.y = H - 8 - Math.random() * (H * 0.4)
+          p.vy = -(8 + Math.random() * 16 + strAmp * 14)
+          p.vx = (Math.random() - 0.5) * (8 + strAmp * 10)
+          p.life = 0.8 + Math.random() * 0.6
+          p.alpha = 0.35 + Math.random() * 0.55
+        }
+      }
+
+      ctx.save()
+      ctx.translate(p.x, p.y)
+      ctx.rotate(p.rot)
+      ctx.globalAlpha = p.alpha * Math.min(1, p.life * 2)
+      ctx.fillStyle = isWhiteBlur ? "#967232" : "#ffe89e"
+      if (!isWhiteBlur) {
+        ctx.shadowColor = accent
+        ctx.shadowBlur = 4
+      }
+      // Petite petal shape
+      ctx.beginPath()
+      ctx.ellipse(0, 0, p.size * 0.6, p.size * 1.3, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    })
     ctx.restore()
   }
 
@@ -2285,7 +2619,8 @@ class MusicVisualizer {
       this.currentStyle !== "heartbeat" &&
       this.currentStyle !== "forest" &&
       this.currentStyle !== "beach" &&
-      this.currentStyle !== "orbit"
+      this.currentStyle !== "orbit" &&
+      this.currentStyle !== "harp"
     ) {
       this._startCSSLoop()
     }
@@ -2436,6 +2771,7 @@ class MusicVisualizer {
         this.orbitAnimId ||
         this.forestAnimId ||
         this.beachAnimId ||
+        this.harpAnimId ||
         this.moonAnimId ||
         this.pixelAnimId ||
         this._cssAnimId)
@@ -2452,6 +2788,7 @@ class MusicVisualizer {
     else if (this.currentStyle === "orbit") this._startOrbit()
     else if (this.currentStyle === "forest") this._startForest()
     else if (this.currentStyle === "beach") this._startBeach()
+    else if (this.currentStyle === "harp") this._startHarp()
     else this._startCSSLoop()
   }
 
