@@ -550,99 +550,93 @@ class MusicVisualizer {
 
     const padX = 14
 
-    // ── Musical Performance Phrasing Engine (Pentatonic Scale & Classical Phrases) ──
-    // 8-second musical cycle with 4 distinct traditional harp/zither playing techniques:
-    const phraseTime = simTime % 8.0
-    const phraseIdx = Math.floor(phraseTime / 2.0) // 0..3 (2s per musical phrase)
-    const localT = (phraseTime % 2.0) / 2.0 // 0..1 in current phrase
+    // ── Beat & Energy Detection Engine ─────────────────────────────────────
+    let kickEnergy = 0
+    let isKickHit = false
 
-    // Classical Andante tempo (~76-80 BPM) with natural human rubato breathing
-    const tempoBpm = 78 + Math.sin(simTime * 0.4) * 4
-    const measurePhase = (simTime * (tempoBpm / 60)) % 1
-    const downbeat = Math.pow(Math.max(0, 1 - measurePhase * 2.8), 2.5) // Deep resonant root bass pluck
-    const backbeat = Math.pow(Math.max(0, Math.sin(measurePhase * Math.PI * 2)), 2.8) * 0.5
+    if (this.isPlaying) {
+      if (hasRealAudio) {
+        // Real-time audio band processing: Extract instant bass & transient kick
+        const b0 = this._realBands[0] || 0
+        const b1 = this._realBands[1] || 0
+        const b2 = this._realBands[Math.min(2, bandsCount - 1)] || 0
+        const currentBass = b0 * 0.5 + b1 * 0.35 + b2 * 0.15
+        const prevBass = this._lastBassEnergy || 0
+        const bassDelta = Math.max(0, currentBass - prevBass)
+        this._lastBassEnergy = currentBass * 0.75 + prevBass * 0.25
+
+        kickEnergy = Math.min(1.0, Math.pow(currentBass, 0.42) * 1.95)
+        isKickHit = bassDelta > 0.09 || currentBass > 0.6
+      } else {
+        // High-energy procedural beat (128 BPM with distinct bass punch & groove)
+        const bpm = 128
+        const beatPhase = (simTime * (bpm / 60)) % 1
+        const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+        const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+        kickEnergy = Math.min(1.0, kick * 1.15 + sub * 0.25)
+        isKickHit = kick > 0.65
+      }
+    }
 
     // 1. Calculate Target Energies & Spring Physics for All 16 Strings
     for (let i = 0; i < numStrings; i++) {
-      let target = 0.03
+      let target = 0.04
       if (this.isPlaying) {
-        if (isReactive && hasRealAudio) {
-          // Logarithmic Bark/Mel frequency mapping from Bass (0) to Shimmering Treble (15)
-          const normIdx = Math.pow(i / (numStrings - 1), 1.22)
+        if (hasRealAudio) {
+          // Accurate Bark/Mel frequency distribution from Bass to Treble
+          const normIdx = Math.pow(i / (numStrings - 1), 1.25)
           const bandIdx = Math.min(
             bandsCount - 1,
             Math.floor(normIdx * bandsCount),
           )
           const rawVal = this._realBands[bandIdx] || 0
-          // Musical sensitivity curve: bass punch + crisp treble definition
-          const freqBoost = i < 3 ? 1.9 : i < 8 ? 1.75 : 1.6
-          target = Math.min(1.0, Math.pow(rawVal, 0.43) * freqBoost)
-        } else {
-          // 4 Authentic Traditional Musical Techniques:
-          let phraseEnergy = 0
+          const bandEnergy = Math.min(1.0, Math.pow(rawVal, 0.44) * 1.85)
 
-          if (phraseIdx === 0) {
-            // Phrase 1: Flowing Ascending & Cascading Glissando (Vuốt dải lụa ngũ cung / Water Ripple Glissando)
-            const sweepCenter = localT * (numStrings + 2) - 1
-            const dist = Math.abs(i - sweepCenter)
-            if (dist < 2.2) {
-              phraseEnergy = Math.pow(1 - dist / 2.2, 1.8) * 0.95
-            }
-            // Add subtle bass root anchor
-            if (i === 0 || i === 2) phraseEnergy += downbeat * 0.65
-          } else if (phraseIdx === 1) {
-            // Phrase 2: Cascading Arpeggio (Rải ngón đàn ngũ cung)
-            // Pattern: Bass(0) -> Mid(5) -> High(9) -> Shimmer(13) -> Mid(7) -> High(11) -> Bass(2) -> High(14)
-            const arpPattern = [0, 5, 9, 13, 7, 11, 2, 14]
-            const step = Math.floor(localT * arpPattern.length)
-            const activeString = arpPattern[step % arpPattern.length]
-            const stepFrac = (localT * arpPattern.length) % 1
-            const stepDecay = Math.pow(Math.max(0, 1 - stepFrac * 2.0), 2.0)
-            if (i === activeString) {
-              phraseEnergy = stepDecay * 0.92
-            } else if (Math.abs(i - activeString) === 1) {
-              phraseEnergy = stepDecay * 0.35 // Sympathetic string resonance (Cộng hưởng dây lân cận)
-            }
-          } else if (phraseIdx === 2) {
-            // Phrase 3: Tremolo & Melody Vibrato (Điệu rung ngón / Luyến láy phím ngọc)
-            const melodyStrings = [4, 7, 9, 12, 14]
-            const mIdx = melodyStrings[Math.floor(localT * melodyStrings.length) % melodyStrings.length]
-            if (i === mIdx) {
-              const tremolo = Math.sin(simTime * 22.0) * 0.2 + 0.8 // Fast tremolo rolling
-              phraseEnergy = tremolo * (0.65 + Math.sin(localT * Math.PI) * 0.35)
-            } else if (i === 1 || i === 3) {
-              phraseEnergy = downbeat * 0.75 + backbeat * 0.3 // Steady bass beat
-            }
+          // Extra kick impact on the bass / root strings
+          const bassBoost = i < 4 ? kickEnergy * 0.65 : 0
+          target = Math.min(1.0, bandEnergy + bassBoost)
+        } else {
+          // Procedural Musical Phrasing + Punchy Beat Strumming
+          const bpm = 128
+          const beatPhase = (simTime * (bpm / 60)) % 1
+          const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+          const sub = Math.sin(simTime * 9.5) * 0.5 + 0.5
+          const hat = (Math.sin(simTime * 24.0) * 0.5 + 0.5) * 0.35
+          const arpStep = Math.floor((simTime * 7.5) % numStrings)
+
+          let stringBeat = 0
+          if (i < 4) {
+            // Bass strings strike on every kick beat!
+            stringBeat = kick * 1.1 + sub * 0.25
+          } else if (i < 10) {
+            // Mid strings cascade in fast arpeggio with melody swells
+            const dist = Math.abs(i - arpStep)
+            const arpVal = dist === 0 ? 0.95 : dist === 1 ? 0.5 : 0.1
+            const snare = Math.pow(Math.max(0, Math.sin(beatPhase * Math.PI * 2)), 2.8) * 0.6
+            stringBeat = arpVal + snare * 0.45
           } else {
-            // Phrase 4: Harmonic Chord Resonance (Hợp âm hòa tấu đồng vọng)
-            // Pentatonic chord voicing: strings 1, 5, 8, 12, 15
-            const chordTones = [1, 5, 8, 12, 15]
-            if (chordTones.includes(i)) {
-              const chordPulse = Math.sin(localT * Math.PI * 2) * 0.5 + 0.5
-              phraseEnergy = chordPulse * 0.8 + downbeat * 0.45
-            }
+            // High treble strings shimmer with high hats and secondary arpeggios
+            const highArp = Math.abs(i - ((arpStep + 5) % numStrings)) <= 1 ? 0.85 : 0.15
+            stringBeat = highArp * 0.7 + hat * 0.5 + kick * 0.35
           }
 
-          // Sympathetic Acoustic Air Shimmer (Âm vang nhẹ không gian)
-          const ambientShimmer =
-            Math.sin(simTime * (3.0 + i * 0.5) + i * 0.9) * 0.08 + 0.08
-          target = Math.min(1.0, 0.04 + phraseEnergy + ambientShimmer)
+          const shimmer = Math.sin(simTime * (4.0 + i * 0.6) + i * 0.9) * 0.08 + 0.08
+          target = Math.min(1.0, stringBeat * 0.9 + shimmer)
         }
       } else {
         target = 0
       }
 
-      // Smooth attack and natural organic decay (bass sustains longer, treble crisper)
-      const stringDecay = 0.12 + (i / numStrings) * 0.08
-      const attackSpeed = target > this._harpAmplitudes[i] ? 0.85 : stringDecay
+      // Snappy attack on pluck transients, smooth physical decay
+      const attackSpeed = target > this._harpAmplitudes[i] ? 0.88 : 0.18
       this._harpAmplitudes[i] +=
         (target - this._harpAmplitudes[i]) * attackSpeed
 
       const currentAmp = this._harpAmplitudes[i]
 
-      // Trigger Pluck Ripple Ring upon strong pluck transients
-      if (this.isPlaying && target > 0.52 && currentAmp > 0.48) {
-        if (simTime - this._lastPluckTimes[i] > 0.22) {
+      // Trigger Pluck Ripple Ring upon strong beat plucks
+      if (this.isPlaying && (target > 0.48 || (isKickHit && i < 4)) && currentAmp > 0.42) {
+        if (simTime - this._lastPluckTimes[i] > 0.18) {
           this._lastPluckTimes[i] = simTime
           if (this._harpPluckRipples.length < 24) {
             const u = i / (numStrings - 1)
@@ -656,8 +650,8 @@ class MusicVisualizer {
               x: stringX,
               y: midY,
               radius: 1,
-              maxRadius: 16 + currentAmp * 24,
-              alpha: 0.9,
+              maxRadius: 18 + currentAmp * 26,
+              alpha: 0.95,
               color: accent,
             })
           }
@@ -665,14 +659,14 @@ class MusicVisualizer {
       }
     }
 
-    // 2. Dual-Layer Resonant Soundboard Glow Ribbons (Dải sóng âm cộng hưởng đáy đàn)
+    // 2. Dual-Layer Resonant Soundboard Glow Ribbons (Surges with beat!)
     ctx.save()
     // Back deeper ambient wave
-    const deepSoundboardGrad = ctx.createLinearGradient(0, H * 0.55, 0, H)
+    const deepSoundboardGrad = ctx.createLinearGradient(0, H * 0.5, 0, H)
     deepSoundboardGrad.addColorStop(0, "transparent")
     deepSoundboardGrad.addColorStop(
       1,
-      isWhiteBlur ? "rgba(138, 109, 59, 0.12)" : "rgba(223, 168, 92, 0.15)",
+      isWhiteBlur ? "rgba(138, 109, 59, 0.15)" : "rgba(223, 168, 92, 0.2)",
     )
     ctx.fillStyle = deepSoundboardGrad
     ctx.beginPath()
@@ -681,7 +675,7 @@ class MusicVisualizer {
       const u = x / W
       const strIdx = Math.min(numStrings - 1, Math.floor(u * numStrings))
       const amp = this._harpAmplitudes[strIdx] || 0
-      const wave = Math.sin(x * 0.035 + simTime * 2.8) * (3 + amp * 6) + Math.cos(x * 0.07 - simTime * 2.0) * 2
+      const wave = Math.sin(x * 0.035 + simTime * 3.5) * (3 + amp * 8 + kickEnergy * 6) + Math.cos(x * 0.07 - simTime * 2.5) * 2
       ctx.lineTo(x, H - 4 - wave)
     }
     ctx.lineTo(W, H)
@@ -689,11 +683,11 @@ class MusicVisualizer {
     ctx.fill()
 
     // Forefront shimmering soundboard wave
-    const foreSoundboardGrad = ctx.createLinearGradient(0, H * 0.7, 0, H)
+    const foreSoundboardGrad = ctx.createLinearGradient(0, H * 0.65, 0, H)
     foreSoundboardGrad.addColorStop(0, "transparent")
     foreSoundboardGrad.addColorStop(
       1,
-      isWhiteBlur ? "rgba(138, 109, 59, 0.22)" : "rgba(255, 220, 140, 0.25)",
+      isWhiteBlur ? "rgba(138, 109, 59, 0.28)" : "rgba(255, 220, 140, 0.35)",
     )
     ctx.fillStyle = foreSoundboardGrad
     ctx.beginPath()
@@ -702,7 +696,7 @@ class MusicVisualizer {
       const u = x / W
       const strIdx = Math.min(numStrings - 1, Math.floor(u * numStrings))
       const amp = this._harpAmplitudes[strIdx] || 0
-      const wave = Math.sin(x * 0.05 - simTime * 3.4) * (2 + amp * 5)
+      const wave = Math.sin(x * 0.05 - simTime * 4.2) * (2 + amp * 7 + kickEnergy * 5)
       ctx.lineTo(x, H - 2 - wave)
     }
     ctx.lineTo(W, H)
@@ -712,7 +706,7 @@ class MusicVisualizer {
 
     // 3. Top Arch Crown & Bottom Bridge Lines (Cung Đàn Hạc & Cầu Đàn Tranh)
     ctx.save()
-    ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, 0.45)" : "rgba(223, 168, 92, 0.55)"
+    ctx.strokeStyle = isWhiteBlur ? "rgba(138, 109, 59, 0.5)" : "rgba(223, 168, 92, 0.65)"
     ctx.lineWidth = 1.4
     ctx.lineCap = "round"
 
@@ -737,7 +731,7 @@ class MusicVisualizer {
     ctx.stroke()
     ctx.restore()
 
-    // 4. Draw the 16 Vibrating Harp Strings with Multi-Harmonic Physics
+    // 4. Draw the 16 Vibrating Harp Strings with High Dynamic Range Plucking
     const stringPtsCount = 9
     for (let i = 0; i < numStrings; i++) {
       const u = i / (numStrings - 1)
@@ -747,9 +741,9 @@ class MusicVisualizer {
       const amp = this._harpAmplitudes[i]
       const stringLen = botY - topY
 
-      // Harmonic frequencies: fundamental + 2nd harmonic
-      const omega1 = 16 + (1 - u) * 20
-      const omega2 = omega1 * 2.04
+      // Harmonic vibration frequencies
+      const omega1 = 20 + (1 - u) * 26
+      const omega2 = omega1 * 2.05
       const phase1 = simTime * omega1
       const phase2 = simTime * omega2
 
@@ -761,58 +755,59 @@ class MusicVisualizer {
         const segFrac = s / stringPtsCount
         const curY = topY + segFrac * stringLen
 
-        // Standing wave displacement: fundamental + 2nd harmonic
+        // Standing harmonic waves: High dynamic displacement (visibly swings on beat!)
         const standing1 = Math.sin(Math.PI * segFrac) * Math.sin(phase1)
-        const standing2 = Math.sin(Math.PI * 2 * segFrac) * Math.sin(phase2) * 0.32
+        const standing2 = Math.sin(Math.PI * 2 * segFrac) * Math.sin(phase2) * 0.35
         const totalDisplace = this.isPlaying
-          ? (standing1 + standing2) * (amp * 7.2)
+          ? (standing1 + standing2) * (amp * 16.5)
           : 0
 
         const curX = baseX + totalDisplace
         ctx.lineTo(curX, curY)
       }
 
-      // Golden amber silk string styling with dynamic luminance bloom
-      const stringAlpha = this.isPlaying ? 0.38 + amp * 0.62 : 0.32
-      ctx.strokeStyle = isWhiteBlur
-        ? `rgba(120, 80, 20, ${stringAlpha})`
-        : accent
+      // Golden silk string styling with dynamic luminance bloom on pluck hits
+      const stringAlpha = this.isPlaying ? 0.4 + amp * 0.6 : 0.32
+      const isPlucked = amp > 0.42
+      ctx.strokeStyle = isPlucked
+        ? (isWhiteBlur ? "#a37a38" : "#fff1c2")
+        : (isWhiteBlur ? `rgba(120, 80, 20, ${stringAlpha})` : accent)
       ctx.globalAlpha = stringAlpha
-      ctx.lineWidth = 0.95 + (1 - u) * 0.65 + amp * 0.6
+      ctx.lineWidth = 0.95 + (1 - u) * 0.75 + amp * 2.4
 
-      if (!isWhiteBlur && amp > 0.22) {
-        ctx.shadowColor = accent
-        ctx.shadowBlur = Math.min(12, 3 + amp * 9)
+      if (!isWhiteBlur && amp > 0.18) {
+        ctx.shadowColor = isPlucked ? "#ffeaa7" : accent
+        ctx.shadowBlur = Math.min(22, 3 + amp * 18)
       }
       ctx.stroke()
 
       // Traveling Light Glint Shimmer along vibrating string
-      if (this.isPlaying && amp > 0.18) {
-        const glintPos = (simTime * (1.2 + u * 0.8)) % 1
+      if (this.isPlaying && amp > 0.15) {
+        const glintPos = (simTime * (1.4 + u * 0.9)) % 1
         const glintY = topY + glintPos * stringLen
         const glintDisplace =
-          Math.sin(Math.PI * glintPos) * Math.sin(phase1) * (amp * 7.2)
+          Math.sin(Math.PI * glintPos) * Math.sin(phase1) * (amp * 16.5)
         const glintX = baseX + glintDisplace
 
         ctx.save()
-        ctx.globalAlpha = Math.min(1.0, amp * 0.9)
+        ctx.globalAlpha = Math.min(1.0, amp * 0.95)
         ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffffff"
         if (!isWhiteBlur) {
           ctx.shadowColor = "#ffffff"
-          ctx.shadowBlur = 6
+          ctx.shadowBlur = 8
         }
         ctx.beginPath()
-        ctx.arc(glintX, glintY, 1.2 + amp * 0.8, 0, Math.PI * 2)
+        ctx.arc(glintX, glintY, 1.4 + amp * 1.2, 0, Math.PI * 2)
         ctx.fill()
         ctx.restore()
       }
 
-      // Top Tuning Peg & Bottom Bridge Pin (Chốt đàn & Nhạn đàn ngọc bích/mạ vàng)
+      // Top Tuning Peg & Bottom Bridge Pin (Chốt đàn & Nhạn đàn)
       ctx.globalAlpha = 0.85 + amp * 0.15
-      ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : "#ffecb3"
+      ctx.fillStyle = isWhiteBlur ? "#8a6d3b" : (isPlucked ? "#ffffff" : "#ffecb3")
       ctx.beginPath()
-      ctx.arc(baseX, topY, 1.4 + amp * 0.5, 0, Math.PI * 2)
-      ctx.arc(baseX, botY, 1.2 + amp * 0.4, 0, Math.PI * 2)
+      ctx.arc(baseX, topY, 1.5 + amp * 0.6, 0, Math.PI * 2)
+      ctx.arc(baseX, botY, 1.3 + amp * 0.5, 0, Math.PI * 2)
       ctx.fill()
       ctx.restore()
     }
@@ -821,8 +816,8 @@ class MusicVisualizer {
     ctx.save()
     for (let r = this._harpPluckRipples.length - 1; r >= 0; r--) {
       const rip = this._harpPluckRipples[r]
-      rip.radius += (rip.maxRadius - rip.radius) * 0.14 + 0.5
-      rip.alpha *= 0.91
+      rip.radius += (rip.maxRadius - rip.radius) * 0.16 + 0.6
+      rip.alpha *= 0.9
 
       if (rip.alpha <= 0.03 || rip.radius >= rip.maxRadius) {
         this._harpPluckRipples.splice(r, 1)
@@ -831,13 +826,13 @@ class MusicVisualizer {
 
       // Outer ripple ring
       ctx.strokeStyle = isWhiteBlur
-        ? `rgba(138, 109, 59, ${rip.alpha * 0.7})`
+        ? `rgba(138, 109, 59, ${rip.alpha * 0.75})`
         : rip.color
-      ctx.globalAlpha = rip.alpha * 0.7
-      ctx.lineWidth = 1.1
+      ctx.globalAlpha = rip.alpha * 0.75
+      ctx.lineWidth = 1.3
       if (!isWhiteBlur) {
         ctx.shadowColor = rip.color
-        ctx.shadowBlur = 6
+        ctx.shadowBlur = 8
       }
       ctx.beginPath()
       ctx.ellipse(rip.x, rip.y, rip.radius * 0.55, rip.radius, 0, 0, Math.PI * 2)
@@ -845,8 +840,8 @@ class MusicVisualizer {
 
       // Inner bright core ring
       if (rip.radius > 4) {
-        ctx.globalAlpha = rip.alpha * 0.9
-        ctx.lineWidth = 1.4
+        ctx.globalAlpha = rip.alpha * 0.95
+        ctx.lineWidth = 1.6
         ctx.beginPath()
         ctx.ellipse(rip.x, rip.y, rip.radius * 0.32, rip.radius * 0.58, 0, 0, Math.PI * 2)
         ctx.stroke()
@@ -858,20 +853,22 @@ class MusicVisualizer {
     ctx.save()
     this._harpPetals.forEach((p) => {
       if (this.isPlaying) {
-        p.y += p.vy * dt
-        p.x += p.vx * dt + Math.sin(simTime * 2.2 + p.y * 0.06) * 0.6
+        // Petals dance to the beat!
+        const beatBounce = isKickHit ? -kickEnergy * 6 : 0
+        p.y += (p.vy + beatBounce) * dt
+        p.x += p.vx * dt + Math.sin(simTime * 2.5 + p.y * 0.06) * 0.8
         p.rotX += p.rotSpeedX * dt
         p.rotY += p.rotSpeedY * dt
         p.rotZ += p.rotSpeedZ * dt
         p.life -= dt * 0.32
 
-        if (p.life <= 0 || p.y < -4) {
+        if (p.life <= 0 || p.y < -6) {
           p.x = padX + Math.random() * (W - padX * 2)
           const chosenStr = Math.floor(Math.random() * numStrings)
           const strAmp = this._harpAmplitudes[chosenStr] || 0.2
           p.y = H - 6 - Math.random() * (H * 0.4)
-          p.vy = -(6 + Math.random() * 14 + strAmp * 12)
-          p.vx = (Math.random() - 0.5) * (7 + strAmp * 8)
+          p.vy = -(8 + Math.random() * 16 + strAmp * 16 + kickEnergy * 14)
+          p.vx = (Math.random() - 0.5) * (8 + strAmp * 10)
           p.life = 0.8 + Math.random() * 0.6
           p.alpha = 0.35 + Math.random() * 0.55
         }
