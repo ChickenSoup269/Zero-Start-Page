@@ -57,9 +57,15 @@ export class HyperspaceEffect {
     this.active = false
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)
+      this.animationId = null
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this.resize)
   }
 
   animate() {
