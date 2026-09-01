@@ -3603,30 +3603,100 @@ body.widgets-m3-accent
 }
 
 .music-style-harp .disc-container {
-  border: 1px solid rgba(223, 168, 92, 0.5);
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(223, 168, 92, 0.6);
   box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.55),
-    0 0 15px rgba(223, 168, 92, 0.22);
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 16px rgba(223, 168, 92, 0.25),
+    inset 0 0 10px rgba(0, 0, 0, 0.5);
   background: radial-gradient(
     circle at center,
-    rgba(35, 24, 18, 0.9) 0%,
-    rgba(16, 11, 8, 0.95) 100%
+    rgba(45, 30, 20, 0.95) 0%,
+    rgba(22, 14, 10, 0.98) 100%
   );
-  transition: box-shadow 0.4s ease;
+  padding: 3px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 3;
 }
 
 .music-style-harp .music-player-wrapper.playing .disc-container {
   box-shadow:
-    0 6px 22px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(223, 168, 92, 0.4);
+    0 10px 28px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(223, 168, 92, 0.45),
+    0 0 0 2px rgba(255, 220, 140, 0.35);
+  transform: scale(1.03);
 }
 
 .music-style-harp .vinyl-disc {
-  box-shadow: inset 0 0 0 2px rgba(223, 168, 92, 0.35);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(223, 168, 92, 0.5);
+  background:
+    radial-gradient(circle at center, #352216 0%, #1e130c 55%, #100a06 100%),
+    repeating-radial-gradient(circle, transparent 0, transparent 3px, rgba(223, 168, 92, 0.15) 4px, transparent 5px);
+  box-shadow:
+    inset 0 0 0 2px rgba(223, 168, 92, 0.4),
+    inset 0 0 12px rgba(0, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* Glossy crystal glass reflection overlay across thumbnail */
+.music-style-harp .vinyl-disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    transparent 50%,
+    rgba(223, 168, 92, 0.18) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Center Golden Spindle Hub (Chốt đồng trung tâm đĩa) */
 .music-style-harp .vinyl-disc::before {
-  border-color: rgba(223, 168, 92, 0.45);
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffe8a8 0%,
+    #dfa85c 40%,
+    #8f5c1e 100%
+  );
+  border: 1.5px solid rgba(255, 240, 200, 0.85);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    0 0 6px rgba(223, 168, 92, 0.6);
+  z-index: 3;
+  transition: opacity 0.3s ease;
+}
+
+/* When thumbnail is present: enhance vibrant contrast & border */
+.music-style-harp .vinyl-disc.has-thumb {
+  border-color: rgba(255, 220, 140, 0.65);
+  box-shadow:
+    inset 0 0 0 2px rgba(223, 168, 92, 0.5),
+    0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+.music-style-harp .vinyl-disc.has-thumb::before {
+  opacity: 0.85;
 }
 
 .music-style-harp .controls-row button,
@@ -3743,6 +3813,30 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper.skin-white-blur .progress-bar-track {
   background: rgba(184, 130, 53, 0.18) !important;
   border-color: rgba(184, 130, 53, 0.3) !important;
+}
+
+/* Thumbnail Background Skin */
+.music-style-harp .music-player-wrapper.skin-thumbnail-bg {
+  border: 1px solid rgba(255, 220, 140, 0.45) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.75),
+    0 0 30px rgba(223, 168, 92, 0.25) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-thumbnail-bg::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(20, 12, 8, 0.55) 0%,
+    rgba(10, 6, 4, 0.8) 100%
+  ) !important;
+}
+
+/* Transparent Skin */
+.music-style-harp .music-player-wrapper.skin-transparent {
+  background: rgba(20, 14, 10, 0.45) !important;
+  border: 1px solid rgba(223, 168, 92, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* =========================================
