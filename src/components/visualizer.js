@@ -1233,44 +1233,48 @@ class MusicVisualizer {
       instantKick = 0
 
     if (this.isPlaying) {
-      if (isReactive) {
-        if (hasRealAudio) {
-          b0 = this._realBands[0] || 0
-          b1 = this._realBands[1] || 0
-          b2 = this._realBands[2] || 0
-          b3 = this._realBands[3] || 0
-          treble =
-            this._realBands.slice(4).reduce((a, b) => a + b, 0) /
-            Math.max(1, bandsCount - 4)
-          bassEnergy = Math.max(b0, b1, (b0 + b1 + b2 * 0.5) / 2.5)
-          instantKick = Math.max(0, bassEnergy - (this._lastBassEnergy || 0.12))
-          this._lastBassEnergy =
-            (this._lastBassEnergy || 0.12) * 0.82 + bassEnergy * 0.18
-          targetNorm = Math.min(1.0, Math.pow(bassEnergy, 0.38) * 1.95)
-        } else {
-          targetNorm = Math.max(
-            0.1,
-            kick * 1.25 + (Math.sin(simTime * 9.5) * 0.5 + 0.5) * 0.3,
-          )
-        }
+      if (isReactive && hasRealAudio) {
+        b0 = this._realBands[0] || 0
+        b1 = this._realBands[1] || 0
+        b2 = this._realBands[2] || 0
+        b3 = this._realBands[3] || 0
+        treble =
+          this._realBands.slice(4).reduce((a, b) => a + b, 0) /
+          Math.max(1, bandsCount - 4)
+
+        bassEnergy = Math.max(b0 * 1.25, b1 * 1.1, (b0 + b1 * 1.3) / 2.2)
+        instantKick = Math.max(0, bassEnergy - (this._lastBassEnergy || 0.08))
+        this._lastBassEnergy =
+          (this._lastBassEnergy || 0.08) * 0.72 + bassEnergy * 0.28
+        targetNorm = Math.min(1.0, Math.pow(bassEnergy, 0.4) * 1.85)
       } else {
-        targetNorm = 0.28 + Math.sin(simTime * 4.0) * 0.12
+        const bpm = 128
+        const beatPhase = (simTime * (bpm / 60)) % 1
+        const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
+        targetNorm = this.isPlaying
+          ? Math.max(
+              0.12,
+              kick * 1.15 + (Math.sin(simTime * 9.5) * 0.5 + 0.5) * 0.25,
+            )
+          : 0
+        bassEnergy = targetNorm
+        instantKick = Math.max(0, kick - 0.2)
       }
     } else {
       targetNorm = 0
     }
 
-    const smoothing = targetNorm > (this._heartbeatNorm || 0) ? 0.85 : 0.32
+    const smoothing = targetNorm > (this._heartbeatNorm || 0) ? 0.7 : 0.25
     this._heartbeatNorm =
       (this._heartbeatNorm || 0) +
       (targetNorm - (this._heartbeatNorm || 0)) * smoothing
     const norm = this._heartbeatNorm
 
     const currentBaseY = H / 2
-    const headX = Math.floor(W * 0.7) // Camera tracking focal point at 70% width
+    const headX = Math.floor(W * 0.72) // Camera tracking focal point at 72% width
 
-    // Forward speed of camera flight (pixels/second)
-    const speed = 100
+    // Smooth forward speed of ECG trace (pixels/second)
+    const speed = 75
     const advance = speed * dt
     this._hbDistance += advance
     this._hbStepRemainder = (this._hbStepRemainder || 0) + advance
@@ -1281,94 +1285,114 @@ class MusicVisualizer {
       this._hbHistory = new Float32Array(Math.max(W + 100, 800)).fill(0)
     }
 
-    // Step physics & record newly formed ECG wave at the head
-    const minInterval = hasRealAudio ? 0.2 : 0.32
+    // Step physics & record newly formed continuous ECG wave at the head
     for (let s = 0; s < numSteps; s++) {
-      this._hbPulseTimer = (this._hbPulseTimer || 0) + 1 / speed
-
-      const beatTriggered =
-        this.isPlaying &&
-        this._hbCardiacProgress < 0 &&
-        this._hbPulseTimer >= minInterval &&
-        ((isReactive &&
-          hasRealAudio &&
-          (instantKick > 0.065 || bassEnergy > 0.26 || norm > 0.36)) ||
-          (isReactive && !hasRealAudio && kick > 0.78) ||
-          (!isReactive && this._hbPulseTimer >= 0.75) ||
-          this._hbPulseTimer >= 0.95)
-
-      if (beatTriggered) {
-        this._hbPulseTimer = 0
-        this._hbCardiacProgress = 0
-        this._hbCardiacAmp =
-          0.85 + norm * 2.8 + (hasRealAudio ? bassEnergy * 1.8 : kick * 1.4)
-        this._hbCardiacDuration = 26
+      // 1. Instantaneous Kick & Beat Impulse Triggering
+      if (this.isPlaying) {
+        const kickThreshold = hasRealAudio ? 0.032 : 0.45
+        if (instantKick > kickThreshold || bassEnergy > 0.36) {
+          const hitForce = Math.min(
+            1.25,
+            Math.max(instantKick * 2.8, bassEnergy * 0.95),
+          )
+          this._hbImpulse = Math.max(this._hbImpulse || 0, hitForce)
+          if (
+            (this._hbImpulsePhase || 0) <= 0 ||
+            (this._hbImpulsePhase || 0) > Math.PI * 1.85
+          ) {
+            this._hbImpulsePhase = 0.01 // Start cardiac spike immediately without waiting
+          }
+        }
       }
 
-      let currentSampleY = 0
-      if (this._hbCardiacProgress >= 0) {
-        const p = this._hbCardiacProgress / this._hbCardiacDuration
-        const amp = this._hbCardiacAmp || 1.0
-        if (p < 0.16) {
-          currentSampleY = -Math.sin((p / 0.16) * Math.PI) * 2.8 * amp // P wave
-        } else if (p < 0.28) {
-          currentSampleY = Math.sin(((p - 0.16) / 0.12) * Math.PI) * 3.0 * amp // Q dip
-        } else if (p < 0.48) {
-          currentSampleY = -Math.sin(((p - 0.28) / 0.2) * Math.PI) * 24.0 * amp // R peak spike
-        } else if (p < 0.64) {
-          currentSampleY = Math.sin(((p - 0.48) / 0.16) * Math.PI) * 12.0 * amp // S wave rebound
-        } else if (p < 0.92) {
-          currentSampleY = -Math.sin(((p - 0.64) / 0.28) * Math.PI) * 6.0 * amp // T wave
+      // 2. Cardiac Impulse Evolution (QRS peak synthesis)
+      let cardiacY = 0
+      if ((this._hbImpulsePhase || 0) > 0) {
+        this._hbImpulsePhase += 0.24 // Clean fluid progression
+        const ph = this._hbImpulsePhase
+        const amp = this._hbImpulse || 0.85
+
+        if (ph < Math.PI * 0.25) {
+          // Q notch (pre-spike dip)
+          cardiacY = Math.sin((ph / (Math.PI * 0.25)) * Math.PI) * 1.8 * amp
+        } else if (ph < Math.PI * 0.85) {
+          // R spike (instant sharp upward peak reacting to beat)
+          const rP = (ph - Math.PI * 0.25) / (Math.PI * 0.6)
+          cardiacY = -Math.sin(rP * Math.PI) * 11.6 * amp
+        } else if (ph < Math.PI * 1.25) {
+          // S dip (rapid rebound below baseline)
+          const sP = (ph - Math.PI * 0.85) / (Math.PI * 0.4)
+          cardiacY = Math.sin(sP * Math.PI) * 4.0 * amp
+        } else if (ph < Math.PI * 1.85) {
+          // T wave (smooth repolarization curve)
+          const tP = (ph - Math.PI * 1.25) / (Math.PI * 0.6)
+          cardiacY = -Math.sin(tP * Math.PI) * 2.2 * amp
         } else {
-          currentSampleY = 0
-        }
-        this._hbCardiacProgress++
-        if (this._hbCardiacProgress >= this._hbCardiacDuration) {
-          this._hbCardiacProgress = -1
+          this._hbImpulsePhase = 0
+          this._hbImpulse = 0
         }
       } else {
-        const audioVibration = hasRealAudio
-          ? Math.sin(simTime * 28 + this._hbDistance * 0.15) * (b2 + b3) * 3.5 +
-            (Math.random() - 0.5) * (treble * 3.8)
-          : (Math.random() - 0.5) * (this.isPlaying ? 0.6 + norm * 2.0 : 0.2)
-        currentSampleY = audioVibration
+        // Continuous gentle heartbeat when music has mild tempo
+        this._hbAutoBeatTimer = (this._hbAutoBeatTimer || 0) + 1 / speed
+        const autoInterval = hasRealAudio ? 0.72 : 0.85
+        if (this.isPlaying && this._hbAutoBeatTimer >= autoInterval) {
+          this._hbAutoBeatTimer = 0
+          this._hbImpulse = 0.72 + norm * 0.35
+          this._hbImpulsePhase = 0.01
+        }
       }
+
+      // 3. Continuous Acoustic Waveform Modulation (Vocals, Mids, Treble live shaping)
+      let acousticY = 0
+      if (this.isPlaying) {
+        if (hasRealAudio) {
+          acousticY =
+            Math.sin(simTime * 16.0 + this._hbDistance * 0.06) *
+              (b2 * 2.2 + b3 * 1.5) +
+            Math.sin(simTime * 28.0 + this._hbDistance * 0.12) *
+              (b1 * 1.1 + treble * 0.85)
+        } else {
+          acousticY =
+            Math.sin(simTime * 6.0 + this._hbDistance * 0.05) *
+            (0.35 + norm * 0.4)
+        }
+      }
+
+      // Combine total instantaneous Y displacement
+      const currentSampleY = Math.max(
+        -12.8,
+        Math.min(8.0, cardiacY + acousticY),
+      )
 
       // Shift history backward (flow into past) and write new sample at head
       this._hbHistory.copyWithin(1, 0, headX + 30)
       this._hbHistory[0] = currentSampleY
 
       // Spawn trailing cinematic ember particles from the moving spark head
-      if (this.isPlaying && Math.random() < 0.25 + norm * 0.35) {
+      if (this.isPlaying && Math.random() < 0.15 + norm * 0.2) {
         if (!this._hbEmbers) this._hbEmbers = []
-        if (this._hbEmbers.length < 25) {
+        if (this._hbEmbers.length < 18) {
           this._hbEmbers.push({
             x: headX,
             y: currentBaseY + currentSampleY,
-            vx: -(70 + Math.random() * 50),
-            vy: (Math.random() - 0.5) * 16,
+            vx: -(45 + Math.random() * 35),
+            vy: (Math.random() - 0.5) * 8,
             life: 1.0,
-            size: 1.0 + Math.random() * 1.5,
+            size: 0.9 + Math.random() * 1.2,
           })
         }
       }
     }
 
-    // Dynamic Camera Spring Tracking (Camera pan & damping following cardiac spikes)
-    const targetCamY = (this._hbHistory[0] || 0) * 0.22
-    this._hbCamY =
-      (this._hbCamY || 0) + (targetCamY - (this._hbCamY || 0)) * 0.16
-    const camOffsetY = this._hbCamY
-
     const isCpuSave = this._cpuSave !== false
 
-    // 1. Draw Infinite Scrolling Background Medical Grid (Hiệu ứng không gian trôi)
+    // 1. Draw Infinite Scrolling Background Medical Grid (Hiệu ứng lưới y tế êm dịu)
     ctx.save()
     ctx.strokeStyle = isWhiteMode
-      ? "rgba(0,0,0,0.08)"
-      : "rgba(255,255,255,0.08)"
+      ? "rgba(0,0,0,0.06)"
+      : "rgba(255,255,255,0.06)"
     ctx.lineWidth = 0.8
-    const gridSpacing = 18
+    const gridSpacing = 16
     const gridOffset = (this._hbDistance || 0) % gridSpacing
     for (let gx = -gridOffset; gx <= W; gx += gridSpacing) {
       if (gx >= 0) {
@@ -1380,28 +1404,28 @@ class MusicVisualizer {
     }
     // Horizontal center line
     ctx.beginPath()
-    ctx.moveTo(0, currentBaseY - camOffsetY)
-    ctx.lineTo(W, currentBaseY - camOffsetY)
+    ctx.moveTo(0, currentBaseY)
+    ctx.lineTo(W, currentBaseY)
     ctx.stroke()
     ctx.restore()
 
-    // 2. Draw Forward Holographic Guide Beam (Phía trước đầu kim - Chưa biết trước)
+    // 2. Draw Forward Holographic Guide Beam (Đường dẫn phía trước kim)
     ctx.save()
     const guideGrad = ctx.createLinearGradient(headX, 0, W, 0)
     guideGrad.addColorStop(0, accent)
-    guideGrad.addColorStop(0.35, "rgba(255,255,255,0.25)")
+    guideGrad.addColorStop(0.35, "rgba(255,255,255,0.2)")
     guideGrad.addColorStop(1, "transparent")
     ctx.strokeStyle = guideGrad
     ctx.lineWidth = 1.0
-    ctx.setLineDash([4, 4])
-    ctx.lineDashOffset = -(this._hbDistance * 0.8) % 8
+    ctx.setLineDash([3, 4])
+    ctx.lineDashOffset = -(this._hbDistance * 0.6) % 7
     ctx.beginPath()
-    ctx.moveTo(headX, currentBaseY - camOffsetY)
-    ctx.lineTo(W, currentBaseY - camOffsetY)
+    ctx.moveTo(headX, currentBaseY)
+    ctx.lineTo(W, currentBaseY)
     ctx.stroke()
     ctx.restore()
 
-    // 3. Draw Formed ECG Waveform (Phía sau đầu kim - Đã hình thành theo nhịp beat)
+    // 3. Draw Formed ECG Waveform (Đường sóng nhịp tim mềm mại)
     const subPixelOffset = this._hbStepRemainder || 0
     const drawECGWave = () => {
       ctx.beginPath()
@@ -1409,7 +1433,7 @@ class MusicVisualizer {
         const histIdx = headX - x
         const sampleY = this._hbHistory[histIdx] || 0
         const px = x - subPixelOffset
-        const py = currentBaseY + sampleY - camOffsetY
+        const py = currentBaseY + sampleY
         if (x === 0) {
           ctx.moveTo(px, py)
         } else {
@@ -1419,29 +1443,29 @@ class MusicVisualizer {
       ctx.stroke()
     }
 
-    // Pass 1: Neon Glow Outline
+    // Pass 1: Soft Neon Glow Outline
     ctx.save()
     ctx.strokeStyle = accent
-    ctx.lineWidth = 2.2 + norm * 0.8
+    ctx.lineWidth = 1.8 + norm * 0.4
     ctx.lineJoin = "round"
     ctx.lineCap = "round"
-    ctx.shadowBlur = isWhiteMode ? 0 : isCpuSave ? 5 : 8 + norm * 14
+    ctx.shadowBlur = isWhiteMode ? 0 : isCpuSave ? 3 : 5 + norm * 6
     ctx.shadowColor = accent
     drawECGWave()
     ctx.restore()
 
-    // Pass 2: Sharp Crisp White Core Line
+    // Pass 2: Crisp Smooth Core Line
     if (!isWhiteMode) {
       ctx.save()
-      ctx.strokeStyle = "rgba(255,255,255,0.92)"
-      ctx.lineWidth = 1.0 + norm * 0.6
+      ctx.strokeStyle = "rgba(255,255,255,0.9)"
+      ctx.lineWidth = 1.0
       ctx.lineJoin = "round"
       ctx.lineCap = "round"
       drawECGWave()
       ctx.restore()
     }
 
-    // 4. Update & Draw Trailing Cinematic Embers (Tia lửa phát quang trôi về phía sau)
+    // 4. Update & Draw Trailing Cinematic Embers
     if (this._hbEmbers && this._hbEmbers.length > 0) {
       ctx.save()
       ctx.fillStyle = isWhiteMode ? accent : "#ffffff"
@@ -1449,33 +1473,33 @@ class MusicVisualizer {
         const p = this._hbEmbers[i]
         p.x += p.vx * dt
         p.y += p.vy * dt
-        p.life -= dt * 1.8
+        p.life -= dt * 1.4
         if (p.life <= 0 || p.x < 0) {
           this._hbEmbers.splice(i, 1)
           continue
         }
-        ctx.globalAlpha = p.life * 0.8
+        ctx.globalAlpha = p.life * 0.7
         ctx.beginPath()
-        ctx.arc(p.x, p.y - camOffsetY, p.size, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
         ctx.fill()
       }
       ctx.restore()
     }
 
-    // 5. Glowing Tracer Spark Head (Điểm sáng dẫn đường camera tracking)
-    const headY = currentBaseY + (this._hbHistory[0] || 0) - camOffsetY
-    const sparkRadius = 2.2 + norm * 3.4
+    // 5. Glowing Tracer Spark Head (Đầu kim quét nhịp tim)
+    const headY = currentBaseY + (this._hbHistory[0] || 0)
+    const sparkRadius = 1.8 + norm * 1.6
 
     ctx.save()
     ctx.shadowColor = accent
-    ctx.shadowBlur = isWhiteMode ? 0 : 9 + norm * 18
+    ctx.shadowBlur = isWhiteMode ? 0 : 6 + norm * 8
     const haloGrad = ctx.createRadialGradient(
       headX,
       headY,
       0,
       headX,
       headY,
-      sparkRadius * 2.8,
+      sparkRadius * 2.5,
     )
     haloGrad.addColorStop(
       0,
@@ -1486,7 +1510,7 @@ class MusicVisualizer {
     ctx.fillStyle = haloGrad
     ctx.globalAlpha = 0.95
     ctx.beginPath()
-    ctx.arc(headX, headY, sparkRadius * 2.8, 0, Math.PI * 2)
+    ctx.arc(headX, headY, sparkRadius * 2.5, 0, Math.PI * 2)
     ctx.fill()
     ctx.restore()
 
