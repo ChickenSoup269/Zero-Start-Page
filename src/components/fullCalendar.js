@@ -1049,8 +1049,11 @@ export class FullCalendar {
       addItem.innerHTML = `<i class="fa-solid fa-plus"></i> <span>${i18n.calendar_add_event || "Add Event"}</span>`
       addItem.addEventListener("click", () => {
         const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+        // Capture the day context menu's real position before hiding it
+        const menuRect = menu.getBoundingClientRect()
         this.hideContextMenu()
-        this.showEventFormMenu(x, y, { dateStr })
+        // Open form anchored to the left edge of the day context menu
+        this.showEventFormMenu(menuRect.left, menuRect.top, { dateStr })
       })
       menu.appendChild(addItem)
     }
@@ -1206,8 +1209,9 @@ export class FullCalendar {
     editItem.className = "context-menu-item"
     editItem.innerHTML = `<i class="fa-solid fa-pen"></i> <span>${i18n.settings_edit || "Edit"}</span>`
     editItem.addEventListener("click", () => {
+      const menuRect = menu.getBoundingClientRect()
       this.hideContextMenu()
-      this.showEventFormMenu(x, y, event)
+      this.showEventFormMenu(menuRect.left, menuRect.top, event)
     })
 
     const deleteItem = document.createElement("div")
