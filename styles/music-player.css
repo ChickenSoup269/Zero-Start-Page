@@ -3235,7 +3235,6 @@ body.widgets-m3-accent
   align-items: center;
   text-align: center;
   min-width: unset;
-  overflow: hidden;
   animation: musicFloating 6s ease-in-out infinite;
 }
 
@@ -3307,7 +3306,7 @@ body.widgets-m3-accent
   background: rgba(0, 0, 0, 0.4);
   border-radius: var(--radius-sm);
   display: block !important;
-  overflow: hidden;
+  overflow: visible !important;
 }
 
 /* GIAO DIỆN GAMEBOY (KHI CÓ CLASS .skin-gameboy) */
