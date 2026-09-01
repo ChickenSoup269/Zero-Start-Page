@@ -985,6 +985,8 @@ export class MusicPlayer {
 
     // Update thumbnail
     if (data.thumbnail && data.thumbnail !== this.currentThumbnail) {
+      // Store the original URL before any fallback resolution
+      const originalThumbUrl = data.thumbnail
       this.currentThumbnail = data.thumbnail
       const applyThumb = (url) => {
         this.disc.style.backgroundImage = `url("${url}")`
@@ -1005,19 +1007,27 @@ export class MusicPlayer {
       if (data.thumbnail.includes("maxresdefault.jpg")) {
         const testImg = new Image()
         testImg.onload = () => {
+          // Only apply fallback if thumbnail hasn't changed since this test started
+          if (this.currentThumbnail !== originalThumbUrl) return
           if (testImg.naturalWidth === 120 && testImg.naturalHeight === 90) {
-            const fallback = data.thumbnail.replace(
+            const fallback = originalThumbUrl.replace(
               "maxresdefault.jpg",
               "hqdefault.jpg",
             )
+            // Update currentThumbnail so next poll won't re-apply maxresdefault
+            this.currentThumbnail = fallback
             applyThumb(fallback)
           }
         }
         testImg.onerror = () => {
-          const fallback = data.thumbnail.replace(
+          // Only apply fallback if thumbnail hasn't changed since this test started
+          if (this.currentThumbnail !== originalThumbUrl) return
+          const fallback = originalThumbUrl.replace(
             "maxresdefault.jpg",
             "hqdefault.jpg",
           )
+          // Update currentThumbnail so next poll won't re-apply maxresdefault
+          this.currentThumbnail = fallback
           applyThumb(fallback)
         }
         testImg.src = data.thumbnail
