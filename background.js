@@ -1107,31 +1107,187 @@ function getMediaFromTab(tabId, sendResponse) {
                     ? "nhaccuatui"
                     : "",
           thumbnail: (() => {
-            // Priority 1: MediaSession Artwork
+            function upgradeThumbnailUrl(url, pageUrl = "") {
+              if (!url || typeof url !== "string") return ""
+              let upgraded = url.trim()
+
+              // 1. YouTube & YouTube Music
+              const ytImgMatch = upgraded.match(
+                /(?:i\.ytimg\.com|img\.youtube\.com)\/vi\/([a-zA-Z0-9_-]+)/i,
+              )
+              if (ytImgMatch && ytImgMatch[1]) {
+                return `https://i.ytimg.com/vi/${ytImgMatch[1]}/maxresdefault.jpg`
+              }
+
+              const fullContextUrl =
+                pageUrl ||
+                (typeof window !== "undefined" ? window.location.href : "")
+              if (
+                fullContextUrl &&
+                (fullContextUrl.includes("youtube.com") ||
+                  fullContextUrl.includes("youtu.be"))
+              ) {
+                let videoId = ""
+                try {
+                  const urlObj = new URL(fullContextUrl)
+                  videoId = urlObj.searchParams.get("v") || ""
+                  if (!videoId && urlObj.pathname.startsWith("/shorts/")) {
+                    videoId = urlObj.pathname.split("/")[2] || ""
+                  }
+                  if (!videoId && fullContextUrl.includes("youtu.be/")) {
+                    videoId = urlObj.pathname.slice(1).split(/[?#]/)[0] || ""
+                  }
+                } catch (e) {}
+
+                if (
+                  videoId &&
+                  (upgraded.includes("ytimg.com") ||
+                    upgraded.includes("googleusercontent.com") ||
+                    !upgraded)
+                ) {
+                  return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+                }
+              }
+
+              if (
+                upgraded.includes("googleusercontent.com") ||
+                upgraded.includes("yt3.ggpht.com")
+              ) {
+                if (/=[sw]\d+/i.test(upgraded)) {
+                  upgraded = upgraded.replace(
+                    /=w\d+-h\d+[^?#]*/i,
+                    "=w1080-h1080-l90-rj",
+                  )
+                  upgraded = upgraded.replace(/=s\d+[^?#]*/i, "=s1200")
+                  return upgraded
+                }
+              }
+
+              // 2. Spotify
+              if (
+                upgraded.includes("scdn.co") ||
+                upgraded.includes("spotifycdn.com") ||
+                upgraded.includes("spotify.com")
+              ) {
+                upgraded = upgraded.replace(
+                  /ab67616d0000(?:1e02|4851)/g,
+                  "ab67616d0000b273",
+                )
+                upgraded = upgraded.replace(
+                  /ab6761610000(?:f68d|5174)/g,
+                  "ab6761610000e5eb",
+                )
+                upgraded = upgraded.replace(
+                  /ab6765630000(?:1e02|4851|f68d|5174)/g,
+                  "ab6765630000b273",
+                )
+                upgraded = upgraded.replace(
+                  /ab67706f0000(?:1e02|4851|f68d|5174)/g,
+                  "ab67706f0000b273",
+                )
+                return upgraded
+              }
+
+              // 3. Apple Music
+              if (
+                upgraded.includes("mzstatic.com") ||
+                upgraded.includes("music.apple.com")
+              ) {
+                upgraded = upgraded.replace(
+                  /\d+x\d+bb\.(jpe?g|png|webp)/i,
+                  "1000x1000bb.$1",
+                )
+                upgraded = upgraded.replace(
+                  /\/image\/thumb\/(.*?)\/\d+x\d+.*?\.(jpe?g|png|webp)/i,
+                  "/image/thumb/$1/1000x1000bb.$2",
+                )
+                upgraded = upgraded.replace(/\{w\}x\{h\}/gi, "1000x1000")
+                return upgraded
+              }
+
+              // 4. SoundCloud
+              if (
+                upgraded.includes("sndcdn.com") ||
+                upgraded.includes("soundcloud.com")
+              ) {
+                upgraded = upgraded.replace(
+                  /-(?:t(?:50x50|67x67|120x120|200x200|300x300)|large)\.([a-z0-9]+)/i,
+                  "-t500x500.$1",
+                )
+                return upgraded
+              }
+
+              // 5. Zing MP3
+              if (
+                upgraded.includes("zmdcdn.me") ||
+                upgraded.includes("zingmp3.vn")
+              ) {
+                upgraded = upgraded.replace(
+                  /w(?:94|240|360)_r1x1_jpeg/i,
+                  "w1024_r1x1_jpeg",
+                )
+                upgraded = upgraded.replace(
+                  /w(?:94|240|360)_r1x1_/i,
+                  "w1024_r1x1_",
+                )
+                return upgraded
+              }
+
+              // 6. NhacCuaTui
+              if (
+                upgraded.includes("nhaccuatui.com") ||
+                upgraded.includes("nct.vn")
+              ) {
+                upgraded = upgraded.replace(
+                  /_(?:small|medium|130)\.(jpe?g|png)/i,
+                  "_600.$1",
+                )
+                return upgraded
+              }
+
+              return upgraded
+            }
+
+            // 1. YouTube specific first to ensure clean videoId maxresdefault
+            if (
+              window.location.href.includes("youtube.com") ||
+              window.location.href.includes("youtu.be")
+            ) {
+              const videoId = new URLSearchParams(
+                window.location.search,
+              ).get("v")
+              if (videoId)
+                return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+            }
+
+            // 2. MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
               try {
                 const largest = metadata.artwork.reduce((prev, curr) => {
                   const getVal = (s) => parseInt(s?.split("x")[0]) || 0
                   return getVal(curr.sizes) >= getVal(prev.sizes) ? curr : prev
                 })
-                if (largest.src) return largest.src
+                if (largest.src) {
+                  const upgraded = upgradeThumbnailUrl(
+                    largest.src,
+                    window.location.href,
+                  )
+                  if (upgraded) return upgraded
+                }
               } catch (e) {}
             }
 
-            // Priority 2: YouTube Specific
-            if (window.location.href.includes("youtube.com")) {
-              const videoId = new URLSearchParams(window.location.search).get(
-                "v",
-              )
-              if (videoId)
-                return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
-
-              // YouTube Music player bar thumbnail fallback
+            // 3. YouTube Fallbacks
+            if (
+              window.location.href.includes("youtube.com") ||
+              window.location.href.includes("youtu.be")
+            ) {
               const ytMusicThumb =
                 document.querySelector("ytmusic-player-bar img")?.src ||
                 document.querySelector(".image.ytmusic-player-bar img")?.src ||
                 document.querySelector("#thumbnail img")?.src
-              if (ytMusicThumb) return ytMusicThumb
+              if (ytMusicThumb)
+                return upgradeThumbnailUrl(ytMusicThumb, window.location.href)
 
               const ytThumb =
                 document.querySelector("img.ytp-videowall-still-image")?.src ||
@@ -1139,15 +1295,23 @@ function getMediaFromTab(tabId, sendResponse) {
                 document
                   .querySelector(".ytp-cued-thumbnail-overlay-image")
                   ?.style.backgroundImage?.slice(5, -2)
-              if (ytThumb) return ytThumb
+              if (ytThumb)
+                return upgradeThumbnailUrl(ytThumb, window.location.href)
             }
 
-            // Priority 3: Spotify Specific
+            // 4. Spotify Specific
             if (window.location.href.includes("spotify.com")) {
-              const spotThumb =
-                document.querySelector('[data-testid="now-playing-widget"] img')
-                  ?.src || document.querySelector(".cover-art img")?.src
-              if (spotThumb) return spotThumb
+              const spotImg =
+                document.querySelector('[data-testid="cover-art-image"]') ||
+                document.querySelector('[data-testid="now-playing-widget"] img') ||
+                document.querySelector(
+                  '[data-testid="context-item-info-artwork"] img',
+                ) ||
+                document.querySelector(".cover-art img") ||
+                document.querySelector('img[src*="scdn.co"]')
+              const spotThumb = spotImg?.currentSrc || spotImg?.src
+              if (spotThumb)
+                return upgradeThumbnailUrl(spotThumb, window.location.href)
             }
 
             if (
@@ -1160,7 +1324,8 @@ function getMediaFromTab(tabId, sendResponse) {
                 document.querySelector(".now-playing img")?.src ||
                 document.querySelector(".media-left img")?.src ||
                 document.querySelector('img[src*="zmdcdn.me"]')?.src
-              if (zingThumb) return zingThumb
+              if (zingThumb)
+                return upgradeThumbnailUrl(zingThumb, window.location.href)
             }
 
             if (window.location.href.includes("soundcloud.com")) {
@@ -1178,7 +1343,11 @@ function getMediaFromTab(tabId, sendResponse) {
                 styleThumb.replace(/^url\(["']?/, "").replace(/["']?\)$/, "") ||
                 document.querySelector(".image__full")?.src ||
                 document.querySelector('img[src*="sndcdn.com"]')?.src
-              if (soundCloudThumb) return soundCloudThumb
+              if (soundCloudThumb)
+                return upgradeThumbnailUrl(
+                  soundCloudThumb,
+                  window.location.href,
+                )
             }
 
             if (window.location.href.includes("music.apple.com")) {
@@ -1188,7 +1357,8 @@ function getMediaFromTab(tabId, sendResponse) {
                 document.querySelector(".web-chrome-playback-lcd__artwork img")
                   ?.src ||
                 document.querySelector('img[src*="mzstatic.com"]')?.src
-              if (appleThumb) return appleThumb
+              if (appleThumb)
+                return upgradeThumbnailUrl(appleThumb, window.location.href)
             }
 
             if (
@@ -1200,14 +1370,15 @@ function getMediaFromTab(tabId, sendResponse) {
                 document.querySelector(".player img")?.src ||
                 document.querySelector('img[src*="nhaccuatui"]')?.src ||
                 document.querySelector('img[src*="nct"]')?.src
-              if (nctThumb) return nctThumb
+              if (nctThumb)
+                return upgradeThumbnailUrl(nctThumb, window.location.href)
             }
 
             // Priority 4: Generic OG Image
             const ogImg = document.querySelector(
               'meta[property="og:image"]',
             )?.content
-            if (ogImg) return ogImg
+            if (ogImg) return upgradeThumbnailUrl(ogImg, window.location.href)
 
             return ""
           })(),
