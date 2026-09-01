@@ -1323,7 +1323,7 @@ export class FullCalendar {
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y, event ? "left" : "right")
+    this.positionContextMenu(menu, x, y, "left")
     titleInput.focus()
     titleInput.select()
   }
