@@ -7,16 +7,25 @@ function hexToHsl(hex) {
   const r = parseInt(hex.slice(1, 3), 16) / 255
   const g = parseInt(hex.slice(3, 5), 16) / 255
   const b = parseInt(hex.slice(5, 7), 16) / 255
-  const max = Math.max(r, g, b), min = Math.min(r, g, b)
-  let h, s, l = (max + min) / 2
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b)
+  let h,
+    s,
+    l = (max + min) / 2
   if (max === min) h = s = 0
   else {
     const d = max - min
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
     switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break
-      case g: h = (b - r) / d + 2; break
-      case b: h = (r - g) / d + 4; break
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
     }
     h /= 6
   }
@@ -33,15 +42,15 @@ class Blob {
     this.y = Math.random() * height
     this.baseRadius = Math.random() * 300 + 250 // Tăng kích thước để phủ rộng hơn
     this.radius = this.baseRadius
-    
+
     // Tạo biến thể màu nhẹ nhàng từ màu gốc
     this.hue = (baseHue + (Math.random() - 0.5) * 40 + 360) % 360
     this._updateColors()
-    
+
     // Chuyển động chậm và mượt
     this.vx = (Math.random() - 0.5) * 0.8
     this.vy = (Math.random() - 0.5) * 0.8
-    
+
     this.sinPhase = Math.random() * Math.PI * 2
     this.sinSpeed = 0.005 + Math.random() * 0.01
   }
@@ -55,11 +64,11 @@ class Blob {
 
   update(width, height) {
     this.sinPhase += this.sinSpeed
-    
+
     // Chuyển động lững lờ kết hợp Sin để bớt cứng nhắc
     this.x += this.vx + Math.sin(this.sinPhase) * 0.2
     this.y += this.vy + Math.cos(this.sinPhase) * 0.2
-    
+
     // Thay đổi kích thước nhẹ theo nhịp thở
     this.radius = this.baseRadius + Math.sin(this.sinPhase * 0.5) * 50
 
@@ -72,10 +81,14 @@ class Blob {
 
   draw(ctx) {
     const gradient = ctx.createRadialGradient(
-      this.x, this.y, 0,
-      this.x, this.y, this.radius
+      this.x,
+      this.y,
+      0,
+      this.x,
+      this.y,
+      this.radius,
     )
-    
+
     gradient.addColorStop(0, this.color0)
     gradient.addColorStop(0.5, this.color05)
     gradient.addColorStop(1, this.color1)
@@ -132,7 +145,7 @@ export class AuraEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.animationFrameId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -140,7 +153,7 @@ export class AuraEffect {
 
     const ctx = this.ctx
     ctx.clearRect(0, 0, this.width, this.height)
-    
+
     // Nền tối mờ để tăng chiều sâu
     ctx.globalCompositeOperation = "source-over"
     ctx.fillStyle = "rgba(1, 2, 10, 0.15)"

@@ -18,12 +18,12 @@ export class PlantGrowthEffect {
   }
 
   get color() {
-    return this.baseColor;
+    return this.baseColor
   }
 
   set color(value) {
-    this.baseColor = value;
-    this.rgb = hexToRgb(value);
+    this.baseColor = value
+    this.rgb = hexToRgb(value)
   }
 
   resize() {
@@ -36,7 +36,7 @@ export class PlantGrowthEffect {
     this.plants = []
     this.grass = []
     this.particles = []
-    
+
     // 1. Grass - Medium density
     const grassCount = Math.floor(window.innerWidth / 8)
     for (let i = 0; i < grassCount; i++) {
@@ -48,32 +48,47 @@ export class PlantGrowthEffect {
         angle: (Math.random() - 0.5) * 0.2,
         phase: Math.random() * Math.PI * 2,
         speed: Math.random() * 0.04 + 0.02,
-        w: Math.random() * 2 + 1
+        w: Math.random() * 2 + 1,
       })
     }
 
     // 2. Bottom Plants - Balanced density
     const bottomRootCount = Math.floor(window.innerWidth / 250) + 2
     for (let i = 0; i < bottomRootCount; i++) {
-      const x = (window.innerWidth / (bottomRootCount - 1)) * i + (Math.random() * 100 - 50)
+      const x =
+        (window.innerWidth / (bottomRootCount - 1)) * i +
+        (Math.random() * 100 - 50)
       const isVine = Math.random() < 0.3
-      this.plants.push(this.createBranch(x, window.innerHeight + 10, -Math.PI / 2, isVine ? 4 : 12, 0, isVine, false))
+      this.plants.push(
+        this.createBranch(
+          x,
+          window.innerHeight + 10,
+          -Math.PI / 2,
+          isVine ? 4 : 12,
+          0,
+          isVine,
+          false,
+        ),
+      )
     }
 
     // 3. Top Hanging Vines - Balanced
     const topRootCount = Math.floor(window.innerWidth / 350) + 1
     for (let i = 0; i < topRootCount; i++) {
-      const x = (window.innerWidth / (topRootCount)) * (i + 0.5) + (Math.random() * 100 - 50)
+      const x =
+        (window.innerWidth / topRootCount) * (i + 0.5) +
+        (Math.random() * 100 - 50)
       this.plants.push(this.createBranch(x, -10, Math.PI / 2, 4, 0, true, true))
     }
   }
 
   createBranch(x, y, angle, size, gen, isVine = false, isTopDown = false) {
-    const baseLen = isTopDown ? 70 : (isVine ? 60 : 100)
+    const baseLen = isTopDown ? 70 : isVine ? 60 : 100
     const maxLen = baseLen + Math.random() * 80 - gen * 15
-    
+
     return {
-      x, y,
+      x,
+      y,
       angle,
       size,
       gen,
@@ -87,9 +102,9 @@ export class PlantGrowthEffect {
       flower: null,
       growing: true,
       phase: Math.random() * Math.PI * 2,
-      wiggleSpeed: (isVine || isTopDown) ? 0.03 : 0.015,
-      wiggleAmp: (isVine || isTopDown) ? 0.2 : 0.08,
-      spiralDir: Math.random() > 0.5 ? 1 : -1
+      wiggleSpeed: isVine || isTopDown ? 0.03 : 0.015,
+      wiggleAmp: isVine || isTopDown ? 0.2 : 0.08,
+      spiralDir: Math.random() > 0.5 ? 1 : -1,
     }
   }
 
@@ -116,7 +131,8 @@ export class PlantGrowthEffect {
       cancelAnimationFrame(this._animId)
       this._animId = null
     }
-    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this.ctx)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
     this.plants = []
     this.grass = []
@@ -124,33 +140,40 @@ export class PlantGrowthEffect {
   }
 
   update() {
-    this.grass.forEach(g => { if (g.height < g.targetHeight) g.height += 0.6 })
+    this.grass.forEach((g) => {
+      if (g.height < g.targetHeight) g.height += 0.6
+    })
 
     const updateBranch = (b) => {
       if (b.growing) {
-        b.length += (b.isVine || b.isTopDown) ? 1.4 : 1.0
-        
+        b.length += b.isVine || b.isTopDown ? 1.4 : 1.0
+
         if (b.length >= b.targetLength) {
           b.growing = false
-          
-          const maxGen = b.isTopDown ? 4 : (b.isVine ? 4 : 3)
+
+          const maxGen = b.isTopDown ? 4 : b.isVine ? 4 : 3
           if (b.gen < maxGen) {
-            const chance = (b.isVine || b.isTopDown) ? 0.6 : 0.5
+            const chance = b.isVine || b.isTopDown ? 0.6 : 0.5
             if (Math.random() < chance) {
               const numChildren = 1 // Mostly single branch for clarity
               for (let i = 0; i < numChildren; i++) {
-                let childAngle = b.angle + (Math.random() - 0.5) * ( (b.isVine || b.isTopDown) ? 1.2 : 0.6)
+                let childAngle =
+                  b.angle +
+                  (Math.random() - 0.5) * (b.isVine || b.isTopDown ? 1.2 : 0.6)
                 const endX = b.x + Math.cos(b.angle) * b.length
                 const endY = b.y + Math.sin(b.angle) * b.length
-                
-                b.children.push(this.createBranch(
-                  endX, endY, 
-                  childAngle, 
-                  b.size * 0.75, 
-                  b.gen + 1, 
-                  b.isVine,
-                  b.isTopDown
-                ))
+
+                b.children.push(
+                  this.createBranch(
+                    endX,
+                    endY,
+                    childAngle,
+                    b.size * 0.75,
+                    b.gen + 1,
+                    b.isVine,
+                    b.isTopDown,
+                  ),
+                )
               }
             }
           }
@@ -161,31 +184,40 @@ export class PlantGrowthEffect {
         }
 
         // Balanced leaf density
-        if (Math.random() < ( (b.isVine || b.isTopDown) ? 0.12 : 0.08)) {
+        if (Math.random() < (b.isVine || b.isTopDown ? 0.12 : 0.08)) {
           const endX = b.x + Math.cos(b.angle) * b.length
           const endY = b.y + Math.sin(b.angle) * b.length
-          
+
           if ((b.isVine || b.isTopDown) && Math.random() < 0.3) {
             b.tendrils.push({
-              x: endX, y: endY,
+              x: endX,
+              y: endY,
               angle: b.angle + (Math.random() - 0.5) * 2,
-              size: 0, targetSize: Math.random() * 20 + 10,
-              dir: Math.random() > 0.5 ? 1 : -1
+              size: 0,
+              targetSize: Math.random() * 20 + 10,
+              dir: Math.random() > 0.5 ? 1 : -1,
             })
           } else {
             b.leaves.push({
               p: b.length / b.targetLength,
               side: Math.random() > 0.5 ? 1 : -1,
               size: 0,
-              targetSize: (b.isVine || b.isTopDown) ? Math.random() * 4 + 3 : Math.random() * 7 + 5,
-              angle: (Math.random() - 0.5) * 0.5
+              targetSize:
+                b.isVine || b.isTopDown
+                  ? Math.random() * 4 + 3
+                  : Math.random() * 7 + 5,
+              angle: (Math.random() - 0.5) * 0.5,
             })
           }
         }
       }
 
-      b.leaves.forEach(l => { if (l.size < l.targetSize) l.size += 0.25 })
-      b.tendrils.forEach(t => { if (t.size < t.targetSize) t.size += 0.6 })
+      b.leaves.forEach((l) => {
+        if (l.size < l.targetSize) l.size += 0.25
+      })
+      b.tendrils.forEach((t) => {
+        if (t.size < t.targetSize) t.size += 0.6
+      })
       if (b.flower && b.flower.size < b.flower.targetSize) b.flower.size += 0.15
 
       b.children.forEach(updateBranch)
@@ -214,7 +246,7 @@ export class PlantGrowthEffect {
       r: Math.random() * Math.PI * 2,
       vr: Math.random() * 0.06 - 0.03,
       size: Math.random() * 3 + 2,
-      color: `hsl(${Math.random() * 40 + 330}, 80%, 85%)`
+      color: `hsl(${Math.random() * 40 + 330}, 80%, 85%)`,
     })
   }
 
@@ -222,14 +254,17 @@ export class PlantGrowthEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     if (!this.rgb) this.rgb = hexToRgb(this.baseColor)
     const rgb = this.rgb
-    
+
     this.drawGrassLayer(rgb)
 
     const drawBranch = (b) => {
       const wind = Math.sin(this.time * b.wiggleSpeed + b.phase) * b.wiggleAmp
-      const spiral = (b.isVine || b.isTopDown) ? Math.sin(this.time * 2 + b.phase) * 0.1 * b.spiralDir : 0
+      const spiral =
+        b.isVine || b.isTopDown
+          ? Math.sin(this.time * 2 + b.phase) * 0.1 * b.spiralDir
+          : 0
       const currentAngle = b.angle + wind + spiral
-      
+
       const cosA = Math.cos(currentAngle)
       const sinA = Math.sin(currentAngle)
       const endX = b.x + cosA * b.length
@@ -238,12 +273,15 @@ export class PlantGrowthEffect {
       this.ctx.beginPath()
       this.ctx.lineWidth = Math.max(0.5, b.size)
       this.ctx.lineCap = "round"
-      
+
       if (b.isVine || b.isTopDown) {
         this.ctx.strokeStyle = `rgba(${rgb.r * 0.3}, ${rgb.g * 0.7}, ${rgb.b * 0.2}, 0.6)`
       } else {
         const grad = this.ctx.createLinearGradient(b.x, b.y, endX, endY)
-        grad.addColorStop(0, `rgba(${rgb.r * 0.5}, ${rgb.g * 0.4}, ${rgb.b * 0.2}, 0.8)`)
+        grad.addColorStop(
+          0,
+          `rgba(${rgb.r * 0.5}, ${rgb.g * 0.4}, ${rgb.b * 0.2}, 0.8)`,
+        )
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`)
         this.ctx.strokeStyle = grad
       }
@@ -252,19 +290,26 @@ export class PlantGrowthEffect {
       this.ctx.lineTo(endX, endY)
       this.ctx.stroke()
 
-      b.tendrils.forEach(t => {
+      b.tendrils.forEach((t) => {
         this.drawTendril(t.x, t.y, t.angle + wind, t.size, t.dir, rgb)
       })
 
-      b.leaves.forEach(l => {
+      b.leaves.forEach((l) => {
         const lx = b.x + cosA * (b.length * l.p)
         const ly = b.y + sinA * (b.length * l.p)
-        this.drawLeaf(lx, ly, currentAngle + (Math.PI/2) * l.side + l.angle, l.size, (b.isVine || b.isTopDown), rgb)
+        this.drawLeaf(
+          lx,
+          ly,
+          currentAngle + (Math.PI / 2) * l.side + l.angle,
+          l.size,
+          b.isVine || b.isTopDown,
+          rgb,
+        )
       })
 
       if (b.flower) this.drawFlower(endX, endY, b.flower.size, rgb)
 
-      b.children.forEach(c => {
+      b.children.forEach((c) => {
         c.x = endX
         c.y = endY
         drawBranch(c)
@@ -273,7 +318,7 @@ export class PlantGrowthEffect {
 
     this.plants.forEach(drawBranch)
 
-    this.particles.forEach(p => {
+    this.particles.forEach((p) => {
       this.ctx.save()
       this.ctx.translate(p.x, p.y)
       this.ctx.rotate(p.r)
@@ -287,16 +332,16 @@ export class PlantGrowthEffect {
 
   drawGrassLayer(rgb) {
     this.ctx.lineCap = "round"
-    this.grass.forEach(g => {
+    this.grass.forEach((g) => {
       const wind = Math.sin(this.time * g.speed + g.phase) * 0.2
       const angle = g.angle + wind
-      const endX = g.x + Math.cos(-Math.PI/2 + angle) * g.height
-      const endY = g.y + Math.sin(-Math.PI/2 + angle) * g.height
-      
+      const endX = g.x + Math.cos(-Math.PI / 2 + angle) * g.height
+      const endY = g.y + Math.sin(-Math.PI / 2 + angle) * g.height
+
       this.ctx.beginPath()
       this.ctx.lineWidth = g.w
       const r = Math.max(0, rgb.r - 20)
-      const g_val = Math.min(255, rgb.g + (g.height / 2))
+      const g_val = Math.min(255, rgb.g + g.height / 2)
       const b = Math.max(0, rgb.b - 20)
       this.ctx.strokeStyle = `rgba(${r}, ${g_val}, ${b}, 0.6)`
       this.ctx.moveTo(g.x, g.y)
@@ -324,11 +369,11 @@ export class PlantGrowthEffect {
     this.ctx.save()
     this.ctx.translate(x, y)
     this.ctx.rotate(angle)
-    
+
     const r = isSmall ? rgb.r * 0.5 : rgb.r
     const g_val = isSmall ? rgb.g * 0.7 : rgb.g
     const b = isSmall ? rgb.b * 0.3 : rgb.b
-    
+
     this.ctx.fillStyle = `rgba(${r}, ${g_val}, ${b}, 0.7)`
     this.ctx.beginPath()
     this.ctx.moveTo(0, 0)

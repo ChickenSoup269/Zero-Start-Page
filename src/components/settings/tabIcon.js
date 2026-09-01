@@ -63,9 +63,9 @@ function drawFaIconOnCanvas(ctx, faClass, size, textColor) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const pseudo = window.getComputedStyle(el, "::before")
-        let content = pseudo.content       // e.g. '"\uf015"' or '"" '
+        let content = pseudo.content // e.g. '"\uf015"' or '"" '
         const fontFamily = pseudo.fontFamily // e.g. '"Font Awesome 6 Free"'
-        const fontWeight = pseudo.fontWeight  // e.g. "900"
+        const fontWeight = pseudo.fontWeight // e.g. "900"
 
         document.body.removeChild(el)
 
@@ -185,7 +185,7 @@ function renderTabIconPreview(value, tabIconPreview) {
 
   const bgColor = transparent
     ? "transparent"
-    : (settings.tabIconBgColor || "#1e1e32")
+    : settings.tabIconBgColor || "#1e1e32"
   tabIconPreview.style.backgroundColor = bgColor
   tabIconPreview.style.color = settings.tabIconTextColor || "#ffffff"
 
@@ -211,4 +211,10 @@ function renderTabIconPreview(value, tabIconPreview) {
       : "12px"
 }
 
-export { getTabIconChars, applyTabIcon, renderTabIconPreview, isFaIcon, isImageIcon }
+export {
+  getTabIconChars,
+  applyTabIcon,
+  renderTabIconPreview,
+  isFaIcon,
+  isImageIcon,
+}

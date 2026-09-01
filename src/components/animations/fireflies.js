@@ -5,14 +5,14 @@ export class FirefliesEffect {
     this.flies = []
     this.active = false
     this.mouse = { x: -1000, y: -1000, radius: 120 }
-    
+
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     this.resize()
     window.addEventListener("resize", () => this.resize())
-    window.addEventListener("mousemove", e => {
+    window.addEventListener("mousemove", (e) => {
       this.mouse.x = e.clientX
       this.mouse.y = e.clientY
     })
@@ -58,7 +58,7 @@ export class FirefliesEffect {
         speedY: Math.random() * 0.4 - 0.2,
         angle: Math.random() * Math.PI * 2,
         targetAngle: Math.random() * Math.PI * 2,
-        trail: []
+        trail: [],
       })
     }
   }
@@ -66,10 +66,15 @@ export class FirefliesEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    if (document.visibilityState === 'hidden') {
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && this.active) requestAnimationFrame((t) => this.animate(t))
-      }, { once: true })
+    if (document.visibilityState === "hidden") {
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (!document.hidden && this.active)
+            requestAnimationFrame((t) => this.animate(t))
+        },
+        { once: true },
+      )
       return
     }
     this._animId = requestAnimationFrame((t) => this.animate(t))
@@ -83,11 +88,11 @@ export class FirefliesEffect {
     this.flies.forEach((fly) => {
       // Steer towards target angle, very slowly
       fly.angle += (fly.targetAngle - fly.angle) * 0.005
-      
+
       // Apply minimal engine force, with very high inertia for drifting
-      fly.speedX = (fly.speedX * 0.995) + (Math.cos(fly.angle) * 0.02)
-      fly.speedY = (fly.speedY * 0.995) + (Math.sin(fly.angle) * 0.02)
-      
+      fly.speedX = fly.speedX * 0.995 + Math.cos(fly.angle) * 0.02
+      fly.speedY = fly.speedY * 0.995 + Math.sin(fly.angle) * 0.02
+
       // Pick a new direction very infrequently
       if (Math.random() < 0.004) {
         fly.targetAngle = Math.random() * Math.PI * 2
@@ -96,21 +101,21 @@ export class FirefliesEffect {
       // Very gentle mouse repulsion
       const dx = fly.x - this.mouse.x
       const dy = fly.y - this.mouse.y
-      const distSq = dx*dx + dy*dy
+      const distSq = dx * dx + dy * dy
       if (distSq < this.mouse.radius * this.mouse.radius) {
         const dist = Math.sqrt(distSq) || 1
         const force = (1 - dist / this.mouse.radius) * 0.5 // Minimal force
-        fly.speedX += dx / dist * force
-        fly.speedY += dy / dist * force
+        fly.speedX += (dx / dist) * force
+        fly.speedY += (dy / dist) * force
       }
 
       fly.x += fly.speedX
       fly.y += fly.speedY
-      
+
       // Trail
       fly.trail.push({ x: fly.x, y: fly.y })
       if (fly.trail.length > 6) fly.trail.shift()
-      
+
       // Loop (Screen Wrap)
       if (fly.x < -20) {
         fly.x = this.canvas.width + 20
@@ -119,7 +124,7 @@ export class FirefliesEffect {
         fly.x = -20
         fly.trail = []
       }
-      
+
       if (fly.y < -20) {
         fly.y = this.canvas.height + 20
         fly.trail = []
@@ -132,14 +137,16 @@ export class FirefliesEffect {
       if (fly.trail.length > 1) {
         this.ctx.beginPath()
         this.ctx.moveTo(fly.trail[0].x, fly.trail[0].y)
-        for(let i=1; i < fly.trail.length; i++) {
-            // Only draw if points are close enough (not a screen wrap jump)
-            const dist = Math.abs(fly.trail[i].x - fly.trail[i-1].x) + Math.abs(fly.trail[i].y - fly.trail[i-1].y)
-            if (dist < 100) {
-              this.ctx.lineTo(fly.trail[i].x, fly.trail[i].y)
-            } else {
-              this.ctx.moveTo(fly.trail[i].x, fly.trail[i].y)
-            }
+        for (let i = 1; i < fly.trail.length; i++) {
+          // Only draw if points are close enough (not a screen wrap jump)
+          const dist =
+            Math.abs(fly.trail[i].x - fly.trail[i - 1].x) +
+            Math.abs(fly.trail[i].y - fly.trail[i - 1].y)
+          if (dist < 100) {
+            this.ctx.lineTo(fly.trail[i].x, fly.trail[i].y)
+          } else {
+            this.ctx.moveTo(fly.trail[i].x, fly.trail[i].y)
+          }
         }
         this.ctx.strokeStyle = `rgba(255, 230, 150, 0.05)` // Fainter trail
         this.ctx.lineWidth = 0.5
@@ -152,7 +159,7 @@ export class FirefliesEffect {
       this.ctx.beginPath()
       this.ctx.arc(fly.x, fly.y, fly.size * 3.5, 0, Math.PI * 2)
       this.ctx.fill()
-      
+
       // Mid glow
       this.ctx.fillStyle = "rgba(255, 220, 120, 0.15)"
       this.ctx.beginPath()

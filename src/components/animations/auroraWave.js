@@ -27,7 +27,7 @@ export class AuroraWaveEffect {
     this._gradients = []
     this._waveConfigs = []
     this._particles = []
-    
+
     this._resizeHandler = () => this._onResize()
     window.addEventListener("resize", this._resizeHandler)
     this._onResize()
@@ -43,14 +43,14 @@ export class AuroraWaveEffect {
     const W = this.canvas.width
     const H = this.canvas.height
     const baseHsl = this._hexToHsl(this.color)
-    
+
     this._gradients = []
     this._waveConfigs = []
 
     for (let w = 0; w < this.waveCount; w++) {
       const hue = (baseHsl.h + (w - this.waveCount / 2) * 20 + 360) % 360
       const opacity = this.brightness * (0.4 - w * 0.05)
-      
+
       // Tạo dải màu có chiều sâu
       const grad = this.ctx.createLinearGradient(0, 0, 0, H * 0.8)
       grad.addColorStop(0.0, `hsla(${hue}, 80%, 40%, 0)`)
@@ -65,7 +65,7 @@ export class AuroraWaveEffect {
         phase: Math.random() * Math.PI * 2,
         speed: 0.005 + w * 0.002,
         amplitude: 0.8 + w * 0.15,
-        yOffset: (w - this.waveCount / 2) * (H * 0.08)
+        yOffset: (w - this.waveCount / 2) * (H * 0.08),
       })
     }
 
@@ -77,7 +77,7 @@ export class AuroraWaveEffect {
       phase: Math.random() * Math.PI * 2,
       speed: Math.random() * 0.02 + 0.005,
       vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.2
+      vy: (Math.random() - 0.5) * 0.2,
     }))
   }
 
@@ -85,16 +85,25 @@ export class AuroraWaveEffect {
     const r = parseInt(hex.slice(1, 3), 16) / 255
     const g = parseInt(hex.slice(3, 5), 16) / 255
     const b = parseInt(hex.slice(5, 7), 16) / 255
-    const max = Math.max(r, g, b), min = Math.min(r, g, b)
-    let h, s, l = (max + min) / 2
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b)
+    let h,
+      s,
+      l = (max + min) / 2
     if (max === min) h = s = 0
     else {
       const d = max - min
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
       switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break
-        case g: h = (b - r) / d + 2; break
-        case b: h = (r - g) / d + 4; break
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0)
+          break
+        case g:
+          h = (b - r) / d + 2
+          break
+        case b:
+          h = (r - g) / d + 4
+          break
       }
       h /= 6
     }
@@ -131,7 +140,7 @@ export class AuroraWaveEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < 16) return // Giới hạn ~60fps
@@ -160,18 +169,24 @@ export class AuroraWaveEffect {
       p.phase += p.speed
       p.x += p.vx * this.speed
       p.y += p.vy * this.speed
-      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0
-      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0
+      if (p.x < 0) p.x = W
+      if (p.x > W) p.x = 0
+      if (p.y < 0) p.y = H
+      if (p.y > H) p.y = 0
 
       const opacity = (Math.sin(p.phase) * 0.5 + 0.5) * 0.6 * this.brightness
       const pSize = p.size * (0.8 + 0.4 * Math.sin(p.phase * 0.7))
-      
+
       ctx.globalAlpha = Math.max(0, Math.min(1, opacity))
-      ctx.beginPath(); ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2); ctx.fill()
-      
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2)
+      ctx.fill()
+
       // Quầng sáng mờ cho hạt
       ctx.globalAlpha = Math.max(0, Math.min(1, opacity * 0.2))
-      ctx.beginPath(); ctx.arc(p.x, p.y, pSize * 3, 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, pSize * 3, 0, Math.PI * 2)
+      ctx.fill()
     })
     ctx.globalAlpha = 1
 
@@ -185,7 +200,7 @@ export class AuroraWaveEffect {
       const thickness = 120 + Math.sin(this.time * 0.5 + w) * 40
 
       ctx.fillStyle = this._gradients[w]
-      
+
       ctx.beginPath()
       let firstY = baseY + this._getWaveY(0, this.time, cfg)
       ctx.moveTo(0, firstY)
@@ -213,9 +228,12 @@ export class AuroraWaveEffect {
     if (options.color !== undefined) this.color = options.color
     if (options.brightness !== undefined) this.brightness = options.brightness
     if (options.speed !== undefined) this.speed = options.speed
-    if (options.waveAmplitude !== undefined) this.waveAmplitude = options.waveAmplitude
-    if (options.transparent !== undefined) this.transparent = options.transparent
-    if (options.backgroundColor !== undefined) this.backgroundColor = options.backgroundColor
+    if (options.waveAmplitude !== undefined)
+      this.waveAmplitude = options.waveAmplitude
+    if (options.transparent !== undefined)
+      this.transparent = options.transparent
+    if (options.backgroundColor !== undefined)
+      this.backgroundColor = options.backgroundColor
     if (options.bgOpacity !== undefined) this.bgOpacity = options.bgOpacity
     this._buildCache()
   }

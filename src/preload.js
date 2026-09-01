@@ -97,7 +97,10 @@
     }
 
     if (settings) {
-      body.setAttribute("data-layout-preset", settings.layoutPreset || "default")
+      body.setAttribute(
+        "data-layout-preset",
+        settings.layoutPreset || "default",
+      )
       // FAST BOOT LAYOUT CLASSES
       let layout = settings.bookmarkLayout || "default"
       if (settings.bookmarkSidebarMode === true && layout === "default") {

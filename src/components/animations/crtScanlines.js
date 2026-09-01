@@ -11,9 +11,9 @@ export class CrtScanlinesEffect {
     this.ctx = this.canvas.getContext("2d", { alpha: true })
     this.active = false
     this.time = 0
-    
+
     this.color = options.scanColor || "#00ff41"
-    
+
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
@@ -53,7 +53,7 @@ export class CrtScanlinesEffect {
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
     this.time += 0.01
     this._draw()
   }
@@ -71,7 +71,7 @@ export class CrtScanlinesEffect {
     // 1. Chromatic Aberration & Basic Phosphor Layer
     ctx.save()
     ctx.globalCompositeOperation = "screen"
-    
+
     // Main glow
     ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.03)`
     ctx.fillRect(0, 0, W, H)
@@ -91,12 +91,12 @@ export class CrtScanlinesEffect {
     ctx.restore()
 
     // 3. Rolling Scan Beam
-    const beamY = (this.time * 200) % (H + 600) - 300
+    const beamY = ((this.time * 200) % (H + 600)) - 300
     const beamGrad = ctx.createLinearGradient(0, beamY, 0, beamY + 250)
     beamGrad.addColorStop(0, "rgba(255, 255, 255, 0)")
     beamGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`)
     beamGrad.addColorStop(1, "rgba(255, 255, 255, 0)")
-    
+
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
     ctx.fillStyle = beamGrad
@@ -104,7 +104,14 @@ export class CrtScanlinesEffect {
     ctx.restore()
 
     // 4. Subtle Vignette (Transparent edges)
-    const vignette = ctx.createRadialGradient(W/2, H/2, W * 0.4, W/2, H/2, W * 0.9)
+    const vignette = ctx.createRadialGradient(
+      W / 2,
+      H / 2,
+      W * 0.4,
+      W / 2,
+      H / 2,
+      W * 0.9,
+    )
     vignette.addColorStop(0, "rgba(0, 0, 0, 0)")
     vignette.addColorStop(1, "rgba(0, 0, 0, 0.4)")
     ctx.fillStyle = vignette

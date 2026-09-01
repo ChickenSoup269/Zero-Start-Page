@@ -87,8 +87,10 @@ export class PixelCubes {
     this.angleX += 0.001
 
     const { r, g, b } = this.rgb
-    const cx = Math.cos(this.angleX), sx = Math.sin(this.angleX)
-    const cy = Math.cos(this.angleY), sy = Math.sin(this.angleY)
+    const cx = Math.cos(this.angleX),
+      sx = Math.sin(this.angleX)
+    const cy = Math.cos(this.angleY),
+      sy = Math.sin(this.angleY)
 
     this.ctx.lineWidth = 1.5
 
@@ -113,9 +115,12 @@ export class PixelCubes {
         this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
 
         let s = c.size * scale
-        let crx = Math.cos(c.rX), srx = Math.sin(c.rX)
-        let cry = Math.cos(c.rY), sry = Math.sin(c.rY)
-        let crz = Math.cos(c.rZ), srz = Math.sin(c.rZ)
+        let crx = Math.cos(c.rX),
+          srx = Math.sin(c.rX)
+        let cry = Math.cos(c.rY),
+          sry = Math.sin(c.rY)
+        let crz = Math.cos(c.rZ),
+          srz = Math.sin(c.rZ)
 
         if (this.shape === "circle") {
           // 3D Wireframe Sphere (3 perpendicular rings)
@@ -181,7 +186,8 @@ export class PixelCubes {
           this.ctx.beginPath()
           for (let f of faces) {
             this.ctx.moveTo(p[f[0]].x, p[f[0]].y)
-            for (let i = 1; i < f.length; i++) this.ctx.lineTo(p[f[i]].x, p[f[i]].y)
+            for (let i = 1; i < f.length; i++)
+              this.ctx.lineTo(p[f[i]].x, p[f[i]].y)
             this.ctx.lineTo(p[f[0]].x, p[f[0]].y)
           }
           this.ctx.stroke()
@@ -234,7 +240,8 @@ export class PixelCubes {
       cancelAnimationFrame(this.animationId)
       this.animationId = null
     }
-    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this.ctx)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
     this.cubes = []
   }

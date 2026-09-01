@@ -70,7 +70,10 @@ export class AutumnLeavesEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -195,7 +198,8 @@ export class AutumnLeavesEffect {
       s * 0.62,
       -s * 0.2,
       s * 0.5,
-      -s * 0.08, s * 0.55,
+      -s * 0.08,
+      s * 0.55,
     )
 
     ctx.lineTo(0, s * 0.9)
@@ -271,7 +275,7 @@ export class AutumnLeavesEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
@@ -283,7 +287,8 @@ export class AutumnLeavesEffect {
       leaf.y += leaf.speedY * deltaTime
       leaf.rotation += leaf.rotationSpeed * deltaTime
       leaf.swingOffset += leaf.swingSpeed * deltaTime
-      leaf.x += (Math.sin(leaf.swingOffset) * leaf.swing + leaf.speedX) * deltaTime
+      leaf.x +=
+        (Math.sin(leaf.swingOffset) * leaf.swing + leaf.speedX) * deltaTime
 
       this.ctx.save()
       this.ctx.translate(leaf.x, leaf.y)

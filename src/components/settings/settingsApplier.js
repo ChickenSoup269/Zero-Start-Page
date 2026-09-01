@@ -45,7 +45,14 @@ import {
 import { updateMediaSaveButtonsState } from "./eventHandlers.js"
 
 const WEATHER_API_REQUIRED_PARAMS = {
-  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  forecast: [
+    "latitude",
+    "longitude",
+    "current",
+    "daily",
+    "timezone",
+    "forecast_days",
+  ],
   geocoding: ["name", "count", "language", "format"],
 }
 
@@ -207,7 +214,10 @@ function configureBackgroundVideo(video, settings) {
   const shouldFreeze = quality === "still"
   const freezeVideo = () => {
     if (!shouldFreeze || video.style.display !== "block") return
-    const seekTo = Math.min(0.2, Number.isFinite(video.duration) ? video.duration / 10 : 0.2)
+    const seekTo = Math.min(
+      0.2,
+      Number.isFinite(video.duration) ? video.duration / 10 : 0.2,
+    )
     if (Number.isFinite(seekTo) && seekTo > 0 && video.currentTime < 0.05) {
       try {
         video.currentTime = seekTo
@@ -301,7 +311,10 @@ function applyDefaultAccentTokens(seedColor) {
 
   root.style.setProperty("--accent-color", color)
   root.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
-  root.style.setProperty("--global-accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+  root.style.setProperty(
+    "--global-accent-color-rgb",
+    `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+  )
   root.style.setProperty("--accent-contrast-color", getContrastYIQ(color))
   root.style.setProperty("--safe-accent", color)
 
@@ -317,7 +330,10 @@ function applyAccentTokens(settings) {
   if ((settings.accentColorMode || "m3") === "default") {
     return applyDefaultAccentTokens(color)
   }
-  return applyMaterialAccentTokens(color, settings.m3PaletteStyle || "tonalSpot")
+  return applyMaterialAccentTokens(
+    color,
+    settings.m3PaletteStyle || "tonalSpot",
+  )
 }
 
 const EFFECT_KEY_MAP = {
@@ -818,7 +834,8 @@ export function markEffectsWithCustomBadges(container = document) {
       if (!item.querySelector(".effect-custom-badge")) {
         const badge = document.createElement("div")
         badge.className = "effect-custom-badge"
-        badge.title = window.i18n?.effect_custom_badge_tooltip || "Customizable Effect"
+        badge.title =
+          window.i18n?.effect_custom_badge_tooltip || "Customizable Effect"
         badge.innerHTML = '<i class="fa-solid fa-sliders"></i>'
         item.appendChild(badge)
       }
@@ -852,18 +869,30 @@ function createApplySettings(effectInstances) {
     let resolvedPageTitle = settings.pageTitle || "Start Page"
     if (resolvedPageTitle.includes("{time}")) {
       const now = new Date()
-      resolvedPageTitle = resolvedPageTitle.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+      resolvedPageTitle = resolvedPageTitle.replace(
+        /{time}/gi,
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
+      )
     }
     if (resolvedPageTitle.includes("{date}")) {
       const now = new Date()
-      resolvedPageTitle = resolvedPageTitle.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+      resolvedPageTitle = resolvedPageTitle.replace(
+        /{date}/gi,
+        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
+      )
     }
     if (resolvedPageTitle.includes("{music}")) {
       const musicTitle = window._currentPlayingTrackTitle || ""
-      resolvedPageTitle = resolvedPageTitle.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "")
+      resolvedPageTitle = resolvedPageTitle.replace(
+        /{music}/gi,
+        musicTitle ? `🎵 ${musicTitle}` : "",
+      )
     }
     document.title = resolvedPageTitle
-    document.body.setAttribute("data-layout-preset", settings.layoutPreset || "default")
+    document.body.setAttribute(
+      "data-layout-preset",
+      settings.layoutPreset || "default",
+    )
     if (typeof effectInstances.applyTabIcon === "function") {
       effectInstances.applyTabIcon(
         settings.tabIcon || settings.tabIconFaClass || "",
@@ -964,9 +993,11 @@ function createApplySettings(effectInstances) {
       "quick-access-m3-accent",
       settings.quickAccessSkin === "m3-accent",
     )
-    
+
     const qaToggleDisplay = (toggleDataAttr, show) => {
-      const btn = document.querySelector(`.quick-btn[data-toggle="${toggleDataAttr}"]`)
+      const btn = document.querySelector(
+        `.quick-btn[data-toggle="${toggleDataAttr}"]`,
+      )
       if (btn) {
         btn.style.display = show !== false ? "" : "none"
       }
@@ -996,10 +1027,7 @@ function createApplySettings(effectInstances) {
       "quick-access-contrast",
       settings.quickAccessSkin === "contrast",
     )
-    document.body.classList.toggle(
-      "quick-access-transparent",
-      false,
-    )
+    document.body.classList.toggle("quick-access-transparent", false)
     document.body.classList.toggle(
       "bookmark-group-accent-enabled",
       settings.bookmarkGroupUseAccent === true,
@@ -1041,19 +1069,23 @@ function createApplySettings(effectInstances) {
       visualizer: "visualizer-container",
       habitTracker: "habit-tracker-container",
       ambientSounds: "ambient-sounds-container",
-      aiAssistant: "ai-assistant-container"
+      aiAssistant: "ai-assistant-container",
     }
 
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
       const el = document.getElementById(id)
       if (el) {
-        const skin = settings.widgetUseM3Accent === true
-          ? "m3-accent"
-          : settings[`${key}Skin`]
+        const skin =
+          settings.widgetUseM3Accent === true
+            ? "m3-accent"
+            : settings[`${key}Skin`]
         el.classList.toggle("skin-white-blur", skin === "white-blur")
         el.classList.toggle("skin-m3-accent", skin === "m3-accent")
         el.classList.toggle("skin-transparent", skin === "transparent")
-        el.classList.toggle("skin-light-transparent", skin === "light-transparent")
+        el.classList.toggle(
+          "skin-light-transparent",
+          skin === "light-transparent",
+        )
         el.classList.toggle("skin-vertical-card", skin === "vertical-card")
         el.classList.toggle("skin-horizontal-card", skin === "horizontal-card")
         el.classList.toggle("skin-gameboy", skin === "gameboy")
@@ -1069,9 +1101,18 @@ function createApplySettings(effectInstances) {
             wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
             wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
             wrapper.classList.toggle("skin-transparent", skin === "transparent")
-            wrapper.classList.toggle("skin-light-transparent", skin === "light-transparent")
-            wrapper.classList.toggle("skin-vertical-card", skin === "vertical-card")
-            wrapper.classList.toggle("skin-horizontal-card", skin === "horizontal-card")
+            wrapper.classList.toggle(
+              "skin-light-transparent",
+              skin === "light-transparent",
+            )
+            wrapper.classList.toggle(
+              "skin-vertical-card",
+              skin === "vertical-card",
+            )
+            wrapper.classList.toggle(
+              "skin-horizontal-card",
+              skin === "horizontal-card",
+            )
             wrapper.classList.toggle("skin-gameboy", skin === "gameboy")
             wrapper.classList.toggle(
               "widget-border-hidden",
@@ -1095,9 +1136,7 @@ function createApplySettings(effectInstances) {
     // Only keep the startup preview while the same kind of local media is still
     // resolving. For colors/reset/gradients it is stale and causes a one-frame flash.
     const previewExists = Boolean(
-      isIdbMedia(rawBg) &&
-        settings.lastUserBackgroundPreview &&
-        isFirstLoad,
+      isIdbMedia(rawBg) && settings.lastUserBackgroundPreview && isFirstLoad,
     )
     const isNextPredefinedLocalBg = effectInstances.localBackgrounds.some(
       (b) => b.id === rawBg,
@@ -1134,30 +1173,38 @@ function createApplySettings(effectInstances) {
       settings.activeBgUid?.startsWith("multi-") ||
       (settings.multiColorActive === true &&
         !settings.activeBgUid?.startsWith("grad-"))
-    const isStaticGradient = !settings.background && !isAnimatedBg && !isMultiColorActive
+    const isStaticGradient =
+      !settings.background && !isAnimatedBg && !isMultiColorActive
 
-    let shouldApplyBackgroundLogic = bgChanged || isAnimatedBg || settings.splashCursorActive || isMultiColorActive || isStaticGradient
+    let shouldApplyBackgroundLogic =
+      bgChanged ||
+      isAnimatedBg ||
+      settings.splashCursorActive ||
+      isMultiColorActive ||
+      isStaticGradient
     if (isWaitingForIdb) {
       shouldApplyBackgroundLogic = false
 
       // Start IDB media async load
       import("../../services/imageStore.js").then((m) => {
-        m.getImageUrl(rawBg).then((url) => {
-          if (getSettings().background === rawBg) {
-            if (url) {
-              // crossfade from early preview to sharp image
-              _prevBg = "force-idb-crossfade-" + Date.now()
-              applySettings()
-            } else {
-              // Fallback: trigger fadeout to prevent page freezing if load failed
+        m.getImageUrl(rawBg)
+          .then((url) => {
+            if (getSettings().background === rawBg) {
+              if (url) {
+                // crossfade from early preview to sharp image
+                _prevBg = "force-idb-crossfade-" + Date.now()
+                applySettings()
+              } else {
+                // Fallback: trigger fadeout to prevent page freezing if load failed
+                triggerBgFadeOut()
+              }
+            }
+          })
+          .catch(() => {
+            if (getSettings().background === rawBg) {
               triggerBgFadeOut()
             }
-          }
-        }).catch(() => {
-          if (getSettings().background === rawBg) {
-            triggerBgFadeOut()
-          }
-        })
+          })
       })
 
       // If we don't have an immediate blob URL but a persistent preview exists,
@@ -1198,7 +1245,8 @@ function createApplySettings(effectInstances) {
       const isVideoUrl =
         typeof rawBg === "string" &&
         (rawBg.match(/\.(mp4|webm|mov|ogg)$/) || rawBg.includes("googlevideo"))
-      const isImageUrl = typeof rawBg === "string" && rawBg.match(/^https?:\/\//)
+      const isImageUrl =
+        typeof rawBg === "string" && rawBg.match(/^https?:\/\//)
       if (isVideoUrl || isImageUrl) {
         document.body.classList.add("bg-image-active")
       } else {
@@ -1209,7 +1257,9 @@ function createApplySettings(effectInstances) {
     }
 
     const shouldCarryFadeLayer =
-      (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg) && (!isFirstLoad || previewExists)
+      (bgChanged || isWaitingForIdb) &&
+      (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg) &&
+      (!isFirstLoad || previewExists)
 
     function triggerBgFadeOut() {
       document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
@@ -1260,17 +1310,22 @@ function createApplySettings(effectInstances) {
           bgFadeLayer.style.transition = "none"
           bgFadeLayer.className = bgLayer.className
           bgFadeLayer.style.background = bgLayer.style.background
-          
+
           let currentBg = bgLayer.style.backgroundImage
-          if (isFirstLoad && previewExists && settings.lastUserBackgroundPreview) {
+          if (
+            isFirstLoad &&
+            previewExists &&
+            settings.lastUserBackgroundPreview
+          ) {
             currentBg = cssUrl(settings.lastUserBackgroundPreview)
           }
           bgFadeLayer.style.backgroundImage = currentBg
           bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
           bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
-          bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition
+          bgFadeLayer.style.backgroundPosition =
+            bgLayer.style.backgroundPosition
           bgFadeLayer.style.opacity = "1"
-          
+
           if (isFirstLoad && previewExists) {
             bgFadeLayer.style.filter = "blur(12px) brightness(0.9)"
             bgFadeLayer.style.transform = "scale(1.02)"
@@ -1278,7 +1333,7 @@ function createApplySettings(effectInstances) {
             bgFadeLayer.style.filter = bgLayer.style.filter
             bgFadeLayer.style.transform = bgLayer.style.transform
           }
-          
+
           bgFadeLayer.offsetHeight // force reflow
           bgFadeLayer.style.transition = "" // restore transition
         } else if (bgFadeLayer) {
@@ -1294,7 +1349,12 @@ function createApplySettings(effectInstances) {
           // We only clear it if we are switching to color/gradient/none (which don't need async loading).
           // Also skip clearing for animated backgrounds – the bgLayer keeps its
           // fallback gradient until the canvas effect is ready to render.
-          if (!isNextPredefinedLocalBg && !isNextImageBg && !isNextVideoBg && !isAnimatedBg) {
+          if (
+            !isNextPredefinedLocalBg &&
+            !isNextImageBg &&
+            !isNextVideoBg &&
+            !isAnimatedBg
+          ) {
             bgLayer.style.backgroundImage = ""
             bgLayer.style.backgroundSize = ""
             bgLayer.style.backgroundRepeat = ""
@@ -1338,22 +1398,34 @@ function createApplySettings(effectInstances) {
         // If a blurry startup preview is currently visible, we must copy it
         // into bg-fade-layer BEFORE decoding the real image.  This prevents a
         // jarring flash where blur/scale un-animate on top of the wrong image.
-        const hasPreloadPreview = document.body.classList.contains("preload-bg-preview")
+        const hasPreloadPreview =
+          document.body.classList.contains("preload-bg-preview")
         if (hasPreloadPreview && bgFadeLayer) {
           // Snapshot the current blurry preview state into the fade layer so it
           // can smoothly fade out while bg-layer shows the crisp image.
           // NOTE: preload.js sets bg via CSS stylesheet (not inline style), so
           // we must use getComputedStyle to read the actual background-image value.
           const computedBg = window.getComputedStyle(bgLayer)
-          const snapshotBgImage = bgLayer.style.backgroundImage ||
-            (settings.lastUserBackgroundPreview ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})` : computedBg.backgroundImage) ||
+          const snapshotBgImage =
+            bgLayer.style.backgroundImage ||
+            (settings.lastUserBackgroundPreview
+              ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})`
+              : computedBg.backgroundImage) ||
             computedBg.backgroundImage
           bgFadeLayer.style.transition = "none"
           bgFadeLayer.style.background = ""
           bgFadeLayer.style.backgroundImage = snapshotBgImage
-          bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize || computedBg.backgroundSize || backgroundSize
-          bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat || computedBg.backgroundRepeat || backgroundRepeat
-          bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition || "var(--bg-pos-x) var(--bg-pos-y)"
+          bgFadeLayer.style.backgroundSize =
+            bgLayer.style.backgroundSize ||
+            computedBg.backgroundSize ||
+            backgroundSize
+          bgFadeLayer.style.backgroundRepeat =
+            bgLayer.style.backgroundRepeat ||
+            computedBg.backgroundRepeat ||
+            backgroundRepeat
+          bgFadeLayer.style.backgroundPosition =
+            bgLayer.style.backgroundPosition ||
+            "var(--bg-pos-x) var(--bg-pos-y)"
           // Apply the same blur/scale the preview was using so it looks identical
           bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
           bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
@@ -1363,7 +1435,10 @@ function createApplySettings(effectInstances) {
 
           // Now immediately clear the preview state from bg-layer so the real
           // image will appear without blur once decoded.
-          document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+          document.body.classList.remove(
+            "preload-bg-preview",
+            "preload-bg-ready",
+          )
 
           // PRE-SET the real image on bg-layer SYNCHRONOUSLY so there's never
           // a blank frame between fade-layer fading out and bg-layer appearing.
@@ -1392,7 +1467,8 @@ function createApplySettings(effectInstances) {
 
         if (typeof img.decode === "function") {
           img.src = imageUrl
-          img.decode()
+          img
+            .decode()
             .then(applyStyles)
             .catch(() => {
               applyStyles()
@@ -1445,8 +1521,12 @@ function createApplySettings(effectInstances) {
                 bgVideoElement.removeEventListener("canplay", onVideoReady)
                 triggerBgFadeOut()
               }
-              bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
-              bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+              bgVideoElement.addEventListener("playing", onVideoReady, {
+                once: true,
+              })
+              bgVideoElement.addEventListener("canplay", onVideoReady, {
+                once: true,
+              })
             }
           } else if (bgLayer) {
             const preview = settings.lastUserBackgroundPreview
@@ -1497,15 +1577,25 @@ function createApplySettings(effectInstances) {
                 bgVideoElement.removeEventListener("canplay", onVideoReady)
                 triggerBgFadeOut()
               }
-              bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
-              bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+              bgVideoElement.addEventListener("playing", onVideoReady, {
+                once: true,
+              })
+              bgVideoElement.addEventListener("canplay", onVideoReady, {
+                once: true,
+              })
             }
-            document.documentElement.style.setProperty("--text-color", "#ffffff")
+            document.documentElement.style.setProperty(
+              "--text-color",
+              "#ffffff",
+            )
           } else if (bg.match(/^https?:\/\//)) {
             if (bgLayer) {
               setBackgroundImageSmoothly(bg)
             }
-            document.documentElement.style.setProperty("--text-color", "#ffffff")
+            document.documentElement.style.setProperty(
+              "--text-color",
+              "#ffffff",
+            )
           } else {
             if (bgLayer) {
               bgLayer.style.backgroundImage = "none"
@@ -1580,30 +1670,34 @@ function createApplySettings(effectInstances) {
           bgLayer.style.backgroundImage = "none"
           bgLayer.style.background = `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
         }
-        const gradientV2Options = withPerformanceBudget(settings, "gradientV2", {
-          color1: settings.gradientV2Color1,
-          color2: settings.gradientV2Color2,
-          color3: settings.gradientV2Color3,
-          timeSpeed: settings.gradientV2TimeSpeed,
-          colorBalance: settings.gradientV2ColorBalance,
-          warpStrength: settings.gradientV2WarpStrength,
-          warpFrequency: settings.gradientV2WarpFrequency,
-          warpSpeed: settings.gradientV2WarpSpeed,
-          warpAmplitude: settings.gradientV2WarpAmplitude,
-          blendAngle: settings.gradientV2BlendAngle,
-          blendSoftness: settings.gradientV2BlendSoftness,
-          rotationAmount: settings.gradientV2RotationAmount,
-          noiseScale: settings.gradientV2NoiseScale,
-          grainAmount: settings.gradientV2GrainAmount,
-          grainScale: settings.gradientV2GrainScale,
-          grainAnimated: settings.gradientV2GrainAnimated,
-          contrast: settings.gradientV2Contrast,
-          gamma: settings.gradientV2Gamma,
-          saturation: settings.gradientV2Saturation,
-          centerX: settings.gradientV2CenterX,
-          centerY: settings.gradientV2CenterY,
-          zoom: settings.gradientV2Zoom,
-        })
+        const gradientV2Options = withPerformanceBudget(
+          settings,
+          "gradientV2",
+          {
+            color1: settings.gradientV2Color1,
+            color2: settings.gradientV2Color2,
+            color3: settings.gradientV2Color3,
+            timeSpeed: settings.gradientV2TimeSpeed,
+            colorBalance: settings.gradientV2ColorBalance,
+            warpStrength: settings.gradientV2WarpStrength,
+            warpFrequency: settings.gradientV2WarpFrequency,
+            warpSpeed: settings.gradientV2WarpSpeed,
+            warpAmplitude: settings.gradientV2WarpAmplitude,
+            blendAngle: settings.gradientV2BlendAngle,
+            blendSoftness: settings.gradientV2BlendSoftness,
+            rotationAmount: settings.gradientV2RotationAmount,
+            noiseScale: settings.gradientV2NoiseScale,
+            grainAmount: settings.gradientV2GrainAmount,
+            grainScale: settings.gradientV2GrainScale,
+            grainAnimated: settings.gradientV2GrainAnimated,
+            contrast: settings.gradientV2Contrast,
+            gamma: settings.gradientV2Gamma,
+            saturation: settings.gradientV2Saturation,
+            centerX: settings.gradientV2CenterX,
+            centerY: settings.gradientV2CenterY,
+            zoom: settings.gradientV2Zoom,
+          },
+        )
         if (effectInstances.gradientV2Effect.active) {
           effectInstances.gradientV2Effect.setOptions(gradientV2Options)
         } else {
@@ -1636,7 +1730,10 @@ function createApplySettings(effectInstances) {
         triggerBgFadeOut()
       }
       // Priority 1.6: Light Pillar (Animated)
-      else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
+      else if (
+        settings.lightPillarActive &&
+        effectInstances.lightPillarEffect
+      ) {
         shouldUseLightPillar = true
         document.body.classList.add("bg-layer-active")
         if (bgLayer) {
@@ -1663,7 +1760,10 @@ function createApplySettings(effectInstances) {
         triggerBgFadeOut()
       }
       // Priority 1.65: Liquid Ether (Animated)
-      else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
+      else if (
+        settings.liquidEtherActive &&
+        effectInstances.liquidEtherEffect
+      ) {
         shouldUseLiquidEther = true
         document.body.classList.add("bg-layer-active")
         if (bgLayer) {
@@ -1762,7 +1862,10 @@ function createApplySettings(effectInstances) {
             bgLayer.style.background = `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
           } else if (settings.liquidEtherActive) {
             bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
-          } else if (settings.splashCursorActive && settings.splashCursorDarkBg === true) {
+          } else if (
+            settings.splashCursorActive &&
+            settings.splashCursorDarkBg === true
+          ) {
             bgLayer.style.background = "#000000"
           } else {
             applyUserSelectedBackground()
@@ -1810,8 +1913,12 @@ function createApplySettings(effectInstances) {
               bgVideoElement.removeEventListener("canplay", onVideoReady)
               triggerBgFadeOut()
             }
-            bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
-            bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+            bgVideoElement.addEventListener("playing", onVideoReady, {
+              once: true,
+            })
+            bgVideoElement.addEventListener("canplay", onVideoReady, {
+              once: true,
+            })
           }
         } else {
           if (bgLayer) {
@@ -1821,24 +1928,39 @@ function createApplySettings(effectInstances) {
               if (isFirstLoad) {
                 // Snapshot the blurry preview into bg-fade-layer BEFORE touching
                 // bg-layer so the real image appears crisp without a blur flash.
-                const _hasPrev = document.body.classList.contains("preload-bg-preview")
+                const _hasPrev =
+                  document.body.classList.contains("preload-bg-preview")
                 if (_hasPrev && bgFadeLayer) {
                   const _computedBg = window.getComputedStyle(bgLayer)
-                  const _snapshotBgImage = bgLayer.style.backgroundImage ||
-                    (settings.lastUserBackgroundPreview ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})` : _computedBg.backgroundImage) ||
+                  const _snapshotBgImage =
+                    bgLayer.style.backgroundImage ||
+                    (settings.lastUserBackgroundPreview
+                      ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})`
+                      : _computedBg.backgroundImage) ||
                     _computedBg.backgroundImage
                   bgFadeLayer.style.transition = "none"
                   bgFadeLayer.style.background = ""
                   bgFadeLayer.style.backgroundImage = _snapshotBgImage
-                  bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize || _computedBg.backgroundSize || backgroundSize
-                  bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat || _computedBg.backgroundRepeat || backgroundRepeat
-                  bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition || "var(--bg-pos-x) var(--bg-pos-y)"
+                  bgFadeLayer.style.backgroundSize =
+                    bgLayer.style.backgroundSize ||
+                    _computedBg.backgroundSize ||
+                    backgroundSize
+                  bgFadeLayer.style.backgroundRepeat =
+                    bgLayer.style.backgroundRepeat ||
+                    _computedBg.backgroundRepeat ||
+                    backgroundRepeat
+                  bgFadeLayer.style.backgroundPosition =
+                    bgLayer.style.backgroundPosition ||
+                    "var(--bg-pos-x) var(--bg-pos-y)"
                   bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
                   bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
                   bgFadeLayer.style.opacity = "1"
                   bgFadeLayer.offsetHeight // force reflow
                   bgFadeLayer.style.transition = ""
-                  document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+                  document.body.classList.remove(
+                    "preload-bg-preview",
+                    "preload-bg-ready",
+                  )
                   // Pre-set real image so bg-layer is never blank while fade-layer fades out
                   bgLayer.style.backgroundImage = cssUrl(imageUrl)
                   bgLayer.style.backgroundSize = backgroundSize
@@ -1849,7 +1971,10 @@ function createApplySettings(effectInstances) {
                   bgLayer.style.backgroundImage = cssUrl(imageUrl)
                   bgLayer.style.backgroundSize = backgroundSize
                   bgLayer.style.backgroundRepeat = backgroundRepeat
-                  document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+                  document.body.classList.remove(
+                    "preload-bg-preview",
+                    "preload-bg-ready",
+                  )
                   const _imgFirst = new Image()
                   const _applyFirst = () => {
                     bgLayer.style.backgroundSize = backgroundSize
@@ -1881,7 +2006,8 @@ function createApplySettings(effectInstances) {
                 }
                 if (typeof img.decode === "function") {
                   img.src = imageUrl
-                  img.decode()
+                  img
+                    .decode()
                     .then(applyStyles)
                     .catch(() => {
                       applyStyles()
@@ -1920,8 +2046,12 @@ function createApplySettings(effectInstances) {
               bgVideoElement.removeEventListener("canplay", onVideoReady)
               triggerBgFadeOut()
             }
-            bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
-            bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+            bgVideoElement.addEventListener("playing", onVideoReady, {
+              once: true,
+            })
+            bgVideoElement.addEventListener("canplay", onVideoReady, {
+              once: true,
+            })
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else if (bg.match(/^https?:\/\//)) {
@@ -1942,7 +2072,8 @@ function createApplySettings(effectInstances) {
               }
               if (typeof img.decode === "function") {
                 img.src = bg
-                img.decode()
+                img
+                  .decode()
                   .then(applyStyles)
                   .catch(() => {
                     applyStyles()
@@ -2036,7 +2167,6 @@ function createApplySettings(effectInstances) {
     }
 
     if (bgVideoElement) configureBackgroundVideo(bgVideoElement, settings)
-
     ;[
       shouldUseGradientV2 && effectInstances.gradientV2Effect,
       shouldUseSilk && effectInstances.silkEffect,
@@ -2054,7 +2184,10 @@ function createApplySettings(effectInstances) {
     }
 
     // Cleanup: stop only background effects that have actually been created.
-    const gradientV2Effect = getCreatedEffect(effectInstances, "gradientV2Effect")
+    const gradientV2Effect = getCreatedEffect(
+      effectInstances,
+      "gradientV2Effect",
+    )
     if (!shouldUseGradientV2 && gradientV2Effect) {
       if (gradientV2Effect.active) gradientV2Effect.stop()
       effectInstances.releaseEffect?.("gradientV2Effect")
@@ -2108,7 +2241,8 @@ function createApplySettings(effectInstances) {
     const blurColor = settings.bgBlurColor || "#000000"
     const blurOpacity = settings.bgBlurColorOpacity || 0
 
-    const mainBlurStr = blurDirection === "none" ? `blur(${blurVal}px)` : `blur(0px)`
+    const mainBlurStr =
+      blurDirection === "none" ? `blur(${blurVal}px)` : `blur(0px)`
 
     const filters = [
       mainBlurStr,
@@ -2123,9 +2257,11 @@ function createApplySettings(effectInstances) {
     if (overlay) {
       if (blurDirection !== "none" || blurOpacity > 0) {
         overlay.style.display = "block"
-        overlay.style.backdropFilter = blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
-        overlay.style.webkitBackdropFilter = blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
-        
+        overlay.style.backdropFilter =
+          blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
+        overlay.style.webkitBackdropFilter =
+          blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
+
         let maskStr = "none"
         if (blurDirection === "left-to-right") {
           maskStr = "linear-gradient(to right, black 0%, transparent 100%)"
@@ -2141,9 +2277,9 @@ function createApplySettings(effectInstances) {
         overlay.style.webkitMaskImage = maskStr
 
         if (blurOpacity > 0) {
-           overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
+          overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
         } else {
-           overlay.style.backgroundColor = "transparent"
+          overlay.style.backgroundColor = "transparent"
         }
       } else {
         overlay.style.display = "none"
@@ -2545,7 +2681,7 @@ function createApplySettings(effectInstances) {
       "bookmark-item-card-style",
       "bookmark-item-glass-style",
       "bookmark-item-neon-style",
-      "bookmark-item-neumorphism-style"
+      "bookmark-item-neumorphism-style",
     )
 
     if (bgStyle === "hidden") {
@@ -2568,7 +2704,8 @@ function createApplySettings(effectInstances) {
         "--bookmark-layout-bg-color",
         bgColor,
       )
-      const textCol = getContrastYIQ(bgColor) === "black" ? "#1e293b" : "#ffffff"
+      const textCol =
+        getContrastYIQ(bgColor) === "black" ? "#1e293b" : "#ffffff"
       document.documentElement.style.setProperty(
         "--bookmark-layout-text-color",
         textCol,
@@ -2648,7 +2785,7 @@ function createApplySettings(effectInstances) {
       "audio-wave-style-pixel",
       "audio-wave-style-thin",
       "audio-wave-style-pulseglow",
-      "audio-wave-float-enabled"
+      "audio-wave-float-enabled",
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"
@@ -2659,7 +2796,7 @@ function createApplySettings(effectInstances) {
     } else if (dateClockStyle === "audio-wave") {
       const pos = settings.audioWavePosition || "bottom"
       document.body.classList.add(`audio-wave-pos-${pos}`)
-      
+
       const waveStyle = settings.audioWaveStyle || "bars"
       document.body.classList.add(`audio-wave-style-${waveStyle}`)
 
@@ -2676,12 +2813,26 @@ function createApplySettings(effectInstances) {
 
       const autoColor = settings.audioWaveAutoColor !== false // default true
       if (autoColor) {
-        document.body.style.setProperty("--aw-color", "rgb(var(--global-accent-color-rgb, 0, 255, 102))")
+        document.body.style.setProperty(
+          "--aw-color",
+          "rgb(var(--global-accent-color-rgb, 0, 255, 102))",
+        )
       } else {
-        document.body.style.setProperty("--aw-color", settings.audioWaveCustomColor || "#00ff66")
+        document.body.style.setProperty(
+          "--aw-color",
+          settings.audioWaveCustomColor || "#00ff66",
+        )
       }
     } else if (dateClockStyle === "glass-float") {
-      document.body.classList.remove("gf-anim-float", "gf-anim-pulse", "gf-anim-shake", "gf-anim-glitch", "gf-anim-bug", "gf-anim-wave", "gf-anim-none")
+      document.body.classList.remove(
+        "gf-anim-float",
+        "gf-anim-pulse",
+        "gf-anim-shake",
+        "gf-anim-glitch",
+        "gf-anim-bug",
+        "gf-anim-wave",
+        "gf-anim-none",
+      )
       const gfAnim = settings.gfAnimation || "float"
       document.body.classList.add(`gf-anim-${gfAnim}`)
 
@@ -2691,11 +2842,17 @@ function createApplySettings(effectInstances) {
         document.body.style.setProperty("--gf-glow-g", glowRgb.g)
         document.body.style.setProperty("--gf-glow-b", glowRgb.b)
       }
-      document.body.style.setProperty("--gf-glow-a", settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3)
+      document.body.style.setProperty(
+        "--gf-glow-a",
+        settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3,
+      )
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
-    document.body.classList.toggle("quick-access-horizontal", settings.quickAccessHorizontal === true)
+    document.body.classList.toggle(
+      "quick-access-horizontal",
+      settings.quickAccessHorizontal === true,
+    )
 
     // Fliqlo Theme
     document.body.classList.remove(
@@ -2805,12 +2962,13 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "clock-style-bg-dark",
-      !isClockStyleTransparentBackground && effectiveClockStyleBackground === "dark",
+      !isClockStyleTransparentBackground &&
+        effectiveClockStyleBackground === "dark",
     )
     document.body.classList.toggle(
       "clock-style-bg-animated",
       !isClockStyleTransparentBackground &&
-      dateClockStyle === "prism-stack" &&
+        dateClockStyle === "prism-stack" &&
         effectiveClockStyleBackground === "animated",
     )
     document.body.classList.toggle(
@@ -2819,7 +2977,8 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "media-orb-overflow-border",
-      dateClockStyle === "media-orb" && settings.mediaOrbOverflowBorder === true,
+      dateClockStyle === "media-orb" &&
+        settings.mediaOrbOverflowBorder === true,
     )
 
     // 3.1 Clock & Date Visibility & Contrast
@@ -3089,7 +3248,9 @@ function createApplySettings(effectInstances) {
     const effectToStart = settings.effect
     const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
     const selectedEffect =
-      effectToStart && effectToStart !== "none" ? effectInstances[mappedKey] : null
+      effectToStart && effectToStart !== "none"
+        ? effectInstances[mappedKey]
+        : null
     const effectChanged = effectToStart !== _prevEffect
 
     // Update Hyperspace color if active
@@ -3300,7 +3461,7 @@ function createApplySettings(effectInstances) {
       selectedEffect.setOptions
     ) {
       selectedEffect.setOptions({
-        fullScreen: settings.synthwaveFullScreen === true
+        fullScreen: settings.synthwaveFullScreen === true,
       })
     }
 
@@ -3355,7 +3516,6 @@ function createApplySettings(effectInstances) {
         pixelSnowCanvas.style.display =
           effectToStart === "pixelSnowHQ" ? "block" : "none"
       }
-
     }
 
     const shouldStartSelectedEffect =
@@ -3416,7 +3576,11 @@ function createApplySettings(effectInstances) {
     // Call updateSettingsInputs to sync all UI
     if (typeof effectInstances.updateSettingsInputs === "function") {
       // Signal layout update instead of global resize to prevent resetting heavy animations
-      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "forceLayoutSync" } }))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "forceLayoutSync" },
+        }),
+      )
       effectInstances.updateSettingsInputs()
     }
   }
@@ -3619,14 +3783,14 @@ function createUpdateSettingsInputs(effectInstances) {
     clockCards.forEach((card) => {
       card.classList.toggle("active", card.dataset.value === currentStyle)
     })
-    
+
     // Sync Date Format Cards
     const dateFormatCards = document.querySelectorAll(".date-format-card")
     const currentDateFormat = settings.dateFormat || "full"
     dateFormatCards.forEach((card) => {
       card.classList.toggle("active", card.dataset.value === currentDateFormat)
     })
-    
+
     // Sync Time Format Cards
     const timeFormatCards = document.querySelectorAll(".time-format-card")
     const currentTimeFormat = settings.timeFormat || "24h"
@@ -3639,7 +3803,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.hueTextModeSelect)
       DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
     if (DOM.clockAutoContrastCheckbox) {
-      DOM.clockAutoContrastCheckbox.checked = settings.clockAutoContrast !== false
+      DOM.clockAutoContrastCheckbox.checked =
+        settings.clockAutoContrast !== false
     }
     if (DOM.clockUseAccentCheckbox) {
       DOM.clockUseAccentCheckbox.checked = settings.clockUseAccentColor === true
@@ -3648,14 +3813,20 @@ function createUpdateSettingsInputs(effectInstances) {
     const accentTargetCards = document.querySelectorAll(".accent-target-card")
     const currentAccentTarget = settings.clockAccentTarget || "style"
     accentTargetCards.forEach((card) => {
-      card.classList.toggle("active", card.dataset.value === currentAccentTarget)
+      card.classList.toggle(
+        "active",
+        card.dataset.value === currentAccentTarget,
+      )
     })
 
     // Sync Shadow Target Cards
     const shadowTargetCards = document.querySelectorAll(".shadow-target-card")
     const currentShadowTarget = settings.clockShadowTarget || "none"
     shadowTargetCards.forEach((card) => {
-      card.classList.toggle("active", card.dataset.value === currentShadowTarget)
+      card.classList.toggle(
+        "active",
+        card.dataset.value === currentShadowTarget,
+      )
     })
 
     if (DOM.clockShadowStrengthInput) {
@@ -3674,66 +3845,113 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleNoBorderCheckbox)
       DOM.sidestyleNoBorderCheckbox.checked =
         settings.sidestyleNoBorder === true
-        
-    const coolGreetingMorningInput = document.getElementById("cool-greeting-morning-input")
-    if (coolGreetingMorningInput) coolGreetingMorningInput.value = settings.coolGreetingMorning || ""
-    const coolGreetingAfternoonInput = document.getElementById("cool-greeting-afternoon-input")
-    if (coolGreetingAfternoonInput) coolGreetingAfternoonInput.value = settings.coolGreetingAfternoon || ""
-    const coolGreetingEveningInput = document.getElementById("cool-greeting-evening-input")
-    if (coolGreetingEveningInput) coolGreetingEveningInput.value = settings.coolGreetingEvening || ""
 
-    const audioWavePositionSelect = document.getElementById("audio-wave-position-select")
-    if (audioWavePositionSelect) audioWavePositionSelect.value = settings.audioWavePosition || "bottom"
-    
-    const audioWaveScaleInput = document.getElementById("audio-wave-scale-input")
+    const coolGreetingMorningInput = document.getElementById(
+      "cool-greeting-morning-input",
+    )
+    if (coolGreetingMorningInput)
+      coolGreetingMorningInput.value = settings.coolGreetingMorning || ""
+    const coolGreetingAfternoonInput = document.getElementById(
+      "cool-greeting-afternoon-input",
+    )
+    if (coolGreetingAfternoonInput)
+      coolGreetingAfternoonInput.value = settings.coolGreetingAfternoon || ""
+    const coolGreetingEveningInput = document.getElementById(
+      "cool-greeting-evening-input",
+    )
+    if (coolGreetingEveningInput)
+      coolGreetingEveningInput.value = settings.coolGreetingEvening || ""
+
+    const audioWavePositionSelect = document.getElementById(
+      "audio-wave-position-select",
+    )
+    if (audioWavePositionSelect)
+      audioWavePositionSelect.value = settings.audioWavePosition || "bottom"
+
+    const audioWaveScaleInput = document.getElementById(
+      "audio-wave-scale-input",
+    )
     const audioWaveScaleVal = document.getElementById("audio-wave-scale-val")
     if (audioWaveScaleInput) {
       audioWaveScaleInput.value = settings.audioWaveScale || 1
-      if (audioWaveScaleVal) audioWaveScaleVal.textContent = settings.audioWaveScale || 1
+      if (audioWaveScaleVal)
+        audioWaveScaleVal.textContent = settings.audioWaveScale || 1
     }
 
-    const audioWaveStyleSelect = document.getElementById("audio-wave-style-select")
-    if (audioWaveStyleSelect) audioWaveStyleSelect.value = settings.audioWaveStyle || "bars"
+    const audioWaveStyleSelect = document.getElementById(
+      "audio-wave-style-select",
+    )
+    if (audioWaveStyleSelect)
+      audioWaveStyleSelect.value = settings.audioWaveStyle || "bars"
 
-    const audioWaveSpeedSelect = document.getElementById("audio-wave-speed-select")
-    if (audioWaveSpeedSelect) audioWaveSpeedSelect.value = settings.audioWaveSpeed || "1"
+    const audioWaveSpeedSelect = document.getElementById(
+      "audio-wave-speed-select",
+    )
+    if (audioWaveSpeedSelect)
+      audioWaveSpeedSelect.value = settings.audioWaveSpeed || "1"
 
-    const audioWaveFloatCheckbox = document.getElementById("audio-wave-float-checkbox")
+    const audioWaveFloatCheckbox = document.getElementById(
+      "audio-wave-float-checkbox",
+    )
     if (audioWaveFloatCheckbox) {
       audioWaveFloatCheckbox.checked = settings.audioWaveFloatEnabled !== false
     }
 
-    const audioWaveAutoColorCheckbox = document.getElementById("audio-wave-auto-color-checkbox")
-    const audioWaveColorPicker = document.getElementById("audio-wave-color-picker")
-    const audioWaveCustomColorContainer = document.getElementById("audio-wave-custom-color-container")
-    
+    const audioWaveAutoColorCheckbox = document.getElementById(
+      "audio-wave-auto-color-checkbox",
+    )
+    const audioWaveColorPicker = document.getElementById(
+      "audio-wave-color-picker",
+    )
+    const audioWaveCustomColorContainer = document.getElementById(
+      "audio-wave-custom-color-container",
+    )
+
     if (audioWaveAutoColorCheckbox) {
       audioWaveAutoColorCheckbox.checked = settings.audioWaveAutoColor !== false
       if (audioWaveCustomColorContainer) {
-        audioWaveCustomColorContainer.style.display = audioWaveAutoColorCheckbox.checked ? "none" : "flex"
+        audioWaveCustomColorContainer.style.display =
+          audioWaveAutoColorCheckbox.checked ? "none" : "flex"
       }
     }
     if (audioWaveColorPicker) {
       audioWaveColorPicker.value = settings.audioWaveCustomColor || "#00ff66"
     }
     const coolBarTopInput = document.getElementById("cool-bar-top-input")
-    if (coolBarTopInput) coolBarTopInput.value = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
+    if (coolBarTopInput)
+      coolBarTopInput.value =
+        settings.coolBarSymbolTop !== undefined
+          ? settings.coolBarSymbolTop
+          : "|"
     const coolBarBottomInput = document.getElementById("cool-bar-bottom-input")
-    if (coolBarBottomInput) coolBarBottomInput.value = settings.coolBarSymbolBottom !== undefined ? settings.coolBarSymbolBottom : "|"
+    if (coolBarBottomInput)
+      coolBarBottomInput.value =
+        settings.coolBarSymbolBottom !== undefined
+          ? settings.coolBarSymbolBottom
+          : "|"
     const coolBarScaleInput = document.getElementById("cool-bar-scale-input")
-    if (coolBarScaleInput) coolBarScaleInput.value = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
-    const codeStyleLanguageSelect = document.getElementById("code-style-language-select")
-    if (codeStyleLanguageSelect) codeStyleLanguageSelect.value = settings.codeClockLanguage || "javascript"
-    const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
-    if (codeStyleShowDateCheckbox) codeStyleShowDateCheckbox.checked = settings.codeClockShowDate !== false
-    
+    if (coolBarScaleInput)
+      coolBarScaleInput.value =
+        settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
+    const codeStyleLanguageSelect = document.getElementById(
+      "code-style-language-select",
+    )
+    if (codeStyleLanguageSelect)
+      codeStyleLanguageSelect.value = settings.codeClockLanguage || "javascript"
+    const codeStyleShowDateCheckbox = document.getElementById(
+      "code-style-show-date-checkbox",
+    )
+    if (codeStyleShowDateCheckbox)
+      codeStyleShowDateCheckbox.checked = settings.codeClockShowDate !== false
+
     const updateInputAndSpan = (key, defaultVal, isPx = false) => {
       const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase()
       const input = document.getElementById(`${idBase}-input`)
       if (input) {
         input.value = settings[key] !== undefined ? settings[key] : defaultVal
         const span = document.getElementById(`${idBase}-value`)
-        if (span) span.innerHTML = isPx ? input.value + "px" : input.value + "&deg;"
+        if (span)
+          span.innerHTML = isPx ? input.value + "px" : input.value + "&deg;"
       }
     }
     updateInputAndSpan("customAngleSkewX", 15)
@@ -3743,13 +3961,25 @@ function createUpdateSettingsInputs(effectInstances) {
     updateInputAndSpan("customAngleRotateY", 0)
     updateInputAndSpan("customAnglePerspective", 1000, true)
 
-    const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
-    if (customAngleShowDateCheckbox) customAngleShowDateCheckbox.checked = settings.customAngleShowDate !== false
+    const customAngleShowDateCheckbox = document.getElementById(
+      "custom-angle-show-date-checkbox",
+    )
+    if (customAngleShowDateCheckbox)
+      customAngleShowDateCheckbox.checked =
+        settings.customAngleShowDate !== false
 
-    const globalClockCutBottomInput = document.getElementById("global-clock-cut-bottom-input")
-    if (globalClockCutBottomInput) globalClockCutBottomInput.value = settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
-    const globalClockFadeBottomInput = document.getElementById("global-clock-fade-bottom-input")
-    if (globalClockFadeBottomInput) globalClockFadeBottomInput.value = settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
+    const globalClockCutBottomInput = document.getElementById(
+      "global-clock-cut-bottom-input",
+    )
+    if (globalClockCutBottomInput)
+      globalClockCutBottomInput.value =
+        settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
+    const globalClockFadeBottomInput = document.getElementById(
+      "global-clock-fade-bottom-input",
+    )
+    if (globalClockFadeBottomInput)
+      globalClockFadeBottomInput.value =
+        settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {
@@ -3844,18 +4074,23 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.clockFadeBottomSelect.value = settings.clockFadeFromBottom || "off"
       }
       if (DOM.clockFadeDirectionSelect) {
-        DOM.clockFadeDirectionSelect.value = settings.clockFadeDirection || "bottom"
+        DOM.clockFadeDirectionSelect.value =
+          settings.clockFadeDirection || "bottom"
       }
     }
 
-    if (settings.clockFadeFromBottom && settings.clockFadeFromBottom !== "off" && settings.clockFadeFromBottom !== false) {
+    if (
+      settings.clockFadeFromBottom &&
+      settings.clockFadeFromBottom !== "off" &&
+      settings.clockFadeFromBottom !== false
+    ) {
       document.body.classList.add("clock-has-fade")
-      
+
       let levelVal = parseInt(settings.clockFadeFromBottom)
       if (isNaN(levelVal)) levelVal = 50
       let p = levelVal / 100 // 0.05 to 1.0
       let dir = settings.clockFadeDirection || "bottom"
-      
+
       let mask = ""
       switch (dir) {
         case "top":
@@ -3875,7 +4110,7 @@ function createUpdateSettingsInputs(effectInstances) {
           mask = `linear-gradient(to top, transparent 0%, black ${p * 100}%)`
           break
       }
-      
+
       document.body.style.setProperty("--clock-fade-mask", mask)
       document.body.removeAttribute("data-clock-fade-bottom") // Cleanup old attr
       document.body.classList.remove("clock-fade-from-bottom") // Cleanup old class
@@ -3898,125 +4133,217 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     const pixelHudSettings = document.getElementById("pixel-hud-settings")
     if (pixelHudSettings) {
-      pixelHudSettings.style.display = settings.dateClockStyle === "pixel-hud" ? "block" : "none"
+      pixelHudSettings.style.display =
+        settings.dateClockStyle === "pixel-hud" ? "block" : "none"
     }
 
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
-        hudColor1Input.value = settings.hudColor1 || "#ffaa00"
-        document.documentElement.style.setProperty("--hud-color-1", settings.hudColor1 || "#ffaa00")
+      hudColor1Input.value = settings.hudColor1 || "#ffaa00"
+      document.documentElement.style.setProperty(
+        "--hud-color-1",
+        settings.hudColor1 || "#ffaa00",
+      )
     }
     const hudColor2Input = document.getElementById("hud-color-2")
     if (hudColor2Input) {
-        hudColor2Input.value = settings.hudColor2 || "#3cf0f0"
-        document.documentElement.style.setProperty("--hud-color-2", settings.hudColor2 || "#3cf0f0")
+      hudColor2Input.value = settings.hudColor2 || "#3cf0f0"
+      document.documentElement.style.setProperty(
+        "--hud-color-2",
+        settings.hudColor2 || "#3cf0f0",
+      )
     }
     const hudColor3Input = document.getElementById("hud-color-3")
     if (hudColor3Input) {
-        hudColor3Input.value = settings.hudColor3 || "#a4de6c"
-        document.documentElement.style.setProperty("--hud-color-3", settings.hudColor3 || "#a4de6c")
+      hudColor3Input.value = settings.hudColor3 || "#a4de6c"
+      document.documentElement.style.setProperty(
+        "--hud-color-3",
+        settings.hudColor3 || "#a4de6c",
+      )
     }
 
     const audioWaveSettings = document.getElementById("audio-wave-settings")
     if (audioWaveSettings) {
-      document.getElementById("audio-wave-settings").style.display = settings.dateClockStyle === "audio-wave" ? "block" : "none"
+      document.getElementById("audio-wave-settings").style.display =
+        settings.dateClockStyle === "audio-wave" ? "block" : "none"
     }
 
     const glassFloatSettings = document.getElementById("glass-float-settings")
     if (glassFloatSettings) {
-      glassFloatSettings.style.display = settings.dateClockStyle === "glass-float" ? "block" : "none"
+      glassFloatSettings.style.display =
+        settings.dateClockStyle === "glass-float" ? "block" : "none"
     }
 
     const ompSettings = document.getElementById("omp-settings")
     if (ompSettings) {
-      ompSettings.style.display = settings.dateClockStyle === "macos-vintage" ? "block" : "none"
+      ompSettings.style.display =
+        settings.dateClockStyle === "macos-vintage" ? "block" : "none"
     }
-    const ompPromptThemeSelect = document.getElementById("omp-prompt-theme-select")
-    if (ompPromptThemeSelect) ompPromptThemeSelect.value = settings.ompPromptTheme || "powerline"
-    const ompWindowStyleSelect = document.getElementById("omp-window-style-select")
-    if (ompWindowStyleSelect) ompWindowStyleSelect.value = settings.ompWindowStyle || "windows"
+    const ompPromptThemeSelect = document.getElementById(
+      "omp-prompt-theme-select",
+    )
+    if (ompPromptThemeSelect)
+      ompPromptThemeSelect.value = settings.ompPromptTheme || "powerline"
+    const ompWindowStyleSelect = document.getElementById(
+      "omp-window-style-select",
+    )
+    if (ompWindowStyleSelect)
+      ompWindowStyleSelect.value = settings.ompWindowStyle || "windows"
     const ompOsIconSelect = document.getElementById("omp-os-icon-select")
     if (ompOsIconSelect) ompOsIconSelect.value = settings.ompOsIcon || "auto"
     const ompUserHostInput = document.getElementById("omp-user-host-input")
-    if (ompUserHostInput) ompUserHostInput.value = settings.ompUserHost !== undefined ? settings.ompUserHost : "dev@startpage"
+    if (ompUserHostInput)
+      ompUserHostInput.value =
+        settings.ompUserHost !== undefined
+          ? settings.ompUserHost
+          : "dev@startpage"
     const ompPathInput = document.getElementById("omp-path-input")
-    if (ompPathInput) ompPathInput.value = settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
+    if (ompPathInput)
+      ompPathInput.value =
+        settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
     const ompBranchInput = document.getElementById("omp-branch-input")
-    if (ompBranchInput) ompBranchInput.value = settings.ompBranch !== undefined ? settings.ompBranch : "main"
-    const ompCursorStyleSelect = document.getElementById("omp-cursor-style-select")
-    if (ompCursorStyleSelect) ompCursorStyleSelect.value = settings.ompCursorStyle || "block"
+    if (ompBranchInput)
+      ompBranchInput.value =
+        settings.ompBranch !== undefined ? settings.ompBranch : "main"
+    const ompCursorStyleSelect = document.getElementById(
+      "omp-cursor-style-select",
+    )
+    if (ompCursorStyleSelect)
+      ompCursorStyleSelect.value = settings.ompCursorStyle || "block"
     const ompShowGitCheckbox = document.getElementById("omp-show-git-checkbox")
-    if (ompShowGitCheckbox) ompShowGitCheckbox.checked = settings.ompShowGit !== false
-    const ompShowBatteryCheckbox = document.getElementById("omp-show-battery-checkbox")
-    if (ompShowBatteryCheckbox) ompShowBatteryCheckbox.checked = settings.ompShowBattery !== false
+    if (ompShowGitCheckbox)
+      ompShowGitCheckbox.checked = settings.ompShowGit !== false
+    const ompShowBatteryCheckbox = document.getElementById(
+      "omp-show-battery-checkbox",
+    )
+    if (ompShowBatteryCheckbox)
+      ompShowBatteryCheckbox.checked = settings.ompShowBattery !== false
     const ompShowOsCheckbox = document.getElementById("omp-show-os-checkbox")
-    if (ompShowOsCheckbox) ompShowOsCheckbox.checked = settings.ompShowOs !== false
-    const ompCrtScanlinesCheckbox = document.getElementById("omp-crt-scanlines-checkbox")
-    if (ompCrtScanlinesCheckbox) ompCrtScanlinesCheckbox.checked = settings.ompCrtScanlines === true
+    if (ompShowOsCheckbox)
+      ompShowOsCheckbox.checked = settings.ompShowOs !== false
+    const ompCrtScanlinesCheckbox = document.getElementById(
+      "omp-crt-scanlines-checkbox",
+    )
+    if (ompCrtScanlinesCheckbox)
+      ompCrtScanlinesCheckbox.checked = settings.ompCrtScanlines === true
 
-    document.body.classList.toggle("omp-crt-enabled", settings.dateClockStyle === "macos-vintage" && settings.ompCrtScanlines === true)
+    document.body.classList.toggle(
+      "omp-crt-enabled",
+      settings.dateClockStyle === "macos-vintage" &&
+        settings.ompCrtScanlines === true,
+    )
 
     const satelliteSettings = document.getElementById("satellite-settings")
     if (satelliteSettings) {
-      satelliteSettings.style.display = settings.dateClockStyle === "satellite" ? "block" : "none"
+      satelliteSettings.style.display =
+        settings.dateClockStyle === "satellite" ? "block" : "none"
     }
     const satAnimColorInput = document.getElementById("satellite-anim-color")
     if (satAnimColorInput) {
-        satAnimColorInput.value = settings.satelliteAnimColor || "#3caac8"
-        document.documentElement.style.setProperty("--sat-color", settings.satelliteAnimColor || "#3caac8")
+      satAnimColorInput.value = settings.satelliteAnimColor || "#3caac8"
+      document.documentElement.style.setProperty(
+        "--sat-color",
+        settings.satelliteAnimColor || "#3caac8",
+      )
     }
     const satSecColorInput = document.getElementById("satellite-sec-color")
     if (satSecColorInput) {
-        satSecColorInput.value = settings.satelliteSecColor || "#7ced7a"
-        document.documentElement.style.setProperty("--sat-sec-color", settings.satelliteSecColor || "#7ced7a")
+      satSecColorInput.value = settings.satelliteSecColor || "#7ced7a"
+      document.documentElement.style.setProperty(
+        "--sat-sec-color",
+        settings.satelliteSecColor || "#7ced7a",
+      )
     }
     const satTerColorInput = document.getElementById("satellite-ter-color")
     if (satTerColorInput) {
-        satTerColorInput.value = settings.satelliteTerColor || "#b57aed"
-        document.documentElement.style.setProperty("--sat-ter-color", settings.satelliteTerColor || "#b57aed")
+      satTerColorInput.value = settings.satelliteTerColor || "#b57aed"
+      document.documentElement.style.setProperty(
+        "--sat-ter-color",
+        settings.satelliteTerColor || "#b57aed",
+      )
     }
     const satAnimStyleInput = document.getElementById("satellite-anim-style")
     if (satAnimStyleInput) {
-        satAnimStyleInput.value = settings.satelliteAnimStyle || "classic"
+      satAnimStyleInput.value = settings.satelliteAnimStyle || "classic"
     }
 
     const gfAnimationSelect = document.getElementById("gf-animation-select")
-    if (gfAnimationSelect) gfAnimationSelect.value = settings.gfAnimation || "float"
+    if (gfAnimationSelect)
+      gfAnimationSelect.value = settings.gfAnimation || "float"
 
     const gfCustomTextInput = document.getElementById("gf-custom-text")
     if (gfCustomTextInput) gfCustomTextInput.value = settings.gfCustomText || ""
     const gfGlowColorInput = document.getElementById("gf-glow-color")
-    if (gfGlowColorInput) gfGlowColorInput.value = settings.gfGlowColor || "#ffffff"
+    if (gfGlowColorInput)
+      gfGlowColorInput.value = settings.gfGlowColor || "#ffffff"
 
-    
     const codeStyleSettings = document.getElementById("code-style-settings")
     if (codeStyleSettings) {
       codeStyleSettings.style.display = style === "code" ? "block" : "none"
     }
     const customAngleSettings = document.getElementById("custom-angle-settings")
     if (customAngleSettings) {
-      customAngleSettings.style.display = style === "custom-angle" ? "block" : "none"
+      customAngleSettings.style.display =
+        style === "custom-angle" ? "block" : "none"
       if (style === "custom-angle") {
-      document.body.style.setProperty("--skewX", (settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15) + "deg")
-      document.body.style.setProperty("--skewY", (settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0) + "deg")
-      document.body.style.setProperty("--rotate", (settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5) + "deg")
-      document.body.style.setProperty("--rotateX", (settings.customAngleRotateX !== undefined ? settings.customAngleRotateX : 0) + "deg")
-      document.body.style.setProperty("--rotateY", (settings.customAngleRotateY !== undefined ? settings.customAngleRotateY : 0) + "deg")
-      document.body.style.setProperty("--perspective", (settings.customAnglePerspective !== undefined ? settings.customAnglePerspective : 1000) + "px")
-    } else {
-      document.body.style.removeProperty("--skewX")
-      document.body.style.removeProperty("--skewY")
-      document.body.style.removeProperty("--rotate")
-      document.body.style.removeProperty("--rotateX")
-      document.body.style.removeProperty("--rotateY")
-      document.body.style.removeProperty("--perspective")
-    }
+        document.body.style.setProperty(
+          "--skewX",
+          (settings.customAngleSkewX !== undefined
+            ? settings.customAngleSkewX
+            : 15) + "deg",
+        )
+        document.body.style.setProperty(
+          "--skewY",
+          (settings.customAngleSkewY !== undefined
+            ? settings.customAngleSkewY
+            : 0) + "deg",
+        )
+        document.body.style.setProperty(
+          "--rotate",
+          (settings.customAngleRotate !== undefined
+            ? settings.customAngleRotate
+            : -5) + "deg",
+        )
+        document.body.style.setProperty(
+          "--rotateX",
+          (settings.customAngleRotateX !== undefined
+            ? settings.customAngleRotateX
+            : 0) + "deg",
+        )
+        document.body.style.setProperty(
+          "--rotateY",
+          (settings.customAngleRotateY !== undefined
+            ? settings.customAngleRotateY
+            : 0) + "deg",
+        )
+        document.body.style.setProperty(
+          "--perspective",
+          (settings.customAnglePerspective !== undefined
+            ? settings.customAnglePerspective
+            : 1000) + "px",
+        )
+      } else {
+        document.body.style.removeProperty("--skewX")
+        document.body.style.removeProperty("--skewY")
+        document.body.style.removeProperty("--rotate")
+        document.body.style.removeProperty("--rotateX")
+        document.body.style.removeProperty("--rotateY")
+        document.body.style.removeProperty("--perspective")
+      }
     }
 
-    const clockCutBottom = settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
-    const clockFadeBottom = settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
-    document.documentElement.style.setProperty("--clock-cut-bottom", clockCutBottom + "px")
-    document.documentElement.style.setProperty("--clock-visible-percent", clockFadeBottom + "%")
+    const clockCutBottom =
+      settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
+    const clockFadeBottom =
+      settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
+    document.documentElement.style.setProperty(
+      "--clock-cut-bottom",
+      clockCutBottom + "px",
+    )
+    document.documentElement.style.setProperty(
+      "--clock-visible-percent",
+      clockFadeBottom + "%",
+    )
     if (clockCutBottom > 0 || clockFadeBottom < 100) {
       document.body.classList.add("clock-occlusion-enabled")
     } else {
@@ -4038,7 +4365,10 @@ function createUpdateSettingsInputs(effectInstances) {
         'option[value="animated"]',
       )
       if (animatedOption) animatedOption.hidden = style !== "prism-stack"
-      if (style !== "prism-stack" && DOM.clockStyleBgSelect.value === "animated") {
+      if (
+        style !== "prism-stack" &&
+        DOM.clockStyleBgSelect.value === "animated"
+      ) {
         DOM.clockStyleBgSelect.value = "default"
       }
     }
@@ -4114,14 +4444,22 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.fliqloThemeSelect) {
         DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
       }
-      const divergenceColorSetting = document.getElementById("fliqlo-divergence-color-setting")
+      const divergenceColorSetting = document.getElementById(
+        "fliqlo-divergence-color-setting",
+      )
       if (divergenceColorSetting) {
-        divergenceColorSetting.style.display = settings.fliqloTheme === "divergence" ? "flex" : "none"
+        divergenceColorSetting.style.display =
+          settings.fliqloTheme === "divergence" ? "flex" : "none"
       }
-      const divergenceColorInput = document.getElementById("fliqlo-divergence-color")
+      const divergenceColorInput = document.getElementById(
+        "fliqlo-divergence-color",
+      )
       if (divergenceColorInput) {
         divergenceColorInput.value = settings.fliqloDivergenceColor || "#ff5500"
-        document.documentElement.style.setProperty("--fliqlo-divergence-color", divergenceColorInput.value)
+        document.documentElement.style.setProperty(
+          "--fliqlo-divergence-color",
+          divergenceColorInput.value,
+        )
       }
       if (DOM.fliqloZenCheckbox) {
         DOM.fliqloZenCheckbox.checked = settings.fliqloZenMode === true
@@ -4279,7 +4617,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.languageSelect.value = curLang
       const btnGroup = document.getElementById("language-button-group")
       if (btnGroup) {
-        Array.from(btnGroup.children).forEach(btn => {
+        Array.from(btnGroup.children).forEach((btn) => {
           btn.classList.toggle("active", btn.dataset.value === curLang)
         })
       }
@@ -4345,7 +4683,8 @@ function createUpdateSettingsInputs(effectInstances) {
       }
 
       if (DOM.bookmarkGroupTextWidthInput)
-        DOM.bookmarkGroupTextWidthInput.value = settings.bookmarkGroupTextWidth ?? 120
+        DOM.bookmarkGroupTextWidthInput.value =
+          settings.bookmarkGroupTextWidth ?? 120
       if (DOM.bookmarkGroupTextWidthValue && DOM.bookmarkGroupTextWidthInput)
         DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
 
@@ -4454,7 +4793,8 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true
       }
       if (DOM.bookmarkHideScrollbarCheckbox) {
-        DOM.bookmarkHideScrollbarCheckbox.checked = settings.bookmarkHideScrollbar === true
+        DOM.bookmarkHideScrollbarCheckbox.checked =
+          settings.bookmarkHideScrollbar === true
       }
       if (DOM.bookmarkMacosHover) {
         DOM.bookmarkMacosHover.checked = settings.bookmarkMacosHover === true
@@ -4506,7 +4846,8 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.enableBookmarkDrag.checked = settings.bookmarkEnableDrag === true
       }
       if (DOM.bookmarkKeepNestedFolders) {
-        DOM.bookmarkKeepNestedFolders.checked = settings.bookmarkKeepNestedFolders === true
+        DOM.bookmarkKeepNestedFolders.checked =
+          settings.bookmarkKeepNestedFolders === true
       }
       if (DOM.bookmarkLimit20) {
         DOM.bookmarkLimit20.checked = settings.bookmarkLimit20 !== false
@@ -4535,7 +4876,34 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.bookmarkGroupBorderHidden.checked =
           settings.bookmarkGroupBorderHidden === true
       }
-      if (settings.settingsSidebarWidth) { document.documentElement.style.setProperty('--sidebar-width', settings.settingsSidebarWidth + 'px'); if (DOM.settingsSidebarWidthInput) DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth; if (DOM.settingsSidebarWidthValue) DOM.settingsSidebarWidthValue.textContent = settings.settingsSidebarWidth + 'px'; } if (settings.bookmarkSidebarWidth) { document.documentElement.style.setProperty('--bookmark-group-text-width', settings.bookmarkSidebarWidth + 'px'); if (DOM.bookmarkSidebarWidthInput) DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth; if (DOM.bookmarkSidebarWidthValue) DOM.bookmarkSidebarWidthValue.textContent = settings.bookmarkSidebarWidth + 'px'; } if (DOM.bookmarkLayout) { if (DOM.bookmarkSidebarWidthContainer) { DOM.bookmarkSidebarWidthContainer.style.display = settings.bookmarkLayout === 'sidebar' ? 'block' : 'none'; } }
+      if (settings.settingsSidebarWidth) {
+        document.documentElement.style.setProperty(
+          "--sidebar-width",
+          settings.settingsSidebarWidth + "px",
+        )
+        if (DOM.settingsSidebarWidthInput)
+          DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth
+        if (DOM.settingsSidebarWidthValue)
+          DOM.settingsSidebarWidthValue.textContent =
+            settings.settingsSidebarWidth + "px"
+      }
+      if (settings.bookmarkSidebarWidth) {
+        document.documentElement.style.setProperty(
+          "--bookmark-group-text-width",
+          settings.bookmarkSidebarWidth + "px",
+        )
+        if (DOM.bookmarkSidebarWidthInput)
+          DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth
+        if (DOM.bookmarkSidebarWidthValue)
+          DOM.bookmarkSidebarWidthValue.textContent =
+            settings.bookmarkSidebarWidth + "px"
+      }
+      if (DOM.bookmarkLayout) {
+        if (DOM.bookmarkSidebarWidthContainer) {
+          DOM.bookmarkSidebarWidthContainer.style.display =
+            settings.bookmarkLayout === "sidebar" ? "block" : "none"
+        }
+      }
       if (DOM.bookmarkLayoutShowGroups) {
         DOM.bookmarkLayoutShowGroups.checked =
           settings.showBookmarkGroups !== false
@@ -4563,7 +4931,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.bgBlurColorOpacityInput) {
       DOM.bgBlurColorOpacityInput.value = settings.bgBlurColorOpacity || 0
-      if (DOM.bgBlurColorOpacityValue) DOM.bgBlurColorOpacityValue.textContent = `${settings.bgBlurColorOpacity || 0}%`
+      if (DOM.bgBlurColorOpacityValue)
+        DOM.bgBlurColorOpacityValue.textContent = `${settings.bgBlurColorOpacity || 0}%`
     }
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100
     DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
@@ -4599,7 +4968,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.bgPositionPadPreview) {
       const bgLayer = document.getElementById("bg-layer")
       if (bgLayer && bgLayer.style.backgroundImage) {
-        DOM.bgPositionPadPreview.style.backgroundImage = bgLayer.style.backgroundImage
+        DOM.bgPositionPadPreview.style.backgroundImage =
+          bgLayer.style.backgroundImage
         DOM.bgPositionPadPreview.style.display = "block"
       } else {
         DOM.bgPositionPadPreview.style.display = "none"
@@ -4614,7 +4984,8 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.unsplashCategorySelect.value =
       settings.unsplashCategory || "spring-wallpapers"
     if (DOM.unsplashAutoRandomSelect) {
-      DOM.unsplashAutoRandomSelect.value = settings.unsplashAutoRandomMode || "off"
+      DOM.unsplashAutoRandomSelect.value =
+        settings.unsplashAutoRandomMode || "off"
     }
     if (DOM.unsplashAccessKeyInput)
       DOM.unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
@@ -4726,10 +5097,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.googleDriveSyncCheckbox.checked = settings.googleDriveSync === true
     }
     if (DOM.driveSyncOptionsWrapper) {
-      DOM.driveSyncOptionsWrapper.style.display = settings.googleDriveSync === true ? "block" : "none"
+      DOM.driveSyncOptionsWrapper.style.display =
+        settings.googleDriveSync === true ? "block" : "none"
     }
     if (DOM.driveAutoBackupInterval) {
-      DOM.driveAutoBackupInterval.value = settings.driveAutoBackupInterval || "none"
+      DOM.driveAutoBackupInterval.value =
+        settings.driveAutoBackupInterval || "none"
     }
 
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
@@ -4792,7 +5165,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
-    
+
     if (DOM.dvdTitleInput) {
       DOM.dvdTitleInput.value = settings.dvdTitle || "DVD"
     }
@@ -4805,7 +5178,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.dvdCloneSlider) {
       DOM.dvdCloneSlider.value = settings.dvdCloneCount || 1
-      if (DOM.dvdCloneVal) DOM.dvdCloneVal.textContent = settings.dvdCloneCount || 1
+      if (DOM.dvdCloneVal)
+        DOM.dvdCloneVal.textContent = settings.dvdCloneCount || 1
     }
     if (DOM.dvdTrailCheckbox) {
       DOM.dvdTrailCheckbox.checked = settings.dvdTrail === true
@@ -4826,7 +5200,10 @@ function createUpdateSettingsInputs(effectInstances) {
     )
     DOM.oceanWavePosTopBtn?.classList.toggle("active", oceanWavePos === "top")
     DOM.oceanWavePosLeftBtn?.classList.toggle("active", oceanWavePos === "left")
-    DOM.oceanWavePosRightBtn?.classList.toggle("active", oceanWavePos === "right")
+    DOM.oceanWavePosRightBtn?.classList.toggle(
+      "active",
+      oceanWavePos === "right",
+    )
     if (DOM.cloudDriftColorPicker)
       DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
     if (DOM.cloudDriftMoodSelect)
@@ -4908,37 +5285,48 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelCubesShapeSelect.value = settings.pixelCubesShape || "cube"
     }
     if (DOM.synthwaveFullScreenCheckbox) {
-      DOM.synthwaveFullScreenCheckbox.checked = settings.synthwaveFullScreen === true
+      DOM.synthwaveFullScreenCheckbox.checked =
+        settings.synthwaveFullScreen === true
     }
     if (DOM.frostedOrbsDarkBgCheckbox) {
-      DOM.frostedOrbsDarkBgCheckbox.checked = settings.frostedOrbsDarkBg !== false
+      DOM.frostedOrbsDarkBgCheckbox.checked =
+        settings.frostedOrbsDarkBg !== false
     }
     if (DOM.frostedOrbsColor1Picker) {
-      DOM.frostedOrbsColor1Picker.value = settings.frostedOrbsColor1 || "#00f2fe"
+      DOM.frostedOrbsColor1Picker.value =
+        settings.frostedOrbsColor1 || "#00f2fe"
     }
     if (DOM.frostedOrbsColor2Picker) {
-      DOM.frostedOrbsColor2Picker.value = settings.frostedOrbsColor2 || "#4facfe"
+      DOM.frostedOrbsColor2Picker.value =
+        settings.frostedOrbsColor2 || "#4facfe"
     }
     if (DOM.blackHoleAccretionColorPicker) {
-      DOM.blackHoleAccretionColorPicker.value = settings.blackHoleAccretionColor || "#ff5500"
+      DOM.blackHoleAccretionColorPicker.value =
+        settings.blackHoleAccretionColor || "#ff5500"
     }
     if (DOM.blackHoleStarColorPicker) {
-      DOM.blackHoleStarColorPicker.value = settings.blackHoleStarColor || "#ffffff"
+      DOM.blackHoleStarColorPicker.value =
+        settings.blackHoleStarColor || "#ffffff"
     }
     if (DOM.interactiveFluidColor1Picker) {
-      DOM.interactiveFluidColor1Picker.value = settings.interactiveFluidColor1 || "#00f2fe"
+      DOM.interactiveFluidColor1Picker.value =
+        settings.interactiveFluidColor1 || "#00f2fe"
     }
     if (DOM.interactiveFluidColor2Picker) {
-      DOM.interactiveFluidColor2Picker.value = settings.interactiveFluidColor2 || "#ff007f"
+      DOM.interactiveFluidColor2Picker.value =
+        settings.interactiveFluidColor2 || "#ff007f"
     }
     if (DOM.cinematicBokehColor1Picker) {
-      DOM.cinematicBokehColor1Picker.value = settings.cinematicBokehColor1 || "#ff9a9e"
+      DOM.cinematicBokehColor1Picker.value =
+        settings.cinematicBokehColor1 || "#ff9a9e"
     }
     if (DOM.cinematicBokehColor2Picker) {
-      DOM.cinematicBokehColor2Picker.value = settings.cinematicBokehColor2 || "#fecfef"
+      DOM.cinematicBokehColor2Picker.value =
+        settings.cinematicBokehColor2 || "#fecfef"
     }
     if (DOM.cinematicBokehDarkBgCheckbox) {
-      DOM.cinematicBokehDarkBgCheckbox.checked = settings.cinematicBokehDarkBg ?? false
+      DOM.cinematicBokehDarkBgCheckbox.checked =
+        settings.cinematicBokehDarkBg ?? false
     }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
@@ -5554,11 +5942,14 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
-    if (DOM.showHabitsCheckbox) DOM.showHabitsCheckbox.checked = settings.showHabits === true
+    if (DOM.showHabitsCheckbox)
+      DOM.showHabitsCheckbox.checked = settings.showHabits === true
     if (DOM.showWeatherCheckbox) {
       DOM.showWeatherCheckbox.checked = settings.showWeather === true
     }
-    const weatherApiModeSelect = document.getElementById("weather-api-mode-select")
+    const weatherApiModeSelect = document.getElementById(
+      "weather-api-mode-select",
+    )
     const weatherCustomApiSettings = document.getElementById(
       "weather-custom-api-settings",
     )
@@ -5580,9 +5971,9 @@ function createUpdateSettingsInputs(effectInstances) {
       } else {
         try {
           const url = new URL(endpoint)
-          const duplicateParams = (WEATHER_API_REQUIRED_PARAMS[type] || []).filter(
-            (param) => url.searchParams.has(param),
-          )
+          const duplicateParams = (
+            WEATHER_API_REQUIRED_PARAMS[type] || []
+          ).filter((param) => url.searchParams.has(param))
           ok =
             (url.protocol === "https:" || url.protocol === "http:") &&
             duplicateParams.length === 0
@@ -5617,7 +6008,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (weatherUnitSelect) {
       weatherUnitSelect.value = settings.weatherUnit || "celsius"
     }
-    const habitColorModeSelect = document.getElementById("habit-color-mode-select")
+    const habitColorModeSelect = document.getElementById(
+      "habit-color-mode-select",
+    )
     if (habitColorModeSelect) {
       habitColorModeSelect.value = settings.habitColorMode || "custom"
     }
@@ -5629,7 +6022,8 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.weatherApiMode === "custom" ? "grid" : "none"
     }
     if (weatherForecastEndpointInput) {
-      weatherForecastEndpointInput.value = settings.weatherForecastEndpoint || ""
+      weatherForecastEndpointInput.value =
+        settings.weatherForecastEndpoint || ""
       setWeatherEndpointValidation(weatherForecastEndpointInput, "forecast")
     }
     if (weatherGeocodingEndpointInput) {
@@ -5664,12 +6058,16 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
     if (DOM.musicRealAudioReactiveCheckbox) {
-      DOM.musicRealAudioReactiveCheckbox.checked = settings.musicRealAudioReactive === true
+      DOM.musicRealAudioReactiveCheckbox.checked =
+        settings.musicRealAudioReactive === true
     }
     if (DOM.lcpMusicRealAudioReactive) {
-      DOM.lcpMusicRealAudioReactive.checked = settings.musicRealAudioReactive === true
+      DOM.lcpMusicRealAudioReactive.checked =
+        settings.musicRealAudioReactive === true
     }
-    chrome.storage?.local?.set({ musicRealAudioReactive: settings.musicRealAudioReactive === true })
+    chrome.storage?.local?.set({
+      musicRealAudioReactive: settings.musicRealAudioReactive === true,
+    })
     if (DOM.musicPlayerUseDefaultColorMode) {
       if (settings.musicPlayerUseDefaultColor === "thumbnail") {
         DOM.musicPlayerUseDefaultColorMode.value = "thumbnail"
@@ -5718,7 +6116,8 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.lcpFlipLayout.checked = settings.flipLayout === true
     }
     if (DOM.lcpQuickAccessHorizontal) {
-      DOM.lcpQuickAccessHorizontal.checked = settings.quickAccessHorizontal === true
+      DOM.lcpQuickAccessHorizontal.checked =
+        settings.quickAccessHorizontal === true
     }
 
     if (DOM.showDonateButtonCheckbox) {
@@ -5730,7 +6129,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.searchBarHoverScaleCheckbox) {
-      DOM.searchBarHoverScaleCheckbox.checked = settings.searchBarHoverScale === true
+      DOM.searchBarHoverScaleCheckbox.checked =
+        settings.searchBarHoverScale === true
     }
     if (DOM.freeMoveSearchBarCheckbox) {
       DOM.freeMoveSearchBarCheckbox.checked =
@@ -5743,9 +6143,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
     }
     if (DOM.extensionActionBehaviorSelect) {
-      DOM.extensionActionBehaviorSelect.value = settings.actionBehavior || "sidepanel"
+      DOM.extensionActionBehaviorSelect.value =
+        settings.actionBehavior || "sidepanel"
     }
-    
+
     if (DOM.searchEngineSelect) {
       DOM.searchEngineSelect.value = settings.searchEngine || "google"
     }
@@ -5756,21 +6157,35 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
 
-    if (DOM.lcpQaShowTodo) DOM.lcpQaShowTodo.checked = settings.qaShowTodo !== false
-    if (DOM.lcpQaShowNotepad) DOM.lcpQaShowNotepad.checked = settings.qaShowNotepad !== false
-    if (DOM.lcpQaShowTimer) DOM.lcpQaShowTimer.checked = settings.qaShowTimer !== false
-    if (DOM.lcpQaShowCalendar) DOM.lcpQaShowCalendar.checked = settings.qaShowCalendar !== false
-    if (DOM.lcpQaShowQuotes) DOM.lcpQaShowQuotes.checked = settings.qaShowQuotes !== false
-    if (DOM.quotesUpdateFreqSelect) DOM.quotesUpdateFreqSelect.value = settings.quotesUpdateFreq || "tab"
-    if (DOM.lcpQaShowWeather) DOM.lcpQaShowWeather.checked = settings.qaShowWeather !== false
-    if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
-    if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
-    if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
+    if (DOM.lcpQaShowTodo)
+      DOM.lcpQaShowTodo.checked = settings.qaShowTodo !== false
+    if (DOM.lcpQaShowNotepad)
+      DOM.lcpQaShowNotepad.checked = settings.qaShowNotepad !== false
+    if (DOM.lcpQaShowTimer)
+      DOM.lcpQaShowTimer.checked = settings.qaShowTimer !== false
+    if (DOM.lcpQaShowCalendar)
+      DOM.lcpQaShowCalendar.checked = settings.qaShowCalendar !== false
+    if (DOM.lcpQaShowQuotes)
+      DOM.lcpQaShowQuotes.checked = settings.qaShowQuotes !== false
+    if (DOM.quotesUpdateFreqSelect)
+      DOM.quotesUpdateFreqSelect.value = settings.quotesUpdateFreq || "tab"
+    if (DOM.lcpQaShowWeather)
+      DOM.lcpQaShowWeather.checked = settings.qaShowWeather !== false
+    if (DOM.lcpQaShowMusic)
+      DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
+    if (DOM.lcpQaShowClock)
+      DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
+    if (DOM.lcpQaShowGregorian)
+      DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
     if (DOM.lcpQaShowRss) DOM.lcpQaShowRss.checked = settings.qaShowRss === true
-    if (DOM.lcpQaShowHabits) DOM.lcpQaShowHabits.checked = settings.qaShowHabits === true
-    if (DOM.lcpQaShowAmbient) DOM.lcpQaShowAmbient.checked = settings.qaShowAmbient === true
-    if (DOM.lcpQaShowAiAssistant) DOM.lcpQaShowAiAssistant.checked = settings.qaShowAiAssistant === true
-    if (DOM.lcpQaAllowReorder) DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
+    if (DOM.lcpQaShowHabits)
+      DOM.lcpQaShowHabits.checked = settings.qaShowHabits === true
+    if (DOM.lcpQaShowAmbient)
+      DOM.lcpQaShowAmbient.checked = settings.qaShowAmbient === true
+    if (DOM.lcpQaShowAiAssistant)
+      DOM.lcpQaShowAiAssistant.checked = settings.qaShowAiAssistant === true
+    if (DOM.lcpQaAllowReorder)
+      DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
       if (DOM.searchBarBlurVal) {
@@ -5790,9 +6205,11 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     const currentWidthStr = String(settings.searchBarWidth || 600)
-    document.querySelectorAll(".lcp-preset-btn, .width-preset-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.width === currentWidthStr)
-    })
+    document
+      .querySelectorAll(".lcp-preset-btn, .width-preset-btn")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.width === currentWidthStr)
+      })
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     if (DOM.showQuickAccessBgCheckbox) {
       DOM.showQuickAccessBgCheckbox.checked =
@@ -5813,7 +6230,34 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
-    if (settings.settingsSidebarWidth) { document.documentElement.style.setProperty('--sidebar-width', settings.settingsSidebarWidth + 'px'); if (DOM.settingsSidebarWidthInput) DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth; if (DOM.settingsSidebarWidthValue) DOM.settingsSidebarWidthValue.textContent = settings.settingsSidebarWidth + 'px'; } if (settings.bookmarkSidebarWidth) { document.documentElement.style.setProperty('--bookmark-group-text-width', settings.bookmarkSidebarWidth + 'px'); if (DOM.bookmarkSidebarWidthInput) DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth; if (DOM.bookmarkSidebarWidthValue) DOM.bookmarkSidebarWidthValue.textContent = settings.bookmarkSidebarWidth + 'px'; } if (DOM.bookmarkLayout) { if (DOM.bookmarkSidebarWidthContainer) { DOM.bookmarkSidebarWidthContainer.style.display = settings.bookmarkLayout === 'sidebar' ? 'block' : 'none'; } }
+    if (settings.settingsSidebarWidth) {
+      document.documentElement.style.setProperty(
+        "--sidebar-width",
+        settings.settingsSidebarWidth + "px",
+      )
+      if (DOM.settingsSidebarWidthInput)
+        DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth
+      if (DOM.settingsSidebarWidthValue)
+        DOM.settingsSidebarWidthValue.textContent =
+          settings.settingsSidebarWidth + "px"
+    }
+    if (settings.bookmarkSidebarWidth) {
+      document.documentElement.style.setProperty(
+        "--bookmark-group-text-width",
+        settings.bookmarkSidebarWidth + "px",
+      )
+      if (DOM.bookmarkSidebarWidthInput)
+        DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth
+      if (DOM.bookmarkSidebarWidthValue)
+        DOM.bookmarkSidebarWidthValue.textContent =
+          settings.bookmarkSidebarWidth + "px"
+    }
+    if (DOM.bookmarkLayout) {
+      if (DOM.bookmarkSidebarWidthContainer) {
+        DOM.bookmarkSidebarWidthContainer.style.display =
+          settings.bookmarkLayout === "sidebar" ? "block" : "none"
+      }
+    }
     if (DOM.bookmarkLayoutShowGroups) {
       DOM.bookmarkLayoutShowGroups.checked =
         settings.showBookmarkGroups !== false
@@ -5825,21 +6269,27 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.bookmarkOpenInNewTab.checked = settings.bookmarkOpenInNewTab === true
     }
     if (DOM.ghostControlsCheckbox) {
-      DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+      DOM.ghostControlsCheckbox.checked =
+        settings.sideControlsGhostMode === true
     }
-    const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
+    const smoothScrollCheckbox = document.getElementById(
+      "smooth-scroll-checkbox",
+    )
     if (smoothScrollCheckbox) {
       smoothScrollCheckbox.checked = settings.smoothScrollEnabled !== false
     }
-    const perfHoverModeCheckbox = document.getElementById("perf-hover-mode-checkbox")
+    const perfHoverModeCheckbox = document.getElementById(
+      "perf-hover-mode-checkbox",
+    )
     if (perfHoverModeCheckbox) {
       perfHoverModeCheckbox.checked = settings.perfHoverMode === true
     }
-    const picsumProviderSelect = document.getElementById("picsum-provider-select")
+    const picsumProviderSelect = document.getElementById(
+      "picsum-provider-select",
+    )
     if (picsumProviderSelect) {
       picsumProviderSelect.value = settings.freePhotosProvider || "loremflickr"
     }
-
 
     const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
     const snapGridSizeRow = document.getElementById("snap-grid-size-row")
@@ -5931,63 +6381,80 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.showCustomTitleCheckbox) {
       DOM.showCustomTitleCheckbox.checked = settings.showCustomTitle !== false
     }
-    document.body.classList.toggle("hide-custom-title", settings.showCustomTitle === false)
+    document.body.classList.toggle(
+      "hide-custom-title",
+      settings.showCustomTitle === false,
+    )
     if (DOM.freeMoveCustomTitleCheckbox) {
       DOM.freeMoveCustomTitleCheckbox.checked =
         settings.freeMoveCustomTitle === true
     }
     if (DOM.customTitleText) {
       DOM.customTitleText.value = settings.customTitleText || ""
-    const text2El = document.getElementById("custom-title-text-2")
-    if (text2El) text2El.value = settings.customTitleText2 || ""
-    const populateFontDropdown = (selectEl, selectedVal) => {
-      if (!selectEl) return;
-      selectEl.innerHTML = '<option value="inherit">Font mặc định</option>';
-      PREDEFINED_FONTS.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f.value;
-        opt.textContent = f.label;
-        selectEl.appendChild(opt);
-      });
-      const customFonts = JSON.parse(localStorage.getItem("customFonts")) || [];
-      customFonts.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = `'${f.name}'`;
-        opt.textContent = `${f.name} (Tùy chỉnh)`;
-        selectEl.appendChild(opt);
-      });
-      selectEl.value = selectedVal || "inherit";
-    };
-    
-    populateFontDropdown(document.getElementById("custom-title-font"), settings.customTitleFont);
-    populateFontDropdown(document.getElementById("custom-title-font-2"), settings.customTitleFont2);
-    populateFontDropdown(document.getElementById("custom-title-font-3"), settings.customTitleFont3);
-    populateFontDropdown(document.getElementById("custom-title-font-4"), settings.customTitleFont4);
+      const text2El = document.getElementById("custom-title-text-2")
+      if (text2El) text2El.value = settings.customTitleText2 || ""
+      const populateFontDropdown = (selectEl, selectedVal) => {
+        if (!selectEl) return
+        selectEl.innerHTML = '<option value="inherit">Font mặc định</option>'
+        PREDEFINED_FONTS.forEach((f) => {
+          const opt = document.createElement("option")
+          opt.value = f.value
+          opt.textContent = f.label
+          selectEl.appendChild(opt)
+        })
+        const customFonts =
+          JSON.parse(localStorage.getItem("customFonts")) || []
+        customFonts.forEach((f) => {
+          const opt = document.createElement("option")
+          opt.value = `'${f.name}'`
+          opt.textContent = `${f.name} (Tùy chỉnh)`
+          selectEl.appendChild(opt)
+        })
+        selectEl.value = selectedVal || "inherit"
+      }
 
-    const oriEl = document.getElementById("custom-title-orientation")
-    if (oriEl) oriEl.value = settings.customTitleOrientation || "upright"
-    const ori2El = document.getElementById("custom-title-orientation-2")
-    if (ori2El) ori2El.value = settings.customTitleOrientation2 || "mixed"
-    const ori3El = document.getElementById("custom-title-orientation-3")
-    if (ori3El) ori3El.value = settings.customTitleOrientation3 || "mixed"
-    const ori4El = document.getElementById("custom-title-orientation-4")
-    if (ori4El) ori4El.value = settings.customTitleOrientation4 || "mixed"
+      populateFontDropdown(
+        document.getElementById("custom-title-font"),
+        settings.customTitleFont,
+      )
+      populateFontDropdown(
+        document.getElementById("custom-title-font-2"),
+        settings.customTitleFont2,
+      )
+      populateFontDropdown(
+        document.getElementById("custom-title-font-3"),
+        settings.customTitleFont3,
+      )
+      populateFontDropdown(
+        document.getElementById("custom-title-font-4"),
+        settings.customTitleFont4,
+      )
 
-    const dirEl = document.getElementById("custom-title-direction")
-    if (dirEl) dirEl.value = settings.customTitleDirection || "horizontal"
-    const orderEl = document.getElementById("custom-title-order")
-    if (orderEl) orderEl.value = settings.customTitleOrder || "normal"
-    const wwEl = document.getElementById("custom-title-word-wrap")
-    if (wwEl) wwEl.checked = settings.customTitleWordWrap === true
+      const oriEl = document.getElementById("custom-title-orientation")
+      if (oriEl) oriEl.value = settings.customTitleOrientation || "upright"
+      const ori2El = document.getElementById("custom-title-orientation-2")
+      if (ori2El) ori2El.value = settings.customTitleOrientation2 || "mixed"
+      const ori3El = document.getElementById("custom-title-orientation-3")
+      if (ori3El) ori3El.value = settings.customTitleOrientation3 || "mixed"
+      const ori4El = document.getElementById("custom-title-orientation-4")
+      if (ori4El) ori4El.value = settings.customTitleOrientation4 || "mixed"
 
-    const animEl = document.getElementById("custom-title-animation")
-    if (animEl) animEl.value = settings.customTitleAnimation || "none"
-    const animLoopEl = document.getElementById("custom-title-animation-loop")
-    if (animLoopEl) animLoopEl.value = settings.customTitleAnimationLoop || "infinite"
-    
-    if (DOM.customTitleMulticolor)
-      DOM.customTitleMulticolor.checked =
-        settings.customTitleMulticolor === true
+      const dirEl = document.getElementById("custom-title-direction")
+      if (dirEl) dirEl.value = settings.customTitleDirection || "horizontal"
+      const orderEl = document.getElementById("custom-title-order")
+      if (orderEl) orderEl.value = settings.customTitleOrder || "normal"
+      const wwEl = document.getElementById("custom-title-word-wrap")
+      if (wwEl) wwEl.checked = settings.customTitleWordWrap === true
+
+      const animEl = document.getElementById("custom-title-animation")
+      if (animEl) animEl.value = settings.customTitleAnimation || "none"
+      const animLoopEl = document.getElementById("custom-title-animation-loop")
+      if (animLoopEl)
+        animLoopEl.value = settings.customTitleAnimationLoop || "infinite"
+
+      if (DOM.customTitleMulticolor)
+        DOM.customTitleMulticolor.checked =
+          settings.customTitleMulticolor === true
       if (DOM.customTitleColor)
         DOM.customTitleColor.value = settings.customTitleColor || "#ffffff"
 
@@ -6077,7 +6544,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     }
-    
+
     // Sync the save background buttons (Unsplash & Picsum) based on the current background
     if (typeof updateMediaSaveButtonsState === "function") {
       updateMediaSaveButtonsState()

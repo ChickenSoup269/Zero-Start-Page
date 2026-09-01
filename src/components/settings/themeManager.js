@@ -613,7 +613,8 @@ export function initThemeManager(
       updateSetting("theme", themeKey)
       applyTheme(themeData, updateSettingsInputs)
 
-      const themeName = themeItem.querySelector(".theme-name")?.textContent || themeKey
+      const themeName =
+        themeItem.querySelector(".theme-name")?.textContent || themeKey
       showToast(`Đã áp dụng theme: ${themeName}`, {
         undoFn: () => {
           updateActiveUI(prevThemeKey || null)
@@ -627,7 +628,7 @@ export function initThemeManager(
           if (updateSettingsInputs) updateSettingsInputs()
           saveSettings(true)
           if (window.appApplySettings) window.appApplySettings()
-        }
+        },
       })
     }
   })
@@ -636,14 +637,18 @@ export function initThemeManager(
   const showAllThemesBtn = document.getElementById("themes-show-all-btn")
   const updateShowAllButtonText = () => {
     if (!showAllThemesBtn || !DOM.themesGrid) return
-    const allCount = DOM.themesGrid.querySelectorAll(".theme-item:not(.theme-filter-hidden)").length
+    const allCount = DOM.themesGrid.querySelectorAll(
+      ".theme-item:not(.theme-filter-hidden)",
+    ).length
     const isExpanded = DOM.themesGrid.classList.contains("show-all")
     const icon = showAllThemesBtn.querySelector("i")
     const textSpan = showAllThemesBtn.querySelector("span")
     const i18n = geti18n()
 
     if (icon) {
-      icon.className = isExpanded ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"
+      icon.className = isExpanded
+        ? "fa-solid fa-chevron-up"
+        : "fa-solid fa-chevron-down"
     }
 
     if (textSpan) {
@@ -670,7 +675,7 @@ export function initThemeManager(
           categoryFilterBar.scrollLeft += e.deltaY
         }
       },
-      { passive: false }
+      { passive: false },
     )
 
     // Enable drag-to-scroll (mouse drag & swipe)
@@ -713,11 +718,17 @@ export function initThemeManager(
       const pill = e.target.closest(".theme-filter-pill")
       if (!pill) return
 
-      categoryFilterBar.querySelectorAll(".theme-filter-pill").forEach((p) => p.classList.remove("active"))
+      categoryFilterBar
+        .querySelectorAll(".theme-filter-pill")
+        .forEach((p) => p.classList.remove("active"))
       pill.classList.add("active")
 
       // Center clicked pill smoothly in the scroll container
-      pill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+      pill.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      })
 
       const filterCategory = pill.getAttribute("data-theme-filter") || "all"
       const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
@@ -729,7 +740,9 @@ export function initThemeManager(
           const isCustom = item.dataset.theme?.startsWith("user-")
           item.classList.toggle("theme-filter-hidden", !isCustom)
         } else {
-          const itemCategories = (item.getAttribute("data-category") || "").split(",").map((c) => c.trim())
+          const itemCategories = (item.getAttribute("data-category") || "")
+            .split(",")
+            .map((c) => c.trim())
           const matches = itemCategories.includes(filterCategory)
           item.classList.toggle("theme-filter-hidden", !matches)
         }
@@ -829,15 +842,17 @@ export function initThemeManager(
   const handleConfirmSaveStyle = () => {
     try {
       if (!DOM.customStyleNameInput) {
-        throw new Error("customStyleNameInput is not defined in DOM");
+        throw new Error("customStyleNameInput is not defined in DOM")
       }
       const name = DOM.customStyleNameInput.value.trim() || "My Style"
 
-      let icon = "fa-bookmark";
+      let icon = "fa-bookmark"
       if (DOM.styleIconGrid) {
-        const activeIcon = DOM.styleIconGrid.querySelector(".icon-option.active")
+        const activeIcon = DOM.styleIconGrid.querySelector(
+          ".icon-option.active",
+        )
         if (activeIcon && activeIcon.dataset.icon) {
-          icon = activeIcon.dataset.icon;
+          icon = activeIcon.dataset.icon
         }
       }
 
@@ -854,8 +869,8 @@ export function initThemeManager(
         DOM.customStyleNameInput.value = ""
       }
     } catch (err) {
-      console.error("Error in handleConfirmSaveStyle:", err);
-      showAlert("Lỗi khi lưu Style: " + err.message);
+      console.error("Error in handleConfirmSaveStyle:", err)
+      showAlert("Lỗi khi lưu Style: " + err.message)
     }
   }
 
@@ -1023,10 +1038,16 @@ function saveUserTheme(
   return true
 }
 
-async function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInputs) {
+async function deleteUserTheme(
+  id,
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
   const i18n = geti18n()
   const confirmed = await showConfirm(
-    i18n.confirm_delete_theme || "Are you sure you want to delete this custom theme?",
+    i18n.confirm_delete_theme ||
+      "Are you sure you want to delete this custom theme?",
   )
   if (!confirmed) return
 
@@ -1064,7 +1085,7 @@ async function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInput
       }
       saveSettings(true)
       renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
-    }
+    },
   })
 }
 
@@ -1113,7 +1134,11 @@ function applyTheme(themeData, updateSettingsInputs) {
   if (window.appApplySettings) window.appApplySettings()
 }
 
-export function renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs) {
+export function renderUserStyles(
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
   if (!DOM.stylePresetGrid) return
 
   // Clear existing user styles (keep default styles)
@@ -1131,7 +1156,7 @@ export function renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
     btn.style.position = "relative"
 
     btn.innerHTML = `
-      <span class="style-preset-icon"><i class="fa-solid ${style.icon || 'fa-bookmark'}"></i></span>
+      <span class="style-preset-icon"><i class="fa-solid ${style.icon || "fa-bookmark"}"></i></span>
       <span class="style-preset-name">${style.name}</span>
       <small data-i18n="style_preset_custom">Custom Preset</small>
       <span class="delete-style-btn" title="Delete Style" style="position: absolute; top: 6px; right: 8px; font-size: 0.8rem; opacity: 0.4; cursor: pointer; transition: opacity 0.2s; z-index: 2;">
@@ -1158,11 +1183,11 @@ function saveUserStyle(
 ) {
   try {
     const currentSettings = getSettings()
-    
+
     if (!currentSettings.userStyles) {
-      currentSettings.userStyles = [];
+      currentSettings.userStyles = []
     }
-    const userStyles = currentSettings.userStyles;
+    const userStyles = currentSettings.userStyles
 
     // Check for duplicates
     const isDuplicate = userStyles.some(
@@ -1204,15 +1229,21 @@ function saveUserStyle(
 
     return true
   } catch (err) {
-    console.error("Exception inside saveUserStyle:", err);
-    throw err;
+    console.error("Exception inside saveUserStyle:", err)
+    throw err
   }
 }
 
-async function deleteUserStyle(id, DOM, handleSettingUpdate, updateSettingsInputs) {
+async function deleteUserStyle(
+  id,
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
   const i18n = geti18n()
   const confirmed = await showConfirm(
-    i18n.confirm_delete_style || "Are you sure you want to delete this custom style?",
+    i18n.confirm_delete_style ||
+      "Are you sure you want to delete this custom style?",
   )
   if (!confirmed) return
 
@@ -1246,13 +1277,15 @@ async function deleteUserStyle(id, DOM, handleSettingUpdate, updateSettingsInput
       if (prevActivePreset === id) {
         updateSetting("interfaceStylePreset", id)
         const preset = deletedStyle.snapshot
-        Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
+        Object.entries(preset).forEach(([key, value]) =>
+          updateSetting(key, value),
+        )
         updateSettingsInputs()
         if (window.appApplySettings) window.appApplySettings()
         renderBookmarks()
       }
       saveSettings(true)
       renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
-    }
+    },
   })
 }

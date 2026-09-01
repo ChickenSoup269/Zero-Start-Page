@@ -20,7 +20,9 @@ export class HabitTracker {
       </div>
       <div class="habit-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
     `
-    this.headerContainer = this.container.querySelector(".habit-header-container")
+    this.headerContainer = this.container.querySelector(
+      ".habit-header-container",
+    )
     this.gridContainer = this.container.querySelector(".habit-grid")
 
     const addForm = this.container.querySelector(".habit-add-form")
@@ -33,17 +35,23 @@ export class HabitTracker {
       if (show) input.focus()
     }
 
-    if (cancelBtn) cancelBtn.addEventListener("click", () => {
-      this.toggleForm(false)
-      input.value = ""
-    })
+    if (cancelBtn)
+      cancelBtn.addEventListener("click", () => {
+        this.toggleForm(false)
+        input.value = ""
+      })
 
     const saveHabit = () => {
       const name = input.value
       const colorInput = this.container.querySelector(".habit-add-color")
       const color = colorInput ? colorInput.value : "#4CAF50"
       if (name && name.trim()) {
-        this.habits.push({ id: Date.now().toString(), name: name.trim(), progress: 0, color: color })
+        this.habits.push({
+          id: Date.now().toString(),
+          name: name.trim(),
+          progress: 0,
+          color: color,
+        })
         this.saveData()
         this.render()
         this.toggleForm(false)
@@ -52,10 +60,11 @@ export class HabitTracker {
     }
 
     if (saveBtn) saveBtn.addEventListener("click", saveHabit)
-    if (input) input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") saveHabit()
-      if (e.key === "Escape") this.toggleForm(false)
-    })
+    if (input)
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveHabit()
+        if (e.key === "Escape") this.toggleForm(false)
+      })
 
     this.loadData()
     this.render()
@@ -65,25 +74,33 @@ export class HabitTracker {
         fadeToggle(this.container, e.detail.value, "flex")
       }
       if (e.detail && e.detail.key === "habitTrackerMini") {
-        this.container.classList.toggle("habitTracker-mini", e.detail.value === true)
+        this.container.classList.toggle(
+          "habitTracker-mini",
+          e.detail.value === true,
+        )
       }
       if (e.detail && e.detail.key === "habitColorMode") {
         this.render()
         const addColorInput = this.container.querySelector(".habit-add-color")
         if (addColorInput) {
-          addColorInput.style.display = e.detail.value === "custom" ? "inline-block" : "none"
+          addColorInput.style.display =
+            e.detail.value === "custom" ? "inline-block" : "none"
         }
       }
     })
 
     fadeToggle(this.container, getSettings().showHabits === true, "flex")
-    this.container.classList.toggle("habitTracker-mini", getSettings().habitTrackerMini === true)
-    
+    this.container.classList.toggle(
+      "habitTracker-mini",
+      getSettings().habitTrackerMini === true,
+    )
+
     // Initial sync of add color input
     const initialColorMode = getSettings().habitColorMode || "custom"
     const addColorInput = this.container.querySelector(".habit-add-color")
     if (addColorInput) {
-       addColorInput.style.display = initialColorMode === "custom" ? "inline-block" : "none"
+      addColorInput.style.display =
+        initialColorMode === "custom" ? "inline-block" : "none"
     }
   }
 
@@ -124,16 +141,18 @@ export class HabitTracker {
       </div>
     `
 
-    this.headerContainer.querySelector(".habit-close-btn")?.addEventListener("click", () => {
-      updateSetting("showHabits", false)
-      saveSettings()
-      fadeToggle(this.container, false, "flex")
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "showHabits", value: false },
-        }),
-      )
-    })
+    this.headerContainer
+      .querySelector(".habit-close-btn")
+      ?.addEventListener("click", () => {
+        updateSetting("showHabits", false)
+        saveSettings()
+        fadeToggle(this.container, false, "flex")
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showHabits", value: false },
+          }),
+        )
+      })
 
     let gridHtml = ""
 
@@ -142,7 +161,7 @@ export class HabitTracker {
     } else {
       for (const habit of this.habits) {
         gridHtml += `<div class="habit-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">`
-        
+
         gridHtml += `<div class="habit-squares-container" style="position: relative; flex: 1; display: flex; height: 28px; border-radius: 4px; overflow: hidden;">`
         gridHtml += `<div class="habit-squares" style="display: flex; width: 100%; gap: 2px;">`
 
@@ -154,27 +173,27 @@ export class HabitTracker {
           const isFilled = i <= currentProgress
           let color = "rgba(255,255,255,0.12)"
           if (isFilled) {
-             if (colorMode === "gradient") {
-                const hue = ((i - 1) / (this.maxLevel - 1)) * 120
-                color = `hsl(${hue}, 80%, 45%)`
-             } else if (colorMode === "m3") {
-                color = "var(--accent-color, #4CAF50)"
-             } else {
-                color = habitColor
-             }
+            if (colorMode === "gradient") {
+              const hue = ((i - 1) / (this.maxLevel - 1)) * 120
+              color = `hsl(${hue}, 80%, 45%)`
+            } else if (colorMode === "m3") {
+              color = "var(--accent-color, #4CAF50)"
+            } else {
+              color = habitColor
+            }
           }
-            
+
           gridHtml += `<div class="habit-square" data-no-drag="true" data-level="${i}" data-id="${habit.id}" style="flex: 1; height: 100%; background: ${color}; border-radius: 2px; cursor: pointer; transition: background 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);"></div>`
         }
         gridHtml += `</div>`
-        
+
         // Text overlay
         gridHtml += `<div class="habit-name" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; font-size: 0.85em; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 5px rgba(0,0,0,0.5); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 10px;">${habit.name}</div>`
-        
+
         gridHtml += `</div>` // end habit-squares-container
-        
+
         if (colorMode === "custom") {
-           gridHtml += `<input type="color" class="habit-change-color" data-id="${habit.id}" value="${habitColor}" style="width: 20px; height: 20px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent; opacity: 0.7; transition: 0.2s;" title="Change color">`
+          gridHtml += `<input type="color" class="habit-change-color" data-id="${habit.id}" value="${habitColor}" style="width: 20px; height: 20px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent; opacity: 0.7; transition: 0.2s;" title="Change color">`
         }
         gridHtml += `<button class="habit-delete-btn" data-id="${habit.id}" style="background: transparent; border: none; color: #ff5252; cursor: pointer; opacity: 0.7; padding: 4px; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i class="fa-solid fa-trash-can" style="font-size: 0.85em;"></i></button>`
         gridHtml += `</div>`
@@ -209,8 +228,8 @@ export class HabitTracker {
         if (this.maxLevel > 1) {
           this.maxLevel--
           // ensure no habit has progress > new maxLevel
-          this.habits.forEach(h => {
-             if (h.progress > this.maxLevel) h.progress = this.maxLevel
+          this.habits.forEach((h) => {
+            if (h.progress > this.maxLevel) h.progress = this.maxLevel
           })
           this.saveData()
           this.render()
@@ -224,12 +243,12 @@ export class HabitTracker {
         const level = parseInt(e.target.dataset.level, 10)
         const id = e.target.dataset.id
 
-        const habitIndex = this.habits.findIndex(h => h.id === id)
+        const habitIndex = this.habits.findIndex((h) => h.id === id)
         if (habitIndex !== -1) {
           if (this.habits[habitIndex].progress === level) {
-             this.habits[habitIndex].progress = level - 1;
+            this.habits[habitIndex].progress = level - 1
           } else {
-             this.habits[habitIndex].progress = level;
+            this.habits[habitIndex].progress = level
           }
           this.saveData()
           this.render()
@@ -242,33 +261,37 @@ export class HabitTracker {
       picker.addEventListener("input", (e) => {
         const id = e.target.dataset.id
         const newColor = e.target.value
-        const habitIndex = this.habits.findIndex(h => h.id === id)
+        const habitIndex = this.habits.findIndex((h) => h.id === id)
         if (habitIndex !== -1) {
           this.habits[habitIndex].color = newColor
           const row = e.target.closest(".habit-row")
           if (row) {
-             const squares = row.querySelectorAll(".habit-square")
-             squares.forEach((sq) => {
-                const level = parseInt(sq.dataset.level, 10)
-                const currentProgress = this.habits[habitIndex].progress || 0
-                if (level <= currentProgress) {
-                   sq.style.background = newColor
-                }
-             })
+            const squares = row.querySelectorAll(".habit-square")
+            squares.forEach((sq) => {
+              const level = parseInt(sq.dataset.level, 10)
+              const currentProgress = this.habits[habitIndex].progress || 0
+              if (level <= currentProgress) {
+                sq.style.background = newColor
+              }
+            })
           }
         }
       })
       picker.addEventListener("change", (e) => {
         const id = e.target.dataset.id
         const newColor = e.target.value
-        const habitIndex = this.habits.findIndex(h => h.id === id)
+        const habitIndex = this.habits.findIndex((h) => h.id === id)
         if (habitIndex !== -1) {
           this.habits[habitIndex].color = newColor
           this.saveData()
         }
       })
-      picker.addEventListener("mouseenter", (e) => { e.currentTarget.style.opacity = "1" })
-      picker.addEventListener("mouseleave", (e) => { e.currentTarget.style.opacity = "0.7" })
+      picker.addEventListener("mouseenter", (e) => {
+        e.currentTarget.style.opacity = "1"
+      })
+      picker.addEventListener("mouseleave", (e) => {
+        e.currentTarget.style.opacity = "0.7"
+      })
     })
 
     const deleteBtns = this.container.querySelectorAll(".habit-delete-btn")
@@ -280,16 +303,20 @@ export class HabitTracker {
         const i18n = geti18n()
         const title = i18n.habit_delete_title || "Delete Habit"
         const message = `${i18n.habit_confirm_delete || "Delete this habit?"}<br><br><strong style="color: var(--accent-color, #4CAF50);">${habit ? habit.name : ""}</strong>`
-        
+
         if (await showConfirm(message, title)) {
           this.habits = this.habits.filter((h) => h.id !== id)
           this.saveData()
           this.render()
         }
       })
-      
-      btn.addEventListener("mouseenter", (e) => { e.currentTarget.style.opacity = "1" })
-      btn.addEventListener("mouseleave", (e) => { e.currentTarget.style.opacity = "0.7" })
+
+      btn.addEventListener("mouseenter", (e) => {
+        e.currentTarget.style.opacity = "1"
+      })
+      btn.addEventListener("mouseleave", (e) => {
+        e.currentTarget.style.opacity = "0.7"
+      })
     })
   }
 }

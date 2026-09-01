@@ -15,14 +15,19 @@
             <span data-i18n="settings_page_title">Page Title</span>
         </div>
         <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
-            placeholder="Enter custom page title" class="settings-page-title-input" style="width: 100%; border-radius: 8px; margin-bottom: 8px;" />
+            placeholder="Enter custom page title" class="settings-page-title-input"
+            style="width: 100%; border-radius: 8px; margin-bottom: 8px;" />
 
         <div class="quick-token-chips" style="margin-bottom: 6px;">
-            <button type="button" class="token-chip" data-token="{time}"><i class="fa-regular fa-clock"></i> {time}</button>
-            <button type="button" class="token-chip" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
-            <button type="button" class="token-chip" data-token="{music}"><i class="fa-solid fa-music"></i> {music}</button>
+            <button type="button" class="token-chip" data-token="{time}"><i class="fa-regular fa-clock"></i>
+                {time}</button>
+            <button type="button" class="token-chip" data-token="{date}"><i class="fa-regular fa-calendar-days"></i>
+                {date}</button>
+            <button type="button" class="token-chip" data-token="{music}"><i class="fa-solid fa-music"></i>
+                {music}</button>
         </div>
-        <small class="setting-hint" data-i18n="settings_page_title_hint">Appears in browser tab. Tap chips to insert dynamic tokens.</small>
+        <small class="setting-hint" data-i18n="settings_page_title_hint">Appears in browser tab. Tap chips to insert
+            dynamic tokens.</small>
     </div>
 
     <!-- Divider -->
@@ -37,37 +42,43 @@
 
         <div class="pt-favicon-row">
             <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
-                placeholder="SP" maxlength="2" class="settings-tab-icon-input" style="flex: 1; border-radius: 8px; height: 36px;" />
+                placeholder="SP" maxlength="2" class="settings-tab-icon-input"
+                style="flex: 1; border-radius: 8px; height: 36px;" />
             <input type="file" id="tab-icon-file-input"
                 accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
             <button type="button" id="tab-icon-fa-btn" class="icon-btn tab-icon-action-btn"
                 title="Pick Font Awesome icon" data-i18n-title="settings_tab_icon_fa_pick">
                 <i class="fas fa-mouse-pointer"></i>
             </button>
-            <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn"
-                title="Upload icon" data-i18n-title="settings_tab_icon_upload">
+            <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn" title="Upload icon"
+                data-i18n-title="settings_tab_icon_upload">
                 <i class="fa-solid fa-upload"></i>
             </button>
-            <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn"
-                title="Remove icon" data-i18n-title="settings_tab_icon_remove" hidden>
+            <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn" title="Remove icon"
+                data-i18n-title="settings_tab_icon_remove" hidden>
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div id="tab-icon-preview" class="settings-tab-icon-preview"></div>
         </div>
-        <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-bottom: 10px; display: block;">Max 2 letters, 1 emoji, or Font Awesome icon (leave blank for default)</small>
+        <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-bottom: 10px; display: block;">Max
+            2 letters, 1 emoji, or Font Awesome icon (leave blank for default)</small>
 
         <!-- Color Customization -->
         <div class="pt-icon-colors">
             <div class="pt-color-item">
                 <label for="tab-icon-bg-color" data-i18n="settings_icon_bg">Icon BG</label>
-                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
-                    <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker" style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                <div class="custom-color-input-group"
+                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
+                    <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker"
+                        style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                 </div>
             </div>
             <div class="pt-color-item">
                 <label for="tab-icon-text-color" data-i18n="settings_icon_text">Icon Text</label>
-                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
-                    <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker" style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                <div class="custom-color-input-group"
+                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
+                    <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker"
+                        style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                 </div>
             </div>
             <div class="pt-color-item" style="margin-left: auto;">

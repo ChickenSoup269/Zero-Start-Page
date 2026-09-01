@@ -368,7 +368,8 @@ function initFaPicker(DOM, onSelect, onClear) {
     if (!grid) return
 
     const query = currentFilter.toLowerCase()
-    const catKey = currentCategory !== "all" ? CATEGORY_MAP[currentCategory] : null
+    const catKey =
+      currentCategory !== "all" ? CATEGORY_MAP[currentCategory] : null
 
     const filtered = FA_ICONS.filter(([prefix, name, label]) => {
       const matchCat = !catKey || prefix === catKey
@@ -444,7 +445,12 @@ function initFaPicker(DOM, onSelect, onClear) {
         grid.querySelectorAll("i[class]").forEach((iconEl) => {
           const content = window.getComputedStyle(iconEl, "::before").content
           // "none" or empty string means the icon glyph wasn't found
-          if (!content || content === "none" || content === '""' || content === "''") {
+          if (
+            !content ||
+            content === "none" ||
+            content === '""' ||
+            content === "''"
+          ) {
             const parentBtn = iconEl.closest("button")
             if (parentBtn) {
               parentBtn.style.opacity = "0.25"

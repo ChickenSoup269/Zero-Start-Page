@@ -16,7 +16,13 @@
  */
 
 export class Jellyfish {
-  constructor(canvasId, color = "#ffaa00", type = "jellyfish", numTentacles = 12, size = 42) {
+  constructor(
+    canvasId,
+    color = "#ffaa00",
+    type = "jellyfish",
+    numTentacles = 12,
+    size = 42,
+  ) {
     this.canvas =
       typeof canvasId === "string"
         ? document.getElementById(canvasId)
@@ -123,10 +129,14 @@ export class Jellyfish {
   stop() {
     this.running = false
     if (this.animationId) cancelAnimationFrame(this.animationId)
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     window.removeEventListener("mousemove", this.handleMouseMove)
     window.removeEventListener("resize", this.handleResize)
-    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this.ctx)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
   updateColor(color) {
@@ -172,7 +182,8 @@ export class Jellyfish {
       document.addEventListener(
         "visibilitychange",
         () => {
-          if (!document.hidden && this.running) requestAnimationFrame(this.animate)
+          if (!document.hidden && this.running)
+            requestAnimationFrame(this.animate)
         },
         { once: true },
       )
@@ -194,7 +205,10 @@ export class Jellyfish {
     // AI Movement
     if (now - this.lastMouseTime > 2500) {
       this.roamT += 0.006
-      const tx = W * 0.5 + Math.cos(this.roamT * 0.8) * (W * 0.35) + Math.sin(this.roamT * 1.5) * 80
+      const tx =
+        W * 0.5 +
+        Math.cos(this.roamT * 0.8) * (W * 0.35) +
+        Math.sin(this.roamT * 1.5) * 80
       const ty = H * 0.45 + Math.sin(this.roamT * 0.7) * (H * 0.25)
       this.target.x += (tx - this.target.x) * 0.018
       this.target.y += (ty - this.target.y) * 0.018
@@ -205,8 +219,10 @@ export class Jellyfish {
 
       if (dist < 90) {
         const orbitAngle = now * 0.0018
-        this.target.x += (this.mouse.x + Math.cos(orbitAngle) * 75 - this.target.x) * 0.04
-        this.target.y += (this.mouse.y + Math.sin(orbitAngle) * 55 - this.target.y) * 0.04
+        this.target.x +=
+          (this.mouse.x + Math.cos(orbitAngle) * 75 - this.target.x) * 0.04
+        this.target.y +=
+          (this.mouse.y + Math.sin(orbitAngle) * 55 - this.target.y) * 0.04
       } else {
         this.target.x += dx * 0.035
         this.target.y += dy * 0.035
@@ -293,7 +309,15 @@ export class Jellyfish {
       ctx.strokeStyle = `rgba(200, 240, 255, ${ring.life * 0.4})`
       ctx.lineWidth = 1.0
       ctx.beginPath()
-      ctx.ellipse(ring.x, ring.y, ring.r * 1.4, ring.r * 0.6, ring.angle, 0, Math.PI * 2)
+      ctx.ellipse(
+        ring.x,
+        ring.y,
+        ring.r * 1.4,
+        ring.r * 0.6,
+        ring.angle,
+        0,
+        Math.PI * 2,
+      )
       ctx.stroke()
     }
   }
@@ -332,7 +356,7 @@ export class Jellyfish {
       ten.segs[0].x = attachX
       ten.segs[0].y = attachY
 
-      const lenFactor = (this.SEG_LEN * (ten.lengthMult || 1))
+      const lenFactor = this.SEG_LEN * (ten.lengthMult || 1)
 
       for (let i = 1; i < this.SEG; i++) {
         const prev = ten.segs[i - 1]
@@ -433,7 +457,14 @@ export class Jellyfish {
     ctx.restore()
 
     // Outer translucent glass dome
-    const bellGrad = ctx.createRadialGradient(0, -bellH * 0.4, 2, 0, 0, bellW * 1.15)
+    const bellGrad = ctx.createRadialGradient(
+      0,
+      -bellH * 0.4,
+      2,
+      0,
+      0,
+      bellW * 1.15,
+    )
     bellGrad.addColorStop(0, `rgba(255, 255, 255, 0.85)`)
     bellGrad.addColorStop(0.35, `rgba(${r}, ${g}, ${b}, 0.65)`)
     bellGrad.addColorStop(0.75, `rgba(${r}, ${g}, ${b}, 0.3)`)
@@ -442,7 +473,14 @@ export class Jellyfish {
     ctx.beginPath()
     ctx.moveTo(-bellW, 0)
     ctx.bezierCurveTo(-bellW, -bellH * 2.1, bellW, -bellH * 2.1, bellW, 0)
-    ctx.bezierCurveTo(bellW * 0.7, bellH * 0.5, -bellW * 0.7, bellH * 0.5, -bellW, 0)
+    ctx.bezierCurveTo(
+      bellW * 0.7,
+      bellH * 0.5,
+      -bellW * 0.7,
+      bellH * 0.5,
+      -bellW,
+      0,
+    )
     ctx.fillStyle = bellGrad
     ctx.fill()
 
@@ -452,7 +490,14 @@ export class Jellyfish {
     ctx.stroke()
 
     // Inner glowing central organ
-    const organGrad = ctx.createRadialGradient(0, -bellH * 0.45, 0, 0, -bellH * 0.45, bellW * 0.4)
+    const organGrad = ctx.createRadialGradient(
+      0,
+      -bellH * 0.45,
+      0,
+      0,
+      -bellH * 0.45,
+      bellW * 0.4,
+    )
     organGrad.addColorStop(0, `rgba(255, 255, 255, ${0.75 + pulse * 0.2})`)
     organGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${0.5 + pulse * 0.15})`)
     organGrad.addColorStop(1, "rgba(0,0,0,0)")
@@ -492,13 +537,17 @@ export class Jellyfish {
     ctx.save()
     ctx.translate(-s * 0.42, s * 0.4)
     ctx.rotate(0.6 + finCycle * 0.4)
-    ctx.beginPath(); ctx.ellipse(0, 0, s * 0.32, s * 0.14, 0, 0, Math.PI * 2); ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(0, 0, s * 0.32, s * 0.14, 0, 0, Math.PI * 2)
+    ctx.fill()
     ctx.restore()
     // Right Back
     ctx.save()
     ctx.translate(s * 0.42, s * 0.4)
     ctx.rotate(-0.6 - finCycle * 0.4)
-    ctx.beginPath(); ctx.ellipse(0, 0, s * 0.32, s * 0.14, 0, 0, Math.PI * 2); ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(0, 0, s * 0.32, s * 0.14, 0, 0, Math.PI * 2)
+    ctx.fill()
     ctx.restore()
 
     // 2. Large Front Wing Flippers
@@ -507,13 +556,17 @@ export class Jellyfish {
     ctx.save()
     ctx.translate(-s * 0.45, -s * 0.15)
     ctx.rotate(0.35 + finCycle)
-    ctx.beginPath(); ctx.ellipse(-s * 0.35, 0, s * 0.58, s * 0.2, -0.2, 0, Math.PI * 2); ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(-s * 0.35, 0, s * 0.58, s * 0.2, -0.2, 0, Math.PI * 2)
+    ctx.fill()
     ctx.restore()
     // Right Front
     ctx.save()
     ctx.translate(s * 0.45, -s * 0.15)
     ctx.rotate(-0.35 - finCycle)
-    ctx.beginPath(); ctx.ellipse(s * 0.35, 0, s * 0.58, s * 0.2, 0.2, 0, Math.PI * 2); ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(s * 0.35, 0, s * 0.58, s * 0.2, 0.2, 0, Math.PI * 2)
+    ctx.fill()
     ctx.restore()
 
     // 3. Head & Neck
@@ -533,7 +586,10 @@ export class Jellyfish {
     const shellGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, s * 0.7)
     shellGrad.addColorStop(0, `rgba(255, 255, 255, 0.95)`)
     shellGrad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, 0.9)`)
-    shellGrad.addColorStop(0.8, `rgba(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(b - 50, 0)}, 0.8)`)
+    shellGrad.addColorStop(
+      0.8,
+      `rgba(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(b - 50, 0)}, 0.8)`,
+    )
     shellGrad.addColorStop(1.0, `rgba(0, 0, 0, 0.4)`)
 
     ctx.fillStyle = shellGrad
@@ -577,27 +633,56 @@ export class Jellyfish {
     ctx.lineWidth = 2.2
     ctx.beginPath()
     ctx.moveTo(0, s * 0.45)
-    ctx.quadraticCurveTo(Math.sin(t * 2.5) * 14, s * 1.4, Math.sin(t * 2.5) * 22, s * 2.4)
+    ctx.quadraticCurveTo(
+      Math.sin(t * 2.5) * 14,
+      s * 1.4,
+      Math.sin(t * 2.5) * 22,
+      s * 2.4,
+    )
     ctx.stroke()
 
     // 2. Wide Undulating Pectoral Wings
     const bodyGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, s * 1.1)
     bodyGrad.addColorStop(0, `rgba(255, 255, 255, 0.95)`)
     bodyGrad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, 0.85)`)
-    bodyGrad.addColorStop(0.8, `rgba(${Math.max(r - 40, 0)}, ${Math.max(g - 40, 0)}, ${Math.max(b - 40, 0)}, 0.65)`)
+    bodyGrad.addColorStop(
+      0.8,
+      `rgba(${Math.max(r - 40, 0)}, ${Math.max(g - 40, 0)}, ${Math.max(b - 40, 0)}, 0.65)`,
+    )
     bodyGrad.addColorStop(1.0, `rgba(${r}, ${g}, ${b}, 0.15)`)
 
     ctx.fillStyle = bodyGrad
     ctx.beginPath()
     ctx.moveTo(0, -s * 0.6) // Snout
     // Left Wing
-    ctx.bezierCurveTo(-s * 0.45, -s * 0.3 + wingWave * 0.4, -s * 1.3, wingWave, -s * 1.1, s * 0.25 + wingWave * 0.5)
+    ctx.bezierCurveTo(
+      -s * 0.45,
+      -s * 0.3 + wingWave * 0.4,
+      -s * 1.3,
+      wingWave,
+      -s * 1.1,
+      s * 0.25 + wingWave * 0.5,
+    )
     // Left Pelvic edge
     ctx.bezierCurveTo(-s * 0.45, s * 0.35, -s * 0.2, s * 0.45, 0, s * 0.45)
     // Right Pelvic edge
-    ctx.bezierCurveTo(s * 0.2, s * 0.45, s * 0.45, s * 0.35, s * 1.1, s * 0.25 - wingWave * 0.5)
+    ctx.bezierCurveTo(
+      s * 0.2,
+      s * 0.45,
+      s * 0.45,
+      s * 0.35,
+      s * 1.1,
+      s * 0.25 - wingWave * 0.5,
+    )
     // Right Wing
-    ctx.bezierCurveTo(s * 1.3, -wingWave, s * 0.45, -s * 0.3 - wingWave * 0.4, 0, -s * 0.6)
+    ctx.bezierCurveTo(
+      s * 1.3,
+      -wingWave,
+      s * 0.45,
+      -s * 0.3 - wingWave * 0.4,
+      0,
+      -s * 0.6,
+    )
     ctx.fill()
 
     ctx.strokeStyle = `rgba(255, 255, 255, 0.5)`
@@ -615,7 +700,13 @@ export class Jellyfish {
     ctx.fillStyle = `rgba(255, 255, 255, 0.85)`
     for (let i = -2; i <= 2; i++) {
       ctx.beginPath()
-      ctx.arc(i * (s * 0.14), -s * 0.1 + Math.abs(i) * (s * 0.08), 1.8, 0, Math.PI * 2)
+      ctx.arc(
+        i * (s * 0.14),
+        -s * 0.1 + Math.abs(i) * (s * 0.08),
+        1.8,
+        0,
+        Math.PI * 2,
+      )
       ctx.fill()
     }
 
@@ -655,7 +746,14 @@ export class Jellyfish {
     ctx.fillStyle = whaleGrad
     ctx.beginPath()
     ctx.moveTo(s * 0.8, 0) // Head rostrum
-    ctx.bezierCurveTo(s * 0.4, -s * 0.38, -s * 0.4, -s * 0.32, -s * 0.9, tailWave * 0.3)
+    ctx.bezierCurveTo(
+      s * 0.4,
+      -s * 0.38,
+      -s * 0.4,
+      -s * 0.32,
+      -s * 0.9,
+      tailWave * 0.3,
+    )
     ctx.bezierCurveTo(-s * 0.4, s * 0.32, s * 0.4, s * 0.38, s * 0.8, 0)
     ctx.fill()
 
@@ -729,7 +827,14 @@ export class Jellyfish {
     ctx.fillStyle = dolphinGrad
     ctx.beginPath()
     ctx.moveTo(s * 0.75, 0) // Beak
-    ctx.bezierCurveTo(s * 0.45, -s * 0.3, -s * 0.35, -s * 0.22, -s * 0.85, tailWave * 0.4)
+    ctx.bezierCurveTo(
+      s * 0.45,
+      -s * 0.3,
+      -s * 0.35,
+      -s * 0.22,
+      -s * 0.85,
+      tailWave * 0.4,
+    )
     ctx.bezierCurveTo(-s * 0.35, s * 0.22, s * 0.45, s * 0.3, s * 0.75, 0)
     ctx.fill()
 
@@ -741,7 +846,14 @@ export class Jellyfish {
     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.85)`
     ctx.beginPath()
     ctx.moveTo(-s * 0.05, -s * 0.2)
-    ctx.bezierCurveTo(-s * 0.2, -s * 0.5, -s * 0.35, -s * 0.48, -s * 0.25, -s * 0.15)
+    ctx.bezierCurveTo(
+      -s * 0.2,
+      -s * 0.5,
+      -s * 0.35,
+      -s * 0.48,
+      -s * 0.25,
+      -s * 0.15,
+    )
     ctx.closePath()
     ctx.fill()
 
@@ -761,4 +873,3 @@ export class Jellyfish {
     ctx.restore()
   }
 }
-

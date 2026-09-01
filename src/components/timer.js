@@ -58,7 +58,6 @@ function playFallbackBeep() {
   }
 }
 
-
 export class Timer {
   constructor() {
     this.container = null
@@ -70,8 +69,7 @@ export class Timer {
     this.isRunning = settings.timerIsRunning || false
     this.isExpired = false
     this.timerId = null
-    this.alarmSound =
-      settings.timerAlarmSound || DEFAULT_TIMER_ALARM_SOUND
+    this.alarmSound = settings.timerAlarmSound || DEFAULT_TIMER_ALARM_SOUND
     this.alarm = new Audio(getTimerAlarmUrl(DEFAULT_TIMER_ALARM_SOUND))
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
@@ -409,9 +407,13 @@ export class Timer {
     })
 
     window.addEventListener("resize", () => this.updateMiniIndicatorPosition())
-    window.addEventListener("scroll", () => this.updateMiniIndicatorPosition(), {
-      passive: true,
-    })
+    window.addEventListener(
+      "scroll",
+      () => this.updateMiniIndicatorPosition(),
+      {
+        passive: true,
+      },
+    )
 
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showTimer") {
@@ -528,7 +530,9 @@ export class Timer {
     this.alarm.loop = true
     // Detect load failure early (e.g. remote file 404, no network)
     this.alarm.onerror = () => {
-      console.warn("Alarm audio file failed to load, will use fallback beep on next ring.")
+      console.warn(
+        "Alarm audio file failed to load, will use fallback beep on next ring.",
+      )
     }
     if (wasPlaying) {
       this.alarm.play().catch((e) => {
@@ -816,7 +820,10 @@ export class Timer {
       .split(":")
       .map((part) => part.trim())
       .filter(Boolean)
-    if (colonParts.length > 1 && colonParts.every((part) => /^\d+$/.test(part))) {
+    if (
+      colonParts.length > 1 &&
+      colonParts.every((part) => /^\d+$/.test(part))
+    ) {
       const parts = colonParts.map((part) => parseInt(part, 10)).slice(-3)
       let hours = 0
       let minutes = 0
@@ -1239,7 +1246,10 @@ export class Timer {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
     this.container.classList.toggle("timer-mini", settings.timerMini === true)
   }
 
@@ -1324,7 +1334,7 @@ export class Timer {
     if (stats.date !== today) {
       stats.count = 0
     }
-    
+
     stats.date = today
     stats.count++
     localStorage.setItem("pomodoroStats", JSON.stringify(stats))

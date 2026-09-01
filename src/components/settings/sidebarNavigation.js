@@ -9,30 +9,30 @@ const DEFAULT_TAB = "appearance"
 // Mapping of section IDs / selectors to tabs in case data-settings-tab is not on partial
 const SECTION_TAB_MAP = {
   // Appearance
-  "themes": "appearance",
-  "font": "appearance",
+  themes: "appearance",
+  font: "appearance",
   "custom-title": "appearance",
   "page-title-group": "appearance",
-  
+
   // Background & FX
-  "background": "background",
+  background: "background",
   "gradient-multi-color": "background",
   "animated-backgrounds": "background",
   "special-effects": "background",
-  
+
   // Clock & Date
   "date-clock": "clock",
-  
+
   // Bookmarks
   "bookmark-custom": "bookmarks",
-  
+
   // Widgets & Layout
-  "layout": "widgets",
-  
+  layout: "widgets",
+
   // System & Data
   "language-setting-group": "system",
   "data-sync": "system",
-  "about-project": "system"
+  "about-project": "system",
 }
 
 const STORAGE_KEY_BG_SUBTAB = "startpage_bg_active_subtab"
@@ -47,7 +47,10 @@ const searchExpandedSections = new Set()
 // Load saved subtab
 try {
   const savedBgSubTab = localStorage.getItem(STORAGE_KEY_BG_SUBTAB)
-  if (savedBgSubTab && ["media", "colors", "animated", "adjust"].includes(savedBgSubTab)) {
+  if (
+    savedBgSubTab &&
+    ["media", "colors", "animated", "adjust"].includes(savedBgSubTab)
+  ) {
     activeBgSubTab = savedBgSubTab
   }
 } catch (e) {
@@ -59,11 +62,11 @@ try {
  */
 export function getElementTab(el) {
   if (!el) return null
-  
+
   // Direct attribute
   const directTab = el.getAttribute("data-settings-tab")
   if (directTab) return directTab
-  
+
   // By section ID
   const sectionId = el.getAttribute("data-section-id") || el.id
   if (sectionId && SECTION_TAB_MAP[sectionId]) {
@@ -77,10 +80,21 @@ export function getElementTab(el) {
   }
 
   // Check specific class or ID
-  if (el.classList?.contains("language-setting-group") || el.closest?.(".language-setting-group") || el.id === "language-select") return "system"
-  if (el.querySelector?.("#page-title-input") || el.closest?.("#page-title-group") || el.id === "page-title-input") return "appearance"
-  if (el.closest?.("#accent-color-group") || el.id === "accent-color-group") return "background"
-  
+  if (
+    el.classList?.contains("language-setting-group") ||
+    el.closest?.(".language-setting-group") ||
+    el.id === "language-select"
+  )
+    return "system"
+  if (
+    el.querySelector?.("#page-title-input") ||
+    el.closest?.("#page-title-group") ||
+    el.id === "page-title-input"
+  )
+    return "appearance"
+  if (el.closest?.("#accent-color-group") || el.id === "accent-color-group")
+    return "background"
+
   // Check closest element with data-settings-tab
   const closestTab = el.closest("[data-settings-tab]")
   if (closestTab) {
@@ -90,7 +104,8 @@ export function getElementTab(el) {
   // Check closest section
   const closestSection = el.closest(".settings-section, .setting-group")
   if (closestSection) {
-    const parentSectionId = closestSection.getAttribute("data-section-id") || closestSection.id
+    const parentSectionId =
+      closestSection.getAttribute("data-section-id") || closestSection.id
     if (parentSectionId && SECTION_TAB_MAP[parentSectionId]) {
       return SECTION_TAB_MAP[parentSectionId]
     }
@@ -100,11 +115,11 @@ export function getElementTab(el) {
 }
 
 const SECTION_BG_SUBTAB_MAP = {
-  "background": "media",
+  background: "media",
   "gradient-multi-color": "colors",
   "accent-color-group": "colors",
   "animated-backgrounds": "animated",
-  "special-effects": "animated"
+  "special-effects": "animated",
 }
 
 /**
@@ -122,12 +137,15 @@ export function getElementBgSubTab(el) {
     return SECTION_BG_SUBTAB_MAP[sectionId]
   }
 
-  const closestSection = el.closest(".settings-section, .setting-group, .bg-control-card")
+  const closestSection = el.closest(
+    ".settings-section, .setting-group, .bg-control-card",
+  )
   if (closestSection) {
     const parentSubTab = closestSection.getAttribute("data-bg-subtab")
     if (parentSubTab) return parentSubTab
 
-    const parentSectionId = closestSection.getAttribute("data-section-id") || closestSection.id
+    const parentSectionId =
+      closestSection.getAttribute("data-section-id") || closestSection.id
     if (parentSectionId && SECTION_BG_SUBTAB_MAP[parentSectionId]) {
       return SECTION_BG_SUBTAB_MAP[parentSectionId]
     }
@@ -168,7 +186,9 @@ export function scrollToSidebarElement(element, highlight = true) {
     const sectionId = parentSection.dataset.sectionId
     if (sectionId) {
       try {
-        const states = JSON.parse(localStorage.getItem("settingsSectionStates") || "{}")
+        const states = JSON.parse(
+          localStorage.getItem("settingsSectionStates") || "{}",
+        )
         states[sectionId] = false
         localStorage.setItem("settingsSectionStates", JSON.stringify(states))
       } catch (e) {}
@@ -190,19 +210,25 @@ export function scrollToSidebarElement(element, highlight = true) {
 
   // 5. Accurate scroll calculation after layout settles
   const performScroll = () => {
-    const currentSidebar = sidebar.querySelector(".sidebar-content") || sidebarContent
+    const currentSidebar =
+      sidebar.querySelector(".sidebar-content") || sidebarContent
     if (!currentSidebar || !element) return
 
     const sidebarRect = currentSidebar.getBoundingClientRect()
     const elemRect = element.getBoundingClientRect()
     const navContainer = document.querySelector(".settings-nav-container")
-    const navOffset = navContainer && !navContainer.classList.contains("nav-hidden")
-      ? (navContainer.offsetHeight || 110)
-      : 10
+    const navOffset =
+      navContainer && !navContainer.classList.contains("nav-hidden")
+        ? navContainer.offsetHeight || 110
+        : 10
 
     const targetPixel = Math.max(
       0,
-      elemRect.top - sidebarRect.top + currentSidebar.scrollTop - navOffset - 14
+      elemRect.top -
+        sidebarRect.top +
+        currentSidebar.scrollTop -
+        navOffset -
+        14,
     )
 
     currentSidebar.scrollTo({
@@ -212,7 +238,9 @@ export function scrollToSidebarElement(element, highlight = true) {
 
     if (highlight) {
       const highlightTarget =
-        element.closest(".setting-item-row, .setting-item, .bg-control-card, .preset-theme-card, .collapsible-group") ||
+        element.closest(
+          ".setting-item-row, .setting-item, .bg-control-card, .preset-theme-card, .collapsible-group",
+        ) ||
         element.querySelector(".section-toggle") ||
         element
       highlightTarget.classList.remove("settings-scroll-highlight")
@@ -266,7 +294,9 @@ export function switchBgSubTab(subTabId, targetElementToScrollTo = null) {
   })
 
   // Handle the parent .settings-section[data-section-id="background"]
-  const bgSection = sidebar.querySelector('.settings-section[data-section-id="background"]')
+  const bgSection = sidebar.querySelector(
+    '.settings-section[data-section-id="background"]',
+  )
   if (bgSection) {
     if (activeBgSubTab === "media" || activeBgSubTab === "adjust") {
       bgSection.classList.remove("bg-subtab-hidden")
@@ -276,7 +306,10 @@ export function switchBgSubTab(subTabId, targetElementToScrollTo = null) {
   }
 
   // Scroll
-  if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+  if (
+    targetElementToScrollTo &&
+    targetElementToScrollTo instanceof HTMLElement
+  ) {
     scrollToSidebarElement(targetElementToScrollTo)
   } else {
     sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
@@ -290,8 +323,8 @@ function getTopLevelSettingElements(sidebarContent) {
   if (!sidebarContent) return []
   return Array.from(
     sidebarContent.querySelectorAll(
-      ":scope > .settings-section, :scope > .setting-group, :scope > .bg-subtab-nav, :scope > [data-settings-partial], :scope > [data-settings-tab]"
-    )
+      ":scope > .settings-section, :scope > .setting-group, :scope > .bg-subtab-nav, :scope > [data-settings-partial], :scope > [data-settings-tab]",
+    ),
   )
 }
 
@@ -307,7 +340,11 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
   if (!sidebar || !sidebarContent) return
 
   // If there's an ongoing search, clear it when explicitly switching tab
-  if (searchInput && searchInput.value.trim().length > 0 && !targetElementToScrollTo) {
+  if (
+    searchInput &&
+    searchInput.value.trim().length > 0 &&
+    !targetElementToScrollTo
+  ) {
     searchInput.value = ""
     exitSearchMode()
   }
@@ -351,7 +388,10 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
 
   // If active tab is background, apply subtab filtering
   if (activeTab === "background") {
-    if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+    if (
+      targetElementToScrollTo &&
+      targetElementToScrollTo instanceof HTMLElement
+    ) {
       const targetSubTab = getElementBgSubTab(targetElementToScrollTo)
       if (targetSubTab) {
         switchBgSubTab(targetSubTab, targetElementToScrollTo)
@@ -361,7 +401,10 @@ export function switchSettingsTab(tabId, targetElementToScrollTo = null) {
     } else {
       switchBgSubTab(activeBgSubTab)
     }
-  } else if (targetElementToScrollTo && targetElementToScrollTo instanceof HTMLElement) {
+  } else if (
+    targetElementToScrollTo &&
+    targetElementToScrollTo instanceof HTMLElement
+  ) {
     scrollToSidebarElement(targetElementToScrollTo)
   } else {
     sidebarContent.scrollTo({ top: 0, behavior: "instant" })
@@ -416,9 +459,11 @@ function handleSettingsSearch(query) {
   let totalMatches = 0
 
   // Search through all sections & sub-groups
-  const sections = Array.from(sidebarContent.querySelectorAll(".settings-section"))
+  const sections = Array.from(
+    sidebarContent.querySelectorAll(".settings-section"),
+  )
   const standaloneGroups = Array.from(
-    sidebarContent.querySelectorAll(":scope > .setting-group")
+    sidebarContent.querySelectorAll(":scope > .setting-group"),
   )
 
   // 1. Process Standalone Groups (Language, Page Title, etc.)
@@ -432,11 +477,15 @@ function handleSettingsSearch(query) {
   // 2. Process Sections & Their Children
   sections.forEach((section) => {
     const sectionToggle = section.querySelector(".section-toggle")
-    const sectionHeaderMatch = sectionToggle && normalizeText(sectionToggle.textContent).includes(normalizedQuery)
+    const sectionHeaderMatch =
+      sectionToggle &&
+      normalizeText(sectionToggle.textContent).includes(normalizedQuery)
 
     // Check individual groups and rows inside the section
     const subGroups = Array.from(
-      section.querySelectorAll(".setting-group, .bg-control-card, .setting-item-row, .preset-theme-card")
+      section.querySelectorAll(
+        ".setting-group, .bg-control-card, .setting-item-row, .preset-theme-card",
+      ),
     )
 
     let sectionHasSubMatch = false
@@ -468,7 +517,9 @@ function handleSettingsSearch(query) {
     if (totalMatches === 0) {
       emptyState.style.display = "flex"
       if (emptyText) {
-        const template = emptyText.getAttribute("data-msg-template") || 'No settings matching "{query}"'
+        const template =
+          emptyText.getAttribute("data-msg-template") ||
+          'No settings matching "{query}"'
         emptyText.textContent = template.replace("{query}", query)
       }
     } else {
@@ -526,7 +577,17 @@ export function initSidebarNavigation() {
   // Load saved tab
   try {
     const savedTab = localStorage.getItem(STORAGE_KEY_ACTIVE_TAB)
-    if (savedTab && ["appearance", "background", "clock", "bookmarks", "widgets", "system"].includes(savedTab)) {
+    if (
+      savedTab &&
+      [
+        "appearance",
+        "background",
+        "clock",
+        "bookmarks",
+        "widgets",
+        "system",
+      ].includes(savedTab)
+    ) {
       activeTab = savedTab
     }
   } catch (e) {
@@ -705,8 +766,6 @@ export function initSidebarNavigation() {
     observer.observe(sidebarContent, { childList: true })
   }
 
-
-
   // Setup Manual Toggle Button (Chevron Icon)
   const navToggleBtn = document.getElementById("settings-nav-toggle")
   if (navToggleBtn && navContainer) {
@@ -769,7 +828,9 @@ export function initSidebarNavigation() {
  * Updates live badges on section headers with current active configuration summary
  */
 export function updateSectionLiveBadges() {
-  const sections = document.querySelectorAll(".settings-section[data-section-id]")
+  const sections = document.querySelectorAll(
+    ".settings-section[data-section-id]",
+  )
   sections.forEach((section) => {
     const sectionId = section.getAttribute("data-section-id")
     const toggle = section.querySelector(".section-toggle")
@@ -786,8 +847,12 @@ export function updateSectionLiveBadges() {
     let text = ""
     switch (sectionId) {
       case "themes": {
-        const activePreset = section.querySelector(".style-preset-btn.active .style-preset-name")
-        const activeTheme = section.querySelector(".theme-item.active .theme-name")
+        const activePreset = section.querySelector(
+          ".style-preset-btn.active .style-preset-name",
+        )
+        const activeTheme = section.querySelector(
+          ".theme-item.active .theme-name",
+        )
         if (activePreset) {
           text = activePreset.textContent.trim()
         } else if (activeTheme) {
@@ -800,7 +865,11 @@ export function updateSectionLiveBadges() {
       }
       case "font": {
         const fontSelect = document.getElementById("font-family-select")
-        if (fontSelect && fontSelect.selectedOptions && fontSelect.selectedOptions[0]) {
+        if (
+          fontSelect &&
+          fontSelect.selectedOptions &&
+          fontSelect.selectedOptions[0]
+        ) {
           text = fontSelect.selectedOptions[0].textContent.trim()
         } else {
           text = localStorage.getItem("currentFont") || "Inter"
@@ -808,7 +877,9 @@ export function updateSectionLiveBadges() {
         break
       }
       case "date-clock": {
-        const activeClock = section.querySelector(".clock-style-card.active .clock-style-name")
+        const activeClock = section.querySelector(
+          ".clock-style-card.active .clock-style-name",
+        )
         if (activeClock) {
           text = activeClock.textContent.trim()
         } else {
@@ -820,7 +891,9 @@ export function updateSectionLiveBadges() {
       case "background":
       case "gradient-multi-color":
       case "animated-backgrounds": {
-        const activeBgTab = document.querySelector("#background-tab-buttons .tab-btn.active")
+        const activeBgTab = document.querySelector(
+          "#background-tab-buttons .tab-btn.active",
+        )
         if (activeBgTab) {
           text = activeBgTab.textContent.trim()
         } else {
@@ -830,7 +903,11 @@ export function updateSectionLiveBadges() {
       }
       case "bookmark-custom": {
         const activeLayout = document.querySelector("#bookmark-layout-select")
-        if (activeLayout && activeLayout.selectedOptions && activeLayout.selectedOptions[0]) {
+        if (
+          activeLayout &&
+          activeLayout.selectedOptions &&
+          activeLayout.selectedOptions[0]
+        ) {
           text = activeLayout.selectedOptions[0].textContent.trim()
         } else {
           text = "Grid"
@@ -839,17 +916,26 @@ export function updateSectionLiveBadges() {
       }
       case "custom-title": {
         const input = document.getElementById("custom-title-input")
-        text = (input && input.value) ? input.value.trim() : (localStorage.getItem("customTitle") || "Startpage")
+        text =
+          input && input.value
+            ? input.value.trim()
+            : localStorage.getItem("customTitle") || "Startpage"
         if (text.length > 12) text = text.substring(0, 10) + "…"
         break
       }
       case "data-sync": {
-        text = localStorage.getItem("cloudSyncEnabled") === "true" ? "Cloud" : "Local"
+        text =
+          localStorage.getItem("cloudSyncEnabled") === "true"
+            ? "Cloud"
+            : "Local"
         break
       }
       case "about-project": {
         const versionEl = document.getElementById("settings-version")
-        text = (versionEl && versionEl.textContent) ? versionEl.textContent.trim() : "v2.5"
+        text =
+          versionEl && versionEl.textContent
+            ? versionEl.textContent.trim()
+            : "v2.5"
         break
       }
       default: {

@@ -21,7 +21,8 @@ export class Notepad {
     this.notes = JSON.parse(localStorage.getItem("notepadNotes")) || []
     this.detachedNotes = JSON.parse(localStorage.getItem("detachedNotes")) || {} // { noteId: true }
     this.hiddenNotes = JSON.parse(localStorage.getItem("hiddenNotes")) || {} // { noteId: true }
-    this.pinnedNotes = JSON.parse(localStorage.getItem("notepadPinnedNotes")) || {} // { noteId: true }
+    this.pinnedNotes =
+      JSON.parse(localStorage.getItem("notepadPinnedNotes")) || {} // { noteId: true }
     this.collapsedFloatingNotes =
       JSON.parse(localStorage.getItem("collapsedFloatingNotes")) || {} // { noteId: true }
     this.hiddenEditToolbars =
@@ -92,7 +93,8 @@ export class Notepad {
     const searchClear = this.container.querySelector(".notepad-search-clear")
     searchInput?.addEventListener("input", (e) => {
       this.searchQuery = e.target.value
-      if (searchClear) searchClear.style.display = this.searchQuery ? "flex" : "none"
+      if (searchClear)
+        searchClear.style.display = this.searchQuery ? "flex" : "none"
       this.render()
     })
     searchClear?.addEventListener("click", () => {
@@ -129,13 +131,19 @@ export class Notepad {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = settings.widgetUseM3Accent === true
-      ? "m3-accent"
-      : isWhiteMode ? "white-blur" : settings.notepadSkin || "default"
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.notepadSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
   }
 
   addNote() {
@@ -190,25 +198,33 @@ export class Notepad {
     const i18n = geti18n()
     const temp = document.createElement("div")
     temp.innerHTML = note.content || ""
-    const plainText = (note.title ? note.title + "\n\n" : "") + (temp.innerText || temp.textContent || "")
-    navigator.clipboard.writeText(plainText.trim()).then(() => {
-      if (btn) {
-        const icon = btn.querySelector("i")
-        if (icon) {
-          const originalClass = icon.className
-          icon.className = "fa-solid fa-check"
-          btn.setAttribute("title", i18n.notepad_copied || "Copied!")
-          btn.classList.add("copy-success")
-          setTimeout(() => {
-            icon.className = originalClass
-            btn.setAttribute("title", i18n.notepad_copy_note || "Copy note text")
-            btn.classList.remove("copy-success")
-          }, 1500)
+    const plainText =
+      (note.title ? note.title + "\n\n" : "") +
+      (temp.innerText || temp.textContent || "")
+    navigator.clipboard
+      .writeText(plainText.trim())
+      .then(() => {
+        if (btn) {
+          const icon = btn.querySelector("i")
+          if (icon) {
+            const originalClass = icon.className
+            icon.className = "fa-solid fa-check"
+            btn.setAttribute("title", i18n.notepad_copied || "Copied!")
+            btn.classList.add("copy-success")
+            setTimeout(() => {
+              icon.className = originalClass
+              btn.setAttribute(
+                "title",
+                i18n.notepad_copy_note || "Copy note text",
+              )
+              btn.classList.remove("copy-success")
+            }, 1500)
+          }
         }
-      }
-    }).catch((err) => {
-      console.error("Failed to copy note:", err)
-    })
+      })
+      .catch((err) => {
+        console.error("Failed to copy note:", err)
+      })
   }
 
   async deleteNote(id) {
@@ -284,7 +300,7 @@ export class Notepad {
   }
 
   saveNoteDimensions() {
-    if (window.location.pathname.includes("sidepanel.html")) return;
+    if (window.location.pathname.includes("sidepanel.html")) return
     localStorage.setItem(
       "notepadNoteDimensions",
       JSON.stringify(this.noteDimensions),
@@ -316,7 +332,7 @@ export class Notepad {
   }
 
   renderDetachedNotes() {
-    if (window.location.pathname.includes("sidepanel.html")) return;
+    if (window.location.pathname.includes("sidepanel.html")) return
     Object.keys(this.detachedNotes).forEach((noteId) => {
       this.renderDetachedNote(parseInt(noteId))
     })
@@ -334,7 +350,8 @@ export class Notepad {
     const isCollapsed = this.collapsedFloatingNotes[noteId]
     const isEditToolbarHidden = this.hiddenEditToolbars[noteId] !== false
     if (isCollapsed) floatingContainer.classList.add("collapsed")
-    if (isEditToolbarHidden) floatingContainer.classList.add("edit-toolbar-hidden")
+    if (isEditToolbarHidden)
+      floatingContainer.classList.add("edit-toolbar-hidden")
 
     floatingContainer.innerHTML = `
       <div class="floating-note-header drag-handle">
@@ -362,8 +379,8 @@ export class Notepad {
           </div>
           <button class="icon-btn note-action-btn" data-action="copy" title="${i18n.notepad_copy_note || "Copy note text"}"><i class="fa-solid fa-copy"></i></button>
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="${i18n.notepad_toggle_bg || "Toggle background theme"}"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
-          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? (i18n.notepad_show_toolbar || "Show formatting toolbar") : (i18n.notepad_hide_toolbar || "Hide formatting toolbar")}"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i></button>
-          <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="${isCollapsed ? (i18n.notepad_expand || "Expand note") : (i18n.notepad_collapse || "Collapse note")}"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
+          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? i18n.notepad_show_toolbar || "Show formatting toolbar" : i18n.notepad_hide_toolbar || "Hide formatting toolbar"}"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i></button>
+          <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="${isCollapsed ? i18n.notepad_expand || "Expand note" : i18n.notepad_collapse || "Collapse note"}"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
           <button class="icon-btn note-action-btn floating-note-close" title="${i18n.notepad_reattach || "Dock back to Notepad"}"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
         </div>
       </div>
@@ -463,7 +480,8 @@ export class Notepad {
     )
     if (collapseBtn) {
       collapseBtn.addEventListener("click", () => {
-        const isNowCollapsed = !floatingContainer.classList.contains("collapsed")
+        const isNowCollapsed =
+          !floatingContainer.classList.contains("collapsed")
         floatingContainer.classList.toggle("collapsed", isNowCollapsed)
 
         if (isNowCollapsed) {
@@ -481,8 +499,8 @@ export class Notepad {
         collapseBtn.setAttribute(
           "title",
           isNowCollapsed
-            ? (i18n.notepad_expand || "Expand note")
-            : (i18n.notepad_collapse || "Collapse note"),
+            ? i18n.notepad_expand || "Expand note"
+            : i18n.notepad_collapse || "Collapse note",
         )
       })
     }
@@ -519,7 +537,10 @@ export class Notepad {
 
         // Update content styling immediately with !important
         if (contentDiv) {
-          this.applyNoteContentTheme({ ...latestNote, contentBg: newBg }, floatingContainer)
+          this.applyNoteContentTheme(
+            { ...latestNote, contentBg: newBg },
+            floatingContainer,
+          )
         }
       })
     }
@@ -574,7 +595,9 @@ export class Notepad {
       this.updateNote(noteId, { content: contentDiv.innerHTML })
     })
 
-    const titleInput = floatingContainer.querySelector(".floating-note-title-input")
+    const titleInput = floatingContainer.querySelector(
+      ".floating-note-title-input",
+    )
     if (titleInput) {
       titleInput.addEventListener("change", () => {
         this.updateNote(noteId, { title: titleInput.value })
@@ -588,7 +611,9 @@ export class Notepad {
     const isHidden = this.hiddenNotes[note.id]
     const isPinned = !!this.pinnedNotes[note.id]
     const isEditToolbarHidden = this.hiddenEditToolbars[note.id] !== false
-    const isDetached = this.detachedNotes[note.id] && !window.location.pathname.includes("sidepanel.html")
+    const isDetached =
+      this.detachedNotes[note.id] &&
+      !window.location.pathname.includes("sidepanel.html")
 
     if (isDetached) return null // Don't render detached notes in parent
 
@@ -605,7 +630,7 @@ export class Notepad {
 
     noteDiv.innerHTML = `
       <div class="note-header">
-        <button class="icon-btn note-action-btn note-pin-btn ${isPinned ? "is-pinned" : ""}" data-action="toggle-pin" title="${isPinned ? (i18n.notepad_unpin_note || "Unpin note") : (i18n.notepad_pin_note || "Pin note to top")}">
+        <button class="icon-btn note-action-btn note-pin-btn ${isPinned ? "is-pinned" : ""}" data-action="toggle-pin" title="${isPinned ? i18n.notepad_unpin_note || "Unpin note" : i18n.notepad_pin_note || "Pin note to top"}">
           <i class="fa-solid fa-thumbtack"></i>
         </button>
         <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
@@ -631,17 +656,21 @@ export class Notepad {
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="${i18n.notepad_toggle_bg || "Toggle background theme"}">
             <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
           </button>
-          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? (i18n.notepad_show_toolbar || "Show formatting toolbar") : (i18n.notepad_hide_toolbar || "Hide formatting toolbar")}">
+          <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? i18n.notepad_show_toolbar || "Show formatting toolbar" : i18n.notepad_hide_toolbar || "Hide formatting toolbar"}">
             <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i>
           </button>
-          <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="${isHidden ? (i18n.notepad_expand || "Show note content") : (i18n.notepad_collapse || "Hide note content")}">
+          <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="${isHidden ? i18n.notepad_expand || "Show note content" : i18n.notepad_collapse || "Hide note content"}">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
           </button>
-          ${window.location.pathname.includes("sidepanel.html") ? "" : `
+          ${
+            window.location.pathname.includes("sidepanel.html")
+              ? ""
+              : `
           <button class="icon-btn note-action-btn" data-action="detach" title="${i18n.notepad_detach || "Pop out note"}">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
-          `}
+          `
+          }
           <button class="icon-btn note-action-btn note-delete-btn" data-action="delete" title="${i18n.notepad_delete_note || "Delete note"}">
             <i class="fa-solid fa-trash"></i>
           </button>
@@ -737,7 +766,10 @@ export class Notepad {
         // Update content styling with !important to override CSS
         const contentDiv = noteDiv.querySelector(".note-content")
         if (contentDiv) {
-          this.applyNoteContentTheme({ ...latestNote, contentBg: newBg }, noteDiv)
+          this.applyNoteContentTheme(
+            { ...latestNote, contentBg: newBg },
+            noteDiv,
+          )
         }
       })
     }
@@ -787,13 +819,16 @@ export class Notepad {
 
     // Action buttons
     const toggleBtn = noteDiv.querySelector('[data-action="toggle-hidden"]')
-    if (toggleBtn) toggleBtn.addEventListener("click", () => this.toggleHidden(note.id))
+    if (toggleBtn)
+      toggleBtn.addEventListener("click", () => this.toggleHidden(note.id))
 
     const detachBtn = noteDiv.querySelector('[data-action="detach"]')
-    if (detachBtn) detachBtn.addEventListener("click", () => this.detachNote(note.id))
+    if (detachBtn)
+      detachBtn.addEventListener("click", () => this.detachNote(note.id))
 
     const deleteBtn = noteDiv.querySelector('[data-action="delete"]')
-    if (deleteBtn) deleteBtn.addEventListener("click", () => this.deleteNote(note.id))
+    if (deleteBtn)
+      deleteBtn.addEventListener("click", () => this.deleteNote(note.id))
 
     return noteDiv
   }
@@ -913,8 +948,8 @@ export class Notepad {
       toggleBtn.setAttribute(
         "title",
         isHidden
-          ? (i18n.notepad_show_toolbar || "Show formatting toolbar")
-          : (i18n.notepad_hide_toolbar || "Hide formatting toolbar"),
+          ? i18n.notepad_show_toolbar || "Show formatting toolbar"
+          : i18n.notepad_hide_toolbar || "Hide formatting toolbar",
       )
     })
   }
@@ -1027,9 +1062,13 @@ export class Notepad {
             const dimensions = {
               width: root.style.width || `${Math.round(root.offsetWidth)}px`,
               height: root.style.height || `${Math.round(root.offsetHeight)}px`,
-              top: root.style.top || `${Math.round(root.getBoundingClientRect().top)}px`,
+              top:
+                root.style.top ||
+                `${Math.round(root.getBoundingClientRect().top)}px`,
               right: root.style.right || "auto",
-              left: root.style.left || `${Math.round(root.getBoundingClientRect().left)}px`,
+              left:
+                root.style.left ||
+                `${Math.round(root.getBoundingClientRect().left)}px`,
             }
             if (!window.location.pathname.includes("sidepanel.html")) {
               localStorage.setItem(
@@ -1064,7 +1103,9 @@ export class Notepad {
       const range = selection.getRangeAt(0)
       const container = range.commonAncestorContainer
       const selectionNode =
-        container.nodeType === Node.ELEMENT_NODE ? container : container.parentNode
+        container.nodeType === Node.ELEMENT_NODE
+          ? container
+          : container.parentNode
       if (selectionNode && contentDiv.contains(selectionNode)) {
         savedRange = range.cloneRange()
       }
@@ -1117,7 +1158,8 @@ export class Notepad {
         root.style.getPropertyValue("--note-toolbar-active-surface") ||
         root.style.getPropertyValue("--note-content-text") ||
         "#ffffff",
-      normalText: root.style.getPropertyValue("--note-content-text") || "#ffffff",
+      normalText:
+        root.style.getPropertyValue("--note-content-text") || "#ffffff",
       activeText: root.style.getPropertyValue("--note-content-bg") || "#000000",
       border:
         root.style.getPropertyValue("--note-toolbar-border") ||
@@ -1156,7 +1198,9 @@ export class Notepad {
       const range = selection.getRangeAt(0)
       const container = range.commonAncestorContainer
       const selectionNode =
-        container.nodeType === Node.ELEMENT_NODE ? container : container.parentNode
+        container.nodeType === Node.ELEMENT_NODE
+          ? container
+          : container.parentNode
       return !!selectionNode && contentDiv.contains(selectionNode)
     }
 
@@ -1288,15 +1332,21 @@ export class Notepad {
       btn.style.setProperty("color", contrastColor, "important")
     })
 
-    const titleInput = header.querySelector(".note-title-input, .floating-note-title-input")
+    const titleInput = header.querySelector(
+      ".note-title-input, .floating-note-title-input",
+    )
     if (titleInput) {
       titleInput.style.setProperty("color", contrastColor, "important")
-      titleInput.style.setProperty("background-color", "transparent", "important")
+      titleInput.style.setProperty(
+        "background-color",
+        "transparent",
+        "important",
+      )
       titleInput.style.setProperty(
         "border-color",
         contrastColor === "#000000"
-           ? "rgba(0, 0, 0, 0.22)"
-           : "rgba(255, 255, 255, 0.28)",
+          ? "rgba(0, 0, 0, 0.22)"
+          : "rgba(255, 255, 255, 0.28)",
         "important",
       )
     }
@@ -1325,7 +1375,11 @@ export class Notepad {
       img.removeAttribute("width")
       img.removeAttribute("height")
       img.style.setProperty("display", "block", "important")
-      img.style.setProperty("width", "var(--note-image-width, 100%)", "important")
+      img.style.setProperty(
+        "width",
+        "var(--note-image-width, 100%)",
+        "important",
+      )
       img.style.setProperty(
         "max-width",
         "var(--note-image-width, 100%)",
@@ -1411,7 +1465,6 @@ export class Notepad {
     root.querySelectorAll(".toolbar-divider").forEach((divider) => {
       divider.style.setProperty("background", subtleBorder, "important")
     })
-
   }
 
   getContrastColor(hexColor) {

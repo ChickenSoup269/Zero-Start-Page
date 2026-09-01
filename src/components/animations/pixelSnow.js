@@ -8,7 +8,7 @@ in vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
-`;
+`
 
 const fragmentShaderSource = `#version 300 es
 precision highp float;
@@ -169,17 +169,21 @@ void main() {
   float alpha = step(0.001, max(finalSnowCol.r, max(finalSnowCol.g, finalSnowCol.b)));
   fragColor = vec4(finalSnowCol, alpha);
 }
-`;
+`
 
 export class PixelSnowEffect {
   constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
     if (!this.canvas) return
-    this.gl = this.canvas.getContext("webgl2", { alpha: true, antialias: false, powerPreference: 'high-performance' })
+    this.gl = this.canvas.getContext("webgl2", {
+      alpha: true,
+      antialias: false,
+      powerPreference: "high-performance",
+    })
     if (!this.gl) return
 
     this.options = {
-      color: '#ffffff',
+      color: "#ffffff",
       flakeSize: 0.01,
       minFlakeSize: 1.25,
       pixelResolution: 200,
@@ -189,10 +193,10 @@ export class PixelSnowEffect {
       brightness: 1,
       gamma: 0.4545,
       density: 0.3,
-      variant: 'square',
+      variant: "square",
       direction: 125,
       targetFps: 30,
-      ...options
+      ...options,
     }
 
     this.active = false
@@ -225,7 +229,11 @@ export class PixelSnowEffect {
     const gl = this.gl
     const buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW)
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    )
     const vao = gl.createVertexArray()
     gl.bindVertexArray(vao)
     const loc = gl.getAttribLocation(this.program, "position")
@@ -235,7 +243,8 @@ export class PixelSnowEffect {
   }
 
   _getUniformLocations() {
-    const gl = this.gl, p = this.program
+    const gl = this.gl,
+      p = this.program
     this.uniforms = {
       uTime: gl.getUniformLocation(p, "uTime"),
       uResolution: gl.getUniformLocation(p, "uResolution"),
@@ -257,7 +266,13 @@ export class PixelSnowEffect {
 
   _hexToRgb(hex) {
     const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return res ? [parseInt(res[1], 16)/255, parseInt(res[2], 16)/255, parseInt(res[3], 16)/255] : [1,1,1]
+    return res
+      ? [
+          parseInt(res[1], 16) / 255,
+          parseInt(res[2], 16) / 255,
+          parseInt(res[3], 16) / 255,
+        ]
+      : [1, 1, 1]
   }
 
   handleResize() {
@@ -302,7 +317,9 @@ export class PixelSnowEffect {
   }
 
   render(t) {
-    const gl = this.gl, u = this.uniforms, o = this.options
+    const gl = this.gl,
+      u = this.uniforms,
+      o = this.options
     gl.useProgram(this.program)
     gl.bindVertexArray(this.vao)
     gl.uniform1f(u.uTime, (t - this.startTime) * 0.001)
@@ -317,15 +334,18 @@ export class PixelSnowEffect {
     gl.uniform1f(u.uBrightness, o.brightness)
     gl.uniform1f(u.uGamma, o.gamma)
     gl.uniform1f(u.uDensity, o.density)
-    
+
     let variantVal = 0.0
-    if (o.variant === 'round' || o.variant === 'circle') variantVal = 1.0
-    if (o.variant === 'snowflake') variantVal = 2.0
+    if (o.variant === "round" || o.variant === "circle") variantVal = 1.0
+    if (o.variant === "snowflake") variantVal = 2.0
     gl.uniform1f(u.uVariant, variantVal)
-    
+
     gl.uniform1f(u.uDirection, o.direction)
     const maxSteps = o.variant === "snowflake" ? 64 : 72
-    gl.uniform1f(u.uMaxSteps, Math.min(128, Math.max(32, o.maxSteps || maxSteps)))
+    gl.uniform1f(
+      u.uMaxSteps,
+      Math.min(128, Math.max(32, o.maxSteps || maxSteps)),
+    )
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
@@ -349,6 +369,9 @@ export class PixelSnowEffect {
   destroy() {
     this.stop()
     window.removeEventListener("resize", this._resizeHandler)
-    if (this.gl) { this.gl.deleteProgram(this.program); this.gl.deleteVertexArray(this.vao); }
+    if (this.gl) {
+      this.gl.deleteProgram(this.program)
+      this.gl.deleteVertexArray(this.vao)
+    }
   }
 }

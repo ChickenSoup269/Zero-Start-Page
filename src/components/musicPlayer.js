@@ -73,7 +73,10 @@ export class MusicPlayer {
     this.isPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
-    this.useDefaultColor = settings.musicPlayerUseDefaultColor !== undefined ? settings.musicPlayerUseDefaultColor : true
+    this.useDefaultColor =
+      settings.musicPlayerUseDefaultColor !== undefined
+        ? settings.musicPlayerUseDefaultColor
+        : true
     this.sourceIconColorMode = settings.musicSourceIconColorMode || "brand"
     this.pollInterval = null
     this.pollTimeout = null
@@ -217,7 +220,7 @@ export class MusicPlayer {
       "skin-transparent",
       "skin-light-transparent",
       "skin-vertical-card",
-      "skin-horizontal-card"
+      "skin-horizontal-card",
     )
     if (this.container)
       this.container.classList.remove(
@@ -226,7 +229,7 @@ export class MusicPlayer {
         "skin-transparent",
         "skin-light-transparent",
         "skin-vertical-card",
-        "skin-horizontal-card"
+        "skin-horizontal-card",
       )
 
     if (skin !== "default") {
@@ -356,17 +359,19 @@ export class MusicPlayer {
 
   setupEventListeners() {
     // Toggle is now external via Quick Access/Settings
-    this.container.querySelector("#music-close-btn")?.addEventListener("click", (e) => {
-      e.stopPropagation()
-      updateSetting("musicPlayerEnabled", false)
-      saveSettings()
-      this.setEnabled(false)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "musicPlayerEnabled", value: false },
-        }),
-      )
-    })
+    this.container
+      .querySelector("#music-close-btn")
+      ?.addEventListener("click", (e) => {
+        e.stopPropagation()
+        updateSetting("musicPlayerEnabled", false)
+        saveSettings()
+        this.setEnabled(false)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "musicPlayerEnabled", value: false },
+          }),
+        )
+      })
 
     document.getElementById("play-pause-btn")?.addEventListener("click", () => {
       this.sendControl("playPause")
@@ -540,11 +545,7 @@ export class MusicPlayer {
       g = hue2rgb(p, q, h)
       b = hue2rgb(p, q, h - 1 / 3)
     }
-    return [
-      Math.round(r * 255),
-      Math.round(g * 255),
-      Math.round(b * 255),
-    ]
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
   }
 
   _stopDynamicColorLoop() {
@@ -583,14 +584,8 @@ export class MusicPlayer {
         "--accent-color",
         `rgb(${r}, ${g}, ${b})`,
       )
-      this.container.style.setProperty(
-        "--accent-color-rgb",
-        `${r}, ${g}, ${b}`,
-      )
-      this.container.style.setProperty(
-        "--accent-contrast-color",
-        contrastColor,
-      )
+      this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
+      this.container.style.setProperty("--accent-contrast-color", contrastColor)
       this.container.style.setProperty(
         "--music-player-bg",
         `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, 0.45) 0%, rgba(${r}, ${g}, ${b}, 0.15) 100%)`,
@@ -658,10 +653,7 @@ export class MusicPlayer {
         "--accent-color-rgb",
         `${curR}, ${curG}, ${curB}`,
       )
-      this.container.style.setProperty(
-        "--accent-contrast-color",
-        contrastColor,
-      )
+      this.container.style.setProperty("--accent-contrast-color", contrastColor)
       this.container.style.setProperty(
         "--music-player-bg",
         `linear-gradient(135deg, rgba(${curR}, ${curG}, ${curB}, 0.45) 0%, rgba(${curR}, ${curG}, ${curB}, 0.15) 100%)`,
@@ -899,7 +891,12 @@ export class MusicPlayer {
           this.setInactive()
           return
         }
-        if (response && (response.audible || response.title || (response.url && !response.paused))) {
+        if (
+          response &&
+          (response.audible ||
+            response.title ||
+            (response.url && !response.paused))
+        ) {
           this.inactivePollCount = 0
           this.updateUI(response)
         } else {
@@ -953,9 +950,22 @@ export class MusicPlayer {
     this.applySourceMeta(sourceMeta)
 
     this.isPlaying = !data.paused
-    localStorage.setItem("musicPlayerLastIsPlaying", this.isPlaying ? "true" : "false")
-    window.dispatchEvent(new CustomEvent("musicPlayingStateChange", { detail: this.isPlaying }))
-    window.dispatchEvent(new CustomEvent("musicTrackChange", { detail: { title: data.title || "", artist: artist, isPlaying: this.isPlaying } }))
+    localStorage.setItem(
+      "musicPlayerLastIsPlaying",
+      this.isPlaying ? "true" : "false",
+    )
+    window.dispatchEvent(
+      new CustomEvent("musicPlayingStateChange", { detail: this.isPlaying }),
+    )
+    window.dispatchEvent(
+      new CustomEvent("musicTrackChange", {
+        detail: {
+          title: data.title || "",
+          artist: artist,
+          isPlaying: this.isPlaying,
+        },
+      }),
+    )
 
     const btn = document.getElementById("play-pause-btn")
     if (btn) {
@@ -973,7 +983,9 @@ export class MusicPlayer {
         this.visualizer.start()
       }
       if (getSettings().musicRealAudioReactive === true) {
-        chrome.runtime?.sendMessage?.({ action: "startRealAudioCapture" })?.catch?.(() => {})
+        chrome.runtime
+          ?.sendMessage?.({ action: "startRealAudioCapture" })
+          ?.catch?.(() => {})
       }
     } else {
       this.disc.classList.remove("playing")
@@ -1139,8 +1151,14 @@ export class MusicPlayer {
     this.isPlaying = false
     window._currentPlayingTrackTitle = ""
     localStorage.setItem("musicPlayerLastIsPlaying", "false")
-    window.dispatchEvent(new CustomEvent("musicPlayingStateChange", { detail: false }))
-    window.dispatchEvent(new CustomEvent("musicTrackChange", { detail: { title: "", artist: "", isPlaying: false } }))
+    window.dispatchEvent(
+      new CustomEvent("musicPlayingStateChange", { detail: false }),
+    )
+    window.dispatchEvent(
+      new CustomEvent("musicTrackChange", {
+        detail: { title: "", artist: "", isPlaying: false },
+      }),
+    )
     this.disc.classList.remove("playing")
     this.disc.style.backgroundImage = "none"
     this.currentThumbnail = ""
@@ -1185,7 +1203,6 @@ export class MusicPlayer {
       this._controlRefreshTimeouts.add(timeoutId)
     })
   }
-
 
   togglePlayer() {
     this.isVisible = !this.isVisible

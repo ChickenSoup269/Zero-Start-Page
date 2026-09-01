@@ -31,7 +31,7 @@ export class LineShinyEffect {
       this.targetMouse.x = e.clientX / window.innerWidth
       this.targetMouse.y = e.clientY / window.innerHeight
     }
-    
+
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
   }
@@ -43,14 +43,21 @@ export class LineShinyEffect {
     const max = Math.max(r, g, b)
     const min = Math.min(r, g, b)
     const l = (max + min) / 2
-    let h = 0, s = 0
+    let h = 0,
+      s = 0
     if (max !== min) {
       const d = max - min
       s = d / (1 - Math.abs(2 * l - 1))
       switch (max) {
-        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break
-        case g: h = ((b - r) / d + 2) / 6; break
-        case b: h = ((r - g) / d + 4) / 6; break
+        case r:
+          h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+          break
+        case g:
+          h = ((b - r) / d + 2) / 6
+          break
+        case b:
+          h = ((r - g) / d + 4) / 6
+          break
       }
     }
     this.tintH = h * 360
@@ -135,8 +142,14 @@ export class LineShinyEffect {
   stop() {
     this.active = false
     window.removeEventListener("mousemove", this._mouseHandler)
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
-    if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+      this.rafId = null
+    }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
@@ -155,8 +168,10 @@ export class LineShinyEffect {
     const centerOff = t * diag * 0.5
 
     const perpA = angle - Math.PI / 2
-    const cx = W * 0.5 + Math.cos(perpA) * centerOff + (this.mouse.x - 0.5) * 100
-    const cy = H * 0.5 + Math.sin(perpA) * centerOff + (this.mouse.y - 0.5) * 100
+    const cx =
+      W * 0.5 + Math.cos(perpA) * centerOff + (this.mouse.x - 0.5) * 100
+    const cy =
+      H * 0.5 + Math.sin(perpA) * centerOff + (this.mouse.y - 0.5) * 100
 
     const hw = diag * beam.halfWidth
     const x0 = cx - Math.cos(perpA) * hw
@@ -220,25 +235,43 @@ export class LineShinyEffect {
 
     if (streak.state === "idle") {
       streak.idleCountdown--
-      if (streak.idleCountdown <= 0) { streak.state = "hinting"; streak.hintTime = 0; }
+      if (streak.idleCountdown <= 0) {
+        streak.state = "hinting"
+        streak.hintTime = 0
+      }
     } else if (streak.state === "hinting") {
       streak.hintTime++
       const hintPeak = streak.alpha * 0.15
       const halfDur = streak.hintDuration / 2
-      streak.hintAlpha = streak.hintTime <= halfDur ? hintPeak * (streak.hintTime / halfDur) : hintPeak * (1 - (streak.hintTime - halfDur) / halfDur)
-      if (streak.hintTime >= streak.hintDuration) { streak.state = "rising"; streak.flashAlpha = 0; }
+      streak.hintAlpha =
+        streak.hintTime <= halfDur
+          ? hintPeak * (streak.hintTime / halfDur)
+          : hintPeak * (1 - (streak.hintTime - halfDur) / halfDur)
+      if (streak.hintTime >= streak.hintDuration) {
+        streak.state = "rising"
+        streak.flashAlpha = 0
+      }
     } else if (streak.state === "rising") {
       streak.flashAlpha += streak.flashSpeed
-      if (streak.flashAlpha >= streak.alpha) { streak.flashAlpha = streak.alpha; streak.state = "hold"; streak.holdTime = 0; }
+      if (streak.flashAlpha >= streak.alpha) {
+        streak.flashAlpha = streak.alpha
+        streak.state = "hold"
+        streak.holdTime = 0
+      }
     } else if (streak.state === "hold") {
       streak.holdTime++
       if (streak.holdTime >= streak.holdMax) streak.state = "falling"
     } else if (streak.state === "falling") {
       streak.flashAlpha -= streak.flashSpeed * 0.6
-      if (streak.flashAlpha <= 0) { streak.state = "idle"; streak.idleCountdown = 200 + Math.floor(Math.random() * 400); streak.pos = Math.random(); }
+      if (streak.flashAlpha <= 0) {
+        streak.state = "idle"
+        streak.idleCountdown = 200 + Math.floor(Math.random() * 400)
+        streak.pos = Math.random()
+      }
     }
 
-    const drawAlpha = streak.state === "hinting" ? streak.hintAlpha : streak.flashAlpha
+    const drawAlpha =
+      streak.state === "hinting" ? streak.hintAlpha : streak.flashAlpha
     if (drawAlpha <= 0) return
 
     streak.pos += streak.speed * 0.0012
@@ -299,7 +332,8 @@ export class LineShinyEffect {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const offset = Math.sin(this.phase * 0.15) * W * 0.3 + (this.mouse.x - 0.5) * 200
+    const offset =
+      Math.sin(this.phase * 0.15) * W * 0.3 + (this.mouse.x - 0.5) * 200
     const grad = ctx.createLinearGradient(offset, 0, W + offset, H)
     const hue = this.tintH
     const sat = this.tintS
@@ -326,7 +360,10 @@ export class LineShinyEffect {
       grad.addColorStop(1, `rgba(200, 0, 255, 0)`)
     } else {
       grad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
-      grad.addColorStop(0.5, `hsla(${(hue + 30) % 360}, ${sat}%, ${lit}%, ${shimmerAlpha})`)
+      grad.addColorStop(
+        0.5,
+        `hsla(${(hue + 30) % 360}, ${sat}%, ${lit}%, ${shimmerAlpha})`,
+      )
       grad.addColorStop(1, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
     }
 
@@ -339,10 +376,15 @@ export class LineShinyEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    if (document.visibilityState === 'hidden') {
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && this.active) requestAnimationFrame((t) => this.animate(t))
-      }, { once: true })
+    if (document.visibilityState === "hidden") {
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (!document.hidden && this.active)
+            requestAnimationFrame((t) => this.animate(t))
+        },
+        { once: true },
+      )
       return
     }
     this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))

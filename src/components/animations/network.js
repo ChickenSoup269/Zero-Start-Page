@@ -11,7 +11,7 @@ export class NetworkEffect {
     this.connectionDistance = 150
     this.mouseDistance = 180
     this.mouseForce = 0.15 // Attraction/Repulsion force factor
-    
+
     this.pulseTime = 0
     this.fps = 60 // Higher FPS for smoother motion
     this.fpsInterval = 1000 / this.fps
@@ -54,7 +54,10 @@ export class NetworkEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     window.removeEventListener("mousemove", this.handleMouseMove)
     window.removeEventListener("mouseout", this.handleMouseOut)
@@ -74,7 +77,7 @@ export class NetworkEffect {
         size: Math.random() * 2 + 1,
         baseSize: Math.random() * 2 + 1,
         brightness: Math.random() * 0.5 + 0.5,
-        pulseOffset: Math.random() * Math.PI * 2
+        pulseOffset: Math.random() * Math.PI * 2,
       })
     }
   }
@@ -82,10 +85,15 @@ export class NetworkEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    if (document.visibilityState === 'hidden') {
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && this.active) requestAnimationFrame((t) => this.animate(t))
-      }, { once: true })
+    if (document.visibilityState === "hidden") {
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (!document.hidden && this.active)
+            requestAnimationFrame((t) => this.animate(t))
+        },
+        { once: true },
+      )
       return
     }
     this._animId = requestAnimationFrame((t) => this.animate(t))
@@ -104,7 +112,7 @@ export class NetworkEffect {
     this.ctx.lineWidth = 1
     for (let i = 0; i < this.particles.length; i++) {
       const p1 = this.particles[i]
-      
+
       // Connect to other particles
       for (let j = i + 1; j < this.particles.length; j++) {
         const p2 = this.particles[j]
@@ -116,7 +124,7 @@ export class NetworkEffect {
         if (distSq < limitSq) {
           const dist = Math.sqrt(distSq)
           let opacity = (1 - dist / this.connectionDistance) * 0.4
-          
+
           // Boost opacity if mouse is near the connection
           if (this.mouse.x !== null) {
             const midX = (p1.x + p2.x) / 2
@@ -126,7 +134,7 @@ export class NetworkEffect {
             const mDistSq = mdx * mdx + mdy * mdy
             if (mDistSq < 10000) {
               const mDist = Math.sqrt(mDistSq)
-              opacity *= (1 + (1 - mDist / 100) * 1.5)
+              opacity *= 1 + (1 - mDist / 100) * 1.5
             }
           }
 
@@ -164,7 +172,7 @@ export class NetworkEffect {
         const dx = this.mouse.x - p.x
         const dy = this.mouse.y - p.y
         const distSq = dx * dx + dy * dy
-        
+
         if (distSq < this.mouseDistance * this.mouseDistance) {
           const dist = Math.sqrt(distSq)
           const proximity = 1 - dist / this.mouseDistance
@@ -192,7 +200,7 @@ export class NetworkEffect {
       this.ctx.arc(p.x, p.y, p.size * finalPulse, 0, Math.PI * 2)
       this.ctx.fillStyle = `rgba(${rgbStr}, ${p.brightness})`
       this.ctx.fill()
-      
+
       // Outer glow for nodes
       if (p.size > 2.5) {
         this.ctx.beginPath()
@@ -208,7 +216,7 @@ export class NetworkEffect {
       this.ctx.arc(this.mouse.x, this.mouse.y, 4, 0, Math.PI * 2)
       this.ctx.fillStyle = `rgba(${rgbStr}, 0.8)`
       this.ctx.fill()
-      
+
       this.ctx.beginPath()
       this.ctx.arc(this.mouse.x, this.mouse.y, mouseRingPulse, 0, Math.PI * 2)
       this.ctx.strokeStyle = `rgba(${rgbStr}, 0.3)`
@@ -216,7 +224,6 @@ export class NetworkEffect {
       this.ctx.stroke()
     }
   }
-
 
   hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)

@@ -137,7 +137,10 @@ function maybeShowLocalBackgroundPerformanceWarning(count) {
     if (shownCount >= warningBucket) {
       return false
     }
-    localStorage.setItem(LOCAL_BG_PERFORMANCE_WARNING_KEY, String(warningBucket))
+    localStorage.setItem(
+      LOCAL_BG_PERFORMANCE_WARNING_KEY,
+      String(warningBucket),
+    )
   } catch {
     // Ignore storage issues; the warning is informational only.
   }
@@ -380,7 +383,10 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
       const vid = document.createElement("video")
       vid.muted = true
       vid.preload = "metadata"
-      const tempUrl = typeof blobOrUrl === "string" ? blobOrUrl : URL.createObjectURL(blobOrUrl)
+      const tempUrl =
+        typeof blobOrUrl === "string"
+          ? blobOrUrl
+          : URL.createObjectURL(blobOrUrl)
       vid.src = tempUrl
 
       vid.addEventListener(
@@ -406,14 +412,21 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
         { once: true },
       )
 
-      vid.addEventListener("error", () => {
-        resolve(null)
-        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
-      }, { once: true })
+      vid.addEventListener(
+        "error",
+        () => {
+          resolve(null)
+          if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
+        },
+        { once: true },
+      )
     } else {
       const img = new Image()
-      const tempUrl = typeof blobOrUrl === "string" ? blobOrUrl : URL.createObjectURL(blobOrUrl)
-      
+      const tempUrl =
+        typeof blobOrUrl === "string"
+          ? blobOrUrl
+          : URL.createObjectURL(blobOrUrl)
+
       img.onload = () => {
         createThumbFromElement(img, img.width, img.height)
         if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
@@ -431,7 +444,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
   maybeShowLocalBackgroundPerformanceWarning(
-    Array.isArray(settings.userBackgrounds) ? settings.userBackgrounds.length : 0,
+    Array.isArray(settings.userBackgrounds)
+      ? settings.userBackgrounds.length
+      : 0,
   )
   updateActiveWallpaperBanner(handleSettingUpdate)
 
@@ -486,8 +501,13 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       typeIcon.className = "video-thumb-badge"
 
       if (authorName) {
-        const isPicsum = typeof bgData === "object" && bgData.photoUrl && bgData.photoUrl.includes("picsum.photos")
-        typeIcon.innerHTML = isPicsum ? '<i class="fa-solid fa-camera"></i>' : '<i class="fa-brands fa-unsplash"></i>'
+        const isPicsum =
+          typeof bgData === "object" &&
+          bgData.photoUrl &&
+          bgData.photoUrl.includes("picsum.photos")
+        typeIcon.innerHTML = isPicsum
+          ? '<i class="fa-solid fa-camera"></i>'
+          : '<i class="fa-brands fa-unsplash"></i>'
         item.appendChild(typeIcon)
         const authorTag = document.createElement("div")
         authorTag.className = "unsplash-author-tag"
@@ -530,34 +550,32 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           )
           item.classList.remove("thumb-loading")
         }
-        getThumbnailUrl(bgId).then(async (thumbUrl) => {
-          if (thumbUrl) {
-            thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
-            item.classList.remove("thumb-loading")
-          } else {
-            const blob = await getImageBlob(bgId).catch(() => null)
-            if (blob) {
-              const newThumb = await _ensureThumbnail(
-                bgId,
-                blob,
-                isVideo,
-              )
-              if (newThumb) {
-                thumbLayer.style.backgroundImage = cssUrl(newThumb)
-                item.classList.remove("thumb-loading")
-              } else {
-                const tempUrl = URL.createObjectURL(blob)
-                thumbLayer.style.backgroundImage = cssUrl(tempUrl)
-                item.classList.remove("thumb-loading")
-                setTimeout(() => URL.revokeObjectURL(tempUrl), 1000)
-              }
-            } else {
+        getThumbnailUrl(bgId)
+          .then(async (thumbUrl) => {
+            if (thumbUrl) {
+              thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
               item.classList.remove("thumb-loading")
+            } else {
+              const blob = await getImageBlob(bgId).catch(() => null)
+              if (blob) {
+                const newThumb = await _ensureThumbnail(bgId, blob, isVideo)
+                if (newThumb) {
+                  thumbLayer.style.backgroundImage = cssUrl(newThumb)
+                  item.classList.remove("thumb-loading")
+                } else {
+                  const tempUrl = URL.createObjectURL(blob)
+                  thumbLayer.style.backgroundImage = cssUrl(tempUrl)
+                  item.classList.remove("thumb-loading")
+                  setTimeout(() => URL.revokeObjectURL(tempUrl), 1000)
+                }
+              } else {
+                item.classList.remove("thumb-loading")
+              }
             }
-          }
-        }).catch(() => {
-          item.classList.remove("thumb-loading")
-        })
+          })
+          .catch(() => {
+            item.classList.remove("thumb-loading")
+          })
       } else if (bgId) {
         thumbLayer.style.backgroundImage = cssUrl(bgId)
       }
@@ -928,9 +946,12 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
         showAlert("No custom wallpaper URL to copy.")
         return
       }
-      navigator.clipboard?.writeText(curBg).then(() => {
-        showAlert("Wallpaper URL / ID copied to clipboard!")
-      }).catch(() => {})
+      navigator.clipboard
+        ?.writeText(curBg)
+        .then(() => {
+          showAlert("Wallpaper URL / ID copied to clipboard!")
+        })
+        .catch(() => {})
     })
   }
 
@@ -944,7 +965,8 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
 
   if (!bg) {
     if (thumb) {
-      thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+      thumb.innerHTML =
+        '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
       thumb.style.backgroundImage = "none"
       thumb.style.backgroundColor = "transparent"
     }
@@ -961,14 +983,19 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
           thumb.innerHTML = `<video src="${url}" autoplay muted loop playsinline></video>`
           thumb.style.backgroundImage = "none"
         } else {
-          thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
+          thumb.innerHTML =
+            '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
         }
       } catch (_) {
-        thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
+        thumb.innerHTML =
+          '<div class="bg-thumb-placeholder"><i class="fa-solid fa-video"></i></div>'
       }
     }
   } else if (isIdbMedia(bg)) {
-    if (nameLabel) nameLabel.textContent = isIdbGif(bg) ? "Local GIF Wallpaper" : "Local Image Wallpaper"
+    if (nameLabel)
+      nameLabel.textContent = isIdbGif(bg)
+        ? "Local GIF Wallpaper"
+        : "Local Image Wallpaper"
     if (thumb) {
       try {
         const url = await getSavedImage(bg)
@@ -976,10 +1003,12 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
           thumb.innerHTML = ""
           thumb.style.backgroundImage = `url("${url}")`
         } else {
-          thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+          thumb.innerHTML =
+            '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
         }
       } catch (_) {
-        thumb.innerHTML = '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
+        thumb.innerHTML =
+          '<div class="bg-thumb-placeholder"><i class="fa-solid fa-image"></i></div>'
       }
     }
   } else if (bg.startsWith("#") || bg.startsWith("rgb")) {
@@ -993,7 +1022,9 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
     // URL or Unsplash
     if (nameLabel) {
       const isUnsplash = bg.includes("unsplash.com")
-      nameLabel.textContent = isUnsplash ? "Unsplash Wallpaper" : "Custom Web URL"
+      nameLabel.textContent = isUnsplash
+        ? "Unsplash Wallpaper"
+        : "Custom Web URL"
     }
     if (thumb) {
       thumb.innerHTML = ""
@@ -1039,9 +1070,11 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       dropzone.classList.remove("dragover")
       const files = Array.from(e.dataTransfer?.files || [])
       if (!files.length) return
-      
-      const videoFiles = files.filter(f => f.type.startsWith("video/"))
-      const imageFiles = files.filter(f => f.type.startsWith("image/") || /\.gif$/i.test(f.name || ""))
+
+      const videoFiles = files.filter((f) => f.type.startsWith("video/"))
+      const imageFiles = files.filter(
+        (f) => f.type.startsWith("image/") || /\.gif$/i.test(f.name || ""),
+      )
 
       let lastSavedId = null
       for (const file of videoFiles) {
@@ -1055,12 +1088,16 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       }
 
       for (const file of imageFiles) {
-        const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+        const isGif =
+          file.type === "image/gif" || /\.gif$/i.test(file.name || "")
         if (isGif) {
           try {
-            const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
+            const id = await saveImage(
+              file,
+              `idb-gif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            )
             getSettings().userBackgrounds.push({
-              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
               id,
               type: "gif",
               name: file.name || "GIF background",
@@ -1106,7 +1143,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
                     }
                   },
                   "image/jpeg",
-                  quality
+                  quality,
                 )
               }
               img.onerror = reject
@@ -1123,7 +1160,9 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       }
 
       if (lastSavedId) {
-        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        maybeShowLocalBackgroundPerformanceWarning(
+          getSettings().userBackgrounds.length,
+        )
         handleSettingUpdate("background", lastSavedId)
         renderLocalBackgrounds(DOM, handleSettingUpdate)
       }
@@ -1139,7 +1178,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
   const filterPills = document.querySelectorAll(".bg-gallery-filter-pill")
   filterPills.forEach((pill) => {
     pill.addEventListener("click", () => {
-      filterPills.forEach(p => p.classList.remove("active"))
+      filterPills.forEach((p) => p.classList.remove("active"))
       pill.classList.add("active")
       const filter = pill.getAttribute("data-gallery-filter")
       const imgSec = document.getElementById("local-images-section")
@@ -1176,12 +1215,16 @@ function setupFileUploads(DOM, handleSettingUpdate) {
           getSettings().userBackgrounds.push(id)
           lastSavedId = id
         }
-        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        maybeShowLocalBackgroundPerformanceWarning(
+          getSettings().userBackgrounds.length,
+        )
         if (lastSavedId) handleSettingUpdate("background", lastSavedId)
         renderLocalBackgrounds(DOM, handleSettingUpdate)
       } catch (err) {
         console.error("Failed to save video:", err)
-        showAlert("Failed to save one or more videos. They might be too large or storage is full.")
+        showAlert(
+          "Failed to save one or more videos. They might be too large or storage is full.",
+        )
       }
       e.target.value = null
     })
@@ -1194,12 +1237,16 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       let lastSavedId = null
 
       for (const file of files) {
-        const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+        const isGif =
+          file.type === "image/gif" || /\.gif$/i.test(file.name || "")
         if (isGif) {
           try {
-            const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
+            const id = await saveImage(
+              file,
+              `idb-gif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            )
             getSettings().userBackgrounds.push({
-              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
               id,
               type: "gif",
               name: file.name || "GIF background",
@@ -1246,7 +1293,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
                     }
                   },
                   "image/jpeg",
-                  quality
+                  quality,
                 )
               }
               img.onerror = reject
@@ -1264,7 +1311,9 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       }
 
       if (lastSavedId) {
-        maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+        maybeShowLocalBackgroundPerformanceWarning(
+          getSettings().userBackgrounds.length,
+        )
         handleSettingUpdate("background", lastSavedId)
         renderLocalBackgrounds(DOM, handleSettingUpdate)
       }

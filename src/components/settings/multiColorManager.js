@@ -266,15 +266,15 @@ export function renderSavedMultiColors(DOM_REFS) {
       let isCurrentActive = false
 
       if (activeBgUid && preset.uid) {
-          isCurrentActive = activeBgUid === preset.uid
+        isCurrentActive = activeBgUid === preset.uid
       } else {
-          isCurrentActive =
-            !settings.svgWaveActive &&
-            !settings.gradientV2Active &&
-            !settings.silkActive &&
-            !settings.lightPillarActive &&
-            (currentBg === generatedBg ||
-              currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
+        isCurrentActive =
+          !settings.svgWaveActive &&
+          !settings.gradientV2Active &&
+          !settings.silkActive &&
+          !settings.lightPillarActive &&
+          (currentBg === generatedBg ||
+            currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
       }
 
       // Fallback: Check if individual parameters match (when background is null and no UID match)
@@ -327,7 +327,7 @@ export function renderSavedMultiColors(DOM_REFS) {
       if (isSelected) {
         item.classList.add("selected")
       }
-      
+
       const checkBadge = document.createElement("div")
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
@@ -346,11 +346,14 @@ export function renderSavedMultiColors(DOM_REFS) {
       })
 
       item.addEventListener("click", (e) => {
-        if (typeof multiColorSelectMode !== "undefined" && multiColorSelectMode) {
+        if (
+          typeof multiColorSelectMode !== "undefined" &&
+          multiColorSelectMode
+        ) {
           // Multi-select is handled by the gallery listener, but we must not stop propagation
           return
         }
-        
+
         window.dispatchEvent(
           new CustomEvent("multiColor:applyPreset", { detail: preset }),
         )
@@ -610,12 +613,12 @@ export function setupMultiColorManager(applySettings) {
       slider.value = String(angleValue)
       slider.style.width = "100%"
 
-        slider.addEventListener("input", () => {
-          const value = Number(slider.value)
-          label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${value}deg`
-          updateMultiColorPreview()
-          syncMultiColorToState()
-        })
+      slider.addEventListener("input", () => {
+        const value = Number(slider.value)
+        label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${value}deg`
+        updateMultiColorPreview()
+        syncMultiColorToState()
+      })
 
       wrapper.appendChild(label)
       wrapper.appendChild(slider)
@@ -809,15 +812,17 @@ export function setupMultiColorManager(applySettings) {
     if (DOM.multiColorCountSelect) DOM.multiColorCountSelect.value = "2"
     if (DOM.multiColorTypeSelect) DOM.multiColorTypeSelect.value = "linear"
     if (DOM.multiGradientAngleInput) DOM.multiGradientAngleInput.value = 135
-    if (DOM.multiGradientAngleValue) DOM.multiGradientAngleValue.textContent = "135"
-    if (DOM.multiColorRepeatingToggle) DOM.multiColorRepeatingToggle.checked = false
+    if (DOM.multiGradientAngleValue)
+      DOM.multiGradientAngleValue.textContent = "135"
+    if (DOM.multiColorRepeatingToggle)
+      DOM.multiColorRepeatingToggle.checked = false
     if (DOM.multiColorLineWidth) {
       DOM.multiColorLineWidth.value = 1.2
-      if (DOM.multiColorLineWidthValue) DOM.multiColorLineWidthValue.textContent = "1.2"
+      if (DOM.multiColorLineWidthValue)
+        DOM.multiColorLineWidthValue.textContent = "1.2"
     }
     applyRandomizedColors(["#FF6B6B", "#4ECDC4"])
   })
-
 
   function setupMultiSelect() {
     const updateMultiColorSelectCount = () => {
@@ -948,12 +953,11 @@ export function setupMultiColorManager(applySettings) {
     const position = DOM.multiColorPositionSelect.value
     const radialShape = DOM.multiColorRadialShapeSelect.value
     const activeUid = settings.activeBgUid
-    const editableMultiUid =
-      (settings.userGradients || []).some(
-        (preset) => preset.uid === activeUid && preset.type === "multi-color",
-      )
-        ? activeUid
-        : null
+    const editableMultiUid = (settings.userGradients || []).some(
+      (preset) => preset.uid === activeUid && preset.type === "multi-color",
+    )
+      ? activeUid
+      : null
 
     updateSetting("multiColors", colors)
     updateSetting("multiGradientAngle", parseInt(angle))
@@ -967,15 +971,15 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("multiColorRepeating", repeating)
     updateSetting("multiColorPosition", position)
     updateSetting("multiColorRadialShape", radialShape)
-    const isAlreadyActive = settings.multiColorActive === true;
+    const isAlreadyActive = settings.multiColorActive === true
 
     if (forceApply || isAlreadyActive) {
       updateSetting("multiColorActive", true)
-      
+
       // Crucial: Set background to null so settingsApplier uses multiColor logic
       updateSetting("background", null)
       updateSetting("activeBgUid", editableMultiUid)
-      
+
       // Deactivate other effects
       updateSetting("svgWaveActive", false)
       updateSetting("gradientV2Active", false)
@@ -1011,7 +1015,11 @@ export function setupMultiColorManager(applySettings) {
 
     saveSettings()
 
-    if ((forceApply || isAlreadyActive) && typeof applySettings !== "undefined" && applySettings) {
+    if (
+      (forceApply || isAlreadyActive) &&
+      typeof applySettings !== "undefined" &&
+      applySettings
+    ) {
       applySettings()
     }
 
@@ -1042,14 +1050,14 @@ export function setupMultiColorManager(applySettings) {
   // Apply split background
   DOM.applyMultiColorBtn.addEventListener("click", () => {
     syncMultiColorToState(true)
-    
+
     // Brief visual feedback on button
     const originalText = DOM.applyMultiColorBtn.textContent
     DOM.applyMultiColorBtn.textContent = "✓ Applied"
     setTimeout(() => {
       DOM.applyMultiColorBtn.textContent = originalText
     }, 1500)
-    
+
     showAlert(t("alert_apply_success", "Applied successfully!"))
   })
 
@@ -1068,20 +1076,22 @@ export function setupMultiColorManager(applySettings) {
     const radialShape = DOM.multiColorRadialShapeSelect.value
 
     const settings = getSettings()
-    
+
     // Check for duplicates
-    const isDuplicate = (settings.userGradients || []).some(g => {
+    const isDuplicate = (settings.userGradients || []).some((g) => {
       if (g.type !== "multi-color") return false
-      return JSON.stringify(g.gradientStops) === JSON.stringify(colors) &&
-             g.angle === parseInt(angle) &&
-             g.mode === mode &&
-             g.multiColorType === type &&
-             g.multiColorRepeating === repeating &&
-             g.multiColorPosition === position &&
-             g.multiColorRadialShape === radialShape &&
-             g.showDividers === dividerConfig.enabled &&
-             g.dividerColor === dividerConfig.color &&
-             g.dividerWidth === dividerConfig.width
+      return (
+        JSON.stringify(g.gradientStops) === JSON.stringify(colors) &&
+        g.angle === parseInt(angle) &&
+        g.mode === mode &&
+        g.multiColorType === type &&
+        g.multiColorRepeating === repeating &&
+        g.multiColorPosition === position &&
+        g.multiColorRadialShape === radialShape &&
+        g.showDividers === dividerConfig.enabled &&
+        g.dividerColor === dividerConfig.color &&
+        g.dividerWidth === dividerConfig.width
+      )
     })
 
     if (isDuplicate) {
@@ -1104,7 +1114,7 @@ export function setupMultiColorManager(applySettings) {
       multiColorRepeating: repeating,
       multiColorPosition: position,
       multiColorRadialShape: radialShape,
-      uid: `multi-${Date.now()}`
+      uid: `multi-${Date.now()}`,
     }
 
     if (!settings.userGradients) {
@@ -1258,7 +1268,7 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("lightPillarActive", false)
     updateSetting("liquidEtherActive", false)
     updateSetting("splashCursorActive", false)
-    
+
     saveSettings()
     if (applySettings) applySettings()
     if (getSettings().m3AutoAccentFromBg === true) {
@@ -1266,7 +1276,6 @@ export function setupMultiColorManager(applySettings) {
     }
 
     renderSavedMultiColors(DOM)
-
   })
 
   window.addEventListener("multiColor:sync", syncFromSettings)

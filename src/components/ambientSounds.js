@@ -21,20 +21,85 @@ export class AmbientSounds {
     this.syncWithTimer = false
 
     this.tracks = [
-      { id: "rain", name: "Rain", i18nKey: "ambient_rain", icon: "fa-cloud-rain" },
-      { id: "thunder", name: "Thunder", i18nKey: "ambient_thunder", icon: "fa-cloud-bolt" },
-      { id: "waves", name: "Waves", i18nKey: "ambient_waves", icon: "fa-water" },
+      {
+        id: "rain",
+        name: "Rain",
+        i18nKey: "ambient_rain",
+        icon: "fa-cloud-rain",
+      },
+      {
+        id: "thunder",
+        name: "Thunder",
+        i18nKey: "ambient_thunder",
+        icon: "fa-cloud-bolt",
+      },
+      {
+        id: "waves",
+        name: "Waves",
+        i18nKey: "ambient_waves",
+        icon: "fa-water",
+      },
       { id: "wind", name: "Wind", i18nKey: "ambient_wind", icon: "fa-wind" },
-      { id: "fire", name: "Campfire", i18nKey: "ambient_fire", icon: "fa-fire" },
-      { id: "birds", name: "Forest Birds", i18nKey: "ambient_birds", icon: "fa-dove" },
-      { id: "crickets", name: "Night Crickets", i18nKey: "ambient_crickets", icon: "fa-moon" },
-      { id: "stream", name: "Stream", i18nKey: "ambient_stream", icon: "fa-water-ladder" },
-      { id: "cafe", name: "Cozy Cafe", i18nKey: "ambient_cafe", icon: "fa-mug-hot" },
-      { id: "space", name: "Cosmic Drone", i18nKey: "ambient_space", icon: "fa-meteor" },
-      { id: "traffic", name: "City Traffic", i18nKey: "ambient_traffic", icon: "fa-car-side" },
-      { id: "brownnoise", name: "Brown Noise", i18nKey: "ambient_brown_noise", icon: "fa-brain" },
-      { id: "pinknoise", name: "Pink Noise", i18nKey: "ambient_pink_noise", icon: "fa-wave-square" },
-      { id: "whitenoise", name: "White Noise", i18nKey: "ambient_white_noise", icon: "fa-bars-staggered" },
+      {
+        id: "fire",
+        name: "Campfire",
+        i18nKey: "ambient_fire",
+        icon: "fa-fire",
+      },
+      {
+        id: "birds",
+        name: "Forest Birds",
+        i18nKey: "ambient_birds",
+        icon: "fa-dove",
+      },
+      {
+        id: "crickets",
+        name: "Night Crickets",
+        i18nKey: "ambient_crickets",
+        icon: "fa-moon",
+      },
+      {
+        id: "stream",
+        name: "Stream",
+        i18nKey: "ambient_stream",
+        icon: "fa-water-ladder",
+      },
+      {
+        id: "cafe",
+        name: "Cozy Cafe",
+        i18nKey: "ambient_cafe",
+        icon: "fa-mug-hot",
+      },
+      {
+        id: "space",
+        name: "Cosmic Drone",
+        i18nKey: "ambient_space",
+        icon: "fa-meteor",
+      },
+      {
+        id: "traffic",
+        name: "City Traffic",
+        i18nKey: "ambient_traffic",
+        icon: "fa-car-side",
+      },
+      {
+        id: "brownnoise",
+        name: "Brown Noise",
+        i18nKey: "ambient_brown_noise",
+        icon: "fa-brain",
+      },
+      {
+        id: "pinknoise",
+        name: "Pink Noise",
+        i18nKey: "ambient_pink_noise",
+        icon: "fa-wave-square",
+      },
+      {
+        id: "whitenoise",
+        name: "White Noise",
+        i18nKey: "ambient_white_noise",
+        icon: "fa-bars-staggered",
+      },
     ]
 
     this.trackVolumes = {}
@@ -53,7 +118,10 @@ export class AmbientSounds {
   loadState() {
     try {
       const settings = getSettings()
-      this.masterVolume = settings.ambientMasterVolume !== undefined ? settings.ambientMasterVolume : 0.7
+      this.masterVolume =
+        settings.ambientMasterVolume !== undefined
+          ? settings.ambientMasterVolume
+          : 0.7
       this.syncWithTimer = settings.ambientSyncTimer === true
       this.trackVolumes = settings.ambientTrackVolumes || {
         rain: 0.7,
@@ -87,12 +155,19 @@ export class AmbientSounds {
       const AudioCtx = window.AudioContext || window.webkitAudioContext
       this.audioCtx = new AudioCtx()
       this.masterGain = this.audioCtx.createGain()
-      this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : this.masterVolume, this.audioCtx.currentTime)
+      this.masterGain.gain.setValueAtTime(
+        this.isMuted ? 0 : this.masterVolume,
+        this.audioCtx.currentTime,
+      )
       this.masterGain.connect(this.audioCtx.destination)
 
       // Pre-create 2-second white noise buffer ONCE
       const sampleRate = this.audioCtx.sampleRate
-      this.noiseBuffer = this.audioCtx.createBuffer(1, sampleRate * 2, sampleRate)
+      this.noiseBuffer = this.audioCtx.createBuffer(
+        1,
+        sampleRate * 2,
+        sampleRate,
+      )
       const data = this.noiseBuffer.getChannelData(0)
       for (let i = 0; i < data.length; i++) {
         data[i] = Math.random() * 2 - 1
@@ -110,7 +185,8 @@ export class AmbientSounds {
     if (!this.container) {
       this.container = document.createElement("div")
       this.container.id = "ambient-sounds-container"
-      this.container.className = "ambient-sounds-container glass-panel drag-handle"
+      this.container.className =
+        "ambient-sounds-container glass-panel drag-handle"
       this.container.style.display = "none"
       document.body.appendChild(this.container)
     }
@@ -145,7 +221,10 @@ export class AmbientSounds {
         <div class="ambient-tracks-list">
           ${this.tracks
             .map((track) => {
-              const vol = this.trackVolumes[track.id] !== undefined ? this.trackVolumes[track.id] : 0.6
+              const vol =
+                this.trackVolumes[track.id] !== undefined
+                  ? this.trackVolumes[track.id]
+                  : 0.6
               const name = i18n[track.i18nKey] || track.name
               const isPlaying = this.playingTracks.has(track.id)
               return `
@@ -175,18 +254,25 @@ export class AmbientSounds {
   }
 
   setupEventListeners() {
-    this.container.querySelector("#ambient-close-btn")?.addEventListener("click", () => {
-      this.toggleVisibility(false)
-    })
+    this.container
+      .querySelector("#ambient-close-btn")
+      ?.addEventListener("click", () => {
+        this.toggleVisibility(false)
+      })
 
     const muteBtn = this.container.querySelector("#ambient-mute-all")
     muteBtn?.addEventListener("click", () => {
       this.ensureAudioContext()
       this.isMuted = !this.isMuted
       if (this.masterGain && this.audioCtx) {
-        this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : this.masterVolume, this.audioCtx.currentTime)
+        this.masterGain.gain.setValueAtTime(
+          this.isMuted ? 0 : this.masterVolume,
+          this.audioCtx.currentTime,
+        )
       }
-      muteBtn.innerHTML = this.isMuted ? `<i class="fa-solid fa-volume-xmark"></i>` : `<i class="fa-solid fa-volume-high"></i>`
+      muteBtn.innerHTML = this.isMuted
+        ? `<i class="fa-solid fa-volume-xmark"></i>`
+        : `<i class="fa-solid fa-volume-high"></i>`
       muteBtn.classList.toggle("muted", this.isMuted)
     })
 
@@ -195,9 +281,13 @@ export class AmbientSounds {
     masterSlider?.addEventListener("input", (e) => {
       this.ensureAudioContext()
       this.masterVolume = parseFloat(e.target.value)
-      if (masterVal) masterVal.textContent = `${Math.round(this.masterVolume * 100)}%`
+      if (masterVal)
+        masterVal.textContent = `${Math.round(this.masterVolume * 100)}%`
       if (this.masterGain && this.audioCtx && !this.isMuted) {
-        this.masterGain.gain.setValueAtTime(this.masterVolume, this.audioCtx.currentTime)
+        this.masterGain.gain.setValueAtTime(
+          this.masterVolume,
+          this.audioCtx.currentTime,
+        )
       }
       this.saveState()
     })
@@ -210,23 +300,29 @@ export class AmbientSounds {
       })
     })
 
-    this.container.querySelectorAll(".ambient-item-slider").forEach((slider) => {
-      slider.addEventListener("input", (e) => {
-        this.ensureAudioContext()
-        const trackId = slider.dataset.trackId
-        const vol = parseFloat(e.target.value)
-        this.setTrackVolume(trackId, vol)
+    this.container
+      .querySelectorAll(".ambient-item-slider")
+      .forEach((slider) => {
+        slider.addEventListener("input", (e) => {
+          this.ensureAudioContext()
+          const trackId = slider.dataset.trackId
+          const vol = parseFloat(e.target.value)
+          this.setTrackVolume(trackId, vol)
+        })
       })
-    })
 
-    this.container.querySelector("#ambient-sync-timer-cb")?.addEventListener("change", (e) => {
-      this.syncWithTimer = e.target.checked
-      this.saveState()
-    })
+    this.container
+      .querySelector("#ambient-sync-timer-cb")
+      ?.addEventListener("change", (e) => {
+        this.syncWithTimer = e.target.checked
+        this.saveState()
+      })
 
-    this.container.querySelector("#ambient-stop-all-btn")?.addEventListener("click", () => {
-      this.stopAllTracks()
-    })
+    this.container
+      .querySelector("#ambient-stop-all-btn")
+      ?.addEventListener("click", () => {
+        this.stopAllTracks()
+      })
 
     this.container.addEventListener("contextmenu", (e) => {
       e.preventDefault()
@@ -234,7 +330,9 @@ export class AmbientSounds {
       showContextMenu(e.clientX, e.clientY, -1, "widget", "ambientSounds")
     })
 
-    window.addEventListener("startpage:languageChanged", () => this.updateLanguage())
+    window.addEventListener("startpage:languageChanged", () =>
+      this.updateLanguage(),
+    )
     window.addEventListener("languageChanged", () => this.updateLanguage())
   }
 
@@ -251,24 +349,34 @@ export class AmbientSounds {
     const closeBtn = this.container.querySelector("#ambient-close-btn")
     if (closeBtn) closeBtn.title = i18n.close || "Close"
 
-    const masterLabel = this.container.querySelector(".ambient-master-row .ambient-label")
-    if (masterLabel) masterLabel.innerHTML = `<i class="fa-solid fa-sliders"></i> ${i18n.ambient_master_volume || "Volume"}`
+    const masterLabel = this.container.querySelector(
+      ".ambient-master-row .ambient-label",
+    )
+    if (masterLabel)
+      masterLabel.innerHTML = `<i class="fa-solid fa-sliders"></i> ${i18n.ambient_master_volume || "Volume"}`
 
     const syncLabel = this.container.querySelector(".ambient-toggle-label span")
-    if (syncLabel) syncLabel.textContent = i18n.ambient_sync_pomodoro || "Sync with Timer"
+    if (syncLabel)
+      syncLabel.textContent = i18n.ambient_sync_pomodoro || "Sync with Timer"
 
     const stopAllBtn = this.container.querySelector("#ambient-stop-all-btn")
-    if (stopAllBtn) stopAllBtn.innerHTML = `<i class="fa-solid fa-stop"></i> ${i18n.ambient_stop_all || "Stop All"}`
+    if (stopAllBtn)
+      stopAllBtn.innerHTML = `<i class="fa-solid fa-stop"></i> ${i18n.ambient_stop_all || "Stop All"}`
 
     this.tracks.forEach((track) => {
-      const trackSpan = this.container.querySelector(`.ambient-track-item[data-track-id="${track.id}"] .ambient-track-btn span`)
+      const trackSpan = this.container.querySelector(
+        `.ambient-track-item[data-track-id="${track.id}"] .ambient-track-btn span`,
+      )
       if (trackSpan) {
         trackSpan.textContent = i18n[track.i18nKey] || track.name
       }
     })
 
-    const quickBtn = document.querySelector('.quick-btn[data-toggle="ambientSounds"]')
-    if (quickBtn) quickBtn.title = i18n.quick_access_ambient_sounds || "Ambient Sounds"
+    const quickBtn = document.querySelector(
+      '.quick-btn[data-toggle="ambientSounds"]',
+    )
+    if (quickBtn)
+      quickBtn.title = i18n.quick_access_ambient_sounds || "Ambient Sounds"
   }
 
   setupTimerSync() {
@@ -307,7 +415,10 @@ export class AmbientSounds {
       }
 
       const trackGain = ctx.createGain()
-      const vol = this.trackVolumes[trackId] !== undefined ? this.trackVolumes[trackId] : 0.6
+      const vol =
+        this.trackVolumes[trackId] !== undefined
+          ? this.trackVolumes[trackId]
+          : 0.6
       trackGain.gain.setValueAtTime(vol, ctx.currentTime)
       trackGain.connect(this.masterGain)
 
@@ -328,8 +439,12 @@ export class AmbientSounds {
       try {
         if (entry.sources) {
           entry.sources.forEach((s) => {
-            try { if (s.stop) s.stop(); } catch {}
-            try { if (s.disconnect) s.disconnect(); } catch {}
+            try {
+              if (s.stop) s.stop()
+            } catch {}
+            try {
+              if (s.disconnect) s.disconnect()
+            } catch {}
           })
         }
         if (entry.gainNode) {
@@ -357,7 +472,9 @@ export class AmbientSounds {
   }
 
   updateTrackUI(trackId, isPlaying) {
-    const item = this.container.querySelector(`.ambient-track-item[data-track-id="${trackId}"]`)
+    const item = this.container.querySelector(
+      `.ambient-track-item[data-track-id="${trackId}"]`,
+    )
     if (item) {
       item.classList.toggle("active", isPlaying)
     }
@@ -374,7 +491,9 @@ export class AmbientSounds {
     updateSetting("showAmbientSounds", target)
     saveSettings()
 
-    const quickBtn = document.querySelector('.quick-btn[data-toggle="ambientSounds"]')
+    const quickBtn = document.querySelector(
+      '.quick-btn[data-toggle="ambientSounds"]',
+    )
     if (quickBtn) quickBtn.classList.toggle("active", target)
   }
 

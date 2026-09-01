@@ -1,160 +1,160 @@
 <div class="settings-section" data-section-id="about-project" data-settings-tab="system">
-                <h3 class="section-toggle"><i class="fa-solid fa-circle-info"></i>
-                    <span data-i18n="settings_about_project">About Project</span>
-                </h3>
-                <div class="section-content">
-                    <div class="about-project-container">
-                        <!-- Hero / App Branding Card -->
-                        <div class="about-hero-card">
-                            <div class="about-hero-icon-wrap">
-                                <img src="icon/logo.png" alt="Zero Startpage" class="about-hero-logo" />
-                                <div class="about-hero-glow"></div>
-                            </div>
-                            <div class="about-hero-info">
-                                <div class="about-hero-title-row">
-                                    <h4 class="about-hero-title">Zero Startpage</h4>
-                                    <div class="about-version-badge">
-                                        <span class="about-version-num">v2.0.0</span>
-                                        <span class="about-version-tag">Latest</span>
-                                    </div>
-                                </div>
-                                <p class="about-hero-subtitle">Fast, elegant &amp; highly customizable new tab experience</p>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons Grid -->
-                        <div class="about-actions-grid">
-                            <a href="https://github.com/ChickenSoup269/Zero-Start-Page" target="_blank"
-                                class="about-action-btn about-btn-star" id="github-star-link">
-                                <div class="about-btn-icon-wrap"><i class="fa-solid fa-star"></i></div>
-                                <div class="about-btn-content">
-                                    <span class="about-btn-label" data-i18n="settings_star_github">Star on GitHub</span>
-                                    <span id="github-star-count" class="about-star-badge" style="display: none;"></span>
-                                </div>
-                                <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
-                            </a>
-
-                            <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank"
-                                class="about-action-btn about-btn-releases">
-                                <div class="about-btn-icon-wrap"><i class="fa-brands fa-github"></i></div>
-                                <div class="about-btn-content">
-                                    <span class="about-btn-label" data-i18n="settings_github_releases">GitHub Releases</span>
-                                </div>
-                                <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
-                            </a>
-
-                            <a href="https://extension-changelogs.vercel.app/" target="_blank"
-                                class="about-action-btn about-btn-changelog">
-                                <div class="about-btn-icon-wrap"><i class="fa-solid fa-book-open"></i></div>
-                                <div class="about-btn-content">
-                                    <span class="about-btn-label" data-i18n="settings_changelogs">Changelogs</span>
-                                </div>
-                                <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
-                            </a>
-
-                            <button id="donate-trigger-btn" class="about-action-btn about-btn-donate">
-                                <div class="about-btn-icon-wrap"><i class="fa-solid fa-heart"></i></div>
-                                <div class="about-btn-content">
-                                    <span class="about-btn-label" data-i18n="donate_button">Support Developer</span>
-                                </div>
-                                <i class="fa-solid fa-chevron-right about-btn-arrow"></i>
-                            </button>
-                        </div>
-
-                        <!-- Update Frequency & Status Guide Card -->
-                        <div class="about-card about-update-card">
-                            <div class="about-card-header">
-                                <div class="about-card-title">
-                                    <i class="fa-solid fa-clock-rotate-left"></i>
-                                    <span data-i18n="update_frequency_title">Update Frequency Guide</span>
-                                </div>
-                            </div>
-                            <div class="about-status-list">
-                                <div class="about-status-item">
-                                    <div class="about-status-time">
-                                        <span class="status-dot dot-active"></span>
-                                        <span>1-2 <span data-i18n="time_weeks">Weeks</span></span>
-                                    </div>
-                                    <span class="status-badge badge-active" data-i18n="update_active">Active Updates</span>
-                                </div>
-                                <div class="about-status-item">
-                                    <div class="about-status-time">
-                                        <span class="status-dot dot-maintained"></span>
-                                        <span>1-2 <span data-i18n="time_months">Months</span></span>
-                                    </div>
-                                    <span class="status-badge badge-maintained" data-i18n="update_maintained">Maintained</span>
-                                </div>
-                                <div class="about-status-item">
-                                    <div class="about-status-time">
-                                        <span class="status-dot dot-stable"></span>
-                                        <span>&gt; 3 <span data-i18n="time_months">Months</span></span>
-                                    </div>
-                                    <span class="status-badge badge-stable" data-i18n="update_stable">Stable Version</span>
-                                </div>
-                            </div>
-
-                            <details class="about-history-accordion">
-                                <summary class="about-history-summary">
-                                    <span class="about-history-summary-text">
-                                        <i class="fa-solid fa-code-commit"></i>
-                                        <span data-i18n="release_history">Release History</span>
-                                    </span>
-                                    <i class="fa-solid fa-chevron-down about-history-arrow"></i>
-                                </summary>
-                                <div class="about-history-content">
-                                    <div class="about-version-tags">
-                                        <span class="ver-chip ver-chip-latest">
-                                            v2.0.0 (Latest)
-                                        </span>
-                                        <span class="ver-chip">v1.9.0</span>
-                                        <span class="ver-chip">v1.8.2</span>
-                                        <span class="ver-chip">v1.8.0</span>
-                                        <span class="ver-chip">v1.7.0</span>
-                                        <span class="ver-chip">v1.6.0</span>
-                                        <span class="ver-chip">v1.5.0</span>
-                                        <span class="ver-chip">v1.4.0</span>
-                                        <span class="ver-chip">v1.3.0</span>
-                                        <span class="ver-chip">v1.2.0</span>
-                                        <span class="ver-chip">v1.1.1</span>
-                                        <span class="ver-chip">v1.1.0</span>
-                                        <span class="ver-chip">v1.0.0</span>
-                                    </div>
-                                </div>
-                            </details>
-                        </div>
-
-                        <!-- Available Platforms Card -->
-                        <div class="about-card about-platforms-card">
-                            <div class="about-platforms-label">
-                                <i class="fa-solid fa-globe"></i>
-                                <span data-i18n="available_on">Available on</span>
-                            </div>
-                            <div class="about-store-badges">
-                                <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0"
-                                    target="_blank" class="about-store-btn chrome-store-btn">
-                                    <i class="fa-brands fa-chrome"></i>
-                                    <div class="store-btn-text">
-                                        <small>Chrome</small>
-                                        <strong>Web Store</strong>
-                                    </div>
-                                </a>
-                                <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/"
-                                    target="_blank" class="about-store-btn firefox-store-btn">
-                                    <i class="fa-brands fa-firefox-browser"></i>
-                                    <div class="store-btn-text">
-                                        <small>Firefox</small>
-                                        <strong>Add-ons</strong>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Footer / Copyright -->
-                        <div class="about-footer">
-                            <span>&copy; 2026 ChickenSoup269</span>
-                            <span class="about-footer-sep">&bull;</span>
-                            <span class="about-footer-love">Crafted with <i class="fa-solid fa-heart"></i></span>
+    <h3 class="section-toggle"><i class="fa-solid fa-circle-info"></i>
+        <span data-i18n="settings_about_project">About Project</span>
+    </h3>
+    <div class="section-content">
+        <div class="about-project-container">
+            <!-- Hero / App Branding Card -->
+            <div class="about-hero-card">
+                <div class="about-hero-icon-wrap">
+                    <img src="icon/logo.png" alt="Zero Startpage" class="about-hero-logo" />
+                    <div class="about-hero-glow"></div>
+                </div>
+                <div class="about-hero-info">
+                    <div class="about-hero-title-row">
+                        <h4 class="about-hero-title">Zero Startpage</h4>
+                        <div class="about-version-badge">
+                            <span class="about-version-num">v2.0.0</span>
+                            <span class="about-version-tag">Latest</span>
                         </div>
                     </div>
+                    <p class="about-hero-subtitle">Fast, elegant &amp; highly customizable new tab experience</p>
                 </div>
             </div>
+
+            <!-- Action Buttons Grid -->
+            <div class="about-actions-grid">
+                <a href="https://github.com/ChickenSoup269/Zero-Start-Page" target="_blank"
+                    class="about-action-btn about-btn-star" id="github-star-link">
+                    <div class="about-btn-icon-wrap"><i class="fa-solid fa-star"></i></div>
+                    <div class="about-btn-content">
+                        <span class="about-btn-label" data-i18n="settings_star_github">Star on GitHub</span>
+                        <span id="github-star-count" class="about-star-badge" style="display: none;"></span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
+                </a>
+
+                <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank"
+                    class="about-action-btn about-btn-releases">
+                    <div class="about-btn-icon-wrap"><i class="fa-brands fa-github"></i></div>
+                    <div class="about-btn-content">
+                        <span class="about-btn-label" data-i18n="settings_github_releases">GitHub Releases</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
+                </a>
+
+                <a href="https://extension-changelogs.vercel.app/" target="_blank"
+                    class="about-action-btn about-btn-changelog">
+                    <div class="about-btn-icon-wrap"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="about-btn-content">
+                        <span class="about-btn-label" data-i18n="settings_changelogs">Changelogs</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square about-btn-arrow"></i>
+                </a>
+
+                <button id="donate-trigger-btn" class="about-action-btn about-btn-donate">
+                    <div class="about-btn-icon-wrap"><i class="fa-solid fa-heart"></i></div>
+                    <div class="about-btn-content">
+                        <span class="about-btn-label" data-i18n="donate_button">Support Developer</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right about-btn-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Update Frequency & Status Guide Card -->
+            <div class="about-card about-update-card">
+                <div class="about-card-header">
+                    <div class="about-card-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span data-i18n="update_frequency_title">Update Frequency Guide</span>
+                    </div>
+                </div>
+                <div class="about-status-list">
+                    <div class="about-status-item">
+                        <div class="about-status-time">
+                            <span class="status-dot dot-active"></span>
+                            <span>1-2 <span data-i18n="time_weeks">Weeks</span></span>
+                        </div>
+                        <span class="status-badge badge-active" data-i18n="update_active">Active Updates</span>
+                    </div>
+                    <div class="about-status-item">
+                        <div class="about-status-time">
+                            <span class="status-dot dot-maintained"></span>
+                            <span>1-2 <span data-i18n="time_months">Months</span></span>
+                        </div>
+                        <span class="status-badge badge-maintained" data-i18n="update_maintained">Maintained</span>
+                    </div>
+                    <div class="about-status-item">
+                        <div class="about-status-time">
+                            <span class="status-dot dot-stable"></span>
+                            <span>&gt; 3 <span data-i18n="time_months">Months</span></span>
+                        </div>
+                        <span class="status-badge badge-stable" data-i18n="update_stable">Stable Version</span>
+                    </div>
+                </div>
+
+                <details class="about-history-accordion">
+                    <summary class="about-history-summary">
+                        <span class="about-history-summary-text">
+                            <i class="fa-solid fa-code-commit"></i>
+                            <span data-i18n="release_history">Release History</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down about-history-arrow"></i>
+                    </summary>
+                    <div class="about-history-content">
+                        <div class="about-version-tags">
+                            <span class="ver-chip ver-chip-latest">
+                                v2.0.0 (Latest)
+                            </span>
+                            <span class="ver-chip">v1.9.0</span>
+                            <span class="ver-chip">v1.8.2</span>
+                            <span class="ver-chip">v1.8.0</span>
+                            <span class="ver-chip">v1.7.0</span>
+                            <span class="ver-chip">v1.6.0</span>
+                            <span class="ver-chip">v1.5.0</span>
+                            <span class="ver-chip">v1.4.0</span>
+                            <span class="ver-chip">v1.3.0</span>
+                            <span class="ver-chip">v1.2.0</span>
+                            <span class="ver-chip">v1.1.1</span>
+                            <span class="ver-chip">v1.1.0</span>
+                            <span class="ver-chip">v1.0.0</span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Available Platforms Card -->
+            <div class="about-card about-platforms-card">
+                <div class="about-platforms-label">
+                    <i class="fa-solid fa-globe"></i>
+                    <span data-i18n="available_on">Available on</span>
+                </div>
+                <div class="about-store-badges">
+                    <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0"
+                        target="_blank" class="about-store-btn chrome-store-btn">
+                        <i class="fa-brands fa-chrome"></i>
+                        <div class="store-btn-text">
+                            <small>Chrome</small>
+                            <strong>Web Store</strong>
+                        </div>
+                    </a>
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/" target="_blank"
+                        class="about-store-btn firefox-store-btn">
+                        <i class="fa-brands fa-firefox-browser"></i>
+                        <div class="store-btn-text">
+                            <small>Firefox</small>
+                            <strong>Add-ons</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer / Copyright -->
+            <div class="about-footer">
+                <span>&copy; 2026 ChickenSoup269</span>
+                <span class="about-footer-sep">&bull;</span>
+                <span class="about-footer-love">Crafted with <i class="fa-solid fa-heart"></i></span>
+            </div>
+        </div>
+    </div>
+</div>

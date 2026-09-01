@@ -14,7 +14,7 @@ export class GridScanEffect {
     this.time = 0
     this.particles = []
     this.scanZ = 2000
-    
+
     // Initialize random 3D corner particles
     this.initParticles()
 
@@ -32,7 +32,7 @@ export class GridScanEffect {
         z: Math.random() * 2000,
         size: 15 + Math.random() * 25,
         rot: Math.random() * Math.PI * 2,
-        speed: 0.5 + Math.random() * 1.5
+        speed: 0.5 + Math.random() * 1.5,
       })
     }
   }
@@ -68,7 +68,7 @@ export class GridScanEffect {
     ctx.rotate(angle)
     ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
     ctx.lineWidth = 1.5
-    
+
     ctx.beginPath()
     ctx.moveTo(size, 0)
     ctx.lineTo(0, 0)
@@ -85,7 +85,7 @@ export class GridScanEffect {
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
     this.time += 0.01
 
     const W = this.canvas.width
@@ -96,7 +96,7 @@ export class GridScanEffect {
     if (!this._rgb) this._rgb = hexToRgb(this.color)
     const rgb = this._rgb
     const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
-    
+
     const focalLength = 800
     const centerX = W / 2
     const centerY = H / 2
@@ -110,12 +110,12 @@ export class GridScanEffect {
     // Sort particles
     this.particles.sort((a, b) => b.z - a.z)
 
-    this.particles.forEach(p => {
+    this.particles.forEach((p) => {
       p.z -= p.speed
       if (p.z < -1000) {
-          p.z = 2500
-          p.x = (Math.random() - 0.5) * 4500
-          p.y = (Math.random() - 0.5) * 3500
+        p.z = 2500
+        p.x = (Math.random() - 0.5) * 4500
+        p.y = (Math.random() - 0.5) * 3500
       }
 
       const scale = focalLength / (focalLength + p.z)
@@ -125,53 +125,77 @@ export class GridScanEffect {
 
       // Highlight logic: Is a wave passing through this particle?
       let highlight = 0
-      waveOffsets.forEach(offset => {
-          let wZ = this.scanZ + offset
-          if (wZ > 2500) wZ -= 4000 // Wrap logic for 6 frames
-          const dist = Math.abs(p.z - wZ)
-          if (dist < 150) {
-              highlight = Math.max(highlight, 1 - dist / 150)
-          }
+      waveOffsets.forEach((offset) => {
+        let wZ = this.scanZ + offset
+        if (wZ > 2500) wZ -= 4000 // Wrap logic for 6 frames
+        const dist = Math.abs(p.z - wZ)
+        if (dist < 150) {
+          highlight = Math.max(highlight, 1 - dist / 150)
+        }
       })
 
       // Base opacity + highlight boost
       let opacity = (0.15 + highlight * 0.6) * (1 - p.z / 2500)
-      if (p.z < 0) opacity *= (1 + p.z / 1000)
-      
+      if (p.z < 0) opacity *= 1 + p.z / 1000
+
       if (opacity > 0.01 && p.z > -focalLength + 50) {
-        this.drawCorner(ctx, x2d, y2d, size2d * (1 + highlight * 0.3), p.rot, opacity, rgbStr)
+        this.drawCorner(
+          ctx,
+          x2d,
+          y2d,
+          size2d * (1 + highlight * 0.3),
+          p.rot,
+          opacity,
+          rgbStr,
+        )
       }
     })
 
     // Render Wave Frames (6 frames)
     waveOffsets.forEach((offset, index) => {
-        let wZ = this.scanZ + offset
-        if (wZ > 2500) wZ -= 4000
-        if (wZ < -1000) return
+      let wZ = this.scanZ + offset
+      if (wZ > 2500) wZ -= 4000
+      if (wZ < -1000) return
 
-        const waveScale = focalLength / (focalLength + wZ)
-        const isMain = index === 0
-        const sw = W * 1.3 * waveScale
-        const sh = H * 1.3 * waveScale
-        const sx = centerX - sw / 2
-        const sy = centerY - sh / 2
-        
-        let waveAlpha = isMain ? 0.4 : 0.2 / (1 + index * 0.2)
-        if (wZ > 2000) waveAlpha *= (1 - (wZ - 2000) / 500)
-        if (wZ < 0) waveAlpha *= (1 + wZ / 1000)
+      const waveScale = focalLength / (focalLength + wZ)
+      const isMain = index === 0
+      const sw = W * 1.3 * waveScale
+      const sh = H * 1.3 * waveScale
+      const sx = centerX - sw / 2
+      const sy = centerY - sh / 2
 
-        if (waveAlpha > 0.01 && wZ > -focalLength + 100) {
-            ctx.strokeStyle = `rgba(${rgbStr}, ${waveAlpha})`
-            ctx.lineWidth = isMain ? 2 : 1
-            ctx.strokeRect(sx, sy, sw, sh)
-            
-            // Corner Brackets for the frame
-            const bSize = (isMain ? 50 : 30) * waveScale
-            this.drawCorner(ctx, sx, sy, bSize, 0, waveAlpha, rgbStr)
-            this.drawCorner(ctx, sx + sw, sy, bSize, Math.PI/2, waveAlpha, rgbStr)
-            this.drawCorner(ctx, sx + sw, sy + sh, bSize, Math.PI, waveAlpha, rgbStr)
-            this.drawCorner(ctx, sx, sy + sh, bSize, -Math.PI/2, waveAlpha, rgbStr)
-        }
+      let waveAlpha = isMain ? 0.4 : 0.2 / (1 + index * 0.2)
+      if (wZ > 2000) waveAlpha *= 1 - (wZ - 2000) / 500
+      if (wZ < 0) waveAlpha *= 1 + wZ / 1000
+
+      if (waveAlpha > 0.01 && wZ > -focalLength + 100) {
+        ctx.strokeStyle = `rgba(${rgbStr}, ${waveAlpha})`
+        ctx.lineWidth = isMain ? 2 : 1
+        ctx.strokeRect(sx, sy, sw, sh)
+
+        // Corner Brackets for the frame
+        const bSize = (isMain ? 50 : 30) * waveScale
+        this.drawCorner(ctx, sx, sy, bSize, 0, waveAlpha, rgbStr)
+        this.drawCorner(ctx, sx + sw, sy, bSize, Math.PI / 2, waveAlpha, rgbStr)
+        this.drawCorner(
+          ctx,
+          sx + sw,
+          sy + sh,
+          bSize,
+          Math.PI,
+          waveAlpha,
+          rgbStr,
+        )
+        this.drawCorner(
+          ctx,
+          sx,
+          sy + sh,
+          bSize,
+          -Math.PI / 2,
+          waveAlpha,
+          rgbStr,
+        )
+      }
     })
   }
 }

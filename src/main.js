@@ -289,7 +289,10 @@ async function bootstrap() {
   ]
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return
-    if (event.target.closest("#ai-user-input") || event.target.closest(".ai-msg-text")) {
+    if (
+      event.target.closest("#ai-user-input") ||
+      event.target.closest(".ai-msg-text")
+    ) {
       return
     }
     const match = widgetContextTargets.find(([sel]) =>

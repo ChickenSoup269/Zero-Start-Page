@@ -21,9 +21,14 @@ const C4_BOMB_PASSCODE = "7355608"
 const C4_BOMB_FUSE_MS = 11500
 const C4_BOMB_BEEP_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/beep.mp3"
-let globalBatteryManager = null;
+let globalBatteryManager = null
 if (navigator.getBattery) {
-  navigator.getBattery().then(bm => { globalBatteryManager = bm; }).catch(() => {});
+  navigator
+    .getBattery()
+    .then((bm) => {
+      globalBatteryManager = bm
+    })
+    .catch(() => {})
 }
 const C4_BOMB_WRONG_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3"
@@ -290,10 +295,19 @@ function applyHuePerCharacter(target, seed = 0) {
 
       const hue = (seed + hueIndex * 43) % 360
 
-      if (node.parentElement && node.parentElement.classList.contains("char-anim")) {
+      if (
+        node.parentElement &&
+        node.parentElement.classList.contains("char-anim")
+      ) {
         node.parentElement.style.setProperty("--char-hue", String(hue))
-        node.parentElement.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
-        node.parentElement.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
+        node.parentElement.style.setProperty(
+          "--char-delay",
+          `${hueIndex * 0.1}s`,
+        )
+        node.parentElement.style.setProperty(
+          "--time-offset",
+          `${(Date.now() % 8000) / 1000}s`,
+        )
         node.parentElement.classList.add("multi-color-char")
         fragment.appendChild(document.createTextNode(char))
       } else {
@@ -301,7 +315,10 @@ function applyHuePerCharacter(target, seed = 0) {
         span.className = "clock-hue-char"
         span.style.setProperty("--char-hue", String(hue))
         span.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
-        span.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
+        span.style.setProperty(
+          "--time-offset",
+          `${(Date.now() % 8000) / 1000}s`,
+        )
         span.textContent = char
         fragment.appendChild(span)
       }
@@ -374,7 +391,9 @@ function applyHueMode(settings) {
     } else if (style === "split-pill") {
       clockTargets.push(clockElement.querySelector(".split-pill-digits"))
     } else if (style === "clock-3d") {
-      clockElement.querySelectorAll(".clock-3d-cube-digit, .clock-3d-ampm-cube span").forEach((el) => clockTargets.push(el))
+      clockElement
+        .querySelectorAll(".clock-3d-cube-digit, .clock-3d-ampm-cube span")
+        .forEach((el) => clockTargets.push(el))
     } else if (style === "satellite") {
       clockTargets.push(clockElement.querySelector(".sat-time"))
       clockTargets.push(clockElement.querySelector(".sat-ampm"))
@@ -777,26 +796,59 @@ function getClockLabel(key, fallback) {
 }
 
 // --- Space Concentric Chrono ---
-const scMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const scWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const scMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]
+const scWeekdays = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+]
 const scGetOrdinal = (d) => {
-  if (d > 3 && d < 21) return 'th';
+  if (d > 3 && d < 21) return "th"
   switch (d % 10) {
-    case 1:  return "st";
-    case 2:  return "nd";
-    case 3:  return "rd";
-    default: return "th";
+    case 1:
+      return "st"
+    case 2:
+      return "nd"
+    case 3:
+      return "rd"
+    default:
+      return "th"
   }
-};
-const scDays = Array.from({length: 31}, (_, i) => `${i + 1}${scGetOrdinal(i + 1)}`);
-const scHours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
-const scMinutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
-const scSeconds = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
-let spaceConcentricHtmlCache = null;
-let spaceConcentricLangCache = null;
-let spaceConcentricRingElements = null;
-let spaceConcentricLastState = {};
-
+}
+const scDays = Array.from(
+  { length: 31 },
+  (_, i) => `${i + 1}${scGetOrdinal(i + 1)}`,
+)
+const scHours = Array.from({ length: 24 }, (_, i) =>
+  i.toString().padStart(2, "0"),
+)
+const scMinutes = Array.from({ length: 60 }, (_, i) =>
+  i.toString().padStart(2, "0"),
+)
+const scSeconds = Array.from({ length: 60 }, (_, i) =>
+  i.toString().padStart(2, "0"),
+)
+let spaceConcentricHtmlCache = null
+let spaceConcentricLangCache = null
+let spaceConcentricRingElements = null
+let spaceConcentricLastState = {}
 
 // Cache Intl.DateTimeFormat instances to avoid expensive re-construction every second
 const _intlCache = new Map()
@@ -1071,7 +1123,9 @@ export function updateTime() {
     const i18n = geti18n()
     const greeting = isTimer
       ? i18n["quick_access_timer"] || "Timer"
-      : (customGreeting && customGreeting.trim() !== "" ? customGreeting.trim() : (i18n[greetingKey] || "Hello"))
+      : customGreeting && customGreeting.trim() !== ""
+        ? customGreeting.trim()
+        : i18n[greetingKey] || "Hello"
 
     const dayName = getSafeWeekday(
       now,
@@ -1090,9 +1144,14 @@ export function updateTime() {
       dateHtml = getCustomDateString(now, dateLangCode, tz, settings)
     }
 
-    const coolBarTop = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
-    const coolBarBottom = settings.coolBarSymbolBottom !== undefined ? settings.coolBarSymbolBottom : "|"
-    const coolBarScale = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
+    const coolBarTop =
+      settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
+    const coolBarBottom =
+      settings.coolBarSymbolBottom !== undefined
+        ? settings.coolBarSymbolBottom
+        : "|"
+    const coolBarScale =
+      settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
 
     clockElement.innerHTML = `
       <div class="cool-style-wrapper">
@@ -1132,7 +1191,7 @@ export function updateTime() {
       const year = now.getFullYear()
       const month = String(now.getMonth() + 1).padStart(2, "0")
       const day = String(now.getDate()).padStart(2, "0")
-      
+
       if (lang === "python") {
         dateFields = `,
         <span class="code-string">"year"</span>: <span class="code-number">${year}</span>,
@@ -1535,7 +1594,10 @@ export function updateTime() {
     const dateEl = cyberRoot.querySelector(".cyber-date")
     if (dateEl) {
       const dTxt = isTimer ? countdownLabel : dateStr
-      if (dateEl.getAttribute("data-raw-html") !== dTxt) { dateEl.innerHTML = dTxt; dateEl.setAttribute("data-raw-html", dTxt); }
+      if (dateEl.getAttribute("data-raw-html") !== dTxt) {
+        dateEl.innerHTML = dTxt
+        dateEl.setAttribute("data-raw-html", dTxt)
+      }
       dateEl.style.display = dTxt ? "block" : "none"
     }
   } else if (dateClockStyle === "neon-grid") {
@@ -1674,7 +1736,20 @@ export function updateTime() {
     const inputDisplay = isCodeWrong
       ? "X X X X"
       : c4BombInput.padEnd(C4_BOMB_PASSCODE.length, "_")
-    const keypadNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "LOCK", "0", "SET"]
+    const keypadNumbers = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "LOCK",
+      "0",
+      "SET",
+    ]
     const statusText = c4BombExploded
       ? "BOOM"
       : isCounting
@@ -1741,7 +1816,10 @@ export function updateTime() {
 
     const statusEl = root.querySelector(".c4-bomb-status")
     const statusHtml = `${statusText} / ${weekday}`
-    if (statusEl.getAttribute("data-raw-html") !== statusHtml) { statusEl.innerHTML = statusHtml; statusEl.setAttribute("data-raw-html", statusHtml); }
+    if (statusEl.getAttribute("data-raw-html") !== statusHtml) {
+      statusEl.innerHTML = statusHtml
+      statusEl.setAttribute("data-raw-html", statusHtml)
+    }
 
     const timeEl = root.querySelector(".c4-bomb-time")
     const timeHtml = c4BombExploded
@@ -1760,11 +1838,19 @@ export function updateTime() {
           ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
           ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
         `
-    if (timeEl.getAttribute("data-raw-html") !== timeHtml) { timeEl.innerHTML = timeHtml; timeEl.setAttribute("data-raw-html", timeHtml); }
+    if (timeEl.getAttribute("data-raw-html") !== timeHtml) {
+      timeEl.innerHTML = timeHtml
+      timeEl.setAttribute("data-raw-html", timeHtml)
+    }
 
     const codeLineEl = root.querySelector(".c4-bomb-code-line")
-    const codeHtml = c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`
-    if (codeLineEl.getAttribute("data-raw-html") !== codeHtml) { codeLineEl.innerHTML = codeHtml; codeLineEl.setAttribute("data-raw-html", codeHtml); }
+    const codeHtml = c4BombUnlocked
+      ? "PASS 7355608 ACCEPTED"
+      : `PASS ${inputDisplay}`
+    if (codeLineEl.getAttribute("data-raw-html") !== codeHtml) {
+      codeLineEl.innerHTML = codeHtml
+      codeLineEl.setAttribute("data-raw-html", codeHtml)
+    }
 
     const dateWrapEl = root.querySelector(".c4-bomb-date-wrapper")
     const dateHtml = isCounting
@@ -1776,7 +1862,10 @@ export function updateTime() {
           : dateStr
             ? `<div class="c4-bomb-date">${dateStr}</div>`
             : ""
-    if (dateWrapEl.getAttribute("data-raw-html") !== dateHtml) { dateWrapEl.innerHTML = dateHtml; dateWrapEl.setAttribute("data-raw-html", dateHtml); }
+    if (dateWrapEl.getAttribute("data-raw-html") !== dateHtml) {
+      dateWrapEl.innerHTML = dateHtml
+      dateWrapEl.setAttribute("data-raw-html", dateHtml)
+    }
 
     const leverBtn = root.querySelector(".c4-bomb-lever")
     leverBtn.setAttribute("aria-pressed", c4BombLeverOn ? "true" : "false")
@@ -1786,14 +1875,19 @@ export function updateTime() {
     if (leverText.textContent !== lTxt) leverText.textContent = lTxt
 
     const actionBtn = root.querySelector(".c4-bomb-button")
-    actionBtn.setAttribute("aria-pressed", c4BombArmed || isCounting ? "true" : "false")
-    if (actionBtn.disabled !== buttonDisabled) actionBtn.disabled = buttonDisabled
+    actionBtn.setAttribute(
+      "aria-pressed",
+      c4BombArmed || isCounting ? "true" : "false",
+    )
+    if (actionBtn.disabled !== buttonDisabled)
+      actionBtn.disabled = buttonDisabled
     const actionText = root.querySelector(".c4-bomb-button-text")
-    if (actionText.textContent !== buttonText) actionText.textContent = buttonText
+    if (actionText.textContent !== buttonText)
+      actionText.textContent = buttonText
 
     const keysDisabled = c4BombUnlocked || isCounting || c4BombExploded
     const keypadBtns = root.querySelectorAll(".c4-bomb-key")
-    keypadBtns.forEach(btn => {
+    keypadBtns.forEach((btn) => {
       if (btn.disabled !== keysDisabled) btn.disabled = keysDisabled
     })
   } else if (dateClockStyle === "holo-ring") {
@@ -1846,7 +1940,10 @@ export function updateTime() {
     const dateEl = holoRoot.querySelector(".holo-ring-date")
     if (dateEl) {
       const dTxt = isTimer ? countdownLabel : dateStr
-      if (dateEl.getAttribute("data-raw-html") !== dTxt) { dateEl.innerHTML = dTxt; dateEl.setAttribute("data-raw-html", dTxt); }
+      if (dateEl.getAttribute("data-raw-html") !== dTxt) {
+        dateEl.innerHTML = dTxt
+        dateEl.setAttribute("data-raw-html", dTxt)
+      }
       dateEl.style.display = dTxt ? "block" : "none"
     }
   } else if (dateClockStyle === "media-orb") {
@@ -1870,7 +1967,11 @@ export function updateTime() {
     const currentLayout = existingOrb?.getAttribute("data-layout")
     const currentSrc = existingOrb?.getAttribute("data-src")
 
-    if (existingOrb && currentLayout === mediaLayout && currentSrc === mediaSrc) {
+    if (
+      existingOrb &&
+      currentLayout === mediaLayout &&
+      currentSrc === mediaSrc
+    ) {
       // Fast path: update text nodes in-place so GIF never restarts
       const hourEl = existingOrb.querySelector(".media-orb-hour")
       if (hourEl && hourEl.textContent !== hh) hourEl.textContent = hh
@@ -1891,7 +1992,8 @@ export function updateTime() {
       }
 
       const weekdayEl = existingOrb.querySelector(".media-orb-weekday")
-      if (weekdayEl && weekdayEl.innerHTML !== weekday) weekdayEl.innerHTML = weekday
+      if (weekdayEl && weekdayEl.innerHTML !== weekday)
+        weekdayEl.innerHTML = weekday
 
       const dateEl = existingOrb.querySelector(".media-orb-date")
       const dTxt = isTimer ? countdownLabel : dateStr
@@ -2117,59 +2219,94 @@ export function updateTime() {
     const dateEl = cartoonRoot.querySelector(".cartoon-date")
     if (dateEl) {
       const dateText = isTimer ? timerRunningLabel : dateStr
-      if (dateEl.getAttribute("data-raw-html") !== dateText) { dateEl.innerHTML = dateText; dateEl.setAttribute("data-raw-html", dateText); }
+      if (dateEl.getAttribute("data-raw-html") !== dateText) {
+        dateEl.innerHTML = dateText
+        dateEl.setAttribute("data-raw-html", dateText)
+      }
       dateEl.style.display = dateText ? "block" : "none"
     }
   } else if (dateClockStyle === "minimalist-word") {
     // 10x11 Matrix
     const isVi = langCode.startsWith("vi")
-    
-    const matrixEn = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
-    const matrixVi = "BÂYXGIỜVLÀOMỘTHAIBABẢYBỐNNĂMSÁUQPTÁMCHÍNMƯỜIKGIỜRƯỠIKÉMMƯỜILĂMHAIXBABỐNMƯƠIYENĂMPHÚTSÁNGTỐICHIỀUĐÊMĐÚNGKTRƯAZV"
-    
+
+    const matrixEn =
+      "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
+    const matrixVi =
+      "BÂYXGIỜVLÀOMỘTHAIBABẢYBỐNNĂMSÁUQPTÁMCHÍNMƯỜIKGIỜRƯỠIKÉMMƯỜILĂMHAIXBABỐNMƯƠIYENĂMPHÚTSÁNGTỐICHIỀUĐÊMĐÚNGKTRƯAZV"
+
     const getActiveIndicesEn = (h, m) => {
       const active = new Set([0, 1, 3, 4]) // IT IS
-      let hour = h, isPast = true, minStr = ""
-      
+      let hour = h,
+        isPast = true,
+        minStr = ""
+
       if (m >= 5 && m < 10) minStr = "FIVE"
       else if (m >= 10 && m < 15) minStr = "TEN"
       else if (m >= 15 && m < 20) minStr = "A QUARTER"
       else if (m >= 20 && m < 25) minStr = "TWENTY"
       else if (m >= 25 && m < 30) minStr = "TWENTY FIVE"
       else if (m >= 30 && m < 35) minStr = "HALF"
-      else if (m >= 35 && m < 40) { minStr = "TWENTY FIVE"; isPast = false; hour++; }
-      else if (m >= 40 && m < 45) { minStr = "TWENTY"; isPast = false; hour++; }
-      else if (m >= 45 && m < 50) { minStr = "A QUARTER"; isPast = false; hour++; }
-      else if (m >= 50 && m < 55) { minStr = "TEN"; isPast = false; hour++; }
-      else if (m >= 55) { minStr = "FIVE"; isPast = false; hour++; }
+      else if (m >= 35 && m < 40) {
+        minStr = "TWENTY FIVE"
+        isPast = false
+        hour++
+      } else if (m >= 40 && m < 45) {
+        minStr = "TWENTY"
+        isPast = false
+        hour++
+      } else if (m >= 45 && m < 50) {
+        minStr = "A QUARTER"
+        isPast = false
+        hour++
+      } else if (m >= 50 && m < 55) {
+        minStr = "TEN"
+        isPast = false
+        hour++
+      } else if (m >= 55) {
+        minStr = "FIVE"
+        isPast = false
+        hour++
+      }
 
       if (minStr.includes("A")) active.add(11)
-      if (minStr.includes("QUARTER")) [13,14,15,16,17,18,19].forEach(i=>active.add(i))
-      if (minStr.includes("TWENTY")) [22,23,24,25,26,27].forEach(i=>active.add(i))
-      if (minStr.includes("FIVE")) [28,29,30,31].forEach(i=>active.add(i))
-      if (minStr.includes("HALF")) [33,34,35,36].forEach(i=>active.add(i))
-      if (minStr.includes("TEN")) [38,39,40].forEach(i=>active.add(i))
+      if (minStr.includes("QUARTER"))
+        [13, 14, 15, 16, 17, 18, 19].forEach((i) => active.add(i))
+      if (minStr.includes("TWENTY"))
+        [22, 23, 24, 25, 26, 27].forEach((i) => active.add(i))
+      if (minStr.includes("FIVE"))
+        [28, 29, 30, 31].forEach((i) => active.add(i))
+      if (minStr.includes("HALF"))
+        [33, 34, 35, 36].forEach((i) => active.add(i))
+      if (minStr.includes("TEN")) [38, 39, 40].forEach((i) => active.add(i))
 
       if (m >= 5) {
-        if (isPast) [44,45,46,47].forEach(i=>active.add(i))
-        else [42,43].forEach(i=>active.add(i))
+        if (isPast) [44, 45, 46, 47].forEach((i) => active.add(i))
+        else [42, 43].forEach((i) => active.add(i))
       } else {
-        [104,105,106,107,108,109].forEach(i=>active.add(i))
+        ;[104, 105, 106, 107, 108, 109].forEach((i) => active.add(i))
       }
 
       if (hour > 12) hour -= 12
       if (hour === 0) hour = 12
-      
+
       const hourMap = {
-        1: [55,56,57], 2: [74,75,76], 3: [61,62,63,64,65],
-        4: [66,67,68,69], 5: [70,71,72,73], 6: [58,59,60],
-        7: [88,89,90,91,92], 8: [77,78,79,80,81], 9: [51,52,53,54],
-        10: [99,100,101], 11: [82,83,84,85,86,87], 12: [93,94,95,96,97,98]
+        1: [55, 56, 57],
+        2: [74, 75, 76],
+        3: [61, 62, 63, 64, 65],
+        4: [66, 67, 68, 69],
+        5: [70, 71, 72, 73],
+        6: [58, 59, 60],
+        7: [88, 89, 90, 91, 92],
+        8: [77, 78, 79, 80, 81],
+        9: [51, 52, 53, 54],
+        10: [99, 100, 101],
+        11: [82, 83, 84, 85, 86, 87],
+        12: [93, 94, 95, 96, 97, 98],
       }
-      if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
-      
-      if (h < 12) [7,8].forEach(i=>active.add(i))
-      else [9,10].forEach(i=>active.add(i))
+      if (hourMap[hour]) hourMap[hour].forEach((i) => active.add(i))
+
+      if (h < 12) [7, 8].forEach((i) => active.add(i))
+      else [9, 10].forEach((i) => active.add(i))
 
       return active
     }
@@ -2179,84 +2316,108 @@ export function updateTime() {
       active.add(4).add(5).add(6) // GIỜ
 
       let hour = h
-      if (m >= 35) hour++ 
-      
+      if (m >= 35) hour++
+
       if (hour > 12) hour -= 12
       if (hour === 0) hour = 12
 
       const hourMap = {
-        1: [11,12,13], 2: [14,15,16], 3: [17,18], 4: [22,23,24],
-        5: [25,26,27], 6: [28,29,30], 7: [19,20,21], 8: [33,34,35],
-        9: [36,37,38,39], 10: [40,41,42,43], 11: [40,41,42,43, 11,12,13], 12: [40,41,42,43, 14,15,16]
+        1: [11, 12, 13],
+        2: [14, 15, 16],
+        3: [17, 18],
+        4: [22, 23, 24],
+        5: [25, 26, 27],
+        6: [28, 29, 30],
+        7: [19, 20, 21],
+        8: [33, 34, 35],
+        9: [36, 37, 38, 39],
+        10: [40, 41, 42, 43],
+        11: [40, 41, 42, 43, 11, 12, 13],
+        12: [40, 41, 42, 43, 14, 15, 16],
       }
-      if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
+      if (hourMap[hour]) hourMap[hour].forEach((i) => active.add(i))
 
       active.add(45).add(46).add(47)
 
-      if (m === 0) [99,100,101,102].forEach(i=>active.add(i)) 
-      else if (m < 5) {} 
-      else if (m >= 5 && m < 10) [77,78,79, 80,81,82,83].forEach(i=>active.add(i)) 
-      else if (m >= 10 && m < 15) [55,56,57,58, 80,81,82,83].forEach(i=>active.add(i)) 
-      else if (m >= 15 && m < 20) [55,56,57,58, 59,60,61].forEach(i=>active.add(i)) 
-      else if (m >= 20 && m < 25) [62,63,64, 71,72,73,74].forEach(i=>active.add(i)) 
-      else if (m >= 25 && m < 30) [62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) 
-      else if (m >= 30 && m < 35) [48,49,50,51].forEach(i=>active.add(i)) 
-      else if (m >= 35 && m < 40) [52,53,54, 62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) 
-      else if (m >= 40 && m < 45) [52,53,54, 62,63,64, 71,72,73,74].forEach(i=>active.add(i)) 
-      else if (m >= 45 && m < 50) [52,53,54, 55,56,57,58, 59,60,61].forEach(i=>active.add(i)) 
-      else if (m >= 50 && m < 55) [52,53,54, 55,56,57,58].forEach(i=>active.add(i)) 
-      else if (m >= 55) [52,53,54, 77,78,79].forEach(i=>active.add(i)) 
+      if (m === 0) [99, 100, 101, 102].forEach((i) => active.add(i))
+      else if (m < 5) {
+      } else if (m >= 5 && m < 10)
+        [77, 78, 79, 80, 81, 82, 83].forEach((i) => active.add(i))
+      else if (m >= 10 && m < 15)
+        [55, 56, 57, 58, 80, 81, 82, 83].forEach((i) => active.add(i))
+      else if (m >= 15 && m < 20)
+        [55, 56, 57, 58, 59, 60, 61].forEach((i) => active.add(i))
+      else if (m >= 20 && m < 25)
+        [62, 63, 64, 71, 72, 73, 74].forEach((i) => active.add(i))
+      else if (m >= 25 && m < 30)
+        [62, 63, 64, 71, 72, 73, 74, 59, 60, 61].forEach((i) => active.add(i))
+      else if (m >= 30 && m < 35) [48, 49, 50, 51].forEach((i) => active.add(i))
+      else if (m >= 35 && m < 40)
+        [52, 53, 54, 62, 63, 64, 71, 72, 73, 74, 59, 60, 61].forEach((i) =>
+          active.add(i),
+        )
+      else if (m >= 40 && m < 45)
+        [52, 53, 54, 62, 63, 64, 71, 72, 73, 74].forEach((i) => active.add(i))
+      else if (m >= 45 && m < 50)
+        [52, 53, 54, 55, 56, 57, 58, 59, 60, 61].forEach((i) => active.add(i))
+      else if (m >= 50 && m < 55)
+        [52, 53, 54, 55, 56, 57, 58].forEach((i) => active.add(i))
+      else if (m >= 55) [52, 53, 54, 77, 78, 79].forEach((i) => active.add(i))
 
       let periodHour = h
       if (m >= 35) periodHour++
       if (periodHour >= 24) periodHour = 0
 
-      if (periodHour >= 0 && periodHour < 4) [96,97,98].forEach(i=>active.add(i)) 
-      else if (periodHour >= 4 && periodHour < 11) [84,85,86,87].forEach(i=>active.add(i)) 
-      else if (periodHour >= 11 && periodHour < 14) [104,105,106,107].forEach(i=>active.add(i)) 
-      else if (periodHour >= 14 && periodHour < 18) [91,92,93,94,95].forEach(i=>active.add(i)) 
-      else if (periodHour >= 18) [88,89,90].forEach(i=>active.add(i)) 
+      if (periodHour >= 0 && periodHour < 4)
+        [96, 97, 98].forEach((i) => active.add(i))
+      else if (periodHour >= 4 && periodHour < 11)
+        [84, 85, 86, 87].forEach((i) => active.add(i))
+      else if (periodHour >= 11 && periodHour < 14)
+        [104, 105, 106, 107].forEach((i) => active.add(i))
+      else if (periodHour >= 14 && periodHour < 18)
+        [91, 92, 93, 94, 95].forEach((i) => active.add(i))
+      else if (periodHour >= 18) [88, 89, 90].forEach((i) => active.add(i))
 
       return active
     }
 
     const minVal = parseInt(mm, 10)
-    
+
     // Always calculate both
     const activeIndicesEn = getActiveIndicesEn(now.getHours(), minVal)
     const activeIndicesVi = getActiveIndicesVi(now.getHours(), minVal)
-    
-    let gridHtml = ''
-    
+
+    let gridHtml = ""
+
     // Board 1: English (Hidden if isVi)
-    gridHtml += `<div class="minimalist-matrix-grid matrix-en" style="display: ${isVi ? 'none' : 'grid'};">`
+    gridHtml += `<div class="minimalist-matrix-grid matrix-en" style="display: ${isVi ? "none" : "grid"};">`
     for (let i = 0; i < matrixEn.length; i++) {
       const char = matrixEn[i]
       const isActive = activeIndicesEn.has(i) ? "is-active" : ""
       gridHtml += `<span class="matrix-char ${isActive}">${char}</span>`
     }
-    gridHtml += '</div>'
+    gridHtml += "</div>"
 
     // Board 2: Vietnamese (Hidden if !isVi)
-    gridHtml += `<div class="minimalist-matrix-grid matrix-vi" style="display: ${isVi ? 'grid' : 'none'};">`
+    gridHtml += `<div class="minimalist-matrix-grid matrix-vi" style="display: ${isVi ? "grid" : "none"};">`
     for (let i = 0; i < matrixVi.length; i++) {
       const char = matrixVi[i]
       const isActive = activeIndicesVi.has(i) ? "is-active" : ""
       gridHtml += `<span class="matrix-char ${isActive}">${char}</span>`
     }
-    gridHtml += '</div>'
+    gridHtml += "</div>"
 
     if (clockElement.innerHTML !== gridHtml) {
       clockElement.innerHTML = gridHtml
     }
   } else if (dateClockStyle === "audio-wave") {
-    if (!clockElement.querySelector('.audio-wave-container')) {
-      const barsCount = 30;
-      let barsHtml = "";
+    if (!clockElement.querySelector(".audio-wave-container")) {
+      const barsCount = 30
+      let barsHtml = ""
       for (let i = 0; i < barsCount; i++) {
-        const delay = (Math.random() * 1.5).toFixed(2);
-        const duration = (0.6 + Math.random() * 0.6).toFixed(2);
-        barsHtml += `<div class="aw-bar" style="--anim-del: ${delay}; --anim-dur: ${duration};"></div>`;
+        const delay = (Math.random() * 1.5).toFixed(2)
+        const duration = (0.6 + Math.random() * 0.6).toFixed(2)
+        barsHtml += `<div class="aw-bar" style="--anim-del: ${delay}; --anim-dur: ${duration};"></div>`
       }
       clockElement.innerHTML = `
         <div class="audio-wave-container">
@@ -2268,30 +2429,35 @@ export function updateTime() {
           </div>
           <div class="aw-visualizer">${barsHtml}</div>
         </div>
-      `;
+      `
     }
-    clockElement.querySelector('.aw-hour').textContent = hh;
-    clockElement.querySelector('.aw-minute').textContent = mm;
-    
-    const secEl = clockElement.querySelector('.aw-seconds');
+    clockElement.querySelector(".aw-hour").textContent = hh
+    clockElement.querySelector(".aw-minute").textContent = mm
+
+    const secEl = clockElement.querySelector(".aw-seconds")
     if (ss) {
-      secEl.style.display = 'inline';
-      secEl.textContent = `:${ss}`;
+      secEl.style.display = "inline"
+      secEl.textContent = `:${ss}`
     } else {
-      secEl.style.display = 'none';
+      secEl.style.display = "none"
     }
-    
-    const ampmEl = clockElement.querySelector('.aw-ampm');
+
+    const ampmEl = clockElement.querySelector(".aw-ampm")
     if (ampm) {
-      ampmEl.style.display = 'inline';
-      ampmEl.textContent = ` ${ampm}`;
+      ampmEl.style.display = "inline"
+      ampmEl.textContent = ` ${ampm}`
     } else {
-      ampmEl.style.display = 'none';
+      ampmEl.style.display = "none"
     }
-    
-    clockElement.querySelector('.aw-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
+
+    clockElement.querySelector(".aw-date").innerHTML = getCustomDateString(
+      now,
+      langCode,
+      tz,
+      settings,
+    )
   } else if (dateClockStyle === "glass-float") {
-    if (!clockElement.querySelector('.glass-float-container')) {
+    if (!clockElement.querySelector(".glass-float-container")) {
       clockElement.innerHTML = `
         <div class="clock-container glass-float-container">
           <div class="gf-content">
@@ -2300,65 +2466,86 @@ export function updateTime() {
             <div class="gf-date"></div>
           </div>
         </div>
-      `;
+      `
     }
     const updateGfSpans = (el, textStr, startIdx) => {
       if (!textStr) {
-        if (el.innerHTML !== "") el.innerHTML = "";
-        return startIdx;
+        if (el.innerHTML !== "") el.innerHTML = ""
+        return startIdx
       }
-      let spans = el.querySelectorAll('.gf-char');
+      let spans = el.querySelectorAll(".gf-char")
       if (spans.length !== textStr.length) {
-        const html = textStr.split('').map((c, i) => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${startIdx + i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-        el.innerHTML = html;
+        const html = textStr
+          .split("")
+          .map(
+            (c, i) =>
+              `<span class="gf-char" data-char="${c === " " ? "&nbsp;" : c}" style="--anim-index: ${startIdx + i}">${c === " " ? "&nbsp;" : c}</span>`,
+          )
+          .join("")
+        el.innerHTML = html
       } else {
         for (let i = 0; i < textStr.length; i++) {
-          const char = textStr[i] === ' ' ? '\u00A0' : textStr[i];
-          const dataChar = textStr[i] === ' ' ? '&nbsp;' : textStr[i];
+          const char = textStr[i] === " " ? "\u00A0" : textStr[i]
+          const dataChar = textStr[i] === " " ? "&nbsp;" : textStr[i]
           if (spans[i].textContent !== char) {
-            spans[i].textContent = char;
-            spans[i].setAttribute('data-char', dataChar);
+            spans[i].textContent = char
+            spans[i].setAttribute("data-char", dataChar)
           }
         }
       }
-      return startIdx + textStr.length;
-    };
+      return startIdx + textStr.length
+    }
 
-    const customText = settings.gfCustomText === "" ? "" : (settings.gfCustomText || "Floating Clock");
-    const gfTextEl = clockElement.querySelector('.gf-text');
-    let animIdx = 0;
+    const customText =
+      settings.gfCustomText === ""
+        ? ""
+        : settings.gfCustomText || "Floating Clock"
+    const gfTextEl = clockElement.querySelector(".gf-text")
+    let animIdx = 0
 
     if (customText) {
-       gfTextEl.style.display = 'block';
-       animIdx = updateGfSpans(gfTextEl, customText, animIdx);
+      gfTextEl.style.display = "block"
+      animIdx = updateGfSpans(gfTextEl, customText, animIdx)
     } else {
-       gfTextEl.style.display = 'none';
-       gfTextEl.innerHTML = "";
+      gfTextEl.style.display = "none"
+      gfTextEl.innerHTML = ""
     }
-    
-    animIdx = updateGfSpans(clockElement.querySelector('.gf-hour'), hh, animIdx);
-    animIdx = updateGfSpans(clockElement.querySelector('.gf-colon'), ":", animIdx);
-    animIdx = updateGfSpans(clockElement.querySelector('.gf-minute'), mm, animIdx);
-    
-    const sEl = clockElement.querySelector('.gf-seconds');
+
+    animIdx = updateGfSpans(clockElement.querySelector(".gf-hour"), hh, animIdx)
+    animIdx = updateGfSpans(
+      clockElement.querySelector(".gf-colon"),
+      ":",
+      animIdx,
+    )
+    animIdx = updateGfSpans(
+      clockElement.querySelector(".gf-minute"),
+      mm,
+      animIdx,
+    )
+
+    const sEl = clockElement.querySelector(".gf-seconds")
     if (ss) {
-       animIdx = updateGfSpans(sEl, ":" + ss, animIdx);
+      animIdx = updateGfSpans(sEl, ":" + ss, animIdx)
     } else {
-       sEl.innerHTML = "";
+      sEl.innerHTML = ""
     }
-    
-    const aEl = clockElement.querySelector('.gf-ampm');
+
+    const aEl = clockElement.querySelector(".gf-ampm")
     if (ampm) {
-       animIdx = updateGfSpans(aEl, " " + ampm, animIdx);
+      animIdx = updateGfSpans(aEl, " " + ampm, animIdx)
     } else {
-       aEl.innerHTML = "";
+      aEl.innerHTML = ""
     }
-    
-    const dateStr = getCustomDateString(now, langCode, tz, settings);
-    const dateText = dateStr.replace(/<[^>]*>?/gm, '').trim();
-    animIdx = updateGfSpans(clockElement.querySelector('.gf-date'), dateText, animIdx);
+
+    const dateStr = getCustomDateString(now, langCode, tz, settings)
+    const dateText = dateStr.replace(/<[^>]*>?/gm, "").trim()
+    animIdx = updateGfSpans(
+      clockElement.querySelector(".gf-date"),
+      dateText,
+      animIdx,
+    )
   } else if (dateClockStyle === "satellite") {
-    if (!clockElement.querySelector('.satellite-container')) {
+    if (!clockElement.querySelector(".satellite-container")) {
       clockElement.innerHTML = `
         <div class="clock-container satellite-container">
           <div class="sat-left-panel">
@@ -2410,67 +2597,74 @@ export function updateTime() {
             </div>
           </div>
         </div>
-      `;
+      `
     }
-    
-    const timeEl = clockElement.querySelector('.sat-time');
-    if (timeEl) timeEl.textContent = `${hh}:${mm}`;
-    
-    const ampmEl = clockElement.querySelector('.sat-ampm');
-    if (ampmEl) ampmEl.textContent = ampm ? ampm.toUpperCase() : '';
-    
-    const secEl = clockElement.querySelector('.sat-seconds');
-    if (secEl) secEl.textContent = `${ss || '00'}s`;
-    
-    const dateStr = getCustomDateString(now, langCode, tz, settings).replace(/<[^>]*>?/gm, '').trim();
-    const dateEl = clockElement.querySelector('.sat-date');
-    if (dateEl) dateEl.textContent = dateStr.toUpperCase();
-    
-    const satContainer = clockElement.querySelector('.satellite-container');
-    const animStyle = settings.satelliteAnimStyle || 'classic';
+
+    const timeEl = clockElement.querySelector(".sat-time")
+    if (timeEl) timeEl.textContent = `${hh}:${mm}`
+
+    const ampmEl = clockElement.querySelector(".sat-ampm")
+    if (ampmEl) ampmEl.textContent = ampm ? ampm.toUpperCase() : ""
+
+    const secEl = clockElement.querySelector(".sat-seconds")
+    if (secEl) secEl.textContent = `${ss || "00"}s`
+
+    const dateStr = getCustomDateString(now, langCode, tz, settings)
+      .replace(/<[^>]*>?/gm, "")
+      .trim()
+    const dateEl = clockElement.querySelector(".sat-date")
+    if (dateEl) dateEl.textContent = dateStr.toUpperCase()
+
+    const satContainer = clockElement.querySelector(".satellite-container")
+    const animStyle = settings.satelliteAnimStyle || "classic"
     if (satContainer) {
-      if (animStyle === 'galaxy') {
-        satContainer.classList.add('anim-style-galaxy');
-        satContainer.classList.remove('anim-style-classic');
+      if (animStyle === "galaxy") {
+        satContainer.classList.add("anim-style-galaxy")
+        satContainer.classList.remove("anim-style-classic")
       } else {
-        satContainer.classList.add('anim-style-classic');
-        satContainer.classList.remove('anim-style-galaxy');
+        satContainer.classList.add("anim-style-classic")
+        satContainer.classList.remove("anim-style-galaxy")
       }
     }
-    
+
     // Calculate hour progress (0% to 100%) for battery
-    const currentMin = now.getMinutes();
-    const currentSec = now.getSeconds();
-    const hourProgress = ((currentMin * 60 + currentSec) / 3600) * 100;
-    const batFill = clockElement.querySelector('.sat-battery-fill');
-    if (batFill) batFill.style.width = `${hourProgress}%`;
-    const batText = clockElement.querySelector('.sat-battery-text');
-    if (batText) batText.textContent = `${Math.round(hourProgress)}%`;
+    const currentMin = now.getMinutes()
+    const currentSec = now.getSeconds()
+    const hourProgress = ((currentMin * 60 + currentSec) / 3600) * 100
+    const batFill = clockElement.querySelector(".sat-battery-fill")
+    if (batFill) batFill.style.width = `${hourProgress}%`
+    const batText = clockElement.querySelector(".sat-battery-text")
+    if (batText) batText.textContent = `${Math.round(hourProgress)}%`
 
     // Fetch weather data from cache
-    if (!window._satWeatherLastUpdate || (now.getTime() - window._satWeatherLastUpdate > 60000)) {
-        try {
-            const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
-            if (cache && cache.data && cache.data.current) {
-                const temp = cache.data.current.temperature_2m;
-                const tempUnit = cache.data.current_units?.temperature_2m || "C";
-                const hum = cache.data.current.relative_humidity_2m;
-                
-                if (temp !== undefined) {
-                    const temEl = clockElement.querySelector('#sat-tem-val');
-                    if (temEl) temEl.textContent = `${(temp).toFixed(1)}°${tempUnit.replace('°', '')}`;
-                }
-                if (hum !== undefined) {
-                    const humEl = clockElement.querySelector('#sat-hum-val');
-                    if (humEl) humEl.textContent = `${Math.round(hum)}%`;
-                }
-            }
-        } catch(e) {}
-        window._satWeatherLastUpdate = now.getTime();
-    }
+    if (
+      !window._satWeatherLastUpdate ||
+      now.getTime() - window._satWeatherLastUpdate > 60000
+    ) {
+      try {
+        const cache = JSON.parse(
+          localStorage.getItem("weatherWidgetCache") || "null",
+        )
+        if (cache && cache.data && cache.data.current) {
+          const temp = cache.data.current.temperature_2m
+          const tempUnit = cache.data.current_units?.temperature_2m || "C"
+          const hum = cache.data.current.relative_humidity_2m
 
+          if (temp !== undefined) {
+            const temEl = clockElement.querySelector("#sat-tem-val")
+            if (temEl)
+              temEl.textContent = `${temp.toFixed(1)}°${tempUnit.replace("°", "")}`
+          }
+          if (hum !== undefined) {
+            const humEl = clockElement.querySelector("#sat-hum-val")
+            if (humEl) humEl.textContent = `${Math.round(hum)}%`
+          }
+        }
+      } catch (e) {}
+      window._satWeatherLastUpdate = now.getTime()
+    }
   } else if (dateClockStyle === "pixel-hud") {
-    if (!clockElement.querySelector('.pixel-hud-container')) {
+    if (!clockElement.querySelector(".pixel-hud-container")) {
       clockElement.innerHTML = `
         <div class="clock-container pixel-hud-container">
           <div class="hud-header">
@@ -2479,22 +2673,25 @@ export function updateTime() {
               <span class="hud-pwr-pct">--%</span>
             </div>
             <div class="hud-battery-track">
-              ${Array(12).fill(0).map(() => '<span class="hud-bat-segment"></span>').join('')}
+              ${Array(12)
+                .fill(0)
+                .map(() => '<span class="hud-bat-segment"></span>')
+                .join("")}
             </div>
           </div>
           <div class="hud-main-display">
             <div class="hud-meta-row">
               <span class="hud-location" id="hud-loc-val">--</span>
-              <span class="hud-sec-tag">${ss ? `:${ss}` : ''}</span>
+              <span class="hud-sec-tag">${ss ? `:${ss}` : ""}</span>
             </div>
             <div class="hud-time">${hh}:${mm}</div>
           </div>
           <div class="hud-data-grid">
             <div class="hud-date-card">
-              <div class="hud-day-badge">${String(now.getDate()).padStart(2, '0')}</div>
+              <div class="hud-day-badge">${String(now.getDate()).padStart(2, "0")}</div>
               <div class="hud-date-meta">
-                <div class="hud-date-my">${now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase()} ${now.getFullYear()}</div>
-                <div class="hud-date-weekday">${now.toLocaleDateString(langCode, { weekday: 'short' }).toUpperCase()}</div>
+                <div class="hud-date-my">${now.toLocaleDateString(langCode, { month: "short" }).toUpperCase()} ${now.getFullYear()}</div>
+                <div class="hud-date-weekday">${now.toLocaleDateString(langCode, { weekday: "short" }).toUpperCase()}</div>
               </div>
             </div>
             <div class="hud-weather-card">
@@ -2515,37 +2712,41 @@ export function updateTime() {
             </div>
           </div>
         </div>
-      `;
+      `
     }
-    
-    const timeEl = clockElement.querySelector('.hud-time');
-    if (timeEl) timeEl.textContent = `${hh}:${mm}`;
-    
-    const secTag = clockElement.querySelector('.hud-sec-tag');
-    if (secTag) secTag.textContent = ss ? `:${ss}` : '';
-    
-    const dayBadge = clockElement.querySelector('.hud-day-badge');
-    if (dayBadge) dayBadge.textContent = String(now.getDate()).padStart(2, '0');
-    
-    const dateMy = clockElement.querySelector('.hud-date-my');
-    if (dateMy) dateMy.textContent = `${now.toLocaleDateString(langCode, { month: 'short' }).toUpperCase()} ${now.getFullYear()}`;
-    
-    const dateWeekday = clockElement.querySelector('.hud-date-weekday');
-    if (dateWeekday) dateWeekday.textContent = now.toLocaleDateString(langCode, { weekday: 'short' }).toUpperCase();
-    
-    const currentMinHUD = now.getMinutes();
-    const currentSecHUD = now.getSeconds();
-    const progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600;
-    
-    const pwrPct = clockElement.querySelector('.hud-pwr-pct');
-    if (pwrPct) pwrPct.textContent = `${Math.floor(progressPct * 100)}%`;
-    
-    const activeSegments = Math.round(progressPct * 12);
-    const segments = clockElement.querySelectorAll('.hud-bat-segment');
+
+    const timeEl = clockElement.querySelector(".hud-time")
+    if (timeEl) timeEl.textContent = `${hh}:${mm}`
+
+    const secTag = clockElement.querySelector(".hud-sec-tag")
+    if (secTag) secTag.textContent = ss ? `:${ss}` : ""
+
+    const dayBadge = clockElement.querySelector(".hud-day-badge")
+    if (dayBadge) dayBadge.textContent = String(now.getDate()).padStart(2, "0")
+
+    const dateMy = clockElement.querySelector(".hud-date-my")
+    if (dateMy)
+      dateMy.textContent = `${now.toLocaleDateString(langCode, { month: "short" }).toUpperCase()} ${now.getFullYear()}`
+
+    const dateWeekday = clockElement.querySelector(".hud-date-weekday")
+    if (dateWeekday)
+      dateWeekday.textContent = now
+        .toLocaleDateString(langCode, { weekday: "short" })
+        .toUpperCase()
+
+    const currentMinHUD = now.getMinutes()
+    const currentSecHUD = now.getSeconds()
+    const progressPct = (currentMinHUD * 60 + currentSecHUD) / 3600
+
+    const pwrPct = clockElement.querySelector(".hud-pwr-pct")
+    if (pwrPct) pwrPct.textContent = `${Math.floor(progressPct * 100)}%`
+
+    const activeSegments = Math.round(progressPct * 12)
+    const segments = clockElement.querySelectorAll(".hud-bat-segment")
     segments.forEach((seg, idx) => {
-      if (idx < activeSegments) seg.classList.add('active');
-      else seg.classList.remove('active');
-    });
+      if (idx < activeSegments) seg.classList.add("active")
+      else seg.classList.remove("active")
+    })
 
     const WEATHER_CODES = {
       0: ["sun", "CLEAR", "Trời quang"],
@@ -2569,90 +2770,131 @@ export function updateTime() {
       95: ["cloud-bolt", "STORM", "Dông"],
       96: ["cloud-bolt", "STORM", "Dông kèm mưa đá"],
       99: ["cloud-bolt", "STORM", "Dông mạnh kèm mưa đá"],
-    };
+    }
 
     try {
-      const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null");
+      const cache = JSON.parse(
+        localStorage.getItem("weatherWidgetCache") || "null",
+      )
       if (cache && cache.data && cache.data.current) {
-        const temp = cache.data.current.temperature_2m;
-        const tempUnit = cache.data.current_units?.temperature_2m || "C";
-        const hum = cache.data.current.relative_humidity_2m;
+        const temp = cache.data.current.temperature_2m
+        const tempUnit = cache.data.current_units?.temperature_2m || "C"
+        const hum = cache.data.current.relative_humidity_2m
 
-        let loc = settings.weatherLocationName || "SECTOR-01";
-        if (loc.length > 12) loc = loc.split(',')[0].substring(0, 12);
-        const locEl = clockElement.querySelector('#hud-loc-val');
-        if (locEl) locEl.textContent = loc.toUpperCase();
+        let loc = settings.weatherLocationName || "SECTOR-01"
+        if (loc.length > 12) loc = loc.split(",")[0].substring(0, 12)
+        const locEl = clockElement.querySelector("#hud-loc-val")
+        if (locEl) locEl.textContent = loc.toUpperCase()
 
         if (temp !== undefined) {
-          const tempStr = `${Math.round(temp)}°${tempUnit.replace('°', '')}`;
-          const wTempEl = clockElement.querySelector('.hud-w2-temp');
-          if (wTempEl) wTempEl.textContent = tempStr;
+          const tempStr = `${Math.round(temp)}°${tempUnit.replace("°", "")}`
+          const wTempEl = clockElement.querySelector(".hud-w2-temp")
+          if (wTempEl) wTempEl.textContent = tempStr
         }
         if (hum !== undefined) {
-          const humStr = `${Math.round(hum)}%`;
-          const wHumEl = clockElement.querySelector('.hud-w2-hum');
-          if (wHumEl) wHumEl.textContent = humStr;
+          const humStr = `${Math.round(hum)}%`
+          const wHumEl = clockElement.querySelector(".hud-w2-hum")
+          if (wHumEl) wHumEl.textContent = humStr
         }
 
-        const code = cache.data.current.weather_code;
+        const code = cache.data.current.weather_code
         if (code !== undefined) {
-          const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0];
-          const langIdx = langCode.startsWith('vi') ? 2 : 1;
-          const condText = item[langIdx].toUpperCase();
-          const condIcon = `<i class="fa-solid fa-${item[0]}"></i>`;
-          const condTextEl = clockElement.querySelector('.hud-w2-cond-text');
-          const condIconEl = clockElement.querySelector('.hud-w2-cond-icon');
-          if (condTextEl) condTextEl.textContent = condText;
-          if (condIconEl) condIconEl.innerHTML = condIcon;
+          const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0]
+          const langIdx = langCode.startsWith("vi") ? 2 : 1
+          const condText = item[langIdx].toUpperCase()
+          const condIcon = `<i class="fa-solid fa-${item[0]}"></i>`
+          const condTextEl = clockElement.querySelector(".hud-w2-cond-text")
+          const condIconEl = clockElement.querySelector(".hud-w2-cond-icon")
+          if (condTextEl) condTextEl.textContent = condText
+          if (condIconEl) condIconEl.innerHTML = condIcon
         }
       }
-    } catch(e) {}
-        
+    } catch (e) {}
   } else if (dateClockStyle === "space-concentric") {
-    const currentMonth = now.getMonth();
-    const currentDay = now.getDate() - 1;
-    const currentWeek = now.getDay();
-    const currentHour = now.getHours();
-    const currentMin = now.getMinutes();
-    const currentSec = now.getSeconds();
+    const currentMonth = now.getMonth()
+    const currentDay = now.getDate() - 1
+    const currentWeek = now.getDay()
+    const currentHour = now.getHours()
+    const currentMin = now.getMinutes()
+    const currentSec = now.getSeconds()
 
-    const isVi = langCode.startsWith("vi");
-    const is12Hour = settings.clockTimeFormat === "12";
-    const hourIdx = is12Hour ? (currentHour % 12) : currentHour;
+    const isVi = langCode.startsWith("vi")
+    const is12Hour = settings.clockTimeFormat === "12"
+    const hourIdx = is12Hour ? currentHour % 12 : currentHour
 
-    const monthAngle = -(currentMonth * (360 / 12));
-    const dayAngle = -(currentDay * (360 / 31));
-    const weekAngle = -(currentWeek * (360 / 7));
-    const hourAngle = -(hourIdx * (360 / (is12Hour ? 12 : 24)));
-    const minAngle = -(currentMin * (360 / 60));
-    const secAngle = -(currentSec * (360 / 60));
-    const showSec = settings.clockDisplaySeconds !== false;
-    const cacheKey = `${langCode}-${is12Hour}-${showSec}`;
+    const monthAngle = -(currentMonth * (360 / 12))
+    const dayAngle = -(currentDay * (360 / 31))
+    const weekAngle = -(currentWeek * (360 / 7))
+    const hourAngle = -(hourIdx * (360 / (is12Hour ? 12 : 24)))
+    const minAngle = -(currentMin * (360 / 60))
+    const secAngle = -(currentSec * (360 / 60))
+    const showSec = settings.clockDisplaySeconds !== false
+    const cacheKey = `${langCode}-${is12Hour}-${showSec}`
 
     if (!spaceConcentricHtmlCache || spaceConcentricLangCache !== cacheKey) {
-      const scMonthsEn = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-      const scMonthsVi = ["THG 01", "THG 02", "THG 03", "THG 04", "THG 05", "THG 06", "THG 07", "THG 08", "THG 09", "THG 10", "THG 11", "THG 12"];
-      const scWeekdaysEn = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      const scWeekdaysVi = ["CN", "T.HAI", "T.BA", "T.TƯ", "T.NĂM", "T.SÁU", "T.BẢY"];
-      const scDaysList = Array.from({length: 31}, (_, i) => (i + 1).toString().padStart(2, '0'));
-      const scHours12 = Array.from({length: 12}, (_, i) => (i === 0 ? 12 : i).toString().padStart(2, '0'));
-      const scHours24 = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+      const scMonthsEn = [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC",
+      ]
+      const scMonthsVi = [
+        "THG 01",
+        "THG 02",
+        "THG 03",
+        "THG 04",
+        "THG 05",
+        "THG 06",
+        "THG 07",
+        "THG 08",
+        "THG 09",
+        "THG 10",
+        "THG 11",
+        "THG 12",
+      ]
+      const scWeekdaysEn = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+      const scWeekdaysVi = [
+        "CN",
+        "T.HAI",
+        "T.BA",
+        "T.TƯ",
+        "T.NĂM",
+        "T.SÁU",
+        "T.BẢY",
+      ]
+      const scDaysList = Array.from({ length: 31 }, (_, i) =>
+        (i + 1).toString().padStart(2, "0"),
+      )
+      const scHours12 = Array.from({ length: 12 }, (_, i) =>
+        (i === 0 ? 12 : i).toString().padStart(2, "0"),
+      )
+      const scHours24 = Array.from({ length: 24 }, (_, i) =>
+        i.toString().padStart(2, "0"),
+      )
 
-      const m = isVi ? scMonthsVi : scMonthsEn;
-      const w = isVi ? scWeekdaysVi : scWeekdaysEn;
-      const d = scDaysList;
-      const hArray = is12Hour ? scHours12 : scHours24;
+      const m = isVi ? scMonthsVi : scMonthsEn
+      const w = isVi ? scWeekdaysVi : scWeekdaysEn
+      const d = scDaysList
+      const hArray = is12Hour ? scHours12 : scHours24
 
       const genRing = (items, id, ringLabel) => {
-        const step = 360 / items.length;
+        const step = 360 / items.length
         const itemsHtml = items
           .map(
             (t, i) =>
               `<div class="sc-text-item" style="transform: rotate(${i * step}deg)"><span class="sc-item-label">${t}</span></div>`,
           )
-          .join("");
-        return `<div id="${id}" class="sc-ring" data-label="${ringLabel}">${itemsHtml}</div>`;
-      };
+          .join("")
+        return `<div id="${id}" class="sc-ring" data-label="${ringLabel}">${itemsHtml}</div>`
+      }
 
       spaceConcentricHtmlCache = `
         <div class="space-concentric-container">
@@ -2677,132 +2919,141 @@ export function updateTime() {
                     <span class="sc-tick sc-tick-6"></span>
                 </div>
             </div>
-            ${genRing(m, 'sc-ring-month', 'MONTH')}
-            ${genRing(d, 'sc-ring-day', 'DAY')}
-            ${genRing(w, 'sc-ring-week', 'WEEK')}
-            ${genRing(hArray, 'sc-ring-hour', 'HOUR')}
-            ${genRing(scMinutes, 'sc-ring-min', 'MIN')}
-            ${showSec ? genRing(scSeconds, 'sc-ring-sec', 'SEC') : ''}
+            ${genRing(m, "sc-ring-month", "MONTH")}
+            ${genRing(d, "sc-ring-day", "DAY")}
+            ${genRing(w, "sc-ring-week", "WEEK")}
+            ${genRing(hArray, "sc-ring-hour", "HOUR")}
+            ${genRing(scMinutes, "sc-ring-min", "MIN")}
+            ${showSec ? genRing(scSeconds, "sc-ring-sec", "SEC") : ""}
             <div class="sc-center-core">
                 <div class="sc-core-glow"></div>
                 <div class="sc-core-hud">
                     <div class="sc-core-time-main">${hh}:${mm}</div>
-                    ${ss ? `<div class="sc-core-sec">${ss}</div>` : ''}
-                    ${ampm ? `<div class="sc-core-ampm">${ampm}</div>` : ''}
+                    ${ss ? `<div class="sc-core-sec">${ss}</div>` : ""}
+                    ${ampm ? `<div class="sc-core-ampm">${ampm}</div>` : ""}
                 </div>
             </div>
         </div>
-      `;
-      spaceConcentricLangCache = cacheKey;
-      clockElement.innerHTML = spaceConcentricHtmlCache;
-      spaceConcentricRingElements = null;
-      spaceConcentricLastState = {};
-    } else if (clockElement.children.length === 0 || !clockElement.querySelector('.space-concentric-container')) {
-      clockElement.innerHTML = spaceConcentricHtmlCache;
-      spaceConcentricRingElements = null;
-      spaceConcentricLastState = {};
+      `
+      spaceConcentricLangCache = cacheKey
+      clockElement.innerHTML = spaceConcentricHtmlCache
+      spaceConcentricRingElements = null
+      spaceConcentricLastState = {}
+    } else if (
+      clockElement.children.length === 0 ||
+      !clockElement.querySelector(".space-concentric-container")
+    ) {
+      clockElement.innerHTML = spaceConcentricHtmlCache
+      spaceConcentricRingElements = null
+      spaceConcentricLastState = {}
     }
 
     if (!spaceConcentricRingElements) {
       spaceConcentricRingElements = {
-        chronoHand: clockElement.querySelector('.sc-chrono-hand'),
-        coreTime: clockElement.querySelector('.sc-core-time-main'),
-        coreSec: clockElement.querySelector('.sc-core-sec'),
-        coreAmPm: clockElement.querySelector('.sc-core-ampm'),
+        chronoHand: clockElement.querySelector(".sc-chrono-hand"),
+        coreTime: clockElement.querySelector(".sc-core-time-main"),
+        coreSec: clockElement.querySelector(".sc-core-sec"),
+        coreAmPm: clockElement.querySelector(".sc-core-ampm"),
         rings: {
           month: {
-            el: clockElement.querySelector('#sc-ring-month'),
-            items: clockElement.querySelectorAll('#sc-ring-month .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-month"),
+            items: clockElement.querySelectorAll(
+              "#sc-ring-month .sc-text-item",
+            ),
           },
           day: {
-            el: clockElement.querySelector('#sc-ring-day'),
-            items: clockElement.querySelectorAll('#sc-ring-day .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-day"),
+            items: clockElement.querySelectorAll("#sc-ring-day .sc-text-item"),
           },
           week: {
-            el: clockElement.querySelector('#sc-ring-week'),
-            items: clockElement.querySelectorAll('#sc-ring-week .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-week"),
+            items: clockElement.querySelectorAll("#sc-ring-week .sc-text-item"),
           },
           hour: {
-            el: clockElement.querySelector('#sc-ring-hour'),
-            items: clockElement.querySelectorAll('#sc-ring-hour .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-hour"),
+            items: clockElement.querySelectorAll("#sc-ring-hour .sc-text-item"),
           },
           min: {
-            el: clockElement.querySelector('#sc-ring-min'),
-            items: clockElement.querySelectorAll('#sc-ring-min .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-min"),
+            items: clockElement.querySelectorAll("#sc-ring-min .sc-text-item"),
           },
           sec: {
-            el: clockElement.querySelector('#sc-ring-sec'),
-            items: clockElement.querySelectorAll('#sc-ring-sec .sc-text-item'),
+            el: clockElement.querySelector("#sc-ring-sec"),
+            items: clockElement.querySelectorAll("#sc-ring-sec .sc-text-item"),
           },
         },
-      };
-      spaceConcentricLastState = {};
+      }
+      spaceConcentricLastState = {}
     }
 
     // Update central core time only when values change
-    const timeStr = `${hh}:${mm}`;
+    const timeStr = `${hh}:${mm}`
     if (spaceConcentricLastState.time !== timeStr) {
       if (spaceConcentricRingElements.coreTime) {
-        spaceConcentricRingElements.coreTime.textContent = timeStr;
+        spaceConcentricRingElements.coreTime.textContent = timeStr
       }
-      spaceConcentricLastState.time = timeStr;
+      spaceConcentricLastState.time = timeStr
     }
     if (ss && spaceConcentricLastState.sec !== ss) {
       if (spaceConcentricRingElements.coreSec) {
-        spaceConcentricRingElements.coreSec.textContent = ss;
+        spaceConcentricRingElements.coreSec.textContent = ss
       }
-      spaceConcentricLastState.sec = ss;
+      spaceConcentricLastState.sec = ss
     }
     if (ampm && spaceConcentricLastState.ampm !== ampm) {
       if (spaceConcentricRingElements.coreAmPm) {
-        spaceConcentricRingElements.coreAmPm.textContent = ampm;
+        spaceConcentricRingElements.coreAmPm.textContent = ampm
       }
-      spaceConcentricLastState.ampm = ampm;
+      spaceConcentricLastState.ampm = ampm
     }
 
     // Update rotating chrono / radar sweep hand
-    const chronoAngle = currentSec * 6;
-    if (spaceConcentricRingElements.chronoHand && spaceConcentricLastState.chronoAngle !== chronoAngle) {
-      spaceConcentricRingElements.chronoHand.style.transform = `rotate(${chronoAngle}deg)`;
-      spaceConcentricLastState.chronoAngle = chronoAngle;
+    const chronoAngle = currentSec * 6
+    if (
+      spaceConcentricRingElements.chronoHand &&
+      spaceConcentricLastState.chronoAngle !== chronoAngle
+    ) {
+      spaceConcentricRingElements.chronoHand.style.transform = `rotate(${chronoAngle}deg)`
+      spaceConcentricLastState.chronoAngle = chronoAngle
     }
 
     const updateRingFast = (ringKey, angle, activeIndex) => {
-      const ringObj = spaceConcentricRingElements.rings[ringKey];
-      if (!ringObj || !ringObj.el) return;
+      const ringObj = spaceConcentricRingElements.rings[ringKey]
+      if (!ringObj || !ringObj.el) return
 
-      const lastKey = `ring_${ringKey}`;
+      const lastKey = `ring_${ringKey}`
       if (spaceConcentricLastState[lastKey] === activeIndex) {
-        return; // Value hasn't changed, skip DOM touching completely
+        return // Value hasn't changed, skip DOM touching completely
       }
 
-      const lastIndex = spaceConcentricLastState[lastKey];
-      ringObj.el.style.transform = `rotate(${angle}deg)`;
+      const lastIndex = spaceConcentricLastState[lastKey]
+      ringObj.el.style.transform = `rotate(${angle}deg)`
 
       if (lastIndex !== undefined && ringObj.items[lastIndex]) {
-        ringObj.items[lastIndex].classList.remove('is-active');
+        ringObj.items[lastIndex].classList.remove("is-active")
       }
       if (ringObj.items[activeIndex]) {
-        ringObj.items[activeIndex].classList.add('is-active');
+        ringObj.items[activeIndex].classList.add("is-active")
       }
 
-      spaceConcentricLastState[lastKey] = activeIndex;
-    };
+      spaceConcentricLastState[lastKey] = activeIndex
+    }
 
-    updateRingFast('month', monthAngle, currentMonth);
-    updateRingFast('day', dayAngle, currentDay);
-    updateRingFast('week', weekAngle, currentWeek);
-    updateRingFast('hour', hourAngle, hourIdx);
-    updateRingFast('min', minAngle, currentMin);
-    if (showSec) updateRingFast('sec', secAngle, currentSec);
-
+    updateRingFast("month", monthAngle, currentMonth)
+    updateRingFast("day", dayAngle, currentDay)
+    updateRingFast("week", weekAngle, currentWeek)
+    updateRingFast("hour", hourAngle, hourIdx)
+    updateRingFast("min", minAngle, currentMin)
+    if (showSec) updateRingFast("sec", secAngle, currentSec)
   } else if (dateClockStyle === "split-pill") {
     const parts = getZonedDateParts(now, tz)
     const day = parts.day
     const monthName = new Intl.DateTimeFormat(langCode, {
       month: "short",
       timeZone: tz,
-    }).format(now).toUpperCase()
+    })
+      .format(now)
+      .toUpperCase()
     const rawWeekday = getSafeWeekday(
       now,
       langCode,
@@ -2846,36 +3097,50 @@ export function updateTime() {
     }
     const formattedDateFull = (rawDate || "").replace(/<[^>]*>?/gm, "").trim()
 
-    const shouldShowClock =
-      displayMode === "all" || displayMode === "clock"
+    const shouldShowClock = displayMode === "all" || displayMode === "clock"
     const shouldShowDate =
-      (displayMode === "all" || displayMode === "date" || displayMode === "weekday") &&
+      (displayMode === "all" ||
+        displayMode === "date" ||
+        displayMode === "weekday") &&
       settings.showGregorian !== false
 
     const promptTheme = settings.ompPromptTheme || "powerline"
     const windowStyle = settings.ompWindowStyle || "windows"
-    const userHost = settings.ompUserHost !== undefined ? settings.ompUserHost : "dev@startpage"
-    const promptPath = settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
-    const gitBranch = settings.ompBranch !== undefined ? settings.ompBranch : "main"
+    const userHost =
+      settings.ompUserHost !== undefined
+        ? settings.ompUserHost
+        : "dev@startpage"
+    const promptPath =
+      settings.ompPath !== undefined ? settings.ompPath : "~/startpage"
+    const gitBranch =
+      settings.ompBranch !== undefined ? settings.ompBranch : "main"
     const showGit = settings.ompShowGit !== false
     const showBattery = settings.ompShowBattery !== false
     const showOs = settings.ompShowOs !== false
     const cursorStyle = settings.ompCursorStyle || "block"
-    const cursorChar = cursorStyle === "line" ? "|" : cursorStyle === "underline" ? "_" : "█"
+    const cursorChar =
+      cursorStyle === "line" ? "|" : cursorStyle === "underline" ? "_" : "█"
 
     // OS Icon helper
     let osIconHtml = '<i class="fa-brands fa-windows"></i>'
     const osChoice = settings.ompOsIcon || "auto"
-    if (osChoice === "windows") osIconHtml = '<i class="fa-brands fa-windows"></i>'
-    else if (osChoice === "apple") osIconHtml = '<i class="fa-brands fa-apple"></i>'
-    else if (osChoice === "linux") osIconHtml = '<i class="fa-brands fa-linux"></i>'
-    else if (osChoice === "ubuntu") osIconHtml = '<i class="fa-brands fa-ubuntu"></i>'
+    if (osChoice === "windows")
+      osIconHtml = '<i class="fa-brands fa-windows"></i>'
+    else if (osChoice === "apple")
+      osIconHtml = '<i class="fa-brands fa-apple"></i>'
+    else if (osChoice === "linux")
+      osIconHtml = '<i class="fa-brands fa-linux"></i>'
+    else if (osChoice === "ubuntu")
+      osIconHtml = '<i class="fa-brands fa-ubuntu"></i>'
     else if (osChoice === "arch") osIconHtml = '<i class="fa-solid fa-gem"></i>'
-    else if (osChoice === "posh") osIconHtml = '<i class="fa-solid fa-bolt"></i>'
+    else if (osChoice === "posh")
+      osIconHtml = '<i class="fa-solid fa-bolt"></i>'
     else {
       const ua = (navigator.userAgent || "").toLowerCase()
-      if (ua.includes("mac") || ua.includes("darwin")) osIconHtml = '<i class="fa-brands fa-apple"></i>'
-      else if (ua.includes("linux") || ua.includes("android")) osIconHtml = '<i class="fa-brands fa-linux"></i>'
+      if (ua.includes("mac") || ua.includes("darwin"))
+        osIconHtml = '<i class="fa-brands fa-apple"></i>'
+      else if (ua.includes("linux") || ua.includes("android"))
+        osIconHtml = '<i class="fa-brands fa-linux"></i>'
     }
 
     // Battery data
@@ -2884,7 +3149,13 @@ export function updateTime() {
     if (globalBatteryManager) {
       const pct = Math.round((globalBatteryManager.level || 1) * 100)
       batText = `${pct}%`
-      batIcon = globalBatteryManager.charging ? "fa-solid fa-bolt" : pct <= 25 ? "fa-solid fa-battery-quarter" : pct <= 65 ? "fa-solid fa-battery-half" : "fa-solid fa-battery-full"
+      batIcon = globalBatteryManager.charging
+        ? "fa-solid fa-bolt"
+        : pct <= 25
+          ? "fa-solid fa-battery-quarter"
+          : pct <= 65
+            ? "fa-solid fa-battery-half"
+            : "fa-solid fa-battery-full"
     }
 
     const ARROW_SVG = `<svg class="omp-seg-arrow" viewBox="0 0 10 24" preserveAspectRatio="none"><path d="M0,0 L10,12 L0,24 Z" fill="currentColor"></path></svg>`
@@ -3073,8 +3344,10 @@ export function updateTime() {
       if (dateEl && dateEl.textContent !== formattedDateFull) {
         dateEl.textContent = formattedDateFull
       }
-      if (clockOutput) clockOutput.style.display = shouldShowClock ? "flex" : "none"
-      if (metaOutput) metaOutput.style.display = shouldShowDate ? "flex" : "none"
+      if (clockOutput)
+        clockOutput.style.display = shouldShowClock ? "flex" : "none"
+      if (metaOutput)
+        metaOutput.style.display = shouldShowDate ? "flex" : "none"
     } else {
       clockElement.innerHTML = `
         <div class="omp-terminal-window omp-style-${escapeAttribute(windowStyle)} omp-theme-${escapeAttribute(promptTheme)}" data-theme="${escapeAttribute(promptTheme)}" data-win="${escapeAttribute(windowStyle)}">
@@ -3120,21 +3393,31 @@ export function updateTime() {
       // Add interactive click listeners on window buttons
       const termWindow = clockElement.querySelector(".omp-terminal-window")
       if (termWindow) {
-        termWindow.querySelector(".omp-win-close, .omp-mac-close")?.addEventListener("click", () => {
-          termWindow.classList.add("omp-glitch-anim")
-          setTimeout(() => termWindow.classList.remove("omp-glitch-anim"), 800)
-        })
-        termWindow.querySelector(".omp-win-min, .omp-mac-min")?.addEventListener("click", () => {
-          termWindow.classList.toggle("omp-compact-mode")
-        })
-        termWindow.querySelector(".omp-win-max, .omp-mac-max")?.addEventListener("click", () => {
-          termWindow.classList.toggle("omp-expanded-mode")
-        })
+        termWindow
+          .querySelector(".omp-win-close, .omp-mac-close")
+          ?.addEventListener("click", () => {
+            termWindow.classList.add("omp-glitch-anim")
+            setTimeout(
+              () => termWindow.classList.remove("omp-glitch-anim"),
+              800,
+            )
+          })
+        termWindow
+          .querySelector(".omp-win-min, .omp-mac-min")
+          ?.addEventListener("click", () => {
+            termWindow.classList.toggle("omp-compact-mode")
+          })
+        termWindow
+          .querySelector(".omp-win-max, .omp-mac-max")
+          ?.addEventListener("click", () => {
+            termWindow.classList.toggle("omp-expanded-mode")
+          })
       }
     }
   } else if (dateClockStyle === "clock-3d") {
     const showSec = !settings.hideSeconds
-    const is12Hour = settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
+    const is12Hour =
+      settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
     let displayHH = hh
     if (is12Hour) {
       let hNum = parseInt(hh, 10)
@@ -3161,11 +3444,12 @@ export function updateTime() {
     }
 
     const shouldShowDate =
-      (displayMode === "all" || displayMode === "date" || displayMode === "weekday") &&
+      (displayMode === "all" ||
+        displayMode === "date" ||
+        displayMode === "weekday") &&
       settings.showGregorian !== false
 
-    const shouldShowClock =
-      displayMode === "all" || displayMode === "clock"
+    const shouldShowClock = displayMode === "all" || displayMode === "clock"
 
     const existingScene = clockElement.querySelector(".clock-3d-scene")
     const existingSec = existingScene?.querySelector(".clock-3d-cube-sec")
@@ -3233,7 +3517,9 @@ export function updateTime() {
               ${renderCube(d3, 2)}
               ${renderCube(d4, 3)}
 
-              ${showSec ? `
+              ${
+                showSec
+                  ? `
               <!-- Seconds Separator -->
               <div class="clock-3d-colon-separator clock-3d-colon-sec">
                 <span class="clock-3d-orb clock-3d-orb-top"></span>
@@ -3242,14 +3528,20 @@ export function updateTime() {
               <!-- Seconds Cubes -->
               ${renderCube(d5, 4, true)}
               ${renderCube(d6, 5, true)}
-              ` : ""}
+              `
+                  : ""
+              }
 
-              ${ampm ? `
+              ${
+                ampm
+                  ? `
               <!-- 3D AM/PM Badge -->
               <div class="clock-3d-ampm-cube">
                 <span>${ampm}</span>
               </div>
-              ` : ""}
+              `
+                  : ""
+              }
             </div>
           </div>
 
@@ -3431,12 +3723,13 @@ export function updateTime() {
 }
 
 export function initClock() {
-  window._isMusicPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
+  window._isMusicPlaying =
+    localStorage.getItem("musicPlayerLastIsPlaying") === "true"
   window.addEventListener("musicPlayingStateChange", (e) => {
     window._isMusicPlaying = e.detail
-    const visualizer = document.querySelector('.round-clock-visualizer')
+    const visualizer = document.querySelector(".round-clock-visualizer")
     if (visualizer) {
-      visualizer.classList.toggle('is-playing', e.detail)
+      visualizer.classList.toggle("is-playing", e.detail)
     }
   })
 
@@ -3643,13 +3936,21 @@ export function updateCustomTitle() {
   const getGreeting = (lang) => {
     const hr = new Date().getHours()
     if (lang === "vi") {
-      return hr < 12 ? "Chào buổi sáng" : hr < 18 ? "Chào buổi chiều" : "Chào buổi tối"
+      return hr < 12
+        ? "Chào buổi sáng"
+        : hr < 18
+          ? "Chào buổi chiều"
+          : "Chào buổi tối"
     } else if (lang === "de") {
       return hr < 12 ? "Guten Morgen" : hr < 18 ? "Guten Tag" : "Guten Abend"
     } else if (lang === "sv") {
       return hr < 12 ? "God morgon" : hr < 18 ? "God eftermiddag" : "God kväll"
     }
-    return hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening"
+    return hr < 12
+      ? "Good morning"
+      : hr < 18
+        ? "Good afternoon"
+        : "Good evening"
   }
 
   const resolveTokens = (str) => {
@@ -3657,18 +3958,28 @@ export function updateCustomTitle() {
     let s = str
     const now = new Date()
 
-    if (s.includes("{greeting}")) s = s.replace(/{greeting}/gi, getGreeting(currentLang))
+    if (s.includes("{greeting}"))
+      s = s.replace(/{greeting}/gi, getGreeting(currentLang))
     if (s.includes("{time}")) {
-      s = s.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+      s = s.replace(
+        /{time}/gi,
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
+      )
     }
     if (s.includes("{time_12}")) {
       const hours = now.getHours()
       const hh = hours % 12 || 12
       const ampm = hours >= 12 ? "PM" : "AM"
-      s = s.replace(/{time_12}/gi, `${hh}:${String(now.getMinutes()).padStart(2, "0")} ${ampm}`)
+      s = s.replace(
+        /{time_12}/gi,
+        `${hh}:${String(now.getMinutes()).padStart(2, "0")} ${ampm}`,
+      )
     }
     if (s.includes("{date}")) {
-      s = s.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+      s = s.replace(
+        /{date}/gi,
+        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
+      )
     }
     if (s.includes("{day}")) {
       s = s.replace(/{day}/gi, String(now.getDate()))
@@ -3680,15 +3991,39 @@ export function updateCustomTitle() {
       s = s.replace(/{year}/gi, String(now.getFullYear()))
     }
     if (s.includes("{weekday}")) {
-      const viDays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
-      const enDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-      const dayName = currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()]
+      const viDays = [
+        "Chủ Nhật",
+        "Thứ Hai",
+        "Thứ Ba",
+        "Thứ Tư",
+        "Thứ Năm",
+        "Thứ Sáu",
+        "Thứ Bảy",
+      ]
+      const enDays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ]
+      const dayName =
+        currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()]
       s = s.replace(/{weekday}/gi, dayName)
     }
     if (s.includes("{weather}")) {
       try {
-        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null")
-        if (cache && cache.data && cache.data.current && cache.data.current.temperature_2m !== undefined) {
+        const cache = JSON.parse(
+          localStorage.getItem("weatherWidgetCache") || "null",
+        )
+        if (
+          cache &&
+          cache.data &&
+          cache.data.current &&
+          cache.data.current.temperature_2m !== undefined
+        ) {
           const temp = Math.round(cache.data.current.temperature_2m)
           s = s.replace(/{weather}/gi, `${temp}°C`)
         } else {
@@ -3730,15 +4065,53 @@ export function updateCustomTitle() {
   const ori2 = settings.customTitleOrientation2 || "mixed"
   const ori3 = settings.customTitleOrientation3 || "mixed"
   const ori4 = settings.customTitleOrientation4 || "mixed"
-  const lineSpacing = settings.customTitleLineSpacing !== undefined ? settings.customTitleLineSpacing : 15
-  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4 + "||" + lineSpacing
+  const lineSpacing =
+    settings.customTitleLineSpacing !== undefined
+      ? settings.customTitleLineSpacing
+      : 15
+  const combinedText =
+    text +
+    "||" +
+    text2 +
+    "||" +
+    text3 +
+    "||" +
+    text4 +
+    "||" +
+    direction +
+    "||" +
+    order +
+    "||" +
+    wordWrap +
+    "||" +
+    animation +
+    "||" +
+    animationLoop +
+    "||" +
+    font1 +
+    "||" +
+    font2 +
+    "||" +
+    font3 +
+    "||" +
+    font4 +
+    "||" +
+    ori1 +
+    "||" +
+    ori2 +
+    "||" +
+    ori3 +
+    "||" +
+    ori4 +
+    "||" +
+    lineSpacing
 
   if (
     el.dataset.prevText !== combinedText ||
     el.dataset.prevMulti !== String(isMulti)
   ) {
     el.innerHTML = ""
-    
+
     // Create inner wrapper for animations so it doesn't conflict with draggable transform
     const innerWrap = document.createElement("div")
     innerWrap.className = "custom-title-inner"
@@ -3756,26 +4129,31 @@ export function updateCustomTitle() {
     if (direction === "vertical") {
       el.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
       el.style.display = "block"
-      innerWrap.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+      innerWrap.style.writingMode =
+        order === "reverse" ? "vertical-rl" : "vertical-lr"
       innerWrap.style.display = "block"
     } else {
       el.style.writingMode = "horizontal-tb"
       el.style.textOrientation = "mixed"
       el.style.display = order === "reverse" ? "flex" : "block"
       if (order === "reverse") {
-         el.style.flexDirection = "column-reverse"
-         el.style.alignItems = "center"
-         innerWrap.style.display = "flex"
-         innerWrap.style.flexDirection = "column-reverse"
-         innerWrap.style.alignItems = "center"
+        el.style.flexDirection = "column-reverse"
+        el.style.alignItems = "center"
+        innerWrap.style.display = "flex"
+        innerWrap.style.flexDirection = "column-reverse"
+        innerWrap.style.alignItems = "center"
       } else {
-         innerWrap.style.display = "block"
+        innerWrap.style.display = "block"
       }
       innerWrap.style.writingMode = "horizontal-tb"
       innerWrap.style.textOrientation = "mixed"
     }
     // Calculate total chars across all lines to sync animations
-    const totalChars = (text || "").length + (text2 || "").length + (text3 || "").length + (text4 || "").length
+    const totalChars =
+      (text || "").length +
+      (text2 || "").length +
+      (text3 || "").length +
+      (text4 || "").length
     const globalTotalDuration = Math.max(3, totalChars * 0.1 + 2)
     let globalCharIndex = 0
 
@@ -3793,7 +4171,20 @@ export function updateCustomTitle() {
         div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus", "shimmer", "flame", "pop-3d"]
+        const charAnimations = [
+          "typing",
+          "wave",
+          "glow",
+          "glitch",
+          "flip",
+          "shake",
+          "float",
+          "neon",
+          "focus",
+          "shimmer",
+          "flame",
+          "pop-3d",
+        ]
         const hasCharAnim = charAnimations.includes(animation)
 
         if (wordWrap) {
@@ -3806,18 +4197,19 @@ export function updateCustomTitle() {
           div.style.gap = "4px"
           div.style.minWidth = "max-content" // Prevent orthogonal clipping
           const words = content.split(" ")
-          words.forEach(w => {
+          words.forEach((w) => {
             if (w.trim() !== "") {
               const wordSpan = document.createElement("span")
               wordSpan.style.whiteSpace = "nowrap"
               if (hasCharAnim) {
                 const chars = w.split("")
-                chars.forEach(char => {
+                chars.forEach((char) => {
                   const span = document.createElement("span")
                   span.textContent = char
                   span.dataset.char = char
                   span.style.animationDelay = `${globalCharIndex * 0.1}s`
-                  if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
+                  if (animation === "typing")
+                    span.style.animationDuration = `${globalTotalDuration}s`
                   span.className = "char-anim"
                   wordSpan.appendChild(span)
                   globalCharIndex++
@@ -3833,27 +4225,28 @@ export function updateCustomTitle() {
           })
         } else {
           div.style.textOrientation = orientation
-          
+
           if (hasCharAnim) {
             const words = content.split(" ")
             words.forEach((word, wordIndex) => {
               const wordSpan = document.createElement("span")
               wordSpan.style.whiteSpace = "nowrap"
-              
+
               const chars = word.split("")
               chars.forEach((char) => {
                 const span = document.createElement("span")
                 span.textContent = char
                 span.dataset.char = char
                 span.style.animationDelay = `${globalCharIndex * 0.1}s`
-                if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
+                if (animation === "typing")
+                  span.style.animationDuration = `${globalTotalDuration}s`
                 span.className = "char-anim"
                 wordSpan.appendChild(span)
                 globalCharIndex++
               })
-              
+
               div.appendChild(wordSpan)
-              
+
               if (wordIndex < words.length - 1) {
                 div.appendChild(document.createTextNode(" "))
                 globalCharIndex++
@@ -3866,14 +4259,27 @@ export function updateCustomTitle() {
       } else {
         // Horizontal mode
         div.style.textOrientation = "mixed"
-        
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus", "shimmer", "flame", "pop-3d"]
+
+        const charAnimations = [
+          "typing",
+          "wave",
+          "glow",
+          "glitch",
+          "flip",
+          "shake",
+          "float",
+          "neon",
+          "focus",
+          "shimmer",
+          "flame",
+          "pop-3d",
+        ]
         if (charAnimations.includes(animation)) {
           const words = content.split(" ")
           words.forEach((word, wordIndex) => {
             const wordSpan = document.createElement("span")
             wordSpan.style.whiteSpace = "nowrap"
-            
+
             const chars = word.split("")
             chars.forEach((char) => {
               const span = document.createElement("span")
@@ -3887,9 +4293,9 @@ export function updateCustomTitle() {
               wordSpan.appendChild(span)
               globalCharIndex++
             })
-            
+
             div.appendChild(wordSpan)
-            
+
             if (wordIndex < words.length - 1) {
               div.appendChild(document.createTextNode(" "))
               globalCharIndex++
@@ -3898,7 +4304,7 @@ export function updateCustomTitle() {
         } else {
           div.textContent = content
         }
-        
+
         if (wordWrap) {
           div.style.whiteSpace = "pre-wrap"
           div.style.wordBreak = "break-word"
@@ -3906,7 +4312,7 @@ export function updateCustomTitle() {
           div.style.margin = "0 auto"
         }
       }
-      
+
       if (isMulti) applyHuePerCharacter(div, 42)
       return div
     }
@@ -3927,12 +4333,12 @@ export function updateCustomTitle() {
   }
 
   el.style.color = settings.customTitleColor || "#ffffff"
-  
+
   const l1 = el.querySelector('[data-line="1"]')
   const l2 = el.querySelector('[data-line="2"]')
   const l3 = el.querySelector('[data-line="3"]')
   const l4 = el.querySelector('[data-line="4"]')
-  
+
   if (l1) {
     l1.style.fontSize = (settings.customTitleFontSize || 24) + "px"
     l1.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"

@@ -177,8 +177,7 @@ const SEARCH_ENGINES = {
     name: "Stack Overflow",
     shortName: "Stack",
     domain: "stackoverflow.com",
-    url: (q) =>
-      `https://stackoverflow.com/search?q=${encodeURIComponent(q)}`,
+    url: (q) => `https://stackoverflow.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_stackoverflow",
   },
   mdn: {
@@ -198,8 +197,7 @@ const SEARCH_ENGINES = {
     name: "Google Scholar",
     shortName: "Scholar",
     domain: "scholar.google.com",
-    url: (q) =>
-      `https://scholar.google.com/scholar?q=${encodeURIComponent(q)}`,
+    url: (q) => `https://scholar.google.com/scholar?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_scholar",
   },
 }
@@ -295,7 +293,8 @@ function renderSearchEngineOptions() {
 function renderSettingsSearchEngineOptions() {
   const settingsSelect = document.getElementById("search-engine-select")
   if (!settingsSelect) return
-  const currentValue = settingsSelect.value || getSettings().searchEngine || "google"
+  const currentValue =
+    settingsSelect.value || getSettings().searchEngine || "google"
   settingsSelect.innerHTML = Object.entries(SEARCH_ENGINES)
     .map(
       ([value, engine]) =>
@@ -334,7 +333,8 @@ function moveEngineFocus(delta) {
   const currentIndex = engineOptions.findIndex(
     (option) => option.dataset.value === currentEngine,
   )
-  const startIndex = focusedIndex >= 0 ? focusedIndex : Math.max(currentIndex, 0)
+  const startIndex =
+    focusedIndex >= 0 ? focusedIndex : Math.max(currentIndex, 0)
   const nextIndex =
     (startIndex + delta + engineOptions.length) % engineOptions.length
   engineOptions[nextIndex].focus()
@@ -557,23 +557,31 @@ function checkAndGetUrl(query) {
   if (!trimmed) return null
 
   // 1. Check if it matches a protocol
-  if (/^(https?|chrome|chrome-extension|edge|about|file|ftp):\/\//i.test(trimmed) || /^about:/i.test(trimmed)) {
+  if (
+    /^(https?|chrome|chrome-extension|edge|about|file|ftp):\/\//i.test(
+      trimmed,
+    ) ||
+    /^about:/i.test(trimmed)
+  ) {
     return trimmed
   }
 
   // 2. Check if it is a localhost address
   if (/^localhost(:\d+)?(\/.*)?$/i.test(trimmed)) {
-    return 'http://' + trimmed
+    return "http://" + trimmed
   }
 
   // 3. Check if it is an IP address
   if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?(\/.*)?$/i.test(trimmed)) {
-    return 'http://' + trimmed
+    return "http://" + trimmed
   }
 
   // 4. Check if it matches a standard domain name pattern (without spaces)
-  if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(trimmed) && !/\s/.test(trimmed)) {
-    return 'https://' + trimmed
+  if (
+    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(trimmed) &&
+    !/\s/.test(trimmed)
+  ) {
+    return "https://" + trimmed
   }
 
   return null
@@ -627,7 +635,10 @@ function submitSearch() {
   }
 
   // Custom CLI commands
-  if (query.toLowerCase() === "/test performance" || query.toLowerCase() === "/perf") {
+  if (
+    query.toLowerCase() === "/test performance" ||
+    query.toLowerCase() === "/perf"
+  ) {
     if (window.perfHUD) {
       window.perfHUD.toggle()
     }
@@ -670,36 +681,38 @@ async function uploadImageToGoogle(file) {
   // modern Google Lens upload is more effective
   const i18n = geti18n()
   showAlert(i18n.alert_uploading_lens || "Uploading to Google Lens...")
-  
+
   try {
     const formData = new FormData()
     formData.append("encoded_image", file)
-    
-    // We use a hidden form for the actual submission because cross-origin 
+
+    // We use a hidden form for the actual submission because cross-origin
     // fetch to lens.google.com will be blocked by CORS.
     const form = document.createElement("form")
     form.method = "POST"
     form.action = "https://lens.google.com/v3/upload"
     form.enctype = "multipart/form-data"
     form.target = "_blank"
-    
+
     const fileInput = document.createElement("input")
     fileInput.type = "file"
     fileInput.name = "encoded_image"
-    
+
     // To send the file we already have, we need a DataTransfer object
     const dataTransfer = new DataTransfer()
     dataTransfer.items.add(file)
     fileInput.files = dataTransfer.files
-    
+
     form.appendChild(fileInput)
     document.body.appendChild(form)
     form.submit()
     document.body.removeChild(form)
-    
+
     clearImagePreview()
     searchInput.disabled = false
-    searchInput.placeholder = i18n[SEARCH_ENGINES[currentEngine].placeholderKey] || SEARCH_ENGINES[currentEngine].name
+    searchInput.placeholder =
+      i18n[SEARCH_ENGINES[currentEngine].placeholderKey] ||
+      SEARCH_ENGINES[currentEngine].name
   } catch (err) {
     console.error("Lens upload error:", err)
     window.open("https://lens.google.com/", "_blank")
@@ -708,7 +721,7 @@ async function uploadImageToGoogle(file) {
 
 function handleImageSelection(file) {
   if (!file || !file.type.startsWith("image/")) return
-  
+
   pendingImageFile = file
 
   // Show Preview
@@ -716,13 +729,14 @@ function handleImageSelection(file) {
   reader.onload = (e) => {
     previewThumb.src = e.target.result
     previewContainer.style.display = "flex"
-    
+
     // Update UI for image mode
     const i18n = geti18n()
-    searchInput.placeholder = i18n.search_press_enter_image || "Press Enter to Search Image..."
-    searchInput.value = "" 
+    searchInput.placeholder =
+      i18n.search_press_enter_image || "Press Enter to Search Image..."
+    searchInput.value = ""
     searchInput.focus()
-    
+
     // Ensure search button/divider are visible
     searchDivider.style.display = "block"
     clearBtn.style.display = "flex"
@@ -758,7 +772,9 @@ export function updateSearchUI() {
         : "none"
   }
   const i18n = geti18n()
-  const ph = (engine.placeholderKey && i18n[engine.placeholderKey]) || `Search ${engine.name}...`
+  const ph =
+    (engine.placeholderKey && i18n[engine.placeholderKey]) ||
+    `Search ${engine.name}...`
   if (searchInput) {
     searchInput.placeholder = ph
     if (engine.placeholderKey) {
@@ -881,13 +897,18 @@ function initSearch() {
       const item = items[index]
       if (item.kind === "file" && item.type.startsWith("image/")) {
         const blob = item.getAsFile()
-        
+
         // If not in image engine, switch to it automatically to show correct context
-        if (currentEngine !== "google-image" && currentEngine !== "google-lens") {
-          const imageOption = engineOptions.find(o => o.dataset.value === "google-image")
+        if (
+          currentEngine !== "google-image" &&
+          currentEngine !== "google-lens"
+        ) {
+          const imageOption = engineOptions.find(
+            (o) => o.dataset.value === "google-image",
+          )
           if (imageOption) imageOption.click()
         }
-        
+
         handleImageSelection(blob)
         e.preventDefault()
         return

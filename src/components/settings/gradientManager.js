@@ -322,19 +322,19 @@ function renderUserGradients(DOM) {
       // Improved active detection
       const currentBg = settings.background || ""
       const activeBgUid = settings.activeBgUid
-      
+
       let isCurrentActive = false
-      
+
       if (activeBgUid && gradient.uid) {
-          isCurrentActive = activeBgUid === gradient.uid
+        isCurrentActive = activeBgUid === gradient.uid
       } else {
-          isCurrentActive =
-            !settings.svgWaveActive &&
-            !settings.gradientV2Active &&
-            !settings.silkActive &&
-            !settings.lightPillarActive &&
-            (currentBg === gradientCss ||
-              currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
+        isCurrentActive =
+          !settings.svgWaveActive &&
+          !settings.gradientV2Active &&
+          !settings.silkActive &&
+          !settings.lightPillarActive &&
+          (currentBg === gradientCss ||
+            currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
       }
 
       // Fallback: Check if individual settings match (when background is null and no UID match)
@@ -348,11 +348,14 @@ function renderUserGradients(DOM) {
         !settings.lightPillarActive
       ) {
         isCurrentActive =
-          String(settings.gradientStart || "").toLowerCase() === String(gradient.start || "").toLowerCase() &&
-          String(settings.gradientEnd || "").toLowerCase() === String(gradient.end || "").toLowerCase() &&
+          String(settings.gradientStart || "").toLowerCase() ===
+            String(gradient.start || "").toLowerCase() &&
+          String(settings.gradientEnd || "").toLowerCase() ===
+            String(gradient.end || "").toLowerCase() &&
           Number(settings.gradientAngle) === Number(gradient.angle) &&
           (settings.gradientType || "linear") === (gradient.type || "linear") &&
-          (settings.gradientRepeating === true) === (gradient.repeating === true) &&
+          (settings.gradientRepeating === true) ===
+            (gradient.repeating === true) &&
           Number(
             settings.gradientExtraColorCount !== undefined
               ? settings.gradientExtraColorCount
@@ -363,9 +366,12 @@ function renderUserGradients(DOM) {
                 ? gradient.extraColorCount
                 : 2,
             ) &&
-          (settings.gradientCustomColors || "") === (gradient.customColors || "") &&
-          (settings.gradientPosition || "center") === (gradient.position || "center") &&
-          (settings.gradientRadialShape || "circle") === (gradient.radialShape || "circle")
+          (settings.gradientCustomColors || "") ===
+            (gradient.customColors || "") &&
+          (settings.gradientPosition || "center") ===
+            (gradient.position || "center") &&
+          (settings.gradientRadialShape || "circle") ===
+            (gradient.radialShape || "circle")
       }
 
       if (isCurrentActive) {
@@ -403,7 +409,7 @@ function renderUserGradients(DOM) {
       if (isSelected) {
         item.classList.add("selected")
       }
-      
+
       const checkBadge = document.createElement("div")
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'

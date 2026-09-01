@@ -186,7 +186,8 @@ export class GreenLeavesEffect {
     }
 
     // Smooth interpolation toward target (ease in/out)
-    this.windStrength += (this.windTarget - this.windStrength) * 0.04 * deltaTime
+    this.windStrength +=
+      (this.windTarget - this.windStrength) * 0.04 * deltaTime
   }
 
   start() {
@@ -204,7 +205,10 @@ export class GreenLeavesEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -214,7 +218,7 @@ export class GreenLeavesEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
@@ -239,7 +243,8 @@ export class GreenLeavesEffect {
       // Rotation — spin faster in wind
       const windSpin = Math.abs(this.windStrength) * 0.4
       leaf.rotation +=
-        (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) * deltaTime
+        (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) *
+        deltaTime
 
       // Draw
       this.ctx.save()

@@ -6,7 +6,10 @@
 
 export class FloatingLinesEffect {
   constructor(canvasId, color = "#ffffff", angle = 0) {
-    this.canvas = typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
+    this.canvas =
+      typeof canvasId === "string"
+        ? document.getElementById(canvasId)
+        : canvasId
     if (!this.canvas) return
     this.ctx = this.canvas.getContext("2d", { alpha: false })
     this.active = false
@@ -14,12 +17,12 @@ export class FloatingLinesEffect {
     this.lastDrawTime = 0
     this.color = color
     this.angle = Number(angle) || 0
-    
+
     this.config = {
       animationSpeed: 1,
-      step: 40, 
+      step: 40,
       starCount: 80,
-      driftSpeed: 0.15
+      driftSpeed: 0.15,
     }
 
     this.hsl = { h: 0, s: 0, l: 100 }
@@ -34,32 +37,47 @@ export class FloatingLinesEffect {
     const r = parseInt(hex.slice(1, 3), 16) / 255
     const g = parseInt(hex.slice(3, 5), 16) / 255
     const b = parseInt(hex.slice(5, 7), 16) / 255
-    const max = Math.max(r, g, b), min = Math.min(r, g, b)
-    let h, s, l = (max + min) / 2
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b)
+    let h,
+      s,
+      l = (max + min) / 2
     if (max === min) h = s = 0
     else {
-        const d = max - min
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-        switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break
-            case g: h = (b - r) / d + 2; break
-            case b: h = (r - g) / d + 4; break
-        }
-        h /= 6
+      const d = max - min
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0)
+          break
+        case g:
+          h = (b - r) / d + 2
+          break
+        case b:
+          h = (r - g) / d + 4
+          break
+      }
+      h /= 6
     }
     this.hsl = { h: h * 360, s: 95, l: 75 }
   }
 
-  updateColor(hex) { this.color = hex; this._updateHsl(hex); this._updateColorCache(); }
-  setAngle(deg) { this.angle = Number(deg) || 0 }
+  updateColor(hex) {
+    this.color = hex
+    this._updateHsl(hex)
+    this._updateColorCache()
+  }
+  setAngle(deg) {
+    this.angle = Number(deg) || 0
+  }
 
   _updateColorCache() {
-    this._colorCache = [-30, 0, 30].map(hueOffset => {
+    this._colorCache = [-30, 0, 30].map((hueOffset) => {
       const h = (this.hsl.h + hueOffset + 360) % 360
       return `hsla(${h}, ${this.hsl.s}%, ${this.hsl.l}%,`
     })
   }
-  
+
   resize() {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
@@ -82,7 +100,7 @@ export class FloatingLinesEffect {
         opacity: Math.random() * 0.6 + 0.4,
         twinkleSpeed: 0.02 + Math.random() * 0.03,
         twinklePhase: Math.random() * Math.PI * 2,
-        color: `hsla(${this.hsl.h + (Math.random()-0.5)*30}, 80%, 95%, 1)`
+        color: `hsla(${this.hsl.h + (Math.random() - 0.5) * 30}, 80%, 95%, 1)`,
       })
     }
   }
@@ -108,31 +126,52 @@ export class FloatingLinesEffect {
     this.stars = []
   }
 
-  _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, colorBase, cosR, sinR) {
+  _drawWaveGroup(
+    count,
+    yBase,
+    ampBase,
+    speed,
+    offsetBase,
+    opacity,
+    colorBase,
+    cosR,
+    sinR,
+  ) {
     const ctx = this.ctx
-    const W = this.canvas.width, H = this.canvas.height
+    const W = this.canvas.width,
+      H = this.canvas.height
     const time = this.time
-    
-    const range = Math.sqrt(W*W + H*H) * 1.2
+
+    const range = Math.sqrt(W * W + H * H) * 1.2
     const step = this.config.step
-    
+
     const path = new Path2D()
 
     for (let i = 0; i < count; i++) {
       const offset = offsetBase + i * 0.4
       let first = true
-      
-      for (let x = -range/2; x <= range/2; x += step) {
+
+      for (let x = -range / 2; x <= range / 2; x += step) {
         const normalizedX = (x / W) * 2
-        let y = yBase * H + Math.sin(normalizedX * 1.2 + offset + time * speed) * ampBase * H * 0.1
-        y += Math.sin(normalizedX * 2.8 - time * speed * 0.5) * ampBase * H * 0.03
-        y += (i * 24)
+        let y =
+          yBase * H +
+          Math.sin(normalizedX * 1.2 + offset + time * speed) *
+            ampBase *
+            H *
+            0.1
+        y +=
+          Math.sin(normalizedX * 2.8 - time * speed * 0.5) * ampBase * H * 0.03
+        y += i * 24
 
-        const rx = x * cosR - (y - H/2) * sinR + W/2
-        const ry = x * sinR + (y - H/2) * cosR + H/2
+        const rx = x * cosR - (y - H / 2) * sinR + W / 2
+        const ry = x * sinR + (y - H / 2) * cosR + H / 2
 
-        if (first) { path.moveTo(rx, ry); first = false; }
-        else { path.lineTo(rx, ry); }
+        if (first) {
+          path.moveTo(rx, ry)
+          first = false
+        } else {
+          path.lineTo(rx, ry)
+        }
       }
     }
 
@@ -148,7 +187,7 @@ export class FloatingLinesEffect {
     ctx.lineWidth = 8
     ctx.stroke(path)
 
-    ctx.strokeStyle = `${colorBase.replace(`${this.hsl.l}%`, '95%')} ${opacity * 0.85})`
+    ctx.strokeStyle = `${colorBase.replace(`${this.hsl.l}%`, "95%")} ${opacity * 0.85})`
     ctx.lineWidth = 3
     ctx.stroke(path)
 
@@ -160,27 +199,28 @@ export class FloatingLinesEffect {
   _animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this._animate(t))
-    if (document.visibilityState === 'hidden') return
-    
+    if (document.visibilityState === "hidden") return
+
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < 1) return 
+    if (elapsed < 1) return
     const dt = elapsed / 16.67 // Normalize to 60fps
     this.lastDrawTime = currentTime
-    
+
     this.time += 0.008 * dt
     const ctx = this.ctx
-    const W = this.canvas.width, H = this.canvas.height
+    const W = this.canvas.width,
+      H = this.canvas.height
 
     // Solid deep background
     ctx.fillStyle = "#010205"
     ctx.fillRect(0, 0, W, H)
 
     // Drifting & Twinkling Stars
-    this.stars.forEach(s => {
+    this.stars.forEach((s) => {
       // Smooth movement
       s.x += s.vx * dt
       s.y += s.vy * dt
-      
+
       // Wrapping logic
       if (s.x < 0) s.x = W
       if (s.x > W) s.x = 0
@@ -190,7 +230,7 @@ export class FloatingLinesEffect {
       // Smooth twinkling
       s.twinklePhase += s.twinkleSpeed * dt
       const op = s.opacity * (0.3 + Math.sin(s.twinklePhase) * 0.7)
-      
+
       ctx.globalAlpha = Math.max(0, Math.min(1, op))
       ctx.fillStyle = s.color
       ctx.beginPath()
@@ -200,18 +240,49 @@ export class FloatingLinesEffect {
     ctx.globalAlpha = 1
 
     ctx.globalCompositeOperation = "lighter"
-    
+
     const rad = (this.angle * Math.PI) / 180
-    const cosR = Math.cos(rad), sinR = Math.sin(rad)
+    const cosR = Math.cos(rad),
+      sinR = Math.sin(rad)
 
     // Group 1: Hue - 30
-    this._drawWaveGroup(3, 0.8, 0.4, 0.05, 1.5, 0.5, this._colorCache[0], cosR, sinR)
-    
+    this._drawWaveGroup(
+      3,
+      0.8,
+      0.4,
+      0.05,
+      1.5,
+      0.5,
+      this._colorCache[0],
+      cosR,
+      sinR,
+    )
+
     // Group 2: Base Hue
-    this._drawWaveGroup(3, 0.5, 0.6, 0.07, 2.0, 0.7, this._colorCache[1], cosR, sinR)
-    
+    this._drawWaveGroup(
+      3,
+      0.5,
+      0.6,
+      0.07,
+      2.0,
+      0.7,
+      this._colorCache[1],
+      cosR,
+      sinR,
+    )
+
     // Group 3: Hue + 30
-    this._drawWaveGroup(3, 0.2, 0.4, 0.09, 1.0, 0.5, this._colorCache[2], cosR, sinR)
+    this._drawWaveGroup(
+      3,
+      0.2,
+      0.4,
+      0.09,
+      1.0,
+      0.5,
+      this._colorCache[2],
+      cosR,
+      sinR,
+    )
 
     ctx.globalCompositeOperation = "source-over"
   }

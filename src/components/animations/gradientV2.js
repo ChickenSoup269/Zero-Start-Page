@@ -8,7 +8,7 @@ in vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
-`;
+`
 
 const fragmentShaderSource = `#version 300 es
 precision mediump float;
@@ -99,22 +99,25 @@ void main(){
   mainImage(o,gl_FragCoord.xy);
   fragColor=o;
 }
-`;
+`
 
 export class GradientV2Effect {
   constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
     if (!this.canvas) return
-    this.gl = this.canvas.getContext("webgl2", { alpha: true, antialias: false })
+    this.gl = this.canvas.getContext("webgl2", {
+      alpha: true,
+      antialias: false,
+    })
     if (!this.gl) {
-        console.error("WebGL 2 not supported")
-        return
+      console.error("WebGL 2 not supported")
+      return
     }
 
     this.options = {
-      color1: '#FF9FFC',
-      color2: '#5227FF',
-      color3: '#B497CF',
+      color1: "#FF9FFC",
+      color2: "#5227FF",
+      color3: "#B497CF",
       timeSpeed: 0.25,
       colorBalance: 0.0,
       warpStrength: 1.0,
@@ -134,7 +137,7 @@ export class GradientV2Effect {
       centerX: 0.0,
       centerY: 0.0,
       zoom: 0.9,
-      ...options
+      ...options,
     }
 
     this.canvas.style.position = "fixed"
@@ -185,11 +188,7 @@ export class GradientV2Effect {
     const positionBuffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
     // Full screen triangle
-    const positions = new Float32Array([
-      -1.0, -1.0,
-       3.0, -1.0,
-      -1.0,  3.0,
-    ])
+    const positions = new Float32Array([-1.0, -1.0, 3.0, -1.0, -1.0, 3.0])
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW)
 
     const vao = gl.createVertexArray()
@@ -234,9 +233,9 @@ export class GradientV2Effect {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     if (!result) return [1, 1, 1]
     return [
-        parseInt(result[1], 16) / 255,
-        parseInt(result[2], 16) / 255,
-        parseInt(result[3], 16) / 255
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255,
     ]
   }
 
@@ -244,7 +243,12 @@ export class GradientV2Effect {
     const dpr = Math.min(window.devicePixelRatio || 1, 1.2)
     this.canvas.width = window.innerWidth * dpr
     this.canvas.height = window.innerHeight * dpr
-    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight)
+    this.gl.viewport(
+      0,
+      0,
+      this.gl.drawingBufferWidth,
+      this.gl.drawingBufferHeight,
+    )
   }
 
   setOptions(newOptions) {
@@ -254,11 +258,11 @@ export class GradientV2Effect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.animationId = requestAnimationFrame((t) => this.animate(t))
-    
+
     const elapsed = currentTime - (this.lastFrameTime || 0)
     if (elapsed < 16) return // Cap at ~60fps
     this.lastFrameTime = currentTime
-    
+
     this.render(currentTime)
   }
 
@@ -272,7 +276,7 @@ export class GradientV2Effect {
 
     gl.uniform2f(u.iResolution, gl.drawingBufferWidth, gl.drawingBufferHeight)
     gl.uniform1f(u.iTime, (currentTime - this.startTime) * 0.001)
-    
+
     gl.uniform1f(u.uTimeSpeed, opt.timeSpeed)
     gl.uniform1f(u.uColorBalance, opt.colorBalance)
     gl.uniform1f(u.uWarpStrength, opt.warpStrength)
@@ -291,7 +295,7 @@ export class GradientV2Effect {
     gl.uniform1f(u.uSaturation, opt.saturation)
     gl.uniform2f(u.uCenterOffset, opt.centerX, opt.centerY)
     gl.uniform1f(u.uZoom, opt.zoom)
-    
+
     gl.uniform3fv(u.uColor1, new Float32Array(this._hexToRgb(opt.color1)))
     gl.uniform3fv(u.uColor2, new Float32Array(this._hexToRgb(opt.color2)))
     gl.uniform3fv(u.uColor3, new Float32Array(this._hexToRgb(opt.color3)))
@@ -310,8 +314,8 @@ export class GradientV2Effect {
   stop() {
     this.active = false
     if (this.animationId) {
-        cancelAnimationFrame(this.animationId)
-        this.animationId = null
+      cancelAnimationFrame(this.animationId)
+      this.animationId = null
     }
     this.canvas.style.display = "none"
   }
@@ -321,8 +325,8 @@ export class GradientV2Effect {
     window.removeEventListener("resize", this._resizeHandler)
     const gl = this.gl
     if (gl) {
-        gl.deleteProgram(this.program)
-        gl.deleteVertexArray(this.vao)
+      gl.deleteProgram(this.program)
+      gl.deleteVertexArray(this.vao)
     }
   }
 }

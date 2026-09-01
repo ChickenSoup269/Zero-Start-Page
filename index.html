@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="color-scheme" content="dark">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,10 +109,12 @@
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
-            <button class="quick-btn" data-toggle="ambientSounds" style="display: none;" data-i18n-title="quick_access_ambient_sounds"
-                title="Ambient Sounds"><i class="fa-solid fa-headphones-simple"></i></button>
-            <button class="quick-btn" data-toggle="aiAssistant" style="display: none;" data-i18n-title="quick_access_ai_assistant"
-                title="Gemini Assistant"><i class="fa-solid fa-robot"></i></button>
+            <button class="quick-btn" data-toggle="ambientSounds" style="display: none;"
+                data-i18n-title="quick_access_ambient_sounds" title="Ambient Sounds"><i
+                    class="fa-solid fa-headphones-simple"></i></button>
+            <button class="quick-btn" data-toggle="aiAssistant" style="display: none;"
+                data-i18n-title="quick_access_ai_assistant" title="Gemini Assistant"><i
+                    class="fa-solid fa-robot"></i></button>
             <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
                     class="fa-solid fa-clock"></i></button>
             <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
@@ -126,7 +129,8 @@
                     class="fa-solid fa-chevron-left"></i></button>
         </div>
 
-        <div data-settings-partial="layout-controls-popup" data-src="partials/controls/layout-controls-popup.html"></div>
+        <div data-settings-partial="layout-controls-popup" data-src="partials/controls/layout-controls-popup.html">
+        </div>
     </div>
 
     <video id="bg-video" autoplay muted loop playsinline></video>
@@ -229,8 +233,8 @@
                     <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_search_clear">Clear search</span>
                 </button>
             </div>
-            <div data-settings-partial="language" data-src="partials/settings/language.html"
-                data-settings-tab="system"></div>
+            <div data-settings-partial="language" data-src="partials/settings/language.html" data-settings-tab="system">
+            </div>
             <div data-settings-partial="page-title" data-src="partials/settings/page-title.html"
                 data-settings-tab="appearance"></div>
 
@@ -367,12 +371,18 @@
 
     <!-- Custom Context Menu -->
     <div id="context-menu" class="context-menu">
-        <div class="menu-item" id="menu-favorite" style="display:none;"><i class="fa-solid fa-star"></i> <span data-i18n="menu_favorite">Favorite</span></div>
-        <div class="menu-item" id="menu-select"><i class="fa-solid fa-check-to-slot"></i> <span data-i18n="menu_select">Select</span></div>
-        <div class="menu-item" id="menu-move" style="display:none;"><i class="fa-solid fa-arrows-up-down"></i> <span data-i18n="menu_move_font">Move</span></div>
-        <div class="menu-item" id="menu-edit"><i class="fa-solid fa-pen"></i> <span data-i18n="menu_edit">Edit</span></div>
-        <div class="menu-item danger" id="menu-delete"><i class="fa-solid fa-trash"></i> <span data-i18n="menu_delete">Delete</span></div>
-        <div class="menu-item" id="menu-lock" style="display:none;"><i class="fa-solid fa-lock"></i> <span data-i18n="menu_lock">Lock Position</span></div>
+        <div class="menu-item" id="menu-favorite" style="display:none;"><i class="fa-solid fa-star"></i> <span
+                data-i18n="menu_favorite">Favorite</span></div>
+        <div class="menu-item" id="menu-select"><i class="fa-solid fa-check-to-slot"></i> <span
+                data-i18n="menu_select">Select</span></div>
+        <div class="menu-item" id="menu-move" style="display:none;"><i class="fa-solid fa-arrows-up-down"></i> <span
+                data-i18n="menu_move_font">Move</span></div>
+        <div class="menu-item" id="menu-edit"><i class="fa-solid fa-pen"></i> <span data-i18n="menu_edit">Edit</span>
+        </div>
+        <div class="menu-item danger" id="menu-delete"><i class="fa-solid fa-trash"></i> <span
+                data-i18n="menu_delete">Delete</span></div>
+        <div class="menu-item" id="menu-lock" style="display:none;"><i class="fa-solid fa-lock"></i> <span
+                data-i18n="menu_lock">Lock Position</span></div>
     </div>
 
     <div data-settings-partial="donate-modal" data-src="partials/modals/donate-modal.html"></div>
@@ -470,12 +480,15 @@
     <div id="rss-container" class="rss-container glass-panel drag-handle" style="display: none;"></div>
     <div id="habit-tracker-container" class="habit-tracker-container glass-panel drag-handle" style="display: none;">
     </div>
-    <div id="ambient-sounds-container" class="ambient-sounds-container glass-panel drag-handle" style="display: none;"></div>
-    <div id="ai-assistant-container" class="ai-assistant-container glass-panel drag-handle" style="display: none;"></div>
+    <div id="ambient-sounds-container" class="ambient-sounds-container glass-panel drag-handle" style="display: none;">
+    </div>
+    <div id="ai-assistant-container" class="ai-assistant-container glass-panel drag-handle" style="display: none;">
+    </div>
 
     <script type="module" src="src/bootstrap.js?v=perf-lazy-v17"></script>
 
-    <div data-settings-partial="update-notification-popup" data-src="partials/modals/update-notification-popup.html"></div>
+    <div data-settings-partial="update-notification-popup" data-src="partials/modals/update-notification-popup.html">
+    </div>
     <!-- Bug Report / Config Modal -->
     <div data-settings-partial="theme-modals" data-src="partials/modals/theme-modals.html"></div>
 

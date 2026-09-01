@@ -60,11 +60,16 @@ export class OceanWaveEffect {
   }
 
   setPosition(position) {
-    this.position = ["top", "bottom", "left", "right"].includes(position) ? position : "bottom"
+    this.position = ["top", "bottom", "left", "right"].includes(position)
+      ? position
+      : "bottom"
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -73,7 +78,7 @@ export class OceanWaveEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -96,11 +101,11 @@ export class OceanWaveEffect {
     for (let i = 0; i < this.layerCount; i++) {
       const t = i / (this.layerCount - 1) // 0 = back, 1 = front
 
-      let basePos = 0;
-      if (isTop) basePos = H * (0.05 + t * 0.2);
-      else if (isLeft) basePos = W * (0.05 + t * 0.2);
-      else if (isRight) basePos = W * (0.45 + t * 0.35);
-      else basePos = H * (0.45 + t * 0.35); // bottom
+      let basePos = 0
+      if (isTop) basePos = H * (0.05 + t * 0.2)
+      else if (isLeft) basePos = W * (0.05 + t * 0.2)
+      else if (isRight) basePos = W * (0.45 + t * 0.35)
+      else basePos = H * (0.45 + t * 0.35) // bottom
 
       // Amplitude decreases for back layers (perspective)
       const amplitude = 30 + t * 45
@@ -129,15 +134,15 @@ export class OceanWaveEffect {
       ctx.beginPath()
 
       // Build the wave path
-      const maxLen = isVertical ? H : W;
+      const maxLen = isVertical ? H : W
       for (let p = 0; p <= maxLen; p += 3) {
         const offset =
           basePos +
           Math.sin(p * freq + timeSpeedPhase) * amplitude +
           Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
 
-        const px = isVertical ? offset : p;
-        const py = isVertical ? p : offset;
+        const px = isVertical ? offset : p
+        const py = isVertical ? p : offset
 
         if (p === 0) {
           ctx.moveTo(px, py)
@@ -156,7 +161,8 @@ export class OceanWaveEffect {
       } else if (isRight) {
         ctx.lineTo(W, H)
         ctx.lineTo(W, 0)
-      } else { // bottom
+      } else {
+        // bottom
         ctx.lineTo(W, H)
         ctx.lineTo(0, H)
       }
@@ -173,8 +179,8 @@ export class OceanWaveEffect {
           Math.sin(p * freq + timeSpeedPhase) * amplitude +
           Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
 
-        const px = isVertical ? offset : p;
-        const py = isVertical ? p : offset;
+        const px = isVertical ? offset : p
+        const py = isVertical ? p : offset
 
         if (p === 0) {
           ctx.moveTo(px, py)

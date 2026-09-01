@@ -1,4 +1,4 @@
-(function () {
+;(function () {
   let updateInterval = null
 
   function getMediaState() {
@@ -43,7 +43,9 @@
         ) ||
         document.querySelector('[data-testid="playback-progressbar"]') ||
         document.querySelector(".duration-bar input[type='range']") ||
-        document.querySelector(".player-controls__container input[type='range']") ||
+        document.querySelector(
+          ".player-controls__container input[type='range']",
+        ) ||
         document.querySelector(".zm-slider input[type='range']") ||
         document.querySelector(".zm-slider [role='slider']") ||
         document.querySelector('[aria-label*="timeline" i][role="slider"]') ||
@@ -93,7 +95,8 @@
         document
           .querySelector(".playControl")
           ?.getAttribute("aria-label")
-          ?.toLowerCase() || ""
+          ?.toLowerCase() ||
+        ""
       const zingPlayButton = document.querySelector(
         ".player-controls__container .btn-play, .zm-btn.btn-play",
       )
@@ -102,35 +105,36 @@
       )
       const spotifyIsPlaying = Boolean(
         spotifyPlayBtn &&
-          (spotifyPlayBtn
+        (spotifyPlayBtn
+          .getAttribute("aria-label")
+          ?.toLowerCase()
+          .includes("pause") ||
+          spotifyPlayBtn
             .getAttribute("aria-label")
             ?.toLowerCase()
-            .includes("pause") ||
-            spotifyPlayBtn
-              .getAttribute("aria-label")
-              ?.toLowerCase()
-              .includes("tạm dừng") ||
-            spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
-            spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
-            navigator.mediaSession?.playbackState === "playing"),
+            .includes("tạm dừng") ||
+          spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
+          spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
+          navigator.mediaSession?.playbackState === "playing"),
       )
       const soundCloudPlayButton = document.querySelector(
         ".playControl, .playControls__play, button[title*='Play' i], button[title*='Pause' i]",
       )
-      const paused =
-        isSpotify
-          ? !spotifyIsPlaying
-          : navigator.mediaSession?.playbackState === "playing"
-            ? false
-            : navigator.mediaSession?.playbackState === "paused"
-              ? true
-              : isZing
-                ? !zingPlayButton?.classList.contains("is-playing") &&
-                  !zingPlayButton?.classList.contains("playing")
-                : isSoundCloud
-                  ? !soundCloudPlayButton?.classList.contains("playing") &&
-                    !soundCloudPlayButton?.classList.contains("playControls__play--playing")
-                  : playPauseLabel.includes("play")
+      const paused = isSpotify
+        ? !spotifyIsPlaying
+        : navigator.mediaSession?.playbackState === "playing"
+          ? false
+          : navigator.mediaSession?.playbackState === "paused"
+            ? true
+            : isZing
+              ? !zingPlayButton?.classList.contains("is-playing") &&
+                !zingPlayButton?.classList.contains("playing")
+              : isSoundCloud
+                ? !soundCloudPlayButton?.classList.contains("playing") &&
+                  !soundCloudPlayButton?.classList.contains(
+                    "playControls__play--playing",
+                  )
+                : playPauseLabel.includes("play")
       return { currentTime, duration, paused }
     })()
 
@@ -143,8 +147,7 @@
     const ytArtist =
       document.querySelector("yt-formatted-string.ytd-channel-name")
         ?.textContent ||
-      document.querySelector("a.ytp-title-expanded-channel-link")
-        ?.textContent
+      document.querySelector("a.ytp-title-expanded-channel-link")?.textContent
 
     const spotifyTitle = textFrom([
       '[data-testid="now-playing-widget"] [data-testid="context-item-link"]',
@@ -228,18 +231,22 @@
     const currentTime =
       (isSpotify || isSoundCloud || isZing) && webPlayback
         ? webPlayback.currentTime
-        : video && typeof video.currentTime === "number" && video.currentTime > 0
+        : video &&
+            typeof video.currentTime === "number" &&
+            video.currentTime > 0
           ? video.currentTime
-          : (webPlayback?.currentTime || 0)
+          : webPlayback?.currentTime || 0
 
     const duration =
-      (isSpotify || isSoundCloud || isZing) && webPlayback && webPlayback.duration > 0
+      (isSpotify || isSoundCloud || isZing) &&
+      webPlayback &&
+      webPlayback.duration > 0
         ? webPlayback.duration
         : video
           ? isFinite(video.duration) && video.duration > 0
             ? video.duration
-            : (webPlayback?.duration || 0)
-          : (webPlayback?.duration || 0)
+            : webPlayback?.duration || 0
+          : webPlayback?.duration || 0
 
     const thumbnail = (() => {
       if (metadata && metadata.artwork && metadata.artwork.length > 0) {
@@ -254,7 +261,8 @@
 
       if (window.location.href.includes("youtube.com")) {
         const videoId = new URLSearchParams(window.location.search).get("v")
-        if (videoId) return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+        if (videoId)
+          return `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
 
         const ytMusicThumb =
           document.querySelector("ytmusic-player-bar img")?.src ||
@@ -265,8 +273,9 @@
         const ytThumb =
           document.querySelector("img.ytp-videowall-still-image")?.src ||
           document.querySelector("img.yt-music-player-bar")?.src ||
-          document.querySelector(".ytp-cued-thumbnail-overlay-image")?.style
-            .backgroundImage?.slice(5, -2)
+          document
+            .querySelector(".ytp-cued-thumbnail-overlay-image")
+            ?.style.backgroundImage?.slice(5, -2)
         if (ytThumb) return ytThumb
       }
 
@@ -386,9 +395,17 @@
       const isUrlChanged = state.url !== lastBroadcastUrl
       const isThumbChanged = state.thumbnail !== lastBroadcastThumb
       const isPausedChanged = state.paused !== lastBroadcastPaused
-      const isTimeChanged = Math.abs((state.currentTime || 0) - lastBroadcastTime) >= 1.0
+      const isTimeChanged =
+        Math.abs((state.currentTime || 0) - lastBroadcastTime) >= 1.0
 
-      if (force || isTitleChanged || isUrlChanged || isThumbChanged || isPausedChanged || isTimeChanged) {
+      if (
+        force ||
+        isTitleChanged ||
+        isUrlChanged ||
+        isThumbChanged ||
+        isPausedChanged ||
+        isTimeChanged
+      ) {
         lastBroadcastTitle = state.title
         lastBroadcastUrl = state.url
         lastBroadcastThumb = state.thumbnail
@@ -559,7 +576,12 @@
       if (el && !el._extObserved) {
         el._extObserved = true
         const obs = new MutationObserver(() => scheduleDOMCheck())
-        obs.observe(el, { childList: true, subtree: true, characterData: true, attributes: true })
+        obs.observe(el, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+          attributes: true,
+        })
       }
     })
   }
@@ -571,7 +593,9 @@
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "mediaControl") {
       const cmdName =
-        typeof request.command === "string" ? request.command : request.command.name
+        typeof request.command === "string"
+          ? request.command
+          : request.command.name
       const video =
         document.querySelector("video") || document.querySelector("audio")
       const isSpotify = window.location.href.includes("spotify.com")
@@ -621,7 +645,9 @@
           ) ||
           document.querySelector('[data-testid="playback-progressbar"]') ||
           document.querySelector(".duration-bar input[type='range']") ||
-          document.querySelector(".player-controls__container input[type='range']") ||
+          document.querySelector(
+            ".player-controls__container input[type='range']",
+          ) ||
           document.querySelector(".zm-slider input[type='range']") ||
           document.querySelector(".zm-slider [role='slider']") ||
           document.querySelector(".playbackTimeline__progressWrapper") ||
@@ -642,7 +668,10 @@
           )
         if (!max) return false
 
-        const value = Math.max(0, Math.min(max, max > 36000 ? time * 1000 : time))
+        const value = Math.max(
+          0,
+          Math.min(max, max > 36000 ? time * 1000 : time),
+        )
         const clickSliderAtValue = () => {
           const rect = slider.getBoundingClientRect()
           if (!rect.width) return false
@@ -661,7 +690,10 @@
           return true
         }
         if ("value" in slider) {
-          const ownSetter = Object.getOwnPropertyDescriptor(slider, "value")?.set
+          const ownSetter = Object.getOwnPropertyDescriptor(
+            slider,
+            "value",
+          )?.set
           const protoSetter = Object.getOwnPropertyDescriptor(
             Object.getPrototypeOf(slider),
             "value",
@@ -749,7 +781,13 @@
           if (typeof request.command.time === "number") {
             if (video && !isSoundCloud) {
               video.currentTime = request.command.time
-            } else if (isSpotify || isZing || isSoundCloud || isAppleMusic || isNct) {
+            } else if (
+              isSpotify ||
+              isZing ||
+              isSoundCloud ||
+              isAppleMusic ||
+              isNct
+            ) {
               seekWebSlider(request.command.time)
             }
           }

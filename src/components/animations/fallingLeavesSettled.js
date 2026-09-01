@@ -185,7 +185,8 @@ export class FallingLeavesSettledEffect {
     }
 
     // Smooth interpolation toward target (ease in/out)
-    this.windStrength += (this.windTarget - this.windStrength) * 0.04 * deltaTime
+    this.windStrength +=
+      (this.windTarget - this.windStrength) * 0.04 * deltaTime
   }
 
   start() {
@@ -203,7 +204,10 @@ export class FallingLeavesSettledEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -304,14 +308,16 @@ export class FallingLeavesSettledEffect {
       s * 0.18,
       -s * 0.4,
       s * 0.22,
-      -s * 0.44, s * 0.38,
+      -s * 0.44,
+      s * 0.38,
     )
     ctx.bezierCurveTo(
       -s * 0.48,
       s * 0.62,
       -s * 0.2,
       s * 0.5,
-      -s * 0.08, s * 0.55,
+      -s * 0.08,
+      s * 0.55,
     )
 
     ctx.lineTo(0, s * 0.9)
@@ -582,7 +588,7 @@ export class FallingLeavesSettledEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
@@ -687,7 +693,8 @@ export class FallingLeavesSettledEffect {
         // Rotation — spin faster in wind
         const windSpin = Math.abs(this.windStrength) * 0.4
         leaf.rotation +=
-          (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) * deltaTime
+          (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) *
+          deltaTime
 
         // Check if leaf has entered settlement zone
         const settlementZone = this.canvas.height - 120

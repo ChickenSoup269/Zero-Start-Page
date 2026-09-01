@@ -363,7 +363,10 @@ chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   }
 
   // 3. Reactive Media tracking on track change or title change in background tab
-  if (isKnownMediaTab(tab) && (changeInfo.title || changeInfo.url || changeInfo.audible !== undefined)) {
+  if (
+    isKnownMediaTab(tab) &&
+    (changeInfo.title || changeInfo.url || changeInfo.audible !== undefined)
+  ) {
     getMediaFromTab(tabId, (state) => {
       if (state && (state.title || state.isPlaying)) {
         mediaStates[tabId] = {
@@ -478,10 +481,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "mediaControl") {
-    const cmdName = typeof request.command === "string" ? request.command : request.command?.name
+    const cmdName =
+      typeof request.command === "string"
+        ? request.command
+        : request.command?.name
     // Invalidate cached state immediately when changing tracks so the next
     // poll always fetches fresh title/artist from the page
-    const isTrackChange = cmdName === "next" || cmdName === "prev" || cmdName === "playPause"
+    const isTrackChange =
+      cmdName === "next" || cmdName === "prev" || cmdName === "playPause"
 
     chrome.tabs.query({ audible: true }, (tabs) => {
       if (tabs[0]) {
@@ -499,7 +506,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true
   }
 })
-
 
 function isKnownMediaTab(tab) {
   return (
@@ -924,17 +930,17 @@ function getMediaFromTab(tabId, sendResponse) {
           )
           const spotifyIsPlaying = Boolean(
             spotifyPlayBtn &&
-              (spotifyPlayBtn
+            (spotifyPlayBtn
+              .getAttribute("aria-label")
+              ?.toLowerCase()
+              .includes("pause") ||
+              spotifyPlayBtn
                 .getAttribute("aria-label")
                 ?.toLowerCase()
-                .includes("pause") ||
-                spotifyPlayBtn
-                  .getAttribute("aria-label")
-                  ?.toLowerCase()
-                  .includes("tạm dừng") ||
-                spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
-                spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
-                navigator.mediaSession?.playbackState === "playing"),
+                .includes("tạm dừng") ||
+              spotifyPlayBtn.querySelector('svg path[d*="M2.7"]') !== null ||
+              spotifyPlayBtn.querySelector('svg path[d*="M3 2"]') !== null ||
+              navigator.mediaSession?.playbackState === "playing"),
           )
           const zingPlayButton = document.querySelector(
             ".player-controls__container .btn-play, .zm-btn.btn-play",
@@ -942,20 +948,21 @@ function getMediaFromTab(tabId, sendResponse) {
           const soundCloudPlayButton = document.querySelector(
             ".playControl, .playControls__play, button[title*='Play' i], button[title*='Pause' i]",
           )
-          const paused =
-            isSpotify
-              ? !spotifyIsPlaying
-              : navigator.mediaSession?.playbackState === "playing"
-                ? false
-                : navigator.mediaSession?.playbackState === "paused"
-                  ? true
-                  : isZing
-                    ? !zingPlayButton?.classList.contains("is-playing") &&
-                      !zingPlayButton?.classList.contains("playing")
-                    : isSoundCloud
-                      ? !soundCloudPlayButton?.classList.contains("playing") &&
-                        !soundCloudPlayButton?.classList.contains("playControls__play--playing")
-                      : playPauseLabel.includes("play")
+          const paused = isSpotify
+            ? !spotifyIsPlaying
+            : navigator.mediaSession?.playbackState === "playing"
+              ? false
+              : navigator.mediaSession?.playbackState === "paused"
+                ? true
+                : isZing
+                  ? !zingPlayButton?.classList.contains("is-playing") &&
+                    !zingPlayButton?.classList.contains("playing")
+                  : isSoundCloud
+                    ? !soundCloudPlayButton?.classList.contains("playing") &&
+                      !soundCloudPlayButton?.classList.contains(
+                        "playControls__play--playing",
+                      )
+                    : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()
 
@@ -1076,7 +1083,7 @@ function getMediaFromTab(tabId, sendResponse) {
                   typeof video.currentTime === "number" &&
                   video.currentTime > 0
                 ? video.currentTime
-                : (webPlayback?.currentTime || 0),
+                : webPlayback?.currentTime || 0,
           duration:
             (isSpotify || isSoundCloud || isZing) &&
             webPlayback &&
@@ -1085,8 +1092,8 @@ function getMediaFromTab(tabId, sendResponse) {
               : video
                 ? isFinite(video.duration) && video.duration > 0
                   ? video.duration
-                  : (webPlayback?.duration || 0)
-                : (webPlayback?.duration || 0),
+                  : webPlayback?.duration || 0
+                : webPlayback?.duration || 0,
           url: window.location.href,
           source: isSpotify
             ? "spotify"

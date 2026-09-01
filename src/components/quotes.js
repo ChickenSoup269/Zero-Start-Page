@@ -540,19 +540,25 @@ export class DailyQuotes {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = settings.widgetUseM3Accent === true
-      ? "m3-accent"
-      : isWhiteMode ? "white-blur" : settings.quotesSkin || "default"
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.quotesSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
     this.container.classList.toggle("skin-transparent", skin === "transparent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
   }
 
   async updateQuote(isManual = false) {
     const source = getSettings().quotesSource || "local"
-    
+
     if (source === "quotable") {
       await this.fetchFromQuotable(isManual)
       return
@@ -568,7 +574,7 @@ export class DailyQuotes {
   renderQuote(text, author, originalText = null) {
     const textEl = this.container.querySelector(".quote-text")
     const authEl = this.container.querySelector(".quote-author")
-    
+
     if (textEl) {
       textEl.style.opacity = "0"
       setTimeout(() => {
@@ -595,21 +601,26 @@ export class DailyQuotes {
     const currentLang = getSettings().language || "en"
     const cacheKey = `quote_cache_${sourceName}`
     const timeKey = `quote_time_${sourceName}`
-    
+
     if (!isManual && freq !== "tab") {
       const cached = localStorage.getItem(cacheKey)
       const cachedTime = localStorage.getItem(timeKey)
       if (cached && cachedTime) {
         const now = new Date()
         const lastTime = new Date(parseInt(cachedTime, 10))
-        
+
         let shouldFetch = false
         if (freq === "hour") {
-          shouldFetch = now.getTime() - lastTime.getTime() >= 3600000 || now.getHours() !== lastTime.getHours()
+          shouldFetch =
+            now.getTime() - lastTime.getTime() >= 3600000 ||
+            now.getHours() !== lastTime.getHours()
         } else if (freq === "day") {
-          shouldFetch = now.getDate() !== lastTime.getDate() || now.getMonth() !== lastTime.getMonth() || now.getFullYear() !== lastTime.getFullYear()
+          shouldFetch =
+            now.getDate() !== lastTime.getDate() ||
+            now.getMonth() !== lastTime.getMonth() ||
+            now.getFullYear() !== lastTime.getFullYear()
         }
-        
+
         if (!shouldFetch) {
           try {
             const parsed = JSON.parse(cached)
@@ -617,23 +628,26 @@ export class DailyQuotes {
               this.renderQuote(parsed.text, parsed.author, parsed.originalText)
               return
             }
-          } catch(e) {}
+          } catch (e) {}
         }
       }
     }
-    
+
     // Show subtle ellipsis if no content yet
     const textEl = this.container?.querySelector(".quote-text")
     if (!textEl || !textEl.textContent.trim()) {
       this.renderQuote("...", "")
     }
-    
+
     try {
       const data = await fetchFn()
       this.renderQuote(data.text, data.author, data.originalText)
-      localStorage.setItem(cacheKey, JSON.stringify({ ...data, lang: currentLang }))
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({ ...data, lang: currentLang }),
+      )
       localStorage.setItem(timeKey, Date.now().toString())
-    } catch(err) {
+    } catch (err) {
       console.warn(`${sourceName} fallback to local:`, err)
       this.updateLocalQuote(isManual)
     }
@@ -646,13 +660,17 @@ export class DailyQuotes {
 
       // Attempt 1: DummyJSON Quotes API (Fast, Reliable, HTTPS)
       try {
-        const res = await fetchWithTimeout("https://dummyjson.com/quotes/random", {}, 3500)
+        const res = await fetchWithTimeout(
+          "https://dummyjson.com/quotes/random",
+          {},
+          3500,
+        )
         if (res.ok) {
           const data = await res.json()
           if (data && data.quote) {
             rawQuote = {
               text: data.quote,
-              author: data.author ? `- ${data.author}` : "- Unknown"
+              author: data.author ? `- ${data.author}` : "- Unknown",
             }
           }
         }
@@ -661,13 +679,17 @@ export class DailyQuotes {
       // Attempt 2: ZenQuotes API
       if (!rawQuote) {
         try {
-          const res = await fetchWithTimeout("https://zenquotes.io/api/random", {}, 3500)
+          const res = await fetchWithTimeout(
+            "https://zenquotes.io/api/random",
+            {},
+            3500,
+          )
           if (res.ok) {
             const data = await res.json()
             if (Array.isArray(data) && data[0]?.q) {
               rawQuote = {
                 text: data[0].q,
-                author: data[0].a ? `- ${data[0].a}` : "- Unknown"
+                author: data[0].a ? `- ${data[0].a}` : "- Unknown",
               }
             }
           }
@@ -677,7 +699,11 @@ export class DailyQuotes {
       // Attempt 3: Type.fit Quotes
       if (!rawQuote) {
         try {
-          const res = await fetchWithTimeout("https://type.fit/api/quotes", {}, 3500)
+          const res = await fetchWithTimeout(
+            "https://type.fit/api/quotes",
+            {},
+            3500,
+          )
           if (res.ok) {
             const data = await res.json()
             if (Array.isArray(data) && data.length > 0) {
@@ -685,7 +711,7 @@ export class DailyQuotes {
               let author = (item.author || "Unknown").replace(", type.fit", "")
               rawQuote = {
                 text: item.text,
-                author: `- ${author}`
+                author: `- ${author}`,
               }
             }
           }
@@ -695,13 +721,17 @@ export class DailyQuotes {
       // Attempt 4: Quotable.io
       if (!rawQuote) {
         try {
-          const res = await fetchWithTimeout("https://api.quotable.io/random", {}, 3000)
+          const res = await fetchWithTimeout(
+            "https://api.quotable.io/random",
+            {},
+            3000,
+          )
           if (res.ok) {
             const data = await res.json()
             if (data && data.content) {
               rawQuote = {
                 text: data.content,
-                author: data.author ? `- ${data.author}` : "- Unknown"
+                author: data.author ? `- ${data.author}` : "- Unknown",
               }
             }
           }
@@ -720,7 +750,7 @@ export class DailyQuotes {
       return {
         text: finalText,
         author: rawQuote.author,
-        originalText: rawQuote.text
+        originalText: rawQuote.text,
       }
     }
     await this.fetchWithCache(isManual, "quotable", fetchFn)
@@ -730,11 +760,15 @@ export class DailyQuotes {
     const fetchFn = async () => {
       const isVi = getSettings().language === "vi"
       // Use cache-busting timestamp and no-store to prevent stale browser caching
-      const res = await fetchWithTimeout(`https://api.adviceslip.com/advice?t=${Date.now()}`, { cache: "no-store" }, 3500)
+      const res = await fetchWithTimeout(
+        `https://api.adviceslip.com/advice?t=${Date.now()}`,
+        { cache: "no-store" },
+        3500,
+      )
       if (!res.ok) throw new Error("Advice Slip API Network error")
       const data = await res.json()
       const originalAdvice = data?.slip?.advice || "Keep moving forward."
-      
+
       let finalAdvice = originalAdvice
       if (isVi) {
         finalAdvice = await translateQuoteText(originalAdvice, "vi")
@@ -744,7 +778,7 @@ export class DailyQuotes {
       return {
         text: finalAdvice,
         author,
-        originalText: originalAdvice
+        originalText: originalAdvice,
       }
     }
     await this.fetchWithCache(isManual, "adviceslip", fetchFn)
@@ -752,7 +786,7 @@ export class DailyQuotes {
 
   updateLocalQuote(isManual = false) {
     const freq = getSettings().quotesUpdateFreq || "tab"
-    
+
     if (this.currentIndex === -1 || isManual) {
       if (isManual || freq === "tab") {
         let newIndex
@@ -775,11 +809,8 @@ export class DailyQuotes {
 
     const quote = QUOTES_DATA[this.currentIndex]
     const isVi = getSettings().language === "vi"
-    
-    this.renderQuote(
-      isVi ? quote.translate : quote.text,
-      `- ${quote.author}`
-    )
+
+    this.renderQuote(isVi ? quote.translate : quote.text, `- ${quote.author}`)
   }
 
   updateCrystalBallUI() {

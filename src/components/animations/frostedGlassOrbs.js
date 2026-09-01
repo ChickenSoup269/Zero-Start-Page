@@ -1,5 +1,10 @@
 export class FrostedGlassOrbsBackground {
-  constructor(canvasId, color1 = "#00f2fe", color2 = "#4facfe", darkBackground = false) {
+  constructor(
+    canvasId,
+    color1 = "#00f2fe",
+    color2 = "#4facfe",
+    darkBackground = false,
+  ) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
@@ -25,14 +30,14 @@ export class FrostedGlassOrbsBackground {
         vx: (Math.random() - 0.5) * 1.5,
         vy: (Math.random() - 0.5) * 1.5,
         radius: Math.random() * 200 + 150,
-        colorIndex: i % 2 === 0 ? 1 : 2
+        colorIndex: i % 2 === 0 ? 1 : 2,
       })
     }
   }
 
   updateColor(type, color) {
-    if (type === 'color1') this.color1 = color
-    if (type === 'color2') this.color2 = color
+    if (type === "color1") this.color1 = color
+    if (type === "color2") this.color2 = color
   }
 
   setOptions(options) {
@@ -66,7 +71,9 @@ export class FrostedGlassOrbsBackground {
   }
 
   hexToRgb(hex) {
-    let r = 0, g = 0, b = 0;
+    let r = 0,
+      g = 0,
+      b = 0
     if (hex.length === 4) {
       r = parseInt(hex[1] + hex[1], 16)
       g = parseInt(hex[2] + hex[2], 16)
@@ -84,13 +91,20 @@ export class FrostedGlassOrbsBackground {
     const radius = size / 2
 
     const createOrb = (color) => {
-      const canvas = document.createElement('canvas')
+      const canvas = document.createElement("canvas")
       canvas.width = size
       canvas.height = size
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext("2d")
       const rgb = this.hexToRgb(color)
 
-      const grad = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius)
+      const grad = ctx.createRadialGradient(
+        radius,
+        radius,
+        0,
+        radius,
+        radius,
+        radius,
+      )
       grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`)
       grad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`)
       grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
@@ -107,7 +121,7 @@ export class FrostedGlassOrbsBackground {
       canvas1: createOrb(this.color1),
       canvas2: createOrb(this.color2),
       color1: this.color1,
-      color2: this.color2
+      color2: this.color2,
     }
   }
 
@@ -116,21 +130,25 @@ export class FrostedGlassOrbsBackground {
 
     const W = this.canvas.width
     const H = this.canvas.height
-    
-    if (!this.orbCache || this.orbCache.color1 !== this.color1 || this.orbCache.color2 !== this.color2) {
+
+    if (
+      !this.orbCache ||
+      this.orbCache.color1 !== this.color1 ||
+      this.orbCache.color2 !== this.color2
+    ) {
       this.buildOrbCache()
     }
 
     // Clear canvas
     if (this.darkBackground) {
-      this.ctx.fillStyle = '#050505'
+      this.ctx.fillStyle = "#050505"
       this.ctx.fillRect(0, 0, W, H)
     } else {
       this.ctx.clearRect(0, 0, W, H)
     }
 
     // Update and draw orbs
-    this.orbs.forEach(orb => {
+    this.orbs.forEach((orb) => {
       orb.x += orb.vx
       orb.y += orb.vy
 
@@ -141,8 +159,15 @@ export class FrostedGlassOrbsBackground {
       if (orb.y + orb.radius < 0) orb.y = H + orb.radius
 
       // Draw orb
-      const cacheCanvas = orb.colorIndex === 1 ? this.orbCache.canvas1 : this.orbCache.canvas2
-      this.ctx.drawImage(cacheCanvas, orb.x - orb.radius, orb.y - orb.radius, orb.radius * 2, orb.radius * 2)
+      const cacheCanvas =
+        orb.colorIndex === 1 ? this.orbCache.canvas1 : this.orbCache.canvas2
+      this.ctx.drawImage(
+        cacheCanvas,
+        orb.x - orb.radius,
+        orb.y - orb.radius,
+        orb.radius * 2,
+        orb.radius * 2,
+      )
     })
 
     requestAnimationFrame(() => this.animate())

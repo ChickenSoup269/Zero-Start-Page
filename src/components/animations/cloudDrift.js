@@ -72,14 +72,14 @@ export class CloudDriftEffect {
     const animateLoop = (now) => {
       if (!this.active) return
       this._animId = requestAnimationFrame(animateLoop)
-      if (document.visibilityState === 'hidden') return
-      
+      if (document.visibilityState === "hidden") return
+
       const deltaTime = (now - this.lastTime) / 1000 // Chuyển sang giây
       this.lastTime = now
 
       // Giới hạn deltaTime để tránh nhảy vọt khi quay lại tab
-      const limitedDelta = Math.min(deltaTime, 0.1) 
-      
+      const limitedDelta = Math.min(deltaTime, 0.1)
+
       this.update(limitedDelta, now / 1000)
       this.draw()
     }
@@ -104,7 +104,7 @@ export class CloudDriftEffect {
     this.time = time
     for (const c of this.clouds) {
       c.x += c.speed * dt
-      
+
       // Update puff sizes
       for (const p of c.puffs) {
         p.currentR = p.r + Math.sin(time * p.speed + p.phase) * (p.r * 0.06)
@@ -139,14 +139,22 @@ export class CloudDriftEffect {
   _getMoodPalette() {
     const palettes = {
       sunrise: {
-        sky: ["rgba(255, 190, 126, 0.2)", "rgba(255, 224, 181, 0.14)", "rgba(133, 191, 226, 0.08)"],
+        sky: [
+          "rgba(255, 190, 126, 0.2)",
+          "rgba(255, 224, 181, 0.14)",
+          "rgba(133, 191, 226, 0.08)",
+        ],
         sun: "rgba(255, 183, 98, 0.45)",
         tint: { r: 255, g: 218, b: 185 },
         tintStrength: 0.5,
         horizon: "rgba(255, 143, 99, 0.18)",
       },
       sunset: {
-        sky: ["rgba(255, 117, 92, 0.18)", "rgba(246, 167, 104, 0.12)", "rgba(76, 80, 158, 0.12)"],
+        sky: [
+          "rgba(255, 117, 92, 0.18)",
+          "rgba(246, 167, 104, 0.12)",
+          "rgba(76, 80, 158, 0.12)",
+        ],
         sun: "rgba(255, 130, 82, 0.42)",
         tint: { r: 255, g: 177, b: 133 },
         tintStrength: 0.58,
@@ -180,7 +188,14 @@ export class CloudDriftEffect {
     const sunX = this.mood === "sunset" ? W * 0.78 : W * 0.22
     const sunY = H * (this.mood === "sunset" ? 0.36 : 0.32)
     const pulse = 1 + Math.sin(this.time * 0.32) * 0.03
-    const sun = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, Math.min(W, H) * 0.36 * pulse)
+    const sun = ctx.createRadialGradient(
+      sunX,
+      sunY,
+      0,
+      sunX,
+      sunY,
+      Math.min(W, H) * 0.36 * pulse,
+    )
     sun.addColorStop(0, palette.sun)
     sun.addColorStop(0.42, "rgba(255, 214, 168, 0.16)")
     sun.addColorStop(1, "rgba(255, 214, 168, 0)")
@@ -204,16 +219,24 @@ export class CloudDriftEffect {
       this.ctx.save()
       this.ctx.translate(c.x, c.y + Math.sin(this.time * 0.18 + c.wobble) * 8)
       const rgb = palette
-        ? this._mixRgb(this._rgb, palette.tint, palette.tintStrength * (0.75 + c.layer * 0.25))
+        ? this._mixRgb(
+            this._rgb,
+            palette.tint,
+            palette.tintStrength * (0.75 + c.layer * 0.25),
+          )
         : this._rgb
-      
+
       this.ctx.globalCompositeOperation = palette ? "source-over" : "lighter"
       for (const p of c.puffs) {
         const grad = this.ctx.createRadialGradient(
-          p.ox, p.oy - p.currentR * 0.2, 0,
-          p.ox, p.oy, p.currentR
+          p.ox,
+          p.oy - p.currentR * 0.2,
+          0,
+          p.ox,
+          p.oy,
+          p.currentR,
         )
-        
+
         const a = palette ? c.alpha * 0.82 : c.alpha
         grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`)
         grad.addColorStop(0.6, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a * 0.6})`)
@@ -224,7 +247,7 @@ export class CloudDriftEffect {
         this.ctx.arc(p.ox, p.oy, p.currentR, 0, Math.PI * 2)
         this.ctx.fill()
       }
-      
+
       this.ctx.restore()
     }
     this.ctx.globalCompositeOperation = "source-over"

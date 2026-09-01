@@ -14,18 +14,112 @@ import { getSettings } from "../../services/state.js"
  * Seeds are stable identifiers that always return the same photo.
  */
 const PICSUM_THEMES = [
-  { key: "random",         labelEn: "Random",          labelVi: "Ngẫu nhiên",           seeds: [] /* purely random */ },
-  { key: "nature",         labelEn: "Nature",           labelVi: "Thiên nhiên",           seeds: [10,15,17,24,29,37,59,82,91,96,117,127,133,145,189,200,219,229,236,246,259,269,274,276,279,287,297,304,308,313,366,397,416,422,433,439,449,457,468,478,483,500,501,503,506,512] },
-  { key: "city",           labelEn: "City & Urban",     labelVi: "Đô thị & Phố xá",      seeds: [6,20,30,43,62,69,91,112,120,122,124,143,158,163,173,179,181,191,201,202,209,222,230,238,241,261,265,268,280,298,309,318,326,337,339,341,350,360,374,384,399,411,435,459,475,490] },
-  { key: "abstract",       labelEn: "Abstract",         labelVi: "Trừu tượng",            seeds: [1,2,8,11,16,22,31,45,52,56,65,70,77,86,100,114,131,148,165,176,188,206,216,227,242,253,264,275,282,293,302,315,328,343,355,368,382,395,408,421,434,447,460,473,486,499] },
-  { key: "architecture",   labelEn: "Architecture",     labelVi: "Kiến trúc",             seeds: [12,18,25,35,48,58,72,85,97,108,119,130,142,155,167,178,193,205,218,228,240,252,263,273,285,295,307,317,329,342,354,367,379,392,405,418,431,444,457,470,483,496,502,507,511,513] },
-  { key: "minimal",        labelEn: "Minimal",          labelVi: "Tối giản",              seeds: [3,13,23,33,44,55,66,77,88,99,110,121,132,143,154,165,176,187,198,209,220,231,242,253,264,275,286,297,308,319,330,341,352,363,374,385,396,407,418,429,440,451,462,473,484,495] },
-  { key: "technology",     labelEn: "Technology",       labelVi: "Công nghệ",             seeds: [0,9,19,28,39,49,60,71,81,92,103,114,125,136,147,158,169,180,191,202,213,224,235,246,257,268,279,290,301,312,323,334,345,356,367,378,389,400,411,422,433,444,455,466,477,488] },
-  { key: "dark",           labelEn: "Dark & Moody",     labelVi: "Tối & Moody",           seeds: [5,14,26,36,47,57,68,79,90,101,111,122,134,144,156,166,177,190,203,214,225,236,247,258,269,281,291,303,314,324,336,346,358,369,380,391,402,413,424,436,446,458,469,480,491,497] },
-  { key: "animals",        labelEn: "Animals",          labelVi: "Động vật",              seeds: [237, 219, 433, 577, 582, 593, 659, 718, 783, 790, 837, 1003, 1025, 1062, 1074, 1084] },
-  { key: "food",           labelEn: "Food & Drink",     labelVi: "Đồ ăn & Thức uống",     seeds: [292, 365, 425, 429, 431, 488, 493, 824, 835, 889, 999, 1060, 1080] },
-  { key: "space",          labelEn: "Space & Night",    labelVi: "Vũ trụ & Bầu trời",     seeds: [903, 930, 973, 974, 988, 1044, 1050, 1051, 1052] },
-  { key: "vehicles",       labelEn: "Vehicles & Cars",  labelVi: "Xe cộ",                 seeds: [107, 111, 133, 146, 183, 195, 386, 396, 442, 459, 498, 517, 563, 626, 680, 717, 725, 843, 856] }
+  {
+    key: "random",
+    labelEn: "Random",
+    labelVi: "Ngẫu nhiên",
+    seeds: [] /* purely random */,
+  },
+  {
+    key: "nature",
+    labelEn: "Nature",
+    labelVi: "Thiên nhiên",
+    seeds: [
+      10, 15, 17, 24, 29, 37, 59, 82, 91, 96, 117, 127, 133, 145, 189, 200, 219,
+      229, 236, 246, 259, 269, 274, 276, 279, 287, 297, 304, 308, 313, 366, 397,
+      416, 422, 433, 439, 449, 457, 468, 478, 483, 500, 501, 503, 506, 512,
+    ],
+  },
+  {
+    key: "city",
+    labelEn: "City & Urban",
+    labelVi: "Đô thị & Phố xá",
+    seeds: [
+      6, 20, 30, 43, 62, 69, 91, 112, 120, 122, 124, 143, 158, 163, 173, 179,
+      181, 191, 201, 202, 209, 222, 230, 238, 241, 261, 265, 268, 280, 298, 309,
+      318, 326, 337, 339, 341, 350, 360, 374, 384, 399, 411, 435, 459, 475, 490,
+    ],
+  },
+  {
+    key: "abstract",
+    labelEn: "Abstract",
+    labelVi: "Trừu tượng",
+    seeds: [
+      1, 2, 8, 11, 16, 22, 31, 45, 52, 56, 65, 70, 77, 86, 100, 114, 131, 148,
+      165, 176, 188, 206, 216, 227, 242, 253, 264, 275, 282, 293, 302, 315, 328,
+      343, 355, 368, 382, 395, 408, 421, 434, 447, 460, 473, 486, 499,
+    ],
+  },
+  {
+    key: "architecture",
+    labelEn: "Architecture",
+    labelVi: "Kiến trúc",
+    seeds: [
+      12, 18, 25, 35, 48, 58, 72, 85, 97, 108, 119, 130, 142, 155, 167, 178,
+      193, 205, 218, 228, 240, 252, 263, 273, 285, 295, 307, 317, 329, 342, 354,
+      367, 379, 392, 405, 418, 431, 444, 457, 470, 483, 496, 502, 507, 511, 513,
+    ],
+  },
+  {
+    key: "minimal",
+    labelEn: "Minimal",
+    labelVi: "Tối giản",
+    seeds: [
+      3, 13, 23, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176,
+      187, 198, 209, 220, 231, 242, 253, 264, 275, 286, 297, 308, 319, 330, 341,
+      352, 363, 374, 385, 396, 407, 418, 429, 440, 451, 462, 473, 484, 495,
+    ],
+  },
+  {
+    key: "technology",
+    labelEn: "Technology",
+    labelVi: "Công nghệ",
+    seeds: [
+      0, 9, 19, 28, 39, 49, 60, 71, 81, 92, 103, 114, 125, 136, 147, 158, 169,
+      180, 191, 202, 213, 224, 235, 246, 257, 268, 279, 290, 301, 312, 323, 334,
+      345, 356, 367, 378, 389, 400, 411, 422, 433, 444, 455, 466, 477, 488,
+    ],
+  },
+  {
+    key: "dark",
+    labelEn: "Dark & Moody",
+    labelVi: "Tối & Moody",
+    seeds: [
+      5, 14, 26, 36, 47, 57, 68, 79, 90, 101, 111, 122, 134, 144, 156, 166, 177,
+      190, 203, 214, 225, 236, 247, 258, 269, 281, 291, 303, 314, 324, 336, 346,
+      358, 369, 380, 391, 402, 413, 424, 436, 446, 458, 469, 480, 491, 497,
+    ],
+  },
+  {
+    key: "animals",
+    labelEn: "Animals",
+    labelVi: "Động vật",
+    seeds: [
+      237, 219, 433, 577, 582, 593, 659, 718, 783, 790, 837, 1003, 1025, 1062,
+      1074, 1084,
+    ],
+  },
+  {
+    key: "food",
+    labelEn: "Food & Drink",
+    labelVi: "Đồ ăn & Thức uống",
+    seeds: [292, 365, 425, 429, 431, 488, 493, 824, 835, 889, 999, 1060, 1080],
+  },
+  {
+    key: "space",
+    labelEn: "Space & Night",
+    labelVi: "Vũ trụ & Bầu trời",
+    seeds: [903, 930, 973, 974, 988, 1044, 1050, 1051, 1052],
+  },
+  {
+    key: "vehicles",
+    labelEn: "Vehicles & Cars",
+    labelVi: "Xe cộ",
+    seeds: [
+      107, 111, 133, 146, 183, 195, 386, 396, 442, 459, 498, 517, 563, 626, 680,
+      717, 725, 843, 856,
+    ],
+  },
 ]
 
 const PICSUM_RECENT_PREFIX = "startpagePicsumRecent:"
@@ -80,20 +174,23 @@ function buildPicsumThumbUrl(seed) {
 function getPicsumTargetDimensions() {
   const settings = getSettings()
   const mode = settings.backgroundMediaQuality || "balanced"
-  
+
   const profiles = {
     quality: { dprCap: 2, widthCap: 3200, heightCap: 2200 },
     balanced: { dprCap: 1.5, widthCap: 2400, heightCap: 1600 },
     low: { dprCap: 1, widthCap: 1600, heightCap: 1000 },
     tiny: { dprCap: 0.75, widthCap: 1024, heightCap: 640 },
-    still: { dprCap: 0.85, widthCap: 1280, heightCap: 800 }
+    still: { dprCap: 0.85, widthCap: 1280, heightCap: 800 },
   }
   const p = profiles[mode] || profiles.balanced
 
   const dpr = Math.min(window.devicePixelRatio || 1, p.dprCap)
   return {
     width: Math.min(p.widthCap, Math.round((window.innerWidth || 1920) * dpr)),
-    height: Math.min(p.heightCap, Math.round((window.innerHeight || 1080) * dpr)),
+    height: Math.min(
+      p.heightCap,
+      Math.round((window.innerHeight || 1080) * dpr),
+    ),
   }
 }
 
@@ -101,7 +198,8 @@ function getPicsumTargetDimensions() {
  * Pick a fresh seed for a given theme, avoiding recently seen ones.
  */
 function pickPicsumSeed(themeKey) {
-  const theme = PICSUM_THEMES.find((t) => t.key === themeKey) || PICSUM_THEMES[0]
+  const theme =
+    PICSUM_THEMES.find((t) => t.key === themeKey) || PICSUM_THEMES[0]
   const seeds = theme.seeds
 
   if (!seeds.length) {
@@ -121,7 +219,9 @@ function pickPicsumSeed(themeKey) {
  */
 async function fetchPicsumPhotoInfo(seed) {
   try {
-    const res = await fetch(`https://picsum.photos/id/${seed}/info`, { signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`https://picsum.photos/id/${seed}/info`, {
+      signal: AbortSignal.timeout(5000),
+    })
     if (!res.ok) return null
     return await res.json()
   } catch {
@@ -169,7 +269,8 @@ function getPicsumThemes() {
  * Returns array of { seed, thumbUrl, imageUrl }
  */
 function getPicsumGalleryPage(themeKey = "random", count = 20, page = 1) {
-  const theme = PICSUM_THEMES.find((t) => t.key === themeKey) || PICSUM_THEMES[0]
+  const theme =
+    PICSUM_THEMES.find((t) => t.key === themeKey) || PICSUM_THEMES[0]
   const { width, height } = getPicsumTargetDimensions()
   const results = []
 
@@ -177,7 +278,7 @@ function getPicsumGalleryPage(themeKey = "random", count = 20, page = 1) {
     // Random mode: generate stable seeds per page
     const offset = (page - 1) * count
     for (let i = 0; i < count; i++) {
-      const seed = ((offset + i) * 7 + 42) % 1000 + 1
+      const seed = (((offset + i) * 7 + 42) % 1000) + 1
       results.push({
         seed,
         thumbUrl: buildPicsumThumbUrl(seed),
@@ -209,22 +310,22 @@ function getPicsumGalleryPage(themeKey = "random", count = 20, page = 1) {
  * Multiple tags can be comma-joined (e.g. "space,stars").
  */
 const FLICKR_TAG_MAP = {
-  random:       "",              // no tag = truly random
-  nature:       "nature",
-  city:         "city",
-  abstract:     "abstract",
+  random: "", // no tag = truly random
+  nature: "nature",
+  city: "city",
+  abstract: "abstract",
   architecture: "architecture",
-  minimal:      "minimal",
-  technology:   "technology",
-  dark:         "dark",
-  animals:      "animals",
-  food:         "food",
-  space:        "space,stars",
-  vehicles:     "car",
+  minimal: "minimal",
+  technology: "technology",
+  dark: "dark",
+  animals: "animals",
+  food: "food",
+  space: "space,stars",
+  vehicles: "car",
 }
 
 const FLICKR_RECENT_PREFIX = "startpageFlickrRecent:"
-const FLICKR_RECENT_LIMIT  = 30
+const FLICKR_RECENT_LIMIT = 30
 
 function getFlickrRecentUrls(themeKey) {
   try {
@@ -321,7 +422,10 @@ async function getLoremFlickrRandomBackground(themeKey = "random") {
  * @param {string} provider  - "picsum" | "loremflickr" (default "loremflickr")
  * @returns {Promise<{imageUrl, seed, info, themeKey}>}
  */
-async function getFreeRandomBackground(themeKey = "random", provider = "loremflickr") {
+async function getFreeRandomBackground(
+  themeKey = "random",
+  provider = "loremflickr",
+) {
   if (provider === "picsum") {
     return getPicsumRandomBackground(themeKey)
   }
@@ -339,4 +443,3 @@ export {
   getFreeRandomBackground,
   FLICKR_TAG_MAP,
 }
-

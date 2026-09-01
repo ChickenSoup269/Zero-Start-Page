@@ -167,21 +167,33 @@ class MusicVisualizer {
     const rect = this.container.getBoundingClientRect()
     const parentRect = parent.getBoundingClientRect?.()
 
-    this.cachedW = Math.round(rect.width || this.container.offsetWidth || parent.offsetWidth || 276)
-    this.cachedH = Math.round(rect.height || this.container.offsetHeight || parent.offsetHeight || 60)
-    this.cachedParentWidth = Math.round(parentRect?.width || parent.offsetWidth || this.cachedW)
-    this.cachedParentHeight = Math.round(parentRect?.height || parent.offsetHeight || this.cachedH)
+    this.cachedW = Math.round(
+      rect.width || this.container.offsetWidth || parent.offsetWidth || 276,
+    )
+    this.cachedH = Math.round(
+      rect.height || this.container.offsetHeight || parent.offsetHeight || 60,
+    )
+    this.cachedParentWidth = Math.round(
+      parentRect?.width || parent.offsetWidth || this.cachedW,
+    )
+    this.cachedParentHeight = Math.round(
+      parentRect?.height || parent.offsetHeight || this.cachedH,
+    )
 
-    this.cachedAccent = getComputedStyle(parent).getPropertyValue("--accent-color").trim() || "#64f4d2"
+    this.cachedAccent =
+      getComputedStyle(parent).getPropertyValue("--accent-color").trim() ||
+      "#64f4d2"
 
-    this.isWhiteBlurCached = parent.classList.contains("skin-white-blur") || 
-                             document.body.classList.contains("quick-access-white")
+    this.isWhiteBlurCached =
+      parent.classList.contains("skin-white-blur") ||
+      document.body.classList.contains("quick-access-white")
 
     this._cpuSave = getSettings().musicVisualizerCpuSave !== false
-    this.isWhiteModeCached = document.body.classList.contains("quick-access-white") || 
-                             this.container.closest(".skin-white-blur") !== null ||
-                             this.container.classList.contains("skin-white-blur") ||
-                             document.querySelector(".side-controls")?.classList.contains("light-mode")
+    this.isWhiteModeCached =
+      document.body.classList.contains("quick-access-white") ||
+      this.container.closest(".skin-white-blur") !== null ||
+      this.container.classList.contains("skin-white-blur") ||
+      document.querySelector(".side-controls")?.classList.contains("light-mode")
   }
 
   // ── Orbit Visualizer ──────────────────────────────────────────────────────
@@ -309,17 +321,11 @@ class MusicVisualizer {
     const playerSize = Math.min(this.cachedParentWidth, this.cachedParentHeight)
     const baseRadius = Math.min(playerSize / 2 + 8, Math.min(W, H) / 2 - 58)
     const isWhiteBlur = this.isWhiteBlurCached
-    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#64f4d2")
+    const accent = isWhiteBlur ? "#000000" : this.cachedAccent || "#64f4d2"
     const isCpuSave = this._cpuSave !== false
 
     // 1. Concentric NCS Shockwave Pulse Rings
-    const drawNcsRing = (
-      phaseOffset,
-      alphaBase,
-      width,
-      expansion,
-      holdEnd,
-    ) => {
+    const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
       const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
       const attack = phase < 0.16 ? phase / 0.16 : 1
       const hold =
@@ -504,7 +510,7 @@ class MusicVisualizer {
 
     if (this.isPlaying && isReactive) {
       if (hasRealAudio) {
-        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.40) * 1.95)
+        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.4) * 1.95)
         midNorm = Math.min(
           1.0,
           Math.pow(this._realBands[Math.min(2, bandsCount - 1)] || 0, 0.45) *
@@ -864,7 +870,7 @@ class MusicVisualizer {
 
     if (this.isPlaying && isReactive) {
       if (hasRealAudio) {
-        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.40) * 1.95)
+        bassNorm = Math.min(1.0, Math.pow(this._realBands[0] || 0, 0.4) * 1.95)
         midNorm = Math.min(
           1.0,
           Math.pow(this._realBands[Math.min(2, bandsCount - 1)] || 0, 0.45) *
@@ -923,9 +929,7 @@ class MusicVisualizer {
       ctx.beginPath()
       ctx.strokeStyle = isWhiteBlur ? "#000000" : v.color
       ctx.lineWidth = v.thickness * (1 + norm * 0.7)
-      ctx.globalAlpha = isWhiteBlur
-        ? 0.15 + norm * 0.2
-        : 0.25 + norm * 0.3
+      ctx.globalAlpha = isWhiteBlur ? 0.15 + norm * 0.2 : 0.25 + norm * 0.3
 
       const time = simTime * (v.speed + norm * 0.4)
       const sway = Math.sin(time + idx) * (v.curve + norm * 28)
@@ -983,7 +987,10 @@ class MusicVisualizer {
         let freq = 0
         if (hasRealAudio) {
           const bIdx = Math.min(bandsCount - 1, Math.floor(u * bandsCount))
-          freq = Math.min(1.0, Math.pow(this._realBands[bIdx] || 0, 0.42) * 1.85)
+          freq = Math.min(
+            1.0,
+            Math.pow(this._realBands[bIdx] || 0, 0.42) * 1.85,
+          )
         } else {
           freq =
             Math.sin(simTime * 5.0 + u * Math.PI * 3) * 0.35 * norm +
@@ -1022,9 +1029,7 @@ class MusicVisualizer {
         if (i === 0) ctx.moveTo(pt.x, pt.y)
         else ctx.lineTo(pt.x, pt.y)
       })
-      ctx.strokeStyle = isWhiteBlur
-        ? "rgba(0,0,0,0.4)"
-        : accent || "#81c784"
+      ctx.strokeStyle = isWhiteBlur ? "rgba(0,0,0,0.4)" : accent || "#81c784"
       ctx.lineWidth = 1.6 + norm * 1.0
       ctx.shadowColor = isWhiteBlur ? "transparent" : accent || "#81c784"
       ctx.shadowBlur = isWhiteBlur ? 0 : 8 + norm * 8
@@ -1064,9 +1069,7 @@ class MusicVisualizer {
       ctx.translate(p.x * (W / 300), p.y * (H / 60))
       ctx.rotate(p.rotation)
       ctx.fillStyle = isWhiteBlur ? "#000000" : p.color
-      ctx.globalAlpha = isWhiteBlur
-        ? 0.4 + norm * 0.4
-        : 0.7 + norm * 0.3
+      ctx.globalAlpha = isWhiteBlur ? 0.4 + norm * 0.4 : 0.7 + norm * 0.3
 
       const pulse = 1 + norm * (p.type === "flower" ? 1.8 : 0.8)
 
@@ -1080,13 +1083,7 @@ class MusicVisualizer {
         for (let j = 0; j < 5; j++) {
           ctx.rotate((Math.PI * 2) / 5)
           ctx.beginPath()
-          ctx.arc(
-            p.size * 0.8 * pulse,
-            0,
-            p.size * 0.5 * pulse,
-            0,
-            Math.PI * 2,
-          )
+          ctx.arc(p.size * 0.8 * pulse, 0, p.size * 0.5 * pulse, 0, Math.PI * 2)
           ctx.fill()
         }
         ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.5)" : "#fff"
@@ -1205,7 +1202,7 @@ class MusicVisualizer {
     ctx.scale(2, 2)
 
     const isWhiteMode = this.isWhiteModeCached
-    let accent = isWhiteMode ? "#000000" : (this.cachedAccent || "#ff4d4d")
+    let accent = isWhiteMode ? "#000000" : this.cachedAccent || "#ff4d4d"
 
     // Audio Reactive Beat Calculation
     this._heartbeatSimTime = (this._heartbeatSimTime || 0) + dt
@@ -1216,7 +1213,10 @@ class MusicVisualizer {
     const hasRealAudio = Boolean(this._realBands && bandsCount > 0)
 
     if (this.container) {
-      this.container.classList.toggle("real-audio-active", isReactive && hasRealAudio)
+      this.container.classList.toggle(
+        "real-audio-active",
+        isReactive && hasRealAudio,
+      )
     }
 
     let targetNorm = 0.15
@@ -1224,7 +1224,13 @@ class MusicVisualizer {
     const beatPhase = (simTime * (bpm / 60)) % 1
     const kick = Math.pow(Math.max(0, 1 - beatPhase * 3.0), 2.2)
 
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, treble = 0, bassEnergy = 0, instantKick = 0
+    let b0 = 0,
+      b1 = 0,
+      b2 = 0,
+      b3 = 0,
+      treble = 0,
+      bassEnergy = 0,
+      instantKick = 0
 
     if (this.isPlaying) {
       if (isReactive) {
@@ -1261,7 +1267,7 @@ class MusicVisualizer {
     const norm = this._heartbeatNorm
 
     const currentBaseY = H / 2
-    const headX = Math.floor(W * 0.70) // Camera tracking focal point at 70% width
+    const headX = Math.floor(W * 0.7) // Camera tracking focal point at 70% width
 
     // Forward speed of camera flight (pixels/second)
     const speed = 100
@@ -1276,9 +1282,9 @@ class MusicVisualizer {
     }
 
     // Step physics & record newly formed ECG wave at the head
-    const minInterval = hasRealAudio ? 0.20 : 0.32
+    const minInterval = hasRealAudio ? 0.2 : 0.32
     for (let s = 0; s < numSteps; s++) {
-      this._hbPulseTimer = (this._hbPulseTimer || 0) + (1 / speed)
+      this._hbPulseTimer = (this._hbPulseTimer || 0) + 1 / speed
 
       const beatTriggered =
         this.isPlaying &&
@@ -1308,7 +1314,7 @@ class MusicVisualizer {
         } else if (p < 0.28) {
           currentSampleY = Math.sin(((p - 0.16) / 0.12) * Math.PI) * 3.0 * amp // Q dip
         } else if (p < 0.48) {
-          currentSampleY = -Math.sin(((p - 0.28) / 0.20) * Math.PI) * 24.0 * amp // R peak spike
+          currentSampleY = -Math.sin(((p - 0.28) / 0.2) * Math.PI) * 24.0 * amp // R peak spike
         } else if (p < 0.64) {
           currentSampleY = Math.sin(((p - 0.48) / 0.16) * Math.PI) * 12.0 * amp // S wave rebound
         } else if (p < 0.92) {
@@ -1350,7 +1356,8 @@ class MusicVisualizer {
 
     // Dynamic Camera Spring Tracking (Camera pan & damping following cardiac spikes)
     const targetCamY = (this._hbHistory[0] || 0) * 0.22
-    this._hbCamY = (this._hbCamY || 0) + (targetCamY - (this._hbCamY || 0)) * 0.16
+    this._hbCamY =
+      (this._hbCamY || 0) + (targetCamY - (this._hbCamY || 0)) * 0.16
     const camOffsetY = this._hbCamY
 
     const isCpuSave = this._cpuSave !== false
@@ -1590,7 +1597,7 @@ class MusicVisualizer {
     ctx.clearRect(0, 0, W, H)
 
     const isWhiteBlur = this.isWhiteBlurCached
-    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
+    const accent = isWhiteBlur ? "#000000" : this.cachedAccent || "#a8c0ff"
 
     const gap = 3
     const barW = Math.max(
@@ -1780,7 +1787,7 @@ class MusicVisualizer {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     const isWhiteBlur = this.isWhiteBlurCached
-    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
+    const accent = isWhiteBlur ? "#000000" : this.cachedAccent || "#a8c0ff"
 
     // Smooth Audio Reactive Beat Calculation (Punchy & Organic)
     this._moonSimTime = (this._moonSimTime || 0) + dt
@@ -1986,9 +1993,7 @@ class MusicVisualizer {
         const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
         const isFront = zFactor > 0.5
         ctx.globalAlpha =
-          qAppearFactor *
-          (0.24 + norm * 0.18) *
-          (isFront ? 0.95 : 0.45)
+          qAppearFactor * (0.24 + norm * 0.18) * (isFront ? 0.95 : 0.45)
         ctx.lineWidth = (1.5 + norm * 0.6) * (0.65 + 0.65 * zFactor)
 
         ctx.beginPath()
@@ -2341,8 +2346,7 @@ class MusicVisualizer {
           )
         }
 
-        const smoothing =
-          targetNorm > this._currentScales[index] ? 0.8 : 0.35
+        const smoothing = targetNorm > this._currentScales[index] ? 0.8 : 0.35
         this._currentScales[index] +=
           (targetNorm - this._currentScales[index]) * smoothing
 

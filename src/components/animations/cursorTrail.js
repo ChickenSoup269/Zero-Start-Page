@@ -192,10 +192,15 @@ export class CursorTrailEffect {
 
     const animateLoop = (t) => {
       if (!this.active) return
-      if (document.visibilityState === 'hidden') {
-        document.addEventListener('visibilitychange', () => {
-          if (!document.hidden && this.active) this._animId = requestAnimationFrame(animateLoop)
-        }, { once: true })
+      if (document.visibilityState === "hidden") {
+        document.addEventListener(
+          "visibilitychange",
+          () => {
+            if (!document.hidden && this.active)
+              this._animId = requestAnimationFrame(animateLoop)
+          },
+          { once: true },
+        )
         return
       }
       this._animId = requestAnimationFrame(animateLoop)
@@ -303,10 +308,14 @@ class FireParticle {
     this.type = "fire"
     this.x = x + (Math.random() * 10 - 5)
     this.y = y + (Math.random() * 10 - 5)
-    this.vx = isExplosion ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 1.2
-    this.vy = isExplosion ? (Math.random() - 0.5) * 6 : (Math.random() * -2) - 1
+    this.vx = isExplosion
+      ? (Math.random() - 0.5) * 6
+      : (Math.random() - 0.5) * 1.2
+    this.vy = isExplosion ? (Math.random() - 0.5) * 6 : Math.random() * -2 - 1
     this.life = 1.0
-    this.decay = isExplosion ? Math.random() * 0.03 + 0.02 : Math.random() * 0.04 + 0.02
+    this.decay = isExplosion
+      ? Math.random() * 0.03 + 0.02
+      : Math.random() * 0.04 + 0.02
     this.size = isExplosion ? Math.random() * 35 + 20 : Math.random() * 25 + 15
   }
 
@@ -343,7 +352,7 @@ class EmberParticle {
     this.x = x
     this.y = y
     this.vx = (Math.random() - 0.5) * 3
-    this.vy = (Math.random() * -4) - 2
+    this.vy = Math.random() * -4 - 2
     this.life = 1.0
     this.decay = 0.02
     this.size = Math.random() * 2 + 1

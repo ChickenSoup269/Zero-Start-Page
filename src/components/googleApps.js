@@ -480,10 +480,9 @@ function getAppHostname(item) {
 }
 
 function getDeclaredIconUrl(item) {
-
   if (item.id === "account") {
     try {
-      const profileStr = localStorage.getItem('googleUserProfile')
+      const profileStr = localStorage.getItem("googleUserProfile")
       if (profileStr) {
         const profile = JSON.parse(profileStr)
         if (profile.picture) return profile.picture
@@ -658,8 +657,8 @@ export function initGoogleApps() {
 
   const persist = () => saveState(state)
 
-  window.addEventListener('googleProfileUpdated', () => {
-    if (typeof render === 'function') render()
+  window.addEventListener("googleProfileUpdated", () => {
+    if (typeof render === "function") render()
   })
 
   const render = () => {
@@ -687,7 +686,7 @@ export function initGoogleApps() {
     if (state.options.showMiniSearch) {
       const searchWrap = document.createElement("div")
       searchWrap.className = "g-apps-mini-search"
-      
+
       const searchIcon = document.createElement("i")
       searchIcon.className = "fa-solid fa-magnifying-glass g-apps-search-icon"
       searchWrap.appendChild(searchIcon)
@@ -705,7 +704,10 @@ export function initGoogleApps() {
         const newInput = document.querySelector(".g-apps-mini-search input")
         if (newInput) {
           newInput.focus()
-          newInput.setSelectionRange(newInput.value.length, newInput.value.length)
+          newInput.setSelectionRange(
+            newInput.value.length,
+            newInput.value.length,
+          )
         }
       })
       searchWrap.appendChild(searchInput)
@@ -800,7 +802,9 @@ export function initGoogleApps() {
 
   function getDropBeforeId(grid, x, y) {
     const allItems = [...grid.querySelectorAll(".g-app-item")]
-    const validItems = allItems.filter(item => !item.classList.contains("dragging"))
+    const validItems = allItems.filter(
+      (item) => !item.classList.contains("dragging"),
+    )
     if (validItems.length === 0) return null
 
     let closestItem = null
@@ -811,7 +815,7 @@ export function initGoogleApps() {
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
       const distance = Math.hypot(x - centerX, y - centerY)
-      
+
       if (distance < minDistance) {
         minDistance = distance
         closestItem = item
@@ -825,14 +829,14 @@ export function initGoogleApps() {
     const draggedIndex = draggedItem ? allItems.indexOf(draggedItem) : -1
 
     let isBefore = false
-    
+
     if (draggedIndex !== -1 && allItems.includes(draggedItem)) {
       isBefore = draggedIndex > closestIndex
     } else {
       const rect = closestItem.getBoundingClientRect()
       isBefore = x < rect.left + rect.width / 2
     }
-    
+
     if (isBefore) {
       return closestItem.dataset.appId
     } else {
@@ -843,7 +847,7 @@ export function initGoogleApps() {
   }
 
   function updateDropIndicator(grid, x, y) {
-    document.querySelectorAll(".g-app-item").forEach(el => {
+    document.querySelectorAll(".g-app-item").forEach((el) => {
       el.classList.remove("drag-insert-before", "drag-insert-after")
     })
     if (!grid) return
@@ -861,7 +865,7 @@ export function initGoogleApps() {
   }
 
   function clearDropIndicator() {
-    document.querySelectorAll(".g-app-item").forEach(el => {
+    document.querySelectorAll(".g-app-item").forEach((el) => {
       el.classList.remove("drag-insert-before", "drag-insert-after")
     })
   }
@@ -1128,7 +1132,9 @@ export function initGoogleApps() {
     const input = document.createElement("input")
     input.type = "text"
     input.value =
-      selectedValue && selectedValue !== defaultIcon && selectedValue !== webIcon
+      selectedValue &&
+      selectedValue !== defaultIcon &&
+      selectedValue !== webIcon
         ? selectedValue
         : ""
     input.placeholder = "https://... or data:image/..."
@@ -1151,7 +1157,10 @@ export function initGoogleApps() {
     const syncPreview = () => {
       previewImg.src = selectedValue || defaultIcon
       choices.querySelectorAll(".g-apps-icon-choice").forEach((choice) => {
-        choice.classList.toggle("active", choice.dataset.value === selectedValue)
+        choice.classList.toggle(
+          "active",
+          choice.dataset.value === selectedValue,
+        )
       })
     }
 
@@ -1313,7 +1322,8 @@ export function initGoogleApps() {
 
   function showGoogleAppsMenu(event, item) {
     hideGoogleAppsMenu()
-    const fallbackItem = item || appMap.get(state.favorites[0] || "search") || apps[0]
+    const fallbackItem =
+      item || appMap.get(state.favorites[0] || "search") || apps[0]
     const labels = getMenuLabels(fallbackItem)
     const menu = document.createElement("div")
     menu.className = "g-apps-context-menu"
@@ -1329,10 +1339,14 @@ export function initGoogleApps() {
     if (item) {
       menu.innerHTML = `<div class="g-apps-menu-title">${labels.currentApp}</div>`
       menu.appendChild(
-        createMenuButton("fa-solid fa-up-right-from-square", labels.open, () => {
-          window.open(item.url, "_blank", "noopener")
-          hideGoogleAppsMenu()
-        }),
+        createMenuButton(
+          "fa-solid fa-up-right-from-square",
+          labels.open,
+          () => {
+            window.open(item.url, "_blank", "noopener")
+            hideGoogleAppsMenu()
+          },
+        ),
       )
       menu.appendChild(
         createMenuButton("fa-solid fa-image", labels.editIcon, () => {
@@ -1402,8 +1416,14 @@ export function initGoogleApps() {
       }
     }
 
-    const posX = Math.max(padding, Math.min(clientX, window.innerWidth - rect.width - padding))
-    const posY = Math.max(padding, Math.min(clientY, window.innerHeight - rect.height - padding))
+    const posX = Math.max(
+      padding,
+      Math.min(clientX, window.innerWidth - rect.width - padding),
+    )
+    const posY = Math.max(
+      padding,
+      Math.min(clientY, window.innerHeight - rect.height - padding),
+    )
 
     menu.style.left = `${posX}px`
     menu.style.top = `${posY}px`

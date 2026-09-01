@@ -53,7 +53,10 @@ export async function copyText(text) {
       await navigator.clipboard.writeText(text)
       return
     } catch (err) {
-      console.warn("navigator.clipboard.writeText failed, falling back to execCommand:", err)
+      console.warn(
+        "navigator.clipboard.writeText failed, falling back to execCommand:",
+        err,
+      )
     }
   }
 

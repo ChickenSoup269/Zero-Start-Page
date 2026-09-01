@@ -53,13 +53,19 @@ export class TodoList {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = settings.widgetUseM3Accent === true
-      ? "m3-accent"
-      : isWhiteMode ? "white-blur" : (settings.todoSkin || "default")
-    
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.todoSkin || "default"
+
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
     this.container.classList.toggle("todo-mini", settings.todoMini === true)
   }
 
@@ -69,7 +75,7 @@ export class TodoList {
     const i18n = geti18n()
     const checkboxClass =
       settings.todoShowCheckboxes === true ? " show-checkboxes-always" : ""
-    
+
     if (!this.container) {
       this.container = document.createElement("div")
       this.container.id = "todo-container"
@@ -123,12 +129,18 @@ export class TodoList {
     const toggleBulkBtn = this.container.querySelector("#todo-toggle-bulk-btn")
     const inputContainer = this.container.querySelector("#todo-input-container")
     const input = this.container.querySelector("#todo-input")
-    const confirmInputBtn = this.container.querySelector("#todo-confirm-input-btn")
-    const cancelInputBtn = this.container.querySelector("#todo-cancel-input-btn")
+    const confirmInputBtn = this.container.querySelector(
+      "#todo-confirm-input-btn",
+    )
+    const cancelInputBtn = this.container.querySelector(
+      "#todo-cancel-input-btn",
+    )
     const selectAllCb = this.container.querySelector("#todo-select-all")
     const fullscreenBtn = this.container.querySelector("#todo-fullscreen-btn")
     const columnsBtn = this.container.querySelector("#todo-columns-btn")
-    const exitFullscreenBtn = this.container.querySelector("#todo-exit-fullscreen-btn")
+    const exitFullscreenBtn = this.container.querySelector(
+      "#todo-exit-fullscreen-btn",
+    )
     const closeBtn = this.container.querySelector("#todo-close-btn")
     const deleteSelectedBtn = this.container.querySelector(
       "#todo-delete-selected-btn",
@@ -160,7 +172,8 @@ export class TodoList {
     addBtn.addEventListener("click", () => {
       const isHidden = inputContainer.style.display === "none"
       inputContainer.style.display = isHidden ? "flex" : "none"
-      input.placeholder = geti18n().todo_input_placeholder || "What needs to be done?"
+      input.placeholder =
+        geti18n().todo_input_placeholder || "What needs to be done?"
       confirmInputBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>${geti18n().todo_add_task || "Add"}</span>`
       if (isHidden) input.focus()
     })
@@ -209,7 +222,9 @@ export class TodoList {
     })
 
     document.addEventListener("keydown", (e) => {
-      const isTyping = ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)
+      const isTyping = ["INPUT", "TEXTAREA", "SELECT"].includes(
+        e.target.tagName,
+      )
       if (isTyping) return
       if (e.key === "Escape" && this.isFullscreen) {
         this.toggleFullscreen(false)
@@ -353,7 +368,7 @@ export class TodoList {
     if (!selectAllCb) return
 
     const count = this.selectedIds.size
-    const totalTasks = this.todos.filter(t => t.type !== 'section').length
+    const totalTasks = this.todos.filter((t) => t.type !== "section").length
 
     if (totalTasks === 0 || count === 0) {
       selectAllCb.checked = false
@@ -422,7 +437,9 @@ export class TodoList {
         li.querySelector(".delete-btn").addEventListener("click", async (e) => {
           e.stopPropagation()
           const i18n = geti18n()
-          const confirmMsg = (i18n.todo_delete_section_confirm || 'Delete section "{name}"?').replace("{name}", item.text)
+          const confirmMsg = (
+            i18n.todo_delete_section_confirm || 'Delete section "{name}"?'
+          ).replace("{name}", item.text)
           if (await showConfirm(confirmMsg)) {
             this.deleteTodo(item.id)
           }
@@ -443,7 +460,7 @@ export class TodoList {
                   <label class="todo-item-select" title="" for="todo-cb-${item.id}">
                       <input type="checkbox" id="todo-cb-${item.id}" name="todo-cb-[${item.id}]" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
                 </label>
-                <button class="todo-complete-btn" title="${item.completed ? (i18n.todo_mark_incomplete || "Mark incomplete") : (i18n.todo_mark_complete || "Mark complete")}">
+                <button class="todo-complete-btn" title="${item.completed ? i18n.todo_mark_incomplete || "Mark incomplete" : i18n.todo_mark_complete || "Mark complete"}">
                   <i class="${item.completed ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}"></i>
                 </button>
                 <span class="todo-text">${this.escapeHtml(item.text)}</span>
@@ -528,7 +545,10 @@ export class TodoList {
     const nextState = typeof force === "boolean" ? force : !this.isFullscreen
     this.isFullscreen = nextState
     this.container.classList.toggle("todo-fullscreen", nextState)
-    this.container.classList.toggle("todo-columns-mode", nextState && this.isColumnMode)
+    this.container.classList.toggle(
+      "todo-columns-mode",
+      nextState && this.isColumnMode,
+    )
     document.body.classList.toggle("todo-fullscreen-active", nextState)
     if (!nextState) this.expandedTodoId = null
 
@@ -692,10 +712,13 @@ export class TodoList {
         ? this.formatDateTime(todo.reminderAt)
         : this.formatDateTime(todo.dueDate)
     const suffix = time ? ` - ${this.escapeHtml(time)}` : ""
-    showToast(`${this.escapeHtml(title)}: ${this.escapeHtml(todo.text)}${suffix}`, {
-      duration: 7000,
-      type: type === "reminder" ? "info" : "warning",
-    })
+    showToast(
+      `${this.escapeHtml(title)}: ${this.escapeHtml(todo.text)}${suffix}`,
+      {
+        duration: 7000,
+        type: type === "reminder" ? "info" : "warning",
+      },
+    )
   }
 
   formatDateTime(value) {
@@ -738,7 +761,10 @@ export class TodoList {
   getTagColor(tag, item) {
     const storedColor = item.tagColors?.[tag]
     if (this.isValidHexColor(storedColor)) return storedColor
-    const sum = Array.from(tag).reduce((total, char) => total + char.charCodeAt(0), 0)
+    const sum = Array.from(tag).reduce(
+      (total, char) => total + char.charCodeAt(0),
+      0,
+    )
     return TODO_TAG_COLORS[sum % TODO_TAG_COLORS.length]
   }
 
@@ -754,30 +780,46 @@ export class TodoList {
   renderTodoMeta(item) {
     const chips = []
     if (item.priority && item.priority !== "none") {
-      chips.push(`<span class="todo-meta-chip priority-chip priority-${this.escapeAttribute(item.priority)}">${this.escapeHtml(this.getPriorityLabel(item.priority))}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip priority-chip priority-${this.escapeAttribute(item.priority)}">${this.escapeHtml(this.getPriorityLabel(item.priority))}</span>`,
+      )
     }
     if (item.dueDate) {
-      chips.push(`<span class="todo-meta-chip due-chip"><i class="fa-regular fa-calendar"></i>${this.escapeHtml(this.formatDateTime(item.dueDate))}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip due-chip"><i class="fa-regular fa-calendar"></i>${this.escapeHtml(this.formatDateTime(item.dueDate))}</span>`,
+      )
     }
     if (item.reminderAt) {
-      chips.push(`<span class="todo-meta-chip reminder-chip"><i class="fa-regular fa-bell"></i>${this.escapeHtml(this.formatDateTime(item.reminderAt))}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip reminder-chip"><i class="fa-regular fa-bell"></i>${this.escapeHtml(this.formatDateTime(item.reminderAt))}</span>`,
+      )
     }
     if (item.recurring && item.recurring !== "none") {
-      chips.push(`<span class="todo-meta-chip recurring-chip"><i class="fa-solid fa-rotate"></i>${this.escapeHtml(this.getRecurringLabel(item.recurring))}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip recurring-chip"><i class="fa-solid fa-rotate"></i>${this.escapeHtml(this.getRecurringLabel(item.recurring))}</span>`,
+      )
     }
     item.tags.forEach((tag) => {
       const color = this.getTagColor(tag, item)
-      chips.push(`<span class="todo-meta-chip tag-chip" style="--todo-tag-color: ${color}"><span class="todo-tag-dot"></span>#${this.escapeHtml(tag)}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip tag-chip" style="--todo-tag-color: ${color}"><span class="todo-tag-dot"></span>#${this.escapeHtml(tag)}</span>`,
+      )
     })
     if (item.subtasks.length > 0) {
       const done = item.subtasks.filter((subtask) => subtask.completed).length
-      chips.push(`<span class="todo-meta-chip"><i class="fa-solid fa-list-check"></i>${done}/${item.subtasks.length}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip"><i class="fa-solid fa-list-check"></i>${done}/${item.subtasks.length}</span>`,
+      )
     }
     if (item.attachments.length > 0) {
-      chips.push(`<span class="todo-meta-chip"><i class="fa-solid fa-paperclip"></i>${item.attachments.length}</span>`)
+      chips.push(
+        `<span class="todo-meta-chip"><i class="fa-solid fa-paperclip"></i>${item.attachments.length}</span>`,
+      )
     }
 
-    return chips.length > 0 ? `<div class="todo-meta-row">${chips.join("")}</div>` : ""
+    return chips.length > 0
+      ? `<div class="todo-meta-row">${chips.join("")}</div>`
+      : ""
   }
 
   renderDetailPanel(item) {
@@ -795,7 +837,8 @@ export class TodoList {
       })
       .join("")
     const subtasks = item.subtasks
-      .map((subtask, index) => `
+      .map(
+        (subtask, index) => `
         <li class="todo-subtask ${subtask.completed ? "completed" : ""}" data-subtask-index="${index}">
           <i class="fa-solid fa-grip-vertical subtask-drag-handle" draggable="true" title="${this.t("todo_drag_subtask", "Drag subtask")}"></i>
           <label title="${this.t("todo_complete_subtask", "Complete subtask")}" for="todo-subtask-${item.id}-${subtask.id}">
@@ -804,16 +847,19 @@ export class TodoList {
           <input class="subtask-title-input" type="text" value="${this.escapeAttribute(subtask.text)}" placeholder="${this.t("todo_subtask_placeholder", "Subtask")}">
           <button class="subtask-delete-btn" title="${this.t("todo_delete_subtask", "Delete subtask")}"><i class="fa-solid fa-xmark"></i></button>
         </li>
-      `)
+      `,
+      )
       .join("")
     const attachments = item.attachments
-      .map((attachment, index) => `
+      .map(
+        (attachment, index) => `
         <li class="todo-attachment" data-attachment-index="${index}">
           <i class="fa-solid fa-link"></i>
           <a href="${this.escapeAttribute(attachment.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(attachment.label || attachment.url)}</a>
           <button class="attachment-delete-btn" title="${this.t("todo_remove_attachment", "Remove attachment")}"><i class="fa-solid fa-xmark"></i></button>
         </li>
-      `)
+      `,
+      )
       .join("")
 
     return `
@@ -919,7 +965,11 @@ export class TodoList {
       })
     }
 
-    updateFromInput(".todo-title-input", "text", (value) => value.trim() || item.text)
+    updateFromInput(
+      ".todo-title-input",
+      "text",
+      (value) => value.trim() || item.text,
+    )
     updateFromInput(".todo-due-input", "dueDate")
     updateFromInput(".todo-reminder-input", "reminderAt")
     updateFromInput(".todo-recurring-select", "recurring")
@@ -964,10 +1014,14 @@ export class TodoList {
       })
     }
 
-    panel.querySelector(".todo-add-subtask-btn")?.addEventListener("click", addSubtask)
-    panel.querySelector(".todo-new-subtask-input")?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addSubtask()
-    })
+    panel
+      .querySelector(".todo-add-subtask-btn")
+      ?.addEventListener("click", addSubtask)
+    panel
+      .querySelector(".todo-new-subtask-input")
+      ?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addSubtask()
+      })
 
     panel.querySelectorAll(".todo-subtask").forEach((subtaskEl) => {
       const index = Number(subtaskEl.dataset.subtaskIndex)
@@ -993,11 +1047,15 @@ export class TodoList {
         this.updateTodo(item.id, { subtasks })
       })
 
-      subtaskEl.querySelector(".subtask-delete-btn").addEventListener("click", () => {
-        this.updateTodo(item.id, {
-          subtasks: item.subtasks.filter((_, subtaskIndex) => subtaskIndex !== index),
+      subtaskEl
+        .querySelector(".subtask-delete-btn")
+        .addEventListener("click", () => {
+          this.updateTodo(item.id, {
+            subtasks: item.subtasks.filter(
+              (_, subtaskIndex) => subtaskIndex !== index,
+            ),
+          })
         })
-      })
 
       dragHandle.addEventListener("dragstart", (e) => {
         e.stopPropagation()
@@ -1005,22 +1063,26 @@ export class TodoList {
         e.dataTransfer.setData("text/plain", String(index))
         e.dataTransfer.effectAllowed = "move"
         subtaskEl.classList.add("dragging")
-        
+
         // Add global wheel listener
         this._subtaskWheelHandler = (wheelEvent) => {
           const subtaskListContainer = panel.querySelector(".todo-subtask-list")
-          if (subtaskListContainer) subtaskListContainer.scrollTop += wheelEvent.deltaY
+          if (subtaskListContainer)
+            subtaskListContainer.scrollTop += wheelEvent.deltaY
         }
-        window.addEventListener("wheel", this._subtaskWheelHandler, { passive: true })
+        window.addEventListener("wheel", this._subtaskWheelHandler, {
+          passive: true,
+        })
       })
 
       subtaskEl.addEventListener("dragover", (e) => {
         e.preventDefault()
         e.stopPropagation()
         subtaskEl.classList.add("drag-over")
-        
+
         const subtaskListContainer = panel.querySelector(".todo-subtask-list")
-        if (subtaskListContainer) this._handleDragScroll(e, subtaskListContainer)
+        if (subtaskListContainer)
+          this._handleDragScroll(e, subtaskListContainer)
       })
 
       subtaskEl.addEventListener("dragleave", () => {
@@ -1032,7 +1094,9 @@ export class TodoList {
         e.stopPropagation()
         subtaskEl.classList.remove("drag-over")
         this._stopAutoScroll()
-        const fromIndex = this.draggedSubtaskIndex ?? Number(e.dataTransfer.getData("text/plain"))
+        const fromIndex =
+          this.draggedSubtaskIndex ??
+          Number(e.dataTransfer.getData("text/plain"))
         if (Number.isNaN(fromIndex) || fromIndex === index) {
           this.draggedSubtaskIndex = null
           return
@@ -1049,7 +1113,7 @@ export class TodoList {
         this.draggedSubtaskIndex = null
         subtaskEl.classList.remove("dragging")
         this._stopAutoScroll()
-        
+
         if (this._subtaskWheelHandler) {
           window.removeEventListener("wheel", this._subtaskWheelHandler)
           this._subtaskWheelHandler = null
@@ -1069,18 +1133,26 @@ export class TodoList {
       })
     }
 
-    panel.querySelector(".todo-add-attachment-btn")?.addEventListener("click", addAttachment)
-    panel.querySelector(".todo-new-attachment-input")?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addAttachment()
-    })
+    panel
+      .querySelector(".todo-add-attachment-btn")
+      ?.addEventListener("click", addAttachment)
+    panel
+      .querySelector(".todo-new-attachment-input")
+      ?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addAttachment()
+      })
 
     panel.querySelectorAll(".todo-attachment").forEach((attachmentEl) => {
       const index = Number(attachmentEl.dataset.attachmentIndex)
-      attachmentEl.querySelector(".attachment-delete-btn").addEventListener("click", () => {
-        this.updateTodo(item.id, {
-          attachments: item.attachments.filter((_, attachmentIndex) => attachmentIndex !== index),
+      attachmentEl
+        .querySelector(".attachment-delete-btn")
+        .addEventListener("click", () => {
+          this.updateTodo(item.id, {
+            attachments: item.attachments.filter(
+              (_, attachmentIndex) => attachmentIndex !== index,
+            ),
+          })
         })
-      })
     })
   }
 
@@ -1128,22 +1200,24 @@ export class TodoList {
       this.draggedIndex = Number(el.dataset.index)
       e.dataTransfer.effectAllowed = "move"
       setTimeout(() => el.classList.add("dragging"), 0)
-      
+
       this._todoWheelHandler = (wheelEvent) => {
         const list = this.container.querySelector("#todo-list")
         if (list) list.scrollTop += wheelEvent.deltaY
       }
-      window.addEventListener("wheel", this._todoWheelHandler, { passive: true })
+      window.addEventListener("wheel", this._todoWheelHandler, {
+        passive: true,
+      })
     })
 
     el.addEventListener("dragover", (e) => {
       if (e.target.closest(".todo-subtask")) return
       e.preventDefault()
       e.dataTransfer.dropEffect = "move"
-      
+
       const list = this.container.querySelector("#todo-list")
       if (list) this._handleDragScroll(e, list)
-      
+
       const target = e.target.closest("li")
       if (target && target !== el) {
         target.classList.add("drag-over")
@@ -1179,8 +1253,11 @@ export class TodoList {
       el.classList.remove("dragging")
       this._stopAutoScroll()
       const list = this.container.querySelector("#todo-list")
-      if (list) list.querySelectorAll("li").forEach(li => li.classList.remove("drag-over"))
-      
+      if (list)
+        list
+          .querySelectorAll("li")
+          .forEach((li) => li.classList.remove("drag-over"))
+
       if (this._todoWheelHandler) {
         window.removeEventListener("wheel", this._todoWheelHandler)
         this._todoWheelHandler = null
@@ -1189,7 +1266,8 @@ export class TodoList {
   }
 
   _startAutoScroll(container, speed) {
-    if (!this.dragScrollState) this.dragScrollState = { container: null, speed: 0, timerId: null }
+    if (!this.dragScrollState)
+      this.dragScrollState = { container: null, speed: 0, timerId: null }
     this.dragScrollState.container = container
     this.dragScrollState.speed = speed
 

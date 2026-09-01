@@ -40,12 +40,12 @@ export class FirefliesHD {
         baseSpeed: (0.6 + Math.random() * 0.5) * (0.3 + z * 0.7),
         wanderAngle: Math.random() * Math.PI * 2,
         wanderStep: 0.02 + Math.random() * 0.03,
-        
+
         // Life cycle / Visuals
         flashClock: Math.random() * 10000,
         flashPeriod: 6000 + Math.random() * 8000,
         flashDuration: 2500 + Math.random() * 2500,
-        
+
         hue: 52 + Math.random() * 22,
         flickerOffset: Math.random() * 100,
         size: (1.2 + z * 3.8) * (W / 1920),
@@ -77,10 +77,10 @@ export class FirefliesHD {
     // 1. Organic Steering
     // Slowly shift the direction they want to go
     fly.wanderAngle += (Math.random() - 0.5) * fly.wanderStep
-    
+
     // Add a subtle "bobbing" to the angle
     const bobbing = Math.sin(time * 0.001 + fly.flickerOffset) * 0.2
-    
+
     const targetVx = Math.cos(fly.wanderAngle + bobbing) * fly.baseSpeed
     const targetVy = Math.sin(fly.wanderAngle + bobbing) * fly.baseSpeed
 
@@ -113,9 +113,10 @@ export class FirefliesHD {
 
     const progress = cyclePos / fly.flashDuration
     let opacity = Math.pow(Math.sin(progress * Math.PI), 2)
-    
+
     // High-frequency bioluminescent flickering
-    const flicker = 0.88 + Math.sin(fly.flashClock * 0.015 + fly.flickerOffset) * 0.12
+    const flicker =
+      0.88 + Math.sin(fly.flashClock * 0.015 + fly.flickerOffset) * 0.12
     opacity *= flicker
 
     if (opacity <= 0.001) return
@@ -125,7 +126,7 @@ export class FirefliesHD {
 
     ctx.save()
     ctx.translate(x, y)
-    
+
     ctx.globalCompositeOperation = "lighter"
 
     // Cache HSLA base strings if not already present
@@ -139,7 +140,7 @@ export class FirefliesHD {
     airGrad.addColorStop(0, `${fly._hsla} 50%, ${opacity * 0.12})`)
     airGrad.addColorStop(0.6, `${fly._hsla} 30%, ${opacity * 0.04})`)
     airGrad.addColorStop(1, `${fly._hsla} 20%, 0)`)
-    
+
     ctx.fillStyle = airGrad
     ctx.beginPath()
     ctx.arc(0, 0, airGlowSize, 0, Math.PI * 2)
@@ -151,7 +152,7 @@ export class FirefliesHD {
     mainGrad.addColorStop(0, `${fly._hsla} 75%, ${opacity * 0.85})`)
     mainGrad.addColorStop(0.4, `${fly._hsla} 55%, ${opacity * 0.35})`)
     mainGrad.addColorStop(1, `${fly._hsla} 45%, 0)`)
-    
+
     ctx.fillStyle = mainGrad
     ctx.beginPath()
     ctx.arc(0, 0, mainGlowSize, 0, Math.PI * 2)
@@ -163,7 +164,7 @@ export class FirefliesHD {
     coreGrad.addColorStop(0, `rgba(255, 255, 245, ${opacity})`)
     coreGrad.addColorStop(0.5, `${fly._hsla} 90%, ${opacity * 0.95})`)
     coreGrad.addColorStop(1, `${fly._hsla} 75%, 0)`)
-    
+
     ctx.fillStyle = coreGrad
     ctx.beginPath()
     ctx.arc(0, 0, coreSize, 0, Math.PI * 2)
@@ -175,7 +176,7 @@ export class FirefliesHD {
   animate(currentTime) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const dt = currentTime - this.lastDrawTime
     this.lastDrawTime = currentTime

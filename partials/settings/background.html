@@ -9,14 +9,17 @@
                 </div>
                 <div class="bg-current-wallpaper-details">
                     <div class="bg-current-wallpaper-badge">
-                        <i class="fa-solid fa-circle-check"></i> <span data-i18n="bg_current_wallpaper">Active Wallpaper</span>
+                        <i class="fa-solid fa-circle-check"></i> <span data-i18n="bg_current_wallpaper">Active
+                            Wallpaper</span>
                     </div>
                     <div class="bg-current-wallpaper-name" id="bg-active-name-label">Default Wallpaper</div>
                     <div class="bg-current-wallpaper-actions">
-                        <button type="button" id="bg-quick-copy-url-btn" class="bg-mini-action-btn" data-i18n-title="bg_copy_url" title="Copy URL">
+                        <button type="button" id="bg-quick-copy-url-btn" class="bg-mini-action-btn"
+                            data-i18n-title="bg_copy_url" title="Copy URL">
                             <i class="fa-solid fa-copy"></i>
                         </button>
-                        <button type="button" id="bg-quick-reset-btn" class="bg-mini-action-btn danger" data-i18n-title="settings_remove_bg_btn" title="Reset Background">
+                        <button type="button" id="bg-quick-reset-btn" class="bg-mini-action-btn danger"
+                            data-i18n-title="settings_remove_bg_btn" title="Reset Background">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
                     </div>
@@ -29,7 +32,9 @@
             <div class="bg-control-title"><i class="fa-solid fa-link"></i> <span
                     data-i18n="settings_source_colors">Source & Colors</span></div>
             <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
-                <label data-i18n="settings_bg" style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; display: block;">Image / Video URL</label>
+                <label data-i18n="settings_bg"
+                    style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; display: block;">Image / Video
+                    URL</label>
                 <div class="full-row bg-input-wrapper" style="display: flex; align-items: center; gap: 8px;">
                     <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" class="full-width"
                         style="flex: 1; margin: 0; padding-right: 12px !important;" />
@@ -42,7 +47,8 @@
             </div>
             <div id="unsplash-credit" class="full-row unsplash-credit-text"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color"><i class="fa-solid fa-bookmark"></i> Save Color</button>
+                <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color"><i
+                        class="fa-solid fa-bookmark"></i> Save Color</button>
                 <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn"><i
                         class="fa-solid fa-trash"></i> Reset Background</button>
             </div>
@@ -150,7 +156,8 @@
             </div>
             <p data-i18n-html="bg_free_random_photos_desc"
                 style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
-                High-quality photos from <strong>LoremFlickr</strong> or <strong>Lorem Picsum</strong> — completely free, no signup needed.
+                High-quality photos from <strong>LoremFlickr</strong> or <strong>Lorem Picsum</strong> — completely
+                free, no signup needed.
             </p>
 
             <!-- Provider Selector -->
@@ -236,7 +243,8 @@
             <div class="bg-control-title">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 <span data-i18n="settings_visual_effects">Visual Effects</span>
-                <button type="button" id="reset-bg-effects-btn" class="bg-card-reset-btn" data-i18n-title="settings_bg_reset_effects" title="Reset Effects">
+                <button type="button" id="reset-bg-effects-btn" class="bg-card-reset-btn"
+                    data-i18n-title="settings_bg_reset_effects" title="Reset Effects">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span data-i18n="settings_bg_reset_effects">Reset</span>
                 </button>
@@ -250,9 +258,12 @@
                         <span id="bg-blur-value" class="bg-slider-value">0px</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-blur-input" data-step="-1" title="-1px"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-blur-input" data-step="1" title="+1px"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-blur-input" data-step="-1"
+                            title="-1px"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0"
+                            class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-blur-input" data-step="1"
+                            title="+1px"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
 
@@ -281,9 +292,12 @@
                             <input type="color" id="bg-blur-color-input" value="#000000">
                         </div>
                         <div class="bg-slider-stepper-wrap" style="flex: 1; margin: 0;">
-                            <button type="button" class="bg-step-btn" data-step-target="bg-blur-color-opacity-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                            <input type="range" id="bg-blur-color-opacity-input" min="0" max="100" step="1" value="0" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                            <button type="button" class="bg-step-btn" data-step-target="bg-blur-color-opacity-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                            <button type="button" class="bg-step-btn" data-step-target="bg-blur-color-opacity-input"
+                                data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
+                            <input type="range" id="bg-blur-color-opacity-input" min="0" max="100" step="1" value="0"
+                                class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                            <button type="button" class="bg-step-btn" data-step-target="bg-blur-color-opacity-input"
+                                data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -295,9 +309,12 @@
                         <span id="bg-brightness-value" class="bg-slider-value">100%</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-brightness-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-brightness-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-brightness-input" data-step="-5"
+                            title="-5%"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100"
+                            class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-brightness-input" data-step="5"
+                            title="+5%"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
 
@@ -308,9 +325,12 @@
                         <span id="bg-contrast-value" class="bg-slider-value">100%</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-contrast-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-contrast-input" min="0" max="200" step="5" value="100" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-contrast-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-contrast-input" data-step="-5"
+                            title="-5%"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-contrast-input" min="0" max="200" step="5" value="100"
+                            class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-contrast-input" data-step="5"
+                            title="+5%"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
 
@@ -321,9 +341,12 @@
                         <span id="bg-saturation-value" class="bg-slider-value">100%</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-saturation-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-saturation-input" min="0" max="200" step="5" value="100" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-saturation-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-saturation-input" data-step="-5"
+                            title="-5%"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-saturation-input" min="0" max="200" step="5" value="100"
+                            class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-saturation-input" data-step="5"
+                            title="+5%"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
 
@@ -335,7 +358,8 @@
             <div class="bg-control-title">
                 <i class="fa-solid fa-arrows-up-down-left-right"></i>
                 <span data-i18n="settings_layout_fit">Layout & Fit</span>
-                <button type="button" id="reset-bg-position-btn" class="bg-card-reset-btn" data-i18n-title="settings_bg_reset_pos" title="Reset Position">
+                <button type="button" id="reset-bg-position-btn" class="bg-card-reset-btn"
+                    data-i18n-title="settings_bg_reset_pos" title="Reset Position">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span data-i18n="settings_bg_reset_pos">Reset</span>
                 </button>
@@ -361,16 +385,20 @@
                     <span id="bg-image-scale-value" class="bg-slider-value">100%</span>
                 </div>
                 <div class="bg-slider-stepper-wrap">
-                    <button type="button" class="bg-step-btn" data-step-target="bg-image-scale-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                    <input type="range" id="bg-image-scale-input" min="25" max="250" step="5" value="100" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                    <button type="button" class="bg-step-btn" data-step-target="bg-image-scale-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                    <button type="button" class="bg-step-btn" data-step-target="bg-image-scale-input" data-step="-5"
+                        title="-5%"><i class="fa-solid fa-minus"></i></button>
+                    <input type="range" id="bg-image-scale-input" min="25" max="250" step="5" value="100"
+                        class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
+                    <button type="button" class="bg-step-btn" data-step-target="bg-image-scale-input" data-step="5"
+                        title="+5%"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
 
             <!-- Interactive 2D Drag Pad & 9-Point Presets Container -->
             <div class="bg-position-interactive-wrapper">
                 <div class="bg-position-pad-container">
-                    <div class="bg-presets-label"><i class="fa-solid fa-up-down-left-right"></i> <span data-i18n="settings_bg_interactive_pad">Drag to position</span></div>
+                    <div class="bg-presets-label"><i class="fa-solid fa-up-down-left-right"></i> <span
+                            data-i18n="settings_bg_interactive_pad">Drag to position</span></div>
                     <div class="bg-position-pad" id="bg-position-pad" title="Drag or click to position image">
                         <div class="bg-position-pad-preview" id="bg-position-pad-preview"></div>
                         <div class="bg-position-pad-grid">
@@ -385,17 +413,36 @@
                 </div>
 
                 <div class="bg-position-quick-presets">
-                    <div class="bg-presets-label"><i class="fa-solid fa-table-cells"></i> <span data-i18n="settings_bg_pos_presets">Quick Align</span></div>
+                    <div class="bg-presets-label"><i class="fa-solid fa-table-cells"></i> <span
+                            data-i18n="settings_bg_pos_presets">Quick Align</span></div>
                     <div class="bg-9grid-aligner" role="group" aria-label="Quick Align Grid">
-                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="0" data-i18n-title="settings_pos_top_left" title="Top Left"><i class="fa-solid fa-arrow-up" style="transform: rotate(-45deg);"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="50" data-pos-y="0" data-i18n-title="settings_pos_top_center" title="Top Center"><i class="fa-solid fa-arrow-up"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="0" data-i18n-title="settings_pos_top_right" title="Top Right"><i class="fa-solid fa-arrow-up" style="transform: rotate(45deg);"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="50" data-i18n-title="settings_pos_center_left" title="Center Left"><i class="fa-solid fa-arrow-left"></i></button>
-                        <button type="button" class="bg-9grid-btn active" data-pos-x="50" data-pos-y="50" data-i18n-title="settings_pos_center" title="Center"><i class="fa-solid fa-circle-dot"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="50" data-i18n-title="settings_pos_center_right" title="Center Right"><i class="fa-solid fa-arrow-right"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="100" data-i18n-title="settings_pos_bottom_left" title="Bottom Left"><i class="fa-solid fa-arrow-down" style="transform: rotate(45deg);"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="50" data-pos-y="100" data-i18n-title="settings_pos_bottom_center" title="Bottom Center"><i class="fa-solid fa-arrow-down"></i></button>
-                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="100" data-i18n-title="settings_pos_bottom_right" title="Bottom Right"><i class="fa-solid fa-arrow-down" style="transform: rotate(-45deg);"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="0"
+                            data-i18n-title="settings_pos_top_left" title="Top Left"><i class="fa-solid fa-arrow-up"
+                                style="transform: rotate(-45deg);"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="50" data-pos-y="0"
+                            data-i18n-title="settings_pos_top_center" title="Top Center"><i
+                                class="fa-solid fa-arrow-up"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="0"
+                            data-i18n-title="settings_pos_top_right" title="Top Right"><i class="fa-solid fa-arrow-up"
+                                style="transform: rotate(45deg);"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="50"
+                            data-i18n-title="settings_pos_center_left" title="Center Left"><i
+                                class="fa-solid fa-arrow-left"></i></button>
+                        <button type="button" class="bg-9grid-btn active" data-pos-x="50" data-pos-y="50"
+                            data-i18n-title="settings_pos_center" title="Center"><i
+                                class="fa-solid fa-circle-dot"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="50"
+                            data-i18n-title="settings_pos_center_right" title="Center Right"><i
+                                class="fa-solid fa-arrow-right"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="0" data-pos-y="100"
+                            data-i18n-title="settings_pos_bottom_left" title="Bottom Left"><i
+                                class="fa-solid fa-arrow-down" style="transform: rotate(45deg);"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="50" data-pos-y="100"
+                            data-i18n-title="settings_pos_bottom_center" title="Bottom Center"><i
+                                class="fa-solid fa-arrow-down"></i></button>
+                        <button type="button" class="bg-9grid-btn" data-pos-x="100" data-pos-y="100"
+                            data-i18n-title="settings_pos_bottom_right" title="Bottom Right"><i
+                                class="fa-solid fa-arrow-down" style="transform: rotate(-45deg);"></i></button>
                     </div>
                 </div>
             </div>
@@ -404,24 +451,32 @@
             <div class="layout-fit-grid">
                 <div class="bg-slider-item">
                     <div class="bg-slider-info">
-                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_horizontal">Horizontal</span></span>
+                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-left-right"></i> <span
+                                data-i18n="settings_horizontal">Horizontal</span></span>
                         <span id="bg-pos-x-value" class="bg-slider-value">50%</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-x-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-pos-x-input" min="0" max="100" value="50" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-x-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-x-input" data-step="-5"
+                            title="-5%"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-pos-x-input" min="0" max="100" value="50" class="bg-wheel-scrollable"
+                            data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-x-input" data-step="5"
+                            title="+5%"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="bg-slider-item">
                     <div class="bg-slider-info">
-                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-up-down"></i> <span data-i18n="settings_vertical">Vertical</span></span>
+                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-up-down"></i> <span
+                                data-i18n="settings_vertical">Vertical</span></span>
                         <span id="bg-pos-y-value" class="bg-slider-value">50%</span>
                     </div>
                     <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-y-input" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="bg-pos-y-input" min="0" max="100" value="50" class="bg-wheel-scrollable" data-i18n-title="settings_bg_pos_scroll_hint">
-                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-y-input" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-y-input" data-step="-5"
+                            title="-5%"><i class="fa-solid fa-minus"></i></button>
+                        <input type="range" id="bg-pos-y-input" min="0" max="100" value="50" class="bg-wheel-scrollable"
+                            data-i18n-title="settings_bg_pos_scroll_hint">
+                        <button type="button" class="bg-step-btn" data-step-target="bg-pos-y-input" data-step="5"
+                            title="+5%"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
             </div>
@@ -439,7 +494,8 @@
             <div class="bg-dropzone" id="local-bg-dropzone" title="Drag & drop images/videos here">
                 <i class="fa-solid fa-cloud-arrow-up bg-dropzone-icon"></i>
                 <div class="bg-dropzone-title" data-i18n="bg_dropzone_title">Drag & drop photos or videos here</div>
-                <div class="bg-dropzone-subtitle" data-i18n="bg_dropzone_subtitle">Supports JPG, PNG, WEBP, GIF, MP4, WEBM</div>
+                <div class="bg-dropzone-subtitle" data-i18n="bg_dropzone_subtitle">Supports JPG, PNG, WEBP, GIF, MP4,
+                    WEBM</div>
             </div>
 
             <div class="local-bg-gallery-controls" style="margin-bottom: 12px;">
@@ -504,7 +560,8 @@
     </div> <!-- Close section-content -->
 </div> <!-- Close settings-section (Background) -->
 
-<div class="setting-group collapsible-group" id="accent-color-group" data-bg-subtab="colors" data-settings-tab="background">
+<div class="setting-group collapsible-group" id="accent-color-group" data-bg-subtab="colors"
+    data-settings-tab="background">
     <div class="group-header">
         <i class="fa-solid fa-palette group-icon"></i>
         <span data-i18n="settings_accent">Accent Color</span>

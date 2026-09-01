@@ -54,7 +54,11 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const silkSettings = document.getElementById("silk-settings")
   const silkToggleLabel = document.getElementById("silk-toggle-label")
   if (silkToggleBtn && silkSettings) {
-    setToggleExpanded(silkToggleBtn, silkSettings, silkSettings.style.display !== "none")
+    setToggleExpanded(
+      silkToggleBtn,
+      silkSettings,
+      silkSettings.style.display !== "none",
+    )
     silkToggleBtn.addEventListener("click", () => {
       const isHidden = silkSettings.classList.contains("is-collapsed")
       setToggleExpanded(silkToggleBtn, silkSettings, isHidden)
@@ -65,10 +69,30 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   }
 
   const silkProps = [
-    { id: "silkSpeed", dom: document.getElementById("silk-speed"), val: document.getElementById("silk-speed-value"), type: "float" },
-    { id: "silkScale", dom: document.getElementById("silk-scale"), val: document.getElementById("silk-scale-value"), type: "float" },
-    { id: "silkNoise", dom: document.getElementById("silk-noise"), val: document.getElementById("silk-noise-value"), type: "float" },
-    { id: "silkRotation", dom: document.getElementById("silk-rotation"), val: document.getElementById("silk-rotation-value"), type: "float" }
+    {
+      id: "silkSpeed",
+      dom: document.getElementById("silk-speed"),
+      val: document.getElementById("silk-speed-value"),
+      type: "float",
+    },
+    {
+      id: "silkScale",
+      dom: document.getElementById("silk-scale"),
+      val: document.getElementById("silk-scale-value"),
+      type: "float",
+    },
+    {
+      id: "silkNoise",
+      dom: document.getElementById("silk-noise"),
+      val: document.getElementById("silk-noise-value"),
+      type: "float",
+    },
+    {
+      id: "silkRotation",
+      dom: document.getElementById("silk-rotation"),
+      val: document.getElementById("silk-rotation-value"),
+      type: "float",
+    },
   ]
   silkProps.forEach((prop) => {
     if (prop.dom) {
@@ -98,17 +122,21 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const silkRandomBtn = document.getElementById("silk-random-btn")
   if (silkRandomBtn) {
     silkRandomBtn.addEventListener("click", () => {
-      const randomHex = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      const randomHex =
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")
       const randomProps = {
         silkColor: randomHex,
         silkSpeed: parseFloat((Math.random() * 10 + 1).toFixed(1)),
         silkScale: parseFloat((Math.random() * 3 + 0.5).toFixed(1)),
         silkNoise: parseFloat((Math.random() * 3 + 0.5).toFixed(1)),
-        silkRotation: parseFloat((Math.random() * 6.28).toFixed(1))
+        silkRotation: parseFloat((Math.random() * 6.28).toFixed(1)),
       }
       Object.entries(randomProps).forEach(([id, val]) => {
         updateSetting(id, val)
-        const propConfig = silkProps.find(p => p.id === id)
+        const propConfig = silkProps.find((p) => p.id === id)
         if (propConfig && propConfig.dom) {
           propConfig.dom.value = val
           if (propConfig.val) propConfig.val.textContent = val.toFixed(1)
@@ -123,7 +151,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
           speed: randomProps.silkSpeed,
           scale: randomProps.silkScale,
           noise: randomProps.silkNoise,
-          rotation: randomProps.silkRotation
+          rotation: randomProps.silkRotation,
         })
       }
     })
@@ -139,7 +167,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
         speed: currentSettings.silkSpeed,
         scale: currentSettings.silkScale,
         noise: currentSettings.silkNoise,
-        rotation: currentSettings.silkRotation
+        rotation: currentSettings.silkRotation,
       }
       const saved = currentSettings.userSilks || []
       updateSetting("userSilks", [...saved, preset])
@@ -161,7 +189,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       }
       Object.entries(defaultSilk).forEach(([id, val]) => {
         updateSetting(id, val)
-        const propConfig = silkProps.find(p => p.id === id)
+        const propConfig = silkProps.find((p) => p.id === id)
         if (propConfig && propConfig.dom) {
           propConfig.dom.value = val
           if (propConfig.val) propConfig.val.textContent = val.toFixed(1)
@@ -195,33 +223,88 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     })
   }
 
-  const lightPillarToggleBtn = document.getElementById("light-pillar-toggle-btn")
+  const lightPillarToggleBtn = document.getElementById(
+    "light-pillar-toggle-btn",
+  )
   const lightPillarSettings = document.getElementById("light-pillar-settings")
-  const lightPillarToggleLabel = document.getElementById("light-pillar-toggle-label")
+  const lightPillarToggleLabel = document.getElementById(
+    "light-pillar-toggle-label",
+  )
   if (lightPillarToggleBtn && lightPillarSettings) {
-    setToggleExpanded(lightPillarToggleBtn, lightPillarSettings, lightPillarSettings.style.display !== "none")
+    setToggleExpanded(
+      lightPillarToggleBtn,
+      lightPillarSettings,
+      lightPillarSettings.style.display !== "none",
+    )
     lightPillarToggleBtn.addEventListener("click", () => {
       const isHidden = lightPillarSettings.classList.contains("is-collapsed")
       setToggleExpanded(lightPillarToggleBtn, lightPillarSettings, isHidden)
       if (lightPillarToggleLabel) {
-        lightPillarToggleLabel.textContent = isHidden ? "Close Light Pillar" : "Open Light Pillar"
+        lightPillarToggleLabel.textContent = isHidden
+          ? "Close Light Pillar"
+          : "Open Light Pillar"
       }
     })
   }
 
   const lightPillarProps = [
-    { id: "lightPillarIntensity", dom: document.getElementById("light-pillar-intensity"), val: document.getElementById("light-pillar-intensity-value"), type: "float", toFixed: 1 },
-    { id: "lightPillarRotationSpeed", dom: document.getElementById("light-pillar-rotation-speed"), val: document.getElementById("light-pillar-rotation-speed-value"), type: "float", toFixed: 1 },
-    { id: "lightPillarGlowAmount", dom: document.getElementById("light-pillar-glow"), val: document.getElementById("light-pillar-glow-value"), type: "float", toFixed: 3 },
-    { id: "lightPillarWidth", dom: document.getElementById("light-pillar-width"), val: document.getElementById("light-pillar-width-value"), type: "float", toFixed: 1 },
-    { id: "lightPillarHeight", dom: document.getElementById("light-pillar-height"), val: document.getElementById("light-pillar-height-value"), type: "float", toFixed: 1 },
-    { id: "lightPillarNoiseIntensity", dom: document.getElementById("light-pillar-noise"), val: document.getElementById("light-pillar-noise-value"), type: "float", toFixed: 1 },
-    { id: "lightPillarRotation", dom: document.getElementById("light-pillar-rotation"), val: document.getElementById("light-pillar-rotation-value"), type: "int", toFixed: 0 }
+    {
+      id: "lightPillarIntensity",
+      dom: document.getElementById("light-pillar-intensity"),
+      val: document.getElementById("light-pillar-intensity-value"),
+      type: "float",
+      toFixed: 1,
+    },
+    {
+      id: "lightPillarRotationSpeed",
+      dom: document.getElementById("light-pillar-rotation-speed"),
+      val: document.getElementById("light-pillar-rotation-speed-value"),
+      type: "float",
+      toFixed: 1,
+    },
+    {
+      id: "lightPillarGlowAmount",
+      dom: document.getElementById("light-pillar-glow"),
+      val: document.getElementById("light-pillar-glow-value"),
+      type: "float",
+      toFixed: 3,
+    },
+    {
+      id: "lightPillarWidth",
+      dom: document.getElementById("light-pillar-width"),
+      val: document.getElementById("light-pillar-width-value"),
+      type: "float",
+      toFixed: 1,
+    },
+    {
+      id: "lightPillarHeight",
+      dom: document.getElementById("light-pillar-height"),
+      val: document.getElementById("light-pillar-height-value"),
+      type: "float",
+      toFixed: 1,
+    },
+    {
+      id: "lightPillarNoiseIntensity",
+      dom: document.getElementById("light-pillar-noise"),
+      val: document.getElementById("light-pillar-noise-value"),
+      type: "float",
+      toFixed: 1,
+    },
+    {
+      id: "lightPillarRotation",
+      dom: document.getElementById("light-pillar-rotation"),
+      val: document.getElementById("light-pillar-rotation-value"),
+      type: "int",
+      toFixed: 0,
+    },
   ]
   lightPillarProps.forEach((prop) => {
     if (prop.dom) {
       prop.dom.addEventListener("input", (e) => {
-        const val = prop.type === "float" ? parseFloat(e.target.value) : parseInt(e.target.value)
+        const val =
+          prop.type === "float"
+            ? parseFloat(e.target.value)
+            : parseInt(e.target.value)
         if (prop.val) prop.val.textContent = val.toFixed(prop.toFixed)
         updateSetting(prop.id, val)
         if (getSettings().lightPillarActive && effects.lightPillarEffect) {
@@ -243,7 +326,9 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       }
     })
   }
-  const lpBottomColorPicker = document.getElementById("light-pillar-bottom-color")
+  const lpBottomColorPicker = document.getElementById(
+    "light-pillar-bottom-color",
+  )
   if (lpBottomColorPicker) {
     lpBottomColorPicker.addEventListener("change", (e) => {
       handleSettingUpdate("lightPillarBottomColor", e.target.value)
@@ -256,28 +341,41 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const lpRandomBtn = document.getElementById("light-pillar-random-btn")
   if (lpRandomBtn) {
     lpRandomBtn.addEventListener("click", () => {
-      const randomHex = () => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      const randomHex = () =>
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")
       const randomProps = {
         lightPillarTopColor: randomHex(),
         lightPillarBottomColor: randomHex(),
         lightPillarIntensity: parseFloat((Math.random() * 2 + 0.5).toFixed(1)),
-        lightPillarRotationSpeed: parseFloat((Math.random() * 1.5 + 0.1).toFixed(1)),
-        lightPillarGlowAmount: parseFloat((Math.random() * 0.02 + 0.001).toFixed(3)),
+        lightPillarRotationSpeed: parseFloat(
+          (Math.random() * 1.5 + 0.1).toFixed(1),
+        ),
+        lightPillarGlowAmount: parseFloat(
+          (Math.random() * 0.02 + 0.001).toFixed(3),
+        ),
         lightPillarWidth: parseFloat((Math.random() * 5 + 1).toFixed(1)),
         lightPillarHeight: parseFloat((Math.random() * 0.8 + 0.1).toFixed(1)),
-        lightPillarNoiseIntensity: parseFloat((Math.random() * 1 + 0.1).toFixed(1)),
-        lightPillarRotation: Math.floor(Math.random() * 360)
+        lightPillarNoiseIntensity: parseFloat(
+          (Math.random() * 1 + 0.1).toFixed(1),
+        ),
+        lightPillarRotation: Math.floor(Math.random() * 360),
       }
       Object.entries(randomProps).forEach(([id, val]) => {
         updateSetting(id, val)
-        const propConfig = lightPillarProps.find(p => p.id === id)
+        const propConfig = lightPillarProps.find((p) => p.id === id)
         if (propConfig && propConfig.dom) {
           propConfig.dom.value = val
-          if (propConfig.val) propConfig.val.textContent = val.toFixed(propConfig.toFixed)
+          if (propConfig.val)
+            propConfig.val.textContent = val.toFixed(propConfig.toFixed)
         }
       })
-      if (lpTopColorPicker) lpTopColorPicker.value = randomProps.lightPillarTopColor
-      if (lpBottomColorPicker) lpBottomColorPicker.value = randomProps.lightPillarBottomColor
+      if (lpTopColorPicker)
+        lpTopColorPicker.value = randomProps.lightPillarTopColor
+      if (lpBottomColorPicker)
+        lpBottomColorPicker.value = randomProps.lightPillarBottomColor
       saveSettings()
       scheduleAutoAccentFromGeneratedBg()
       if (getSettings().lightPillarActive && effects.lightPillarEffect) {
@@ -290,7 +388,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
           pillarWidth: randomProps.lightPillarWidth,
           pillarHeight: randomProps.lightPillarHeight,
           noiseIntensity: randomProps.lightPillarNoiseIntensity,
-          pillarRotation: randomProps.lightPillarRotation
+          pillarRotation: randomProps.lightPillarRotation,
         })
       }
     })
@@ -312,14 +410,17 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       }
       Object.entries(defaultLP).forEach(([id, val]) => {
         updateSetting(id, val)
-        const propConfig = lightPillarProps.find(p => p.id === id)
+        const propConfig = lightPillarProps.find((p) => p.id === id)
         if (propConfig && propConfig.dom) {
           propConfig.dom.value = val
-          if (propConfig.val) propConfig.val.textContent = val.toFixed(propConfig.toFixed)
+          if (propConfig.val)
+            propConfig.val.textContent = val.toFixed(propConfig.toFixed)
         }
       })
-      if (lpTopColorPicker) lpTopColorPicker.value = defaultLP.lightPillarTopColor
-      if (lpBottomColorPicker) lpBottomColorPicker.value = defaultLP.lightPillarBottomColor
+      if (lpTopColorPicker)
+        lpTopColorPicker.value = defaultLP.lightPillarTopColor
+      if (lpBottomColorPicker)
+        lpBottomColorPicker.value = defaultLP.lightPillarBottomColor
       saveSettings()
       scheduleAutoAccentFromGeneratedBg()
       if (getSettings().lightPillarActive && effects.lightPillarEffect) {
@@ -357,7 +458,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
         pillarWidth: currentSettings.lightPillarWidth,
         pillarHeight: currentSettings.lightPillarHeight,
         noiseIntensity: currentSettings.lightPillarNoiseIntensity,
-        pillarRotation: currentSettings.lightPillarRotation
+        pillarRotation: currentSettings.lightPillarRotation,
       }
       const saved = currentSettings.userLightPillars || []
       updateSetting("userLightPillars", [...saved, preset])
@@ -375,11 +476,19 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     })
   }
 
-  const liquidEtherToggleBtn = document.getElementById("liquid-ether-toggle-btn")
+  const liquidEtherToggleBtn = document.getElementById(
+    "liquid-ether-toggle-btn",
+  )
   const liquidEtherSettings = document.getElementById("liquid-ether-settings")
-  const liquidEtherToggleLabel = document.getElementById("liquid-ether-toggle-label")
+  const liquidEtherToggleLabel = document.getElementById(
+    "liquid-ether-toggle-label",
+  )
   if (liquidEtherToggleBtn && liquidEtherSettings) {
-    setToggleExpanded(liquidEtherToggleBtn, liquidEtherSettings, liquidEtherSettings.style.display !== "none")
+    setToggleExpanded(
+      liquidEtherToggleBtn,
+      liquidEtherSettings,
+      liquidEtherSettings.style.display !== "none",
+    )
     liquidEtherToggleBtn.addEventListener("click", () => {
       const isHidden = liquidEtherSettings.classList.contains("is-collapsed")
       setToggleExpanded(liquidEtherToggleBtn, liquidEtherSettings, isHidden)
@@ -400,7 +509,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     const colors = [
       leColor1 ? leColor1.value : "#5227FF",
       leColor2 ? leColor2.value : "#FF9FFC",
-      leColor3 ? leColor3.value : "#B497CF"
+      leColor3 ? leColor3.value : "#B497CF",
     ]
     updateSetting("liquidEtherColors", colors)
     updateSetting("liquidEtherColor1", colors[0])
@@ -418,7 +527,9 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   if (leColor3) leColor3.addEventListener("change", updateLEColors)
 
   const leGlowWidth = document.getElementById("liquid-ether-glow-width")
-  const leGlowWidthVal = document.getElementById("liquid-ether-glow-width-value")
+  const leGlowWidthVal = document.getElementById(
+    "liquid-ether-glow-width-value",
+  )
   if (leGlowWidth) {
     leGlowWidth.addEventListener("input", (e) => {
       const val = parseFloat(e.target.value)
@@ -434,22 +545,26 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const leRandomBtn = document.getElementById("liquid-ether-random-btn")
   if (leRandomBtn) {
     leRandomBtn.addEventListener("click", () => {
-      const randomHex = () => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      const randomHex = () =>
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")
       const colors = [randomHex(), randomHex(), randomHex()]
       const glowWidth = parseFloat((Math.random() * 8 + 1).toFixed(1))
-      
+
       updateSetting("liquidEtherColors", colors)
       updateSetting("liquidEtherColor1", colors[0])
       updateSetting("liquidEtherColor2", colors[1])
       updateSetting("liquidEtherColor3", colors[2])
       updateSetting("liquidEtherGlowWidth", glowWidth)
-      
+
       if (leColor1) leColor1.value = colors[0]
       if (leColor2) leColor2.value = colors[1]
       if (leColor3) leColor3.value = colors[2]
       if (leGlowWidth) leGlowWidth.value = glowWidth
       if (leGlowWidthVal) leGlowWidthVal.textContent = glowWidth.toFixed(1)
-      
+
       saveSettings()
       scheduleAutoAccentFromGeneratedBg()
       if (getSettings().liquidEtherActive && effects.liquidEtherEffect) {
@@ -492,14 +607,21 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const currentSettings = getSettings()
       const preset = {
         id: Date.now(),
-        colors: currentSettings.liquidEtherColors || ["#5227FF", "#FF9FFC", "#B497CF"],
-        glowWidth: currentSettings.liquidEtherGlowWidth || 5.5
+        colors: currentSettings.liquidEtherColors || [
+          "#5227FF",
+          "#FF9FFC",
+          "#B497CF",
+        ],
+        glowWidth: currentSettings.liquidEtherGlowWidth || 5.5,
       }
       const saved = currentSettings.userLiquidEthers || []
       updateSetting("userLiquidEthers", [...saved, preset])
       saveSettings()
       renderUserLiquidEthers()
-      showAlert(geti18n().settings_liquid_ether_saved || "Mist Light Streams background saved!")
+      showAlert(
+        geti18n().settings_liquid_ether_saved ||
+          "Mist Light Streams background saved!",
+      )
     })
   }
 
@@ -523,7 +645,8 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
         const i18n = geti18n()
         label.textContent = enabled
           ? i18n.settings_splash_cursor_dark_bg_on || "Black background on"
-          : i18n.settings_splash_cursor_dark_bg_btn || "Switch to black background"
+          : i18n.settings_splash_cursor_dark_bg_btn ||
+            "Switch to black background"
       }
     }
     handleSettingUpdate("splashCursorDarkBg", enabled)
@@ -546,7 +669,11 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const scSettings = document.getElementById("splash-cursor-settings")
   const scToggleLabel = document.getElementById("splash-cursor-toggle-label")
   if (scToggleBtn && scSettings) {
-    setToggleExpanded(scToggleBtn, scSettings, scSettings.style.display !== "none")
+    setToggleExpanded(
+      scToggleBtn,
+      scSettings,
+      scSettings.style.display !== "none",
+    )
     scToggleBtn.addEventListener("click", () => {
       const isHidden = scSettings.classList.contains("is-collapsed")
       setToggleExpanded(scToggleBtn, scSettings, isHidden)
@@ -564,8 +691,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       simResolution: getSettings().splashCursorSimResolution ?? 128,
       dyeResolution: getSettings().splashCursorDyeResolution ?? 720,
       densityDissipation: getSettings().splashCursorDensityDissipation ?? 3.5,
-      velocityDissipation:
-        getSettings().splashCursorVelocityDissipation ?? 2,
+      velocityDissipation: getSettings().splashCursorVelocityDissipation ?? 2,
       curl: getSettings().splashCursorCurl ?? 3,
       splatRadius: getSettings().splashCursorSplatRadius ?? 0.2,
       splatForce: getSettings().splashCursorSplatForce ?? 6000,
@@ -576,8 +702,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     }
     if (getSettings().splashCursorActive && effects.splashCursorEffect) {
       const effect = effects.splashCursorEffect
-      const dyeChanged =
-        opts.dyeResolution !== effect.options.dyeResolution
+      const dyeChanged = opts.dyeResolution !== effect.options.dyeResolution
       effect.setOptions(opts)
       if (!effect.active) {
         effect.start()
@@ -671,8 +796,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const num = parseFloat(e.target.value)
       updateSetting(key, num)
       if (valEl) {
-        valEl.textContent =
-          decimals > 0 ? num.toFixed(decimals) : String(num)
+        valEl.textContent = decimals > 0 ? num.toFixed(decimals) : String(num)
       }
       applySplashCursorLive()
     })
@@ -711,7 +835,11 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
         const valEl = document.getElementById(val)
         if (slider && defaultSC[key] !== undefined) {
           slider.value = defaultSC[key]
-          if (valEl) valEl.textContent = decimals > 0 ? defaultSC[key].toFixed(decimals) : String(defaultSC[key])
+          if (valEl)
+            valEl.textContent =
+              decimals > 0
+                ? defaultSC[key].toFixed(decimals)
+                : String(defaultSC[key])
         }
       })
       saveSettings()
@@ -725,7 +853,9 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   }
 
   // --- Reset Active Effect Settings Button ---
-  const resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
+  const resetActiveEffectBtn = document.getElementById(
+    "reset-active-effect-btn",
+  )
   if (resetActiveEffectBtn) {
     resetActiveEffectBtn.addEventListener("click", () => {
       // Animate reset button icon
@@ -746,8 +876,14 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const dvdGlitch = document.getElementById("dvd-glitch-checkbox")
       if (dvdTitle) dvdTitle.value = "DVD"
       if (dvdColorMode) dvdColorMode.value = "random"
-      if (dvdSpeed) { dvdSpeed.value = 3; if (dvdSpeedVal) dvdSpeedVal.textContent = "3"; }
-      if (dvdClone) { dvdClone.value = 1; if (dvdCloneVal) dvdCloneVal.textContent = "1"; }
+      if (dvdSpeed) {
+        dvdSpeed.value = 3
+        if (dvdSpeedVal) dvdSpeedVal.textContent = "3"
+      }
+      if (dvdClone) {
+        dvdClone.value = 1
+        if (dvdCloneVal) dvdCloneVal.textContent = "1"
+      }
       if (dvdTrail) dvdTrail.checked = false
       if (dvdGlitch) dvdGlitch.checked = false
 
@@ -763,37 +899,88 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const awBgColor = document.getElementById("aurora-wave-bg-color-picker")
       const awBgOp = document.getElementById("aurora-wave-bg-opacity-slider")
       const awBgOpVal = document.getElementById("aurora-wave-bg-opacity-val")
-      if (awColor) { awColor.value = "#00bcd4"; updateSetting("auroraWaveColor", "#00bcd4"); }
-      if (awBright) { awBright.value = 0.65; if (awBrightVal) awBrightVal.textContent = "0.65"; updateSetting("auroraWaveBrightness", 0.65); }
-      if (awSpeed) { awSpeed.value = 1.0; if (awSpeedVal) awSpeedVal.textContent = "1.0"; updateSetting("auroraWaveSpeed", 1.0); }
-      if (awAmp) { awAmp.value = 70; if (awAmpVal) awAmpVal.textContent = "70"; updateSetting("auroraWaveAmplitude", 70); }
-      if (awTrans) { awTrans.checked = true; updateSetting("auroraWaveTransparent", true); }
-      if (awBgColor) { awBgColor.value = "#000000"; updateSetting("auroraWaveBgColor", "#000000"); }
-      if (awBgOp) { awBgOp.value = 0.15; if (awBgOpVal) awBgOpVal.textContent = "0.15"; updateSetting("auroraWaveBgOpacity", 0.15); }
+      if (awColor) {
+        awColor.value = "#00bcd4"
+        updateSetting("auroraWaveColor", "#00bcd4")
+      }
+      if (awBright) {
+        awBright.value = 0.65
+        if (awBrightVal) awBrightVal.textContent = "0.65"
+        updateSetting("auroraWaveBrightness", 0.65)
+      }
+      if (awSpeed) {
+        awSpeed.value = 1.0
+        if (awSpeedVal) awSpeedVal.textContent = "1.0"
+        updateSetting("auroraWaveSpeed", 1.0)
+      }
+      if (awAmp) {
+        awAmp.value = 70
+        if (awAmpVal) awAmpVal.textContent = "70"
+        updateSetting("auroraWaveAmplitude", 70)
+      }
+      if (awTrans) {
+        awTrans.checked = true
+        updateSetting("auroraWaveTransparent", true)
+      }
+      if (awBgColor) {
+        awBgColor.value = "#000000"
+        updateSetting("auroraWaveBgColor", "#000000")
+      }
+      if (awBgOp) {
+        awBgOp.value = 0.15
+        if (awBgOpVal) awBgOpVal.textContent = "0.15"
+        updateSetting("auroraWaveBgOpacity", 0.15)
+      }
 
       // Northern Lights
       const nlColor = document.getElementById("northern-lights-color-picker")
       const nlStyle = document.getElementById("northern-lights-style-select")
-      const nlBright = document.getElementById("northern-lights-brightness-slider")
-      const nlBrightVal = document.getElementById("northern-lights-brightness-val")
-      if (nlColor) { nlColor.value = "#00ffcc"; updateSetting("northernLightsColor", "#00ffcc"); }
-      if (nlStyle) { nlStyle.value = "classic"; updateSetting("northernLightsStyle", "classic"); }
-      if (nlBright) { nlBright.value = 0.8; if (nlBrightVal) nlBrightVal.textContent = "0.8"; updateSetting("northernLightsBrightness", 0.8); }
+      const nlBright = document.getElementById(
+        "northern-lights-brightness-slider",
+      )
+      const nlBrightVal = document.getElementById(
+        "northern-lights-brightness-val",
+      )
+      if (nlColor) {
+        nlColor.value = "#00ffcc"
+        updateSetting("northernLightsColor", "#00ffcc")
+      }
+      if (nlStyle) {
+        nlStyle.value = "classic"
+        updateSetting("northernLightsStyle", "classic")
+      }
+      if (nlBright) {
+        nlBright.value = 0.8
+        if (nlBrightVal) nlBrightVal.textContent = "0.8"
+        updateSetting("northernLightsBrightness", 0.8)
+      }
 
       // Pixel Weather
       const pwRes = document.getElementById("pixel-weather-resolution-slider")
       const pwSpeed = document.getElementById("pixel-weather-speed-slider")
       const pwSize = document.getElementById("pixel-weather-size-slider")
       const pwDensity = document.getElementById("pixel-weather-density-slider")
-      if (pwRes) { pwRes.value = 1; updateSetting("pixelWeatherResolution", 1); }
-      if (pwSpeed) { pwSpeed.value = 1.0; updateSetting("pixelWeatherSpeed", 1.0); }
-      if (pwSize) { pwSize.value = 1.0; updateSetting("pixelWeatherSize", 1.0); }
-      if (pwDensity) { pwDensity.value = 1.0; updateSetting("pixelWeatherDensity", 1.0); }
+      if (pwRes) {
+        pwRes.value = 1
+        updateSetting("pixelWeatherResolution", 1)
+      }
+      if (pwSpeed) {
+        pwSpeed.value = 1.0
+        updateSetting("pixelWeatherSpeed", 1.0)
+      }
+      if (pwSize) {
+        pwSize.value = 1.0
+        updateSetting("pixelWeatherSize", 1.0)
+      }
+      if (pwDensity) {
+        pwDensity.value = 1.0
+        updateSetting("pixelWeatherDensity", 1.0)
+      }
 
       // Reset all color pickers in the active settings container to their HTML default value attribute
       const container = document.getElementById("active-effect-settings-body")
       if (container) {
-        container.querySelectorAll('input[type="color"]').forEach(input => {
+        container.querySelectorAll('input[type="color"]').forEach((input) => {
           const def = input.getAttribute("value")
           if (def) {
             input.value = def
@@ -807,9 +994,9 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   }
 
   // Setup multi-select
-  setupEffectMultiSelect('silk', handleSettingUpdate)
-  setupEffectMultiSelect('light-pillar', handleSettingUpdate)
-  setupEffectMultiSelect('liquid-ether', handleSettingUpdate)
+  setupEffectMultiSelect("silk", handleSettingUpdate)
+  setupEffectMultiSelect("light-pillar", handleSettingUpdate)
+  setupEffectMultiSelect("liquid-ether", handleSettingUpdate)
 }
 
 function updateGalleryCount(key, countId) {
@@ -825,7 +1012,7 @@ export function renderUserSilks() {
   const { userSilks } = settings
   const gallery = document.getElementById("user-silks-gallery")
   const galleryWrap = document.getElementById("user-silks-gallery-wrap")
-  
+
   if (!gallery) return
   gallery.innerHTML = ""
 
@@ -875,7 +1062,8 @@ export function renderUserSilks() {
         }
         const countEl = document.getElementById("silk-select-count")
         const i18n = geti18n()
-        if (countEl) countEl.textContent = `${silkSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
+        if (countEl)
+          countEl.textContent = `${silkSelectedIndices.size} ${i18n.bookmark_selected || "selected"}`
         return
       }
       applySilkPreset(preset)
@@ -893,10 +1081,12 @@ function applySilkPreset(preset) {
   updateSetting("silkRotation", preset.rotation)
   updateSetting("background", null)
   scheduleAutoAccentFromGeneratedBg()
-  
-  window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
-    detail: { type: 'silk', preset } 
-  }));
+
+  window.dispatchEvent(
+    new CustomEvent("specialEffectPresetApplied", {
+      detail: { type: "silk", preset },
+    }),
+  )
 }
 
 export function renderUserLightPillars() {
@@ -904,7 +1094,7 @@ export function renderUserLightPillars() {
   const { userLightPillars } = settings
   const gallery = document.getElementById("user-light-pillars-gallery")
   const galleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
-  
+
   if (!gallery) return
   gallery.innerHTML = ""
 
@@ -918,7 +1108,7 @@ export function renderUserLightPillars() {
   userLightPillars.forEach((preset, index) => {
     const item = document.createElement("div")
     item.className = "local-bg-item user-light-pillar-item"
-    
+
     const isActive =
       settings.lightPillarActive &&
       !settings.background &&
@@ -927,7 +1117,7 @@ export function renderUserLightPillars() {
 
     if (isActive) item.classList.add("active")
     if (lightPillarSelectedIndices.has(index)) item.classList.add("selected")
-    item.style.background = `linear-gradient(to bottom, ${preset.topColor || '#5227FF'}, ${preset.bottomColor || '#FF9FFC'})`
+    item.style.background = `linear-gradient(to bottom, ${preset.topColor || "#5227FF"}, ${preset.bottomColor || "#FF9FFC"})`
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
       <button class="remove-bg-btn" title="Delete" aria-label="Delete"><i class="fa-solid fa-xmark"></i></button>
@@ -954,7 +1144,8 @@ export function renderUserLightPillars() {
         }
         const countEl = document.getElementById("light-pillar-select-count")
         const i18n = geti18n()
-        if (countEl) countEl.textContent = `${lightPillarSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
+        if (countEl)
+          countEl.textContent = `${lightPillarSelectedIndices.size} ${i18n.bookmark_selected || "selected"}`
         return
       }
       applyLightPillarPreset(preset)
@@ -976,10 +1167,12 @@ function applyLightPillarPreset(preset) {
   updateSetting("lightPillarRotation", preset.pillarRotation)
   updateSetting("background", null)
   scheduleAutoAccentFromGeneratedBg()
-  
-  window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
-    detail: { type: 'light-pillar', preset } 
-  }));
+
+  window.dispatchEvent(
+    new CustomEvent("specialEffectPresetApplied", {
+      detail: { type: "light-pillar", preset },
+    }),
+  )
 }
 
 export function renderUserLiquidEthers() {
@@ -987,7 +1180,7 @@ export function renderUserLiquidEthers() {
   const { userLiquidEthers } = settings
   const gallery = document.getElementById("user-liquid-ethers-gallery")
   const galleryWrap = document.getElementById("user-liquid-ethers-gallery-wrap")
-  
+
   if (!gallery) return
   gallery.innerHTML = ""
 
@@ -1047,7 +1240,8 @@ export function renderUserLiquidEthers() {
         }
         const countEl = document.getElementById("liquid-ether-select-count")
         const i18n = geti18n()
-        if (countEl) countEl.textContent = `${liquidEtherSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
+        if (countEl)
+          countEl.textContent = `${liquidEtherSelectedIndices.size} ${i18n.bookmark_selected || "selected"}`
         return
       }
       applyLiquidEtherPreset(preset)
@@ -1066,10 +1260,12 @@ function applyLiquidEtherPreset(preset) {
   updateSetting("liquidEtherGlowWidth", preset.glowWidth)
   updateSetting("background", null)
   scheduleAutoAccentFromGeneratedBg()
-  
-  window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
-    detail: { type: 'liquid-ether', preset } 
-  }));
+
+  window.dispatchEvent(
+    new CustomEvent("specialEffectPresetApplied", {
+      detail: { type: "liquid-ether", preset },
+    }),
+  )
 }
 
 async function removeSavedEffectPreset(type, index) {
@@ -1114,88 +1310,125 @@ function setupEffectMultiSelect(type, handleSettingUpdate) {
 
   if (selectModeBtn) {
     selectModeBtn.addEventListener("click", () => {
-      if (type === 'silk') { silkSelectMode = !silkSelectMode; silkSelectedIndices.clear() }
-      else if (type === 'light-pillar') { lightPillarSelectMode = !lightPillarSelectMode; lightPillarSelectedIndices.clear() }
-      else if (type === 'liquid-ether') { liquidEtherSelectMode = !liquidEtherSelectMode; liquidEtherSelectedIndices.clear() }
-      
+      if (type === "silk") {
+        silkSelectMode = !silkSelectMode
+        silkSelectedIndices.clear()
+      } else if (type === "light-pillar") {
+        lightPillarSelectMode = !lightPillarSelectMode
+        lightPillarSelectedIndices.clear()
+      } else if (type === "liquid-ether") {
+        liquidEtherSelectMode = !liquidEtherSelectMode
+        liquidEtherSelectedIndices.clear()
+      }
+
       const i18n = geti18n()
-      const isMode = type === 'silk' ? silkSelectMode : (type === 'light-pillar' ? lightPillarSelectMode : liquidEtherSelectMode)
+      const isMode =
+        type === "silk"
+          ? silkSelectMode
+          : type === "light-pillar"
+            ? lightPillarSelectMode
+            : liquidEtherSelectMode
       if (toolbar) toolbar.style.display = isMode ? "flex" : "none"
-      selectModeBtn.textContent = isMode 
-        ? (i18n.cancel || "Cancel") 
-        : (i18n.bg_select_mode || "Select")
-      
-      if (countEl) countEl.textContent = `0 ${i18n.bookmark_selected || 'selected'}`
-      
-      if (type === 'silk') renderUserSilks()
-      else if (type === 'light-pillar') renderUserLightPillars()
-      else if (type === 'liquid-ether') renderUserLiquidEthers()
+      selectModeBtn.textContent = isMode
+        ? i18n.cancel || "Cancel"
+        : i18n.bg_select_mode || "Select"
+
+      if (countEl)
+        countEl.textContent = `0 ${i18n.bookmark_selected || "selected"}`
+
+      if (type === "silk") renderUserSilks()
+      else if (type === "light-pillar") renderUserLightPillars()
+      else if (type === "liquid-ether") renderUserLiquidEthers()
     })
   }
 
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
       const i18n = geti18n()
-      if (type === 'silk') silkSelectMode = false
-      else if (type === 'light-pillar') lightPillarSelectMode = false
-      else if (type === 'liquid-ether') liquidEtherSelectMode = false
-      
+      if (type === "silk") silkSelectMode = false
+      else if (type === "light-pillar") lightPillarSelectMode = false
+      else if (type === "liquid-ether") liquidEtherSelectMode = false
+
       if (toolbar) toolbar.style.display = "none"
-      if (selectModeBtn) selectModeBtn.textContent = i18n.bg_select_mode || "Select"
-      
-      if (type === 'silk') renderUserSilks()
-      else if (type === 'light-pillar') renderUserLightPillars()
-      else if (type === 'liquid-ether') renderUserLiquidEthers()
+      if (selectModeBtn)
+        selectModeBtn.textContent = i18n.bg_select_mode || "Select"
+
+      if (type === "silk") renderUserSilks()
+      else if (type === "light-pillar") renderUserLightPillars()
+      else if (type === "liquid-ether") renderUserLiquidEthers()
     })
   }
 
   if (selectAllBtn) {
     selectAllBtn.addEventListener("click", () => {
-      const key = type === 'silk' ? 'userSilks' : (type === 'light-pillar' ? 'userLightPillars' : 'userLiquidEthers')
+      const key =
+        type === "silk"
+          ? "userSilks"
+          : type === "light-pillar"
+            ? "userLightPillars"
+            : "userLiquidEthers"
       const items = getSettings()[key] || []
-      let indicesSet = type === 'silk' ? silkSelectedIndices : (type === 'light-pillar' ? lightPillarSelectedIndices : liquidEtherSelectedIndices)
-      
+      let indicesSet =
+        type === "silk"
+          ? silkSelectedIndices
+          : type === "light-pillar"
+            ? lightPillarSelectedIndices
+            : liquidEtherSelectedIndices
+
       const itemElements = document.querySelectorAll(`.user-${type}-item`)
       if (indicesSet.size === items.length) {
         indicesSet.clear()
-        itemElements.forEach(el => {
+        itemElements.forEach((el) => {
           el.classList.remove("selected")
           const cb = el.querySelector(".bg-item-checkbox")
           if (cb) cb.classList.remove("checked")
         })
       } else {
         items.forEach((_, i) => indicesSet.add(i))
-        itemElements.forEach(el => {
+        itemElements.forEach((el) => {
           el.classList.add("selected")
           const cb = el.querySelector(".bg-item-checkbox")
           if (cb) cb.classList.add("checked")
         })
       }
-      
+
       const i18n = geti18n()
-      if (countEl) countEl.textContent = `${indicesSet.size} ${i18n.bookmark_selected || 'selected'}`
+      if (countEl)
+        countEl.textContent = `${indicesSet.size} ${i18n.bookmark_selected || "selected"}`
     })
   }
 
   if (deleteBtn) {
     deleteBtn.addEventListener("click", async () => {
       const i18n = geti18n()
-      let indicesSet = type === 'silk' ? silkSelectedIndices : (type === 'light-pillar' ? lightPillarSelectedIndices : liquidEtherSelectedIndices)
+      let indicesSet =
+        type === "silk"
+          ? silkSelectedIndices
+          : type === "light-pillar"
+            ? lightPillarSelectedIndices
+            : liquidEtherSelectedIndices
       if (indicesSet.size === 0) return
-      
-      const confirmMsg = i18n.alert_delete_bg_confirm || `Delete ${indicesSet.size} saved items?`
+
+      const confirmMsg =
+        i18n.alert_delete_bg_confirm || `Delete ${indicesSet.size} saved items?`
       const confirmed = await showConfirm(confirmMsg)
       if (confirmed) {
-        const key = type === 'silk' ? 'userSilks' : (type === 'light-pillar' ? 'userLightPillars' : 'userLiquidEthers')
+        const key =
+          type === "silk"
+            ? "userSilks"
+            : type === "light-pillar"
+              ? "userLightPillars"
+              : "userLiquidEthers"
         const items = getSettings()[key] || []
         const newList = items.filter((_, i) => !indicesSet.has(i))
         updateSetting(key, newList)
         saveSettings()
         indicesSet.clear()
-        if (countEl) countEl.textContent = `0 ${i18n.bookmark_selected || 'selected'}`
-        if (type === 'silk') renderUserSilks()
-        else if (type === 'light-pillar') renderUserLightPillars()
-        else if (type === 'liquid-ether') renderUserLiquidEthers()
+        if (countEl)
+          countEl.textContent = `0 ${i18n.bookmark_selected || "selected"}`
+        if (type === "silk") renderUserSilks()
+        else if (type === "light-pillar") renderUserLightPillars()
+        else if (type === "liquid-ether") renderUserLiquidEthers()
       }
     })
   }

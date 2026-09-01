@@ -38,7 +38,9 @@ function rememberUnsplashPhoto(categoryKey, photo) {
   const key = getPhotoKey(photo)
   if (!key) return
 
-  const recent = getRecentUnsplashKeys(categoryKey).filter((item) => item !== key)
+  const recent = getRecentUnsplashKeys(categoryKey).filter(
+    (item) => item !== key,
+  )
   recent.unshift(key)
   try {
     localStorage.setItem(
@@ -113,11 +115,15 @@ function getTargetImageDimensions() {
   return {
     width: Math.min(
       profile.widthCap,
-      Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * effectiveDpr),
+      Math.round(
+        (window.innerWidth > 0 ? window.innerWidth : 1920) * effectiveDpr,
+      ),
     ),
     height: Math.min(
       profile.heightCap,
-      Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * effectiveDpr),
+      Math.round(
+        (window.innerHeight > 0 ? window.innerHeight : 1080) * effectiveDpr,
+      ),
     ),
   }
 }
@@ -254,9 +260,16 @@ async function fetchBestUnsplashPhoto(accessKey, collection) {
           query: keyword,
         })
       } catch (err) {
-        console.warn("Unsplash random-query fetch failed, trying search fallback:", err)
+        console.warn(
+          "Unsplash random-query fetch failed, trying search fallback:",
+          err,
+        )
         try {
-          return await fetchUnsplashPhotoFromSearch(accessKey, keyword, categoryKey)
+          return await fetchUnsplashPhotoFromSearch(
+            accessKey,
+            keyword,
+            categoryKey,
+          )
         } catch (searchErr) {
           console.warn("Unsplash search fallback failed:", searchErr)
         }
@@ -284,7 +297,10 @@ async function fetchBestUnsplashPhoto(accessKey, collection) {
           categoryKey,
         )
       } catch (err) {
-        console.warn("Unsplash topic/photos fetch failed, trying random topic:", err)
+        console.warn(
+          "Unsplash topic/photos fetch failed, trying random topic:",
+          err,
+        )
         try {
           return await fetchUnsplashPhotoByParams(accessKey, {
             topics: collection.topic,
@@ -366,7 +382,7 @@ async function setUnsplashRandomBackground(
       photoUrl: photo.links?.html || "",
       authorName: photo.user?.name || "",
       authorUrl: photo.user?.links?.html || "",
-      isFavorite: false
+      isFavorite: false,
     }
 
     // Persist credit so it survives page refresh
@@ -386,18 +402,21 @@ async function setUnsplashRandomBackground(
     if (saveBtn) {
       saveBtn.disabled = false
       // Reset save button state
-      const i18n = (typeof geti18n === 'function') ? geti18n() : null
+      const i18n = typeof geti18n === "function" ? geti18n() : null
       saveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>${i18n?.settings_unsplash_save || "Save to Gallery"}</span>`
     }
 
-    const updateFn = typeof handleSettingUpdateCallback === 'function' 
-      ? handleSettingUpdateCallback 
-      : (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
+    const updateFn =
+      typeof handleSettingUpdateCallback === "function"
+        ? handleSettingUpdateCallback
+        : typeof window !== "undefined"
+          ? window.appHandleSettingUpdate
+          : null
 
-    if (typeof updateFn === 'function') {
+    if (typeof updateFn === "function") {
       updateFn("background", finalBgValue)
     }
-    
+
     if (btn) {
       btn.disabled = false
       btn.innerHTML = originalHtml
@@ -406,12 +425,15 @@ async function setUnsplashRandomBackground(
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
 
-    const updateFn = typeof handleSettingUpdateCallback === 'function' 
-      ? handleSettingUpdateCallback 
-      : (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
+    const updateFn =
+      typeof handleSettingUpdateCallback === "function"
+        ? handleSettingUpdateCallback
+        : typeof window !== "undefined"
+          ? window.appHandleSettingUpdate
+          : null
 
     // Restore previous background if loading fails after black-screen state.
-    if (typeof updateFn === 'function') {
+    if (typeof updateFn === "function") {
       updateFn("background", previousBackground)
     }
 
@@ -419,17 +441,20 @@ async function setUnsplashRandomBackground(
       btn.disabled = false
       btn.innerHTML = originalHtml
     }
-    
+
     if (!isSilent) {
       let errorMsg = "Failed to load Unsplash image."
       if (err.message.includes("401")) {
-          errorMsg = "Invalid Unsplash Access Key. Please check your key in Settings."
+        errorMsg =
+          "Invalid Unsplash Access Key. Please check your key in Settings."
       } else if (err.message.includes("403")) {
-          errorMsg = "Unsplash API rate limit exceeded or Access Key unauthorized."
+        errorMsg =
+          "Unsplash API rate limit exceeded or Access Key unauthorized."
       } else if (err.message.includes("Failed to fetch")) {
-          errorMsg = "Network error. Please check your internet connection or Unsplash permissions."
+        errorMsg =
+          "Network error. Please check your internet connection or Unsplash permissions."
       }
-      
+
       showAlert(errorMsg)
     }
   }
@@ -454,7 +479,9 @@ async function searchUnsplashPhotos(accessKey, query, page = 1, perPage = 20) {
     content_filter: "high",
     client_id: accessKey,
   })
-  const res = await fetch(`https://api.unsplash.com/search/photos?${params.toString()}`)
+  const res = await fetch(
+    `https://api.unsplash.com/search/photos?${params.toString()}`,
+  )
   if (!res.ok) throw new Error(`Search failed: ${res.status}`)
   return await res.json()
 }
@@ -462,14 +489,21 @@ async function searchUnsplashPhotos(accessKey, query, page = 1, perPage = 20) {
 /**
  * List Unsplash photos (latest, popular, oldest)
  */
-async function listUnsplashPhotos(accessKey, orderBy = "latest", page = 1, perPage = 20) {
+async function listUnsplashPhotos(
+  accessKey,
+  orderBy = "latest",
+  page = 1,
+  perPage = 20,
+) {
   const params = new URLSearchParams({
     order_by: orderBy,
     page: String(page),
     per_page: String(perPage),
     client_id: accessKey,
   })
-  const res = await fetch(`https://api.unsplash.com/photos?${params.toString()}`)
+  const res = await fetch(
+    `https://api.unsplash.com/photos?${params.toString()}`,
+  )
   if (!res.ok) throw new Error(`List failed: ${res.status}`)
   return await res.json()
 }
@@ -588,7 +622,7 @@ function restoreExplorerPosition() {
 }
 
 function getExplorerDisplayTitle(type = explorerType, query = explorerQuery) {
-  const i18n = (typeof geti18n === "function") ? geti18n() : {}
+  const i18n = typeof geti18n === "function" ? geti18n() : {}
 
   if (type === "search") {
     return `${i18n.settings_unsplash_search || "Search"}: ${query}`
@@ -687,7 +721,9 @@ async function openUnsplashExplorer(type = "latest", query = "") {
 
   const grid = document.getElementById("unsplash-explorer-grid")
   explorerScrollCapturePaused = true
-  if (grid) grid.innerHTML = '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
+  if (grid)
+    grid.innerHTML =
+      '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
 
   modal.classList.add("open")
   for (let page = 1; page <= targetPage; page++) {
@@ -733,14 +769,24 @@ async function loadExplorerResults(append = false) {
   try {
     let data = []
     if (explorerType === "search") {
-      const result = await searchUnsplashPhotos(accessKey, explorerQuery, explorerPage, perPage)
+      const result = await searchUnsplashPhotos(
+        accessKey,
+        explorerQuery,
+        explorerPage,
+        perPage,
+      )
       data = result.results || []
       // Optional: Check total_pages to hide button
       if (result.total_pages && explorerPage >= result.total_pages) {
         if (loadMoreBtn) loadMoreBtn.style.display = "none"
       }
     } else {
-      data = await listUnsplashPhotos(accessKey, explorerType, explorerPage, perPage)
+      data = await listUnsplashPhotos(
+        accessKey,
+        explorerType,
+        explorerPage,
+        perPage,
+      )
     }
 
     if (!append && grid) grid.innerHTML = ""
@@ -748,7 +794,7 @@ async function loadExplorerResults(append = false) {
     if (data && data.length > 0) {
       const fragment = document.createDocumentFragment()
 
-      data.forEach(photo => {
+      data.forEach((photo) => {
         const item = document.createElement("div")
         item.className = "explorer-photo-item"
         const { width, height } = getTargetImageDimensions()
@@ -791,7 +837,9 @@ async function loadExplorerResults(append = false) {
           rememberExplorerPosition(true)
           grid
             .querySelectorAll(".explorer-photo-item.selected")
-            .forEach((selectedItem) => selectedItem.classList.remove("selected"))
+            .forEach((selectedItem) =>
+              selectedItem.classList.remove("selected"),
+            )
           item.classList.add("selected")
           applyUnsplashPhoto(photo, item)
           // Removed auto-close as per user request to allow manual closing
@@ -810,13 +858,16 @@ async function loadExplorerResults(append = false) {
           loadMoreBtn.style.display = "none"
         } else {
           loadMoreBtn.style.display = "inline-flex"
-          loadMoreBtn.innerHTML = loadMoreBtn.dataset.originalHtml || '<i class="fa-solid fa-plus"></i> Load More'
+          loadMoreBtn.innerHTML =
+            loadMoreBtn.dataset.originalHtml ||
+            '<i class="fa-solid fa-plus"></i> Load More'
           loadMoreBtn.disabled = false
         }
       }
     } else {
       if (!append && grid) {
-        grid.innerHTML = '<div class="explorer-no-results">No photos found.</div>'
+        grid.innerHTML =
+          '<div class="explorer-no-results">No photos found.</div>'
       }
       if (loadMoreBtn) loadMoreBtn.style.display = "none"
     }
@@ -828,7 +879,9 @@ async function loadExplorerResults(append = false) {
       showAlert(`Load failed: ${err.message}`)
     }
     if (loadMoreBtn) {
-      loadMoreBtn.innerHTML = loadMoreBtn.dataset.originalHtml || '<i class="fa-solid fa-plus"></i> Load More'
+      loadMoreBtn.innerHTML =
+        loadMoreBtn.dataset.originalHtml ||
+        '<i class="fa-solid fa-plus"></i> Load More'
       loadMoreBtn.disabled = false
     }
   }
@@ -844,7 +897,7 @@ async function applyUnsplashPhoto(photo, element = null) {
 
   const { width, height } = getTargetImageDimensions()
   rememberUnsplashPhoto(explorerType || "explorer", photo)
-  
+
   const imageUrl = buildUnsplashImageUrl(photo, width, height)
 
   try {
@@ -861,8 +914,9 @@ async function applyUnsplashPhoto(photo, element = null) {
     })
 
     // Update settings and apply
-    const updateFn = (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
-    if (typeof updateFn === 'function') {
+    const updateFn =
+      typeof window !== "undefined" ? window.appHandleSettingUpdate : null
+    if (typeof updateFn === "function") {
       updateFn("background", finalBgValue)
     }
 

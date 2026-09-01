@@ -40,7 +40,7 @@ export class HyperspaceEffect {
     this._rgb = {
       r: parseInt(this.color.slice(1, 3), 16),
       g: parseInt(this.color.slice(3, 5), 16),
-      b: parseInt(this.color.slice(5, 7), 16)
+      b: parseInt(this.color.slice(5, 7), 16),
     }
   }
 
@@ -65,7 +65,7 @@ export class HyperspaceEffect {
   animate() {
     if (!this.active) return
     this.animationId = requestAnimationFrame(() => this.animate())
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
@@ -108,14 +108,14 @@ export class HyperspaceEffect {
     const { r, g, b } = this._rgb
 
     this.ctx.lineWidth = 2
-    
+
     // Draw 4 main perspective lines forming a square tunnel
     const tunnelSize = 400
     const points = [
       { x: -tunnelSize, y: -tunnelSize },
       { x: tunnelSize, y: -tunnelSize },
       { x: tunnelSize, y: tunnelSize },
-      { x: -tunnelSize, y: tunnelSize }
+      { x: -tunnelSize, y: tunnelSize },
     ]
 
     for (let i = 0; i < points.length; i++) {
@@ -125,22 +125,33 @@ export class HyperspaceEffect {
       this.ctx.moveTo(this.centerX, this.centerY)
       // Extend to the edges of the screen
       const angle = Math.atan2(p.y, p.x)
-      const dist = Math.sqrt(this.canvas.width * this.canvas.width + this.canvas.height * this.canvas.height)
-      this.ctx.lineTo(this.centerX + Math.cos(angle) * dist, this.centerY + Math.sin(angle) * dist)
+      const dist = Math.sqrt(
+        this.canvas.width * this.canvas.width +
+          this.canvas.height * this.canvas.height,
+      )
+      this.ctx.lineTo(
+        this.centerX + Math.cos(angle) * dist,
+        this.centerY + Math.sin(angle) * dist,
+      )
       this.ctx.stroke()
     }
 
     // Draw rectangular segments moving towards viewer
     for (let z = 2000; z > 0; z -= 200) {
-      const currentZ = (z - (time * 150) % 200)
+      const currentZ = z - ((time * 150) % 200)
       if (currentZ <= 0) continue
-      
+
       const scale = this.fov / currentZ
       const size = tunnelSize * scale
       const alpha = (1 - currentZ / 2000) * 0.3
-      
+
       this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
-      this.ctx.strokeRect(this.centerX - size, this.centerY - size, size * 2, size * 2)
+      this.ctx.strokeRect(
+        this.centerX - size,
+        this.centerY - size,
+        size * 2,
+        size * 2,
+      )
     }
   }
 }

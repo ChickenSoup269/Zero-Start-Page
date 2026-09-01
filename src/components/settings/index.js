@@ -145,8 +145,6 @@ function getExtensionVersion() {
   return ""
 }
 
-
-
 function createEffects(settings) {
   const instances = {}
   const extraProps = {}
@@ -251,9 +249,13 @@ export async function initSettings() {
     renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
     renderUserColors(DOM_EXPORTS)
     renderUserGradients(DOM_EXPORTS)
-    renderUserSvgWaves(DOM_EXPORTS, () => effects.svgWaveEffect, () => {
-      handleSettingUpdate("svgWaveActive", true)
-    })
+    renderUserSvgWaves(
+      DOM_EXPORTS,
+      () => effects.svgWaveEffect,
+      () => {
+        handleSettingUpdate("svgWaveActive", true)
+      },
+    )
     renderUserGradientV2s(DOM_EXPORTS)
     renderUserSilks()
     renderUserLightPillars()
@@ -615,7 +617,8 @@ export async function initSettings() {
           if (!activePreset) updateSetting("activeBgUid", null)
           updateSetting(
             "lastUserBackgroundState",
-            currentBackgroundSnapshot || getBackgroundStateSnapshot(getSettings()),
+            currentBackgroundSnapshot ||
+              getBackgroundStateSnapshot(getSettings()),
           )
           // Generate a small persistent preview for faster reloads (data URL or CSS)
           ;(async () => {
@@ -693,7 +696,10 @@ export async function initSettings() {
                         let targetHeight = img.height
                         const MAX_SIZE = 1280
                         if (targetWidth > MAX_SIZE || targetHeight > MAX_SIZE) {
-                          const ratio = Math.min(MAX_SIZE / targetWidth, MAX_SIZE / targetHeight)
+                          const ratio = Math.min(
+                            MAX_SIZE / targetWidth,
+                            MAX_SIZE / targetHeight,
+                          )
                           targetWidth = Math.floor(targetWidth * ratio)
                           targetHeight = Math.floor(targetHeight * ratio)
                         }
@@ -701,17 +707,21 @@ export async function initSettings() {
                         canvas.height = targetHeight
                         const ctx = canvas.getContext("2d")
                         ctx.drawImage(img, 0, 0, targetWidth, targetHeight)
-                        
-                        canvas.toBlob((blob) => {
-                          if (!blob) {
-                            resolve(candidateUrl)
-                            return
-                          }
-                          const reader = new FileReader()
-                          reader.onloadend = () => resolve(reader.result)
-                          reader.onerror = () => resolve(candidateUrl)
-                          reader.readAsDataURL(blob)
-                        }, "image/webp", 0.75)
+
+                        canvas.toBlob(
+                          (blob) => {
+                            if (!blob) {
+                              resolve(candidateUrl)
+                              return
+                            }
+                            const reader = new FileReader()
+                            reader.onloadend = () => resolve(reader.result)
+                            reader.onerror = () => resolve(candidateUrl)
+                            reader.readAsDataURL(blob)
+                          },
+                          "image/webp",
+                          0.75,
+                        )
                       } catch (e) {
                         resolve(candidateUrl)
                       }
@@ -1051,7 +1061,7 @@ export async function initSettings() {
   effects.renderFontGrid = () => {
     renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
   }
-  
+
   initFont(handleSettingUpdate)
   setupFontMultiSelect(DOM_EXPORTS, handleSettingUpdate)
   setupLocalFonts(handleSettingUpdate)
@@ -1082,9 +1092,13 @@ export async function initSettings() {
   }
 
   // Initialize Gradient V2 Manager
-  initGradientV2Manager(DOM_EXPORTS, () => effects.gradientV2Effect, (k, v) => {
-    handleSettingUpdate(k, v)
-  })
+  initGradientV2Manager(
+    DOM_EXPORTS,
+    () => effects.gradientV2Effect,
+    (k, v) => {
+      handleSettingUpdate(k, v)
+    },
+  )
 
   // Initialize Special Effects Manager (Silk, Light Pillar, Liquid Ether)
   initSpecialEffectsManager(ctx, handleSettingUpdate)
@@ -1145,20 +1159,25 @@ export async function initSettings() {
   initSidebarNavigation()
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
-  
+
   // Restore collapsible groups state
-  document.querySelectorAll(".setting-group.collapsible-group").forEach((group) => {
-    const groupId = group.id || group.dataset.groupId
-    if (groupId) {
-      const isExpanded = localStorage.getItem(`${GROUP_EXPANDED_KEY_PREFIX}${groupId}`) === "1"
-      if (isExpanded) {
-        group.classList.add("expanded")
+  document
+    .querySelectorAll(".setting-group.collapsible-group")
+    .forEach((group) => {
+      const groupId = group.id || group.dataset.groupId
+      if (groupId) {
+        const isExpanded =
+          localStorage.getItem(`${GROUP_EXPANDED_KEY_PREFIX}${groupId}`) === "1"
+        if (isExpanded) {
+          group.classList.add("expanded")
+        }
       }
-    }
-  })
+    })
 
   document.addEventListener("click", (e) => {
-    const header = e.target.closest(".setting-group.collapsible-group .group-header")
+    const header = e.target.closest(
+      ".setting-group.collapsible-group .group-header",
+    )
     if (header) {
       const group = header.closest(".setting-group.collapsible-group")
       if (group) {

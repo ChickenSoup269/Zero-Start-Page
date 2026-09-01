@@ -6,49 +6,49 @@
 import { updateSetting, saveSettings } from "../../services/state.js"
 
 function setupEffectColorHandlers(DOM, effectInstances) {
-  document.querySelectorAll('input[type="color"]').forEach(input => {
-    if (input.parentElement.classList.contains('color-picker-wrapper')) return;
+  document.querySelectorAll('input[type="color"]').forEach((input) => {
+    if (input.parentElement.classList.contains("color-picker-wrapper")) return
 
-    const defaultColor = input.getAttribute('value') || '#ffffff';
+    const defaultColor = input.getAttribute("value") || "#ffffff"
 
     // Đổi giao diện thành dạng ngang (setting-item-row) giống Light Ray
-    const parentSetting = input.parentElement;
-    if (parentSetting && parentSetting.classList.contains('setting-item')) {
-      parentSetting.classList.remove('setting-item');
-      parentSetting.classList.add('setting-item-row');
+    const parentSetting = input.parentElement
+    if (parentSetting && parentSetting.classList.contains("setting-item")) {
+      parentSetting.classList.remove("setting-item")
+      parentSetting.classList.add("setting-item-row")
     }
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'color-picker-wrapper';
-    wrapper.style.display = 'flex';
-    wrapper.style.gap = '8px';
-    wrapper.style.alignItems = 'center';
-    
+    const wrapper = document.createElement("div")
+    wrapper.className = "color-picker-wrapper"
+    wrapper.style.display = "flex"
+    wrapper.style.gap = "8px"
+    wrapper.style.alignItems = "center"
+
     // Ép tất cả các ô chọn màu thành hình vuông đều đặn
-    input.style.width = "32px";
-    input.style.height = "32px";
-    input.style.padding = "0";
-    input.style.border = "none";
-    input.style.borderRadius = "4px";
-    input.style.cursor = "pointer";
-    input.style.flexShrink = "0";
+    input.style.width = "32px"
+    input.style.height = "32px"
+    input.style.padding = "0"
+    input.style.border = "none"
+    input.style.borderRadius = "4px"
+    input.style.cursor = "pointer"
+    input.style.flexShrink = "0"
 
-    input.parentNode.insertBefore(wrapper, input);
-    wrapper.appendChild(input);
+    input.parentNode.insertBefore(wrapper, input)
+    wrapper.appendChild(input)
 
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'icon-btn';
-    btn.title = 'Reset to Default';
-    btn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
-    wrapper.appendChild(btn);
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "icon-btn"
+    btn.title = "Reset to Default"
+    btn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
+    wrapper.appendChild(btn)
 
-    btn.addEventListener('click', () => {
-      input.value = defaultColor;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  });
+    btn.addEventListener("click", () => {
+      input.value = defaultColor
+      input.dispatchEvent(new Event("input", { bubbles: true }))
+      input.dispatchEvent(new Event("change", { bubbles: true }))
+    })
+  })
   DOM.starColorPicker?.addEventListener("change", () => {
     updateSetting("starColor", DOM.starColorPicker.value)
     saveSettings()
@@ -63,7 +63,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       const settings = effectInstances.getSettings()
       if (settings.meteorFullColor) {
         // Nếu bật full color, lấy thêm màu từ userColors
-        const userColors = (settings.userColors || []).map(c => typeof c === 'string' ? c : c.val)
+        const userColors = (settings.userColors || []).map((c) =>
+          typeof c === "string" ? c : c.val,
+        )
         const palette = [DOM.meteorColorPicker.value, ...userColors]
         effectInstances.meteorEffect.setColor(palette)
       } else {
@@ -80,8 +82,12 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.meteorEffect.setFullColor(enabled)
       // Refresh colors
       const settings = effectInstances.getSettings()
-      const userColors = (settings.userColors || []).map(c => typeof c === 'string' ? c : c.val)
-      const palette = enabled ? [settings.meteorColor, ...userColors] : settings.meteorColor
+      const userColors = (settings.userColors || []).map((c) =>
+        typeof c === "string" ? c : c.val,
+      )
+      const palette = enabled
+        ? [settings.meteorColor, ...userColors]
+        : settings.meteorColor
       effectInstances.meteorEffect.setColor(palette)
     }
   })
@@ -218,7 +224,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       updateSetting("pixelCubesShape", DOM.pixelCubesShapeSelect.value)
       saveSettings()
       if (effectInstances.pixelCubesEffect) {
-        effectInstances.pixelCubesEffect.updateShape(DOM.pixelCubesShapeSelect.value)
+        effectInstances.pixelCubesEffect.updateShape(
+          DOM.pixelCubesShapeSelect.value,
+        )
       }
     })
   }
@@ -249,7 +257,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       updateSetting("jellyfishType", DOM.jellyfishTypeSelect.value)
       saveSettings()
       if (effectInstances.jellyfishEffect) {
-        effectInstances.jellyfishEffect.updateType(DOM.jellyfishTypeSelect.value)
+        effectInstances.jellyfishEffect.updateType(
+          DOM.jellyfishTypeSelect.value,
+        )
       }
     })
   }
@@ -317,7 +327,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("cursorTrailStyle", DOM.cursorTrailStyleSelect.value)
     saveSettings()
     if (effectInstances.cursorTrailEffect)
-      effectInstances.cursorTrailEffect.setStyle(DOM.cursorTrailStyleSelect.value)
+      effectInstances.cursorTrailEffect.setStyle(
+        DOM.cursorTrailStyleSelect.value,
+      )
   })
 
   DOM.cursorTrailClickCheckbox?.addEventListener("change", () => {
@@ -392,7 +404,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
 
   let floatingLinesTimer = null
   DOM.floatingLinesColorPicker?.addEventListener("change", () => {
-    // Update live color in effect if it's not too heavy, 
+    // Update live color in effect if it's not too heavy,
     // but debounce the saving and state update to prevent lag
     if (effectInstances.floatingLinesEffect) {
       effectInstances.floatingLinesEffect.updateColor(
@@ -436,7 +448,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       updateSetting("musicBarsColor", DOM.musicBarsColorPicker.value)
       saveSettings()
       if (effectInstances.musicBarsEffect) {
-        effectInstances.musicBarsEffect.updateColor(DOM.musicBarsColorPicker.value)
+        effectInstances.musicBarsEffect.updateColor(
+          DOM.musicBarsColorPicker.value,
+        )
       }
     })
   }
@@ -452,11 +466,16 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("oceanWaveColor", DOM.oceanWaveColorPicker.value)
     saveSettings()
     if (effectInstances.oceanWaveEffect)
-      effectInstances.oceanWaveEffect.updateColor(DOM.oceanWaveColorPicker.value)
+      effectInstances.oceanWaveEffect.updateColor(
+        DOM.oceanWaveColorPicker.value,
+      )
   })
 
   const updateOceanWavePosBtns = (activePos) => {
-    DOM.oceanWavePosBottomBtn?.classList.toggle("active", activePos === "bottom")
+    DOM.oceanWavePosBottomBtn?.classList.toggle(
+      "active",
+      activePos === "bottom",
+    )
     DOM.oceanWavePosTopBtn?.classList.toggle("active", activePos === "top")
     DOM.oceanWavePosLeftBtn?.classList.toggle("active", activePos === "left")
     DOM.oceanWavePosRightBtn?.classList.toggle("active", activePos === "right")
@@ -498,7 +517,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("cloudDriftColor", DOM.cloudDriftColorPicker.value)
     saveSettings()
     if (effectInstances.cloudDriftEffect)
-      effectInstances.cloudDriftEffect.updateColor(DOM.cloudDriftColorPicker.value)
+      effectInstances.cloudDriftEffect.updateColor(
+        DOM.cloudDriftColorPicker.value,
+      )
   })
 
   DOM.cloudDriftMoodSelect?.addEventListener("change", () => {
@@ -525,15 +546,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.lineShinyColorPicker.value,
       )
   })
-  
+
   DOM.lineShinyModeSelect?.addEventListener("change", () => {
     updateSetting("lineShinyMode", DOM.lineShinyModeSelect.value)
     saveSettings()
 
     if (effectInstances.lineShinyEffect)
-      effectInstances.lineShinyEffect.setMode(
-        DOM.lineShinyModeSelect.value,
-      )
+      effectInstances.lineShinyEffect.setMode(DOM.lineShinyModeSelect.value)
   })
 
   DOM.pixelRunColorPicker?.addEventListener("change", () => {
@@ -542,8 +561,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     if (effectInstances.pixelRunEffect)
       effectInstances.pixelRunEffect.color = DOM.pixelRunColorPicker.value
   })
-
-
 
   DOM.nintendoPixelColorPicker?.addEventListener("change", () => {
     updateSetting("nintendoPixelColor", DOM.nintendoPixelColorPicker.value)
@@ -562,43 +579,42 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.crtScanColorPicker.value,
       )
   })
-DOM.crtScanFrequencyInput?.addEventListener("input", () => {
-  const frequency = Number(DOM.crtScanFrequencyInput.value)
-  if (DOM.crtScanFrequencyValue)
-    DOM.crtScanFrequencyValue.textContent = frequency.toFixed(2)
-  updateSetting("crtScanFrequency", frequency)
-  saveSettings()
-  if (effectInstances.crtScanlinesEffect)
-    effectInstances.crtScanlinesEffect.updateScanFrequency(frequency)
-})
+  DOM.crtScanFrequencyInput?.addEventListener("input", () => {
+    const frequency = Number(DOM.crtScanFrequencyInput.value)
+    if (DOM.crtScanFrequencyValue)
+      DOM.crtScanFrequencyValue.textContent = frequency.toFixed(2)
+    updateSetting("crtScanFrequency", frequency)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateScanFrequency(frequency)
+  })
 
-DOM.crtScanAngleInput?.addEventListener("input", () => {
-  const angle = Number(DOM.crtScanAngleInput.value)
-  if (DOM.crtScanAngleValue) DOM.crtScanAngleValue.textContent = angle
-  updateSetting("crtScanAngle", angle)
-  saveSettings()
-  if (effectInstances.crtScanlinesEffect)
-    effectInstances.crtScanlinesEffect.updateScanAngle(angle)
-})
+  DOM.crtScanAngleInput?.addEventListener("input", () => {
+    const angle = Number(DOM.crtScanAngleInput.value)
+    if (DOM.crtScanAngleValue) DOM.crtScanAngleValue.textContent = angle
+    updateSetting("crtScanAngle", angle)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateScanAngle(angle)
+  })
 
-DOM.crtScanDensityInput?.addEventListener("input", () => {
-  const density = Number(DOM.crtScanDensityInput.value)
-  if (DOM.crtScanDensityValue) DOM.crtScanDensityValue.textContent = density
-  updateSetting("crtScanDensity", density)
-  saveSettings()
-  if (effectInstances.crtScanlinesEffect)
-    effectInstances.crtScanlinesEffect.updateScanDensity(density)
-})
+  DOM.crtScanDensityInput?.addEventListener("input", () => {
+    const density = Number(DOM.crtScanDensityInput.value)
+    if (DOM.crtScanDensityValue) DOM.crtScanDensityValue.textContent = density
+    updateSetting("crtScanDensity", density)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateScanDensity(density)
+  })
 
-DOM.crtGammaInput?.addEventListener("input", () => {
-  const gamma = Number(DOM.crtGammaInput.value)
-  if (DOM.crtGammaValue) DOM.crtGammaValue.textContent = gamma.toFixed(2)
-  updateSetting("crtGamma", gamma)
-  saveSettings()
-  if (effectInstances.crtScanlinesEffect)
-    effectInstances.crtScanlinesEffect.updateGamma(gamma)
-})
-
+  DOM.crtGammaInput?.addEventListener("input", () => {
+    const gamma = Number(DOM.crtGammaInput.value)
+    if (DOM.crtGammaValue) DOM.crtGammaValue.textContent = gamma.toFixed(2)
+    updateSetting("crtGamma", gamma)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateGamma(gamma)
+  })
 
   DOM.crtBackgroundColorPicker?.addEventListener("change", () => {
     updateSetting("crtBackgroundColor", DOM.crtBackgroundColorPicker.value)
@@ -762,7 +778,9 @@ DOM.crtGammaInput?.addEventListener("input", () => {
         effectInstances.pixelBlastEffect.setOptions({ backgroundColor: color })
       }
     })
-    DOM.pixelBlastBgColorPicker?.addEventListener("change", () => saveSettings())
+    DOM.pixelBlastBgColorPicker?.addEventListener("change", () =>
+      saveSettings(),
+    )
   }
 
   if (DOM.pixelBlastLiquidCheckbox) {
@@ -787,7 +805,9 @@ DOM.crtGammaInput?.addEventListener("input", () => {
         effectInstances.pixelBlastEffect.setOptions({ liquidStrength })
       }
     })
-    DOM.pixelBlastLiquidStrengthSlider?.addEventListener("change", () => saveSettings())
+    DOM.pixelBlastLiquidStrengthSlider?.addEventListener("change", () =>
+      saveSettings(),
+    )
   }
 
   if (DOM.pixelBlastCursorRadiusSlider) {
@@ -801,7 +821,9 @@ DOM.crtGammaInput?.addEventListener("input", () => {
         effectInstances.pixelBlastEffect.setOptions({ cursorRadius })
       }
     })
-    DOM.pixelBlastCursorRadiusSlider?.addEventListener("change", () => saveSettings())
+    DOM.pixelBlastCursorRadiusSlider?.addEventListener("change", () =>
+      saveSettings(),
+    )
   }
 
   if (DOM.pixelBlastRippleCheckbox) {
@@ -840,7 +862,8 @@ DOM.crtGammaInput?.addEventListener("input", () => {
 
   DOM.auroraWaveSpeedSlider?.addEventListener("input", (e) => {
     const val = parseFloat(e.target.value)
-    if (DOM.auroraWaveSpeedVal) DOM.auroraWaveSpeedVal.textContent = val.toFixed(1)
+    if (DOM.auroraWaveSpeedVal)
+      DOM.auroraWaveSpeedVal.textContent = val.toFixed(1)
     updateSetting("auroraWaveSpeed", val)
     if (effectInstances.auroraWaveEffect) {
       effectInstances.auroraWaveEffect.setOptions({ speed: val })
@@ -870,7 +893,9 @@ DOM.crtGammaInput?.addEventListener("input", () => {
         : "block"
     }
     if (effectInstances.auroraWaveEffect) {
-      effectInstances.auroraWaveEffect.setOptions({ transparent: isTransparent })
+      effectInstances.auroraWaveEffect.setOptions({
+        transparent: isTransparent,
+      })
     }
   })
 
@@ -898,7 +923,10 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
     saveSettings()
     if (effectInstances.neonGridEffect) {
-      effectInstances.neonGridEffect.updateColor('grid', DOM.synthwaveGridColorPicker.value)
+      effectInstances.neonGridEffect.updateColor(
+        "grid",
+        DOM.synthwaveGridColorPicker.value,
+      )
     }
   })
 
@@ -906,7 +934,10 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("synthwaveSunColor", DOM.synthwaveSunColorPicker.value)
     saveSettings()
     if (effectInstances.neonGridEffect) {
-      effectInstances.neonGridEffect.updateColor('sun', DOM.synthwaveSunColorPicker.value)
+      effectInstances.neonGridEffect.updateColor(
+        "sun",
+        DOM.synthwaveSunColorPicker.value,
+      )
     }
   })
 
@@ -923,7 +954,10 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("frostedOrbsColor1", DOM.frostedOrbsColor1Picker.value)
     saveSettings()
     if (effectInstances.frostedGlassOrbsEffect) {
-      effectInstances.frostedGlassOrbsEffect.updateColor('color1', DOM.frostedOrbsColor1Picker.value)
+      effectInstances.frostedGlassOrbsEffect.updateColor(
+        "color1",
+        DOM.frostedOrbsColor1Picker.value,
+      )
     }
   })
 
@@ -931,7 +965,10 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("frostedOrbsColor2", DOM.frostedOrbsColor2Picker.value)
     saveSettings()
     if (effectInstances.frostedGlassOrbsEffect) {
-      effectInstances.frostedGlassOrbsEffect.updateColor('color2', DOM.frostedOrbsColor2Picker.value)
+      effectInstances.frostedGlassOrbsEffect.updateColor(
+        "color2",
+        DOM.frostedOrbsColor2Picker.value,
+      )
     }
   })
 
@@ -939,15 +976,23 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("frostedOrbsDarkBg", DOM.frostedOrbsDarkBgCheckbox.checked)
     saveSettings()
     if (effectInstances.frostedGlassOrbsEffect) {
-      effectInstances.frostedGlassOrbsEffect.setOptions({ darkBackground: DOM.frostedOrbsDarkBgCheckbox.checked })
+      effectInstances.frostedGlassOrbsEffect.setOptions({
+        darkBackground: DOM.frostedOrbsDarkBgCheckbox.checked,
+      })
     }
   })
 
   DOM.blackHoleAccretionColorPicker?.addEventListener("change", () => {
-    updateSetting("blackHoleAccretionColor", DOM.blackHoleAccretionColorPicker.value)
+    updateSetting(
+      "blackHoleAccretionColor",
+      DOM.blackHoleAccretionColorPicker.value,
+    )
     saveSettings()
     if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor('accretion', DOM.blackHoleAccretionColorPicker.value)
+      effectInstances.blackHoleEffect.updateColor(
+        "accretion",
+        DOM.blackHoleAccretionColorPicker.value,
+      )
     }
   })
 
@@ -955,23 +1000,38 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
     saveSettings()
     if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor('star', DOM.blackHoleStarColorPicker.value)
+      effectInstances.blackHoleEffect.updateColor(
+        "star",
+        DOM.blackHoleStarColorPicker.value,
+      )
     }
   })
 
   DOM.interactiveFluidColor1Picker?.addEventListener("change", () => {
-    updateSetting("interactiveFluidColor1", DOM.interactiveFluidColor1Picker.value)
+    updateSetting(
+      "interactiveFluidColor1",
+      DOM.interactiveFluidColor1Picker.value,
+    )
     saveSettings()
     if (effectInstances.interactiveFluidEffect) {
-      effectInstances.interactiveFluidEffect.updateColor('color1', DOM.interactiveFluidColor1Picker.value)
+      effectInstances.interactiveFluidEffect.updateColor(
+        "color1",
+        DOM.interactiveFluidColor1Picker.value,
+      )
     }
   })
 
   DOM.interactiveFluidColor2Picker?.addEventListener("change", () => {
-    updateSetting("interactiveFluidColor2", DOM.interactiveFluidColor2Picker.value)
+    updateSetting(
+      "interactiveFluidColor2",
+      DOM.interactiveFluidColor2Picker.value,
+    )
     saveSettings()
     if (effectInstances.interactiveFluidEffect) {
-      effectInstances.interactiveFluidEffect.updateColor('color2', DOM.interactiveFluidColor2Picker.value)
+      effectInstances.interactiveFluidEffect.updateColor(
+        "color2",
+        DOM.interactiveFluidColor2Picker.value,
+      )
     }
   })
 
@@ -979,7 +1039,10 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("cinematicBokehColor1", DOM.cinematicBokehColor1Picker.value)
     saveSettings()
     if (effectInstances.cinematicBokehEffect) {
-      effectInstances.cinematicBokehEffect.updateColor('color1', DOM.cinematicBokehColor1Picker.value)
+      effectInstances.cinematicBokehEffect.updateColor(
+        "color1",
+        DOM.cinematicBokehColor1Picker.value,
+      )
     }
   })
 
@@ -987,15 +1050,23 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     updateSetting("cinematicBokehColor2", DOM.cinematicBokehColor2Picker.value)
     saveSettings()
     if (effectInstances.cinematicBokehEffect) {
-      effectInstances.cinematicBokehEffect.updateColor('color2', DOM.cinematicBokehColor2Picker.value)
+      effectInstances.cinematicBokehEffect.updateColor(
+        "color2",
+        DOM.cinematicBokehColor2Picker.value,
+      )
     }
   })
 
   DOM.cinematicBokehDarkBgCheckbox?.addEventListener("change", () => {
-    updateSetting("cinematicBokehDarkBg", DOM.cinematicBokehDarkBgCheckbox.checked)
+    updateSetting(
+      "cinematicBokehDarkBg",
+      DOM.cinematicBokehDarkBgCheckbox.checked,
+    )
     saveSettings()
     if (effectInstances.cinematicBokehEffect) {
-      effectInstances.cinematicBokehEffect.updateDarkBackground(DOM.cinematicBokehDarkBgCheckbox.checked)
+      effectInstances.cinematicBokehEffect.updateDarkBackground(
+        DOM.cinematicBokehDarkBgCheckbox.checked,
+      )
     }
   })
 }

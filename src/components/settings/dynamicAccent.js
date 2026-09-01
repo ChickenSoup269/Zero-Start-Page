@@ -339,11 +339,10 @@ export async function pickAccentFromCurrentBackground(options = {}) {
 
       if (/^data:image\/svg\+xml/i.test(trimmed) && cssSeed) return cssSeed
     }
-    const explicitSeed =
-      !isMedia
-        ? getGeneratedBackgroundSeedColor(settings) ||
-          getGradientSeedColor(settings)
-        : null
+    const explicitSeed = !isMedia
+      ? getGeneratedBackgroundSeedColor(settings) ||
+        getGradientSeedColor(settings)
+      : null
     if (explicitSeed) return explicitSeed
   } catch (e) {
     // ignore and continue to sampling

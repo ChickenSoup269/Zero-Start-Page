@@ -656,10 +656,16 @@ export class FullCalendar {
         const currentUrl = normalizeGoogleCalendarUrl(
           getSettings().googleCalendarIcsUrl,
         )
-        if (cached && cached.url === currentUrl && Array.isArray(cached.events)) {
+        if (
+          cached &&
+          cached.url === currentUrl &&
+          Array.isArray(cached.events)
+        ) {
           this.googleEvents = cached.events
           this.googleCalendarLoadedUrl = cached.url
-          this.lastSyncTime = cached.timestamp ? new Date(cached.timestamp) : null
+          this.lastSyncTime = cached.timestamp
+            ? new Date(cached.timestamp)
+            : null
           if (this.lastSyncTime) {
             const timeStr = formatTimeStr(this.lastSyncTime)
             const i18n = geti18n()
@@ -842,9 +848,19 @@ export class FullCalendar {
 
     this.container.addEventListener("mousemove", (e) => {
       if (this.currentEventPreview) {
-        this.positionContextMenu(this.currentEventPreview, e.clientX, e.clientY, "left")
+        this.positionContextMenu(
+          this.currentEventPreview,
+          e.clientX,
+          e.clientY,
+          "left",
+        )
       } else if (this.currentHolidayPreview) {
-        this.positionContextMenu(this.currentHolidayPreview, e.clientX, e.clientY, "right")
+        this.positionContextMenu(
+          this.currentHolidayPreview,
+          e.clientX,
+          e.clientY,
+          "right",
+        )
       }
     })
 
@@ -958,7 +974,10 @@ export class FullCalendar {
           }
         }
       } catch (directErr) {
-        console.warn("Direct iCal fetch failed, attempting proxy fallback...", directErr)
+        console.warn(
+          "Direct iCal fetch failed, attempting proxy fallback...",
+          directErr,
+        )
       }
 
       // 2. Fallback via CORS proxy if direct fetch is blocked
@@ -986,8 +1005,7 @@ export class FullCalendar {
       this.saveCachedGoogleEvents(this.googleEvents, url)
 
       const timeStr = formatTimeStr(new Date())
-      const loadedMsg =
-        i18n.calendar_google_loaded || "Loaded {count} events."
+      const loadedMsg = i18n.calendar_google_loaded || "Loaded {count} events."
       this.googleCalendarStatus = `${loadedMsg.replace("{count}", this.googleEvents.length)} (${timeStr})`
     } catch (error) {
       console.warn("Failed to load calendar", error)
@@ -1001,7 +1019,9 @@ export class FullCalendar {
   }
 
   selectDay(dayElement) {
-    const dayNumber = dayElement.dataset.day || dayElement.querySelector(".day-number")?.textContent
+    const dayNumber =
+      dayElement.dataset.day ||
+      dayElement.querySelector(".day-number")?.textContent
     if (!dayNumber) return
 
     const day = parseInt(dayNumber, 10)
@@ -1027,7 +1047,11 @@ export class FullCalendar {
     menu.className = "calendar-context-menu calendar-day-menu"
     menu.addEventListener("click", (e) => e.stopPropagation())
 
-    const dateObj = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth(), day)
+    const dateObj = new Date(
+      this.viewDate.getFullYear(),
+      this.viewDate.getMonth(),
+      day,
+    )
     const formattedHeader = dateObj.toLocaleDateString(undefined, {
       weekday: "short",
       day: "numeric",
@@ -1065,14 +1089,17 @@ export class FullCalendar {
 
       events.forEach((event) => {
         const eventItem = document.createElement("div")
-        eventItem.className = "context-menu-item event-item calendar-day-event-card"
-        
+        eventItem.className =
+          "context-menu-item event-item calendar-day-event-card"
+
         let meetingBadge = ""
         if (event.meetingUrl) {
           meetingBadge = `<span class="calendar-meeting-icon-pill" title="${escapeHtml(event.meetingLabel || "Meeting")}"><i class="${event.meetingIcon || "fa-solid fa-video"}"></i></span>`
         }
 
-        const timeLabel = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+        const timeLabel =
+          event.timeRange ||
+          (event.allDay ? i18n.calendar_all_day || "Cả ngày" : event.time || "")
 
         eventItem.innerHTML = `
           <div class="calendar-day-event-left">
@@ -1117,7 +1144,9 @@ export class FullCalendar {
     menu.className = "calendar-context-menu calendar-google-event-modal"
     menu.addEventListener("click", (e) => e.stopPropagation())
 
-    const timeLabel = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+    const timeLabel =
+      event.timeRange ||
+      (event.allDay ? i18n.calendar_all_day || "Cả ngày" : event.time || "")
 
     let html = `
       <div class="calendar-modal-header">
@@ -1187,9 +1216,11 @@ export class FullCalendar {
     `
 
     menu.innerHTML = html
-    menu.querySelectorAll(".calendar-modal-close, .calendar-modal-close-btn").forEach((btn) => {
-      btn.addEventListener("click", () => this.hideContextMenu())
-    })
+    menu
+      .querySelectorAll(".calendar-modal-close, .calendar-modal-close-btn")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => this.hideContextMenu())
+      })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
@@ -1258,7 +1289,7 @@ export class FullCalendar {
     menu.innerHTML = `
       <div class="calendar-form-title">
         <i class="${isEdit ? "fa-solid fa-pen" : "fa-solid fa-calendar-plus"}"></i>
-        <span>${isEdit ? (i18n.calendar_edit_event || "Edit Event") : (i18n.calendar_new_event || "New Event")}</span>
+        <span>${isEdit ? i18n.calendar_edit_event || "Edit Event" : i18n.calendar_new_event || "New Event"}</span>
       </div>
       <div class="calendar-form-body">
         <label class="calendar-form-label">
@@ -1282,7 +1313,7 @@ export class FullCalendar {
       </div>
       <div class="calendar-form-actions">
         <button type="button" class="calendar-form-btn calendar-event-cancel">${i18n.settings_cancel || "Cancel"}</button>
-        <button type="button" class="calendar-form-btn primary calendar-event-save">${isEdit ? (i18n.settings_save || "Save") : (i18n.calendar_add_event || "Add")}</button>
+        <button type="button" class="calendar-form-btn primary calendar-event-save">${isEdit ? i18n.settings_save || "Save" : i18n.calendar_add_event || "Add"}</button>
       </div>
     `
 
@@ -1291,40 +1322,44 @@ export class FullCalendar {
     const timeInput = menu.querySelector(".calendar-event-time-input")
     const descInput = menu.querySelector(".calendar-event-desc-input")
 
-    menu.querySelector(".calendar-event-save")?.addEventListener("click", () => {
-      const title = titleInput.value.trim()
-      const date = dateInput.value
-      const time = timeInput.value
-      const description = descInput.value.trim()
+    menu
+      .querySelector(".calendar-event-save")
+      ?.addEventListener("click", () => {
+        const title = titleInput.value.trim()
+        const date = dateInput.value
+        const time = timeInput.value
+        const description = descInput.value.trim()
 
-      if (!title) {
-        titleInput.focus()
-        return
-      }
+        if (!title) {
+          titleInput.focus()
+          return
+        }
 
-      if (isEdit) {
-        updateCalendarEvent(event.id, {
-          title,
-          date,
-          time,
-          description,
-        })
-      } else {
-        addCalendarEvent({
-          title,
-          date,
-          time,
-          description,
-        })
-      }
+        if (isEdit) {
+          updateCalendarEvent(event.id, {
+            title,
+            date,
+            time,
+            description,
+          })
+        } else {
+          addCalendarEvent({
+            title,
+            date,
+            time,
+            description,
+          })
+        }
 
-      this.render()
-      this.hideContextMenu()
-    })
+        this.render()
+        this.hideContextMenu()
+      })
 
-    menu.querySelector(".calendar-event-cancel")?.addEventListener("click", () => {
-      this.hideContextMenu()
-    })
+    menu
+      .querySelector(".calendar-event-cancel")
+      ?.addEventListener("click", () => {
+        this.hideContextMenu()
+      })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
@@ -1351,7 +1386,9 @@ export class FullCalendar {
     const meta = document.createElement("div")
     meta.className = "calendar-event-preview-meta"
 
-    const timeText = event.timeRange || (event.allDay ? (i18n.calendar_all_day || "Cả ngày") : event.time || "")
+    const timeText =
+      event.timeRange ||
+      (event.allDay ? i18n.calendar_all_day || "Cả ngày" : event.time || "")
     const metaParts = [event.date, timeText, event.location].filter(Boolean)
     meta.textContent = metaParts.join(" • ")
     preview.appendChild(meta)
@@ -1678,7 +1715,9 @@ export class FullCalendar {
       const pYear = prevDate.getFullYear()
       const pMonth = prevDate.getMonth()
       const dateStr = `${pYear}-${String(pMonth + 1).padStart(2, "0")}-${String(prevDay).padStart(2, "0")}`
-      const lunarDate = this.showLunar ? getLunarDateString(prevDay, pMonth + 1, pYear) : ""
+      const lunarDate = this.showLunar
+        ? getLunarDateString(prevDay, pMonth + 1, pYear)
+        : ""
       const dayOfWeek = prevDate.getDay()
 
       const dayDiv = document.createElement("div")
@@ -1692,7 +1731,10 @@ export class FullCalendar {
       dayHeader.className = "day-info-header"
       const dayNumber = document.createElement("div")
       dayNumber.className = "day-number"
-      dayNumber.textContent = this.calendarDateMode === "lunar" ? (lunarDate || String(prevDay)) : prevDay
+      dayNumber.textContent =
+        this.calendarDateMode === "lunar"
+          ? lunarDate || String(prevDay)
+          : prevDay
       dayHeader.appendChild(dayNumber)
 
       if (this.calendarDateMode === "both" && lunarDate) {
@@ -1795,8 +1837,12 @@ export class FullCalendar {
           }
           eventEl.dataset.eventId = event.id
 
-          const timePrefix = event.time ? `<span class="event-time-tag">${escapeHtml(event.time)}</span>` : ""
-          const meetingDot = event.meetingUrl ? `<i class="fa-solid fa-video event-meeting-icon"></i>` : ""
+          const timePrefix = event.time
+            ? `<span class="event-time-tag">${escapeHtml(event.time)}</span>`
+            : ""
+          const meetingDot = event.meetingUrl
+            ? `<i class="fa-solid fa-video event-meeting-icon"></i>`
+            : ""
 
           eventEl.innerHTML = `
             <span class="event-dot"></span>
@@ -1829,7 +1875,9 @@ export class FullCalendar {
       const nYear = nextDate.getFullYear()
       const nMonth = nextDate.getMonth()
       const dateStr = `${nYear}-${String(nMonth + 1).padStart(2, "0")}-${String(nextDay).padStart(2, "0")}`
-      const lunarDate = this.showLunar ? getLunarDateString(nextDay, nMonth + 1, nYear) : ""
+      const lunarDate = this.showLunar
+        ? getLunarDateString(nextDay, nMonth + 1, nYear)
+        : ""
       const dayOfWeek = nextDate.getDay()
 
       const dayDiv = document.createElement("div")
@@ -1843,7 +1891,10 @@ export class FullCalendar {
       dayHeader.className = "day-info-header"
       const dayNumber = document.createElement("div")
       dayNumber.className = "day-number"
-      dayNumber.textContent = this.calendarDateMode === "lunar" ? (lunarDate || String(nextDay)) : nextDay
+      dayNumber.textContent =
+        this.calendarDateMode === "lunar"
+          ? lunarDate || String(nextDay)
+          : nextDay
       dayHeader.appendChild(dayNumber)
 
       if (this.calendarDateMode === "both" && lunarDate) {

@@ -76,9 +76,9 @@ export function createEffectFactories(settings) {
     matrixRainEffect: () =>
       new MatrixRain("effect-canvas", settings.matrixColor),
     auraEffect: () => new AuraEffect("effect-canvas", settings.auraColor),
-    windEffect: () => new WindEffect("effect-canvas", settings.windMode || "2d"),
-    hackerEffect: () =>
-      new HackerEffect("effect-canvas", settings.hackerColor),
+    windEffect: () =>
+      new WindEffect("effect-canvas", settings.windMode || "2d"),
+    hackerEffect: () => new HackerEffect("effect-canvas", settings.hackerColor),
     pixelCubesEffect: () =>
       new PixelCubes(
         "effect-canvas",
@@ -90,33 +90,33 @@ export function createEffectFactories(settings) {
         "effect-canvas",
         settings.synthwaveGridColor || "#ff007f",
         settings.synthwaveSunColor || "#ffbe0b",
-        settings.synthwaveFullScreen === true
+        settings.synthwaveFullScreen === true,
       ),
     frostedGlassOrbsEffect: () =>
       new FrostedGlassOrbsBackground(
         "effect-canvas",
         settings.frostedOrbsColor1 || "#00f2fe",
         settings.frostedOrbsColor2 || "#4facfe",
-        settings.frostedOrbsDarkBg !== false // default true
+        settings.frostedOrbsDarkBg !== false, // default true
       ),
     blackHoleEffect: () =>
       new BlackHoleBackground(
         "effect-canvas",
         settings.blackHoleAccretionColor || "#ff5500",
-        settings.blackHoleStarColor || "#ffffff"
+        settings.blackHoleStarColor || "#ffffff",
       ),
     interactiveFluidEffect: () =>
       new InteractiveFluidBackground(
         "effect-canvas",
         settings.interactiveFluidColor1 || "#00f2fe",
-        settings.interactiveFluidColor2 || "#ff007f"
+        settings.interactiveFluidColor2 || "#ff007f",
       ),
     cinematicBokehEffect: () =>
       new CinematicBokehBackground(
         "effect-canvas",
         settings.cinematicBokehColor1 || "#ff9a9e",
         settings.cinematicBokehColor2 || "#fecfef",
-        settings.cinematicBokehDarkBg ?? false
+        settings.cinematicBokehDarkBg ?? false,
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),
@@ -155,11 +155,20 @@ export function createEffectFactories(settings) {
     rainHDEffect: () =>
       new RainHDEffect("effect-canvas", settings.rainHDColor || "#99ccff"),
     musicBarsEffect: () =>
-      new MusicBarsEffect("effect-canvas", settings.musicBarsColor || "#8be9fd"),
+      new MusicBarsEffect(
+        "effect-canvas",
+        settings.musicBarsColor || "#8be9fd",
+      ),
     rainbowEffect: () =>
-      new RainbowBackground("effect-canvas", settings.rainbowDirection || "left"),
+      new RainbowBackground(
+        "effect-canvas",
+        settings.rainbowDirection || "left",
+      ),
     wavyLinesEffect: () =>
-      new WavyLinesEffect("effect-canvas", settings.wavyLinesColor || "#00bcd4"),
+      new WavyLinesEffect(
+        "effect-canvas",
+        settings.wavyLinesColor || "#00bcd4",
+      ),
     oceanWaveEffect: () =>
       new OceanWaveEffect(
         "effect-canvas",
@@ -198,7 +207,7 @@ export function createEffectFactories(settings) {
       new LineShinyEffect(
         "effect-canvas",
         settings.lineShinyColor || "#ffffff",
-        settings.lineShinyMode || "default"
+        settings.lineShinyMode || "default",
       ),
     tetFireworksEffect: () => new TetFireworksEffect("effect-canvas", {}),
     reunificationDayEffect: () =>
@@ -241,7 +250,10 @@ export function createEffectFactories(settings) {
         settings.plantGrowthColor || "#4caf50",
       ),
     oceanFishEffect: () =>
-      new OceanFishEffect("effect-canvas", settings.oceanFishColor || "#ff7f50"),
+      new OceanFishEffect(
+        "effect-canvas",
+        settings.oceanFishColor || "#ff7f50",
+      ),
     floatingLinesEffect: () =>
       new FloatingLinesEffect(
         "effect-canvas",

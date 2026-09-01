@@ -73,50 +73,266 @@ const BOOKMARK_ICON_OPTIONS = [
 
 const BOOKMARK_FOLDER_ICON_OPTIONS = [
   // General & Essentials
-  { key: "auto", icon: "fa-solid fa-border-all", label: "Auto (Grid)", value: "", category: "all" },
-  { key: "folder", icon: "fa-solid fa-folder", label: "Folder", value: "fa:fa-solid fa-folder", category: "all" },
-  { key: "folder-open", icon: "fa-solid fa-folder-open", label: "Open Folder", value: "fa:fa-solid fa-folder-open", category: "all" },
-  { key: "layer", icon: "fa-solid fa-layer-group", label: "Stack", value: "fa:fa-solid fa-layer-group", category: "all" },
-  { key: "bookmark", icon: "fa-solid fa-bookmark", label: "Bookmark", value: "fa:fa-solid fa-bookmark", category: "all" },
-  { key: "star", icon: "fa-solid fa-star", label: "Star", value: "fa:fa-solid fa-star", category: "all" },
-  { key: "heart", icon: "fa-solid fa-heart", label: "Favorite", value: "fa:fa-solid fa-heart", category: "all" },
-  { key: "sparkles", icon: "fa-solid fa-wand-magic-sparkles", label: "Sparkles", value: "fa:fa-solid fa-wand-magic-sparkles", category: "all" },
-  { key: "fire", icon: "fa-solid fa-fire", label: "Trending", value: "fa:fa-solid fa-fire", category: "all" },
-  { key: "rocket", icon: "fa-solid fa-rocket", label: "Rocket", value: "fa:fa-solid fa-rocket", category: "all" },
-  
+  {
+    key: "auto",
+    icon: "fa-solid fa-border-all",
+    label: "Auto (Grid)",
+    value: "",
+    category: "all",
+  },
+  {
+    key: "folder",
+    icon: "fa-solid fa-folder",
+    label: "Folder",
+    value: "fa:fa-solid fa-folder",
+    category: "all",
+  },
+  {
+    key: "folder-open",
+    icon: "fa-solid fa-folder-open",
+    label: "Open Folder",
+    value: "fa:fa-solid fa-folder-open",
+    category: "all",
+  },
+  {
+    key: "layer",
+    icon: "fa-solid fa-layer-group",
+    label: "Stack",
+    value: "fa:fa-solid fa-layer-group",
+    category: "all",
+  },
+  {
+    key: "bookmark",
+    icon: "fa-solid fa-bookmark",
+    label: "Bookmark",
+    value: "fa:fa-solid fa-bookmark",
+    category: "all",
+  },
+  {
+    key: "star",
+    icon: "fa-solid fa-star",
+    label: "Star",
+    value: "fa:fa-solid fa-star",
+    category: "all",
+  },
+  {
+    key: "heart",
+    icon: "fa-solid fa-heart",
+    label: "Favorite",
+    value: "fa:fa-solid fa-heart",
+    category: "all",
+  },
+  {
+    key: "sparkles",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    label: "Sparkles",
+    value: "fa:fa-solid fa-wand-magic-sparkles",
+    category: "all",
+  },
+  {
+    key: "fire",
+    icon: "fa-solid fa-fire",
+    label: "Trending",
+    value: "fa:fa-solid fa-fire",
+    category: "all",
+  },
+  {
+    key: "rocket",
+    icon: "fa-solid fa-rocket",
+    label: "Rocket",
+    value: "fa:fa-solid fa-rocket",
+    category: "all",
+  },
+
   // Work & Productivity
-  { key: "briefcase", icon: "fa-solid fa-briefcase", label: "Work", value: "fa:fa-solid fa-briefcase", category: "work" },
-  { key: "chart", icon: "fa-solid fa-chart-line", label: "Analytics", value: "fa:fa-solid fa-chart-line", category: "work" },
-  { key: "calendar", icon: "fa-solid fa-calendar-days", label: "Calendar", value: "fa:fa-solid fa-calendar-days", category: "work" },
-  { key: "envelope", icon: "fa-solid fa-envelope", label: "Mail", value: "fa:fa-solid fa-envelope", category: "work" },
-  { key: "cloud", icon: "fa-solid fa-cloud", label: "Cloud", value: "fa:fa-solid fa-cloud", category: "work" },
-  { key: "file", icon: "fa-solid fa-file-lines", label: "Docs", value: "fa:fa-solid fa-file-lines", category: "work" },
+  {
+    key: "briefcase",
+    icon: "fa-solid fa-briefcase",
+    label: "Work",
+    value: "fa:fa-solid fa-briefcase",
+    category: "work",
+  },
+  {
+    key: "chart",
+    icon: "fa-solid fa-chart-line",
+    label: "Analytics",
+    value: "fa:fa-solid fa-chart-line",
+    category: "work",
+  },
+  {
+    key: "calendar",
+    icon: "fa-solid fa-calendar-days",
+    label: "Calendar",
+    value: "fa:fa-solid fa-calendar-days",
+    category: "work",
+  },
+  {
+    key: "envelope",
+    icon: "fa-solid fa-envelope",
+    label: "Mail",
+    value: "fa:fa-solid fa-envelope",
+    category: "work",
+  },
+  {
+    key: "cloud",
+    icon: "fa-solid fa-cloud",
+    label: "Cloud",
+    value: "fa:fa-solid fa-cloud",
+    category: "work",
+  },
+  {
+    key: "file",
+    icon: "fa-solid fa-file-lines",
+    label: "Docs",
+    value: "fa:fa-solid fa-file-lines",
+    category: "work",
+  },
 
   // Dev & Tech
-  { key: "code", icon: "fa-solid fa-code", label: "Code", value: "fa:fa-solid fa-code", category: "dev" },
-  { key: "terminal", icon: "fa-solid fa-terminal", label: "Terminal", value: "fa:fa-solid fa-terminal", category: "dev" },
-  { key: "robot", icon: "fa-solid fa-robot", label: "AI & Bot", value: "fa:fa-solid fa-robot", category: "dev" },
-  { key: "database", icon: "fa-solid fa-database", label: "Database", value: "fa:fa-solid fa-database", category: "dev" },
-  { key: "gear", icon: "fa-solid fa-gear", label: "Settings", value: "fa:fa-solid fa-gear", category: "dev" },
-  { key: "shield", icon: "fa-solid fa-shield-halved", label: "Security", value: "fa:fa-solid fa-shield-halved", category: "dev" },
-  { key: "bug", icon: "fa-solid fa-bug", label: "Debug", value: "fa:fa-solid fa-bug", category: "dev" },
+  {
+    key: "code",
+    icon: "fa-solid fa-code",
+    label: "Code",
+    value: "fa:fa-solid fa-code",
+    category: "dev",
+  },
+  {
+    key: "terminal",
+    icon: "fa-solid fa-terminal",
+    label: "Terminal",
+    value: "fa:fa-solid fa-terminal",
+    category: "dev",
+  },
+  {
+    key: "robot",
+    icon: "fa-solid fa-robot",
+    label: "AI & Bot",
+    value: "fa:fa-solid fa-robot",
+    category: "dev",
+  },
+  {
+    key: "database",
+    icon: "fa-solid fa-database",
+    label: "Database",
+    value: "fa:fa-solid fa-database",
+    category: "dev",
+  },
+  {
+    key: "gear",
+    icon: "fa-solid fa-gear",
+    label: "Settings",
+    value: "fa:fa-solid fa-gear",
+    category: "dev",
+  },
+  {
+    key: "shield",
+    icon: "fa-solid fa-shield-halved",
+    label: "Security",
+    value: "fa:fa-solid fa-shield-halved",
+    category: "dev",
+  },
+  {
+    key: "bug",
+    icon: "fa-solid fa-bug",
+    label: "Debug",
+    value: "fa:fa-solid fa-bug",
+    category: "dev",
+  },
 
   // Media & Design
-  { key: "image", icon: "fa-solid fa-image", label: "Photos", value: "fa:fa-solid fa-image", category: "media" },
-  { key: "camera", icon: "fa-solid fa-camera", label: "Camera", value: "fa:fa-solid fa-camera", category: "media" },
-  { key: "music", icon: "fa-solid fa-music", label: "Music", value: "fa:fa-solid fa-music", category: "media" },
-  { key: "video", icon: "fa-solid fa-film", label: "Video", value: "fa:fa-solid fa-film", category: "media" },
-  { key: "palette", icon: "fa-solid fa-palette", label: "Design", value: "fa:fa-solid fa-palette", category: "media" },
-  { key: "headphones", icon: "fa-solid fa-headphones", label: "Audio", value: "fa:fa-solid fa-headphones", category: "media" },
+  {
+    key: "image",
+    icon: "fa-solid fa-image",
+    label: "Photos",
+    value: "fa:fa-solid fa-image",
+    category: "media",
+  },
+  {
+    key: "camera",
+    icon: "fa-solid fa-camera",
+    label: "Camera",
+    value: "fa:fa-solid fa-camera",
+    category: "media",
+  },
+  {
+    key: "music",
+    icon: "fa-solid fa-music",
+    label: "Music",
+    value: "fa:fa-solid fa-music",
+    category: "media",
+  },
+  {
+    key: "video",
+    icon: "fa-solid fa-film",
+    label: "Video",
+    value: "fa:fa-solid fa-film",
+    category: "media",
+  },
+  {
+    key: "palette",
+    icon: "fa-solid fa-palette",
+    label: "Design",
+    value: "fa:fa-solid fa-palette",
+    category: "media",
+  },
+  {
+    key: "headphones",
+    icon: "fa-solid fa-headphones",
+    label: "Audio",
+    value: "fa:fa-solid fa-headphones",
+    category: "media",
+  },
 
   // Life, Study & Fun
-  { key: "book", icon: "fa-solid fa-book", label: "Study", value: "fa:fa-solid fa-book", category: "fun" },
-  { key: "graduation", icon: "fa-solid fa-graduation-cap", label: "Education", value: "fa:fa-solid fa-graduation-cap", category: "fun" },
-  { key: "gamepad", icon: "fa-solid fa-gamepad", label: "Gaming", value: "fa:fa-solid fa-gamepad", category: "fun" },
-  { key: "cart", icon: "fa-solid fa-cart-shopping", label: "Shopping", value: "fa:fa-solid fa-cart-shopping", category: "fun" },
-  { key: "globe", icon: "fa-solid fa-globe", label: "Web", value: "fa:fa-solid fa-globe", category: "fun" },
-  { key: "compass", icon: "fa-solid fa-compass", label: "Explore", value: "fa:fa-solid fa-compass", category: "fun" },
-  { key: "coffee", icon: "fa-solid fa-mug-hot", label: "Coffee", value: "fa:fa-solid fa-mug-hot", category: "fun" },
+  {
+    key: "book",
+    icon: "fa-solid fa-book",
+    label: "Study",
+    value: "fa:fa-solid fa-book",
+    category: "fun",
+  },
+  {
+    key: "graduation",
+    icon: "fa-solid fa-graduation-cap",
+    label: "Education",
+    value: "fa:fa-solid fa-graduation-cap",
+    category: "fun",
+  },
+  {
+    key: "gamepad",
+    icon: "fa-solid fa-gamepad",
+    label: "Gaming",
+    value: "fa:fa-solid fa-gamepad",
+    category: "fun",
+  },
+  {
+    key: "cart",
+    icon: "fa-solid fa-cart-shopping",
+    label: "Shopping",
+    value: "fa:fa-solid fa-cart-shopping",
+    category: "fun",
+  },
+  {
+    key: "globe",
+    icon: "fa-solid fa-globe",
+    label: "Web",
+    value: "fa:fa-solid fa-globe",
+    category: "fun",
+  },
+  {
+    key: "compass",
+    icon: "fa-solid fa-compass",
+    label: "Explore",
+    value: "fa:fa-solid fa-compass",
+    category: "fun",
+  },
+  {
+    key: "coffee",
+    icon: "fa-solid fa-mug-hot",
+    label: "Coffee",
+    value: "fa:fa-solid fa-mug-hot",
+    category: "fun",
+  },
 ]
 
 function getBookmarkHostname(url) {
@@ -156,7 +372,10 @@ function positionBookmarkEditPopover(popover, anchor) {
       // Try placing docked to the right of the stack popup:
       if (pr.right + width + margin <= window.innerWidth) {
         let top = pr.top
-        top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+        top = Math.min(
+          Math.max(top, margin),
+          window.innerHeight - height - margin,
+        )
         popover.style.left = `${Math.round(pr.right + 10)}px`
         popover.style.top = `${Math.round(top)}px`
         return
@@ -164,7 +383,10 @@ function positionBookmarkEditPopover(popover, anchor) {
       // If not enough room on right, try placing docked to the left of the stack popup:
       if (pr.left - width - margin >= 0) {
         let top = pr.top
-        top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+        top = Math.min(
+          Math.max(top, margin),
+          window.innerHeight - height - margin,
+        )
         popover.style.left = `${Math.round(pr.left - width - 10)}px`
         popover.style.top = `${Math.round(top)}px`
         return
@@ -326,11 +548,15 @@ export function openBookmarkEditPopover(
       img.alt = ""
       img.referrerPolicy = "no-referrer"
       img.addEventListener("error", () => {
-        iconPreview.textContent = (titleInput.value || "?").charAt(0).toUpperCase()
+        iconPreview.textContent = (titleInput.value || "?")
+          .charAt(0)
+          .toUpperCase()
       })
       iconPreview.appendChild(img)
     } else {
-      iconPreview.textContent = (titleInput.value || "?").charAt(0).toUpperCase()
+      iconPreview.textContent = (titleInput.value || "?")
+        .charAt(0)
+        .toUpperCase()
     }
   }
 
@@ -519,20 +745,28 @@ function createFolderIconEditor({
       iconPreview,
       iconColorReset ? "" : iconColorInput?.value || "",
     )
-    renderFolderIconPreview(iconPreview, iconInput?.value || icon || "", nameInput?.value || "?")
+    renderFolderIconPreview(
+      iconPreview,
+      iconInput?.value || icon || "",
+      nameInput?.value || "?",
+    )
   }
 
   const syncButtons = () => {
     if (!allowIconEdit || !iconGrid) return
     const current = (iconInput?.value || icon || "").trim()
     iconGrid.querySelectorAll("button").forEach((button) => {
-      button.classList.toggle("active", (button.dataset.value || "") === current)
+      button.classList.toggle(
+        "active",
+        (button.dataset.value || "") === current,
+      )
     })
   }
 
   if (allowIconEdit) {
     iconPreview = document.createElement("div")
-    iconPreview.className = "bookmark-edit-icon-preview bookmark-folder-icon-preview"
+    iconPreview.className =
+      "bookmark-edit-icon-preview bookmark-folder-icon-preview"
     popover.appendChild(iconPreview)
 
     let activeCategory = "all"
@@ -541,7 +775,9 @@ function createFolderIconEditor({
     const searchInput = document.createElement("input")
     searchInput.type = "text"
     searchInput.className = "bookmark-folder-icon-search"
-    searchInput.placeholder = i18n.bookmark_folder_search_icons || "Search icon (code, game, star, work)..."
+    searchInput.placeholder =
+      i18n.bookmark_folder_search_icons ||
+      "Search icon (code, game, star, work)..."
     popover.appendChild(searchInput)
 
     const categoryChips = document.createElement("div")
@@ -560,7 +796,9 @@ function createFolderIconEditor({
       chip.textContent = cat.label
       chip.addEventListener("click", () => {
         activeCategory = cat.id
-        categoryChips.querySelectorAll(".bookmark-folder-chip").forEach((c) => c.classList.remove("active"))
+        categoryChips
+          .querySelectorAll(".bookmark-folder-chip")
+          .forEach((c) => c.classList.remove("active"))
         chip.classList.add("active")
         renderIconGrid()
       })
@@ -576,8 +814,15 @@ function createFolderIconEditor({
       iconGrid.innerHTML = ""
       const q = searchQuery.toLowerCase().trim()
       const filtered = BOOKMARK_FOLDER_ICON_OPTIONS.filter((opt) => {
-        const matchesCat = activeCategory === "all" || opt.category === activeCategory || opt.category === "all"
-        const matchesQuery = !q || opt.label.toLowerCase().includes(q) || opt.icon.toLowerCase().includes(q) || opt.key.includes(q)
+        const matchesCat =
+          activeCategory === "all" ||
+          opt.category === activeCategory ||
+          opt.category === "all"
+        const matchesQuery =
+          !q ||
+          opt.label.toLowerCase().includes(q) ||
+          opt.icon.toLowerCase().includes(q) ||
+          opt.key.includes(q)
         return matchesCat && matchesQuery
       })
 
@@ -688,7 +933,7 @@ function createFolderIconEditor({
     }
     onSave({
       name: nextName,
-      icon: allowIconEdit ? (iconInput?.value || "").trim() : (icon || ""),
+      icon: allowIconEdit ? (iconInput?.value || "").trim() : icon || "",
       iconColor:
         showIconColor && (iconColorDirty || iconColor)
           ? iconColorReset
@@ -703,7 +948,7 @@ function createFolderIconEditor({
   const inputsToListen = [nameInput]
   if (allowIconEdit && iconInput) inputsToListen.push(iconInput)
   if (showIconColor && iconColorInput) inputsToListen.push(iconColorInput)
-  
+
   inputsToListen.filter(Boolean).forEach((input) => {
     input.addEventListener("input", () => {
       syncButtons()
@@ -733,7 +978,7 @@ function createFolderIconEditor({
   }
   setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
 
-  const focusTarget = focus === "icon" ? (iconInput || nameInput) : nameInput
+  const focusTarget = focus === "icon" ? iconInput || nameInput : nameInput
   focusTarget.focus()
   focusTarget.select?.()
 }
@@ -780,7 +1025,8 @@ export function openBookmarkStackEditPopover(
       if (typeof stackIndex === "number" && bookmarks[stackIndex]) {
         bookmarks[stackIndex].title = name
         bookmarks[stackIndex].icon = icon
-        if (iconColor !== undefined) bookmarks[stackIndex].iconColor = iconColor || ""
+        if (iconColor !== undefined)
+          bookmarks[stackIndex].iconColor = iconColor || ""
         setBookmarks(bookmarks)
       }
 
@@ -791,19 +1037,28 @@ export function openBookmarkStackEditPopover(
       if (popup) {
         const titleEl = popup.querySelector(".bookmark-stack-popup-title")
         if (titleEl) titleEl.textContent = name
-        const headerIcon = popup.querySelector(".bookmark-stack-popup-header-icon")
+        const headerIcon = popup.querySelector(
+          ".bookmark-stack-popup-header-icon",
+        )
         if (headerIcon) {
           if (iconColor) headerIcon.style.color = iconColor
           else headerIcon.style.removeProperty("color")
         }
       }
 
-      showBookmarkUndo(i18n.bookmark_group_renamed || "Folder updated", snapshot)
+      showBookmarkUndo(
+        i18n.bookmark_group_renamed || "Folder updated",
+        snapshot,
+      )
     },
   })
 }
 
-export function openBookmarkGroupEditPopover(groupId, anchor = null, options = {}) {
+export function openBookmarkGroupEditPopover(
+  groupId,
+  anchor = null,
+  options = {},
+) {
   const i18n = geti18n()
   const groups = getBookmarkGroups()
   const group = groups.find((item) => item.id === groupId)

@@ -191,13 +191,13 @@ export class LiquidEther {
 
   updateSettings(settings) {
     if (!settings) return
-    
+
     if (settings.colors && settings.colors.length >= 3) {
       this.colors = settings.colors.map(
         (hex) => this.hexToRgb(hex) || [255, 255, 255],
       )
     }
-    
+
     if (settings.glowWidth !== undefined) {
       // Chuyển đổi từ scale người dùng (ví dụ 1-10) sang scale shader (ví dụ 10-1)
       // Độ rộng lớn hơn trong UI = u_glowWidth nhỏ hơn trong shader
@@ -239,10 +239,10 @@ export class LiquidEther {
       // Tính toán tốc độ di chuyển chuột để tạo hiệu ứng "nhá khói"
       const dist = Math.sqrt(
         Math.pow(this.targetMouse.x - this.prevTargetMouse.x, 2) +
-        Math.pow(this.targetMouse.y - this.prevTargetMouse.y, 2)
+          Math.pow(this.targetMouse.y - this.prevTargetMouse.y, 2),
       )
-      
-      this.mouseActivity += dist * 15.0 
+
+      this.mouseActivity += dist * 15.0
       this.mouseActivity = Math.min(this.mouseActivity, 1.5)
       this.mouseActivity *= 0.94
 
@@ -285,12 +285,16 @@ export class LiquidEther {
       // Pause animation when tab is hidden to save GPU/CPU
       if (document.hidden) {
         this.animationId = null
-        document.addEventListener("visibilitychange", () => {
-          if (!document.hidden && this.active) {
-            lastTime = performance.now()
-            this.animationId = requestAnimationFrame(render)
-          }
-        }, { once: true })
+        document.addEventListener(
+          "visibilitychange",
+          () => {
+            if (!document.hidden && this.active) {
+              lastTime = performance.now()
+              this.animationId = requestAnimationFrame(render)
+            }
+          },
+          { once: true },
+        )
         return
       }
 

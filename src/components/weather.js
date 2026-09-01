@@ -19,7 +19,14 @@ const DEFAULT_FORECAST_ENDPOINT = "https://api.open-meteo.com/v1/forecast"
 const DEFAULT_GEOCODING_ENDPOINT =
   "https://geocoding-api.open-meteo.com/v1/search"
 const WEATHER_API_PARAM_KEYS = {
-  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  forecast: [
+    "latitude",
+    "longitude",
+    "current",
+    "daily",
+    "timezone",
+    "forecast_days",
+  ],
   geocoding: ["name", "count", "language", "format"],
 }
 
@@ -105,24 +112,30 @@ export class Weather {
   }
 
   setupEventListeners() {
-    this.container.querySelector("#weather-close-btn")?.addEventListener("click", () => {
-      updateSetting("showWeather", false)
-      saveSettings()
-      this.applySettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "showWeather", value: false },
-        }),
-      )
-    })
+    this.container
+      .querySelector("#weather-close-btn")
+      ?.addEventListener("click", () => {
+        updateSetting("showWeather", false)
+        saveSettings()
+        this.applySettings()
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showWeather", value: false },
+          }),
+        )
+      })
 
-    this.container.querySelector("#weather-refresh-btn")?.addEventListener("click", () => {
-      this.loadWeather({ force: true })
-    })
+    this.container
+      .querySelector("#weather-refresh-btn")
+      ?.addEventListener("click", () => {
+        this.loadWeather({ force: true })
+      })
 
-    this.container.querySelector("#weather-locate-btn")?.addEventListener("click", () => {
-      this.useCurrentLocation()
-    })
+    this.container
+      .querySelector("#weather-locate-btn")
+      ?.addEventListener("click", () => {
+        this.useCurrentLocation()
+      })
 
     const input = this.container.querySelector("#weather-location-input")
     const runSearch = () => {
@@ -130,7 +143,9 @@ export class Weather {
       this.searchLocation(input?.value.trim() || "")
     }
 
-    this.container.querySelector("#weather-search-btn")?.addEventListener("click", runSearch)
+    this.container
+      .querySelector("#weather-search-btn")
+      ?.addEventListener("click", runSearch)
 
     input?.addEventListener("input", () => {
       this.queueSuggestions(input.value.trim())
@@ -168,11 +183,13 @@ export class Weather {
       }
     })
 
-    this.container.querySelector("#weather-suggestions")?.addEventListener("click", (event) => {
-      const item = event.target.closest?.("[data-weather-suggestion]")
-      if (!item) return
-      this.chooseSuggestionItem(item, input)
-    })
+    this.container
+      .querySelector("#weather-suggestions")
+      ?.addEventListener("click", (event) => {
+        const item = event.target.closest?.("[data-weather-suggestion]")
+        if (!item) return
+        this.chooseSuggestionItem(item, input)
+      })
 
     window.addEventListener("layoutUpdated", (event) => {
       if (event.detail?.key === "showWeather") {
@@ -218,9 +235,18 @@ export class Weather {
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
     this.container.classList.toggle("skin-transparent", skin === "transparent")
-    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
-    this.container.classList.toggle("widget-border-hidden", settings.weatherHideBorder === true)
-    this.container.classList.toggle("weather-mini", settings.weatherMini === true)
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.weatherHideBorder === true,
+    )
+    this.container.classList.toggle(
+      "weather-mini",
+      settings.weatherMini === true,
+    )
     this.container.classList.toggle(
       "weather-expanded",
       settings.weatherExpanded === true && settings.weatherMini !== true,
@@ -250,9 +276,13 @@ export class Weather {
   getWeatherApiConfig(type = "forecast") {
     const settings = getSettings()
     const endpointKey =
-      type === "geocoding" ? "weatherGeocodingEndpoint" : "weatherForecastEndpoint"
+      type === "geocoding"
+        ? "weatherGeocodingEndpoint"
+        : "weatherForecastEndpoint"
     const defaultEndpoint =
-      type === "geocoding" ? DEFAULT_GEOCODING_ENDPOINT : DEFAULT_FORECAST_ENDPOINT
+      type === "geocoding"
+        ? DEFAULT_GEOCODING_ENDPOINT
+        : DEFAULT_FORECAST_ENDPOINT
 
     if (settings.weatherApiMode !== "custom") {
       return {
@@ -344,7 +374,9 @@ export class Weather {
     const now = Date.now()
     let timestamps = []
     try {
-      timestamps = JSON.parse(localStorage.getItem(WEATHER_REFRESH_LIMIT_KEY) || "[]")
+      timestamps = JSON.parse(
+        localStorage.getItem(WEATHER_REFRESH_LIMIT_KEY) || "[]",
+      )
     } catch {
       timestamps = []
     }
@@ -363,7 +395,10 @@ export class Weather {
         geti18n().weather_refresh_limited ||
         "Weather refresh limit reached. Try again in {minutes} min."
       this.renderMessage(message.replace("{minutes}", String(waitMinutes)))
-      localStorage.setItem(WEATHER_REFRESH_LIMIT_KEY, JSON.stringify(timestamps))
+      localStorage.setItem(
+        WEATHER_REFRESH_LIMIT_KEY,
+        JSON.stringify(timestamps),
+      )
       return false
     }
 
@@ -407,8 +442,10 @@ export class Weather {
       const params = new URLSearchParams({
         latitude: String(location.latitude),
         longitude: String(location.longitude),
-        current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
-        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        current:
+          "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+        daily:
+          "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         timezone: "auto",
         forecast_days: "8",
       })
@@ -461,7 +498,9 @@ export class Weather {
       )
       const first = data.results?.[0]
       if (!first) {
-        this.renderMessage(geti18n().weather_location_not_found || "Location not found.")
+        this.renderMessage(
+          geti18n().weather_location_not_found || "Location not found.",
+        )
         return
       }
       this.saveLocation({
@@ -474,7 +513,9 @@ export class Weather {
       this.loadWeather({ force: true, skipRefreshLimit: true })
     } catch (error) {
       console.warn("Weather location search failed:", error)
-      this.renderMessage(this.getFetchErrorMessage(error, "weather_location_error"))
+      this.renderMessage(
+        this.getFetchErrorMessage(error, "weather_location_error"),
+      )
     }
   }
 
@@ -523,7 +564,10 @@ export class Weather {
     if (!suggestions) return
 
     const validResults = results
-      .filter((item) => Number.isFinite(item.latitude) && Number.isFinite(item.longitude))
+      .filter(
+        (item) =>
+          Number.isFinite(item.latitude) && Number.isFinite(item.longitude),
+      )
       .slice(0, 5)
 
     if (!validResults.length) {
@@ -535,7 +579,9 @@ export class Weather {
       .map((item, index) => {
         const admin = item.admin1 ? `${item.admin1}, ` : ""
         const country = item.country || ""
-        const fullLabel = [item.name, admin.replace(/, $/, ""), country].filter(Boolean).join(", ")
+        const fullLabel = [item.name, admin.replace(/, $/, ""), country]
+          .filter(Boolean)
+          .join(", ")
         return `
           <button type="button" class="weather-suggestion-item" id="weather-suggestion-${index}" role="option" aria-selected="false" data-weather-suggestion="true"
             data-name="${this.escapeAttribute(item.name)}"
@@ -568,11 +614,17 @@ export class Weather {
 
   areSuggestionsVisible() {
     const suggestions = this.container?.querySelector("#weather-suggestions")
-    return Boolean(suggestions && suggestions.style.display !== "none" && suggestions.children.length)
+    return Boolean(
+      suggestions &&
+      suggestions.style.display !== "none" &&
+      suggestions.children.length,
+    )
   }
 
   getSuggestionItems() {
-    return Array.from(this.container?.querySelectorAll("[data-weather-suggestion]") || [])
+    return Array.from(
+      this.container?.querySelectorAll("[data-weather-suggestion]") || [],
+    )
   }
 
   moveActiveSuggestion(direction) {
@@ -620,7 +672,11 @@ export class Weather {
       latitude: Number(item.dataset.latitude),
       longitude: Number(item.dataset.longitude),
     }
-    if (!Number.isFinite(location.latitude) || !Number.isFinite(location.longitude)) return
+    if (
+      !Number.isFinite(location.latitude) ||
+      !Number.isFinite(location.longitude)
+    )
+      return
     this.saveLocation(location)
     if (input) input.value = ""
     this.clearSuggestions()
@@ -635,7 +691,10 @@ export class Weather {
 
   useCurrentLocation() {
     if (!navigator.geolocation) {
-      this.renderMessage(geti18n().weather_geolocation_unavailable || "Geolocation is not available.")
+      this.renderMessage(
+        geti18n().weather_geolocation_unavailable ||
+          "Geolocation is not available.",
+      )
       return
     }
 
@@ -651,7 +710,10 @@ export class Weather {
         this.loadWeather({ force: true, skipRefreshLimit: true })
       },
       () => {
-        this.renderMessage(geti18n().weather_location_denied || "Location permission was denied.")
+        this.renderMessage(
+          geti18n().weather_location_denied ||
+            "Location permission was denied.",
+        )
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 15 * 60 * 1000 },
     )
@@ -755,8 +817,11 @@ export class Weather {
 
   getCachedWeather(location, sourceKey) {
     try {
-      const cache = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || "null")
-      if (!cache || Date.now() - cache.fetchedAt > WEATHER_CACHE_TTL) return null
+      const cache = JSON.parse(
+        localStorage.getItem(WEATHER_CACHE_KEY) || "null",
+      )
+      if (!cache || Date.now() - cache.fetchedAt > WEATHER_CACHE_TTL)
+        return null
       if ((cache.data?.daily?.time?.length || 0) < 8) return null
       const sameLocation =
         Math.abs(cache.location.latitude - location.latitude) < 0.001 &&

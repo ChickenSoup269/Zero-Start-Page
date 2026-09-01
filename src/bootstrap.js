@@ -110,14 +110,24 @@ const hydrateSettingsPartialsWhenVisible = () => {
     }
     const settingsBtn = document.getElementById("settings-btn")
     if (settingsBtn) {
-      settingsBtn.addEventListener("mouseenter", triggerHydrateEarly, { once: true, passive: true })
-      settingsBtn.addEventListener("click", triggerHydrateEarly, { once: true, passive: true })
+      settingsBtn.addEventListener("mouseenter", triggerHydrateEarly, {
+        once: true,
+        passive: true,
+      })
+      settingsBtn.addEventListener("click", triggerHydrateEarly, {
+        once: true,
+        passive: true,
+      })
     }
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "s" || e.key === "S") {
-        triggerHydrateEarly()
-      }
-    }, { once: true, passive: true })
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "s" || e.key === "S") {
+          triggerHydrateEarly()
+        }
+      },
+      { once: true, passive: true },
+    )
   }
 }
 

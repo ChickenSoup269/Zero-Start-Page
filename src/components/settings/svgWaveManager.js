@@ -172,7 +172,8 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
             Number(wave.amplitudeY ?? 80) &&
           Number(settings.svgWaveStartHue ?? 200) ===
             Number(wave.startHue ?? 200) &&
-          Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
+          Number(settings.svgWaveEndHue ?? 280) ===
+            Number(wave.endHue ?? 280) &&
           Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0)))
 
     if (isActive) {

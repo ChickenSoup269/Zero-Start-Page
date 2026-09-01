@@ -23,37 +23,37 @@ import {
   saveSettings,
 } from "../services/state.js"
 
-export let currentFolderStack = [];
+export let currentFolderStack = []
 
 export function getBookmarks() {
-  let items = getRootBookmarks();
+  let items = getRootBookmarks()
   for (const folder of currentFolderStack) {
-    const found = items.find(item => item.id === folder.id);
+    const found = items.find((item) => item.id === folder.id)
     if (found && found.items) {
-      items = found.items;
+      items = found.items
     } else {
-      currentFolderStack = [];
-      return getRootBookmarks();
+      currentFolderStack = []
+      return getRootBookmarks()
     }
   }
-  return items;
+  return items
 }
 
 export function setBookmarks(newItems) {
   if (currentFolderStack.length === 0) {
-    setRootBookmarks(newItems);
-    return;
+    setRootBookmarks(newItems)
+    return
   }
-  let items = getRootBookmarks();
-  let parent = null;
+  let items = getRootBookmarks()
+  let parent = null
   for (const folder of currentFolderStack) {
-    const found = items.find(item => item.id === folder.id);
-    if (!found) return;
-    parent = found;
-    items = found.items;
+    const found = items.find((item) => item.id === folder.id)
+    if (!found) return
+    parent = found
+    items = found.items
   }
   if (parent) {
-    parent.items = newItems;
+    parent.items = newItems
   }
 }
 
@@ -155,7 +155,10 @@ try {
 
 function saveIconCache() {
   try {
-    localStorage.setItem(ICON_CACHE_KEY, JSON.stringify(Array.from(iconCache.entries())))
+    localStorage.setItem(
+      ICON_CACHE_KEY,
+      JSON.stringify(Array.from(iconCache.entries())),
+    )
   } catch (e) {
     console.warn("Failed to save icon cache:", e)
   }
@@ -343,7 +346,10 @@ function getIconCandidates(bookmark) {
 
   if (bookmark.icon) list.push(bookmark.icon)
 
-  if (bookmark.url.startsWith("chrome-extension://") || bookmark.url.startsWith("extension://")) {
+  if (
+    bookmark.url.startsWith("chrome-extension://") ||
+    bookmark.url.startsWith("extension://")
+  ) {
     const res = getSettings().bookmarkFaviconRes ?? 128
     list.push(`chrome://extension-icon/${hostname}/${res}/1`)
     list.push(`edge://extension-icon/${hostname}/${res}/1`)
@@ -488,7 +494,9 @@ function getFaviconObserver() {
                 img.src = bestIcon
               } else {
                 img.style.display = "none"
-                if (!img.parentElement.querySelector(".bookmark-icon-fallback")) {
+                if (
+                  !img.parentElement.querySelector(".bookmark-icon-fallback")
+                ) {
                   const fallback = document.createElement("div")
                   fallback.className = "bookmark-icon-fallback"
                   fallback.textContent = (bookmarkMock.title || "?")
@@ -507,8 +515,6 @@ function getFaviconObserver() {
   }
   return faviconObserver
 }
-
-
 
 function createBookmarkStackIcon(stack) {
   const wrap = document.createElement("div")
@@ -530,18 +536,18 @@ function createBookmarkStackIcon(stack) {
     return wrap
   }
 
-  const displayItems = [];
+  const displayItems = []
   function extractBookmarks(items) {
     for (const item of items) {
-      if (displayItems.length >= 4) return;
+      if (displayItems.length >= 4) return
       if (item && item.type === "stack") {
-        extractBookmarks(item.items || []);
+        extractBookmarks(item.items || [])
       } else if (item) {
-        displayItems.push(item);
+        displayItems.push(item)
       }
     }
   }
-  extractBookmarks(stack.items || []);
+  extractBookmarks(stack.items || [])
 
   displayItems.forEach((item) => {
     const cell = document.createElement("div")
@@ -628,7 +634,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     }
   } else {
     folderIcon = document.createElement("i")
-    folderIcon.className = "fa-solid fa-folder-open bookmark-stack-popup-header-icon"
+    folderIcon.className =
+      "fa-solid fa-folder-open bookmark-stack-popup-header-icon"
     if (stack.iconColor) {
       folderIcon.style.color = stack.iconColor
     }
@@ -723,7 +730,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const closeBtn = document.createElement("button")
   closeBtn.type = "button"
-  closeBtn.className = "bookmark-stack-popup-header-btn bookmark-stack-popup-close-btn"
+  closeBtn.className =
+    "bookmark-stack-popup-header-btn bookmark-stack-popup-close-btn"
   closeBtn.title = i18n.close || "Close"
   closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
 
@@ -742,7 +750,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   }
 
   const searchIcon = document.createElement("i")
-  searchIcon.className = "fa-solid fa-magnifying-glass bookmark-stack-popup-search-icon"
+  searchIcon.className =
+    "fa-solid fa-magnifying-glass bookmark-stack-popup-search-icon"
 
   const searchInput = document.createElement("input")
   searchInput.type = "text"
@@ -833,9 +842,14 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
     const visibleIndices = stack.items
       .map((item, idx) => ({ item, idx }))
-      .filter(({ item }) => !query || getBookmarkLabel(item).toLowerCase().includes(query))
+      .filter(
+        ({ item }) =>
+          !query || getBookmarkLabel(item).toLowerCase().includes(query),
+      )
       .map(({ idx }) => idx)
-    const isAllVisibleSelected = visibleIndices.length > 0 && visibleIndices.every(idx => selectedStackIndices.has(idx))
+    const isAllVisibleSelected =
+      visibleIndices.length > 0 &&
+      visibleIndices.every((idx) => selectedStackIndices.has(idx))
     selectAllBtn.innerHTML = isAllVisibleSelected
       ? `<i class="fa-regular fa-square"></i><span>${i18n.deselect_all || "Deselect"}</span>`
       : `<i class="fa-solid fa-check-square"></i><span>${i18n.select_all || "Select all"}</span>`
@@ -872,8 +886,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     const targetItemIndex = Number(target.dataset.stackIndex)
     const isSelfDrop = (draggedStackItems || []).some(
       (item) =>
-        (item.stack === stack || (item.stackIndex != null && item.stackIndex === stackIndex)) &&
-        (item.itemIndex === targetItemIndex || (item.item && stack.items[targetItemIndex] === item.item)),
+        (item.stack === stack ||
+          (item.stackIndex != null && item.stackIndex === stackIndex)) &&
+        (item.itemIndex === targetItemIndex ||
+          (item.item && stack.items[targetItemIndex] === item.item)),
     )
     if (isSelfDrop) return
 
@@ -886,8 +902,15 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const moveDraggedStackItemsInsidePopup = (targetItemIndex, intent) => {
     const movedIndices = (draggedStackItems || [])
-      .filter((item) => item.stack === stack || (item.stackIndex != null && item.stackIndex === stackIndex) || (item.item && stack.items.includes(item.item)))
-      .map((item) => item.item ? stack.items.indexOf(item.item) : item.itemIndex)
+      .filter(
+        (item) =>
+          item.stack === stack ||
+          (item.stackIndex != null && item.stackIndex === stackIndex) ||
+          (item.item && stack.items.includes(item.item)),
+      )
+      .map((item) =>
+        item.item ? stack.items.indexOf(item.item) : item.itemIndex,
+      )
       .filter((idx) => idx !== -1)
       .sort((a, b) => b - a)
     if (!movedIndices.length) return false
@@ -913,12 +936,23 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const handleStackItemDragStart = function (event) {
     const itemIndex = Number(this.dataset.stackIndex)
-    if (isStackSelectionMode && selectedStackIndices.size > 0 && selectedStackIndices.has(itemIndex)) {
+    if (
+      isStackSelectionMode &&
+      selectedStackIndices.size > 0 &&
+      selectedStackIndices.has(itemIndex)
+    ) {
       draggedStackItems = Array.from(selectedStackIndices)
         .sort((a, b) => a - b)
-        .map((idx) => ({ stack, stackIndex, itemIndex: idx, item: stack.items[idx] }))
+        .map((idx) => ({
+          stack,
+          stackIndex,
+          itemIndex: idx,
+          item: stack.items[idx],
+        }))
     } else {
-      draggedStackItems = [{ stack, stackIndex, itemIndex, item: stack.items[itemIndex] }]
+      draggedStackItems = [
+        { stack, stackIndex, itemIndex, item: stack.items[itemIndex] },
+      ]
     }
     window._activeDraggedStackItems = draggedStackItems
     draggedBookmarkIndices = []
@@ -990,7 +1024,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const renderStackItems = () => {
     grid.innerHTML = ""
     const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
-    
+
     let visibleCount = 0
     stack.items.forEach((item, itemIndex) => {
       const labelText = getBookmarkLabel(item)
@@ -1193,14 +1227,19 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     const query = searchInput ? searchInput.value.toLowerCase().trim() : ""
     const visibleIndices = stack.items
       .map((item, idx) => ({ item, idx }))
-      .filter(({ item }) => !query || getBookmarkLabel(item).toLowerCase().includes(query))
+      .filter(
+        ({ item }) =>
+          !query || getBookmarkLabel(item).toLowerCase().includes(query),
+      )
       .map(({ idx }) => idx)
 
-    const allVisibleSelected = visibleIndices.length > 0 && visibleIndices.every(idx => selectedStackIndices.has(idx))
+    const allVisibleSelected =
+      visibleIndices.length > 0 &&
+      visibleIndices.every((idx) => selectedStackIndices.has(idx))
     if (allVisibleSelected) {
-      visibleIndices.forEach(idx => selectedStackIndices.delete(idx))
+      visibleIndices.forEach((idx) => selectedStackIndices.delete(idx))
     } else {
-      visibleIndices.forEach(idx => selectedStackIndices.add(idx))
+      visibleIndices.forEach((idx) => selectedStackIndices.add(idx))
     }
     renderStackItems()
     syncStackSelectionUi()
@@ -1257,10 +1296,18 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   // Detect layout mode
   const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
-  const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
-  const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
-  const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
-  const isTaskbarMode = document.body.classList.contains("bookmark-taskbar-mode")
+  const isTaskbarTop = document.body.classList.contains(
+    "bookmark-taskbar-top-mode",
+  )
+  const isTaskbarLeft = document.body.classList.contains(
+    "bookmark-taskbar-left-mode",
+  )
+  const isTaskbarRight = document.body.classList.contains(
+    "bookmark-taskbar-right-mode",
+  )
+  const isTaskbarMode = document.body.classList.contains(
+    "bookmark-taskbar-mode",
+  )
   const isFlipped = document.body.classList.contains("flip-layout")
 
   // Position nicely near anchor or centered on smaller displays
@@ -1319,7 +1366,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       // Top taskbar: expand below
       let left = Math.max(
         16,
-        Math.min(rect.left + rect.width / 2 - pWidth / 2, window.innerWidth - pWidth - 16),
+        Math.min(
+          rect.left + rect.width / 2 - pWidth / 2,
+          window.innerWidth - pWidth - 16,
+        ),
       )
       let top = rect.bottom + 14
       if (top + pHeight > window.innerHeight - 16) {
@@ -1331,7 +1381,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       // Bottom taskbar: expand above
       let left = Math.max(
         16,
-        Math.min(rect.left + rect.width / 2 - pWidth / 2, window.innerWidth - pWidth - 16),
+        Math.min(
+          rect.left + rect.width / 2 - pWidth / 2,
+          window.innerWidth - pWidth - 16,
+        ),
       )
       let top = rect.top - pHeight - 14
       if (top < 16) {
@@ -1390,7 +1443,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     document.addEventListener("click", onDocumentClick)
     document.addEventListener("keydown", onKeyDown)
   }, 50)
-  
+
   // Force macOS hover cache to update for the new popup items
   window.dispatchEvent(new CustomEvent("layoutUpdated"))
 }
@@ -1408,7 +1461,7 @@ function isBookmarkStack(item) {
 
 function getStackItems(item) {
   if (isBookmarkStack(item)) {
-    return getSettings().bookmarkKeepNestedFolders ? [item] : item.items;
+    return getSettings().bookmarkKeepNestedFolders ? [item] : item.items
   }
   return [item]
 }
@@ -1505,7 +1558,9 @@ function inferBookmarkStackName(items) {
 }
 
 function createBookmarkStack(title, items) {
-  const validItems = items.filter((item) => item && (item.url || item.type === "stack") && item.title)
+  const validItems = items.filter(
+    (item) => item && (item.url || item.type === "stack") && item.title,
+  )
   return {
     type: "stack",
     id: `stack-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -1515,9 +1570,10 @@ function createBookmarkStack(title, items) {
 }
 
 function takeDraggedStackItems() {
-  const currentStackItems = (draggedStackItems && draggedStackItems.length > 0)
-    ? draggedStackItems
-    : (window._activeDraggedStackItems || [])
+  const currentStackItems =
+    draggedStackItems && draggedStackItems.length > 0
+      ? draggedStackItems
+      : window._activeDraggedStackItems || []
 
   if (!currentStackItems || currentStackItems.length === 0) return null
   const bookmarks = getBookmarks()
@@ -1537,7 +1593,9 @@ function takeDraggedStackItems() {
         (b) =>
           b === sourceStack ||
           (b.id && sourceStack.id && b.id === sourceStack.id) ||
-          (Array.isArray(b.items) && (b.items === sourceStack.items || (first.item && b.items.includes(first.item)))),
+          (Array.isArray(b.items) &&
+            (b.items === sourceStack.items ||
+              (first.item && b.items.includes(first.item)))),
       )
       if (rootIdx !== -1) {
         sourceStack = bookmarks[rootIdx]
@@ -1556,7 +1614,9 @@ function takeDraggedStackItems() {
           (it) =>
             it === sourceStack ||
             (it.id && sourceStack.id && it.id === sourceStack.id) ||
-            (Array.isArray(it.items) && (it.items === sourceStack.items || (first.item && it.items.includes(first.item)))),
+            (Array.isArray(it.items) &&
+              (it.items === sourceStack.items ||
+                (first.item && it.items.includes(first.item)))),
         )
         if (nestedIdx !== -1) {
           parentStack = b
@@ -1590,7 +1650,9 @@ function takeDraggedStackItems() {
     let idx = ds.itemIndex
     if (ds.item && sourceStack.items[idx] !== ds.item) {
       idx = sourceStack.items.findIndex(
-        (it) => it === ds.item || (it.url && it.url === ds.item.url && it.title === ds.item.title),
+        (it) =>
+          it === ds.item ||
+          (it.url && it.url === ds.item.url && it.title === ds.item.title),
       )
     }
     if (idx !== -1 && sourceStack.items[idx]) {
@@ -1608,7 +1670,11 @@ function takeDraggedStackItems() {
     } else if (sourceStack.items.length === 1) {
       if (pIdx !== -1) parentStack.items[pIdx] = sourceStack.items[0]
     }
-  } else if (sourceStackIndex != null && sourceStackIndex >= 0 && bookmarks[sourceStackIndex]) {
+  } else if (
+    sourceStackIndex != null &&
+    sourceStackIndex >= 0 &&
+    bookmarks[sourceStackIndex]
+  ) {
     if (sourceStack.items.length <= 0) {
       bookmarks.splice(sourceStackIndex, 1)
       removedSourceSlot = true
@@ -1629,29 +1695,32 @@ function getBookmarkDropIntent(target, event) {
 
   // Use cached rect from dragenter to avoid forced reflow on every dragover tick
   const rect = dragOverRectCache.get(target) || target.getBoundingClientRect()
-  if (!rect.width || !rect.height) return target.classList.contains("bookmark-stack") ? "stack" : "before"
-  
-  const isVerticalLayout = document.body.classList.contains("bookmark-sidebar-mode") || 
-                           document.body.classList.contains("bookmark-taskbar-left-mode") ||
-                           document.body.classList.contains("bookmark-taskbar-right-mode");
-                           
-  const ratioX = (event.clientX - rect.left) / rect.width;
-  const ratioY = (event.clientY - rect.top) / rect.height;
-  
+  if (!rect.width || !rect.height)
+    return target.classList.contains("bookmark-stack") ? "stack" : "before"
+
+  const isVerticalLayout =
+    document.body.classList.contains("bookmark-sidebar-mode") ||
+    document.body.classList.contains("bookmark-taskbar-left-mode") ||
+    document.body.classList.contains("bookmark-taskbar-right-mode")
+
+  const ratioX = (event.clientX - rect.left) / rect.width
+  const ratioY = (event.clientY - rect.top) / rect.height
+
   // Center 50% area is for stacking/merging
-  const isCenter = ratioX >= 0.25 && ratioX <= 0.75 && ratioY >= 0.25 && ratioY <= 0.75;
-  
-  if (isCenter) return "stack";
-  
+  const isCenter =
+    ratioX >= 0.25 && ratioX <= 0.75 && ratioY >= 0.25 && ratioY <= 0.75
+
+  if (isCenter) return "stack"
+
   if (isVerticalLayout) {
-    return ratioY < 0.5 ? "before" : "after";
+    return ratioY < 0.5 ? "before" : "after"
   } else {
     // Grid/Horizontal flow layout
-    if (ratioX < 0.25) return "before";
-    if (ratioX > 0.75) return "after";
-    if (ratioY < 0.25) return "before";
-    if (ratioY > 0.75) return "after";
-    return ratioX < 0.5 ? "before" : "after";
+    if (ratioX < 0.25) return "before"
+    if (ratioX > 0.75) return "after"
+    if (ratioY < 0.25) return "before"
+    if (ratioY > 0.75) return "after"
+    return ratioX < 0.5 ? "before" : "after"
   }
 }
 
@@ -1737,34 +1806,36 @@ function handleDragOver(e) {
         geti18n().bookmark_drop_move_to_folder || "Move here"
     } else if (draggedGroupIndex !== null) {
       // Use cached rect from dragenter — no forced reflow on dragover
-      const rect = dragOverRectCache.get(this) || this.getBoundingClientRect();
-      const isVertical = this.parentElement.style.flexDirection === "column" || 
-                         document.body.classList.contains("bookmark-sidebar-mode") ||
-                         document.body.classList.contains("bookmark-taskbar-left-mode") ||
-                         document.body.classList.contains("bookmark-taskbar-right-mode");
-      let intent = "before";
+      const rect = dragOverRectCache.get(this) || this.getBoundingClientRect()
+      const isVertical =
+        this.parentElement.style.flexDirection === "column" ||
+        document.body.classList.contains("bookmark-sidebar-mode") ||
+        document.body.classList.contains("bookmark-taskbar-left-mode") ||
+        document.body.classList.contains("bookmark-taskbar-right-mode")
+      let intent = "before"
       if (isVertical) {
-        const ratio = (e.clientY - rect.top) / rect.height;
-        if (ratio >= 0.25 && ratio <= 0.75) intent = "stack";
-        else if (ratio > 0.75) intent = "after";
+        const ratio = (e.clientY - rect.top) / rect.height
+        if (ratio >= 0.25 && ratio <= 0.75) intent = "stack"
+        else if (ratio > 0.75) intent = "after"
       } else {
-        const ratio = (e.clientX - rect.left) / rect.width;
-        if (ratio >= 0.25 && ratio <= 0.75) intent = "stack";
-        else if (ratio > 0.75) intent = "after";
+        const ratio = (e.clientX - rect.left) / rect.width
+        if (ratio >= 0.25 && ratio <= 0.75) intent = "stack"
+        else if (ratio > 0.75) intent = "after"
       }
-      
-      this.classList.remove("drag-over-before", "drag-over-after", "drag-over");
+
+      this.classList.remove("drag-over-before", "drag-over-after", "drag-over")
       if (intent === "before") {
-        this.classList.add("drag-over-before");
-        this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move";
+        this.classList.add("drag-over-before")
+        this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
       } else if (intent === "after") {
-        this.classList.add("drag-over-after");
-        this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move";
+        this.classList.add("drag-over-after")
+        this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
       } else {
-        this.classList.add("drag-over");
-        this.dataset.dropLabel = geti18n().bookmark_drop_add_group || "Merge into group";
+        this.classList.add("drag-over")
+        this.dataset.dropLabel =
+          geti18n().bookmark_drop_add_group || "Merge into group"
       }
-      this.dataset.dropIntent = intent;
+      this.dataset.dropIntent = intent
     }
   }
   return false
@@ -1806,7 +1877,10 @@ function handleDrop(e) {
   clearBookmarkDropClasses(this)
   const targetIndex = Number(this.dataset.index)
 
-  if (draggedStackItems.length > 0 || window._activeDraggedStackItems?.length > 0) {
+  if (
+    draggedStackItems.length > 0 ||
+    window._activeDraggedStackItems?.length > 0
+  ) {
     const snapshot = captureBookmarkSnapshot()
     const currentBookmarks = getBookmarks()
     const targetItem = currentBookmarks[targetIndex]
@@ -1983,34 +2057,37 @@ function handleGroupDrop(e) {
     renderBookmarks()
     showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
   } else if (draggedGroupIndex !== null && draggedGroupIndex !== targetIndex) {
-    const intent = this.dataset.dropIntent || "after";
+    const intent = this.dataset.dropIntent || "after"
     const snapshot = captureBookmarkSnapshot()
     const groups = getBookmarkGroups()
-    
+
     if (intent === "stack") {
-      const [draggedItem] = groups.splice(draggedGroupIndex, 1);
-      let actualTargetIndex = targetIndex;
-      if (draggedGroupIndex < targetIndex) actualTargetIndex--;
-      const targetGroup = groups[actualTargetIndex];
-      
+      const [draggedItem] = groups.splice(draggedGroupIndex, 1)
+      let actualTargetIndex = targetIndex
+      if (draggedGroupIndex < targetIndex) actualTargetIndex--
+      const targetGroup = groups[actualTargetIndex]
+
       const newStack = {
         type: "stack",
         id: `stack-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        title: draggedItem.name || geti18n().bookmark_stack_default_name || "Bookmark Group",
+        title:
+          draggedItem.name ||
+          geti18n().bookmark_stack_default_name ||
+          "Bookmark Group",
         icon: draggedItem.icon || "",
-        items: draggedItem.items || []
-      };
-      
-      targetGroup.items = targetGroup.items || [];
-      targetGroup.items.push(newStack);
+        items: draggedItem.items || [],
+      }
+
+      targetGroup.items = targetGroup.items || []
+      targetGroup.items.push(newStack)
     } else {
       const [draggedItem] = groups.splice(draggedGroupIndex, 1)
-      let insertIndex = targetIndex;
-      if (draggedGroupIndex < targetIndex) insertIndex--;
-      if (intent === "after") insertIndex++;
+      let insertIndex = targetIndex
+      if (draggedGroupIndex < targetIndex) insertIndex--
+      if (intent === "after") insertIndex++
       groups.splice(insertIndex, 0, draggedItem)
     }
-    
+
     setBookmarkGroups(groups)
     saveBookmarks()
     renderBookmarks()
@@ -2076,9 +2153,15 @@ function getToggleIconClass(isHidden) {
   const isTaskbarTop = document.body.classList.contains(
     "bookmark-taskbar-top-mode",
   )
-  const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
-  const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
-  const isTaskbarMode = document.body.classList.contains("bookmark-taskbar-mode")
+  const isTaskbarLeft = document.body.classList.contains(
+    "bookmark-taskbar-left-mode",
+  )
+  const isTaskbarRight = document.body.classList.contains(
+    "bookmark-taskbar-right-mode",
+  )
+  const isTaskbarMode = document.body.classList.contains(
+    "bookmark-taskbar-mode",
+  )
 
   if (isSidebar) {
     const isFlipped = document.body.classList.contains("flip-layout")
@@ -2119,7 +2202,10 @@ export function updateBookmarkGroupsToggleIcon() {
 export function renderBookmarks() {
   const settings = getSettings()
   const bw = document.getElementById("bookmark-widget")
-  if (bw && (!settings.bookmarkLayout || settings.bookmarkLayout === "default")) {
+  if (
+    bw &&
+    (!settings.bookmarkLayout || settings.bookmarkLayout === "default")
+  ) {
     bw.style.removeProperty("top")
     bw.style.removeProperty("left")
     bw.style.removeProperty("right")
@@ -2156,40 +2242,40 @@ export function renderBookmarks() {
 
   // Use Document Fragment to prevent multiple reflows / layout shifts
   const frag = document.createDocumentFragment()
-  
+
   if (currentFolderStack.length > 0) {
-    const breadcrumb = document.createElement("div");
-    breadcrumb.className = "bookmark-breadcrumb";
-    breadcrumb.style.gridColumn = "1 / -1";
-    breadcrumb.style.display = "flex";
-    breadcrumb.style.alignItems = "center";
-    breadcrumb.style.gap = "10px";
-    breadcrumb.style.marginBottom = "20px";
-    breadcrumb.style.padding = "10px 16px";
-    breadcrumb.style.background = "rgba(255,255,255,0.05)";
-    breadcrumb.style.borderRadius = "12px";
-    
-    const backBtn = document.createElement("button");
-    backBtn.innerHTML = "<i class=\"fa-solid fa-arrow-left\"></i> Back";
-    backBtn.style.padding = "6px 12px";
-    backBtn.style.background = "rgba(255,255,255,0.1)";
-    backBtn.style.border = "none";
-    backBtn.style.borderRadius = "8px";
-    backBtn.style.color = "white";
-    backBtn.style.cursor = "pointer";
+    const breadcrumb = document.createElement("div")
+    breadcrumb.className = "bookmark-breadcrumb"
+    breadcrumb.style.gridColumn = "1 / -1"
+    breadcrumb.style.display = "flex"
+    breadcrumb.style.alignItems = "center"
+    breadcrumb.style.gap = "10px"
+    breadcrumb.style.marginBottom = "20px"
+    breadcrumb.style.padding = "10px 16px"
+    breadcrumb.style.background = "rgba(255,255,255,0.05)"
+    breadcrumb.style.borderRadius = "12px"
+
+    const backBtn = document.createElement("button")
+    backBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back'
+    backBtn.style.padding = "6px 12px"
+    backBtn.style.background = "rgba(255,255,255,0.1)"
+    backBtn.style.border = "none"
+    backBtn.style.borderRadius = "8px"
+    backBtn.style.color = "white"
+    backBtn.style.cursor = "pointer"
     backBtn.onclick = () => {
-      currentFolderStack.pop();
-      renderBookmarks();
-    };
-    
-    const pathText = document.createElement("span");
-    pathText.style.color = "rgba(255,255,255,0.7)";
-    pathText.style.fontWeight = "500";
-    pathText.textContent = currentFolderStack.map(f => f.title).join(" > ");
-    
-    breadcrumb.appendChild(backBtn);
-    breadcrumb.appendChild(pathText);
-    frag.appendChild(breadcrumb);
+      currentFolderStack.pop()
+      renderBookmarks()
+    }
+
+    const pathText = document.createElement("span")
+    pathText.style.color = "rgba(255,255,255,0.7)"
+    pathText.style.fontWeight = "500"
+    pathText.textContent = currentFolderStack.map((f) => f.title).join(" > ")
+
+    breadcrumb.appendChild(backBtn)
+    breadcrumb.appendChild(pathText)
+    frag.appendChild(breadcrumb)
   }
 
   const enableDrag = settings.bookmarkEnableDrag !== false
@@ -2349,7 +2435,11 @@ export function renderBookmarks() {
       }
     })
     bookmarksContainer.addEventListener("drop", (e) => {
-      if ((e.target === bookmarksContainer || !e.target.closest(".bookmark")) && draggedStackItems && draggedStackItems.length > 0) {
+      if (
+        (e.target === bookmarksContainer || !e.target.closest(".bookmark")) &&
+        draggedStackItems &&
+        draggedStackItems.length > 0
+      ) {
         e.preventDefault()
         e.stopPropagation()
         const snapshot = captureBookmarkSnapshot()
@@ -2361,7 +2451,10 @@ export function renderBookmarks() {
         document.getElementById("bookmark-stack-popup")?.remove()
         cancelSelection()
         renderBookmarks()
-        showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+        showBookmarkUndo(
+          geti18n().bookmark_moved || "Bookmarks moved",
+          snapshot,
+        )
       }
     })
 
@@ -2393,7 +2486,10 @@ export function renderBookmarks() {
           document.getElementById("bookmark-stack-popup")?.remove()
           cancelSelection()
           renderBookmarks()
-          showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+          showBookmarkUndo(
+            geti18n().bookmark_moved || "Bookmarks moved",
+            snapshot,
+          )
         }
       })
     }
@@ -2422,7 +2518,9 @@ export function renderBookmarks() {
     if (pendingFolderBookmarkReveal) {
       // Filter out items that were hidden by updateOverflowBookmarks
       const visibleAnimReads = animReads.filter(
-        (read) => read.item.style.display !== "none" && !read.item.classList.contains("overflow-indicator")
+        (read) =>
+          read.item.style.display !== "none" &&
+          !read.item.classList.contains("overflow-indicator"),
       )
       animateBookmarksForFolderSwitch(visibleAnimReads, containerRect)
     }
@@ -2467,7 +2565,8 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
 
   if (!skipEarlyOverflowMutation) {
     if (!isDefault) {
-      if (container.style.overflow !== "hidden") container.style.overflow = "hidden"
+      if (container.style.overflow !== "hidden")
+        container.style.overflow = "hidden"
     } else {
       if (container.style.overflow !== "") container.style.overflow = ""
     }
@@ -2486,12 +2585,16 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   let requiredHiddenCount = 0
 
   if (isDefault) {
-    if (overflowItems.length > 25) requiredHiddenCount = overflowItems.length - 25
+    if (overflowItems.length > 25)
+      requiredHiddenCount = overflowItems.length - 25
   } else if (overflowItems.length > 0) {
     const firstItem = overflowItems[0]
     const itemH = (firstItem.offsetHeight || 52) + 8
     if (isSidebar) {
-      const maxVisibleSlots = Math.max(3, Math.floor((window.innerHeight - 175) / itemH))
+      const maxVisibleSlots = Math.max(
+        3,
+        Math.floor((window.innerHeight - 175) / itemH),
+      )
       if (overflowItems.length > maxVisibleSlots) {
         requiredHiddenCount = overflowItems.length - maxVisibleSlots
       }
@@ -2501,30 +2604,48 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
         requiredHiddenCount = Math.max(requiredHiddenCount, overflowHiddenCount)
       }
     } else {
-      const maxTaskbarSlots = Math.max(3, Math.floor((window.innerHeight - 180) / itemH))
-      let limit = isTaskbarLeft || isTaskbarRight ? Math.min(9, maxTaskbarSlots) : Math.min(12, maxTaskbarSlots)
+      const maxTaskbarSlots = Math.max(
+        3,
+        Math.floor((window.innerHeight - 180) / itemH),
+      )
+      let limit =
+        isTaskbarLeft || isTaskbarRight
+          ? Math.min(9, maxTaskbarSlots)
+          : Math.min(12, maxTaskbarSlots)
       if (overflowItems.length > limit) {
         requiredHiddenCount = overflowItems.length - limit
       }
       // Taskbars are forced to vertical layout via CSS override, so we must check vertical overflow (scrollHeight)
       const overflowAmt = container.scrollHeight - container.clientHeight
-      if (overflowAmt > 2 || (isTaskbarRight && container.getBoundingClientRect().top > firstItem.getBoundingClientRect().top)) {
+      if (
+        overflowAmt > 2 ||
+        (isTaskbarRight &&
+          container.getBoundingClientRect().top >
+            firstItem.getBoundingClientRect().top)
+      ) {
         let actualOverflow = overflowAmt
         if (isTaskbarRight) {
           const cRect = container.getBoundingClientRect()
           const fRect = firstItem.getBoundingClientRect()
-          if (fRect.top < cRect.top) actualOverflow = Math.max(overflowAmt, cRect.top - fRect.top)
+          if (fRect.top < cRect.top)
+            actualOverflow = Math.max(overflowAmt, cRect.top - fRect.top)
         }
         if (actualOverflow > 2) {
-          const overflowHiddenCount = Math.ceil((actualOverflow + itemH) / itemH)
-          requiredHiddenCount = Math.max(requiredHiddenCount, overflowHiddenCount)
+          const overflowHiddenCount = Math.ceil(
+            (actualOverflow + itemH) / itemH,
+          )
+          requiredHiddenCount = Math.max(
+            requiredHiddenCount,
+            overflowHiddenCount,
+          )
         }
       }
     }
   }
 
   // Bounds check
-  if (requiredHiddenCount > overflowItems.length) requiredHiddenCount = overflowItems.length
+  if (requiredHiddenCount > overflowItems.length)
+    requiredHiddenCount = overflowItems.length
   if (requiredHiddenCount < 0) requiredHiddenCount = 0
 
   if (requiredHiddenCount === 0) {
@@ -2556,7 +2677,8 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   fallback.style.background = "rgba(255, 255, 255, 0.12)"
   fallback.style.border = "1px solid rgba(255, 255, 255, 0.2)"
   fallback.style.backdropFilter = "blur(16px) saturate(155%)"
-  fallback.style.boxShadow = "inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.16)"
+  fallback.style.boxShadow =
+    "inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.16)"
   indicator.appendChild(fallback)
 
   if (isSidebar || isTaskbarRight) {
@@ -2568,7 +2690,7 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   }
 
   let ans = requiredHiddenCount
-  
+
   if (isTaskbarRight) {
     for (let i = 0; i < ans; i++) {
       const el = overflowItems[i]
@@ -2577,7 +2699,11 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
       hiddenCount++
     }
   } else {
-    for (let i = overflowItems.length - 1; i >= overflowItems.length - ans; i--) {
+    for (
+      let i = overflowItems.length - 1;
+      i >= overflowItems.length - ans;
+      i--
+    ) {
       const el = overflowItems[i]
       el.style.display = "none"
       hiddenElements.unshift(el)
@@ -2605,11 +2731,11 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
     hiddenElements.forEach((el) => {
       const clone = el.cloneNode(true)
       clone.style.display = ""
-      
-      const imgs = clone.querySelectorAll('.bookmark-icon')
-      imgs.forEach(img => {
-        if (img.src && img.src.startsWith('data:image/gif')) {
-           getFaviconObserver().observe(img)
+
+      const imgs = clone.querySelectorAll(".bookmark-icon")
+      imgs.forEach((img) => {
+        if (img.src && img.src.startsWith("data:image/gif")) {
+          getFaviconObserver().observe(img)
         }
       })
       if (getSettings().bookmarkEnableDrag !== false) {
@@ -2662,7 +2788,9 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
                 openBookmarkStackEditPopover(numericIdx, clone)
               },
               onEditIcon: () => {
-                openBookmarkStackEditPopover(numericIdx, clone, { focus: "icon" })
+                openBookmarkStackEditPopover(numericIdx, clone, {
+                  focus: "icon",
+                })
               },
               onDelete: async () => {
                 const currentI18n = geti18n()
@@ -2685,9 +2813,16 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
             },
           )
         } else {
-          showContextMenu(evt.clientX, evt.clientY, numericIdx, "bookmark", null, {
-            anchor: clone,
-          })
+          showContextMenu(
+            evt.clientX,
+            evt.clientY,
+            numericIdx,
+            "bookmark",
+            null,
+            {
+              anchor: clone,
+            },
+          )
         }
       })
 
@@ -3003,7 +3138,7 @@ function animateBookmarksForFolderSwitch(animReads, containerRect) {
     .sort((a, b) => a.distance - b.distance)
     .forEach(({ item, offsetX, offsetY, offset }, order) => {
       item.classList.remove("bookmark-folder-reveal")
-      
+
       let x = "0px"
       let y = "0px"
       if (isGrid) {
@@ -3077,7 +3212,13 @@ function openHiddenGroupsPopup(anchor, hiddenGroups, activeId, enableDrag) {
 
   hiddenGroups.forEach((group, idx) => {
     const realIndex = 8 + idx
-    const tabEl = createGroupTabElement(group, realIndex, activeId, enableDrag, true)
+    const tabEl = createGroupTabElement(
+      group,
+      realIndex,
+      activeId,
+      enableDrag,
+      true,
+    )
     list.appendChild(tabEl)
   })
 
@@ -3088,9 +3229,11 @@ function openHiddenGroupsPopup(anchor, hiddenGroups, activeId, enableDrag) {
   requestAnimationFrame(() => {
     const anchorRect = anchor.getBoundingClientRect()
     const pRect = popup.getBoundingClientRect()
-    const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
+    const isTaskbarTop = document.body.classList.contains(
+      "bookmark-taskbar-top-mode",
+    )
 
-    let left = anchorRect.left + (anchorRect.width / 2) - (pRect.width / 2)
+    let left = anchorRect.left + anchorRect.width / 2 - pRect.width / 2
     left = Math.max(12, Math.min(left, window.innerWidth - pRect.width - 12))
 
     let top
@@ -3116,7 +3259,13 @@ function openHiddenGroupsPopup(anchor, hiddenGroups, activeId, enableDrag) {
   setTimeout(() => document.addEventListener("click", onDocClick), 50)
 }
 
-function createGroupTabElement(group, index, activeId, enableDrag, isInsidePopup = false) {
+function createGroupTabElement(
+  group,
+  index,
+  activeId,
+  enableDrag,
+  isInsidePopup = false,
+) {
   const currentI18n = geti18n()
   const tab = document.createElement("div")
   tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
@@ -3157,16 +3306,19 @@ function createGroupTabElement(group, index, activeId, enableDrag, isInsidePopup
   nameSpan.style.flexGrow = "1"
   nameSpan.style.marginRight = "8px"
   tab.appendChild(nameSpan)
-  
-  const hasNestedFolder = Array.isArray(group.items) && group.items.some(item => item && item.type === "stack");
+
+  const hasNestedFolder =
+    Array.isArray(group.items) &&
+    group.items.some((item) => item && item.type === "stack")
   if (hasNestedFolder) {
-    const folderMarker = document.createElement("i");
-    folderMarker.className = "fa-solid fa-folder-tree group-tab-folder-marker";
-    folderMarker.title = currentI18n.bookmark_contains_folders || "Contains nested folders";
-    folderMarker.style.fontSize = "11px";
-    folderMarker.style.marginRight = "6px";
-    folderMarker.style.opacity = "0.7";
-    tab.appendChild(folderMarker);
+    const folderMarker = document.createElement("i")
+    folderMarker.className = "fa-solid fa-folder-tree group-tab-folder-marker"
+    folderMarker.title =
+      currentI18n.bookmark_contains_folders || "Contains nested folders"
+    folderMarker.style.fontSize = "11px"
+    folderMarker.style.marginRight = "6px"
+    folderMarker.style.opacity = "0.7"
+    tab.appendChild(folderMarker)
   }
 
   const countBadge = document.createElement("small")
@@ -3215,7 +3367,8 @@ function createGroupTabElement(group, index, activeId, enableDrag, isInsidePopup
   tab.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     const allGroups = getBookmarkGroups()
-    const realIndex = allGroups.indexOf(group) >= 0 ? allGroups.indexOf(group) : index
+    const realIndex =
+      allGroups.indexOf(group) >= 0 ? allGroups.indexOf(group) : index
     showContextMenu(e.clientX, e.clientY, realIndex, "group", group.id, {
       anchor: tab,
       onEdit: () => openBookmarkGroupEditPopover(group.id, tab),
@@ -3234,7 +3387,9 @@ function renderGroupTabs() {
   const enableDrag = settings.bookmarkEnableDrag !== false
   bookmarkGroupsContainer.innerHTML = ""
 
-  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode") || settings.bookmarkLayout === "sidebar"
+  const isSidebar =
+    document.body.classList.contains("bookmark-sidebar-mode") ||
+    settings.bookmarkLayout === "sidebar"
   const MAX_VISIBLE_GROUPS = 8
   const shouldCollapse = !isSidebar && groups.length > MAX_VISIBLE_GROUPS
 
@@ -3260,15 +3415,22 @@ function renderGroupTabs() {
     const moreTab = document.createElement("div")
     moreTab.className = `bookmark-group-tab bookmark-groups-more-tab ${isHiddenActive ? "active has-active-hidden" : ""}`
     moreTab.setAttribute("role", "button")
-    moreTab.setAttribute("aria-label", `${hiddenGroups.length} more bookmark groups`)
+    moreTab.setAttribute(
+      "aria-label",
+      `${hiddenGroups.length} more bookmark groups`,
+    )
     moreTab.title = isHiddenActive
       ? `${activeHiddenGroup.name} (${hiddenGroups.length} other groups)`
       : `${currentI18n.more_groups || "Other groups"} (+${hiddenGroups.length})`
 
-    const moreIcon = isHiddenActive && activeHiddenGroup.icon
-      ? createStoredIconElement(activeHiddenGroup.icon, activeHiddenGroup.name)
-      : document.createElement("i")
-    
+    const moreIcon =
+      isHiddenActive && activeHiddenGroup.icon
+        ? createStoredIconElement(
+            activeHiddenGroup.icon,
+            activeHiddenGroup.name,
+          )
+        : document.createElement("i")
+
     if (isHiddenActive && activeHiddenGroup.icon) {
       moreIcon.classList.add("group-tab-icon", "custom-group-tab-icon")
     } else if (isHiddenActive) {
@@ -3282,7 +3444,7 @@ function renderGroupTabs() {
     moreName.className = "group-tab-name"
     moreName.textContent = isHiddenActive
       ? activeHiddenGroup.name
-      : (currentI18n.more_groups || "More")
+      : currentI18n.more_groups || "More"
     moreName.style.flexGrow = "1"
     moreName.style.marginRight = "6px"
     moreTab.appendChild(moreName)
@@ -3290,7 +3452,11 @@ function renderGroupTabs() {
     const moreBadge = document.createElement("small")
     moreBadge.className = "group-tab-count"
     moreBadge.textContent = isHiddenActive
-      ? String(Array.isArray(activeHiddenGroup.items) ? activeHiddenGroup.items.length : 0)
+      ? String(
+          Array.isArray(activeHiddenGroup.items)
+            ? activeHiddenGroup.items.length
+            : 0,
+        )
       : `+${hiddenGroups.length}`
     moreTab.appendChild(moreBadge)
 
@@ -3412,45 +3578,53 @@ export function initBookmarks() {
 
   bookmarkGroupsContainer.addEventListener("drop", (e) => {
     e.preventDefault()
-    if (e.target.closest('.bookmark-group-tab') && !e.target.closest('.add-group-tab')) return; // Handled by handleGroupDrop
+    if (
+      e.target.closest(".bookmark-group-tab") &&
+      !e.target.closest(".add-group-tab")
+    )
+      return // Handled by handleGroupDrop
 
     if (draggedBookmarkIndices.length > 0) {
       const snapshot = captureBookmarkSnapshot()
       const bookmarks = getBookmarks()
       const groups = getBookmarkGroups()
-      
+
       const sortedIndices = [...draggedBookmarkIndices].sort((a, b) => b - a)
       const draggedItemsOriginal = sortedIndices.map((idx) => bookmarks[idx])
 
-      let createdGroup = false;
+      let createdGroup = false
 
       draggedItemsOriginal.forEach((item) => {
         if (isBookmarkStack(item)) {
-          createdGroup = true;
-          const newGroupId = "group_" + Date.now() + Math.random().toString(36).substring(2, 9);
+          createdGroup = true
+          const newGroupId =
+            "group_" + Date.now() + Math.random().toString(36).substring(2, 9)
           groups.push({
             id: newGroupId,
             name: item.title || inferBookmarkStackName(item.items),
             items: item.items || [],
             icon: item.icon,
-            iconColor: item.iconColor
-          });
+            iconColor: item.iconColor,
+          })
         }
-      });
+      })
 
       if (createdGroup) {
         for (const idx of sortedIndices) {
           if (isBookmarkStack(bookmarks[idx])) {
-            bookmarks.splice(idx, 1);
+            bookmarks.splice(idx, 1)
           }
         }
-        setBookmarks(bookmarks);
-        setBookmarkGroups(groups);
-        saveBookmarks();
-        cancelSelection();
-        renderGroupTabs();
-        renderBookmarks();
-        showBookmarkUndo(geti18n().bookmark_group_created || "Group created", snapshot);
+        setBookmarks(bookmarks)
+        setBookmarkGroups(groups)
+        saveBookmarks()
+        cancelSelection()
+        renderGroupTabs()
+        renderBookmarks()
+        showBookmarkUndo(
+          geti18n().bookmark_group_created || "Group created",
+          snapshot,
+        )
       }
     }
   })
@@ -3505,7 +3679,7 @@ export function initBookmarks() {
     })
   }
 
-  let resizeTimeout;
+  let resizeTimeout
   window.addEventListener("resize", () => {
     cachedMacosItems = null
     clearTimeout(resizeTimeout)
@@ -3513,7 +3687,7 @@ export function initBookmarks() {
       requestAnimationFrame(updateOverflowBookmarks)
     }, 150)
   })
-  
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       const popup = document.getElementById("bookmark-stack-popup")
@@ -3524,7 +3698,7 @@ export function initBookmarks() {
       if (isSelectionMode) cancelSelection()
     }
   })
-  
+
   window.addEventListener("layoutUpdated", (e) => {
     cachedMacosItems = null
     horizontalScrollCache = new WeakMap()
@@ -3546,9 +3720,13 @@ export function initBookmarks() {
     }
   })
 
-  document.addEventListener("scroll", () => {
-    cachedMacosItems = null
-  }, { capture: true, passive: true })
+  document.addEventListener(
+    "scroll",
+    () => {
+      cachedMacosItems = null
+    },
+    { capture: true, passive: true },
+  )
 
   // FOUC/Layout shift fix: no-transition class is now removed precisely
   // at the end of updateOverflowBookmarks() after first calculation.
@@ -3600,10 +3778,10 @@ function updateMacosHover() {
     const containers = [
       document.querySelector("#bookmarks-container"),
       document.querySelector("#hidden-bookmarks-popup"),
-      document.querySelector("#bookmark-stack-popup")
+      document.querySelector("#bookmark-stack-popup"),
     ].filter(Boolean)
-    containers.forEach(c => c.style.removeProperty("z-index"))
-    
+    containers.forEach((c) => c.style.removeProperty("z-index"))
+
     cachedMacosItems = null
     rafId = null
     return
@@ -3613,35 +3791,38 @@ function updateMacosHover() {
     const containers = [
       document.querySelector("#bookmarks-container"),
       document.querySelector("#hidden-bookmarks-popup"),
-      document.querySelector("#bookmark-stack-popup")
+      document.querySelector("#bookmark-stack-popup"),
     ].filter(Boolean)
-    
+
     if (containers.length > 0) {
       const bookmarks = []
-      containers.forEach(c => {
-        bookmarks.push(...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
+      containers.forEach((c) => {
+        bookmarks.push(
+          ...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"),
+        )
       })
 
       // PASS 1: Save and clear all transforms (WRITES only)
-      const savedTransforms = bookmarks.map(item => {
+      const savedTransforms = bookmarks.map((item) => {
         const t = item.style.transform
         if (t) item.style.removeProperty("transform")
         return t
       })
 
       // PASS 2: Read all rects in one batch — browser only recalculates layout once
-      const rects = bookmarks.map(item => item.getBoundingClientRect())
+      const rects = bookmarks.map((item) => item.getBoundingClientRect())
 
       // PASS 3: Restore all transforms (WRITES only)
       bookmarks.forEach((item, i) => {
-        if (savedTransforms[i]) item.style.setProperty("transform", savedTransforms[i], "important")
+        if (savedTransforms[i])
+          item.style.setProperty("transform", savedTransforms[i], "important")
       })
 
       cachedMacosItems = bookmarks.map((item, i) => ({
         item,
         centerX: rects[i].left + rects[i].width / 2,
         centerY: rects[i].top + rects[i].height / 2,
-        rect: rects[i]
+        rect: rects[i],
       }))
     } else {
       cachedMacosItems = []
@@ -3652,11 +3833,11 @@ function updateMacosHover() {
   const isFlipped = document.body.classList.contains("flip-layout")
 
   // MacOS parameters
-  const isDefaultLayout = 
-    !document.body.classList.contains("bookmark-taskbar-mode") && 
-    !document.body.classList.contains("bookmark-taskbar-top-mode") && 
-    !document.body.classList.contains("bookmark-taskbar-left-mode") && 
-    !document.body.classList.contains("bookmark-taskbar-right-mode") && 
+  const isDefaultLayout =
+    !document.body.classList.contains("bookmark-taskbar-mode") &&
+    !document.body.classList.contains("bookmark-taskbar-top-mode") &&
+    !document.body.classList.contains("bookmark-taskbar-left-mode") &&
+    !document.body.classList.contains("bookmark-taskbar-right-mode") &&
     !document.body.classList.contains("bookmark-sidebar-mode")
 
   const maxScale = isDefaultLayout ? 1.6 : 1.35
@@ -3682,205 +3863,230 @@ function updateMacosHover() {
     return { item, scale, rect }
   })
 
-    // PHASE 2: WRITES
-    itemData.forEach(({ item, scale }) => {
-      // Apply scaling and smooth z-index
-      item.style.setProperty("transform", `scale(${scale})`, "important")
-      item.style.zIndex = Math.round(scale * 100)
-    })
-    
-    // Update global tooltip for the item under cursor
-    const globalTooltip = document.getElementById("macos-global-tooltip")
-    if (globalTooltip) {
-      // Find the element with highest scale
-      let maxData = null
-      let highestScale = 1.1 // Minimum scale to show tooltip
-      
-      itemData.forEach(data => {
-        if (data.scale > highestScale) {
-          highestScale = data.scale
-          maxData = data
-        }
-      })
-      
-      if (maxData && highestScale > 1.2) { // Only show if significantly hovered
-        const { item, rect } = maxData
-        const span = item.querySelector(".bookmark-stack-popup-label, span:not(.bookmark-icon-fallback):not(.bookmark-stack-popup-check):not(.bookmark-stack-count)")
-        if (span && span.textContent) {
-          globalTooltip.textContent = span.textContent
-          
-          let topPos = rect.top - 45
-          let leftPos = rect.left + rect.width / 2
-          
-          const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
-          const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
-          const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
-          
-          let translateX = "-50%"
-          let translateY = "0%"
+  // PHASE 2: WRITES
+  itemData.forEach(({ item, scale }) => {
+    // Apply scaling and smooth z-index
+    item.style.setProperty("transform", `scale(${scale})`, "important")
+    item.style.zIndex = Math.round(scale * 100)
+  })
 
-          // Handle sidebar and specific taskbar mode positions
-          if (isSidebar) {
-            if (isFlipped) {
-              // Sidebar is on the left side, tooltip should point right
-              leftPos = rect.right + 20
-              topPos = rect.top + rect.height / 2
-              translateX = "0%"
-              translateY = "-50%"
-            } else {
-              // Sidebar is on the right side, tooltip should point left
-              leftPos = rect.left - 20
-              topPos = rect.top + rect.height / 2
-              translateX = "-100%"
-              translateY = "-50%"
-            }
-          } else if (isTaskbarTop) {
-            topPos = rect.bottom + 20
-            translateX = "-50%"
-            translateY = "0%"
-          } else if (isTaskbarLeft) {
+  // Update global tooltip for the item under cursor
+  const globalTooltip = document.getElementById("macos-global-tooltip")
+  if (globalTooltip) {
+    // Find the element with highest scale
+    let maxData = null
+    let highestScale = 1.1 // Minimum scale to show tooltip
+
+    itemData.forEach((data) => {
+      if (data.scale > highestScale) {
+        highestScale = data.scale
+        maxData = data
+      }
+    })
+
+    if (maxData && highestScale > 1.2) {
+      // Only show if significantly hovered
+      const { item, rect } = maxData
+      const span = item.querySelector(
+        ".bookmark-stack-popup-label, span:not(.bookmark-icon-fallback):not(.bookmark-stack-popup-check):not(.bookmark-stack-count)",
+      )
+      if (span && span.textContent) {
+        globalTooltip.textContent = span.textContent
+
+        let topPos = rect.top - 45
+        let leftPos = rect.left + rect.width / 2
+
+        const isTaskbarTop = document.body.classList.contains(
+          "bookmark-taskbar-top-mode",
+        )
+        const isTaskbarLeft = document.body.classList.contains(
+          "bookmark-taskbar-left-mode",
+        )
+        const isTaskbarRight = document.body.classList.contains(
+          "bookmark-taskbar-right-mode",
+        )
+
+        let translateX = "-50%"
+        let translateY = "0%"
+
+        // Handle sidebar and specific taskbar mode positions
+        if (isSidebar) {
+          if (isFlipped) {
+            // Sidebar is on the left side, tooltip should point right
             leftPos = rect.right + 20
             topPos = rect.top + rect.height / 2
             translateX = "0%"
             translateY = "-50%"
-          } else if (isTaskbarRight) {
+          } else {
+            // Sidebar is on the right side, tooltip should point left
             leftPos = rect.left - 20
             topPos = rect.top + rect.height / 2
             translateX = "-100%"
             translateY = "-50%"
-          } else {
-            // Taskbar Bottom (default)
-            translateX = "-50%"
-            translateY = "0%"
           }
-
-          globalTooltip.style.setProperty("--translate-x", translateX)
-          globalTooltip.style.setProperty("--translate-y", translateY)
-          globalTooltip.style.transform = ""
-          
-          if (!globalTooltip.classList.contains("show")) {
-            globalTooltip.style.transition = "none"
-            globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
-            globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
-            globalTooltip.offsetHeight // Force reflow
-            globalTooltip.style.transition = ""
-            globalTooltip.classList.add("show")
-          } else {
-            globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
-            globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
-          }
+        } else if (isTaskbarTop) {
+          topPos = rect.bottom + 20
+          translateX = "-50%"
+          translateY = "0%"
+        } else if (isTaskbarLeft) {
+          leftPos = rect.right + 20
+          topPos = rect.top + rect.height / 2
+          translateX = "0%"
+          translateY = "-50%"
+        } else if (isTaskbarRight) {
+          leftPos = rect.left - 20
+          topPos = rect.top + rect.height / 2
+          translateX = "-100%"
+          translateY = "-50%"
+        } else {
+          // Taskbar Bottom (default)
+          translateX = "-50%"
+          translateY = "0%"
         }
-      } else {
-        globalTooltip.classList.remove("show")
+
+        globalTooltip.style.setProperty("--translate-x", translateX)
+        globalTooltip.style.setProperty("--translate-y", translateY)
+        globalTooltip.style.transform = ""
+
+        if (!globalTooltip.classList.contains("show")) {
+          globalTooltip.style.transition = "none"
+          globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
+          globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
+          globalTooltip.offsetHeight // Force reflow
+          globalTooltip.style.transition = ""
+          globalTooltip.classList.add("show")
+        } else {
+          globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
+          globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
+        }
       }
+    } else {
+      globalTooltip.classList.remove("show")
     }
+  }
 
   rafId = null
 }
 
+document.addEventListener(
+  "mousemove",
+  (e) => {
+    if (!macosHoverEnabled) return
 
-document.addEventListener("mousemove", (e) => {
-  if (!macosHoverEnabled) return
+    const container =
+      e.target.closest("#bookmarks-container") ||
+      e.target.closest("#hidden-bookmarks-popup") ||
+      e.target.closest("#bookmark-stack-popup")
 
-  const container =
-    e.target.closest("#bookmarks-container") ||
-    e.target.closest("#hidden-bookmarks-popup") ||
-    e.target.closest("#bookmark-stack-popup")
-
-  if (container) {
-    // Boost container z-index so its tooltips render above other popups
-    container.style.setProperty("z-index", "10030", "important")
-    mouseX = e.clientX
-    mouseY = e.clientY
-    isHoveringContainer = true
-    wasHoveringContainer = true
-    if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
-  } else if (wasHoveringContainer) {
-    isHoveringContainer = false
-    wasHoveringContainer = false
-    if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
-  }
-}, { passive: true })
+    if (container) {
+      // Boost container z-index so its tooltips render above other popups
+      container.style.setProperty("z-index", "10030", "important")
+      mouseX = e.clientX
+      mouseY = e.clientY
+      isHoveringContainer = true
+      wasHoveringContainer = true
+      if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
+    } else if (wasHoveringContainer) {
+      isHoveringContainer = false
+      wasHoveringContainer = false
+      if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
+    }
+  },
+  { passive: true },
+)
 
 function groupSelected() {
-  if (selectedIndices.size === 0) return;
-  const snapshot = captureBookmarkSnapshot();
-  const bookmarks = getBookmarks();
-  
-  const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a);
-  const itemsToGroup = sortedIndices.map(idx => bookmarks[idx]);
-  itemsToGroup.reverse();
-  
-  const minIndex = Math.min(...Array.from(selectedIndices));
-  const newStack = createBookmarkStack(null, itemsToGroup);
-  
+  if (selectedIndices.size === 0) return
+  const snapshot = captureBookmarkSnapshot()
+  const bookmarks = getBookmarks()
+
+  const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a)
+  const itemsToGroup = sortedIndices.map((idx) => bookmarks[idx])
+  itemsToGroup.reverse()
+
+  const minIndex = Math.min(...Array.from(selectedIndices))
+  const newStack = createBookmarkStack(null, itemsToGroup)
+
   for (const idx of sortedIndices) {
-    bookmarks.splice(idx, 1);
+    bookmarks.splice(idx, 1)
   }
-  
-  bookmarks.splice(minIndex, 0, newStack);
-  
-  setBookmarks(bookmarks);
-  saveBookmarks();
-  cancelSelection();
-  renderBookmarks();
-  showBookmarkUndo(geti18n().bookmark_grouped || "Bookmarks grouped", snapshot);
+
+  bookmarks.splice(minIndex, 0, newStack)
+
+  setBookmarks(bookmarks)
+  saveBookmarks()
+  cancelSelection()
+  renderBookmarks()
+  showBookmarkUndo(geti18n().bookmark_grouped || "Bookmarks grouped", snapshot)
 }
 
 function moveSelected() {
-  if (selectedIndices.size === 0) return;
-  
-  const groups = getBookmarkGroups();
-  const activeGroupId = getActiveGroupId();
-  
-  const groupNames = groups.map((g, i) => `${i + 1}. ${g.name || "Group " + (i+1)}`).join("\n");
-  const result = prompt(`${geti18n().bookmark_move_prompt || "Move to group (enter number):"}\n${groupNames}`);
-  
-  if (!result) return;
-  const targetIndex = parseInt(result) - 1;
-  if (isNaN(targetIndex) || targetIndex < 0 || targetIndex >= groups.length) return;
-  
-  const targetGroup = groups[targetIndex];
-  if (targetGroup.id === activeGroupId) return;
-  
-  const snapshot = captureBookmarkSnapshot();
-  const bookmarks = getBookmarks();
-  const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a);
-  const itemsToMove = sortedIndices.map(idx => bookmarks[idx]);
-  itemsToMove.reverse();
-  
-  targetGroup.items = targetGroup.items || [];
-  targetGroup.items.push(...itemsToMove);
-  
+  if (selectedIndices.size === 0) return
+
+  const groups = getBookmarkGroups()
+  const activeGroupId = getActiveGroupId()
+
+  const groupNames = groups
+    .map((g, i) => `${i + 1}. ${g.name || "Group " + (i + 1)}`)
+    .join("\n")
+  const result = prompt(
+    `${geti18n().bookmark_move_prompt || "Move to group (enter number):"}\n${groupNames}`,
+  )
+
+  if (!result) return
+  const targetIndex = parseInt(result) - 1
+  if (isNaN(targetIndex) || targetIndex < 0 || targetIndex >= groups.length)
+    return
+
+  const targetGroup = groups[targetIndex]
+  if (targetGroup.id === activeGroupId) return
+
+  const snapshot = captureBookmarkSnapshot()
+  const bookmarks = getBookmarks()
+  const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a)
+  const itemsToMove = sortedIndices.map((idx) => bookmarks[idx])
+  itemsToMove.reverse()
+
+  targetGroup.items = targetGroup.items || []
+  targetGroup.items.push(...itemsToMove)
+
   for (const idx of sortedIndices) {
-    bookmarks.splice(idx, 1);
+    bookmarks.splice(idx, 1)
   }
-  
-  setBookmarks(bookmarks);
-  setBookmarkGroups(groups);
-  saveBookmarks();
-  cancelSelection();
-  renderBookmarks();
-  showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot);
+
+  setBookmarks(bookmarks)
+  setBookmarkGroups(groups)
+  saveBookmarks()
+  cancelSelection()
+  renderBookmarks()
+  showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
 }
 
-
 // Fix for hidden scrollbars preventing scrolling (especially horizontal in taskbar mode)
-document.addEventListener('wheel', (e) => {
-  const container = e.target.closest('#bookmarks-container') || e.target.closest('.bookmark-groups-container') || e.target.closest('#hidden-bookmarks-popup');
-  if (!container) return;
+document.addEventListener(
+  "wheel",
+  (e) => {
+    const container =
+      e.target.closest("#bookmarks-container") ||
+      e.target.closest(".bookmark-groups-container") ||
+      e.target.closest("#hidden-bookmarks-popup")
+    if (!container) return
 
-  let isHorizontalScroll = horizontalScrollCache.get(container);
-  if (isHorizontalScroll === undefined) {
-    const style = window.getComputedStyle(container);
-    isHorizontalScroll = (style.overflowX === 'auto' || style.overflowX === 'scroll') && (style.overflowY === 'hidden' || style.overflowY === 'clip');
-    horizontalScrollCache.set(container, isHorizontalScroll);
-  }
-
-  if (isHorizontalScroll) {
-    if (e.deltaY !== 0 && !e.shiftKey) {
-      e.preventDefault();
-      container.scrollLeft += e.deltaY > 0 ? 100 : -100;
+    let isHorizontalScroll = horizontalScrollCache.get(container)
+    if (isHorizontalScroll === undefined) {
+      const style = window.getComputedStyle(container)
+      isHorizontalScroll =
+        (style.overflowX === "auto" || style.overflowX === "scroll") &&
+        (style.overflowY === "hidden" || style.overflowY === "clip")
+      horizontalScrollCache.set(container, isHorizontalScroll)
     }
-  }
-}, { passive: false });
+
+    if (isHorizontalScroll) {
+      if (e.deltaY !== 0 && !e.shiftKey) {
+        e.preventDefault()
+        container.scrollLeft += e.deltaY > 0 ? 100 : -100
+      }
+    }
+  },
+  { passive: false },
+)

@@ -15,18 +15,34 @@ import { showToast } from "../../utils/toast.js"
 import { getImageUrl } from "../../services/imageStore.js"
 
 const PREDEFINED_FONTS = [
-  { label: "Space Grotesk", value: "'Space Grotesk', sans-serif", google: true },
+  {
+    label: "Space Grotesk",
+    value: "'Space Grotesk', sans-serif",
+    google: true,
+  },
   { label: "Inter", value: "'Inter', sans-serif", google: true },
-  { label: "Plus Jakarta Sans", value: "'Plus Jakarta Sans', sans-serif", google: true },
+  {
+    label: "Plus Jakarta Sans",
+    value: "'Plus Jakarta Sans', sans-serif",
+    google: true,
+  },
   { label: "Outfit", value: "'Outfit', sans-serif", google: true },
-  { label: "Bricolage Grotesque", value: "'Bricolage Grotesque', sans-serif", google: true },
+  {
+    label: "Bricolage Grotesque",
+    value: "'Bricolage Grotesque', sans-serif",
+    google: true,
+  },
   { label: "Poppins", value: "'Poppins', sans-serif", google: true },
   { label: "Roboto", value: "'Roboto', sans-serif", google: true },
   { label: "Montserrat", value: "'Montserrat', sans-serif", google: true },
   { label: "Nunito", value: "'Nunito', sans-serif", google: true },
   { label: "Sora", value: "'Sora', sans-serif", google: true },
   { label: "Syne", value: "'Syne', sans-serif", google: true },
-  { label: "Playfair Display", value: "'Playfair Display', serif", google: true },
+  {
+    label: "Playfair Display",
+    value: "'Playfair Display', serif",
+    google: true,
+  },
   { label: "Cinzel", value: "'Cinzel', serif", google: true },
   { label: "Caveat", value: "'Caveat', cursive", google: true },
   { label: "Pacifico", value: "'Pacifico', cursive", google: true },
@@ -90,8 +106,16 @@ const PREDEFINED_FONTS = [
   { label: "E1234", value: "'E1234', sans-serif", tag: "Clock/Date" },
   { label: "SAIBA-45", value: "'SAIBA-45', sans-serif", tag: "Clock/Date" },
   { label: "Reiko", value: "'Reiko', sans-serif", tag: "Clock/Date" },
-  { label: "Aquire Light", value: "'Aquire Light', sans-serif", tag: "Clock/Date" },
-  { label: "Aquire Bold", value: "'Aquire Bold', sans-serif", tag: "Clock/Date" },
+  {
+    label: "Aquire Light",
+    value: "'Aquire Light', sans-serif",
+    tag: "Clock/Date",
+  },
+  {
+    label: "Aquire Bold",
+    value: "'Aquire Bold', sans-serif",
+    tag: "Clock/Date",
+  },
   { label: "Aquire", value: "'Aquire', sans-serif", tag: "Clock/Date" },
   { label: "Blanka", value: "'Blanka', sans-serif", tag: "Clock/Date" },
   { label: "Bungee Inline", value: "'Bungee Inline', cursive", google: true },
@@ -405,18 +429,36 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const target = targetSelect ? targetSelect.value : "general"
 
         const prevSettings = getSettings()
-        const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
-        const curFontForDecouple = normalizeFont(prevSettings.font || "'Space Grotesk', sans-serif")
-        const curClockFontForDecouple = normalizeFont(prevSettings.clockFont || prevSettings.font || "'Space Grotesk', sans-serif")
-        
+        const normalizeFont = (f) =>
+          String(f || "")
+            .replace(/['"]/g, "")
+            .split(",")[0]
+            .trim()
+        const curFontForDecouple = normalizeFont(
+          prevSettings.font || "'Space Grotesk', sans-serif",
+        )
+        const curClockFontForDecouple = normalizeFont(
+          prevSettings.clockFont ||
+            prevSettings.font ||
+            "'Space Grotesk', sans-serif",
+        )
+
         if (target === "both") {
           updateSettingCallback("font", value)
           updateSettingCallback("clockFont", value)
         } else if (target === "clock") {
           updateSettingCallback("clockFont", value)
         } else {
-          if (!prevSettings.clockFont || curClockFontForDecouple === curFontForDecouple) {
-            updateSettingCallback("clockFont", prevSettings.clockFont || prevSettings.font || "'Space Grotesk', sans-serif")
+          if (
+            !prevSettings.clockFont ||
+            curClockFontForDecouple === curFontForDecouple
+          ) {
+            updateSettingCallback(
+              "clockFont",
+              prevSettings.clockFont ||
+                prevSettings.font ||
+                "'Space Grotesk', sans-serif",
+            )
           }
           updateSettingCallback("font", value)
         }
@@ -425,9 +467,15 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const currentSettings = getSettings()
         const isTargetClock = target === "clock"
         const allCards = fontGrid.querySelectorAll(".font-item")
-        
-        const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
-        const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+
+        const curFont = normalizeFont(
+          currentSettings.font || "'Space Grotesk', sans-serif",
+        )
+        const curClockFont = normalizeFont(
+          currentSettings.clockFont ||
+            currentSettings.font ||
+            "'Space Grotesk', sans-serif",
+        )
 
         allCards.forEach((c) => {
           const cVal = c.dataset.fontValue
@@ -498,12 +546,27 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           onApplyToGen: () => {
             if (custom || google) loadGoogleFont(label)
             const currentSettings = getSettings()
-            const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
-            const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
-            const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
-            
+            const normalizeFont = (f) =>
+              String(f || "")
+                .replace(/['"]/g, "")
+                .split(",")[0]
+                .trim()
+            const curFont = normalizeFont(
+              currentSettings.font || "'Space Grotesk', sans-serif",
+            )
+            const curClockFont = normalizeFont(
+              currentSettings.clockFont ||
+                currentSettings.font ||
+                "'Space Grotesk', sans-serif",
+            )
+
             if (!currentSettings.clockFont || curClockFont === curFont) {
-              updateSettingCallback("clockFont", currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+              updateSettingCallback(
+                "clockFont",
+                currentSettings.clockFont ||
+                  currentSettings.font ||
+                  "'Space Grotesk', sans-serif",
+              )
             }
             updateSettingCallback("font", value)
 
@@ -788,10 +851,20 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       const isTargetClock = targetSelect.value === "clock"
       const isTargetBoth = targetSelect.value === "both"
       const allCards = DOM.fontGrid.querySelectorAll(".font-item")
-      
-      const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
-      const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
-      const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+
+      const normalizeFont = (f) =>
+        String(f || "")
+          .replace(/['"]/g, "")
+          .split(",")[0]
+          .trim()
+      const curFont = normalizeFont(
+        currentSettings.font || "'Space Grotesk', sans-serif",
+      )
+      const curClockFont = normalizeFont(
+        currentSettings.clockFont ||
+          currentSettings.font ||
+          "'Space Grotesk', sans-serif",
+      )
 
       allCards.forEach((c) => {
         const cVal = c.dataset.fontValue

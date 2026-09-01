@@ -46,7 +46,13 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import { switchSettingsTab, switchBgSubTab, getElementTab, getElementBgSubTab, scrollToSidebarElement } from "./sidebarNavigation.js"
+import {
+  switchSettingsTab,
+  switchBgSubTab,
+  getElementTab,
+  getElementBgSubTab,
+  scrollToSidebarElement,
+} from "./sidebarNavigation.js"
 import { initLcpCustomDropdowns } from "../../utils/lcpDropdowns.js"
 import {
   buildMaterial3Scheme,
@@ -106,11 +112,19 @@ const BUG_REPORT_FORM_URLS = {
   en: "https://docs.google.com/forms/d/e/1FAIpQLSeO4hVhXSx1yz3nr2WEKnmJUO3JJWaB0guFGNGzISjoB5hc1A/viewform?usp=publish-editor",
 }
 
-const DEFAULT_WEATHER_FORECAST_ENDPOINT = "https://api.open-meteo.com/v1/forecast"
+const DEFAULT_WEATHER_FORECAST_ENDPOINT =
+  "https://api.open-meteo.com/v1/forecast"
 const DEFAULT_WEATHER_GEOCODING_ENDPOINT =
   "https://geocoding-api.open-meteo.com/v1/search"
 const WEATHER_API_REQUIRED_PARAMS = {
-  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  forecast: [
+    "latitude",
+    "longitude",
+    "current",
+    "daily",
+    "timezone",
+    "forecast_days",
+  ],
   geocoding: ["name", "count", "language", "format"],
 }
 
@@ -124,7 +138,10 @@ function syncUninstallSurveyLanguage(language) {
       () => {
         const error = window.chrome?.runtime?.lastError
         if (error) {
-          console.warn("Could not sync uninstall survey language:", error.message)
+          console.warn(
+            "Could not sync uninstall survey language:",
+            error.message,
+          )
         }
       },
     )
@@ -137,15 +154,21 @@ export function updateMediaSaveButtonsState() {
   const currentBg = settings.background
   const userBackgrounds = settings.userBackgrounds || []
   const i18n = geti18n()
-  
-  const isSaved = userBackgrounds.some(bg => {
-    if (typeof bg === "object") return bg.id === currentBg || (bg.photoUrl && bg.photoUrl === currentBg)
+
+  const isSaved = userBackgrounds.some((bg) => {
+    if (typeof bg === "object")
+      return bg.id === currentBg || (bg.photoUrl && bg.photoUrl === currentBg)
     return bg === currentBg
   })
 
   const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
   if (unsplashSaveBtn) {
-    if (isSaved && currentBg && (currentBg.includes("unsplash.com") || currentBg.startsWith("idb-img-unsplash"))) {
+    if (
+      isSaved &&
+      currentBg &&
+      (currentBg.includes("unsplash.com") ||
+        currentBg.startsWith("idb-img-unsplash"))
+    ) {
       unsplashSaveBtn.disabled = true
       unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
     } else {
@@ -156,7 +179,12 @@ export function updateMediaSaveButtonsState() {
 
   const picsumSaveBtn = document.getElementById("picsum-save-btn")
   if (picsumSaveBtn) {
-    if (isSaved && currentBg && (currentBg.includes("picsum.photos") || currentBg.startsWith("idb-img-picsum"))) {
+    if (
+      isSaved &&
+      currentBg &&
+      (currentBg.includes("picsum.photos") ||
+        currentBg.startsWith("idb-img-picsum"))
+    ) {
       picsumSaveBtn.disabled = true
       picsumSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved!"}</span>`
     } else {
@@ -637,7 +665,7 @@ export function setupGeneralEventHandlers(
         btn.className = "clock-style-card compact-style-card"
         btn.dataset.value = opt.value
         if (opt.value === currentLang) btn.classList.add("active")
-        
+
         const textSpan = document.createElement("span")
         textSpan.className = "clock-style-name"
         textSpan.textContent = opt.textContent
@@ -649,7 +677,7 @@ export function setupGeneralEventHandlers(
           badge.textContent = opt.dataset.badge
           btn.appendChild(badge)
         }
-        
+
         btn.onclick = () => {
           if (btn.classList.contains("active")) return
           DOM.languageSelect.value = opt.value
@@ -1031,7 +1059,7 @@ export function setupGeneralEventHandlers(
       if (prevPreset === "custom") {
         STYLE_PRESETS.custom = {}
         const keysToTrack = Object.keys(STYLE_PRESETS.clean || {})
-        keysToTrack.forEach(k => {
+        keysToTrack.forEach((k) => {
           STYLE_PRESETS.custom[k] = currentSettings[k]
         })
       }
@@ -1046,7 +1074,10 @@ export function setupGeneralEventHandlers(
         compact: "Compact",
         custom: "Custom",
       }
-      const presetName = btn.querySelector(".style-preset-name")?.textContent || presetNames[presetId] || presetId
+      const presetName =
+        btn.querySelector(".style-preset-name")?.textContent ||
+        presetNames[presetId] ||
+        presetId
       showToast(`Style preset: ${presetName}`, {
         type: "success",
         undoFn: () => applyInterfaceStylePreset(prevPreset),
@@ -1212,8 +1243,6 @@ export function setupGeneralEventHandlers(
     })
   }
 
-
-
   // Sidebar toggle and close
   DOM.settingsToggle.addEventListener("click", () => {
     DOM.settingsSidebar.classList.add("open")
@@ -1273,13 +1302,16 @@ export function setupGeneralEventHandlers(
   })
   document.addEventListener("click", (e) => {
     if (document.body.classList.contains("first-run-tour-active")) return
-    
+
     // Use composedPath() to check if the click originated in the sidebar,
     // which fixes the bug where replacing innerHTML of a clicked button
     // causes e.target to be detached from the DOM, tricking the contains() check.
     const path = e.composedPath ? e.composedPath() : []
-    const clickedInSidebar = path.includes(DOM.settingsSidebar) || DOM.settingsSidebar.contains(e.target)
-    const clickedOnToggle = path.includes(DOM.settingsToggle) || DOM.settingsToggle.contains(e.target)
+    const clickedInSidebar =
+      path.includes(DOM.settingsSidebar) ||
+      DOM.settingsSidebar.contains(e.target)
+    const clickedOnToggle =
+      path.includes(DOM.settingsToggle) || DOM.settingsToggle.contains(e.target)
 
     if (!clickedInSidebar && !clickedOnToggle) {
       DOM.settingsSidebar.classList.remove("open")
@@ -1301,25 +1333,29 @@ export function setupGeneralEventHandlers(
 
   let scrollSaveTimer = null
   let btnRafId = null
-  
-  sidebarContent.addEventListener("scroll", () => {
-    const top = sidebarContent.scrollTop
-    clearTimeout(scrollSaveTimer)
-    
-    scrollSaveTimer = setTimeout(() => {
-      sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
-    }, 200)
-    
-    if (sidebarScrollTopBtn && !btnRafId) {
-      btnRafId = requestAnimationFrame(() => {
-        btnRafId = null
-        const isVisible = top > 200
-        if (sidebarScrollTopBtn.classList.contains("visible") !== isVisible) {
-          sidebarScrollTopBtn.classList.toggle("visible", isVisible)
-        }
-      })
-    }
-  }, { passive: true })
+
+  sidebarContent.addEventListener(
+    "scroll",
+    () => {
+      const top = sidebarContent.scrollTop
+      clearTimeout(scrollSaveTimer)
+
+      scrollSaveTimer = setTimeout(() => {
+        sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
+      }, 200)
+
+      if (sidebarScrollTopBtn && !btnRafId) {
+        btnRafId = requestAnimationFrame(() => {
+          btnRafId = null
+          const isVisible = top > 200
+          if (sidebarScrollTopBtn.classList.contains("visible") !== isVisible) {
+            sidebarScrollTopBtn.classList.toggle("visible", isVisible)
+          }
+        })
+      }
+    },
+    { passive: true },
+  )
 
   if (sidebarScrollTopBtn) {
     sidebarScrollTopBtn.addEventListener("click", () => {
@@ -1328,7 +1364,9 @@ export function setupGeneralEventHandlers(
   }
 
   // Sidebar Floating Quick Actions Toggle
-  const quickActionsToggleBtn = document.getElementById("sidebar-quick-actions-toggle")
+  const quickActionsToggleBtn = document.getElementById(
+    "sidebar-quick-actions-toggle",
+  )
   const quickActionsContainer = document.getElementById("sidebar-quick-actions")
   if (quickActionsToggleBtn && quickActionsContainer) {
     const STORAGE_KEY = "sidebarQuickActionsCollapsed"
@@ -1346,12 +1384,16 @@ export function setupGeneralEventHandlers(
     smoothScrollCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("smoothScrollEnabled", e.target.checked)
       if (sidebarContent) {
-        sidebarContent.style.scrollBehavior = e.target.checked ? "smooth" : "auto"
+        sidebarContent.style.scrollBehavior = e.target.checked
+          ? "smooth"
+          : "auto"
       }
     })
   }
 
-  const perfHoverModeCheckbox = document.getElementById("perf-hover-mode-checkbox")
+  const perfHoverModeCheckbox = document.getElementById(
+    "perf-hover-mode-checkbox",
+  )
   if (perfHoverModeCheckbox) {
     perfHoverModeCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("perfHoverMode", e.target.checked)
@@ -1362,7 +1404,7 @@ export function setupGeneralEventHandlers(
   const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
   const snapGridSizeRow = document.getElementById("snap-grid-size-row")
   const snapGridSizeInput = document.getElementById("snap-grid-size-input")
-  
+
   if (snapToGridCheckbox) {
     snapToGridCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("snapToGrid", e.target.checked)
@@ -1461,7 +1503,8 @@ export function setupGeneralEventHandlers(
       )
 
       if (!selectedLanguage) return
-      const formUrl = BUG_REPORT_FORM_URLS[selectedLanguage] || BUG_REPORT_FORM_URLS.en
+      const formUrl =
+        BUG_REPORT_FORM_URLS[selectedLanguage] || BUG_REPORT_FORM_URLS.en
       window.open(formUrl, "_blank", "noopener,noreferrer")
     })
   }
@@ -1479,7 +1522,7 @@ export function setupGeneralEventHandlers(
         ".settings-section",
         "#page-title-input",
         "#language-select",
-        "#accent-color-group"
+        "#accent-color-group",
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
@@ -1518,16 +1561,22 @@ export function setupGeneralEventHandlers(
           // Main Section Title
           const toggle = section.querySelector(".section-toggle")
           if (toggle) {
-            const liveBadge = toggle.querySelector(".section-live-badge, .section-count")
+            const liveBadge = toggle.querySelector(
+              ".section-live-badge, .section-count",
+            )
             if (liveBadge) {
               liveBadgeText = liveBadge.textContent.trim()
             }
-            const titleSpan = toggle.querySelector("span[data-i18n], span:not(.section-live-badge):not(.section-count)")
+            const titleSpan = toggle.querySelector(
+              "span[data-i18n], span:not(.section-live-badge):not(.section-count)",
+            )
             if (titleSpan) {
               title = titleSpan.textContent.trim()
             } else {
               const clone = toggle.cloneNode(true)
-              clone.querySelectorAll(".section-live-badge, .section-count, i").forEach((el) => el.remove())
+              clone
+                .querySelectorAll(".section-live-badge, .section-count, i")
+                .forEach((el) => el.remove())
               title = clone.textContent.trim()
             }
             const icon = toggle.querySelector("i")
@@ -1541,9 +1590,13 @@ export function setupGeneralEventHandlers(
           const settingLabel = section.querySelector(":scope > .setting-label")
 
           if (header) {
-            const liveBadge = header.querySelector(".section-live-badge, .section-count")
+            const liveBadge = header.querySelector(
+              ".section-live-badge, .section-count",
+            )
             if (liveBadge) liveBadgeText = liveBadge.textContent.trim()
-            const span = header.querySelector("span[data-i18n], span:not(.section-live-badge):not(.section-count)")
+            const span = header.querySelector(
+              "span[data-i18n], span:not(.section-live-badge):not(.section-count)",
+            )
             title = span ? span.textContent.trim() : header.textContent.trim()
             const icon = header.querySelector("i.group-icon, i")
             if (icon) iconClass = icon.className
@@ -1566,16 +1619,21 @@ export function setupGeneralEventHandlers(
           addedTitles.add(title)
 
           const targetTab = getElementTab(section)
-          const targetBgSubTab = targetTab === "background" ? getElementBgSubTab(section) : null
+          const targetBgSubTab =
+            targetTab === "background" ? getElementBgSubTab(section) : null
 
           let tabBadgeLabel = ""
           if (targetTab === "appearance") {
             tabBadgeLabel = i18n.settings_tab_appearance || "Appearance"
           } else if (targetTab === "background") {
-            if (targetBgSubTab === "media") tabBadgeLabel = i18n.bg_subtab_media || "Media"
-            else if (targetBgSubTab === "colors") tabBadgeLabel = i18n.bg_subtab_colors || "Colors"
-            else if (targetBgSubTab === "animated") tabBadgeLabel = i18n.bg_subtab_animated || "Live FX"
-            else if (targetBgSubTab === "adjust") tabBadgeLabel = i18n.bg_subtab_adjust || "Adjust"
+            if (targetBgSubTab === "media")
+              tabBadgeLabel = i18n.bg_subtab_media || "Media"
+            else if (targetBgSubTab === "colors")
+              tabBadgeLabel = i18n.bg_subtab_colors || "Colors"
+            else if (targetBgSubTab === "animated")
+              tabBadgeLabel = i18n.bg_subtab_animated || "Live FX"
+            else if (targetBgSubTab === "adjust")
+              tabBadgeLabel = i18n.bg_subtab_adjust || "Adjust"
             else tabBadgeLabel = i18n.settings_tab_background || "Background"
           } else if (targetTab === "widgets") {
             tabBadgeLabel = i18n.settings_tab_widgets || "Widgets"
@@ -1627,7 +1685,11 @@ export function setupGeneralEventHandlers(
               scrollToSidebarElement(section, true)
             } else {
               if (targetTab) switchSettingsTab(targetTab)
-              if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
+              if (
+                targetTab === "background" &&
+                targetBgSubTab &&
+                typeof switchBgSubTab === "function"
+              ) {
                 switchBgSubTab(targetBgSubTab)
               }
             }
@@ -1656,7 +1718,9 @@ export function setupGeneralEventHandlers(
 
   const fetchGithubStars = async () => {
     try {
-      const response = await fetch("https://api.github.com/repos/ChickenSoup269/Zero-Start-Page")
+      const response = await fetch(
+        "https://api.github.com/repos/ChickenSoup269/Zero-Start-Page",
+      )
       if (response.ok) {
         const data = await response.json()
         const countSpan = document.getElementById("github-star-count")
@@ -1695,10 +1759,19 @@ export function setupGeneralEventHandlers(
 
   // Card collapse/expand logic
   document.addEventListener("click", (e) => {
-    if (e.target.closest("button, input, select, a, .bg-card-reset-btn, .bg-step-btn, .bg-9grid-btn")) return
-    const title = e.target.closest(".bg-control-title, .gradient-v2-section-title, .setting-group-title")
+    if (
+      e.target.closest(
+        "button, input, select, a, .bg-card-reset-btn, .bg-step-btn, .bg-9grid-btn",
+      )
+    )
+      return
+    const title = e.target.closest(
+      ".bg-control-title, .gradient-v2-section-title, .setting-group-title",
+    )
     if (title) {
-      const card = title.closest(".bg-control-card, .gradient-v2-panel, .setting-group-collapsible")
+      const card = title.closest(
+        ".bg-control-card, .gradient-v2-panel, .setting-group-collapsible",
+      )
       if (card) {
         card.classList.toggle("is-collapsed")
       }
@@ -1707,7 +1780,9 @@ export function setupGeneralEventHandlers(
     const advancedBtn = e.target.closest(".settings-advanced-toggle-btn")
     if (advancedBtn) {
       advancedBtn.classList.toggle("is-open")
-      const panel = advancedBtn.nextElementSibling || advancedBtn.parentElement.querySelector(".settings-advanced-panel")
+      const panel =
+        advancedBtn.nextElementSibling ||
+        advancedBtn.parentElement.querySelector(".settings-advanced-panel")
       if (panel) {
         panel.classList.toggle("is-open")
       }
@@ -1951,21 +2026,15 @@ export function setupGeneralEventHandlers(
         }
       }
 
-      const authorName =
-        settings.unsplashLastCredit?.authorName ||
-        "Unsplash"
+      const authorName = settings.unsplashLastCredit?.authorName || "Unsplash"
       const newBg = {
         uid: "bg-" + Date.now(), // Unique entry ID
         id: savedBgId, // Source image ID
         authorName: authorName,
         type: "image",
         date: new Date().toISOString(),
-        photoUrl:
-          settings.unsplashLastCredit?.photoUrl ||
-          "",
-        authorUrl:
-          settings.unsplashLastCredit?.authorUrl ||
-          "",
+        photoUrl: settings.unsplashLastCredit?.photoUrl || "",
+        authorUrl: settings.unsplashLastCredit?.authorUrl || "",
         settings: getBackgroundSnapshot(settings),
       }
 
@@ -1993,7 +2062,9 @@ export function setupGeneralEventHandlers(
 
       settings.userBackgrounds.push(newBg)
       const showedPerformanceWarning =
-        maybeShowLocalBackgroundPerformanceWarning(settings.userBackgrounds.length)
+        maybeShowLocalBackgroundPerformanceWarning(
+          settings.userBackgrounds.length,
+        )
       saveSettings()
       if (savedBgId !== currentBg) {
         updateSetting("unsplashLastCredit", {
@@ -2005,7 +2076,9 @@ export function setupGeneralEventHandlers(
       }
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       if (!showedPerformanceWarning) {
-        showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
+        showAlert(
+          geti18n().alert_bg_saved || "Background saved to Local Themes!",
+        )
       }
 
       // Allow saving again (e.g. if they change blur/brightness)
@@ -2023,7 +2096,10 @@ export function setupGeneralEventHandlers(
 
   if (DOM.unsplashAutoRandomSelect) {
     DOM.unsplashAutoRandomSelect.addEventListener("change", () => {
-      handleSettingUpdate("unsplashAutoRandomMode", DOM.unsplashAutoRandomSelect.value)
+      handleSettingUpdate(
+        "unsplashAutoRandomMode",
+        DOM.unsplashAutoRandomSelect.value,
+      )
     })
   }
 
@@ -2066,11 +2142,13 @@ export function setupGeneralEventHandlers(
           const info = result.info
           const isFlickr = provider === "loremflickr"
           const providerName = isFlickr ? "LoremFlickr" : "picsum.photos"
-          const providerHref = isFlickr ? "https://loremflickr.com" : "https://picsum.photos"
+          const providerHref = isFlickr
+            ? "https://loremflickr.com"
+            : "https://picsum.photos"
           if (info) {
             const authorLink = info.url
               ? `<a href="${info.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${info.author || "Unknown"}</a>`
-              : (info.author || "Unknown")
+              : info.author || "Unknown"
             picsumCreditEl.innerHTML = `📷 ${authorLink} · <a href="${providerHref}" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">${providerName}</a>`
           } else {
             picsumCreditEl.innerHTML = `Photo via <a href="${providerHref}" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">${providerName}</a>`
@@ -2087,7 +2165,6 @@ export function setupGeneralEventHandlers(
       }
     })
   }
-
 
   if (picsumSaveBtn) {
     picsumSaveBtn.addEventListener("click", async () => {
@@ -2149,16 +2226,24 @@ export function setupGeneralEventHandlers(
   // ─── Local Gallery Random ───────────────────────────────────────────────
   const localRandomBtn = document.getElementById("local-random-btn")
   const localRandomFavBtn = document.getElementById("local-random-fav-btn")
-  const localAutoRandomSelect = document.getElementById("local-auto-random-select")
+  const localAutoRandomSelect = document.getElementById(
+    "local-auto-random-select",
+  )
 
   function pickRandomLocalBg(favoritesOnly = false) {
     const settings = getSettings()
     const userBackgrounds = settings.userBackgrounds || []
     const pool = favoritesOnly
-      ? userBackgrounds.filter((bg) => (typeof bg === "object" ? bg.isFavorite : false))
+      ? userBackgrounds.filter((bg) =>
+          typeof bg === "object" ? bg.isFavorite : false,
+        )
       : userBackgrounds
     if (!pool.length) {
-      showAlert(favoritesOnly ? "No favorites found! Star some images first." : "No local images saved yet!")
+      showAlert(
+        favoritesOnly
+          ? "No favorites found! Star some images first."
+          : "No local images saved yet!",
+      )
       return
     }
     const current = settings.background
@@ -2579,7 +2664,6 @@ export function setupGeneralEventHandlers(
     }
   })
 
-
   renderUserAccentColors(DOM)
 
   // Background effects
@@ -2608,7 +2692,8 @@ export function setupGeneralEventHandlers(
     const blurVal = next.bgBlur ?? current.bgBlur ?? 0
     const blurDir = next.bgBlurDirection ?? current.bgBlurDirection ?? "none"
     const blurColor = next.bgBlurColor ?? current.bgBlurColor ?? "#000000"
-    const blurOpacity = next.bgBlurColorOpacity ?? current.bgBlurColorOpacity ?? 0
+    const blurOpacity =
+      next.bgBlurColorOpacity ?? current.bgBlurColorOpacity ?? 0
 
     const mainBlurStr = blurDir === "none" ? `blur(${blurVal}px)` : `blur(0px)`
 
@@ -2622,10 +2707,7 @@ export function setupGeneralEventHandlers(
     root.style.setProperty("--bg-pos-x", `${x}%`)
     root.style.setProperty("--bg-pos-y", `${y}%`)
     root.style.setProperty("--bg-filter", filters)
-    root.style.setProperty(
-      "--bg-blur",
-      `${blurVal}px`,
-    )
+    root.style.setProperty("--bg-blur", `${blurVal}px`)
     root.style.setProperty(
       "--bg-brightness",
       `${next.bgBrightness ?? current.bgBrightness ?? 100}%`,
@@ -2635,9 +2717,11 @@ export function setupGeneralEventHandlers(
     if (overlay) {
       if (blurDir !== "none" || blurOpacity > 0) {
         overlay.style.display = "block"
-        overlay.style.backdropFilter = blurDir !== "none" ? `blur(${blurVal}px)` : "none"
-        overlay.style.webkitBackdropFilter = blurDir !== "none" ? `blur(${blurVal}px)` : "none"
-        
+        overlay.style.backdropFilter =
+          blurDir !== "none" ? `blur(${blurVal}px)` : "none"
+        overlay.style.webkitBackdropFilter =
+          blurDir !== "none" ? `blur(${blurVal}px)` : "none"
+
         let maskStr = "none"
         if (blurDir === "left-to-right") {
           maskStr = "linear-gradient(to right, black 0%, transparent 100%)"
@@ -2653,9 +2737,9 @@ export function setupGeneralEventHandlers(
         overlay.style.webkitMaskImage = maskStr
 
         if (blurOpacity > 0) {
-           overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
+          overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
         } else {
-           overlay.style.backgroundColor = "transparent"
+          overlay.style.backgroundColor = "transparent"
         }
       } else {
         overlay.style.display = "none"
@@ -2790,27 +2874,31 @@ export function setupGeneralEventHandlers(
     })
 
     // Mouse wheel over position pad (scrolls Y by default, Shift+scroll adjusts X)
-    DOM.bgPositionPad.addEventListener("wheel", (e) => {
-      e.preventDefault()
-      const delta = Math.sign(e.deltaY || e.deltaX) * -5
-      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        let posX = Number(DOM.bgPosXInput.value || 50) + delta
-        posX = Math.max(0, Math.min(100, posX))
-        DOM.bgPosXInput.value = posX
-        DOM.bgPosXValue.textContent = `${posX}%`
-        syncBgPositionUI(posX, DOM.bgPosYInput.value)
-        applyBackgroundVisualPreview({ bgPositionX: posX })
-        throttleSettingUpdate("bgPositionX", posX)
-      } else {
-        let posY = Number(DOM.bgPosYInput.value || 50) + delta
-        posY = Math.max(0, Math.min(100, posY))
-        DOM.bgPosYInput.value = posY
-        DOM.bgPosYValue.textContent = `${posY}%`
-        syncBgPositionUI(DOM.bgPosXInput.value, posY)
-        applyBackgroundVisualPreview({ bgPositionY: posY })
-        throttleSettingUpdate("bgPositionY", posY)
-      }
-    }, { passive: false })
+    DOM.bgPositionPad.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault()
+        const delta = Math.sign(e.deltaY || e.deltaX) * -5
+        if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+          let posX = Number(DOM.bgPosXInput.value || 50) + delta
+          posX = Math.max(0, Math.min(100, posX))
+          DOM.bgPosXInput.value = posX
+          DOM.bgPosXValue.textContent = `${posX}%`
+          syncBgPositionUI(posX, DOM.bgPosYInput.value)
+          applyBackgroundVisualPreview({ bgPositionX: posX })
+          throttleSettingUpdate("bgPositionX", posX)
+        } else {
+          let posY = Number(DOM.bgPosYInput.value || 50) + delta
+          posY = Math.max(0, Math.min(100, posY))
+          DOM.bgPosYInput.value = posY
+          DOM.bgPosYValue.textContent = `${posY}%`
+          syncBgPositionUI(DOM.bgPosXInput.value, posY)
+          applyBackgroundVisualPreview({ bgPositionY: posY })
+          throttleSettingUpdate("bgPositionY", posY)
+        }
+      },
+      { passive: false },
+    )
   }
 
   // 9-Grid Quick Alignment buttons
@@ -2850,19 +2938,23 @@ export function setupGeneralEventHandlers(
 
   // Wheel scrolling support for all .bg-wheel-scrollable range inputs
   document.querySelectorAll(".bg-wheel-scrollable").forEach((slider) => {
-    slider.addEventListener("wheel", (e) => {
-      e.preventDefault()
-      const step = Number(slider.step) || 1
-      const min = Number(slider.min !== "" ? slider.min : 0)
-      const max = Number(slider.max !== "" ? slider.max : 100)
-      const delta = Math.sign(-e.deltaY) * (step > 1 ? step : 2)
-      let nextVal = Number(slider.value) + delta
-      nextVal = Math.max(min, Math.min(max, nextVal))
-      if (slider.value != nextVal) {
-        slider.value = nextVal
-        slider.dispatchEvent(new Event("input", { bubbles: true }))
-      }
-    }, { passive: false })
+    slider.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault()
+        const step = Number(slider.step) || 1
+        const min = Number(slider.min !== "" ? slider.min : 0)
+        const max = Number(slider.max !== "" ? slider.max : 100)
+        const delta = Math.sign(-e.deltaY) * (step > 1 ? step : 2)
+        let nextVal = Number(slider.value) + delta
+        nextVal = Math.max(min, Math.min(max, nextVal))
+        if (slider.value != nextVal) {
+          slider.value = nextVal
+          slider.dispatchEvent(new Event("input", { bubbles: true }))
+        }
+      },
+      { passive: false },
+    )
   })
 
   // Reset Position Button
@@ -2871,7 +2963,9 @@ export function setupGeneralEventHandlers(
     const icon = DOM.resetBgPositionBtn.querySelector("i")
     if (icon) {
       icon.style.transform = "rotate(-360deg)"
-      setTimeout(() => { if (icon) icon.style.transform = "" }, 400)
+      setTimeout(() => {
+        if (icon) icon.style.transform = ""
+      }, 400)
     }
 
     const defaultX = 50
@@ -2885,7 +2979,8 @@ export function setupGeneralEventHandlers(
     DOM.bgPosYValue.textContent = `${defaultY}%`
     DOM.bgSizeSelect.value = defaultFit
     if (DOM.bgImageScaleInput) DOM.bgImageScaleInput.value = defaultScale
-    if (DOM.bgImageScaleValue) DOM.bgImageScaleValue.textContent = `${defaultScale}%`
+    if (DOM.bgImageScaleValue)
+      DOM.bgImageScaleValue.textContent = `${defaultScale}%`
 
     syncBgImageScaleVisibility()
     syncBgPositionUI(defaultX, defaultY)
@@ -2909,7 +3004,9 @@ export function setupGeneralEventHandlers(
     const icon = DOM.resetBgEffectsBtn.querySelector("i")
     if (icon) {
       icon.style.transform = "rotate(-360deg)"
-      setTimeout(() => { if (icon) icon.style.transform = "" }, 400)
+      setTimeout(() => {
+        if (icon) icon.style.transform = ""
+      }, 400)
     }
 
     DOM.bgBlurInput.value = 0
@@ -2917,7 +3014,8 @@ export function setupGeneralEventHandlers(
     if (DOM.bgBlurDirectionSelect) DOM.bgBlurDirectionSelect.value = "none"
     if (DOM.bgBlurColorInput) DOM.bgBlurColorInput.value = "#000000"
     if (DOM.bgBlurColorOpacityInput) DOM.bgBlurColorOpacityInput.value = 0
-    if (DOM.bgBlurColorOpacityValue) DOM.bgBlurColorOpacityValue.textContent = "0%"
+    if (DOM.bgBlurColorOpacityValue)
+      DOM.bgBlurColorOpacityValue.textContent = "0%"
     DOM.bgBrightnessInput.value = 100
     DOM.bgBrightnessValue.textContent = "100%"
     if (DOM.bgContrastInput) DOM.bgContrastInput.value = 100
@@ -2952,7 +3050,9 @@ export function setupGeneralEventHandlers(
 
   if (DOM.bgBlurDirectionSelect) {
     DOM.bgBlurDirectionSelect.addEventListener("change", () => {
-      applyBackgroundVisualPreview({ bgBlurDirection: DOM.bgBlurDirectionSelect.value })
+      applyBackgroundVisualPreview({
+        bgBlurDirection: DOM.bgBlurDirectionSelect.value,
+      })
       updateSetting("bgBlurDirection", DOM.bgBlurDirectionSelect.value)
       saveSettings()
     })
@@ -2970,8 +3070,13 @@ export function setupGeneralEventHandlers(
       if (DOM.bgBlurColorOpacityValue) {
         DOM.bgBlurColorOpacityValue.textContent = `${DOM.bgBlurColorOpacityInput.value}%`
       }
-      applyBackgroundVisualPreview({ bgBlurColorOpacity: Number(DOM.bgBlurColorOpacityInput.value) })
-      throttleSettingUpdate("bgBlurColorOpacity", Number(DOM.bgBlurColorOpacityInput.value))
+      applyBackgroundVisualPreview({
+        bgBlurColorOpacity: Number(DOM.bgBlurColorOpacityInput.value),
+      })
+      throttleSettingUpdate(
+        "bgBlurColorOpacity",
+        Number(DOM.bgBlurColorOpacityInput.value),
+      )
     })
   }
 
@@ -3050,25 +3155,45 @@ export function setupGeneralEventHandlers(
     const previewTitle = document.getElementById("bookmark-preview-title")
     if (!previewItem || !previewTab) return
 
-    const fontSize = DOM.bookmarkFontSizeInput ? `${DOM.bookmarkFontSizeInput.value}px` : "10px"
-    const iconSize = DOM.bookmarkIconSizeInput ? `${DOM.bookmarkIconSizeInput.value}px` : "42px"
+    const fontSize = DOM.bookmarkFontSizeInput
+      ? `${DOM.bookmarkFontSizeInput.value}px`
+      : "10px"
+    const iconSize = DOM.bookmarkIconSizeInput
+      ? `${DOM.bookmarkIconSizeInput.value}px`
+      : "42px"
     const gap = DOM.bookmarkGapInput ? `${DOM.bookmarkGapInput.value}px` : "8px"
     const textColor = DOM.bookmarkTextColorPicker?.value || "#ffffff"
     const bgColor = DOM.bookmarkBgColorPicker?.value || "#ffffff"
-    const bgOpacity = DOM.bookmarkBgOpacityInput ? Number(DOM.bookmarkBgOpacityInput.value) / 100 : 1
+    const bgOpacity = DOM.bookmarkBgOpacityInput
+      ? Number(DOM.bookmarkBgOpacityInput.value) / 100
+      : 1
     const shadowColor = DOM.bookmarkShadowColorPicker?.value || "#000000"
-    const shadowOpacity = DOM.bookmarkShadowOpacityInput ? Number(DOM.bookmarkShadowOpacityInput.value) / 100 : 0.24
-    const shadowBlur = DOM.bookmarkShadowBlurInput ? `${DOM.bookmarkShadowBlurInput.value}px` : "8px"
+    const shadowOpacity = DOM.bookmarkShadowOpacityInput
+      ? Number(DOM.bookmarkShadowOpacityInput.value) / 100
+      : 0.24
+    const shadowBlur = DOM.bookmarkShadowBlurInput
+      ? `${DOM.bookmarkShadowBlurInput.value}px`
+      : "8px"
 
     const groupBg = DOM.bookmarkGroupBgColorPicker?.value || "#ffffff"
-    const groupBgOpacity = DOM.bookmarkGroupBgOpacityInput ? Number(DOM.bookmarkGroupBgOpacityInput.value) / 100 : 0
+    const groupBgOpacity = DOM.bookmarkGroupBgOpacityInput
+      ? Number(DOM.bookmarkGroupBgOpacityInput.value) / 100
+      : 0
     const groupText = DOM.bookmarkGroupTextColorPicker?.value || "#ffffff"
-    const groupFontSize = DOM.bookmarkGroupFontSizeInput ? `${DOM.bookmarkGroupFontSizeInput.value}px` : "14px"
-    const groupRadius = DOM.bookmarkGroupBorderRadiusInput ? `${DOM.bookmarkGroupBorderRadiusInput.value}px` : "8px"
+    const groupFontSize = DOM.bookmarkGroupFontSizeInput
+      ? `${DOM.bookmarkGroupFontSizeInput.value}px`
+      : "14px"
+    const groupRadius = DOM.bookmarkGroupBorderRadiusInput
+      ? `${DOM.bookmarkGroupBorderRadiusInput.value}px`
+      : "8px"
 
     const hexToRgba = (hex, alpha) => {
       let c = (hex || "#ffffff").replace("#", "")
-      if (c.length === 3) c = c.split("").map((x) => x + x).join("")
+      if (c.length === 3)
+        c = c
+          .split("")
+          .map((x) => x + x)
+          .join("")
       const num = parseInt(c, 16) || 0
       return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`
     }
@@ -3087,7 +3212,9 @@ export function setupGeneralEventHandlers(
     }
 
     if (previewTitle && DOM.hideBookmarkText) {
-      previewTitle.style.display = DOM.hideBookmarkText.checked ? "none" : "block"
+      previewTitle.style.display = DOM.hideBookmarkText.checked
+        ? "none"
+        : "block"
     }
 
     // Apply to group tab preview
@@ -3404,34 +3531,48 @@ export function setupGeneralEventHandlers(
             DOM.bookmarkLayout.value === "default" ? "none" : "flex"
         }
         if (DOM.bookmarkSidebarWidthContainer) {
-          DOM.bookmarkSidebarWidthContainer.style.display = 
+          DOM.bookmarkSidebarWidthContainer.style.display =
             DOM.bookmarkLayout.value === "sidebar" ? "block" : "none"
         }
       })
     }
-    
+
     if (DOM.bookmarkSidebarWidthInput) {
       DOM.bookmarkSidebarWidthInput.addEventListener("input", () => {
         if (DOM.bookmarkSidebarWidthValue) {
           DOM.bookmarkSidebarWidthValue.textContent = `${DOM.bookmarkSidebarWidthInput.value}px`
         }
-        document.documentElement.style.setProperty("--bookmark-group-text-width", `${DOM.bookmarkSidebarWidthInput.value}px`)
-        throttleSettingUpdate("bookmarkSidebarWidth", DOM.bookmarkSidebarWidthInput.value)
+        document.documentElement.style.setProperty(
+          "--bookmark-group-text-width",
+          `${DOM.bookmarkSidebarWidthInput.value}px`,
+        )
+        throttleSettingUpdate(
+          "bookmarkSidebarWidth",
+          DOM.bookmarkSidebarWidthInput.value,
+        )
       })
     }
-    
+
     if (DOM.settingsSidebarWidthInput) {
       DOM.settingsSidebarWidthInput.addEventListener("change", () => {
         if (DOM.settingsSidebarWidthValue) {
           DOM.settingsSidebarWidthValue.textContent = `${DOM.settingsSidebarWidthInput.value}px`
         }
-        document.documentElement.style.setProperty("--sidebar-width", `${DOM.settingsSidebarWidthInput.value}px`)
-        throttleSettingUpdate("settingsSidebarWidth", DOM.settingsSidebarWidthInput.value)
+        document.documentElement.style.setProperty(
+          "--sidebar-width",
+          `${DOM.settingsSidebarWidthInput.value}px`,
+        )
+        throttleSettingUpdate(
+          "settingsSidebarWidth",
+          DOM.settingsSidebarWidthInput.value,
+        )
       })
     }
 
     // Section Reset Handlers
-    const resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
+    const resetBookmarkSizesBtn = document.getElementById(
+      "reset-bookmark-sizes-btn",
+    )
     resetBookmarkSizesBtn?.addEventListener("click", () => {
       if (DOM.bookmarkFontSizeInput) {
         DOM.bookmarkFontSizeInput.value = 10
@@ -3456,7 +3597,9 @@ export function setupGeneralEventHandlers(
       renderBookmarks()
     })
 
-    const resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
+    const resetBookmarkAppearanceBtn = document.getElementById(
+      "reset-bookmark-appearance-btn",
+    )
     resetBookmarkAppearanceBtn?.addEventListener("click", () => {
       if (DOM.bookmarkTextColorPicker) {
         DOM.bookmarkTextColorPicker.value = "#ffffff"
@@ -3480,14 +3623,17 @@ export function setupGeneralEventHandlers(
       }
       if (DOM.bookmarkShadowBlurInput) {
         DOM.bookmarkShadowBlurInput.value = 8
-        if (DOM.bookmarkShadowBlurValue) DOM.bookmarkShadowBlurValue.textContent = "8px"
+        if (DOM.bookmarkShadowBlurValue)
+          DOM.bookmarkShadowBlurValue.textContent = "8px"
         throttleSettingUpdate("bookmarkShadowBlur", 8)
       }
       updateBookmarkLivePreview()
       renderBookmarks()
     })
 
-    const resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
+    const resetBookmarkTabsBtn = document.getElementById(
+      "reset-bookmark-tabs-btn",
+    )
     resetBookmarkTabsBtn?.addEventListener("click", () => {
       if (DOM.bookmarkGroupBgColorPicker) {
         DOM.bookmarkGroupBgColorPicker.value = "#ffffff"
@@ -3508,17 +3654,20 @@ export function setupGeneralEventHandlers(
       }
       if (DOM.bookmarkGroupFontSizeInput) {
         DOM.bookmarkGroupFontSizeInput.value = 14
-        if (DOM.bookmarkGroupFontSizeValue) DOM.bookmarkGroupFontSizeValue.textContent = "14px"
+        if (DOM.bookmarkGroupFontSizeValue)
+          DOM.bookmarkGroupFontSizeValue.textContent = "14px"
         throttleSettingUpdate("bookmarkGroupFontSize", 14)
       }
       if (DOM.bookmarkGroupTextWidthInput) {
         DOM.bookmarkGroupTextWidthInput.value = 120
-        if (DOM.bookmarkGroupTextWidthValue) DOM.bookmarkGroupTextWidthValue.textContent = "120px"
+        if (DOM.bookmarkGroupTextWidthValue)
+          DOM.bookmarkGroupTextWidthValue.textContent = "120px"
         throttleSettingUpdate("bookmarkGroupTextWidth", 120)
       }
       if (DOM.bookmarkGroupBorderRadiusInput) {
         DOM.bookmarkGroupBorderRadiusInput.value = 8
-        if (DOM.bookmarkGroupBorderRadiusValue) DOM.bookmarkGroupBorderRadiusValue.textContent = "8px"
+        if (DOM.bookmarkGroupBorderRadiusValue)
+          DOM.bookmarkGroupBorderRadiusValue.textContent = "8px"
         throttleSettingUpdate("bookmarkGroupBorderRadius", 8)
       }
       if (DOM.bookmarkGroupShowCount) {
@@ -3554,7 +3703,9 @@ export function setupGeneralEventHandlers(
       renderBookmarks()
     })
 
-    const resetBookmarkLayoutBtn = document.getElementById("reset-bookmark-layout-btn")
+    const resetBookmarkLayoutBtn = document.getElementById(
+      "reset-bookmark-layout-btn",
+    )
     resetBookmarkLayoutBtn?.addEventListener("click", () => {
       if (DOM.bookmarkLayout) {
         DOM.bookmarkLayout.value = "default"
@@ -3707,8 +3858,7 @@ export function setupGeneralEventHandlers(
           key: "current",
           icon: "fa-solid fa-arrow-up-right-from-square",
           label:
-            i18n.bookmark_open_behavior_current_choice ||
-            "Open in this tab",
+            i18n.bookmark_open_behavior_current_choice || "Open in this tab",
           description:
             i18n.bookmark_open_behavior_current_desc ||
             "Clicking a bookmark replaces the Start Page in the current tab.",
@@ -4478,7 +4628,9 @@ export function setupGeneralEventHandlers(
   const decodeCodeForType = (code, type) => {
     const normalizedCode =
       type === "backgroundAnimation"
-        ? String(code || "").trim().replace(/^BAC1\./, "SPC1.")
+        ? String(code || "")
+            .trim()
+            .replace(/^BAC1\./, "SPC1.")
         : code
     return decodePresetCode(normalizedCode, type)
   }
@@ -4752,7 +4904,8 @@ export function setupGeneralEventHandlers(
     if (DOM.gradientExtraColorCount) DOM.gradientExtraColorCount.value = "0"
     if (DOM.gradientCustomColors) DOM.gradientCustomColors.value = ""
     if (DOM.gradientPositionSelect) DOM.gradientPositionSelect.value = "center"
-    if (DOM.gradientRadialShapeSelect) DOM.gradientRadialShapeSelect.value = "circle"
+    if (DOM.gradientRadialShapeSelect)
+      DOM.gradientRadialShapeSelect.value = "circle"
     renderGradientExtraColorPickers()
     updateCurrentGradient()
   })
@@ -5316,7 +5469,9 @@ export function setupGeneralEventHandlers(
   })
 
   // Clock Style Card Grid
-  const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card):not(.font-target-card)")
+  const clockCards = document.querySelectorAll(
+    ".clock-style-card:not(.date-format-card):not(.time-format-card):not(.font-target-card)",
+  )
   clockCards.forEach((card) => {
     card.addEventListener("click", () => {
       const val = card.dataset.value
@@ -5438,38 +5593,44 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockStyleCustomBgColor", color)
   })
 
-  document.getElementById("satellite-anim-color")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("satelliteAnimColor", color)
-    document.documentElement.style.setProperty("--sat-color", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "satelliteAnimColor", value: color },
-      }),
-    )
-  })
+  document
+    .getElementById("satellite-anim-color")
+    ?.addEventListener("change", (e) => {
+      const color = e.target.value
+      handleSettingUpdate("satelliteAnimColor", color)
+      document.documentElement.style.setProperty("--sat-color", color)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "satelliteAnimColor", value: color },
+        }),
+      )
+    })
 
-  document.getElementById("satellite-sec-color")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("satelliteSecColor", color)
-    document.documentElement.style.setProperty("--sat-sec-color", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "satelliteSecColor", value: color },
-      }),
-    )
-  })
+  document
+    .getElementById("satellite-sec-color")
+    ?.addEventListener("change", (e) => {
+      const color = e.target.value
+      handleSettingUpdate("satelliteSecColor", color)
+      document.documentElement.style.setProperty("--sat-sec-color", color)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "satelliteSecColor", value: color },
+        }),
+      )
+    })
 
-  document.getElementById("satellite-ter-color")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("satelliteTerColor", color)
-    document.documentElement.style.setProperty("--sat-ter-color", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "satelliteTerColor", value: color },
-      }),
-    )
-  })
+  document
+    .getElementById("satellite-ter-color")
+    ?.addEventListener("change", (e) => {
+      const color = e.target.value
+      handleSettingUpdate("satelliteTerColor", color)
+      document.documentElement.style.setProperty("--sat-ter-color", color)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "satelliteTerColor", value: color },
+        }),
+      )
+    })
 
   document.getElementById("hud-color-1")?.addEventListener("change", (e) => {
     const color = e.target.value
@@ -5504,40 +5665,66 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  document.getElementById("satellite-anim-style")?.addEventListener("change", (e) => {
-    handleSettingUpdate("satelliteAnimStyle", e.target.value)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "satelliteAnimStyle", value: e.target.value },
-      }),
-    )
-  })
+  document
+    .getElementById("satellite-anim-style")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("satelliteAnimStyle", e.target.value)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "satelliteAnimStyle", value: e.target.value },
+        }),
+      )
+    })
 
   // Oh My Posh Terminal settings event handlers
-  const ompHandler = (key, isCheckbox = false) => (e) => {
-    const val = isCheckbox ? e.target.checked : e.target.value
-    handleSettingUpdate(key, val)
-    if (key === "ompCrtScanlines") {
-      document.body.classList.toggle("omp-crt-enabled", val === true)
+  const ompHandler =
+    (key, isCheckbox = false) =>
+    (e) => {
+      const val = isCheckbox ? e.target.checked : e.target.value
+      handleSettingUpdate(key, val)
+      if (key === "ompCrtScanlines") {
+        document.body.classList.toggle("omp-crt-enabled", val === true)
+      }
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key, value: val },
+        }),
+      )
     }
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key, value: val },
-      }),
-    )
-  }
 
-  document.getElementById("omp-prompt-theme-select")?.addEventListener("change", ompHandler("ompPromptTheme"))
-  document.getElementById("omp-window-style-select")?.addEventListener("change", ompHandler("ompWindowStyle"))
-  document.getElementById("omp-os-icon-select")?.addEventListener("change", ompHandler("ompOsIcon"))
-  document.getElementById("omp-user-host-input")?.addEventListener("input", ompHandler("ompUserHost"))
-  document.getElementById("omp-path-input")?.addEventListener("input", ompHandler("ompPath"))
-  document.getElementById("omp-branch-input")?.addEventListener("input", ompHandler("ompBranch"))
-  document.getElementById("omp-cursor-style-select")?.addEventListener("change", ompHandler("ompCursorStyle"))
-  document.getElementById("omp-show-git-checkbox")?.addEventListener("change", ompHandler("ompShowGit", true))
-  document.getElementById("omp-show-battery-checkbox")?.addEventListener("change", ompHandler("ompShowBattery", true))
-  document.getElementById("omp-show-os-checkbox")?.addEventListener("change", ompHandler("ompShowOs", true))
-  document.getElementById("omp-crt-scanlines-checkbox")?.addEventListener("change", ompHandler("ompCrtScanlines", true))
+  document
+    .getElementById("omp-prompt-theme-select")
+    ?.addEventListener("change", ompHandler("ompPromptTheme"))
+  document
+    .getElementById("omp-window-style-select")
+    ?.addEventListener("change", ompHandler("ompWindowStyle"))
+  document
+    .getElementById("omp-os-icon-select")
+    ?.addEventListener("change", ompHandler("ompOsIcon"))
+  document
+    .getElementById("omp-user-host-input")
+    ?.addEventListener("input", ompHandler("ompUserHost"))
+  document
+    .getElementById("omp-path-input")
+    ?.addEventListener("input", ompHandler("ompPath"))
+  document
+    .getElementById("omp-branch-input")
+    ?.addEventListener("input", ompHandler("ompBranch"))
+  document
+    .getElementById("omp-cursor-style-select")
+    ?.addEventListener("change", ompHandler("ompCursorStyle"))
+  document
+    .getElementById("omp-show-git-checkbox")
+    ?.addEventListener("change", ompHandler("ompShowGit", true))
+  document
+    .getElementById("omp-show-battery-checkbox")
+    ?.addEventListener("change", ompHandler("ompShowBattery", true))
+  document
+    .getElementById("omp-show-os-checkbox")
+    ?.addEventListener("change", ompHandler("ompShowOs", true))
+  document
+    .getElementById("omp-crt-scanlines-checkbox")
+    ?.addEventListener("change", ompHandler("ompCrtScanlines", true))
 
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()
@@ -5548,7 +5735,9 @@ export function setupGeneralEventHandlers(
       [style]: nextValue,
     })
     if (DOM.clockStyleAccentColorSetting) {
-      DOM.clockStyleAccentColorSetting.style.display = nextValue ? "none" : "flex"
+      DOM.clockStyleAccentColorSetting.style.display = nextValue
+        ? "none"
+        : "flex"
     }
 
     const color = nextValue
@@ -5566,12 +5755,17 @@ export function setupGeneralEventHandlers(
     const customRgb = hexToRgb(color)
     const colorRgb =
       rgb ||
-      (customRgb ? `${customRgb.r}, ${customRgb.g}, ${customRgb.b}` : "255, 255, 255")
+      (customRgb
+        ? `${customRgb.r}, ${customRgb.g}, ${customRgb.b}`
+        : "255, 255, 255")
     document.documentElement.style.setProperty(
       "--clock-style-accent-color",
       color,
     )
-    document.documentElement.style.setProperty("--clock-style-accent-rgb", colorRgb)
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-rgb",
+      colorRgb,
+    )
     document
       .querySelector(".clock-date-wrap")
       ?.style.setProperty("--accent-color", color)
@@ -5708,10 +5902,13 @@ export function setupGeneralEventHandlers(
 
   DOM.fliqloThemeSelect?.addEventListener("change", () => {
     handleSettingUpdate("fliqloTheme", DOM.fliqloThemeSelect.value)
-    
-    const divergenceColorSetting = document.getElementById("fliqlo-divergence-color-setting")
+
+    const divergenceColorSetting = document.getElementById(
+      "fliqlo-divergence-color-setting",
+    )
     if (divergenceColorSetting) {
-      divergenceColorSetting.style.display = DOM.fliqloThemeSelect.value === "divergence" ? "flex" : "none"
+      divergenceColorSetting.style.display =
+        DOM.fliqloThemeSelect.value === "divergence" ? "flex" : "none"
     }
 
     window.dispatchEvent(
@@ -5724,10 +5921,15 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  const divergenceColorInput = document.getElementById("fliqlo-divergence-color")
+  const divergenceColorInput = document.getElementById(
+    "fliqlo-divergence-color",
+  )
   if (divergenceColorInput) {
     divergenceColorInput.addEventListener("change", (e) => {
-      document.documentElement.style.setProperty("--fliqlo-divergence-color", e.target.value)
+      document.documentElement.style.setProperty(
+        "--fliqlo-divergence-color",
+        e.target.value,
+      )
       handleSettingUpdate("fliqloDivergenceColor", e.target.value)
     })
   }
@@ -5773,18 +5975,20 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  document.getElementById("audio-wave-position-select")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWavePosition", e.target.value)
-    applySettings()
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: {
-          key: "audioWavePosition",
-          value: e.target.value,
-        },
-      }),
-    )
-  })
+  document
+    .getElementById("audio-wave-position-select")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWavePosition", e.target.value)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "audioWavePosition",
+            value: e.target.value,
+          },
+        }),
+      )
+    })
 
   const audioWaveScaleInput = document.getElementById("audio-wave-scale-input")
   const audioWaveScaleVal = document.getElementById("audio-wave-scale-val")
@@ -5795,59 +5999,105 @@ export function setupGeneralEventHandlers(
     audioWaveScaleInput.addEventListener("change", (e) => {
       handleSettingUpdate("audioWaveScale", parseFloat(e.target.value))
       applySettings()
-      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveScale", value: parseFloat(e.target.value) } }))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveScale", value: parseFloat(e.target.value) },
+        }),
+      )
     })
   }
 
-  document.getElementById("audio-wave-style-select")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWaveStyle", e.target.value)
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveStyle", value: e.target.value } }))
-  })
+  document
+    .getElementById("audio-wave-style-select")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveStyle", e.target.value)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveStyle", value: e.target.value },
+        }),
+      )
+    })
 
-  document.getElementById("audio-wave-speed-select")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWaveSpeed", parseFloat(e.target.value))
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveSpeed", value: parseFloat(e.target.value) } }))
-  })
+  document
+    .getElementById("audio-wave-speed-select")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveSpeed", parseFloat(e.target.value))
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveSpeed", value: parseFloat(e.target.value) },
+        }),
+      )
+    })
 
-  document.getElementById("audio-wave-float-checkbox")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWaveFloatEnabled", e.target.checked)
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveFloatEnabled", value: e.target.checked } }))
-  })
+  document
+    .getElementById("audio-wave-float-checkbox")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveFloatEnabled", e.target.checked)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveFloatEnabled", value: e.target.checked },
+        }),
+      )
+    })
 
-  document.getElementById("audio-wave-auto-color-checkbox")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWaveAutoColor", e.target.checked)
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveAutoColor", value: e.target.checked } }))
-  })
+  document
+    .getElementById("audio-wave-auto-color-checkbox")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveAutoColor", e.target.checked)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveAutoColor", value: e.target.checked },
+        }),
+      )
+    })
 
-  document.getElementById("audio-wave-color-picker")?.addEventListener("change", (e) => {
-    handleSettingUpdate("audioWaveCustomColor", e.target.value)
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveCustomColor", value: e.target.value } }))
-  })
+  document
+    .getElementById("audio-wave-color-picker")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveCustomColor", e.target.value)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "audioWaveCustomColor", value: e.target.value },
+        }),
+      )
+    })
 
-  document.getElementById("gf-animation-select")?.addEventListener("change", (e) => {
-    handleSettingUpdate("gfAnimation", e.target.value)
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfAnimation", value: e.target.value } }))
-  })
+  document
+    .getElementById("gf-animation-select")
+    ?.addEventListener("change", (e) => {
+      handleSettingUpdate("gfAnimation", e.target.value)
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "gfAnimation", value: e.target.value },
+        }),
+      )
+    })
 
   document.getElementById("gf-custom-text")?.addEventListener("input", (e) => {
     handleSettingUpdate("gfCustomText", e.target.value)
     applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfCustomText", value: e.target.value } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "gfCustomText", value: e.target.value },
+      }),
+    )
   })
-  
+
   document.getElementById("gf-glow-color")?.addEventListener("change", (e) => {
     handleSettingUpdate("gfGlowColor", e.target.value)
     applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowColor", value: e.target.value } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "gfGlowColor", value: e.target.value },
+      }),
+    )
   })
-
-
 
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
@@ -5866,14 +6116,26 @@ export function setupGeneralEventHandlers(
 
   const attachCoolStyleListeners = () => {
     const inputs = [
-      { id: "cool-greeting-morning-input", key: "coolGreetingMorning", isStr: true },
-      { id: "cool-greeting-afternoon-input", key: "coolGreetingAfternoon", isStr: true },
-      { id: "cool-greeting-evening-input", key: "coolGreetingEvening", isStr: true },
+      {
+        id: "cool-greeting-morning-input",
+        key: "coolGreetingMorning",
+        isStr: true,
+      },
+      {
+        id: "cool-greeting-afternoon-input",
+        key: "coolGreetingAfternoon",
+        isStr: true,
+      },
+      {
+        id: "cool-greeting-evening-input",
+        key: "coolGreetingEvening",
+        isStr: true,
+      },
       { id: "cool-bar-top-input", key: "coolBarSymbolTop", isStr: true },
       { id: "cool-bar-bottom-input", key: "coolBarSymbolBottom", isStr: true },
-      { id: "cool-bar-scale-input", key: "coolBarScale", isFloat: true }
+      { id: "cool-bar-scale-input", key: "coolBarScale", isFloat: true },
     ]
-    inputs.forEach(item => {
+    inputs.forEach((item) => {
       const el = document.getElementById(item.id)
       if (el) {
         el.addEventListener("input", (e) => {
@@ -5891,7 +6153,9 @@ export function setupGeneralEventHandlers(
   }
   attachCoolStyleListeners()
 
-  const codeStyleLanguageSelect = document.getElementById("code-style-language-select")
+  const codeStyleLanguageSelect = document.getElementById(
+    "code-style-language-select",
+  )
   if (codeStyleLanguageSelect) {
     codeStyleLanguageSelect.addEventListener("change", (e) => {
       handleSettingUpdate("codeClockLanguage", e.target.value)
@@ -5903,7 +6167,9 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
+  const codeStyleShowDateCheckbox = document.getElementById(
+    "code-style-show-date-checkbox",
+  )
   if (codeStyleShowDateCheckbox) {
     codeStyleShowDateCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("codeClockShowDate", e.target.checked)
@@ -5918,29 +6184,58 @@ export function setupGeneralEventHandlers(
   const customAngleInputs = [
     { id: "custom-angle-skewx-input", key: "customAngleSkewX", isFloat: true },
     { id: "custom-angle-skewy-input", key: "customAngleSkewY", isFloat: true },
-    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true },
-    { id: "custom-angle-rotatex-input", key: "customAngleRotateX", isFloat: true },
-    { id: "custom-angle-rotatey-input", key: "customAngleRotateY", isFloat: true },
-    { id: "custom-angle-perspective-input", key: "customAnglePerspective", isFloat: true }
+    {
+      id: "custom-angle-rotate-input",
+      key: "customAngleRotate",
+      isFloat: true,
+    },
+    {
+      id: "custom-angle-rotatex-input",
+      key: "customAngleRotateX",
+      isFloat: true,
+    },
+    {
+      id: "custom-angle-rotatey-input",
+      key: "customAngleRotateY",
+      isFloat: true,
+    },
+    {
+      id: "custom-angle-perspective-input",
+      key: "customAnglePerspective",
+      isFloat: true,
+    },
   ]
-  customAngleInputs.forEach(item => {
+  customAngleInputs.forEach((item) => {
     const el = document.getElementById(item.id)
     if (el) {
       el.addEventListener("input", (e) => {
         let val = parseFloat(e.target.value) || 0
-        const valSpan = document.getElementById(item.id.replace("-input", "-value"))
+        const valSpan = document.getElementById(
+          item.id.replace("-input", "-value"),
+        )
         if (valSpan) {
-            valSpan.innerHTML = item.key === "customAnglePerspective" ? val + "px" : val + "&deg;"
+          valSpan.innerHTML =
+            item.key === "customAnglePerspective" ? val + "px" : val + "&deg;"
         }
 
-        if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
-        if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
-        if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
-        if (item.key === "customAngleRotateX") document.body.style.setProperty("--rotateX", val + "deg");
-        if (item.key === "customAngleRotateY") document.body.style.setProperty("--rotateY", val + "deg");
-        if (item.key === "customAnglePerspective") document.body.style.setProperty("--perspective", val + "px");
+        if (item.key === "customAngleSkewX")
+          document.body.style.setProperty("--skewX", val + "deg")
+        if (item.key === "customAngleSkewY")
+          document.body.style.setProperty("--skewY", val + "deg")
+        if (item.key === "customAngleRotate")
+          document.body.style.setProperty("--rotate", val + "deg")
+        if (item.key === "customAngleRotateX")
+          document.body.style.setProperty("--rotateX", val + "deg")
+        if (item.key === "customAngleRotateY")
+          document.body.style.setProperty("--rotateY", val + "deg")
+        if (item.key === "customAnglePerspective")
+          document.body.style.setProperty("--perspective", val + "px")
         handleSettingUpdate(item.key, val)
-        window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: item.key, value: val },
+          }),
+        )
       })
     }
   })
@@ -5948,81 +6243,172 @@ export function setupGeneralEventHandlers(
   const customAngleResetBtn = document.getElementById("custom-angle-reset-btn")
   if (customAngleResetBtn) {
     customAngleResetBtn.addEventListener("click", () => {
-      const defaults = { customAngleSkewX: 15, customAngleSkewY: 0, customAngleRotate: -5, customAngleRotateX: 0, customAngleRotateY: 0, customAnglePerspective: 1000 };
-      Object.keys(defaults).forEach(key => {
-        handleSettingUpdate(key, defaults[key]);
-        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase();
-        const el = document.getElementById(`${idBase}-input`);
-        if (el) el.value = defaults[key];
-        const span = document.getElementById(`${idBase}-value`);
-        if (span) span.innerHTML = key === "customAnglePerspective" ? defaults[key] + "px" : defaults[key] + "&deg;";
-      });
-      document.body.style.setProperty("--skewX", "15deg");
-      document.body.style.setProperty("--skewY", "0deg");
-      document.body.style.setProperty("--rotate", "-5deg");
-      document.body.style.setProperty("--rotateX", "0deg");
-      document.body.style.setProperty("--rotateY", "0deg");
-      document.body.style.setProperty("--perspective", "1000px");
-      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customAngleReset" } }));
-    });
+      const defaults = {
+        customAngleSkewX: 15,
+        customAngleSkewY: 0,
+        customAngleRotate: -5,
+        customAngleRotateX: 0,
+        customAngleRotateY: 0,
+        customAnglePerspective: 1000,
+      }
+      Object.keys(defaults).forEach((key) => {
+        handleSettingUpdate(key, defaults[key])
+        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase()
+        const el = document.getElementById(`${idBase}-input`)
+        if (el) el.value = defaults[key]
+        const span = document.getElementById(`${idBase}-value`)
+        if (span)
+          span.innerHTML =
+            key === "customAnglePerspective"
+              ? defaults[key] + "px"
+              : defaults[key] + "&deg;"
+      })
+      document.body.style.setProperty("--skewX", "15deg")
+      document.body.style.setProperty("--skewY", "0deg")
+      document.body.style.setProperty("--rotate", "-5deg")
+      document.body.style.setProperty("--rotateX", "0deg")
+      document.body.style.setProperty("--rotateY", "0deg")
+      document.body.style.setProperty("--perspective", "1000px")
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "customAngleReset" },
+        }),
+      )
+    })
   }
 
-  const presetAngleBtns = document.querySelectorAll(".preset-angle-btn");
-  presetAngleBtns.forEach(btn => {
+  const presetAngleBtns = document.querySelectorAll(".preset-angle-btn")
+  presetAngleBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const presetName = btn.getAttribute("data-preset");
-      let presetValues = {};
+      const presetName = btn.getAttribute("data-preset")
+      let presetValues = {}
       switch (presetName) {
         case "iso-left":
-          presetValues = { customAngleSkewX: 0, customAngleSkewY: 15, customAngleRotate: 5, customAngleRotateX: 20, customAngleRotateY: -25, customAnglePerspective: 1000 };
-          break;
+          presetValues = {
+            customAngleSkewX: 0,
+            customAngleSkewY: 15,
+            customAngleRotate: 5,
+            customAngleRotateX: 20,
+            customAngleRotateY: -25,
+            customAnglePerspective: 1000,
+          }
+          break
         case "iso-right":
-          presetValues = { customAngleSkewX: 0, customAngleSkewY: -15, customAngleRotate: -5, customAngleRotateX: 20, customAngleRotateY: 25, customAnglePerspective: 1000 };
-          break;
+          presetValues = {
+            customAngleSkewX: 0,
+            customAngleSkewY: -15,
+            customAngleRotate: -5,
+            customAngleRotateX: 20,
+            customAngleRotateY: 25,
+            customAnglePerspective: 1000,
+          }
+          break
         case "flat-top":
-          presetValues = { customAngleSkewX: 0, customAngleSkewY: 0, customAngleRotate: 0, customAngleRotateX: 50, customAngleRotateY: 0, customAnglePerspective: 800 };
-          break;
+          presetValues = {
+            customAngleSkewX: 0,
+            customAngleSkewY: 0,
+            customAngleRotate: 0,
+            customAngleRotateX: 50,
+            customAngleRotateY: 0,
+            customAnglePerspective: 800,
+          }
+          break
         case "cinematic":
-          presetValues = { customAngleSkewX: -10, customAngleSkewY: -5, customAngleRotate: 5, customAngleRotateX: -10, customAngleRotateY: 20, customAnglePerspective: 1200 };
-          break;
+          presetValues = {
+            customAngleSkewX: -10,
+            customAngleSkewY: -5,
+            customAngleRotate: 5,
+            customAngleRotateX: -10,
+            customAngleRotateY: 20,
+            customAnglePerspective: 1200,
+          }
+          break
       }
-      
-      Object.keys(presetValues).forEach(key => {
-        handleSettingUpdate(key, presetValues[key]);
-        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase();
-        const el = document.getElementById(`${idBase}-input`);
-        if (el) el.value = presetValues[key];
-        const span = document.getElementById(`${idBase}-value`);
-        if (span) span.innerHTML = key === "customAnglePerspective" ? presetValues[key] + "px" : presetValues[key] + "&deg;";
-      });
-      document.body.style.setProperty("--skewX", presetValues.customAngleSkewX + "deg");
-      document.body.style.setProperty("--skewY", presetValues.customAngleSkewY + "deg");
-      document.body.style.setProperty("--rotate", presetValues.customAngleRotate + "deg");
-      document.body.style.setProperty("--rotateX", presetValues.customAngleRotateX + "deg");
-      document.body.style.setProperty("--rotateY", presetValues.customAngleRotateY + "deg");
-      document.body.style.setProperty("--perspective", presetValues.customAnglePerspective + "px");
-      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customAnglePreset" } }));
-    });
-  });
+
+      Object.keys(presetValues).forEach((key) => {
+        handleSettingUpdate(key, presetValues[key])
+        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase()
+        const el = document.getElementById(`${idBase}-input`)
+        if (el) el.value = presetValues[key]
+        const span = document.getElementById(`${idBase}-value`)
+        if (span)
+          span.innerHTML =
+            key === "customAnglePerspective"
+              ? presetValues[key] + "px"
+              : presetValues[key] + "&deg;"
+      })
+      document.body.style.setProperty(
+        "--skewX",
+        presetValues.customAngleSkewX + "deg",
+      )
+      document.body.style.setProperty(
+        "--skewY",
+        presetValues.customAngleSkewY + "deg",
+      )
+      document.body.style.setProperty(
+        "--rotate",
+        presetValues.customAngleRotate + "deg",
+      )
+      document.body.style.setProperty(
+        "--rotateX",
+        presetValues.customAngleRotateX + "deg",
+      )
+      document.body.style.setProperty(
+        "--rotateY",
+        presetValues.customAngleRotateY + "deg",
+      )
+      document.body.style.setProperty(
+        "--perspective",
+        presetValues.customAnglePerspective + "px",
+      )
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "customAnglePreset" },
+        }),
+      )
+    })
+  })
 
   const globalMaskingInputs = [
-    { id: "global-clock-cut-bottom-input", key: "clockCutBottom", isFloat: true },
-    { id: "global-clock-fade-bottom-input", key: "clockFadeBottom", isFloat: true }
+    {
+      id: "global-clock-cut-bottom-input",
+      key: "clockCutBottom",
+      isFloat: true,
+    },
+    {
+      id: "global-clock-fade-bottom-input",
+      key: "clockFadeBottom",
+      isFloat: true,
+    },
   ]
-  globalMaskingInputs.forEach(item => {
+  globalMaskingInputs.forEach((item) => {
     const el = document.getElementById(item.id)
     if (el) {
       el.addEventListener("input", (e) => {
         let val = parseFloat(e.target.value) || 0
-        if (item.key === "clockCutBottom") document.documentElement.style.setProperty("--clock-cut-bottom", val + "px");
-        if (item.key === "clockFadeBottom") document.documentElement.style.setProperty("--clock-visible-percent", val + "%");
+        if (item.key === "clockCutBottom")
+          document.documentElement.style.setProperty(
+            "--clock-cut-bottom",
+            val + "px",
+          )
+        if (item.key === "clockFadeBottom")
+          document.documentElement.style.setProperty(
+            "--clock-visible-percent",
+            val + "%",
+          )
         handleSettingUpdate(item.key, val)
-        window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: item.key, value: val },
+          }),
+        )
       })
     }
   })
 
-  const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
+  const customAngleShowDateCheckbox = document.getElementById(
+    "custom-angle-show-date-checkbox",
+  )
   if (customAngleShowDateCheckbox) {
     customAngleShowDateCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("customAngleShowDate", e.target.checked)
@@ -6174,10 +6560,7 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.clockFadeBottomSelect?.addEventListener("change", () => {
-    handleSettingUpdate(
-      "clockFadeFromBottom",
-      DOM.clockFadeBottomSelect.value,
-    )
+    handleSettingUpdate("clockFadeFromBottom", DOM.clockFadeBottomSelect.value)
   })
 
   DOM.clockFadeDirectionSelect?.addEventListener("change", () => {
@@ -6191,15 +6574,24 @@ export function setupGeneralEventHandlers(
     let resolved = rawTitle || "Start Page"
     if (resolved.includes("{time}")) {
       const now = new Date()
-      resolved = resolved.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
+      resolved = resolved.replace(
+        /{time}/gi,
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
+      )
     }
     if (resolved.includes("{date}")) {
       const now = new Date()
-      resolved = resolved.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+      resolved = resolved.replace(
+        /{date}/gi,
+        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
+      )
     }
     if (resolved.includes("{music}")) {
       const musicTitle = window._currentPlayingTrackTitle || ""
-      resolved = resolved.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "")
+      resolved = resolved.replace(
+        /{music}/gi,
+        musicTitle ? `🎵 ${musicTitle}` : "",
+      )
     }
     document.title = resolved
   }
@@ -6212,34 +6604,41 @@ export function setupGeneralEventHandlers(
   })
 
   // Delegated handler for quick token chips & custom title presets
-  document.getElementById("settings-sidebar")?.addEventListener("click", (e) => {
-    const tokenChip = e.target.closest(".token-chip")
-    if (tokenChip) {
-      const token = tokenChip.getAttribute("data-token")
-      const targetInputId = tokenChip.getAttribute("data-target-input") || "page-title-input"
-      const targetInput = document.getElementById(targetInputId)
-      if (targetInput && token) {
-        const start = targetInput.selectionStart || targetInput.value.length
-        const end = targetInput.selectionEnd || targetInput.value.length
-        const currentVal = targetInput.value
-        targetInput.value = currentVal.substring(0, start) + (start > 0 && currentVal[start - 1] !== " " ? " " : "") + token + currentVal.substring(end)
-        targetInput.focus()
-        targetInput.dispatchEvent(new Event("input", { bubbles: true }))
+  document
+    .getElementById("settings-sidebar")
+    ?.addEventListener("click", (e) => {
+      const tokenChip = e.target.closest(".token-chip")
+      if (tokenChip) {
+        const token = tokenChip.getAttribute("data-token")
+        const targetInputId =
+          tokenChip.getAttribute("data-target-input") || "page-title-input"
+        const targetInput = document.getElementById(targetInputId)
+        if (targetInput && token) {
+          const start = targetInput.selectionStart || targetInput.value.length
+          const end = targetInput.selectionEnd || targetInput.value.length
+          const currentVal = targetInput.value
+          targetInput.value =
+            currentVal.substring(0, start) +
+            (start > 0 && currentVal[start - 1] !== " " ? " " : "") +
+            token +
+            currentVal.substring(end)
+          targetInput.focus()
+          targetInput.dispatchEvent(new Event("input", { bubbles: true }))
+        }
+        return
       }
-      return
-    }
 
-    const presetBtn = e.target.closest(".preset-pill-btn")
-    if (presetBtn) {
-      const presetText = presetBtn.getAttribute("data-preset-text")
-      const titleInput1 = document.getElementById("custom-title-text")
-      if (titleInput1 && presetText) {
-        titleInput1.value = presetText
-        titleInput1.dispatchEvent(new Event("input", { bubbles: true }))
+      const presetBtn = e.target.closest(".preset-pill-btn")
+      if (presetBtn) {
+        const presetText = presetBtn.getAttribute("data-preset-text")
+        const titleInput1 = document.getElementById("custom-title-text")
+        if (titleInput1 && presetText) {
+          titleInput1.value = presetText
+          titleInput1.dispatchEvent(new Event("input", { bubbles: true }))
+        }
+        return
       }
-      return
-    }
-  })
+    })
 
   DOM.pageTitleColorInput?.addEventListener("change", () => {
     updateSetting("pageTitleColor", DOM.pageTitleColorInput.value)
@@ -6401,20 +6800,26 @@ export function setupGeneralEventHandlers(
   DOM.clockSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("clockSize", DOM.clockSizeInput.value)
   })
-  
+
   document.getElementById("clock-size-dec")?.addEventListener("click", () => {
-    if (!DOM.clockSizeInput) return;
-    DOM.clockSizeInput.value = Math.max(Number(DOM.clockSizeInput.min), Number(DOM.clockSizeInput.value) - Number(DOM.clockSizeInput.step));
-    DOM.clockSizeInput.dispatchEvent(new Event("input"));
-    DOM.clockSizeInput.dispatchEvent(new Event("change"));
-  });
-  
+    if (!DOM.clockSizeInput) return
+    DOM.clockSizeInput.value = Math.max(
+      Number(DOM.clockSizeInput.min),
+      Number(DOM.clockSizeInput.value) - Number(DOM.clockSizeInput.step),
+    )
+    DOM.clockSizeInput.dispatchEvent(new Event("input"))
+    DOM.clockSizeInput.dispatchEvent(new Event("change"))
+  })
+
   document.getElementById("clock-size-inc")?.addEventListener("click", () => {
-    if (!DOM.clockSizeInput) return;
-    DOM.clockSizeInput.value = Math.min(Number(DOM.clockSizeInput.max), Number(DOM.clockSizeInput.value) + Number(DOM.clockSizeInput.step));
-    DOM.clockSizeInput.dispatchEvent(new Event("input"));
-    DOM.clockSizeInput.dispatchEvent(new Event("change"));
-  });
+    if (!DOM.clockSizeInput) return
+    DOM.clockSizeInput.value = Math.min(
+      Number(DOM.clockSizeInput.max),
+      Number(DOM.clockSizeInput.value) + Number(DOM.clockSizeInput.step),
+    )
+    DOM.clockSizeInput.dispatchEvent(new Event("input"))
+    DOM.clockSizeInput.dispatchEvent(new Event("change"))
+  })
 
   DOM.dateSizeInput?.addEventListener("input", () => {
     if (DOM.dateSizeValue)
@@ -6427,20 +6832,26 @@ export function setupGeneralEventHandlers(
   DOM.dateSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
-  
+
   document.getElementById("date-size-dec")?.addEventListener("click", () => {
-    if (!DOM.dateSizeInput) return;
-    DOM.dateSizeInput.value = Math.max(Number(DOM.dateSizeInput.min), Number(DOM.dateSizeInput.value) - Number(DOM.dateSizeInput.step));
-    DOM.dateSizeInput.dispatchEvent(new Event("input"));
-    DOM.dateSizeInput.dispatchEvent(new Event("change"));
-  });
-  
+    if (!DOM.dateSizeInput) return
+    DOM.dateSizeInput.value = Math.max(
+      Number(DOM.dateSizeInput.min),
+      Number(DOM.dateSizeInput.value) - Number(DOM.dateSizeInput.step),
+    )
+    DOM.dateSizeInput.dispatchEvent(new Event("input"))
+    DOM.dateSizeInput.dispatchEvent(new Event("change"))
+  })
+
   document.getElementById("date-size-inc")?.addEventListener("click", () => {
-    if (!DOM.dateSizeInput) return;
-    DOM.dateSizeInput.value = Math.min(Number(DOM.dateSizeInput.max), Number(DOM.dateSizeInput.value) + Number(DOM.dateSizeInput.step));
-    DOM.dateSizeInput.dispatchEvent(new Event("input"));
-    DOM.dateSizeInput.dispatchEvent(new Event("change"));
-  });
+    if (!DOM.dateSizeInput) return
+    DOM.dateSizeInput.value = Math.min(
+      Number(DOM.dateSizeInput.max),
+      Number(DOM.dateSizeInput.value) + Number(DOM.dateSizeInput.step),
+    )
+    DOM.dateSizeInput.dispatchEvent(new Event("input"))
+    DOM.dateSizeInput.dispatchEvent(new Event("change"))
+  })
 
   DOM.clockDateStrokeWidthInput?.addEventListener("input", (e) => {
     if (DOM.clockDateStrokeWidthValue)
@@ -6619,7 +7030,9 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showWeatherCheckbox, "showWeather", {})
   setupLayoutCheckbox(DOM.showHabitsCheckbox, "showHabits", {})
 
-  const weatherApiModeSelect = document.getElementById("weather-api-mode-select")
+  const weatherApiModeSelect = document.getElementById(
+    "weather-api-mode-select",
+  )
   const weatherForecastEndpointInput = document.getElementById(
     "weather-forecast-endpoint-input",
   )
@@ -6709,8 +7122,12 @@ export function setupGeneralEventHandlers(
   const validateWeatherApiSettings = () => {
     const mode = weatherApiModeSelect?.value || getSettings().weatherApiMode
     if (mode !== "custom") return { ok: true }
-    const forecast = renderWeatherEndpointValidation(weatherForecastEndpointInput)
-    const geocoding = renderWeatherEndpointValidation(weatherGeocodingEndpointInput)
+    const forecast = renderWeatherEndpointValidation(
+      weatherForecastEndpointInput,
+    )
+    const geocoding = renderWeatherEndpointValidation(
+      weatherGeocodingEndpointInput,
+    )
     return {
       ok: forecast.ok && geocoding.ok,
       forecast: forecast.value,
@@ -6725,12 +7142,21 @@ export function setupGeneralEventHandlers(
       success: "fa-circle-check",
       error: "fa-triangle-exclamation",
     }
-    weatherApiConnectionState.classList.toggle("is-testing", state === "testing")
-    weatherApiConnectionState.classList.toggle("is-success", state === "success")
+    weatherApiConnectionState.classList.toggle(
+      "is-testing",
+      state === "testing",
+    )
+    weatherApiConnectionState.classList.toggle(
+      "is-success",
+      state === "success",
+    )
     weatherApiConnectionState.classList.toggle("is-error", state === "error")
     weatherApiConnectionState.innerHTML = `
       <i class="fa-solid ${iconMap[state] || iconMap.idle}"></i>
-      <span>${String(message || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</span>
+      <span>${String(message || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")}</span>
     `
   }
   const withWeatherParams = (endpoint, params) => {
@@ -6781,8 +7207,14 @@ export function setupGeneralEventHandlers(
     renderWeatherEndpointValidation(weatherForecastEndpointInput)
     renderWeatherEndpointValidation(weatherGeocodingEndpointInput)
     handleSettingUpdate("weatherApiMode", "custom")
-    handleSettingUpdate("weatherForecastEndpoint", DEFAULT_WEATHER_FORECAST_ENDPOINT)
-    handleSettingUpdate("weatherGeocodingEndpoint", DEFAULT_WEATHER_GEOCODING_ENDPOINT)
+    handleSettingUpdate(
+      "weatherForecastEndpoint",
+      DEFAULT_WEATHER_FORECAST_ENDPOINT,
+    )
+    handleSettingUpdate(
+      "weatherGeocodingEndpoint",
+      DEFAULT_WEATHER_GEOCODING_ENDPOINT,
+    )
     dispatchWeatherApiUpdate("weatherApiMode", "custom")
     setWeatherApiConnectionState(
       "idle",
@@ -6820,8 +7252,10 @@ export function setupGeneralEventHandlers(
       const forecastParams = new URLSearchParams({
         latitude: String(latitude),
         longitude: String(longitude),
-        current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
-        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        current:
+          "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+        daily:
+          "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
         timezone: "auto",
         forecast_days: "8",
       })
@@ -6832,8 +7266,12 @@ export function setupGeneralEventHandlers(
         format: "json",
       })
       const [forecastData, geocodingData] = await Promise.all([
-        fetchWeatherApiJson(withWeatherParams(forecastEndpoint, forecastParams)),
-        fetchWeatherApiJson(withWeatherParams(geocodingEndpoint, geocodingParams)),
+        fetchWeatherApiJson(
+          withWeatherParams(forecastEndpoint, forecastParams),
+        ),
+        fetchWeatherApiJson(
+          withWeatherParams(geocodingEndpoint, geocodingParams),
+        ),
       ])
       if (!forecastData?.current || !forecastData?.daily) {
         throw new Error("Forecast response missing current/daily data")
@@ -6871,25 +7309,28 @@ export function setupGeneralEventHandlers(
     dispatchWeatherApiUpdate("weatherUnit", weatherUnitSelect.value)
   })
 
-  const habitColorModeSelect = document.getElementById("habit-color-mode-select")
+  const habitColorModeSelect = document.getElementById(
+    "habit-color-mode-select",
+  )
   habitColorModeSelect?.addEventListener("change", () => {
     handleSettingUpdate("habitColorMode", habitColorModeSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: { key: "habitColorMode", value: habitColorModeSelect.value },
-      })
+      }),
     )
   })
-
-  ;[weatherForecastEndpointInput, weatherGeocodingEndpointInput].forEach((input) => {
-    input?.addEventListener("input", () => {
-      renderWeatherEndpointValidation(input)
-      setWeatherApiConnectionState(
-        "idle",
-        i18n.settings_weather_test_idle || "Not tested yet.",
-      )
-    })
-  })
+  ;[weatherForecastEndpointInput, weatherGeocodingEndpointInput].forEach(
+    (input) => {
+      input?.addEventListener("input", () => {
+        renderWeatherEndpointValidation(input)
+        setWeatherApiConnectionState(
+          "idle",
+          i18n.settings_weather_test_idle || "Not tested yet.",
+        )
+      })
+    },
+  )
   weatherForecastEndpointInput?.addEventListener("change", () => {
     commitWeatherEndpointInput(
       weatherForecastEndpointInput,
@@ -7039,7 +7480,10 @@ export function setupGeneralEventHandlers(
       if (!e.target.checked) {
         const settings = getSettings()
         let changed = false
-        if (settings.componentPositions && settings.componentPositions.searchBar) {
+        if (
+          settings.componentPositions &&
+          settings.componentPositions.searchBar
+        ) {
           delete settings.componentPositions.searchBar
           changed = true
         }
@@ -7117,7 +7561,11 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
   if (DOM.searchBarHoverScaleCheckbox) {
-    setupLayoutCheckbox(DOM.searchBarHoverScaleCheckbox, "searchBarHoverScale", { defaultState: false })
+    setupLayoutCheckbox(
+      DOM.searchBarHoverScaleCheckbox,
+      "searchBarHoverScale",
+      { defaultState: false },
+    )
   }
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})
@@ -7127,7 +7575,10 @@ export function setupGeneralEventHandlers(
       const value = e.target.value
       updateSetting("actionBehavior", value)
       try {
-        chrome.runtime.sendMessage({ action: "updateActionBehavior", behavior: value })
+        chrome.runtime.sendMessage({
+          action: "updateActionBehavior",
+          behavior: value,
+        })
       } catch (err) {
         console.error("Failed to sync action behavior to background", err)
       }
@@ -7145,9 +7596,11 @@ export function setupGeneralEventHandlers(
   }
   const syncWidthPresets = (val) => {
     const s = String(val)
-    document.querySelectorAll(".lcp-preset-btn, .width-preset-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.width === s)
-    })
+    document
+      .querySelectorAll(".lcp-preset-btn, .width-preset-btn")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.width === s)
+      })
   }
 
   document.addEventListener("click", (e) => {
@@ -7159,7 +7612,8 @@ export function setupGeneralEventHandlers(
     if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
     if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
     if (DOM.searchBarWidthVal) DOM.searchBarWidthVal.textContent = `${width}px`
-    if (DOM.lcpSearchBarWidthVal) DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+    if (DOM.lcpSearchBarWidthVal)
+      DOM.lcpSearchBarWidthVal.textContent = `${width}px`
 
     syncWidthPresets(width)
     handleSettingUpdate("searchBarWidth", width)
@@ -7190,9 +7644,11 @@ export function setupGeneralEventHandlers(
   if (DOM.searchBarBlurSlider) {
     DOM.searchBarBlurSlider.addEventListener("input", (e) => {
       const blur = e.target.value
-      if (DOM.searchBarBlurVal)
-        DOM.searchBarBlurVal.textContent = `${blur}px`
-      document.documentElement.style.setProperty("--search-bar-blur", `${blur}px`)
+      if (DOM.searchBarBlurVal) DOM.searchBarBlurVal.textContent = `${blur}px`
+      document.documentElement.style.setProperty(
+        "--search-bar-blur",
+        `${blur}px`,
+      )
     })
     DOM.searchBarBlurSlider.addEventListener("change", (e) => {
       const blur = e.target.value
@@ -7209,7 +7665,10 @@ export function setupGeneralEventHandlers(
       const radius = e.target.value
       if (DOM.searchBarRadiusVal)
         DOM.searchBarRadiusVal.textContent = `${radius}px`
-      document.documentElement.style.setProperty("--search-bar-radius", `${radius}px`)
+      document.documentElement.style.setProperty(
+        "--search-bar-radius",
+        `${radius}px`,
+      )
     })
     DOM.searchBarRadiusSlider.addEventListener("change", (e) => {
       const radius = e.target.value
@@ -7280,7 +7739,9 @@ export function setupGeneralEventHandlers(
     const val = DOM.contextMenuStyleSelect.value
     handleSettingUpdate("contextMenuStyle", val)
   })
-  setupLayoutCheckbox(DOM.contextMenuMiniCheckbox, "contextMenuMini", { defaultState: false })
+  setupLayoutCheckbox(DOM.contextMenuMiniCheckbox, "contextMenuMini", {
+    defaultState: false,
+  })
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
   DOM.showMusicCheckbox.addEventListener("change", () => {
@@ -7307,11 +7768,14 @@ export function setupGeneralEventHandlers(
               if (DOM.lcpMusicRealAudioReactive)
                 DOM.lcpMusicRealAudioReactive.checked = true
               handleSettingUpdate("musicRealAudioReactive", true)
-              chrome.storage?.local?.set({ musicRealAudioReactive: true }, () => {
-                chrome.runtime
-                  ?.sendMessage({ action: "startRealAudioCapture" })
-                  ?.catch?.(() => {})
-              })
+              chrome.storage?.local?.set(
+                { musicRealAudioReactive: true },
+                () => {
+                  chrome.runtime
+                    ?.sendMessage({ action: "startRealAudioCapture" })
+                    ?.catch?.(() => {})
+                },
+              )
               window.dispatchEvent(
                 new CustomEvent("settingsUpdated", {
                   detail: {
@@ -7408,7 +7872,10 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.mediaOrbImageUrlInput?.addEventListener("change", () => {
-    handleSettingUpdate("mediaOrbImageUrl", DOM.mediaOrbImageUrlInput.value.trim())
+    handleSettingUpdate(
+      "mediaOrbImageUrl",
+      DOM.mediaOrbImageUrlInput.value.trim(),
+    )
     if (DOM.mediaOrbImageUrlInput.value.trim()) {
       handleSettingUpdate("mediaOrbImageData", "")
     }
@@ -7528,21 +7995,21 @@ export function setupGeneralEventHandlers(
     { el: DOM.lcpQaShowHabits, key: "qaShowHabits" },
     { el: DOM.lcpQaShowAmbient, key: "qaShowAmbient" },
     { el: DOM.lcpQaShowAiAssistant, key: "qaShowAiAssistant" },
-    { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" }
-  ];
+    { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" },
+  ]
 
-  qaToggles.forEach(toggle => {
+  qaToggles.forEach((toggle) => {
     if (toggle.el) {
       toggle.el.addEventListener("change", () => {
-        handleSettingUpdate(toggle.key, toggle.el.checked);
+        handleSettingUpdate(toggle.key, toggle.el.checked)
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
             detail: { key: toggle.key, value: toggle.el.checked },
           }),
-        );
-      });
+        )
+      })
     }
-  });
+  })
 
   // Layout controls popup
   const closeLcp = () => {
@@ -7846,13 +8313,19 @@ export function setupGeneralEventHandlers(
         ? e.target.value
         : "default"
       handleSettingUpdate("quickAccessSkin", skin)
-      document.body.classList.toggle("quick-access-m3-accent", skin === "m3-accent")
+      document.body.classList.toggle(
+        "quick-access-m3-accent",
+        skin === "m3-accent",
+      )
       document.body.classList.toggle(
         "quick-access-light-transparent",
         skin === "light-transparent",
       )
       document.body.classList.toggle("quick-access-light", skin === "light")
-      document.body.classList.toggle("quick-access-contrast", skin === "contrast")
+      document.body.classList.toggle(
+        "quick-access-contrast",
+        skin === "contrast",
+      )
       document.body.classList.toggle("quick-access-transparent", false)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
@@ -7885,7 +8358,7 @@ export function setupGeneralEventHandlers(
     const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
     const hasUnsplashKey = Boolean(
       settingsSnapshot.unsplashAccessKey &&
-        settingsSnapshot.unsplashAccessKey.trim(),
+      settingsSnapshot.unsplashAccessKey.trim(),
     )
     const localMediaIds = collectLocalMediaIds(settingsSnapshot)
     const hasLocalMedia = localMediaIds.length > 0
@@ -8105,7 +8578,9 @@ export function setupGeneralEventHandlers(
         i18n.import_json_code_placeholder || "Paste JSON code here",
       )
       const cancelLabel = escapeDialogHtml(i18n.cancel || "Close")
-      const importLabel = escapeDialogHtml(i18n.settings_import || "Import JSON")
+      const importLabel = escapeDialogHtml(
+        i18n.settings_import || "Import JSON",
+      )
       overlay.innerHTML = `
         <div class="custom-dialog json-code-dialog">
           <div class="dialog-header">${title}</div>
@@ -8159,17 +8634,25 @@ export function setupGeneralEventHandlers(
       data = {
         source: "zero-startpage",
         version: 2,
-        bookmarks: data
+        bookmarks: data,
       }
     } else if (typeof data === "object") {
-      const hasMainSection = data.settings || data.bookmarks || data.todos || data.notepad || data.calendarEvents || data.media
+      const hasMainSection =
+        data.settings ||
+        data.bookmarks ||
+        data.todos ||
+        data.notepad ||
+        data.calendarEvents ||
+        data.media
       if (!hasMainSection) {
-        const hasSettingKeys = Object.keys(data).some(key => Object.prototype.hasOwnProperty.call(defaultSettings, key))
+        const hasSettingKeys = Object.keys(data).some((key) =>
+          Object.prototype.hasOwnProperty.call(defaultSettings, key),
+        )
         if (hasSettingKeys) {
           data = {
             source: "zero-startpage",
             version: 2,
-            settings: data
+            settings: data,
           }
         }
       }
@@ -8192,7 +8675,7 @@ export function setupGeneralEventHandlers(
 
     // Convert stringified sections if they exist as strings
     const sections = ["bookmarks", "todos", "notepad", "calendarEvents"]
-    sections.forEach(sec => {
+    sections.forEach((sec) => {
       if (data[sec] && typeof data[sec] === "string") {
         try {
           data[sec] = JSON.parse(data[sec])
@@ -8356,9 +8839,9 @@ export function setupGeneralEventHandlers(
       for (const [oldId, payload] of Object.entries(data.media)) {
         try {
           if (!payload || typeof payload.dataUrl !== "string") continue
-          
+
           const blob = await dataUrlToBlob(payload.dataUrl)
-          
+
           let existingId = null
           if (!selected.clear) {
             existingId = await findExistingMediaId(blob)
@@ -8399,7 +8882,9 @@ export function setupGeneralEventHandlers(
       const oldBgId = data.settings?.background
       if (oldBgId && data.media?.[oldBgId]) {
         try {
-          const preview = await generateBase64Preview(data.media[oldBgId].dataUrl)
+          const preview = await generateBase64Preview(
+            data.media[oldBgId].dataUrl,
+          )
           if (preview) {
             importedSettings.lastUserBackgroundPreview = preview
             importedSettings.lastUserBackground = importedSettings.background
@@ -8444,12 +8929,18 @@ export function setupGeneralEventHandlers(
       try {
         applySettings()
       } catch (e) {
-        console.warn("Non-fatal: applySettings failed during import background", e)
+        console.warn(
+          "Non-fatal: applySettings failed during import background",
+          e,
+        )
       }
       try {
         updateSettingsInputs()
       } catch (e) {
-        console.warn("Non-fatal: updateSettingsInputs failed during import background", e)
+        console.warn(
+          "Non-fatal: updateSettingsInputs failed during import background",
+          e,
+        )
       }
       requiresReload = true
     }
@@ -8658,7 +9149,10 @@ export function setupGeneralEventHandlers(
       if (!e.target.checked) {
         const settings = getSettings()
         let changed = false
-        if (settings.componentPositions && settings.componentPositions.customTitle) {
+        if (
+          settings.componentPositions &&
+          settings.componentPositions.customTitle
+        ) {
           delete settings.componentPositions.customTitle
           changed = true
         }
@@ -8681,15 +9175,51 @@ export function setupGeneralEventHandlers(
   }
 
   const customTitleSliders = [
-    { dom: document.getElementById("custom-title-font-size"), valDom: document.getElementById("custom-title-fontsize-val"), key: "customTitleFontSize" },
-    { dom: document.getElementById("custom-title-letter-spacing"), valDom: document.getElementById("custom-title-letter-spacing-val"), key: "customTitleLetterSpacing" },
-    { dom: document.getElementById("custom-title-font-size-2"), valDom: document.getElementById("custom-title-fontsize-2-val"), key: "customTitleFontSize2" },
-    { dom: document.getElementById("custom-title-letter-spacing-2"), valDom: document.getElementById("custom-title-letter-spacing-2-val"), key: "customTitleLetterSpacing2" },
-    { dom: document.getElementById("custom-title-font-size-3"), valDom: document.getElementById("custom-title-fontsize-3-val"), key: "customTitleFontSize3" },
-    { dom: document.getElementById("custom-title-letter-spacing-3"), valDom: document.getElementById("custom-title-letter-spacing-3-val"), key: "customTitleLetterSpacing3" },
-    { dom: document.getElementById("custom-title-font-size-4"), valDom: document.getElementById("custom-title-fontsize-4-val"), key: "customTitleFontSize4" },
-    { dom: document.getElementById("custom-title-letter-spacing-4"), valDom: document.getElementById("custom-title-letter-spacing-4-val"), key: "customTitleLetterSpacing4" },
-    { dom: document.getElementById("custom-title-line-spacing"), valDom: document.getElementById("custom-title-line-spacing-val"), key: "customTitleLineSpacing" },
+    {
+      dom: document.getElementById("custom-title-font-size"),
+      valDom: document.getElementById("custom-title-fontsize-val"),
+      key: "customTitleFontSize",
+    },
+    {
+      dom: document.getElementById("custom-title-letter-spacing"),
+      valDom: document.getElementById("custom-title-letter-spacing-val"),
+      key: "customTitleLetterSpacing",
+    },
+    {
+      dom: document.getElementById("custom-title-font-size-2"),
+      valDom: document.getElementById("custom-title-fontsize-2-val"),
+      key: "customTitleFontSize2",
+    },
+    {
+      dom: document.getElementById("custom-title-letter-spacing-2"),
+      valDom: document.getElementById("custom-title-letter-spacing-2-val"),
+      key: "customTitleLetterSpacing2",
+    },
+    {
+      dom: document.getElementById("custom-title-font-size-3"),
+      valDom: document.getElementById("custom-title-fontsize-3-val"),
+      key: "customTitleFontSize3",
+    },
+    {
+      dom: document.getElementById("custom-title-letter-spacing-3"),
+      valDom: document.getElementById("custom-title-letter-spacing-3-val"),
+      key: "customTitleLetterSpacing3",
+    },
+    {
+      dom: document.getElementById("custom-title-font-size-4"),
+      valDom: document.getElementById("custom-title-fontsize-4-val"),
+      key: "customTitleFontSize4",
+    },
+    {
+      dom: document.getElementById("custom-title-letter-spacing-4"),
+      valDom: document.getElementById("custom-title-letter-spacing-4-val"),
+      key: "customTitleLetterSpacing4",
+    },
+    {
+      dom: document.getElementById("custom-title-line-spacing"),
+      valDom: document.getElementById("custom-title-line-spacing-val"),
+      key: "customTitleLineSpacing",
+    },
   ]
 
   customTitleSliders.forEach((s) => {
@@ -8697,29 +9227,103 @@ export function setupGeneralEventHandlers(
       const val = parseInt(e.target.value)
       if (s.valDom) s.valDom.textContent = val
       updateSetting(s.key, val)
-      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: s.key, value: val } }))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: s.key, value: val },
+        }),
+      )
     })
-    s.dom?.addEventListener("change", (e) => handleSettingUpdate(s.key, parseInt(e.target.value)))
+    s.dom?.addEventListener("change", (e) =>
+      handleSettingUpdate(s.key, parseInt(e.target.value)),
+    )
   })
 
   const customTitleFields = [
-    { dom: document.getElementById("custom-title-text"), key: "customTitleText", isCheckbox: false },
-    { dom: document.getElementById("custom-title-text-2"), key: "customTitleText2", isCheckbox: false },
-    { dom: document.getElementById("custom-title-text-3"), key: "customTitleText3", isCheckbox: false },
-    { dom: document.getElementById("custom-title-text-4"), key: "customTitleText4", isCheckbox: false },
-    { dom: document.getElementById("custom-title-font"), key: "customTitleFont", isCheckbox: false },
-    { dom: document.getElementById("custom-title-font-2"), key: "customTitleFont2", isCheckbox: false },
-    { dom: document.getElementById("custom-title-font-3"), key: "customTitleFont3", isCheckbox: false },
-    { dom: document.getElementById("custom-title-font-4"), key: "customTitleFont4", isCheckbox: false },
-    { dom: document.getElementById("custom-title-orientation"), key: "customTitleOrientation", isCheckbox: false },
-    { dom: document.getElementById("custom-title-orientation-2"), key: "customTitleOrientation2", isCheckbox: false },
-    { dom: document.getElementById("custom-title-orientation-3"), key: "customTitleOrientation3", isCheckbox: false },
-    { dom: document.getElementById("custom-title-orientation-4"), key: "customTitleOrientation4", isCheckbox: false },
-    { dom: document.getElementById("custom-title-direction"), key: "customTitleDirection", isCheckbox: false },
-    { dom: document.getElementById("custom-title-order"), key: "customTitleOrder", isCheckbox: false },
-    { dom: document.getElementById("custom-title-word-wrap"), key: "customTitleWordWrap", isCheckbox: true },
-    { dom: document.getElementById("custom-title-animation"), key: "customTitleAnimation", isCheckbox: false },
-    { dom: document.getElementById("custom-title-animation-loop"), key: "customTitleAnimationLoop", isCheckbox: false },
+    {
+      dom: document.getElementById("custom-title-text"),
+      key: "customTitleText",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-text-2"),
+      key: "customTitleText2",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-text-3"),
+      key: "customTitleText3",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-text-4"),
+      key: "customTitleText4",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-font"),
+      key: "customTitleFont",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-font-2"),
+      key: "customTitleFont2",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-font-3"),
+      key: "customTitleFont3",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-font-4"),
+      key: "customTitleFont4",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-orientation"),
+      key: "customTitleOrientation",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-orientation-2"),
+      key: "customTitleOrientation2",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-orientation-3"),
+      key: "customTitleOrientation3",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-orientation-4"),
+      key: "customTitleOrientation4",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-direction"),
+      key: "customTitleDirection",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-order"),
+      key: "customTitleOrder",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-word-wrap"),
+      key: "customTitleWordWrap",
+      isCheckbox: true,
+    },
+    {
+      dom: document.getElementById("custom-title-animation"),
+      key: "customTitleAnimation",
+      isCheckbox: false,
+    },
+    {
+      dom: document.getElementById("custom-title-animation-loop"),
+      key: "customTitleAnimationLoop",
+      isCheckbox: false,
+    },
     {
       dom: DOM.customTitleMulticolor,
       key: "customTitleMulticolor",
@@ -8780,8 +9384,12 @@ export function setupGeneralEventHandlers(
     },
   ]
 
-  const line3Container = document.getElementById("custom-title-line-3-container")
-  const line4Container = document.getElementById("custom-title-line-4-container")
+  const line3Container = document.getElementById(
+    "custom-title-line-3-container",
+  )
+  const line4Container = document.getElementById(
+    "custom-title-line-4-container",
+  )
   const addLineBtn = document.getElementById("custom-title-add-line-btn")
   const removeLineBtns = document.querySelectorAll(".remove-line-btn")
 
@@ -8789,7 +9397,7 @@ export function setupGeneralEventHandlers(
     if (!line3Container || !line4Container || !addLineBtn) return
     const isLine3Visible = line3Container.style.display !== "none"
     const isLine4Visible = line4Container.style.display !== "none"
-    
+
     if (isLine3Visible && isLine4Visible) {
       addLineBtn.style.display = "none"
     } else {
@@ -8797,7 +9405,9 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  const lineTabs = document.querySelectorAll("#custom-title-line-tabs .ct-tab-btn")
+  const lineTabs = document.querySelectorAll(
+    "#custom-title-line-tabs .ct-tab-btn",
+  )
   const linePanels = [
     document.getElementById("custom-title-line-1-panel"),
     document.getElementById("custom-title-line-2-panel"),
@@ -8806,18 +9416,18 @@ export function setupGeneralEventHandlers(
   ]
 
   const switchLineTab = (lineNum) => {
-    lineTabs.forEach(tab => {
+    lineTabs.forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.targetLine === String(lineNum))
     })
     linePanels.forEach((panel, idx) => {
       if (panel) {
-        panel.style.display = (idx + 1 === lineNum) ? "flex" : "none"
+        panel.style.display = idx + 1 === lineNum ? "flex" : "none"
         panel.classList.toggle("active", idx + 1 === lineNum)
       }
     })
   }
 
-  lineTabs.forEach(tab => {
+  lineTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       const lineNum = parseInt(tab.dataset.targetLine || "1")
       switchLineTab(lineNum)
@@ -8828,7 +9438,7 @@ export function setupGeneralEventHandlers(
     const previewEl = document.getElementById("custom-title-preview-render")
     if (!previewEl) return
     const s = getSettings()
-    
+
     const inputs = [
       document.getElementById("custom-title-text")?.value,
       document.getElementById("custom-title-text-2")?.value,
@@ -8845,37 +9455,97 @@ export function setupGeneralEventHandlers(
       const now = new Date()
       const currentLang = s.language || "en"
       const hr = now.getHours()
-      const greeting = currentLang === "vi" ? (hr < 12 ? "Chào buổi sáng" : hr < 18 ? "Chào buổi chiều" : "Chào buổi tối") : (hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening")
+      const greeting =
+        currentLang === "vi"
+          ? hr < 12
+            ? "Chào buổi sáng"
+            : hr < 18
+              ? "Chào buổi chiều"
+              : "Chào buổi tối"
+          : hr < 12
+            ? "Good morning"
+            : hr < 18
+              ? "Good afternoon"
+              : "Good evening"
       res = res.replace(/{greeting}/gi, greeting)
-      res = res.replace(/{time}/gi, `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`)
-      res = res.replace(/{time_12}/gi, `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, "0")} ${now.getHours() >= 12 ? "PM" : "AM"}`)
-      res = res.replace(/{date}/gi, `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`)
+      res = res.replace(
+        /{time}/gi,
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
+      )
+      res = res.replace(
+        /{time_12}/gi,
+        `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, "0")} ${now.getHours() >= 12 ? "PM" : "AM"}`,
+      )
+      res = res.replace(
+        /{date}/gi,
+        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
+      )
       res = res.replace(/{day}/gi, String(now.getDate()))
-      res = res.replace(/{month}/gi, String(now.getMonth() + 1).padStart(2, "0"))
+      res = res.replace(
+        /{month}/gi,
+        String(now.getMonth() + 1).padStart(2, "0"),
+      )
       res = res.replace(/{year}/gi, String(now.getFullYear()))
-      const viDays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
-      const enDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-      res = res.replace(/{weekday}/gi, currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()])
-      
+      const viDays = [
+        "Chủ Nhật",
+        "Thứ Hai",
+        "Thứ Ba",
+        "Thứ Tư",
+        "Thứ Năm",
+        "Thứ Sáu",
+        "Thứ Bảy",
+      ]
+      const enDays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ]
+      res = res.replace(
+        /{weekday}/gi,
+        currentLang === "vi" ? viDays[now.getDay()] : enDays[now.getDay()],
+      )
+
       try {
-        const cache = JSON.parse(localStorage.getItem("weatherWidgetCache") || "null")
-        if (cache && cache.data && cache.data.current && cache.data.current.temperature_2m !== undefined) {
-          res = res.replace(/{weather}/gi, `${Math.round(cache.data.current.temperature_2m)}°C`)
+        const cache = JSON.parse(
+          localStorage.getItem("weatherWidgetCache") || "null",
+        )
+        if (
+          cache &&
+          cache.data &&
+          cache.data.current &&
+          cache.data.current.temperature_2m !== undefined
+        ) {
+          res = res.replace(
+            /{weather}/gi,
+            `${Math.round(cache.data.current.temperature_2m)}°C`,
+          )
         } else {
           res = res.replace(/{weather}/gi, "28°C")
         }
-      } catch(e) {
+      } catch (e) {
         res = res.replace(/{weather}/gi, "28°C")
       }
 
       let musicTitle = window._currentPlayingTrackTitle || ""
       if (!musicTitle) {
         const mEl = document.querySelector("#music-title")
-        if (mEl && mEl.textContent && !mEl.textContent.includes("No Media") && !mEl.textContent.includes("Không phát nhạc")) {
+        if (
+          mEl &&
+          mEl.textContent &&
+          !mEl.textContent.includes("No Media") &&
+          !mEl.textContent.includes("Không phát nhạc")
+        ) {
           musicTitle = mEl.textContent.trim()
         }
       }
-      res = res.replace(/{music}/gi, musicTitle ? `🎵 ${musicTitle}` : "🎵 Music Track")
+      res = res.replace(
+        /{music}/gi,
+        musicTitle ? `🎵 ${musicTitle}` : "🎵 Music Track",
+      )
       return res
     }
 
@@ -8890,7 +9560,7 @@ export function setupGeneralEventHandlers(
     }
 
     const lines = [t1, t2, t3, t4].filter(Boolean)
-    previewEl.innerHTML = lines.map(line => `<div>${line}</div>`).join("")
+    previewEl.innerHTML = lines.map((line) => `<div>${line}</div>`).join("")
     if (s.customTitleColor) previewEl.style.color = s.customTitleColor
   }
 
@@ -8899,22 +9569,30 @@ export function setupGeneralEventHandlers(
   updateCustomTitleLivePreview()
 
   if (removeLineBtns.length) {
-    removeLineBtns.forEach(btn => {
+    removeLineBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const target = e.currentTarget.dataset.target
         if (target === "3") {
           const input = document.getElementById("custom-title-text-3")
           if (input) {
-             input.value = ""
-             handleSettingUpdate("customTitleText3", "")
-             window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText3", value: "" } }))
+            input.value = ""
+            handleSettingUpdate("customTitleText3", "")
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "customTitleText3", value: "" },
+              }),
+            )
           }
         } else if (target === "4") {
           const input = document.getElementById("custom-title-text-4")
           if (input) {
-             input.value = ""
-             handleSettingUpdate("customTitleText4", "")
-             window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText4", value: "" } }))
+            input.value = ""
+            handleSettingUpdate("customTitleText4", "")
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "customTitleText4", value: "" },
+              }),
+            )
           }
         }
         updateCustomTitleLivePreview()
@@ -8958,18 +9636,56 @@ export function setupGeneralEventHandlers(
   })
 
   // Custom Title Reset Handlers
-  const resetCustomTitleTypoBtn = document.getElementById("reset-custom-title-typography-btn")
+  const resetCustomTitleTypoBtn = document.getElementById(
+    "reset-custom-title-typography-btn",
+  )
   resetCustomTitleTypoBtn?.addEventListener("click", () => {
     const defaultSizes = {
-      "custom-title-font-size": { val: 24, key: "customTitleFontSize", valId: "custom-title-fontsize-val" },
-      "custom-title-font-size-2": { val: 24, key: "customTitleFontSize2", valId: "custom-title-fontsize-2-val" },
-      "custom-title-font-size-3": { val: 24, key: "customTitleFontSize3", valId: "custom-title-fontsize-3-val" },
-      "custom-title-font-size-4": { val: 24, key: "customTitleFontSize4", valId: "custom-title-fontsize-4-val" },
-      "custom-title-letter-spacing": { val: 0, key: "customTitleLetterSpacing", valId: "custom-title-letter-spacing-val" },
-      "custom-title-letter-spacing-2": { val: 0, key: "customTitleLetterSpacing2", valId: "custom-title-letter-spacing-2-val" },
-      "custom-title-letter-spacing-3": { val: 0, key: "customTitleLetterSpacing3", valId: "custom-title-letter-spacing-3-val" },
-      "custom-title-letter-spacing-4": { val: 0, key: "customTitleLetterSpacing4", valId: "custom-title-letter-spacing-4-val" },
-      "custom-title-line-spacing": { val: 15, key: "customTitleLineSpacing", valId: "custom-title-line-spacing-val" },
+      "custom-title-font-size": {
+        val: 24,
+        key: "customTitleFontSize",
+        valId: "custom-title-fontsize-val",
+      },
+      "custom-title-font-size-2": {
+        val: 24,
+        key: "customTitleFontSize2",
+        valId: "custom-title-fontsize-2-val",
+      },
+      "custom-title-font-size-3": {
+        val: 24,
+        key: "customTitleFontSize3",
+        valId: "custom-title-fontsize-3-val",
+      },
+      "custom-title-font-size-4": {
+        val: 24,
+        key: "customTitleFontSize4",
+        valId: "custom-title-fontsize-4-val",
+      },
+      "custom-title-letter-spacing": {
+        val: 0,
+        key: "customTitleLetterSpacing",
+        valId: "custom-title-letter-spacing-val",
+      },
+      "custom-title-letter-spacing-2": {
+        val: 0,
+        key: "customTitleLetterSpacing2",
+        valId: "custom-title-letter-spacing-2-val",
+      },
+      "custom-title-letter-spacing-3": {
+        val: 0,
+        key: "customTitleLetterSpacing3",
+        valId: "custom-title-letter-spacing-3-val",
+      },
+      "custom-title-letter-spacing-4": {
+        val: 0,
+        key: "customTitleLetterSpacing4",
+        valId: "custom-title-letter-spacing-4-val",
+      },
+      "custom-title-line-spacing": {
+        val: 15,
+        key: "customTitleLineSpacing",
+        valId: "custom-title-line-spacing-val",
+      },
     }
     Object.entries(defaultSizes).forEach(([id, item]) => {
       const input = document.getElementById(id)
@@ -9006,7 +9722,9 @@ export function setupGeneralEventHandlers(
     updateCustomTitleLivePreview()
   })
 
-  const resetCustomTitleColorBtn = document.getElementById("reset-custom-title-color-btn")
+  const resetCustomTitleColorBtn = document.getElementById(
+    "reset-custom-title-color-btn",
+  )
   resetCustomTitleColorBtn?.addEventListener("click", () => {
     const colorInput = document.getElementById("custom-title-color")
     if (colorInput) {
@@ -9021,7 +9739,9 @@ export function setupGeneralEventHandlers(
     updateCustomTitleLivePreview()
   })
 
-  const resetCustomTitleEffectsBtn = document.getElementById("reset-custom-title-effects-btn")
+  const resetCustomTitleEffectsBtn = document.getElementById(
+    "reset-custom-title-effects-btn",
+  )
   resetCustomTitleEffectsBtn?.addEventListener("click", () => {
     const shadowColor = document.getElementById("custom-title-shadow-color")
     if (shadowColor) {
@@ -9087,24 +9807,28 @@ export function setupGeneralEventHandlers(
       if (!payload) return
 
       DOM.forceDriveSyncBtn.disabled = true
-      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
+      DOM.forceDriveSyncBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
       await DriveSync.syncToDrive(payload)
       DOM.forceDriveSyncBtn.disabled = false
-      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
+      DOM.forceDriveSyncBtn.innerHTML =
+        '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
     })
   }
 
   if (DOM.forceDriveDownloadBtn) {
     DOM.forceDriveDownloadBtn.addEventListener("click", async () => {
       DOM.forceDriveDownloadBtn.disabled = true
-      DOM.forceDriveDownloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+      DOM.forceDriveDownloadBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
       try {
         await DriveSync.syncFromDrive(true)
       } catch (err) {
         showAlert("Failed to download or invalid JSON.")
       }
       DOM.forceDriveDownloadBtn.disabled = false
-      DOM.forceDriveDownloadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
+      DOM.forceDriveDownloadBtn.innerHTML =
+        '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
     })
   }
 
@@ -9149,7 +9873,8 @@ export function setupGeneralEventHandlers(
       DOM.m3PaletteStyleSelect.value = value || "tonalSpot"
     }
     if (key === "accentColorMode") {
-      if (DOM.accentColorModeM3) DOM.accentColorModeM3.checked = value !== "default"
+      if (DOM.accentColorModeM3)
+        DOM.accentColorModeM3.checked = value !== "default"
       if (DOM.accentColorModeDefault)
         DOM.accentColorModeDefault.checked = value === "default"
       DOM.accentColorSettingsBody?.classList.toggle(
@@ -9157,14 +9882,21 @@ export function setupGeneralEventHandlers(
         value === "default",
       )
     }
-    if (key === "musicPlayerUseDefaultColor" && DOM.musicPlayerUseDefaultColorMode) {
+    if (
+      key === "musicPlayerUseDefaultColor" &&
+      DOM.musicPlayerUseDefaultColorMode
+    ) {
       if (value === "thumbnail") {
         DOM.musicPlayerUseDefaultColorMode.value = "thumbnail"
       } else {
-        DOM.musicPlayerUseDefaultColorMode.value = value === true ? "true" : "false"
+        DOM.musicPlayerUseDefaultColorMode.value =
+          value === true ? "true" : "false"
       }
     }
-    if (key === "musicSourceIconColorMode" && DOM.musicSourceIconColorModeSelect) {
+    if (
+      key === "musicSourceIconColorMode" &&
+      DOM.musicSourceIconColorModeSelect
+    ) {
       DOM.musicSourceIconColorModeSelect.value = value || "brand"
     }
     if (key === "sideControlsGhostMode" && DOM.lcpGhostControls)
@@ -9178,5 +9910,4 @@ export function setupGeneralEventHandlers(
     if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout)
       DOM.lcpBookmarkLayout.value = value
   })
-
 }

@@ -36,6 +36,7 @@
 ### Component Pattern (`src/components/`)
 
 Components (e.g., `bookmarks.js`, `todo.js`, `weather.js`, etc.) follow this generic pattern:
+
 1. Import DOM references from `src/utils/dom.js`.
 2. Import state/i18n services.
 3. Export an `init{Component}()` function called from `main.js`.
@@ -46,11 +47,13 @@ Components (e.g., `bookmarks.js`, `todo.js`, `weather.js`, etc.) follow this gen
 ## Key Directories & Files
 
 ### Extension Core (Root)
+
 - `background.js`: Service worker for background tasks and extension events.
 - `content-media.js`: Content script for specific page interactions/media.
 - `manifest.json`: MV3 configuration declaring permissions (bookmarks, storage, etc.).
 
 ### Services (`src/services/`)
+
 - `state.js`: Core configuration and localStorage management.
 - `i18n.js`: Localization system.
 - `googleDriveSync.js`: Cloud backup functionality.
@@ -58,7 +61,9 @@ Components (e.g., `bookmarks.js`, `todo.js`, `weather.js`, etc.) follow this gen
 - `imageStore.js`: Handling custom user image uploads via IndexedDB/Base64.
 
 ### UI Components (`src/components/`)
+
 A vast collection of widgets and features:
+
 - **Core widgets:** `clock.js`, `bookmarks.js`, `search.js`
 - **Productivity:** `todo.js`, `notepad.js`, `habitTracker.js`, `timer.js`, `fullCalendar.js`
 - **Utility:** `weather.js`, `rss.js`, `terminal.js`, `commandPalette.js`
@@ -66,16 +71,19 @@ A vast collection of widgets and features:
 - **UI Shell:** `contextMenu.js`, `modal.js`, `quotes.js`
 
 ### Settings Module (`src/components/settings/`)
+
 - The settings panel is modularized inside the `settings/` folder.
 - `src/components/settings.js` acts only as a wrapper/re-export for `src/components/settings/index.js`.
 - Always update specific setting sub-modules when adding new preferences, rather than a single monolithic file.
 
 ### Animations (`src/components/animations/`)
+
 - Canvas-based effects (Matrix, meteor, particles, etc.).
 - Extend a common Canvas API, implementing `.start()` and `.stop()`.
 - Must respond to window resizes (`.resize()`) and be performance-conscious (throttling, `requestAnimationFrame`).
 
 ### Utils (`src/utils/`)
+
 - `dom.js`: Centralized DOM element references (extremely important to avoid `document.querySelector` scattering).
 - `colors.js`: Color utilities (e.g., contrast calculation).
 - `dialog.js`, `toast.js`: UI feedback utilities.
@@ -115,11 +123,13 @@ saveSettings() // Persist to localStorage
 ## Developer Workflows
 
 ### Testing Changes
+
 1. **Local testing:** Open `index.html` in browser for standalone UI testing. Note that Chrome Extension specific APIs (like Bookmarks or Background scripts) will throw errors or not function.
 2. **Extension testing:** Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked). Required for full functionality testing.
 3. **Storage Reset:** Run `localStorage.clear()` in DevTools Console to reset settings to default if state becomes corrupted.
 
 ### Adding External Dependencies
+
 - No bundler (Webpack/Vite) is used.
 - Dependencies must be native APIs, CDN scripts (in `index.html`), or manual inline utility files.
 

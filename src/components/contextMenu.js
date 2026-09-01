@@ -182,21 +182,25 @@ async function openSettingsSection(sectionId, targetSelector = null) {
   }
 
   const scrollTarget =
-    targetElement || (section ? section.querySelector(".section-toggle") : null) || section
+    targetElement ||
+    (section ? section.querySelector(".section-toggle") : null) ||
+    section
 
   if (!scrollTarget) return
 
   // Ensure correct tab & subtab are activated and scrolled smoothly
   try {
-    const { scrollToSidebarElement } = await import(
-      "./settings/sidebarNavigation.js"
-    )
+    const { scrollToSidebarElement } =
+      await import("./settings/sidebarNavigation.js")
     if (typeof scrollToSidebarElement === "function") {
       scrollToSidebarElement(scrollTarget, true)
       return
     }
   } catch (err) {
-    console.warn("Could not switch settings tab via scrollToSidebarElement:", err)
+    console.warn(
+      "Could not switch settings tab via scrollToSidebarElement:",
+      err,
+    )
   }
 
   if (section) section.classList.remove("collapsed")
@@ -405,7 +409,7 @@ function showQrCodeModal(url, faviconUrl = "") {
   // Use ECC Level H to allow the center icon without breaking the QR code
   img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}&ecc=H`
   text.textContent = url
-  
+
   // Verify faviconUrl is a valid image URL and not a FontAwesome icon class
   const isValidImageUrl =
     typeof faviconUrl === "string" &&
@@ -513,8 +517,13 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
       }
     }
   }
-  
-  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
+
+  if (
+    url &&
+    url.trim() !== "" &&
+    !url.startsWith("chrome://") &&
+    !url.startsWith("edge://")
+  ) {
     const qrBtn = createCustomMenuItem(
       i18n.context_generate_qr || "Tạo mã QR",
       "fa-solid fa-qrcode",
@@ -524,7 +533,7 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
         hideContextMenu()
         showQrCodeModal(url, faviconUrl)
       },
-      "context-settings-item qr-menu-item"
+      "context-settings-item qr-menu-item",
     )
 
     // Live QR hover popover preview
@@ -665,8 +674,6 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
     contextMenu.insertBefore(qrBtn, menuEdit)
   }
 }
-
-
 
 function openExternalUrl(url) {
   if (window.chrome?.tabs?.create) {
@@ -869,12 +876,22 @@ function getContextMenuTargetName(type, id, index, i18n) {
     case "bookmark": {
       const bookmarks = getBookmarks()
       const bookmark = bookmarks[index]
-      return bookmark?.title || bookmark?.url || i18n.context_header_bookmark || "Bookmark"
+      return (
+        bookmark?.title ||
+        bookmark?.url ||
+        i18n.context_header_bookmark ||
+        "Bookmark"
+      )
     }
     case "bookmarkStack": {
       const bookmarks = getBookmarks()
       const bookmark = bookmarks[index]
-      return bookmark?.title || bookmark?.name || i18n.context_header_bookmark_stack || "Bookmark Stack"
+      return (
+        bookmark?.title ||
+        bookmark?.name ||
+        i18n.context_header_bookmark_stack ||
+        "Bookmark Stack"
+      )
     }
     case "bookmarkStackItem": {
       if (id && id.includes(":")) {
@@ -884,7 +901,12 @@ function getContextMenuTargetName(type, id, index, i18n) {
         if (stack && stack.items) {
           const item = stack.items[itemIndex]
           if (item) {
-            return item.title || item.url || i18n.context_header_bookmark || "Bookmark"
+            return (
+              item.title ||
+              item.url ||
+              i18n.context_header_bookmark ||
+              "Bookmark"
+            )
           }
         }
       }
@@ -899,19 +921,32 @@ function getContextMenuTargetName(type, id, index, i18n) {
     case "search": {
       const widgetId = id || type
       if (widgetId === "todo") return i18n.context_header_widget_todo || "Tasks"
-      if (widgetId === "timer") return i18n.context_header_widget_timer || "Timer"
-      if (widgetId === "clock") return i18n.context_header_widget_clock || "Clock"
-      if (widgetId === "search") return i18n.context_header_widget_search || "Search Bar"
-      if (widgetId === "weather") return i18n.context_header_widget_weather || "Weather"
-      if (widgetId === "music") return i18n.context_header_widget_music || "Music Player"
-      if (widgetId === "notepad") return i18n.context_header_widget_notepad || "Notepad"
-      if (widgetId === "calendar") return i18n.context_header_widget_calendar || "Calendar"
-      if (widgetId === "daily-quotes") return i18n.context_header_widget_quotes || "Daily Quotes"
-      if (widgetId === "rss") return i18n.context_header_widget_rss || "RSS Reader"
-      if (widgetId === "habitTracker") return i18n.context_header_widget_habitTracker || "Habit Tracker"
-      if (widgetId === "ambientSounds") return i18n.quick_access_ambient_sounds || "Ambient Sounds"
-      if (widgetId === "aiAssistant") return i18n.quick_access_ai_assistant || "AI Assistant"
-      if (widgetId === "custom-title") return i18n.context_header_widget_custom_title || "Custom Title"
+      if (widgetId === "timer")
+        return i18n.context_header_widget_timer || "Timer"
+      if (widgetId === "clock")
+        return i18n.context_header_widget_clock || "Clock"
+      if (widgetId === "search")
+        return i18n.context_header_widget_search || "Search Bar"
+      if (widgetId === "weather")
+        return i18n.context_header_widget_weather || "Weather"
+      if (widgetId === "music")
+        return i18n.context_header_widget_music || "Music Player"
+      if (widgetId === "notepad")
+        return i18n.context_header_widget_notepad || "Notepad"
+      if (widgetId === "calendar")
+        return i18n.context_header_widget_calendar || "Calendar"
+      if (widgetId === "daily-quotes")
+        return i18n.context_header_widget_quotes || "Daily Quotes"
+      if (widgetId === "rss")
+        return i18n.context_header_widget_rss || "RSS Reader"
+      if (widgetId === "habitTracker")
+        return i18n.context_header_widget_habitTracker || "Habit Tracker"
+      if (widgetId === "ambientSounds")
+        return i18n.quick_access_ambient_sounds || "Ambient Sounds"
+      if (widgetId === "aiAssistant")
+        return i18n.quick_access_ai_assistant || "AI Assistant"
+      if (widgetId === "custom-title")
+        return i18n.context_header_widget_custom_title || "Custom Title"
       return widgetId
     }
     case "todo": {
@@ -1028,11 +1063,12 @@ export function showContextMenu(
     menuDelete.style.display = "none"
     menuFavorite.style.display = "none"
     menuSelect.style.display = "none"
-    
+
     const settings = getSettings()
     if (settings.freeMoveSearchBar === true) {
       menuLock.style.display = "flex"
-      let isLocked = settings.lockedWidgets && settings.lockedWidgets["searchBar"]
+      let isLocked =
+        settings.lockedWidgets && settings.lockedWidgets["searchBar"]
       const lockText = menuLock.querySelector("span")
       const lockIcon = menuLock.querySelector("i")
       if (isLocked) {
@@ -1052,12 +1088,12 @@ export function showContextMenu(
     menuDelete.style.display = "none"
 
     const settings = getSettings()
-    
-    let isFreeMoveEnabled = true;
+
+    let isFreeMoveEnabled = true
     if (id === "clock") {
-      isFreeMoveEnabled = settings.freeMoveClock === true;
+      isFreeMoveEnabled = settings.freeMoveClock === true
     } else if (id === "custom-title" || id === "customTitle") {
-      isFreeMoveEnabled = settings.freeMoveCustomTitle === true;
+      isFreeMoveEnabled = settings.freeMoveCustomTitle === true
     }
 
     if (!isFreeMoveEnabled) {
@@ -1086,7 +1122,7 @@ export function showContextMenu(
 
     addOpenWidgetSettingsItem(id, i18n)
 
-        const skinnableWidgets = [
+    const skinnableWidgets = [
       "todo",
       "timer",
       "calendar",
@@ -1096,7 +1132,7 @@ export function showContextMenu(
       "rss",
       "habitTracker",
       "ambientSounds",
-      "aiAssistant"
+      "aiAssistant",
     ]
 
     if (skinnableWidgets.includes(id)) {
@@ -1229,7 +1265,16 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer" || id === "habitTracker" || id === "ambientSounds" || id === "aiAssistant") {
+      if (
+        id === "daily-quotes" ||
+        id === "weather" ||
+        id === "rss" ||
+        id === "todo" ||
+        id === "timer" ||
+        id === "habitTracker" ||
+        id === "ambientSounds" ||
+        id === "aiAssistant"
+      ) {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -1278,20 +1323,29 @@ export function showContextMenu(
         const isMini = settings[settingKey] === true
         const miniBtn = document.createElement("div")
         miniBtn.className = "context-menu-item custom-music-item"
-        
+
         const labels = {
-          todo: { mini: i18n.todo_mini_size || "Mini Todo", normal: i18n.todo_normal_size || "Normal Todo" },
-          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" },
-          habitTracker: { mini: i18n.habit_mini_size || "Mini Habit", normal: i18n.habit_normal_size || "Normal Habit" }
+          todo: {
+            mini: i18n.todo_mini_size || "Mini Todo",
+            normal: i18n.todo_normal_size || "Normal Todo",
+          },
+          timer: {
+            mini: i18n.timer_mini_size || "Mini Timer",
+            normal: i18n.timer_normal_size || "Normal Timer",
+          },
+          habitTracker: {
+            mini: i18n.habit_mini_size || "Mini Habit",
+            normal: i18n.habit_normal_size || "Normal Habit",
+          },
         }
-        
+
         miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
         miniBtn.onclick = () => {
           const widgetIdMap = {
             todo: "todo-container",
             timer: "timer-component",
             habitTracker: "habit-tracker-container",
-            music: "music-player-container"
+            music: "music-player-container",
           }
           const el = document.getElementById(widgetIdMap[id])
 
@@ -1301,9 +1355,9 @@ export function showContextMenu(
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
               detail: { key: settingKey, value: newVal },
-            })
+            }),
           )
-          
+
           if (el) {
             el.classList.toggle(`${id}-mini`, newVal)
           }
@@ -1314,26 +1368,27 @@ export function showContextMenu(
 
       if (id === "habitTracker") {
         contextMenu.insertBefore(createCustomMenuDivider(), menuLock)
-        
+
         const colorMode = settings.habitColorMode || "custom"
         const modes = [
-           { id: "custom", label: i18n.habit_color_custom || "Màu riêng" },
-           { id: "gradient", label: i18n.habit_color_gradient || "Đỏ sang Xanh" },
-           { id: "m3", label: i18n.habit_color_m3 || "Màu Accent" }
+          { id: "custom", label: i18n.habit_color_custom || "Màu riêng" },
+          {
+            id: "gradient",
+            label: i18n.habit_color_gradient || "Đỏ sang Xanh",
+          },
+          { id: "m3", label: i18n.habit_color_m3 || "Màu Accent" },
         ]
-        
-        modes.forEach(mode => {
-           const isSelected = colorMode === mode.id
-           const icon = isSelected ? "fa-solid fa-circle-dot" : "fa-regular fa-circle"
-           const modeBtn = createCustomMenuItem(
-             mode.label,
-             icon,
-             () => {
-               applyContextSetting("habitColorMode", mode.id)
-               hideContextMenu()
-             }
-           )
-           contextMenu.insertBefore(modeBtn, menuLock)
+
+        modes.forEach((mode) => {
+          const isSelected = colorMode === mode.id
+          const icon = isSelected
+            ? "fa-solid fa-circle-dot"
+            : "fa-regular fa-circle"
+          const modeBtn = createCustomMenuItem(mode.label, icon, () => {
+            applyContextSetting("habitColorMode", mode.id)
+            hideContextMenu()
+          })
+          contextMenu.insertBefore(modeBtn, menuLock)
         })
       }
 
@@ -1342,12 +1397,22 @@ export function showContextMenu(
         const isExpanded = settings[`${id}Expanded`] === true && !isMini
         const miniBtn = document.createElement("div")
         miniBtn.className = "context-menu-item custom-music-item"
-        
+
         const labels = {
-          weather: { mini: i18n.weather_mini_size || "Thu nhỏ", normal: i18n.weather_normal_size || "Kích thước chuẩn", expand: i18n.weather_expand || "Phóng to", collapse: i18n.weather_collapse || "Thu gọn" },
-          rss: { mini: "Thu nhỏ", normal: "Kích thước chuẩn", expand: "Phóng to", collapse: "Thu gọn" }
+          weather: {
+            mini: i18n.weather_mini_size || "Thu nhỏ",
+            normal: i18n.weather_normal_size || "Kích thước chuẩn",
+            expand: i18n.weather_expand || "Phóng to",
+            collapse: i18n.weather_collapse || "Thu gọn",
+          },
+          rss: {
+            mini: "Thu nhỏ",
+            normal: "Kích thước chuẩn",
+            expand: "Phóng to",
+            collapse: "Thu gọn",
+          },
         }
-        
+
         miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-compress" : "fa-compress-arrows-alt"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
         miniBtn.onclick = () => {
           const newVal = !isMini
@@ -1370,7 +1435,7 @@ export function showContextMenu(
 
           const widgetIdMap = {
             weather: "weather-container",
-            rss: "rss-container"
+            rss: "rss-container",
           }
           const el = document.getElementById(widgetIdMap[id])
           if (el) {
@@ -1405,7 +1470,7 @@ export function showContextMenu(
 
           const widgetIdMap = {
             weather: "weather-container",
-            rss: "rss-container"
+            rss: "rss-container",
           }
           const el = document.getElementById(widgetIdMap[id])
           if (el) {
@@ -1535,21 +1600,21 @@ export function showContextMenu(
       if (id === "daily-quotes") {
         const sourceKey = "quotesSource"
         const currentSource = settings[sourceKey] || "local"
-        
+
         const sourceBtn = document.createElement("div")
         sourceBtn.className = "context-menu-item custom-music-item"
         const sourceNames = {
           local: i18n.settings_quotes_source_local || "Local (Offline)",
           quotable: i18n.settings_quotes_source_quotable || "Quotable API",
-          adviceslip: i18n.settings_quotes_source_advice || "Advice Slip API"
+          adviceslip: i18n.settings_quotes_source_advice || "Advice Slip API",
         }
         const nextSources = {
           local: "quotable",
           quotable: "adviceslip",
-          adviceslip: "local"
+          adviceslip: "local",
         }
         const nextSource = nextSources[currentSource] || "local"
-        
+
         sourceBtn.innerHTML = `<i class="fa-solid fa-server"></i> <span>${i18n.settings_quotes_source || "API Source"}: ${sourceNames[currentSource]}</span>`
         sourceBtn.onclick = () => {
           updateSetting(sourceKey, nextSource)
@@ -1570,12 +1635,12 @@ export function showContextMenu(
         const freqNames = {
           tab: i18n.settings_quotes_freq_tab || "Every New Tab",
           hour: i18n.settings_quotes_freq_hour || "Every Hour",
-          day: i18n.settings_quotes_freq_day || "Every Day"
+          day: i18n.settings_quotes_freq_day || "Every Day",
         }
         const nextFreqs = {
           tab: "hour",
           hour: "day",
-          day: "tab"
+          day: "tab",
         }
         const nextFreq = nextFreqs[currentFreq] || "tab"
 
@@ -1600,7 +1665,7 @@ export function showContextMenu(
       const itemsToInsert = []
 
       // --- 1. Skins & Appearance Options ---
-      
+
       // M3 Accent Skin
       const isM3Accent = settings.musicPlayerSkin === "m3-accent"
       const m3SkinBtn = document.createElement("div")
@@ -1638,7 +1703,8 @@ export function showContextMenu(
       itemsToInsert.push(transparentBtn)
 
       // Light Transparent Skin
-      const isLightTransparent = settings.musicPlayerSkin === "light-transparent"
+      const isLightTransparent =
+        settings.musicPlayerSkin === "light-transparent"
       const lightTransparentBtn = document.createElement("div")
       lightTransparentBtn.className = "context-menu-item custom-music-item"
       lightTransparentBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
@@ -1934,7 +2000,7 @@ export function showContextMenu(
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
             detail: { key: "musicMini", value: newVal },
-          })
+          }),
         )
         if (el) {
           el.classList.toggle("music-mini", newVal)
@@ -2317,12 +2383,12 @@ export function showContextMenu(
 
       const sizeLabel = document.createElement("div")
       sizeLabel.className = "lcp-label"
-      sizeLabel.textContent = i18n.context_menu_size_toggle || "Context Menu Size"
+      sizeLabel.textContent =
+        i18n.context_menu_size_toggle || "Context Menu Size"
 
       const sizeBtn = document.createElement("button")
       sizeBtn.type = "button"
-      sizeBtn.className =
-        "quick-access-radius-chip quick-access-border-button"
+      sizeBtn.className = "quick-access-radius-chip quick-access-border-button"
       sizeBtn.textContent = isMiniState
         ? i18n.context_menu_size_mini || "Mini"
         : i18n.context_menu_size_enlarged || "Phóng to (Mặc định)"
@@ -2461,9 +2527,13 @@ export function showContextMenu(
     if (type === "userFont") {
       menuMove.style.display = "flex"
       if (callbacks && callbacks.fontCategoryType) {
-        const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
+        const targetType =
+          callbacks.fontCategoryType === "clock"
+            ? i18n.settings_font || "General"
+            : i18n.clock || "Clock"
         const span = menuMove.querySelector("span")
-        if (span) span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
+        if (span)
+          span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
       }
       menuSelect.style.display = "flex"
 
@@ -2509,9 +2579,13 @@ export function showContextMenu(
 
     menuMove.style.display = "flex"
     if (callbacks && callbacks.fontCategoryType) {
-      const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
+      const targetType =
+        callbacks.fontCategoryType === "clock"
+          ? i18n.settings_font || "General"
+          : i18n.clock || "Clock"
       const span = menuMove.querySelector("span")
-      if (span) span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
+      if (span)
+        span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
     }
 
     const applyGenBtn = document.createElement("div")
@@ -2615,7 +2689,6 @@ export function hideContextMenu() {
   const old = document.querySelector(".quick-access-popup")
   if (old && old.parentElement) old.parentElement.removeChild(old)
 }
-
 
 async function handleFavorite() {
   const type = contextMenuTargetType
@@ -2958,7 +3031,12 @@ async function handleDelete() {
         const itemId =
           typeof item === "object" ? item.id || item.val || item.label : item
 
-        if (key === "userSavedFonts" && item && item.isLocalFile && item.fileId) {
+        if (
+          key === "userSavedFonts" &&
+          item &&
+          item.isLocalFile &&
+          item.fileId
+        ) {
           const { deleteImage } = await import("../services/imageStore.js")
           await deleteImage(item.fileId)
         }
@@ -3003,7 +3081,7 @@ function handleLock() {
     const lockedWidgets = { ...(settings.lockedWidgets || {}) }
     const isLocked = lockedWidgets["searchBar"]
     lockedWidgets["searchBar"] = !isLocked
-    
+
     if (window.appHandleSettingUpdate) {
       window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
     } else {
@@ -3024,11 +3102,14 @@ function handleLock() {
   }
 
   if (contextMenuTargetType === "widget" && contextMenuTargetId) {
-    if (contextMenuTargetId === "custom-title" || contextMenuTargetId === "customTitle") {
+    if (
+      contextMenuTargetId === "custom-title" ||
+      contextMenuTargetId === "customTitle"
+    ) {
       const lockedWidgets = { ...(settings.lockedWidgets || {}) }
       const isLocked = lockedWidgets["customTitle"]
       lockedWidgets["customTitle"] = !isLocked
-      
+
       if (window.appHandleSettingUpdate) {
         window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
       } else {
@@ -3136,4 +3217,3 @@ export function initContextMenu() {
     }
   })
 }
-

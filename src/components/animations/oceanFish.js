@@ -7,10 +7,7 @@ export class OceanFishEffect {
 
     // Arrays for different creatures
     this.fishes = []
-    
-    
-    
-    
+
     this.bubbles = []
 
     this.fps = 60
@@ -88,10 +85,7 @@ export class OceanFishEffect {
 
   initMarineLife() {
     this.fishes = []
-    
-    
-    
-    
+
     this.bubbles = []
 
     // Scale count based on screen width
@@ -122,8 +116,6 @@ export class OceanFishEffect {
         targetAngle: 0,
       })
     }
-
-    
   }
 
   start() {
@@ -138,14 +130,17 @@ export class OceanFishEffect {
     const animateLoop = (t) => {
       if (!this.active) return
       this._animId = requestAnimationFrame(animateLoop)
-      if (document.visibilityState === 'hidden') return
+      if (document.visibilityState === "hidden") return
       this.animate(t)
     }
     this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     if (!this.active) return
     this.active = false
     window.removeEventListener("mousemove", this.handleMouseMove)
@@ -285,13 +280,7 @@ export class OceanFishEffect {
       ctx.fill()
       ctx.fillStyle = "#111"
       ctx.beginPath()
-      ctx.arc(
-        fish.size / 2 + 1,
-        -fish.size / 5,
-        fish.size / 8,
-        0,
-        Math.PI * 2,
-      )
+      ctx.arc(fish.size / 2 + 1, -fish.size / 5, fish.size / 8, 0, Math.PI * 2)
       ctx.fill()
 
       ctx.restore()
@@ -310,5 +299,4 @@ export class OceanFishEffect {
     // Call modular drawing functions
     this.drawFishesAndBubbles()
   }
-
 }
