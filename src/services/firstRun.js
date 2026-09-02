@@ -24,6 +24,7 @@ import {
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
 const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
+const FIRST_RUN_LAYOUT_KEY = "startpageFirstRunBookmarkLayoutV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const FIRST_RUN_SETTINGS_GUIDE_KEY = "startpageFirstRunSettingsGuideV1"
@@ -91,6 +92,7 @@ export function prepareFirstRunDefaults() {
     FIRST_RUN_BG_KEY,
     FIRST_RUN_LANGUAGE_KEY,
     FIRST_RUN_NAME_KEY,
+    FIRST_RUN_LAYOUT_KEY,
     FIRST_RUN_OPEN_SOURCE_KEY,
     FIRST_RUN_IMPORT_KEY,
     FIRST_RUN_SETTINGS_GUIDE_KEY,
@@ -567,6 +569,95 @@ async function promptFirstRunUserName() {
   localStorage.setItem(FIRST_RUN_NAME_KEY, name)
 }
 
+async function promptFirstRunBookmarkLayout(renderBookmarks) {
+  if (localStorage.getItem(FIRST_RUN_LAYOUT_KEY)) return
+
+  const i18n = geti18n()
+  const options = [
+    {
+      key: "default",
+      label: i18n.first_run_style_clean || "Default Grid",
+      description:
+        i18n.first_run_style_clean_desc ||
+        "Simple, centered bookmarks with minimal background.",
+      icon: "fa-solid fa-table-cells",
+    },
+    {
+      key: "taskbar",
+      label: i18n.first_run_style_dock || "Taskbar (Bottom Center)",
+      description:
+        i18n.first_run_style_dock_desc ||
+        "Bottom taskbar dock, compact icons, easy for new tabs.",
+      icon: "fa-solid fa-window-maximize",
+    },
+    {
+      key: "sidebar",
+      label: i18n.first_run_style_sidebar || "Sidebar",
+      description:
+        i18n.first_run_style_sidebar_desc ||
+        "Vertical folder list on the side for heavy bookmark use.",
+      icon: "fa-solid fa-table-columns",
+    },
+    {
+      key: "taskbar-top",
+      label: i18n.layout_taskbar_top || "Taskbar (Top Center)",
+      description:
+        i18n.layout_taskbar_top_desc || "Dock at the top of the screen.",
+      icon: "fa-solid fa-border-top-left",
+    },
+    {
+      key: "taskbar-left",
+      label: i18n.layout_taskbar_left || "Taskbar (Bottom Left)",
+      description:
+        i18n.layout_taskbar_left_desc || "Dock at the bottom-left corner.",
+      icon: "fa-solid fa-grip-vertical",
+    },
+    {
+      key: "taskbar-right",
+      label: i18n.layout_taskbar_right || "Taskbar (Bottom Right)",
+      description:
+        i18n.layout_taskbar_right_desc || "Dock at the bottom-right corner.",
+      icon: "fa-solid fa-grip-vertical",
+    },
+  ]
+
+  const selectedLayout = await showChoiceConfirm(
+    options,
+    i18n.first_run_style_title || "Choose a start style",
+    i18n.first_run_style_prompt ||
+      "Choose a layout to start with. You can change it later in Settings.",
+  )
+
+  const layout = selectedLayout || "default"
+  updateSetting("bookmarkLayout", layout)
+  saveSettings(true)
+
+  const layoutClasses = [
+    "bookmark-sidebar-mode",
+    "bookmark-taskbar-mode",
+    "bookmark-taskbar-top-mode",
+    "bookmark-taskbar-left-mode",
+    "bookmark-taskbar-right-mode",
+  ]
+  document.body.classList.remove(...layoutClasses)
+  if (layout !== "default") {
+    document.body.classList.add(`bookmark-${layout}-mode`)
+  }
+
+  renderBookmarks?.()
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key: "bookmarkLayout", value: layout },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("startpage:settingChanged", {
+      detail: { key: "bookmarkLayout", value: layout },
+    }),
+  )
+  localStorage.setItem(FIRST_RUN_LAYOUT_KEY, layout)
+}
+
 
 
 function getFirstRunSettingsGuideSteps(i18n) {
@@ -813,6 +904,45 @@ function setSettingsSectionExpanded(section, expanded = true) {
   localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
 }
 
+export function autoExpandAllSettingsSectionsAndGroups() {
+  // 1. Expand all collapsible groups (.setting-group.collapsible-group)
+  document
+    .querySelectorAll(".setting-group.collapsible-group")
+    .forEach((group) => {
+      group.classList.add("expanded")
+      const groupId = group.id || group.dataset.groupId
+      if (groupId) {
+        localStorage.setItem(`settingsGroupExpanded:${groupId}`, "1")
+      }
+    })
+
+  // 2. Expand all settings sections (.settings-section)
+  const sectionStates = JSON.parse(
+    localStorage.getItem("settingsSectionStates") || "{}",
+  )
+  document.querySelectorAll(".settings-section").forEach((section) => {
+    section.classList.remove("collapsed")
+    const sectionId = section.dataset.sectionId
+    if (sectionId) {
+      sectionStates[sectionId] = false
+    }
+  })
+  localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
+
+  // 3. Expand other collapsible sub-panels
+  document
+    .querySelectorAll(
+      ".language-tools-panel, .gradient-settings-body, .multicolor-settings-body, .svg-wave-settings",
+    )
+    .forEach((panel) => {
+      panel.classList.remove("is-collapsed")
+    })
+}
+
+if (typeof window !== "undefined") {
+  window.autoExpandAllSettingsSectionsAndGroups = autoExpandAllSettingsSectionsAndGroups
+}
+
 function getGuideTarget(selector) {
   const target = document.querySelector(selector)
   if (!target) return null
@@ -992,6 +1122,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       overlay.remove()
       document.removeEventListener("keydown", onKeyDown)
       window.removeEventListener("resize", renderStep)
+      if (status === "skipped") {
+        autoExpandAllSettingsSectionsAndGroups()
+      }
       resolve()
     }
 
@@ -1175,6 +1308,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   }
   await promptFirstRunLanguage()
   await promptFirstRunUserName()
+  await promptFirstRunBookmarkLayout(renderBookmarks)
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(
