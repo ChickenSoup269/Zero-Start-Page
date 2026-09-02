@@ -116,6 +116,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.matrixRainEffect.updateColor(DOM.matrixColorPicker.value)
   })
 
+  DOM.matrixStyleSelect?.addEventListener("change", () => {
+    updateSetting("matrixStyle", DOM.matrixStyleSelect.value)
+    saveSettings()
+    if (effectInstances.matrixRainEffect)
+      effectInstances.matrixRainEffect.setStyle(DOM.matrixStyleSelect.value)
+  })
+
   DOM.auraColorPicker?.addEventListener("change", () => {
     updateSetting("auraColor", DOM.auraColorPicker.value)
     saveSettings()

@@ -74,7 +74,11 @@ export function createEffectFactories(settings) {
         settings.networkColor || settings.accentColor,
       ),
     matrixRainEffect: () =>
-      new MatrixRain("effect-canvas", settings.matrixColor),
+      new MatrixRain(
+        "effect-canvas",
+        settings.matrixColor,
+        settings.matrixStyle || "hd",
+      ),
     auraEffect: () => new AuraEffect("effect-canvas", settings.auraColor),
     windEffect: () =>
       new WindEffect("effect-canvas", settings.windMode || "2d"),

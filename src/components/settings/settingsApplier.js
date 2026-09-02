@@ -5149,6 +5149,9 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.networkColorPicker.value = settings.networkColor || "#00bcd4"
     DOM.matrixColorPicker.value = settings.matrixColor || "#00FF00"
+    if (DOM.matrixStyleSelect) {
+      DOM.matrixStyleSelect.value = settings.matrixStyle || "hd"
+    }
     DOM.auraColorPicker.value = settings.auraColor || "#a8c0ff"
     DOM.northernLightsColorPicker.value =
       settings.northernLightsColor || "#00ff88"
@@ -5252,6 +5255,9 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.effect === "network" ? "block" : "none"
     if (DOM.matrixColorSetting)
       DOM.matrixColorSetting.style.display =
+        settings.effect === "matrix" ? "block" : "none"
+    if (DOM.matrixStyleSetting)
+      DOM.matrixStyleSetting.style.display =
         settings.effect === "matrix" ? "block" : "none"
     if (DOM.auraColorSetting)
       DOM.auraColorSetting.style.display =

@@ -387,6 +387,8 @@ export let networkColorSetting = document.getElementById(
 
 export let matrixColorPicker = document.getElementById("matrix-color-picker")
 export let matrixColorSetting = document.getElementById("matrix-color-setting")
+export let matrixStyleSelect = document.getElementById("matrix-style-select")
+export let matrixStyleSetting = document.getElementById("matrix-style-setting")
 
 export let auraColorPicker = document.getElementById("aura-color-picker")
 export let auraColorSetting = document.getElementById("aura-color-setting")
@@ -2477,6 +2479,8 @@ export function refreshDOMReferences() {
   networkColorSetting = document.getElementById("network-color-setting")
   matrixColorPicker = document.getElementById("matrix-color-picker")
   matrixColorSetting = document.getElementById("matrix-color-setting")
+  matrixStyleSelect = document.getElementById("matrix-style-select")
+  matrixStyleSetting = document.getElementById("matrix-style-setting")
   auraColorPicker = document.getElementById("aura-color-picker")
   auraColorSetting = document.getElementById("aura-color-setting")
   northernLightsColorPicker = document.getElementById(
