@@ -8230,6 +8230,7 @@ body.is-dragging-widget .dragging * {
   z-index: 2000 !important;
   transition: none !important;
   animation: none !important;
+  transform: none !important;
   will-change: left, top;
 }
 
@@ -10227,7 +10228,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   box-shadow:
     0 32px 80px rgba(0, 0, 0, 0.7),
     0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.55) !important;
-  transform: scale(1.02) !important;
+  transform: none !important;
+  transition: none !important;
   z-index: 2000 !important;
   cursor: grabbing !important;
   user-select: none !important;

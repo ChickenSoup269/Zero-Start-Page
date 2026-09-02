@@ -381,7 +381,7 @@ export class Notepad {
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="${i18n.notepad_toggle_bg || "Toggle background theme"}"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
           <button class="icon-btn note-action-btn ${isEditToolbarHidden ? "" : "active"}" data-action="toggle-edit-toolbar" title="${isEditToolbarHidden ? i18n.notepad_show_toolbar || "Show formatting toolbar" : i18n.notepad_hide_toolbar || "Hide formatting toolbar"}"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-ruler" : "fa-pen-clip"}"></i></button>
           <button class="icon-btn note-action-btn floating-note-collapse" data-action="toggle-collapse" title="${isCollapsed ? i18n.notepad_expand || "Expand note" : i18n.notepad_collapse || "Collapse note"}"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
-          <button class="icon-btn note-action-btn floating-note-close" title="${i18n.notepad_reattach || "Dock back to Notepad"}"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
+          <button class="icon-btn note-action-btn floating-note-close" title="${i18n.notepad_reattach || "Dock back to Notepad"}"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </div>
       <div class="floating-note-toolbar">
@@ -431,21 +431,30 @@ export class Notepad {
       }
     }
 
-    // Save dimensions on resize
+    // Save dimensions on resize (debounced and avoided during dragging/resizing)
+    let resizeSaveTimer = null
     const observer = new ResizeObserver(() => {
-      const dimensions = {
-        width: floatingContainer.style.width || "420px",
-        height: floatingContainer.style.height || "auto",
-        top: floatingContainer.style.top || "150px",
-        right: floatingContainer.style.right || "30px",
-        left: floatingContainer.style.left || null,
-      }
-      if (!window.location.pathname.includes("sidepanel.html")) {
-        localStorage.setItem(
-          `floating-note-${noteId}-dimensions`,
-          JSON.stringify(dimensions),
-        )
-      }
+      if (
+        floatingContainer.classList.contains("dragging") ||
+        floatingContainer.classList.contains("resizing")
+      )
+        return
+      clearTimeout(resizeSaveTimer)
+      resizeSaveTimer = setTimeout(() => {
+        const dimensions = {
+          width: floatingContainer.style.width || "420px",
+          height: floatingContainer.style.height || "auto",
+          top: floatingContainer.style.top || "150px",
+          right: floatingContainer.style.right || "30px",
+          left: floatingContainer.style.left || null,
+        }
+        if (!window.location.pathname.includes("sidepanel.html")) {
+          localStorage.setItem(
+            `floating-note-${noteId}-dimensions`,
+            JSON.stringify(dimensions),
+          )
+        }
+      }, 250)
     })
     observer.observe(floatingContainer)
 
@@ -957,14 +966,19 @@ export class Notepad {
   setupNoteResizeObserver(noteDiv, noteId) {
     if (!window.ResizeObserver) return
 
+    let saveTimer = null
     const observer = new ResizeObserver(() => {
-      const { width, height } = noteDiv.getBoundingClientRect()
-      if (width <= 0 || height <= 0) return
+      if (noteDiv.classList.contains("resizing")) return
+      clearTimeout(saveTimer)
+      saveTimer = setTimeout(() => {
+        const { height } = noteDiv.getBoundingClientRect()
+        if (height <= 0) return
 
-      this.noteDimensions[noteId] = {
-        height: `${Math.round(height)}px`,
-      }
-      this.saveNoteDimensions()
+        this.noteDimensions[noteId] = {
+          height: `${Math.round(height)}px`,
+        }
+        this.saveNoteDimensions()
+      }, 250)
     })
     observer.observe(noteDiv)
   }

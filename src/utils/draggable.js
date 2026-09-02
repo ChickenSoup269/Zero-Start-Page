@@ -358,6 +358,7 @@ export function makeDraggable(
     element.style.left = (currentRect.left - magicOffsetX) / cachedZoom + "px"
     element.style.top = (currentRect.top - magicOffsetY) / cachedZoom + "px"
     element.classList.add("has-position")
+    element.classList.add("dragging")
 
     document.body.classList.add("is-dragging-widget")
     const isSnapEnabled = currentSettings.snapToGrid === true
@@ -371,13 +372,16 @@ export function makeDraggable(
     element.style.willChange = "left, top"
     element.style.setProperty("transition", "none", "important")
 
-    const onPointerMove = (e) => {
-      e.preventDefault()
-      let targetScreenLeft = e.clientX - offsetX
-      let targetScreenTop = e.clientY - offsetY
+    let vw = document.documentElement.clientWidth
+    let vh = document.documentElement.clientHeight
+    let isTicking = false
+    let latestClientX = e.clientX
+    let latestClientY = e.clientY
+    let rafId = null
 
-      const vw = document.documentElement.clientWidth
-      const vh = document.documentElement.clientHeight
+    const updatePosition = () => {
+      let targetScreenLeft = latestClientX - offsetX
+      let targetScreenTop = latestClientY - offsetY
 
       // Smart clamping for both small and large widgets
       if (initialWidth <= vw) {
@@ -406,6 +410,17 @@ export function makeDraggable(
 
       element.style.left = (targetScreenLeft - magicOffsetX) / cachedZoom + "px"
       element.style.top = (targetScreenTop - magicOffsetY) / cachedZoom + "px"
+      isTicking = false
+    }
+
+    const onPointerMove = (moveEvent) => {
+      moveEvent.preventDefault()
+      latestClientX = moveEvent.clientX
+      latestClientY = moveEvent.clientY
+      if (!isTicking) {
+        isTicking = true
+        rafId = requestAnimationFrame(updatePosition)
+      }
     }
 
     const onPointerUp = () => {
@@ -413,6 +428,14 @@ export function makeDraggable(
       window.removeEventListener("mouseup", onPointerUp, { capture: true })
       document.onmousemove = null
       document.onmouseup = null
+
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+      if (isTicking) {
+        updatePosition()
+      }
 
       element.classList.remove("dragging")
       document.body.classList.remove("is-dragging-widget")
