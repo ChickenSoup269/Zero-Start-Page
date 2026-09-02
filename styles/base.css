@@ -6822,98 +6822,59 @@ body.date-clock-style-media-orb .media-orb-ampm {
   align-self: flex-start;
 }
 
-/* --- Prism Stack Clock (Layered Dimensional Acrylic Glass & Precision Chronograph) --- */
+/* --- Prism Stack Clock (Neat Modern Frosted Glass & Precision Chronograph) --- */
 body.date-clock-style-prism-stack .prism-stack-clock {
-  --prism-accent: var(--accent-color, #a8c0ff);
-  --prism-accent-rgb: var(--accent-color-rgb, 168, 192, 255);
+  --prism-accent: var(--accent-color, #60a5fa);
+  --prism-accent-rgb: var(--accent-color-rgb, 96, 165, 250);
   position: relative;
   display: inline-flex;
   flex-direction: column;
   box-sizing: border-box;
   width: fit-content;
-  min-width: min(340px, 90vw);
-  max-width: min(440px, 94vw);
+  min-width: min(290px, 88vw);
+  max-width: min(390px, 92vw);
   margin: 0 auto;
-  padding: clamp(14px, 2vw, 18px) clamp(18px, 2.5vw, 24px);
-  border-radius: 18px;
-  background: rgba(12, 16, 28, 0.86);
-  border: 1.5px solid rgba(var(--prism-accent-rgb), 0.4);
+  padding: 12px 18px 14px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 24px 50px -10px rgba(0, 0, 0, 0.6),
-    0 0 30px rgba(var(--prism-accent-rgb), 0.2),
-    8px 8px 0 rgba(var(--prism-accent-rgb), 0.14),
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1.5px 0 rgba(0, 0, 0, 0.5);
+    0 16px 36px -8px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   isolation: isolate;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 body.date-clock-style-prism-stack .prism-stack-clock:hover {
-  transform: translateY(-4px) perspective(800px) rotateX(2deg) rotateY(-2deg) scale(1.012);
-  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  border-color: rgba(var(--prism-accent-rgb), 0.4);
   box-shadow:
-    0 32px 64px -12px rgba(0, 0, 0, 0.7),
-    0 0 45px rgba(var(--prism-accent-rgb), 0.35),
-    12px 12px 0 rgba(var(--prism-accent-rgb), 0.22),
-    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+    0 20px 42px -8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(var(--prism-accent-rgb), 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Prismatic Chromatic Dispersion Offset Layer Behind */
+/* Subtle Prism Top Accent Line */
 body.date-clock-style-prism-stack .prism-stack-clock::before {
   content: "";
   position: absolute;
-  inset: -3px;
-  z-index: -1;
-  border-radius: 20px;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
   background: linear-gradient(
-    135deg,
-    rgba(244, 63, 94, 0.45) 0%,
-    rgba(168, 85, 247, 0.45) 25%,
-    rgba(59, 130, 246, 0.45) 50%,
-    rgba(6, 182, 212, 0.45) 75%,
-    rgba(16, 185, 129, 0.45) 100%
+    90deg,
+    transparent 0%,
+    rgba(var(--prism-accent-rgb), 0.8) 50%,
+    transparent 100%
   );
-  background-size: 200% 200%;
-  transform: translate(8px, 8px);
+  opacity: 0.8;
   pointer-events: none;
-  opacity: 0.85;
-  filter: blur(8px);
-  animation: prismChromaDrift 8s ease-in-out infinite alternate;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
-}
-
-body.date-clock-style-prism-stack .prism-stack-clock:hover::before {
-  transform: translate(14px, 14px);
-  opacity: 1;
-  filter: blur(10px);
-}
-
-@keyframes prismChromaDrift {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 100%; }
-}
-
-/* Glass Glare Specular Refraction */
-body.date-clock-style-prism-stack .prism-stack-glass-glare {
-  position: absolute;
-  top: -60%;
-  left: -30%;
-  width: 50%;
-  height: 220%;
-  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 48%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.08) 52%, transparent 60%);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: 5;
-  transition: transform 0.6s ease;
-}
-
-body.date-clock-style-prism-stack .prism-stack-clock:hover .prism-stack-glass-glare {
-  transform: rotate(25deg) translateX(220px);
 }
 
 /* Top Row: Weekday Meta & Precision Mini Chronograph */
@@ -6922,88 +6883,81 @@ body.date-clock-style-prism-stack .prism-stack-top-row {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 2;
 }
 
 body.date-clock-style-prism-stack .prism-stack-meta {
   font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
-  font-size: 0.82rem;
-  font-weight: 750;
-  letter-spacing: 2.2px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--prism-accent);
-  text-shadow: 0 0 12px rgba(var(--prism-accent-rgb), 0.5);
-  opacity: 0.95;
+  opacity: 0.92;
 }
 
 /* Precision Mini Chronograph Dial */
 body.date-clock-style-prism-stack .prism-stack-mini-clock {
   position: relative;
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid rgba(var(--prism-accent-rgb), 0.5);
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.2), rgba(15, 23, 42, 0.85));
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.5),
-    0 0 10px rgba(var(--prism-accent-rgb), 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15);
 }
 
 /* Dial Cardinal Tick Marks */
 body.date-clock-style-prism-stack .prism-stack-mini-mark {
   position: absolute;
-  background: var(--prism-accent);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 1px;
 }
-body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-12 { top: 2px; left: 50%; width: 2px; height: 4px; transform: translateX(-50%); }
-body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-3 { top: 50%; right: 2px; width: 4px; height: 2px; transform: translateY(-50%); opacity: 0.7; }
-body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-6 { bottom: 2px; left: 50%; width: 2px; height: 4px; transform: translateX(-50%); opacity: 0.7; }
-body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-9 { top: 50%; left: 2px; width: 4px; height: 2px; transform: translateY(-50%); opacity: 0.7; }
+body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-12 { top: 2px; left: 50%; width: 1.5px; height: 3px; transform: translateX(-50%); background: var(--prism-accent); }
+body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-3 { top: 50%; right: 2px; width: 3px; height: 1.5px; transform: translateY(-50%); opacity: 0.5; }
+body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-6 { bottom: 2px; left: 50%; width: 1.5px; height: 3px; transform: translateX(-50%); opacity: 0.5; }
+body.date-clock-style-prism-stack .prism-stack-mini-mark.mark-9 { top: 50%; left: 2px; width: 3px; height: 1.5px; transform: translateY(-50%); opacity: 0.5; }
 
 body.date-clock-style-prism-stack .prism-stack-mini-hand {
   position: absolute;
   left: 50%;
   bottom: 50%;
-  border-radius: 2px;
+  border-radius: 1px;
   transform: translateX(-50%) rotate(var(--mini-hand-rotation, 0deg));
   transform-origin: 50% 100%;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-hour {
-  width: 2.5px;
+  width: 2px;
   height: 30%;
   background: #ffffff;
-  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
   opacity: 0.95;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-minute {
-  width: 2px;
+  width: 1.5px;
   height: 42%;
   background: var(--prism-accent);
-  box-shadow: 0 0 4px var(--prism-accent);
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-second {
   width: 1px;
   height: 46%;
   background: #f43f5e;
-  box-shadow: 0 0 4px #f43f5e;
 }
 
 body.date-clock-style-prism-stack .prism-stack-mini-pin {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffffff, var(--prism-accent));
-  box-shadow: 0 0 4px #ffffff;
+  background: #ffffff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   transform: translate(-50%, -50%);
 }
 
@@ -7012,135 +6966,120 @@ body.date-clock-style-prism-stack .prism-stack-time {
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
-  gap: 3px;
+  gap: 2px;
   width: 100%;
   font-family: var(--font-clock, 'Inter', -apple-system, sans-serif);
-  font-size: var(--clock-size, clamp(2.8rem, 8vw, 3.8rem));
-  font-weight: 850;
+  font-size: var(--clock-size, clamp(2.4rem, 7vw, 3.4rem));
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: var(--clock-letter-spacing, -1px);
+  letter-spacing: var(--clock-letter-spacing, -0.5px);
   color: var(--clock-color, #ffffff);
-  padding: 10px 0 8px;
-  text-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.6),
-    0 0 24px rgba(var(--prism-accent-rgb), 0.35);
+  padding: 6px 0 4px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 2;
 }
 
 body.date-clock-style-prism-stack .prism-stack-separator {
   color: var(--prism-accent);
-  margin: 0 2px;
-  text-shadow: 0 0 12px var(--prism-accent);
+  margin: 0 1px;
   animation: prismPulse 2s infinite ease-in-out;
 }
 
 @keyframes prismPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.96); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
 }
 
 body.date-clock-style-prism-stack .prism-stack-ss {
-  font-size: 0.34em;
-  font-weight: 800;
+  font-size: 0.32em;
+  font-weight: 750;
   color: var(--prism-accent);
-  background: rgba(var(--prism-accent-rgb), 0.16);
-  border: 1px solid rgba(var(--prism-accent-rgb), 0.4);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  padding: 3px 7px;
-  margin-left: 8px;
+  background: rgba(var(--prism-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--prism-accent-rgb), 0.28);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-left: 6px;
   align-self: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 body.date-clock-style-prism-stack .prism-stack-ampm {
-  font-size: 0.28em;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  padding: 3px 6px;
-  margin-left: 6px;
+  font-size: 0.26em;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 2px 5px;
+  margin-left: 4px;
   align-self: center;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  letter-spacing: 0.5px;
 }
 
 /* Bottom Date */
 body.date-clock-style-prism-stack .prism-stack-date {
   font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
-  font-size: var(--date-size, 0.86rem);
-  font-weight: 650;
-  letter-spacing: 0.6px;
-  color: var(--date-color, rgba(255, 255, 255, 0.85));
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: var(--date-size, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: var(--date-color, rgba(255, 255, 255, 0.78));
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 2;
 }
 
 /* Light Mode Overrides */
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(0, 0, 0, 0.14) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
   box-shadow:
-    0 20px 42px rgba(0, 0, 0, 0.1),
-    8px 8px 0 rgba(var(--prism-accent-rgb), 0.15),
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.9) !important;
+    0 12px 28px -6px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
   color: #0f172a !important;
 }
 
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock::before {
   background: linear-gradient(
-    135deg,
-    rgba(244, 63, 94, 0.25) 0%,
-    rgba(168, 85, 247, 0.25) 25%,
-    rgba(59, 130, 246, 0.25) 50%,
-    rgba(6, 182, 212, 0.25) 75%,
-    rgba(16, 185, 129, 0.25) 100%
+    90deg,
+    transparent 0%,
+    rgba(var(--prism-accent-rgb), 0.6) 50%,
+    transparent 100%
   ) !important;
-  opacity: 0.7 !important;
 }
 
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-top-row,
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-date {
-  border-color: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-time {
   color: #0f172a !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-}
-
-body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-date {
-  color: #334155 !important;
   text-shadow: none !important;
 }
 
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-date {
+  color: #475569 !important;
+}
+
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-mini-clock {
-  background: radial-gradient(circle at 35% 35%, #ffffff, #e2e8f0) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-mini-hour {
   background: #0f172a !important;
-  box-shadow: none !important;
 }
 
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-ampm {
-  color: #334155 !important;
-  background: rgba(0, 0, 0, 0.06) !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #475569 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Metro Panel Style */
