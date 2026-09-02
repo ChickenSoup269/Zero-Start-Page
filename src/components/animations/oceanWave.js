@@ -1,31 +1,67 @@
+/**
+ * OceanWaveEffect — Pure Original Ocean Wave (HD Edition)
+ *
+ * Preserves the exact original clean, minimalist wave design:
+ *  - Native High-DPI Retina subpixel scaling (ultra-sharp anti-aliased curves).
+ *  - Smooth display-rate Delta-Time animation (no 40 FPS lock/stutter).
+ *  - No extra particles or unnecessary effects, purely original aesthetic in HD.
+ */
+
 export class OceanWaveEffect {
   constructor(canvasId, color = "#0077b6", position = "bottom") {
-    this.canvas = document.getElementById(canvasId)
+    this.canvas =
+      typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
+    if (!this.canvas) return
+
     this.ctx = this.canvas.getContext("2d")
     this.active = false
-    this.color = color
-    this.position = position // "bottom" | "top"
-    this.time = 0
+    this.destroyed = false
+    this._animId = null
 
-    // Wave layers — each stacked slightly higher with less opacity
+    this.color = color || "#0077b6"
+    this.position = ["top", "bottom", "left", "right"].includes(position)
+      ? position
+      : "bottom"
+    this.rgb = this._hexToRgb(this.color)
+
+    // Original wave layers
     this.layerCount = 5
+    this.time = 0
+    this.lastTime = performance.now()
 
-    // FPS throttling
-    this.fps = 40
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
+    // High-DPI Retina
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
+
+    this._resizeHandler = () => this.resize()
+    this._visibilityHandler = () => this._onVisibilityChange()
 
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
+    document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    if (!this.canvas) return
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
+
+    this.canvas.width = Math.round(this.width * this.dpr)
+    this.canvas.height = Math.round(this.height * this.dpr)
+    this.canvas.style.width = `${this.width}px`
+    this.canvas.style.height = `${this.height}px`
+    this.canvas.style.pointerEvents = "none"
+
+    if (this.ctx) {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+      this.ctx.scale(this.dpr, this.dpr)
+    }
   }
 
-  /** Parse hex color to { r, g, b } */
   _hexToRgb(color) {
+    if (!color) return { r: 0, g: 119, b: 182 }
     const hex = color.replace("#", "")
     if (hex.length === 6) {
       return {
@@ -44,17 +80,8 @@ export class OceanWaveEffect {
     return { r: 0, g: 119, b: 182 }
   }
 
-  start() {
-    if (this.active) return
-    this.active = true
-    this.lastDrawTime = 0
-    this.time = 0
-    this.rgb = this._hexToRgb(this.color)
-    this.canvas.style.display = "block"
-    this.animate(0)
-  }
-
   updateColor(color) {
+    if (!color) return
     this.color = color
     this.rgb = this._hexToRgb(color)
   }
@@ -65,39 +92,82 @@ export class OceanWaveEffect {
       : "bottom"
   }
 
+  _onVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      this.lastTime = performance.now()
+    }
+  }
+
+  start() {
+    if (this.active || this.destroyed) return
+    this.active = true
+    this.lastTime = performance.now()
+    this.time = 0
+    this.rgb = this._hexToRgb(this.color)
+
+    this.canvas.style.display = "block"
+    this.canvas.style.pointerEvents = "none"
+
+    this.resize()
+
+    const loop = (now) => {
+      if (!this.active || this.destroyed) return
+      this._animId = requestAnimationFrame(loop)
+
+      if (document.visibilityState === "hidden") {
+        this.lastTime = now
+        return
+      }
+
+      const elapsed = Math.min(now - this.lastTime, 100)
+      this.lastTime = now
+      const dt = Math.min(elapsed / 16.67, 3.0)
+      this.time += 0.012 * dt
+
+      this.draw()
+    }
+
+    this._animId = requestAnimationFrame(loop)
+  }
+
   stop() {
+    if (!this.active) return
+    this.active = false
     if (this._animId) {
       cancelAnimationFrame(this._animId)
       this._animId = null
     }
-    this.active = false
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.canvas.style.display = "none"
+    if (this.ctx && this.canvas) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    }
+    if (this.canvas) {
+      this.canvas.style.display = "none"
+    }
   }
 
-  animate(currentTime = 0) {
-    if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === "hidden") return
+  destroy() {
+    this.stop()
+    this.destroyed = true
+    window.removeEventListener("resize", this._resizeHandler)
+    document.removeEventListener("visibilitychange", this._visibilityHandler)
+    this.rgb = null
+  }
 
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-
-    const W = this.canvas.width
-    const H = this.canvas.height
+  draw() {
+    const W = this.width
+    const H = this.height
     const ctx = this.ctx
 
     ctx.clearRect(0, 0, W, H)
-    this.time += 0.012
 
     const rgb = this.rgb || this._hexToRgb(this.color)
     const isTop = this.position === "top"
     const isLeft = this.position === "left"
     const isRight = this.position === "right"
     const isVertical = isLeft || isRight
+    const maxLen = isVertical ? H : W
 
-    // Draw from back layer to front layer
+    // Draw from back layer to front layer (original design)
     for (let i = 0; i < this.layerCount; i++) {
       const t = i / (this.layerCount - 1) // 0 = back, 1 = front
 
@@ -133,9 +203,9 @@ export class OceanWaveEffect {
 
       ctx.beginPath()
 
-      // Build the wave path
-      const maxLen = isVertical ? H : W
-      for (let p = 0; p <= maxLen; p += 3) {
+      // Build the wave path with smooth step
+      const step = 3
+      for (let p = 0; p <= maxLen; p += step) {
         const offset =
           basePos +
           Math.sin(p * freq + timeSpeedPhase) * amplitude +
@@ -171,9 +241,9 @@ export class OceanWaveEffect {
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`
       ctx.fill()
 
-      // Draw a subtle bright crest line on top of each wave
+      // Draw original crisp crest line on top of each wave (HD anti-aliased)
       ctx.beginPath()
-      for (let p = 0; p <= maxLen; p += 3) {
+      for (let p = 0; p <= maxLen; p += step) {
         const offset =
           basePos +
           Math.sin(p * freq + timeSpeedPhase) * amplitude +
@@ -194,3 +264,5 @@ export class OceanWaveEffect {
     }
   }
 }
+
+
