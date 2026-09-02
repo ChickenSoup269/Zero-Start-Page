@@ -2057,28 +2057,83 @@ export function updateTime() {
       : ""
     const analogHours = Number.parseInt(hh, 10) || 0
     const analogMinutes = Number.parseInt(mm, 10) || 0
+    const analogSeconds = Number.parseInt(ss, 10) || 0
     const analogHourDeg = ((analogHours % 12) + analogMinutes / 60) * 30
     const analogMinuteDeg = analogMinutes * 6
-    clockElement.innerHTML = `
-      <div class="prism-stack-clock">
-        <div class="prism-stack-top-row">
-          <div class="prism-stack-meta">${weekday}</div>
-          <div class="prism-stack-mini-clock" aria-hidden="true">
-            <span class="prism-stack-mini-hand prism-stack-mini-hour" style="--mini-hand-rotation: ${analogHourDeg}deg"></span>
-            <span class="prism-stack-mini-hand prism-stack-mini-minute" style="--mini-hand-rotation: ${analogMinuteDeg}deg"></span>
-            <span class="prism-stack-mini-pin"></span>
+    const analogSecondDeg = analogSeconds * 6
+
+    const existingPrism = clockElement.querySelector(".prism-stack-clock")
+    if (existingPrism) {
+      // Fast path: update elements in place without flicker or DOM reconstruction
+      const hhEl = existingPrism.querySelector(".prism-stack-hh")
+      const mmEl = existingPrism.querySelector(".prism-stack-mm")
+      const ssEl = existingPrism.querySelector(".prism-stack-ss")
+      const ampmEl = existingPrism.querySelector(".prism-stack-ampm")
+      const metaEl = existingPrism.querySelector(".prism-stack-meta")
+      const dateEl = existingPrism.querySelector(".prism-stack-date")
+      const hourHand = existingPrism.querySelector(".prism-stack-mini-hour")
+      const minuteHand = existingPrism.querySelector(".prism-stack-mini-minute")
+      const secondHand = existingPrism.querySelector(".prism-stack-mini-second")
+
+      if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh
+      if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
+      if (ssEl) {
+        if (ss) {
+          if (ssEl.textContent !== ss) ssEl.textContent = ss
+          ssEl.style.display = "inline-flex"
+        } else {
+          ssEl.style.display = "none"
+        }
+      }
+      if (ampmEl) {
+        if (ampm) {
+          if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+          ampmEl.style.display = "inline-flex"
+        } else {
+          ampmEl.style.display = "none"
+        }
+      }
+      if (metaEl && metaEl.textContent !== weekday) metaEl.textContent = weekday
+      const targetDateText = isTimer ? countdownLabel : dateStr
+      if (dateEl) {
+        if (targetDateText) {
+          if (dateEl.textContent !== targetDateText) dateEl.textContent = targetDateText
+          dateEl.style.display = "block"
+        } else {
+          dateEl.style.display = "none"
+        }
+      }
+      if (hourHand) hourHand.style.setProperty("--mini-hand-rotation", `${analogHourDeg}deg`)
+      if (minuteHand) minuteHand.style.setProperty("--mini-hand-rotation", `${analogMinuteDeg}deg`)
+      if (secondHand) secondHand.style.setProperty("--mini-hand-rotation", `${analogSecondDeg}deg`)
+    } else {
+      clockElement.innerHTML = `
+        <div class="prism-stack-clock">
+          <div class="prism-stack-glass-glare" aria-hidden="true"></div>
+          <div class="prism-stack-top-row">
+            <div class="prism-stack-meta">${weekday}</div>
+            <div class="prism-stack-mini-clock" aria-hidden="true" title="Precision Chronograph">
+              <span class="prism-stack-mini-mark mark-12"></span>
+              <span class="prism-stack-mini-mark mark-3"></span>
+              <span class="prism-stack-mini-mark mark-6"></span>
+              <span class="prism-stack-mini-mark mark-9"></span>
+              <span class="prism-stack-mini-hand prism-stack-mini-hour" style="--mini-hand-rotation: ${analogHourDeg}deg"></span>
+              <span class="prism-stack-mini-hand prism-stack-mini-minute" style="--mini-hand-rotation: ${analogMinuteDeg}deg"></span>
+              <span class="prism-stack-mini-hand prism-stack-mini-second" style="--mini-hand-rotation: ${analogSecondDeg}deg; ${ss ? "" : "display: none;"}"></span>
+              <span class="prism-stack-mini-pin"></span>
+            </div>
           </div>
+          <div class="prism-stack-time">
+            <span class="prism-stack-hh">${hh}</span>
+            <span class="prism-stack-separator">:</span>
+            <span class="prism-stack-mm">${mm}</span>
+            <span class="prism-stack-ss" style="${ss ? "" : "display: none;"}">${ss || ""}</span>
+            <span class="prism-stack-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
+          </div>
+          <div class="prism-stack-date" style="${isTimer || dateStr ? "" : "display: none;"}">${isTimer ? countdownLabel : dateStr}</div>
         </div>
-        <div class="prism-stack-time">
-          <span class="prism-stack-hh">${hh}</span>
-          <span class="prism-stack-separator">:</span>
-          <span class="prism-stack-mm">${mm}</span>
-          ${ss ? `<span class="prism-stack-ss">${ss}</span>` : ""}
-          ${ampm ? `<span class="prism-stack-ampm">${ampm}</span>` : ""}
-        </div>
-        ${isTimer ? `<div class="prism-stack-date">${countdownLabel}</div>` : dateStr ? `<div class="prism-stack-date">${dateStr}</div>` : ""}
-      </div>
-    `
+      `
+    }
   } else if (dateClockStyle === "metro-panel") {
     const weekday = isTimer
       ? countdownLabel
