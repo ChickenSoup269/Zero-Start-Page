@@ -66,8 +66,18 @@ import { DVDEffect } from "../animations/dvdScreenSaver.js"
 
 export function createEffectFactories(settings) {
   return {
-    starFallEffect: () => new StarFall("effect-canvas", settings.starColor),
-    firefliesEffect: () => new FirefliesEffect("effect-canvas"),
+    starFallEffect: () =>
+      new StarFall(
+        "effect-canvas",
+        settings.starColor,
+        settings.rainMode || "chill",
+      ),
+    firefliesEffect: () =>
+      new FirefliesEffect(
+        "effect-canvas",
+        settings.firefliesColor || "#ffe855",
+        settings.firefliesMode || "enchanted",
+      ),
     networkEffect: () =>
       new NetworkEffect(
         "effect-canvas",
@@ -82,7 +92,10 @@ export function createEffectFactories(settings) {
     auraEffect: () => new AuraEffect("effect-canvas", settings.auraColor),
     windEffect: () =>
       new WindEffect("effect-canvas", settings.windMode || "2d"),
-    hackerEffect: () => new HackerEffect("effect-canvas", settings.hackerColor),
+    hackerEffect: () =>
+      new HackerEffect("effect-canvas", settings.hackerColor, {
+        mode: settings.hackerMode || "hollywood",
+      }),
     pixelCubesEffect: () =>
       new PixelCubes(
         "effect-canvas",
@@ -183,8 +196,12 @@ export function createEffectFactories(settings) {
     cloudDriftEffect: () =>
       new CloudDriftEffect(
         "effect-canvas",
-        settings.cloudDriftColor || "#0a0a0a",
-        settings.cloudDriftMood || "default",
+        settings.cloudDriftColor || "#f0f4f8",
+        settings.cloudDriftMood || "daylight",
+        {
+          opacity: settings.cloudDriftOpacity !== undefined ? settings.cloudDriftOpacity : 0.65,
+          speed: settings.cloudDriftSpeed !== undefined ? settings.cloudDriftSpeed : 1.0,
+        },
       ),
     firefliesHDEffect: () => new FirefliesHD("effect-canvas"),
     autumnLeavesEffect: () => new AutumnLeavesEffect("effect-canvas"),

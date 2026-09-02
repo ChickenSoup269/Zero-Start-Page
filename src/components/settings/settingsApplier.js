@@ -3308,6 +3308,22 @@ function createApplySettings(effectInstances) {
       }
     }
 
+    if ((effectToStart === "galaxy" || effectToStart === "rainHD") && selectedEffect) {
+      if (selectedEffect.setMode) {
+        const mode = effectToStart === "rainHD" ? "storm" : (settings.rainMode || "chill")
+        selectedEffect.setMode(mode)
+      }
+    }
+
+    if ((effectToStart === "fireflies" || effectToStart === "firefliesHD") && selectedEffect) {
+      if (selectedEffect.setMode) {
+        selectedEffect.setMode(settings.firefliesMode || "enchanted")
+      }
+      if (selectedEffect.updateColor) {
+        selectedEffect.updateColor(settings.firefliesColor || "#ffe855")
+      }
+    }
+
     if (effectToStart === "pixelSnowHQ" && selectedEffect) {
       if (selectedEffect.setOptions) {
         selectedEffect.setOptions({
@@ -3329,10 +3345,34 @@ function createApplySettings(effectInstances) {
       selectedEffect.setOptions(getEffectPerformanceOptions(settings, "rainHD"))
     }
 
+    if (effectToStart === "cloudDrift" && selectedEffect) {
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          color: settings.cloudDriftColor || "#f0f4f8",
+          mood: settings.cloudDriftMood || "daylight",
+          opacity: settings.cloudDriftOpacity !== undefined ? settings.cloudDriftOpacity : 0.65,
+          speed: settings.cloudDriftSpeed !== undefined ? settings.cloudDriftSpeed : 1.0,
+        })
+      }
+    }
+
     if (effectToStart === "skyLanterns" && selectedEffect) {
       if (selectedEffect.setOptions) {
         selectedEffect.setOptions({
           type: settings.skyLanternsType || "lantern",
+        })
+      }
+    }
+
+    if (effectToStart === "crtScanlines" && selectedEffect) {
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          scanColor: settings.crtScanColor || "#7cffad",
+          scanFrequency: settings.crtScanFrequency ?? 0.11,
+          scanAngle: settings.crtScanAngle ?? 0,
+          scanDensity: settings.crtScanDensity ?? 4,
+          gamma: settings.crtGamma ?? 0.45,
+          backgroundColor: settings.crtBackgroundColor || "#000000",
         })
       }
     }
@@ -3555,6 +3595,16 @@ function createApplySettings(effectInstances) {
             ? [settings.meteorColor, ...userColors]
             : settings.meteorColor
         selectedEffect.setColor(palette)
+      }
+      if (selectedEffect) {
+        if (typeof selectedEffect.setMouseEnabled === "function") {
+          selectedEffect.setMouseEnabled(
+            settings.effectMouseInteraction !== false,
+          )
+        } else {
+          selectedEffect.mouseEnabled =
+            settings.effectMouseInteraction !== false
+        }
       }
       selectedEffect.start?.()
     }
@@ -5075,6 +5125,10 @@ function createUpdateSettingsInputs(effectInstances) {
         btn.dataset.mode === (settings.performanceMode || "auto"),
       )
     })
+    if (DOM.effectMouseInteractionToggle) {
+      DOM.effectMouseInteractionToggle.checked =
+        settings.effectMouseInteraction !== false
+    }
 
     // Gradient Inputs
     DOM.gradientStartPicker.value = settings.gradientStart
@@ -5163,6 +5217,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.northernLightsBrightnessSlider.value = b
       if (DOM.northernLightsBrightnessVal)
         DOM.northernLightsBrightnessVal.textContent = b.toFixed(1)
+    }
+    if (DOM.hackerModeSelect) {
+      DOM.hackerModeSelect.value = settings.hackerMode || "hollywood"
     }
     DOM.hackerColorPicker.value = settings.hackerColor || "#00FF00"
     DOM.pixelCubesColorPicker.value = settings.pixelCubesColor || "#00ff73"
@@ -5303,14 +5360,40 @@ function createUpdateSettingsInputs(effectInstances) {
       oceanWavePos === "right",
     )
     if (DOM.cloudDriftColorPicker)
-      DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
+      DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#f0f4f8"
     if (DOM.cloudDriftMoodSelect)
-      DOM.cloudDriftMoodSelect.value = settings.cloudDriftMood || "default"
+      DOM.cloudDriftMoodSelect.value = settings.cloudDriftMood || "daylight"
 
     // Visibility of Effect Settings
     if (DOM.starColorSetting)
       DOM.starColorSetting.style.display =
-        settings.effect === "galaxy" ? "block" : "none"
+        settings.effect === "galaxy" || settings.effect === "rainHD"
+          ? "block"
+          : "none"
+    if (DOM.rainModeSetting)
+      DOM.rainModeSetting.style.display =
+        settings.effect === "galaxy" || settings.effect === "rainHD"
+          ? "block"
+          : "none"
+    if (DOM.rainModeSelect)
+      DOM.rainModeSelect.value =
+        settings.effect === "rainHD"
+          ? "storm"
+          : settings.rainMode || "chill"
+    if (DOM.firefliesColorSetting)
+      DOM.firefliesColorSetting.style.display =
+        settings.effect === "fireflies" || settings.effect === "firefliesHD"
+          ? "block"
+          : "none"
+    if (DOM.firefliesColorPicker)
+      DOM.firefliesColorPicker.value = settings.firefliesColor || "#ffe855"
+    if (DOM.firefliesModeSetting)
+      DOM.firefliesModeSetting.style.display =
+        settings.effect === "fireflies" || settings.effect === "firefliesHD"
+          ? "block"
+          : "none"
+    if (DOM.firefliesModeSelect)
+      DOM.firefliesModeSelect.value = settings.firefliesMode || "enchanted"
     if (DOM.meteorColorSetting)
       DOM.meteorColorSetting.style.display =
         settings.effect === "meteor" ? "block" : "none"
@@ -5844,8 +5927,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.floatingLinesAngleSetting.style.display =
         settings.effect === "floatingLines" ? "block" : "none"
     if (DOM.rainHDColorSetting)
-      DOM.rainHDColorSetting.style.display =
-        settings.effect === "rainHD" ? "block" : "none"
+      DOM.rainHDColorSetting.style.display = "none"
     if (DOM.musicBarsColorSetting)
       DOM.musicBarsColorSetting.style.display =
         settings.effect === "musicBars" ? "block" : "none"
@@ -5867,6 +5949,24 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.cloudDriftMoodSetting)
       DOM.cloudDriftMoodSetting.style.display =
         settings.effect === "cloudDrift" ? "block" : "none"
+    if (DOM.cloudDriftOpacitySetting)
+      DOM.cloudDriftOpacitySetting.style.display =
+        settings.effect === "cloudDrift" ? "block" : "none"
+    if (DOM.cloudDriftSpeedSetting)
+      DOM.cloudDriftSpeedSetting.style.display =
+        settings.effect === "cloudDrift" ? "block" : "none"
+    if (DOM.cloudDriftOpacitySlider) {
+      const op = settings.cloudDriftOpacity !== undefined ? settings.cloudDriftOpacity : 0.65
+      DOM.cloudDriftOpacitySlider.value = op
+      if (DOM.cloudDriftOpacityVal)
+        DOM.cloudDriftOpacityVal.textContent = `${Math.round(op * 100)}%`
+    }
+    if (DOM.cloudDriftSpeedSlider) {
+      const spd = settings.cloudDriftSpeed !== undefined ? settings.cloudDriftSpeed : 1.0
+      DOM.cloudDriftSpeedSlider.value = spd
+      if (DOM.cloudDriftSpeedVal)
+        DOM.cloudDriftSpeedVal.textContent = `${spd.toFixed(1)}x`
+    }
     if (DOM.shinyColorSetting)
       DOM.shinyColorSetting.style.display =
         settings.effect === "shiny" ? "block" : "none"

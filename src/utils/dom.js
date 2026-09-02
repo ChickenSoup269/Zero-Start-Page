@@ -197,6 +197,9 @@ export let resetActiveEffectBtn = document.getElementById("reset-active-effect-b
 export let performanceModeBtns = document.querySelectorAll(
   ".performance-mode-btn",
 )
+export let effectMouseInteractionToggle = document.getElementById(
+  "effect-mouse-interaction-toggle",
+)
 export let rainbowDirectionSetting = document.getElementById(
   "rainbow-direction-setting",
 )
@@ -371,6 +374,12 @@ export let multiColorModeBtns = document.querySelectorAll(
 
 export let starColorPicker = document.getElementById("star-color-picker")
 export let starColorSetting = document.getElementById("star-color-setting")
+export let rainModeSetting = document.getElementById("rain-mode-setting")
+export let rainModeSelect = document.getElementById("rain-mode-select")
+export let firefliesColorPicker = document.getElementById("fireflies-color-picker")
+export let firefliesColorSetting = document.getElementById("fireflies-color-setting")
+export let firefliesModeSetting = document.getElementById("fireflies-mode-setting")
+export let firefliesModeSelect = document.getElementById("fireflies-mode-select")
 
 export let meteorColorPicker = document.getElementById("meteor-color-picker")
 export let meteorFullColorToggle = document.getElementById(
@@ -410,6 +419,7 @@ export let northernLightsBrightnessVal = document.getElementById(
 )
 
 export let hackerColorPicker = document.getElementById("hacker-color-picker")
+export let hackerModeSelect = document.getElementById("hacker-mode-select")
 export let hackerColorSetting = document.getElementById("hacker-color-setting")
 export let pixelCubesColorPicker = document.getElementById(
   "pixel-cubes-color-picker",
@@ -822,6 +832,24 @@ export let cloudDriftMoodSelect = document.getElementById(
 )
 export let cloudDriftMoodSetting = document.getElementById(
   "cloud-drift-mood-setting",
+)
+export let cloudDriftOpacitySlider = document.getElementById(
+  "cloud-drift-opacity-slider",
+)
+export let cloudDriftOpacityVal = document.getElementById(
+  "cloud-drift-opacity-val",
+)
+export let cloudDriftOpacitySetting = document.getElementById(
+  "cloud-drift-opacity-setting",
+)
+export let cloudDriftSpeedSlider = document.getElementById(
+  "cloud-drift-speed-slider",
+)
+export let cloudDriftSpeedVal = document.getElementById(
+  "cloud-drift-speed-val",
+)
+export let cloudDriftSpeedSetting = document.getElementById(
+  "cloud-drift-speed-setting",
 )
 export let shinyColorPicker = document.getElementById("shiny-color-picker")
 export let shinyColorSetting = document.getElementById("shiny-color-setting")
@@ -2408,6 +2436,9 @@ export function refreshDOMReferences() {
   )
   resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
   performanceModeBtns = document.querySelectorAll(".performance-mode-btn")
+  effectMouseInteractionToggle = document.getElementById(
+    "effect-mouse-interaction-toggle",
+  )
   rainbowDirectionSetting = document.getElementById("rainbow-direction-setting")
   rainbowDirLeftBtn = document.getElementById("rainbow-dir-left")
   rainbowDirRightBtn = document.getElementById("rainbow-dir-right")
@@ -2524,6 +2555,12 @@ export function refreshDOMReferences() {
   multiColorModeBtns = document.querySelectorAll(".multi-color-mode-btn")
   starColorPicker = document.getElementById("star-color-picker")
   starColorSetting = document.getElementById("star-color-setting")
+  rainModeSetting = document.getElementById("rain-mode-setting")
+  rainModeSelect = document.getElementById("rain-mode-select")
+  firefliesColorPicker = document.getElementById("fireflies-color-picker")
+  firefliesColorSetting = document.getElementById("fireflies-color-setting")
+  firefliesModeSetting = document.getElementById("fireflies-mode-setting")
+  firefliesModeSelect = document.getElementById("fireflies-mode-select")
   meteorColorPicker = document.getElementById("meteor-color-picker")
   meteorFullColorToggle = document.getElementById("meteor-full-color-toggle")
   meteorAngleInput = document.getElementById("meteor-angle-input")
@@ -2553,6 +2590,7 @@ export function refreshDOMReferences() {
     "northern-lights-brightness-val",
   )
   hackerColorPicker = document.getElementById("hacker-color-picker")
+  hackerModeSelect = document.getElementById("hacker-mode-select")
   hackerColorSetting = document.getElementById("hacker-color-setting")
 
   // DVD Effect
@@ -2829,6 +2867,12 @@ export function refreshDOMReferences() {
   cloudDriftColorSetting = document.getElementById("cloud-drift-color-setting")
   cloudDriftMoodSelect = document.getElementById("cloud-drift-mood-select")
   cloudDriftMoodSetting = document.getElementById("cloud-drift-mood-setting")
+  cloudDriftOpacitySlider = document.getElementById("cloud-drift-opacity-slider")
+  cloudDriftOpacityVal = document.getElementById("cloud-drift-opacity-val")
+  cloudDriftOpacitySetting = document.getElementById("cloud-drift-opacity-setting")
+  cloudDriftSpeedSlider = document.getElementById("cloud-drift-speed-slider")
+  cloudDriftSpeedVal = document.getElementById("cloud-drift-speed-val")
+  cloudDriftSpeedSetting = document.getElementById("cloud-drift-speed-setting")
   shinyColorPicker = document.getElementById("shiny-color-picker")
   shinyColorSetting = document.getElementById("shiny-color-setting")
   lineShinyColorPicker = document.getElementById("line-shiny-color-picker")

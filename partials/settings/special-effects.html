@@ -54,6 +54,20 @@
                             data-i18n="settings_performance_low">Low Setting</button>
                     </div>
                 </div>
+                <div class="setting-item-row effect-mouse-interaction-card" id="effect-mouse-interaction-setting"
+                    style="margin-bottom: 12px; justify-content: space-between; align-items: center;">
+                    <label for="effect-mouse-interaction-toggle" style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">
+                        <i class="fa-solid fa-arrow-pointer" style="opacity: 0.8;"></i>
+                        <div>
+                            <span data-i18n="setting_effect_mouse_interaction">Mouse Hover Effect Interaction</span>
+                            <small data-i18n="setting_effect_mouse_interaction_hint" style="display: block; opacity: 0.6; font-size: 0.75rem; font-weight: normal;">Allow effects to respond and animate with mouse cursor movements</small>
+                        </div>
+                    </label>
+                    <label class="switch" style="margin: 0; flex-shrink: 0;">
+                        <input type="checkbox" id="effect-mouse-interaction-toggle" checked />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
                 <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
                     autocomplete="off">
                 <div class="effects-legend-hint">
@@ -169,7 +183,7 @@
                         <span class="effect-name" data-i18n="effect_ocean_fish">Ocean Fishes</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
-                    <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
+                    <button class="effect-item" data-value="rainHD" data-search="rain hd splash" style="display: none;">
                         <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
                         <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
@@ -185,7 +199,7 @@
                         <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
-                    <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high">
+                    <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high" style="display: none;">
                         <span class="effect-icon"><i class="fa-solid fa-wand-sparkles"></i></span>
                         <span class="effect-name" data-i18n="effect_fireflies_hd">Fireflies HD</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
@@ -556,11 +570,20 @@
                             </div>
                         </div>
 
-                        <!-- Hacker Color -->
-                        <div id="hacker-color-setting" class="setting-item-row" style="display: none;">
-                            <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text
-                                Color</label>
-                            <input type="color" id="hacker-color-picker" value="#00FF00" />
+                        <!-- Hacker Setting -->
+                        <div id="hacker-color-setting" class="setting-item" style="display: none;">
+                            <label for="hacker-mode-select" data-i18n="setting_hacker_mode">Hacker Mode</label>
+                            <select id="hacker-mode-select" class="styled-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="hollywood" data-i18n="hacker_mode_hollywood">Hollywood AAA (Mới - Đa tầng &amp; Hiệu ứng)</option>
+                                <option value="classic" data-i18n="hacker_mode_classic">Cổ điển (Bản cũ - Typing, Loading, Flood)</option>
+                                <option value="matrix" data-i18n="hacker_mode_matrix">Mưa mã nhị phân (Matrix Rain)</option>
+                                <option value="terminal" data-i18n="hacker_mode_terminal">Cửa sổ dòng lệnh (Cyber Terminal)</option>
+                            </select>
+
+                            <div class="setting-item-row">
+                                <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
+                                <input type="color" id="hacker-color-picker" value="#00FF00" />
+                            </div>
                         </div>
 
                         <!-- Aura Color -->
@@ -707,10 +730,34 @@
                         </div>
 
 
-                        <!-- Star Color (Galaxy) -->
+                        <!-- Star Color (Galaxy / Rain) -->
                         <div id="star-color-setting" class="setting-item" style="display: none;">
-                            <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
+                            <label for="star-color-picker" data-i18n="setting_star_color">Rain Color</label>
                             <input type="color" id="star-color-picker" />
+                        </div>
+
+                        <!-- Rain Mode (Style) -->
+                        <div id="rain-mode-setting" class="setting-item" style="display: none;">
+                            <label for="rain-mode-select" data-i18n="setting_rain_mode">Rain Style</label>
+                            <select id="rain-mode-select" class="form-select">
+                                <option value="chill" data-i18n="rain_mode_chill">Chill Window & Bokeh</option>
+                                <option value="storm" data-i18n="rain_mode_storm">Cinematic Storm & Lightning</option>
+                            </select>
+                        </div>
+
+                        <!-- Fireflies Color -->
+                        <div id="fireflies-color-setting" class="setting-item" style="display: none;">
+                            <label for="fireflies-color-picker" data-i18n="setting_fireflies_color">Fireflies Color</label>
+                            <input type="color" id="fireflies-color-picker" value="#ffe855" />
+                        </div>
+
+                        <!-- Fireflies Mode -->
+                        <div id="fireflies-mode-setting" class="setting-item" style="display: none;">
+                            <label for="fireflies-mode-select" data-i18n="setting_fireflies_mode">Fireflies Style</label>
+                            <select id="fireflies-mode-select" class="form-select">
+                                <option value="enchanted" data-i18n="fireflies_mode_enchanted">Enchanted Forest</option>
+                                <option value="synchronous" data-i18n="fireflies_mode_synchronous">Synchronous Wave</option>
+                            </select>
                         </div>
 
                         <!-- Meteor Color -->
@@ -1322,16 +1369,27 @@
                         <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
                             <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud
                                 Color</label>
-                            <input type="color" id="cloud-drift-color-picker" value="#0a0a0a" />
+                            <input type="color" id="cloud-drift-color-picker" value="#f0f4f8" />
                         </div>
                         <div id="cloud-drift-mood-setting" class="setting-item" style="display: none;">
                             <label for="cloud-drift-mood-select" data-i18n="setting_cloud_drift_mood">Sky
                                 Mood</label>
                             <select id="cloud-drift-mood-select" class="styled-select">
-                                <option value="default" data-i18n="cloud_drift_mood_default">Default</option>
+                                <option value="daylight" data-i18n="cloud_drift_mood_daylight">Daylight Sky</option>
                                 <option value="sunrise" data-i18n="cloud_drift_mood_sunrise">Sunrise Chill</option>
                                 <option value="sunset" data-i18n="cloud_drift_mood_sunset">Sunset Chill</option>
+                                <option value="midnight" data-i18n="cloud_drift_mood_midnight">Moonlit Midnight</option>
+                                <option value="stormy" data-i18n="cloud_drift_mood_stormy">Stormy Thunder</option>
+                                <option value="custom" data-i18n="cloud_drift_mood_custom">Custom Color</option>
                             </select>
+                        </div>
+                        <div id="cloud-drift-opacity-setting" class="setting-item" style="display: none;">
+                            <label for="cloud-drift-opacity-slider" data-i18n="setting_cloud_drift_opacity">Cloud Opacity: <span id="cloud-drift-opacity-val">65%</span></label>
+                            <input type="range" id="cloud-drift-opacity-slider" min="0.1" max="1.0" step="0.05" value="0.65" />
+                        </div>
+                        <div id="cloud-drift-speed-setting" class="setting-item" style="display: none;">
+                            <label for="cloud-drift-speed-slider" data-i18n="setting_cloud_drift_speed">Drift Speed: <span id="cloud-drift-speed-val">1.0x</span></label>
+                            <input type="range" id="cloud-drift-speed-slider" min="0.2" max="3.0" step="0.1" value="1.0" />
                         </div>
                         <!-- Shiny Tint Color -->
                         <div id="shiny-color-setting" class="setting-item" style="display: none;">

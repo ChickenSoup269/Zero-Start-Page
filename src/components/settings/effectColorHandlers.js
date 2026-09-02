@@ -56,6 +56,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.starFallEffect.updateColor(DOM.starColorPicker.value)
   })
 
+  DOM.firefliesColorPicker?.addEventListener("change", () => {
+    updateSetting("firefliesColor", DOM.firefliesColorPicker.value)
+    saveSettings()
+    if (effectInstances.firefliesEffect)
+      effectInstances.firefliesEffect.updateColor(DOM.firefliesColorPicker.value)
+  })
+
   DOM.meteorColorPicker?.addEventListener("change", () => {
     updateSetting("meteorColor", DOM.meteorColorPicker.value)
     saveSettings()
@@ -158,6 +165,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.northernLightsEffect.setOptions({
         brightness: val,
       })
+  })
+
+  DOM.hackerModeSelect?.addEventListener("change", () => {
+    updateSetting("hackerMode", DOM.hackerModeSelect.value)
+    saveSettings()
+    if (effectInstances.hackerEffect) {
+      effectInstances.hackerEffect.setMode(DOM.hackerModeSelect.value)
+    }
   })
 
   DOM.hackerColorPicker?.addEventListener("change", () => {
@@ -630,6 +645,28 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     saveSettings()
     if (effectInstances.cloudDriftEffect) {
       effectInstances.cloudDriftEffect.setMood(DOM.cloudDriftMoodSelect.value)
+    }
+  })
+
+  DOM.cloudDriftOpacitySlider?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    if (DOM.cloudDriftOpacityVal)
+      DOM.cloudDriftOpacityVal.textContent = `${Math.round(val * 100)}%`
+    updateSetting("cloudDriftOpacity", val)
+    saveSettings()
+    if (effectInstances.cloudDriftEffect) {
+      effectInstances.cloudDriftEffect.setOptions({ opacity: val })
+    }
+  })
+
+  DOM.cloudDriftSpeedSlider?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    if (DOM.cloudDriftSpeedVal)
+      DOM.cloudDriftSpeedVal.textContent = `${val.toFixed(1)}x`
+    updateSetting("cloudDriftSpeed", val)
+    saveSettings()
+    if (effectInstances.cloudDriftEffect) {
+      effectInstances.cloudDriftEffect.setOptions({ speed: val })
     }
   })
 

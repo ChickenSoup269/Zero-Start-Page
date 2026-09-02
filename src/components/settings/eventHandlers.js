@@ -5282,6 +5282,38 @@ export function setupGeneralEventHandlers(
     })
   })
 
+  if (DOM.effectMouseInteractionToggle) {
+    DOM.effectMouseInteractionToggle.addEventListener("change", (e) => {
+      const enabled = e.target.checked
+      handleSettingUpdate("effectMouseInteraction", enabled)
+      Object.values(effectInstances).forEach((instance) => {
+        if (instance && typeof instance.setMouseEnabled === "function") {
+          instance.setMouseEnabled(enabled)
+        } else if (instance && typeof instance === "object") {
+          instance.mouseEnabled = enabled
+        }
+      })
+    })
+  }
+
+  if (DOM.rainModeSelect) {
+    DOM.rainModeSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("rainMode", e.target.value)
+      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setMode) {
+        effectInstances.starFallEffect.setMode(e.target.value)
+      }
+    })
+  }
+
+  if (DOM.firefliesModeSelect) {
+    DOM.firefliesModeSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("firefliesMode", e.target.value)
+      if (effectInstances.firefliesEffect && effectInstances.firefliesEffect.setMode) {
+        effectInstances.firefliesEffect.setMode(e.target.value)
+      }
+    })
+  }
+
   if (DOM.pixelWeatherStyleSelect) {
     DOM.pixelWeatherStyleSelect.addEventListener("change", (e) => {
       handleSettingUpdate("pixelWeatherStyle", e.target.value)
