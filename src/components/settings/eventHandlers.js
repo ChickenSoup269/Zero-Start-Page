@@ -5801,6 +5801,42 @@ export function setupGeneralEventHandlers(
     .getElementById("omp-crt-scanlines-checkbox")
     ?.addEventListener("change", ompHandler("ompCrtScanlines", true))
 
+  // Aquarium Clock settings event handlers
+  const aquariumHandler =
+    (key, isCheckbox = false, isNumber = false) =>
+    (e) => {
+      const val = isCheckbox
+        ? e.target.checked
+        : isNumber
+          ? Number(e.target.value) || 1
+          : e.target.value
+      handleSettingUpdate(key, val)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key, value: val },
+        }),
+      )
+    }
+
+  document
+    .getElementById("aquarium-water-theme-select")
+    ?.addEventListener("change", aquariumHandler("aquariumWaterTheme"))
+  document
+    .getElementById("aquarium-glass-style-select")
+    ?.addEventListener("change", aquariumHandler("aquariumGlassStyle"))
+  document
+    .getElementById("aquarium-fish-count-select")
+    ?.addEventListener("change", aquariumHandler("aquariumFishCount", false, true))
+  document
+    .getElementById("aquarium-fish-speed-select")
+    ?.addEventListener("change", aquariumHandler("aquariumFishSpeed"))
+  document
+    .getElementById("aquarium-show-seaweed-checkbox")
+    ?.addEventListener("change", aquariumHandler("aquariumShowSeaweed", true))
+  document
+    .getElementById("aquarium-show-bubbles-checkbox")
+    ?.addEventListener("change", aquariumHandler("aquariumShowBubbles", true))
+
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()
     const style = settings.dateClockStyle || "default"

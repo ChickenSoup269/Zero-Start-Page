@@ -394,6 +394,11 @@
                             Posh</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </div>
+                    <div class="clock-style-card" data-value="aquarium">
+                        <i class="fa-solid fa-fish"></i>
+                        <span class="clock-style-name" data-i18n="settings_clock_date_style_aquarium">Aquarium</span>
+                        <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                    </div>
                 </div>
             </div>
             <select id="clock-date-style-select" style="display: none;">
@@ -433,6 +438,7 @@
                 <option value="split-pill">Split Pill</option>
                 <option value="clock-3d">3D Clock</option>
                 <option value="macos-vintage" data-i18n="settings_clock_date_style_macos_vintage">Oh My Posh</option>
+                <option value="aquarium" data-i18n="settings_clock_date_style_aquarium">Aquarium</option>
             </select>
         </div>
         <!-- Style Specific Customization (Stand-alone group) -->
@@ -708,7 +714,59 @@
                 </div>
             </div>
 
-
+            <!-- Aquarium Tank Clock Settings -->
+            <div id="aquarium-settings" class="setting-item no-margin-top" style="display: none;">
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-water-theme-select" data-i18n="settings_aquarium_water_theme">Water Theme</label>
+                    <select id="aquarium-water-theme-select">
+                        <option value="tropical" data-i18n="settings_aquarium_theme_tropical">Tropical Reef</option>
+                        <option value="deep-ocean" data-i18n="settings_aquarium_theme_deep_ocean">Deep Ocean</option>
+                        <option value="emerald" data-i18n="settings_aquarium_theme_emerald">Emerald Lagoon</option>
+                        <option value="sunset" data-i18n="settings_aquarium_theme_sunset">Sunset Coral</option>
+                        <option value="crystal" data-i18n="settings_aquarium_theme_crystal">Crystal Clear</option>
+                    </select>
+                </div>
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-glass-style-select" data-i18n="settings_aquarium_glass_style">Tank Frame Style</label>
+                    <select id="aquarium-glass-style-select">
+                        <option value="tank" data-i18n="settings_aquarium_glass_tank">Modern Tank (Rounded)</option>
+                        <option value="bowl" data-i18n="settings_aquarium_glass_bowl">Fish Bowl (Curved)</option>
+                        <option value="minimal" data-i18n="settings_aquarium_glass_minimal">Rimless Glass</option>
+                    </select>
+                </div>
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-fish-count-select" data-i18n="settings_aquarium_fish_count">Fish Count</label>
+                    <select id="aquarium-fish-count-select">
+                        <option value="1">1 Fish</option>
+                        <option value="2">2 Fish</option>
+                        <option value="3">3 Fish</option>
+                        <option value="4">4 Fish</option>
+                        <option value="5">5 Fish</option>
+                    </select>
+                </div>
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-fish-speed-select" data-i18n="settings_aquarium_fish_speed">Swim Speed</label>
+                    <select id="aquarium-fish-speed-select">
+                        <option value="slow" data-i18n="settings_aquarium_speed_slow">Relaxed (Slow)</option>
+                        <option value="normal" data-i18n="settings_aquarium_speed_normal">Natural (Normal)</option>
+                        <option value="fast" data-i18n="settings_aquarium_speed_fast">Lively (Fast)</option>
+                    </select>
+                </div>
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-show-seaweed-checkbox" data-i18n="settings_aquarium_show_seaweed">Aquatic Plants (Seaweed)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="aquarium-show-seaweed-checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting-item-row" style="margin-top: 5px;">
+                    <label for="aquarium-show-bubbles-checkbox" data-i18n="settings_aquarium_show_bubbles">Water Bubbles</label>
+                    <label class="switch">
+                        <input type="checkbox" id="aquarium-show-bubbles-checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
 
             <div id="cool-style-settings" class="setting-item no-margin-top" style="display: none;">
                 <div class="setting-item-row" style="margin-top: 5px;">

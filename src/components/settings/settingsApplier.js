@@ -96,6 +96,7 @@ const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "split-pill": "#111111",
   "clock-3d": "#ffffff",
   "macos-vintage": "#ffffff",
+  aquarium: "#00e5ff",
 }
 
 const CLOCK_STYLE_ACCENT_STYLES = Object.keys(CLOCK_STYLE_ACCENT_DEFAULTS)
@@ -2767,6 +2768,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-split-pill",
       "date-clock-style-clock-3d",
       "date-clock-style-macos-vintage",
+      "date-clock-style-aquarium",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -2921,6 +2923,7 @@ function createApplySettings(effectInstances) {
       "split-pill",
       "clock-3d",
       "macos-vintage",
+      "aquarium",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -4052,6 +4055,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "split-pill",
       "clock-3d",
       "macos-vintage",
+      "aquarium",
     ]
 
     // Show style-specific container if current style has special settings
@@ -4233,6 +4237,30 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.dateClockStyle === "macos-vintage" &&
         settings.ompCrtScanlines === true,
     )
+
+    const aquariumSettings = document.getElementById("aquarium-settings")
+    if (aquariumSettings) {
+      aquariumSettings.style.display =
+        settings.dateClockStyle === "aquarium" ? "block" : "none"
+    }
+    const aquariumWaterThemeSelect = document.getElementById("aquarium-water-theme-select")
+    if (aquariumWaterThemeSelect)
+      aquariumWaterThemeSelect.value = settings.aquariumWaterTheme || "tropical"
+    const aquariumGlassStyleSelect = document.getElementById("aquarium-glass-style-select")
+    if (aquariumGlassStyleSelect)
+      aquariumGlassStyleSelect.value = settings.aquariumGlassStyle || "tank"
+    const aquariumFishCountSelect = document.getElementById("aquarium-fish-count-select")
+    if (aquariumFishCountSelect)
+      aquariumFishCountSelect.value = String(settings.aquariumFishCount || 3)
+    const aquariumFishSpeedSelect = document.getElementById("aquarium-fish-speed-select")
+    if (aquariumFishSpeedSelect)
+      aquariumFishSpeedSelect.value = settings.aquariumFishSpeed || "normal"
+    const aquariumShowSeaweedCheckbox = document.getElementById("aquarium-show-seaweed-checkbox")
+    if (aquariumShowSeaweedCheckbox)
+      aquariumShowSeaweedCheckbox.checked = settings.aquariumShowSeaweed !== false
+    const aquariumShowBubblesCheckbox = document.getElementById("aquarium-show-bubbles-checkbox")
+    if (aquariumShowBubblesCheckbox)
+      aquariumShowBubblesCheckbox.checked = settings.aquariumShowBubbles !== false
 
     const satelliteSettings = document.getElementById("satellite-settings")
     if (satelliteSettings) {
