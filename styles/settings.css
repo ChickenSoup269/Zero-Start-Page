@@ -68,6 +68,7 @@
 .settings-section[data-section-id="background"] > .section-content,
 .settings-section[data-section-id="gradient-multi-color"] > .section-content,
 .settings-section[data-section-id="animated-backgrounds"] > .section-content,
+.settings-section[data-section-id="special-effects"] > .section-content,
 .settings-section[data-section-id="font"] > .section-content,
 .settings-section[data-section-id="date-clock"] > .section-content,
 .settings-section[data-section-id="bookmark-custom"] > .section-content,
@@ -90,6 +91,8 @@
 .settings-section[data-section-id="gradient-multi-color"].collapsed
   > .section-content,
 .settings-section[data-section-id="animated-backgrounds"].collapsed
+  > .section-content,
+.settings-section[data-section-id="special-effects"].collapsed
   > .section-content,
 .settings-section[data-section-id="font"].collapsed > .section-content,
 .settings-section[data-section-id="date-clock"].collapsed > .section-content,
