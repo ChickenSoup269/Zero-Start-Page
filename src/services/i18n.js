@@ -7,18 +7,18 @@ let englishI18n = null
 async function loadEnglishTranslations() {
   if (englishI18n) return englishI18n
   try {
-    const cached = sessionStorage.getItem("startpageCachedI18n_v3_en")
+    const cached = sessionStorage.getItem("startpageCachedI18n_v4_en")
     if (cached) {
       englishI18n = JSON.parse(cached)
       return englishI18n
     }
   } catch {}
 
-  const response = await fetch("./locales/en.json?v=3")
+  const response = await fetch("./locales/en.json?v=4")
   englishI18n = await response.json()
   try {
     sessionStorage.setItem(
-      "startpageCachedI18n_v3_en",
+      "startpageCachedI18n_v4_en",
       JSON.stringify(englishI18n),
     )
   } catch {}
@@ -84,7 +84,7 @@ export async function loadLanguage(lang) {
     let translations = null
     try {
       const cached = sessionStorage.getItem(
-        `startpageCachedI18n_v3_${language}`,
+        `startpageCachedI18n_v4_${language}`,
       )
       if (cached) {
         translations = JSON.parse(cached)
@@ -93,12 +93,12 @@ export async function loadLanguage(lang) {
 
     if (!translations) {
       try {
-        const response = await fetch(`./locales/${language}.json?v=3`)
+        const response = await fetch(`./locales/${language}.json?v=4`)
         if (response.ok) {
           translations = await response.json()
           try {
             sessionStorage.setItem(
-              `startpageCachedI18n_v3_${language}`,
+              `startpageCachedI18n_v4_${language}`,
               JSON.stringify(translations),
             )
           } catch {}
