@@ -407,6 +407,11 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".omp-time-digits"))
       clockTargets.push(clockElement.querySelector(".omp-t-ampm"))
       clockTargets.push(clockElement.querySelector(".omp-t-cursor"))
+    } else if (style === "aquarium") {
+      clockTargets.push(clockElement.querySelector(".aquarium-hh"))
+      clockTargets.push(clockElement.querySelector(".aquarium-mm"))
+      clockTargets.push(clockElement.querySelector(".aquarium-ampm"))
+      clockTargets.push(clockElement.querySelector(".aquarium-ss"))
     }
   }
 
@@ -488,6 +493,8 @@ function applyHueMode(settings) {
       } else if (style === "macos-vintage") {
         dateTargets.push(clockElement.querySelector(".omp-date-line"))
         dateTargets.push(clockElement.querySelector(".omp-sys-info"))
+      } else if (style === "aquarium") {
+        dateTargets.push(clockElement.querySelector(".aquarium-date-text"))
       }
     }
   }
@@ -3555,6 +3562,400 @@ export function updateTime() {
       `
       init3DClockInteractiveTilt()
     }
+  } else if (dateClockStyle === "aquarium") {
+    const showSec = !settings.hideSeconds
+    const is12Hour =
+      settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
+    let displayHH = hh
+    if (is12Hour) {
+      let hNum = parseInt(hh, 10)
+      if (hNum > 12) hNum -= 12
+      if (hNum === 0) hNum = 12
+      displayHH = String(hNum).padStart(2, "0")
+    }
+
+    let rawDate = ""
+    if (isTimer) {
+      rawDate = countdownLabel
+    } else {
+      rawDate = getCustomDateString(now, langCode, tz, settings, "full")
+    }
+    const formattedDateFull = (rawDate || "").replace(/<[^>]*>?/gm, "").trim()
+
+    const shouldShowClock = displayMode === "all" || displayMode === "clock"
+    const shouldShowDate =
+      (displayMode === "all" ||
+        displayMode === "date" ||
+        displayMode === "weekday") &&
+      settings.showGregorian !== false
+
+    const waterTheme = settings.aquariumWaterTheme || "tropical"
+    const glassStyle = settings.aquariumGlassStyle || "tank"
+    const fishCount = Math.min(5, Math.max(1, Number(settings.aquariumFishCount) || 3))
+    const fishSpeed = settings.aquariumFishSpeed || "normal"
+    const showSeaweed = settings.aquariumShowSeaweed !== false
+    const showBubbles = settings.aquariumShowBubbles !== false
+
+    const existingTank = clockElement.querySelector(".aquarium-clock-tank")
+    const tankTheme = existingTank?.dataset?.theme
+    const tankGlass = existingTank?.dataset?.glass
+    const tankFishCount = Number(existingTank?.dataset?.fishCount)
+    const tankFishSpeed = existingTank?.dataset?.fishSpeed
+    const tankSeaweed = existingTank?.dataset?.seaweed === "true"
+    const tankBubbles = existingTank?.dataset?.bubbles === "true"
+
+    const isConfigMatch =
+      existingTank &&
+      tankTheme === waterTheme &&
+      tankGlass === glassStyle &&
+      tankFishCount === fishCount &&
+      tankFishSpeed === fishSpeed &&
+      tankSeaweed === showSeaweed &&
+      tankBubbles === showBubbles
+
+    if (isConfigMatch) {
+      // Fast path: update text/time without restarting fish or bubble CSS animations
+      const hhEl = existingTank.querySelector(".aquarium-hh")
+      const mmEl = existingTank.querySelector(".aquarium-mm")
+      const ssEl = existingTank.querySelector(".aquarium-ss")
+      const ssColonEl = existingTank.querySelector(".aquarium-ss-colon")
+      const ampmEl = existingTank.querySelector(".aquarium-ampm")
+      const dateEl = existingTank.querySelector(".aquarium-date-text")
+      const clockWrap = existingTank.querySelector(".aquarium-clock-inner")
+      const dateWrap = existingTank.querySelector(".aquarium-date-pill")
+
+      if (hhEl && hhEl.textContent !== displayHH) hhEl.textContent = displayHH
+      if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
+      if (ssEl) {
+        if (showSec && ss) {
+          if (ssEl.textContent !== ss) ssEl.textContent = ss
+          ssEl.style.display = "inline-flex"
+          if (ssColonEl) ssColonEl.style.display = "flex"
+        } else {
+          ssEl.style.display = "none"
+          if (ssColonEl) ssColonEl.style.display = "none"
+        }
+      }
+      if (ampmEl) {
+        if (ampm) {
+          if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+          ampmEl.style.display = "inline-flex"
+        } else {
+          ampmEl.style.display = "none"
+        }
+      }
+      if (dateEl && dateEl.textContent !== formattedDateFull) {
+        dateEl.textContent = formattedDateFull
+      }
+      if (clockWrap) clockWrap.style.display = shouldShowClock ? "flex" : "none"
+      if (dateWrap) dateWrap.style.display = shouldShowDate ? "inline-flex" : "none"
+    } else {
+      // Generate fish elements
+      const FISH_DATA = [
+        {
+          id: "fish-clown",
+          name: "Clownfish",
+          svg: `
+            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+              <g class="aquarium-fish-tail">
+                <path d="M12 18 C6 10, 2 8, 2 18 C2 28, 6 26, 12 18 Z" fill="#ff6b35"/>
+                <path d="M4 18 C3 14, 2 13, 2 18 C2 23, 3 22, 4 18 Z" fill="#ffffff" opacity="0.9"/>
+                <path d="M2 18 C1 13, 0 12, 0 18 C0 24, 1 23, 2 18 Z" fill="#111111"/>
+              </g>
+              <path d="M28 8 C36 4, 44 8, 48 11 C42 12, 34 10, 28 8 Z" fill="#ff6b35"/>
+              <path d="M30 28 C36 32, 42 30, 46 25 C40 26, 34 27, 30 28 Z" fill="#ff6b35"/>
+              <ellipse cx="36" cy="18" rx="22" ry="11" fill="#ff6b35"/>
+              <path d="M26 10 C29 14, 29 22, 26 26 C23 22, 23 14, 26 10 Z" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
+              <path d="M38 7 C42 12, 42 24, 38 29 C35 24, 35 12, 38 7 Z" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
+              <path d="M49 12 C51 15, 51 21, 49 24 C48 21, 48 15, 49 12 Z" fill="#ffffff" stroke="#111111" stroke-width="0.6"/>
+              <circle cx="50" cy="15" r="2.8" fill="#ffffff"/>
+              <circle cx="51" cy="15" r="1.4" fill="#111111"/>
+              <circle cx="51.5" cy="14.5" r="0.5" fill="#ffffff"/>
+              <g class="aquarium-fish-fin">
+                <ellipse cx="40" cy="20" rx="5" ry="3" fill="#ff8c5a" stroke="#111111" stroke-width="0.5" transform="rotate(-15 40 20)"/>
+              </g>
+            </svg>
+          `,
+        },
+        {
+          id: "fish-tang",
+          name: "Blue Tang",
+          svg: `
+            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+              <g class="aquarium-fish-tail">
+                <polygon points="14,18 2,8 5,18 2,28" fill="#ffd100"/>
+                <path d="M14 18 L6 13 L8 18 L6 23 Z" fill="#00d2ff"/>
+              </g>
+              <path d="M26 7 C38 4, 46 8, 50 12 C42 11, 32 9, 26 7 Z" fill="#0052cc"/>
+              <path d="M28 29 C38 32, 46 28, 48 24 C40 25, 32 27, 28 29 Z" fill="#0052cc"/>
+              <ellipse cx="36" cy="18" rx="20" ry="12" fill="#0066ff"/>
+              <path d="M22 18 C28 14, 38 12, 46 16 C42 22, 30 24, 22 18 Z" fill="#0c1b33"/>
+              <polygon points="20,18 10,13 14,18 10,23" fill="#ffd100"/>
+              <circle cx="49" cy="14" r="2.5" fill="#ffffff"/>
+              <circle cx="50" cy="14" r="1.3" fill="#0c1b33"/>
+              <circle cx="50.4" cy="13.6" r="0.4" fill="#ffffff"/>
+              <g class="aquarium-fish-fin">
+                <ellipse cx="38" cy="21" rx="4.5" ry="2.5" fill="#ffd100" transform="rotate(-10 38 21)"/>
+              </g>
+            </svg>
+          `,
+        },
+        {
+          id: "fish-koi",
+          name: "Golden Koi",
+          svg: `
+            <svg class="aquarium-fish-svg" viewBox="0 0 68 36" fill="none">
+              <g class="aquarium-fish-tail">
+                <path d="M16 18 C8 6, 0 4, 0 18 C0 32, 8 30, 16 18 Z" fill="#ff9f1c" opacity="0.9"/>
+                <path d="M16 18 C10 10, 4 8, 2 18 C4 28, 10 26, 16 18 Z" fill="#ffe49e" opacity="0.8"/>
+              </g>
+              <path d="M26 6 C36 2, 46 5, 52 11 C44 9, 34 8, 26 6 Z" fill="#ff9f1c"/>
+              <ellipse cx="38" cy="18" rx="21" ry="11" fill="#ffb703"/>
+              <path d="M30 11 C35 10, 40 13, 38 18 C34 16, 31 14, 30 11 Z" fill="#d90429"/>
+              <path d="M42 12 C46 13, 48 16, 45 19 C43 17, 42 14, 42 12 Z" fill="#d90429"/>
+              <circle cx="51" cy="15" r="2.6" fill="#ffffff"/>
+              <circle cx="52" cy="15" r="1.3" fill="#111111"/>
+              <circle cx="52.4" cy="14.5" r="0.4" fill="#ffffff"/>
+              <g class="aquarium-fish-fin">
+                <path d="M38 20 C34 26, 30 28, 32 23 C34 21, 36 20, 38 20 Z" fill="#ffe49e" opacity="0.95"/>
+              </g>
+            </svg>
+          `,
+        },
+        {
+          id: "fish-emerald",
+          name: "Emerald Guppy",
+          svg: `
+            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+              <g class="aquarium-fish-tail">
+                <path d="M14 18 C6 8, 1 7, 0 18 C1 29, 6 28, 14 18 Z" fill="#06d6a0"/>
+                <path d="M12 18 C7 11, 3 10, 2 18 C3 26, 7 25, 12 18 Z" fill="#118ab2" opacity="0.8"/>
+              </g>
+              <ellipse cx="36" cy="18" rx="19" ry="9" fill="#06d6a0"/>
+              <path d="M26 12 C34 10, 44 12, 48 16 C40 18, 30 16, 26 12 Z" fill="#118ab2" opacity="0.7"/>
+              <circle cx="48" cy="15" r="2.3" fill="#ffffff"/>
+              <circle cx="49" cy="15" r="1.2" fill="#073b4c"/>
+              <circle cx="49.3" cy="14.6" r="0.4" fill="#ffffff"/>
+              <g class="aquarium-fish-fin">
+                <ellipse cx="38" cy="20" rx="4" ry="2" fill="#05c08f" transform="rotate(-15 38 20)"/>
+              </g>
+            </svg>
+          `,
+        },
+        {
+          id: "fish-coral",
+          name: "Coral Damselfish",
+          svg: `
+            <svg class="aquarium-fish-svg" viewBox="0 0 60 34" fill="none">
+              <g class="aquarium-fish-tail">
+                <polygon points="12,17 2,8 5,17 2,26" fill="#f72585"/>
+              </g>
+              <ellipse cx="34" cy="17" rx="18" ry="10" fill="#7209b7"/>
+              <path d="M24 10 C32 8, 40 10, 44 14 C36 15, 28 14, 24 10 Z" fill="#f72585" opacity="0.85"/>
+              <circle cx="45" cy="14" r="2.4" fill="#ffffff"/>
+              <circle cx="46" cy="14" r="1.2" fill="#3a0ca3"/>
+              <circle cx="46.3" cy="13.6" r="0.4" fill="#ffffff"/>
+              <g class="aquarium-fish-fin">
+                <ellipse cx="36" cy="19" rx="3.8" ry="2" fill="#4cc9f0" transform="rotate(-10 36 19)"/>
+              </g>
+            </svg>
+          `,
+        },
+      ]
+
+      let fishHtml = ""
+      for (let i = 0; i < fishCount; i++) {
+        const fish = FISH_DATA[i % FISH_DATA.length]
+        fishHtml += `
+          <div class="aquarium-fish aquarium-fish-${i + 1} ${fish.id}" title="${fish.name}">
+            ${fish.svg}
+          </div>
+        `
+      }
+
+      // Seaweed SVG stems with multi-layer depth (Background & Foreground)
+      const seaweedHtml = showSeaweed
+        ? `
+        <div class="aquarium-plants-layer">
+          <!-- Background Deep Seaweed -->
+          <div class="aquarium-seaweed-bg-cluster aquarium-seaweed-left-bg">
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-deep-1" viewBox="0 0 50 130" preserveAspectRatio="none">
+              <path d="M25 130 Q10 95 30 60 T20 0" stroke="#065f46" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M26 100 Q40 90 34 80 T26 90" fill="#047857" opacity="0.6"/>
+              <path d="M24 70 Q8 60 14 50 T24 60" fill="#065f46" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="aquarium-seaweed-bg-cluster aquarium-seaweed-right-bg">
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-deep-2" viewBox="0 0 50 130" preserveAspectRatio="none">
+              <path d="M25 130 Q40 95 20 60 T30 0" stroke="#064e3b" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M25 100 Q10 90 16 80 T25 90" fill="#047857" opacity="0.6"/>
+              <path d="M26 68 Q42 58 36 48 T26 58" fill="#064e3b" opacity="0.6"/>
+            </svg>
+          </div>
+
+          <!-- Foreground Lush Seaweed -->
+          <div class="aquarium-seaweed-cluster aquarium-seaweed-left">
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-1" viewBox="0 0 60 120" preserveAspectRatio="none">
+              <path d="M30 120 Q15 90 35 60 T25 0" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/>
+              <path d="M30 95 Q48 85 42 75 T32 85" fill="#34d399" opacity="0.9"/>
+              <path d="M28 65 Q10 55 18 45 T28 55" fill="#059669" opacity="0.9"/>
+              <path d="M30 35 Q46 25 40 15 T30 25" fill="#10b981" opacity="0.9"/>
+            </svg>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-2" viewBox="0 0 50 100" preserveAspectRatio="none">
+              <path d="M25 100 Q38 75 18 50 T28 0" stroke="#059669" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <path d="M22 75 Q8 65 14 55 T24 65" fill="#34d399" opacity="0.85"/>
+              <path d="M22 45 Q36 35 30 25 T20 35" fill="#10b981" opacity="0.85"/>
+            </svg>
+          </div>
+
+          <div class="aquarium-seaweed-cluster aquarium-seaweed-right">
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-3" viewBox="0 0 60 120" preserveAspectRatio="none">
+              <path d="M30 120 Q45 90 25 60 T35 0" stroke="#047857" stroke-width="6" fill="none" stroke-linecap="round"/>
+              <path d="M32 95 Q14 85 20 75 T30 85" fill="#34d399" opacity="0.9"/>
+              <path d="M32 65 Q50 55 42 45 T32 55" fill="#10b981" opacity="0.9"/>
+              <path d="M30 35 Q14 25 20 15 T30 25" fill="#059669" opacity="0.9"/>
+            </svg>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-4" viewBox="0 0 50 90" preserveAspectRatio="none">
+              <path d="M25 90 Q12 65 30 40 T22 0" stroke="#10b981" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+              <path d="M24 65 Q38 55 32 45 T22 55" fill="#6ee7b7" opacity="0.85"/>
+              <path d="M24 35 Q10 25 16 15 T26 25" fill="#059669" opacity="0.85"/>
+            </svg>
+          </div>
+        </div>
+      `
+        : ""
+
+      // Bubbles elements with micro bubble streams
+      let bubblesHtml = ""
+      if (showBubbles) {
+        bubblesHtml = `
+          <div class="aquarium-bubbles-layer">
+            <div class="aquarium-bubble bubble-1"></div>
+            <div class="aquarium-bubble bubble-2"></div>
+            <div class="aquarium-bubble bubble-3"></div>
+            <div class="aquarium-bubble bubble-4"></div>
+            <div class="aquarium-bubble bubble-5"></div>
+            <div class="aquarium-bubble bubble-6"></div>
+            <div class="aquarium-bubble bubble-7"></div>
+            <div class="aquarium-bubble bubble-8"></div>
+            <div class="aquarium-bubble bubble-9"></div>
+            <div class="aquarium-bubble bubble-10"></div>
+            <div class="aquarium-micro-stream stream-left">
+              <span class="micro-b m-1"></span>
+              <span class="micro-b m-2"></span>
+              <span class="micro-b m-3"></span>
+            </div>
+            <div class="aquarium-micro-stream stream-right">
+              <span class="micro-b m-4"></span>
+              <span class="micro-b m-5"></span>
+              <span class="micro-b m-6"></span>
+            </div>
+          </div>
+        `
+      }
+
+      clockElement.innerHTML = `
+        <div class="aquarium-clock-tank aquarium-glass-${escapeAttribute(glassStyle)} aquarium-theme-${escapeAttribute(waterTheme)} aquarium-speed-${escapeAttribute(fishSpeed)}"
+             data-theme="${escapeAttribute(waterTheme)}"
+             data-glass="${escapeAttribute(glassStyle)}"
+             data-fish-count="${fishCount}"
+             data-fish-speed="${escapeAttribute(fishSpeed)}"
+             data-seaweed="${showSeaweed}"
+             data-bubbles="${showBubbles}">
+          
+          <!-- Underwater Ambient Lighting & Sunbeams -->
+          <div class="aquarium-water-bg"></div>
+          <div class="aquarium-sunbeams">
+            <div class="aquarium-beam beam-1"></div>
+            <div class="aquarium-beam beam-2"></div>
+            <div class="aquarium-beam beam-3"></div>
+          </div>
+          <div class="aquarium-caustics-layer"></div>
+          
+          <!-- Undulating Water Surface Waves -->
+          <div class="aquarium-water-surface">
+            <svg class="aquarium-wave-svg" viewBox="0 0 1200 30" preserveAspectRatio="none">
+              <path class="aquarium-wave-path wave-path-1" d="M0,15 C150,25 350,5 500,15 C650,25 850,5 1000,15 C1150,25 1250,10 1300,15 L1300,0 L0,0 Z" fill="rgba(255,255,255,0.22)"/>
+              <path class="aquarium-wave-path wave-path-2" d="M0,10 C200,3 400,20 600,10 C800,3 1000,20 1200,10 L1200,0 L0,0 Z" fill="rgba(255,255,255,0.14)"/>
+            </svg>
+          </div>
+
+          <!-- Aquatic Flora & Bubbles Layer -->
+          ${seaweedHtml}
+          ${bubblesHtml}
+
+          <!-- Swimming Fish Layer -->
+          <div class="aquarium-fish-layer">
+            ${fishHtml}
+          </div>
+
+          <!-- Seabed Sand, Coral & Pebbles Base -->
+          <div class="aquarium-sand-floor">
+            <div class="aquarium-sand-texture"></div>
+            <div class="aquarium-pebble pebble-1"></div>
+            <div class="aquarium-pebble pebble-2"></div>
+            <div class="aquarium-pebble pebble-3"></div>
+            <div class="aquarium-pebble pebble-4"></div>
+            <div class="aquarium-coral-accent coral-left"></div>
+            <div class="aquarium-coral-accent coral-right"></div>
+          </div>
+
+          <!-- Central Clock Content -->
+          <div class="aquarium-clock-content">
+            <div class="aquarium-clock-inner" style="${shouldShowClock ? "" : "display: none;"}">
+              <div class="aquarium-time-digits">
+                <span class="aquarium-hh">${displayHH}</span>
+                <span class="aquarium-colon"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
+                <span class="aquarium-mm">${mm}</span>
+                <span class="aquarium-colon aquarium-ss-colon" style="${showSec && ss ? "" : "display: none;"}"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
+                <span class="aquarium-ss" style="${showSec && ss ? "" : "display: none;"}">${ss || "00"}</span>
+              </div>
+              <span class="aquarium-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
+            </div>
+
+            <div class="aquarium-date-pill" style="${shouldShowDate ? "" : "display: none;"}">
+              <span class="aquarium-date-icon"><i class="fa-solid fa-water"></i></span>
+              <span class="aquarium-date-text">${formattedDateFull}</span>
+            </div>
+          </div>
+
+          <!-- Glass Highlights and Surface Reflections -->
+          <div class="aquarium-glass-sheen"></div>
+          <div class="aquarium-feed-container"></div>
+        </div>
+      `
+
+      // Interactive fish feeding / ripple interaction
+      const tankEl = clockElement.querySelector(".aquarium-clock-tank")
+      if (tankEl) {
+        tankEl.addEventListener("click", (e) => {
+          const rect = tankEl.getBoundingClientRect()
+          const x = e.clientX - rect.left
+          const y = e.clientY - rect.top
+
+          const feedContainer = tankEl.querySelector(".aquarium-feed-container")
+          if (feedContainer) {
+            const flake = document.createElement("div")
+            flake.className = "aquarium-food-flake"
+            flake.style.left = `${x}px`
+            flake.style.top = `${Math.min(y, 30)}px`
+            feedContainer.appendChild(flake)
+
+            setTimeout(() => {
+              flake.remove()
+            }, 3000)
+          }
+
+          // Gentle water ripple
+          const ripple = document.createElement("div")
+          ripple.className = "aquarium-click-ripple"
+          ripple.style.left = `${x}px`
+          ripple.style.top = `${y}px`
+          tankEl.appendChild(ripple)
+          setTimeout(() => ripple.remove(), 1000)
+        })
+      }
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -3612,6 +4013,7 @@ export function updateTime() {
       "split-pill",
       "clock-3d",
       "macos-vintage",
+      "aquarium",
     ].includes(dateClockStyle) || isCustomAngleShowingInternalDate
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
@@ -3873,6 +4275,12 @@ export function initClock() {
     "c4BombArmState",
     "c4BombDefuseCode",
     "freeMoveClock",
+    "aquariumWaterTheme",
+    "aquariumFishCount",
+    "aquariumFishSpeed",
+    "aquariumShowSeaweed",
+    "aquariumShowBubbles",
+    "aquariumGlassStyle",
   ])
 
   window.addEventListener("layoutUpdated", (e) => {
@@ -3886,6 +4294,7 @@ export function initClock() {
       key.startsWith("customAngle") ||
       key.startsWith("audioWave") ||
       key.startsWith("pixelHud") ||
+      key.startsWith("aquarium") ||
       key.startsWith("fliqlo") ||
       key.startsWith("sidestyle") ||
       key.startsWith("mediaOrb") ||
