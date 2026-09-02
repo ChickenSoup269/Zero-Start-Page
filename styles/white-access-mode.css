@@ -37,6 +37,7 @@ body.sidebar-light {
 .side-controls.light-mode .quick-access-bar,
 body.quick-access-white .side-controls #settings-toggle,
 body.quick-access-white .side-controls .quick-access-bar,
+body.quick-access-white #settings-toggle,
 body.quick-access-light #settings-toggle,
 body.quick-access-light .quick-access-bar {
   background: rgba(255, 255, 255, 0.94) !important;
@@ -55,7 +56,10 @@ body.quick-access-light .quick-access-bar {
 .side-controls.light-mode .collapse-btn i,
 .side-controls.light-mode .quick-btn i,
 body.quick-access-white .side-controls .quick-btn,
+body.quick-access-white .side-controls #settings-toggle,
+body.quick-access-white #settings-toggle,
 body.quick-access-white .side-controls #settings-toggle i,
+body.quick-access-white #settings-toggle i,
 body.quick-access-white .side-controls .collapse-btn i,
 body.quick-access-white .side-controls .quick-btn i {
   color: #0f172a !important;
@@ -66,13 +70,28 @@ body.quick-access-white .side-controls .quick-btn i {
 body.sidebar-open .side-controls.light-mode #settings-toggle,
 body.quick-access-white .side-controls .quick-btn.active,
 body.quick-access-white .side-controls #settings-toggle.active,
-body.sidebar-open body.quick-access-white .side-controls #settings-toggle {
+body.quick-access-white #settings-toggle.active,
+body.sidebar-open.quick-access-white .side-controls #settings-toggle,
+body.sidebar-open.quick-access-white #settings-toggle,
+body.sidebar-open .side-controls.light-mode #settings-toggle {
   color: var(--accent-contrast-color, #ffffff) !important;
   background: var(--accent-color) !important;
   box-shadow:
     0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.38),
     0 0 0 1px rgba(0, 0, 0, 0.1) !important;
-  border-radius: var(--radius-md, 10px);
+}
+
+.side-controls.light-mode .quick-btn.active {
+  border-radius: var(--quick-access-button-radius, var(--radius-md, 10px));
+}
+
+.side-controls.light-mode #settings-toggle.active,
+body.sidebar-open .side-controls.light-mode #settings-toggle,
+body.quick-access-white .side-controls #settings-toggle.active,
+body.quick-access-white #settings-toggle.active,
+body.sidebar-open.quick-access-white .side-controls #settings-toggle,
+body.sidebar-open.quick-access-white #settings-toggle {
+  border-radius: var(--quick-access-toggle-radius, 50%) !important;
 }
 
 .side-controls.light-mode .quick-btn.active i,
@@ -80,14 +99,17 @@ body.sidebar-open body.quick-access-white .side-controls #settings-toggle {
 body.sidebar-open .side-controls.light-mode #settings-toggle i,
 body.quick-access-white .side-controls .quick-btn.active i,
 body.quick-access-white .side-controls #settings-toggle.active i,
-body.sidebar-open body.quick-access-white .side-controls #settings-toggle i {
+body.quick-access-white #settings-toggle.active i,
+body.sidebar-open.quick-access-white .side-controls #settings-toggle i,
+body.sidebar-open.quick-access-white #settings-toggle i {
   color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 .side-controls.light-mode .quick-btn:hover:not(.active),
 .side-controls.light-mode #settings-toggle:hover:not(.active),
 body.quick-access-white .side-controls .quick-btn:hover:not(.active),
-body.quick-access-white .side-controls #settings-toggle:hover:not(.active) {
+body.quick-access-white .side-controls #settings-toggle:hover:not(.active),
+body.quick-access-white #settings-toggle:hover:not(.active) {
   color: #000000 !important;
   background: rgba(0, 0, 0, 0.07) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
@@ -98,6 +120,7 @@ body.quick-access-white .side-controls #settings-toggle:hover:not(.active) {
 .side-controls.light-mode #quick-access-collapse:hover i,
 body.quick-access-white .side-controls .quick-btn:hover:not(.active) i,
 body.quick-access-white .side-controls #settings-toggle:hover:not(.active) i,
+body.quick-access-white #settings-toggle:hover:not(.active) i,
 body.quick-access-white .side-controls #quick-access-collapse:hover i {
   color: #000000 !important;
 }
