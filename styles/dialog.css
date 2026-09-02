@@ -483,8 +483,8 @@
 
 .first-run-tour-card {
   position: fixed;
-  width: min(360px, calc(100vw - 28px));
-  padding: 16px;
+  width: min(420px, calc(100vw - 28px));
+  padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-md);
   background: rgba(15, 18, 25, 0.96);
@@ -519,23 +519,45 @@
   opacity: 1;
 }
 
+.first-run-tour-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.first-run-tour-chapter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .first-run-tour-kicker {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 28px;
-  margin-bottom: 8px;
-  padding: 4px 9px;
+  min-height: 26px;
+  padding: 3px 9px;
   border: 1px solid rgba(var(--accent-color-rgb), 0.28);
   border-radius: 999px;
   background: rgba(var(--accent-color-rgb), 0.12);
   color: var(--accent-color);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 800;
 }
 
 .first-run-tour-kicker i {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .first-run-tour-title {
@@ -551,14 +573,41 @@
 
 .first-run-tour-text {
   margin: 0;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
   line-height: 1.5;
+}
+
+.first-run-tour-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 2px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.first-run-tour-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.first-run-tour-feature-item i {
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  margin-top: 3px;
+  flex-shrink: 0;
 }
 
 .first-run-tour-progress {
   height: 5px;
-  margin: 14px 0;
+  margin: 14px 0 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
@@ -586,21 +635,21 @@
   align-items: center;
   gap: 5px;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .first-run-tour-shortcuts kbd {
-  min-width: 24px;
-  height: 24px;
+  min-width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 7px;
+  padding: 0 6px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-bottom-color: rgba(0, 0, 0, 0.42);
-  border-radius: 6px;
+  border-radius: 5px;
   background:
     linear-gradient(
       180deg,
@@ -613,30 +662,41 @@
     0 1px 0 rgba(255, 255, 255, 0.09) inset;
   color: #fff;
   font-family: var(--font-primary);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 850;
 }
 
 .first-run-tour-actions {
   display: grid;
-  grid-template-columns: minmax(74px, 0.9fr) minmax(74px, 0.9fr) minmax(
-      92px,
-      1.2fr
-    );
-  gap: 8px;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 7px;
+  align-items: center;
 }
 
 .first-run-tour-actions .dialog-btn {
   width: auto;
   min-width: 0;
-  height: 40px;
+  height: 36px;
   padding: 0 10px;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.first-run-tour-skip-section {
+  color: var(--accent-color) !important;
+  border-color: rgba(var(--accent-color-rgb), 0.25) !important;
+  background: rgba(var(--accent-color-rgb), 0.08) !important;
+}
+
+.first-run-tour-skip-section:hover {
+  background: rgba(var(--accent-color-rgb), 0.18) !important;
+  border-color: var(--accent-color) !important;
 }
 
 .first-run-tour-actions .dialog-btn:disabled {
   cursor: default;
-  opacity: 0.42;
+  opacity: 0.35;
   transform: none;
 }
 
