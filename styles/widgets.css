@@ -7931,9 +7931,232 @@ body.context-menu-macos #menu-delete:hover i {
   color: #fff !important;
 }
 
-body.context-menu-macos .calendar-event-form-title,
 body.context-menu-none .calendar-event-form-title {
   color: #ffffff;
+}
+
+/* macOS Style for Calendar Context Menus & Popups */
+body.context-menu-macos .calendar-context-menu {
+  background: rgba(248, 249, 252, 0.88) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.8) inset,
+    0 12px 36px rgba(0, 0, 0, 0.16),
+    0 24px 64px rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+/* Event Tooltip Preview in macOS mode */
+body.context-menu-macos .calendar-event-preview {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.9) inset,
+    0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 9px !important;
+}
+
+body.context-menu-macos .calendar-event-preview-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+}
+
+body.context-menu-macos .calendar-event-preview-meta {
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.74rem !important;
+}
+
+body.context-menu-macos .calendar-event-preview-desc {
+  color: #334155 !important;
+  font-size: 0.76rem !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  padding: 4px 6px !important;
+  border-radius: 5px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+body.context-menu-macos .calendar-preview-meeting-tag {
+  color: #1a73e8 !important;
+  font-weight: 600 !important;
+}
+
+/* Day Menu in macOS mode */
+body.context-menu-macos .calendar-day-menu-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.context-menu-macos .calendar-day-menu-date {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-macos .calendar-day-menu-date i {
+  color: #007aff !important;
+}
+
+body.context-menu-macos .calendar-day-menu-count {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+body.context-menu-macos .calendar-day-event-card {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+body.context-menu-macos .calendar-day-event-card:hover {
+  background: #007aff !important;
+  border-color: #007aff !important;
+}
+
+body.context-menu-macos .calendar-day-event-card:hover .calendar-day-event-title,
+body.context-menu-macos .calendar-day-event-card:hover .calendar-event-time-pill {
+  color: #ffffff !important;
+}
+
+body.context-menu-macos .calendar-day-event-title {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+body.context-menu-macos .calendar-event-time-pill {
+  background: rgba(0, 122, 255, 0.12) !important;
+  color: #007aff !important;
+}
+
+body.context-menu-macos .calendar-add-item-btn {
+  background: rgba(0, 122, 255, 0.08) !important;
+  color: #007aff !important;
+  font-weight: 600 !important;
+  border: 1px dashed rgba(0, 122, 255, 0.3) !important;
+}
+
+body.context-menu-macos .calendar-add-item-btn:hover {
+  background: #007aff !important;
+  color: #ffffff !important;
+  border-style: solid !important;
+}
+
+body.context-menu-macos .calendar-add-item-btn:hover i,
+body.context-menu-macos .calendar-add-item-btn:hover span {
+  color: #ffffff !important;
+}
+
+body.context-menu-macos .calendar-day-events-empty {
+  color: #64748b !important;
+}
+
+/* Event Form Menu in macOS mode */
+body.context-menu-macos .calendar-event-form-menu {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+}
+
+body.context-menu-macos .calendar-form-title,
+body.context-menu-macos .calendar-event-form-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-macos .calendar-form-title i,
+body.context-menu-macos .calendar-event-form-title i {
+  color: #007aff !important;
+}
+
+body.context-menu-macos .calendar-form-label span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-macos .calendar-form-input,
+body.context-menu-macos .calendar-event-form input,
+body.context-menu-macos .calendar-event-form textarea {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) inset !important;
+}
+
+body.context-menu-macos .calendar-form-input:focus,
+body.context-menu-macos .calendar-event-form input:focus,
+body.context-menu-macos .calendar-event-form textarea:focus {
+  border-color: #007aff !important;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25) !important;
+}
+
+body.context-menu-macos .calendar-form-btn.calendar-event-cancel {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #1e293b !important;
+}
+
+body.context-menu-macos .calendar-form-btn.calendar-event-cancel:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.context-menu-macos .calendar-form-btn.primary.calendar-event-save,
+body.context-menu-macos .calendar-event-form-actions button[type="submit"] {
+  background: #007aff !important;
+  border-color: #007aff !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-macos .calendar-form-btn.primary.calendar-event-save:hover,
+body.context-menu-macos .calendar-event-form-actions button[type="submit"]:hover {
+  background: #0062cc !important;
+}
+
+/* Google Event Modal in macOS mode */
+body.context-menu-macos .calendar-google-event-modal {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+}
+
+body.context-menu-macos .calendar-modal-event-title,
+body.context-menu-macos .calendar-modal-title {
+  color: #0f172a !important;
+}
+
+body.context-menu-macos .calendar-modal-meta-row,
+body.context-menu-macos .calendar-modal-section,
+body.context-menu-macos .calendar-modal-text {
+  color: #334155 !important;
+}
+
+body.context-menu-macos .calendar-modal-desc-box {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.context-menu-macos .calendar-modal-desc-content {
+  color: #1e293b !important;
+}
+
+body.context-menu-macos .calendar-modal-close {
+  color: #64748b !important;
+}
+
+body.context-menu-macos .calendar-modal-close:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.context-menu-macos .calendar-modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.context-menu-macos .calendar-modal-close-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #1e293b !important;
+}
+
+body.context-menu-macos .calendar-modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Transparent context menu */

@@ -859,7 +859,7 @@ export class FullCalendar {
           this.currentHolidayPreview,
           e.clientX,
           e.clientY,
-          "right",
+          "left",
         )
       }
     })
@@ -1073,12 +1073,11 @@ export class FullCalendar {
       addItem.innerHTML = `<i class="fa-solid fa-plus"></i> <span>${i18n.calendar_add_event || "Add Event"}</span>`
       addItem.addEventListener("click", () => {
         const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-        // Capture the day context menu's position before hiding it.
-        // positionContextMenu("left") computes: safeX = x - formWidth - 12
-        // So passing menuRect.left means form.rightEdge = menuRect.left - 12 → no overlap.
         const menuRect = menu.getBoundingClientRect()
+        const targetX = menuRect.right
+        const targetY = menuRect.top
         this.hideContextMenu()
-        this.showEventFormMenu(menuRect.left, menuRect.top, { dateStr })
+        this.showEventFormMenu(targetX, targetY, { dateStr })
       })
       menu.appendChild(addItem)
     }
@@ -1130,7 +1129,7 @@ export class FullCalendar {
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
-    this.positionContextMenu(menu, x, y, "right")
+    this.positionContextMenu(menu, x, y, "left")
   }
 
   showGoogleEventDetailMenu(x, y, eventId) {
@@ -1445,7 +1444,7 @@ export class FullCalendar {
 
     document.body.appendChild(preview)
     this.currentHolidayPreview = preview
-    this.positionContextMenu(preview, x, y, "right")
+    this.positionContextMenu(preview, x, y, "left")
   }
 
   hideEventPreview() {
