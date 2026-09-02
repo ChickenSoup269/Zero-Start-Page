@@ -390,7 +390,7 @@ export const defaultSettings = {
   showBookmarkGroups: true,
   showSearchBar: true,
   freeMoveSearchBar: false,
-  searchBarWidth: 600,
+  searchBarWidth: 750,
   searchBarBlur: 20,
   searchBarRadius: 20,
   showSearchAIIcon: true,

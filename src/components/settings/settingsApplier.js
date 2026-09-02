@@ -2487,7 +2487,7 @@ function createApplySettings(effectInstances) {
 
     document.documentElement.style.setProperty(
       "--search-bar-width",
-      `${settings.searchBarWidth || 600}px`,
+      `${settings.searchBarWidth || 750}px`,
     )
     document.documentElement.style.setProperty(
       "--search-bar-blur",
@@ -6186,9 +6186,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.searchEngineSelect.value = settings.searchEngine || "google"
     }
     if (DOM.searchBarWidthSlider) {
-      DOM.searchBarWidthSlider.value = settings.searchBarWidth || 600
+      DOM.searchBarWidthSlider.value = settings.searchBarWidth || 750
       if (DOM.searchBarWidthVal) {
-        DOM.searchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
+        DOM.searchBarWidthVal.textContent = `${settings.searchBarWidth || 750}px`
       }
     }
 
@@ -6234,12 +6234,12 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     if (DOM.lcpSearchBarWidth) {
-      DOM.lcpSearchBarWidth.value = settings.searchBarWidth || 600
+      DOM.lcpSearchBarWidth.value = settings.searchBarWidth || 750
       if (DOM.lcpSearchBarWidthVal) {
-        DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
+        DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 750}px`
       }
     }
-    const currentWidthStr = String(settings.searchBarWidth || 600)
+    const currentWidthStr = String(settings.searchBarWidth || 750)
     document
       .querySelectorAll(".lcp-preset-btn, .width-preset-btn")
       .forEach((btn) => {

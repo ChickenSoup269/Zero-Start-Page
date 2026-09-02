@@ -432,7 +432,7 @@
       }
       const accentRgb = hexToRgb(accentColor)
 
-      const searchBarWidth = settings.searchBarWidth || 600
+      const searchBarWidth = settings.searchBarWidth || 750
       const searchBarBlur = settings.searchBarBlur ?? 20
       const searchBarRadius = settings.searchBarRadius ?? 20
       const groupBgHex = settings.bookmarkGroupBgColor || "#ffffff"

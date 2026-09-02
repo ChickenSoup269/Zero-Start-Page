@@ -136,7 +136,7 @@ export function applyBootBodyClasses(settings) {
   }
   root.style.setProperty(
     "--search-bar-width",
-    `${settings.searchBarWidth || 600}px`,
+    `${settings.searchBarWidth || 750}px`,
   )
   root.style.setProperty(
     "--search-bar-blur",
