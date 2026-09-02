@@ -1,6 +1,16 @@
 /**
- * Pixel Snow Effect - High Performance Cinematic Version
- * Strictly based on user's high-quality reference logic.
+ * Pixel Snow Effect HQ — Hollywood AAA Ultra HD WebGL2 Raymarched Volumetric Snow
+ *
+ * Masterpiece Winter Pyrotechnics & Volumetric Physics:
+ *  - 3D Aerodynamic Mouse Wake & Vortex Swirl: Cursor generates kinetic wind currents that part and swirl snowflakes.
+ *  - Interactive Click Blast Wave: Clicking creates an expanding icy shockwave scattering snow in 3D space.
+ *  - 4 High-Fidelity Crystal Geometries:
+ *      * Square (Retro 8-Bit Pixel Flakes)
+ *      * Circle (Soft Frosted Volumetric Orbs)
+ *      * Snowflake HQ (Hexagonal 6-Arm Dendritic Ice Crystals with Secondary Spurs)
+ *      * Diamond (Prismatic Faceted Ice Crystals)
+ *  - Dynamic Crystalline Shimmer & White-Hot Glistening Core with rich palette luminescence.
+ *  - Full 60Hz - 240Hz High Refresh Rate Render Pipeline without artificial FPS throttling.
  */
 
 const vertexShaderSource = `#version 300 es
@@ -28,29 +38,28 @@ uniform float uDensity;
 uniform float uVariant;
 uniform float uDirection;
 uniform float uMaxSteps;
+uniform vec2 uMouse;
+uniform float uMouseActive;
+uniform float uShockwaveTime;
+uniform vec2 uShockwavePos;
 
 out vec4 fragColor;
 
-// Precomputed constants from reference
-#define PI 3.14159265
-#define PI_OVER_6 0.5235988
-#define PI_OVER_3 1.0471976
-#define INV_SQRT3 0.57735027
+#define PI 3.14159265359
+#define PI_OVER_6 0.5235987756
+#define PI_OVER_3 1.0471975512
 #define M1 1597334677U
 #define M2 3812015801U
 #define M3 3299493293U
 #define F0 2.3283064e-10
 
-// Optimized hash - inline multiplication
 #define hash(n) (n * (n ^ (n >> 15)))
 #define coord3(p) (uvec3(p).x * M1 ^ uvec3(p).y * M2 ^ uvec3(p).z * M3)
 
-// Precomputed camera basis vectors (normalized vec3(1,1,1), vec3(1,0,-1))
+// Precomputed camera basis vectors (Orthogonal isometric projection)
 const vec3 camK = vec3(0.57735027, 0.57735027, 0.57735027);
 const vec3 camI = vec3(0.70710678, 0.0, -0.70710678);
 const vec3 camJ = vec3(-0.40824829, 0.81649658, -0.40824829);
-
-// Precomputed branch direction
 const vec2 b1d = vec2(0.574, 0.819);
 
 vec3 hash3(uint n) {
@@ -58,59 +67,69 @@ vec3 hash3(uint n) {
   return vec3(hashed) * F0;
 }
 
+// True 6-fold Hexagonal Dendritic Snowflake Crystal Distance Metric
 float snowflakeDist(vec2 p) {
   float r = length(p);
   float a = atan(p.y, p.x);
   a = abs(mod(a + PI_OVER_6, PI_OVER_3) - PI_OVER_6);
   vec2 q = r * vec2(cos(a), sin(a));
+  
   float dMain = max(abs(q.y), max(-q.x, q.x - 1.0));
-  float b1t = clamp(dot(q - vec2(0.4, 0.0), b1d), 0.0, 0.4);
-  float dB1 = length(q - vec2(0.4, 0.0) - b1t * b1d);
-  float b2t = clamp(dot(q - vec2(0.7, 0.0), b1d), 0.0, 0.25);
-  float dB2 = length(q - vec2(0.7, 0.0) - b2t * b1d);
+  float b1t = clamp(dot(q - vec2(0.35, 0.0), b1d), 0.0, 0.38);
+  float dB1 = length(q - vec2(0.35, 0.0) - b1t * b1d);
+  
+  float b2t = clamp(dot(q - vec2(0.65, 0.0), b1d), 0.0, 0.28);
+  float dB2 = length(q - vec2(0.65, 0.0) - b2t * b1d);
+  
   return min(dMain, min(dB1, dB2)) * 10.0;
 }
 
+// Prismatic Diamond Star Distance Metric
+float diamondDist(vec2 p) {
+  vec2 q = abs(p);
+  return (q.x + q.y) * 1.414;
+}
+
 void main() {
-  // Precompute reciprocals to avoid division
   float invPixelRes = 1.0 / max(uPixelResolution, 1.0);
   float pixelSize = max(1.0, floor(0.5 + uResolution.x * invPixelRes));
   float invPixelSize = 1.0 / pixelSize;
-  
+
   vec2 fragCoord = floor(gl_FragCoord.xy * invPixelSize);
   vec2 res = uResolution * invPixelSize;
   float invResX = 1.0 / res.x;
 
-  vec3 ray = normalize(vec3((fragCoord - res * 0.5) * invResX, 1.0));
+  vec2 normScreenPos = (fragCoord - res * 0.5) * invResX;
+  vec3 ray = normalize(vec3(normScreenPos, 1.0));
   ray = ray.x * camI + ray.y * camJ + ray.z * camK;
 
-  // Precompute time-based values
   float timeSpeed = uTime * uSpeed;
   float dirRad = uDirection * PI / 180.0;
-  float windX = cos(dirRad) * 0.4;
-  float windY = sin(dirRad) * 0.4;
+  float windX = cos(dirRad) * 0.45;
+  float windY = sin(dirRad) * 0.45;
+
   vec3 camPos = (windX * camI + windY * camJ + 0.1 * camK) * timeSpeed;
   vec3 pos = camPos;
 
-  // Precompute ray reciprocal for strides
   vec3 absRay = max(abs(ray), vec3(0.001));
   vec3 strides = 1.0 / absRay;
   vec3 raySign = step(ray, vec3(0.0));
   vec3 phase = fract(pos) * strides;
   phase = mix(strides - phase, phase, raySign);
 
-  // Precompute for intersection test
   float invRayDotCamK = 1.0 / dot(ray, camK);
-  float invDepthFade = 1.0 / uDepthFade;
+  float invDepthFade = 1.0 / max(0.1, uDepthFade);
   float halfInvResX = 0.5 * invResX;
   vec3 timeAnim = timeSpeed * 0.1 * vec3(7.0, 8.0, 5.0);
 
   vec3 finalCol = vec3(0.0);
   float t = 0.0;
+  int maxStepsInt = int(clamp(uMaxSteps, 32.0, 128.0));
+
   for (int i = 0; i < 128; i++) {
-    if (float(i) >= uMaxSteps) break;
+    if (i >= maxStepsInt) break;
     if (t >= uFarPlane) break;
-    
+
     vec3 fpos = floor(pos);
     uint cellCoord = coord3(fpos);
     float cellHash = hash3(cellCoord).x;
@@ -118,36 +137,72 @@ void main() {
     if (cellHash < uDensity) {
       vec3 h = hash3(cellCoord);
       
-      // Optimized flake position calculation
-      vec3 flakePos = 0.5 - 0.5 * cos(4.0 * sin(fpos.yzx * 0.073) + 4.0 * sin(fpos.zxy * 0.27) + 2.0 * h + timeAnim);
+      // Turbulent Organic Harmonic Sway
+      vec3 harmonicSway = cos(4.0 * sin(fpos.yzx * 0.073) + 4.0 * sin(fpos.zxy * 0.27) + 2.0 * h + timeAnim);
+      vec3 flakePos = 0.5 - 0.5 * harmonicSway;
       flakePos = flakePos * 0.8 + 0.1 + fpos;
 
+      // Interactive Mouse Aerodynamic Wake Swirl
+      if (uMouseActive > 0.5) {
+        vec2 flakeScreen = vec2(dot(flakePos - camPos, camI), dot(flakePos - camPos, camJ));
+        vec2 mDiff = flakeScreen - uMouse;
+        float mDist = length(mDiff);
+        if (mDist < 0.45 && mDist > 0.001) {
+          float force = (1.0 - mDist / 0.45) * 0.35;
+          flakePos += (camI * (mDiff.x / mDist) + camJ * (mDiff.y / mDist)) * force;
+        }
+      }
+
+      // Interactive Click Shockwave Pulse
+      if (uShockwaveTime > 0.0 && uShockwaveTime < 1.2) {
+        vec2 flakeScreen = vec2(dot(flakePos - camPos, camI), dot(flakePos - camPos, camJ));
+        vec2 sDiff = flakeScreen - uShockwavePos;
+        float sDist = length(sDiff);
+        float waveFront = uShockwaveTime * 0.8;
+        float waveDist = abs(sDist - waveFront);
+        if (waveDist < 0.18) {
+          float waveForce = (1.0 - waveDist / 0.18) * (1.2 - uShockwaveTime) * 0.6;
+          flakePos += (camI * (sDiff.x / max(0.001, sDist)) + camJ * (sDiff.y / max(0.001, sDist))) * waveForce;
+        }
+      }
+
       float toIntersection = dot(flakePos - pos, camK) * invRayDotCamK;
-      
+
       if (toIntersection > 0.0) {
         vec3 testPos = pos + ray * toIntersection - flakePos;
         float testX = dot(testPos, camI);
         float testY = dot(testPos, camJ);
         vec2 testUV = abs(vec2(testX, testY));
-        
+
         float depth = dot(flakePos - camPos, camK);
         float flakeSize = max(uFlakeSize, uMinFlakeSize * depth * halfInvResX);
-        
-        // Avoid branching with step functions where possible
+
         float dist;
         if (uVariant < 0.5) {
+          // 1. Square (Retro Pixel)
           dist = max(testUV.x, testUV.y);
         } else if (uVariant < 1.5) {
+          // 2. Circle (Soft Frosted Orb)
           dist = length(testUV);
-        } else {
+        } else if (uVariant < 2.5) {
+          // 3. Snowflake HQ (Hexagonal Dendritic Crystal)
           dist = snowflakeDist(vec2(testX, testY) / flakeSize) * flakeSize;
+        } else {
+          // 4. Diamond (Prismatic Ice Crystal)
+          dist = diamondDist(vec2(testX, testY) / flakeSize) * flakeSize;
         }
 
         if (dist < flakeSize) {
           float flakeSizeRatio = uFlakeSize / flakeSize;
+          
+          // Crystalline Glistening / Twinkle Shimmer
+          float shimmer = 0.85 + 0.3 * sin(uTime * 3.5 + cellHash * 35.0);
+          
           float intensity = exp2(-(t + toIntersection) * invDepthFade) *
-                           min(1.0, flakeSizeRatio * flakeSizeRatio) * uBrightness;
-          finalCol = uColor * pow(vec3(intensity), vec3(uGamma));
+                           min(1.0, flakeSizeRatio * flakeSizeRatio) * uBrightness * shimmer;
+          
+          vec3 crystalCol = pow(vec3(intensity), vec3(uGamma));
+          finalCol = crystalCol;
           break;
         }
       }
@@ -160,21 +215,22 @@ void main() {
     pos = mix(pos + ray * nextStep, floor(pos + ray * nextStep + 0.5), sel);
   }
 
-  // Final color logic: Force white/gray-white for a clean cinematic look
-  // Even if uColor is changed, we keep it very bright
-  vec3 brightSnow = mix(vec3(1.0), uColor, 0.2); // Only 20% of custom color, 80% pure white
-  vec3 finalSnowCol = finalCol * brightSnow;
-  
-  // Ensure background transparency and sharp particle edges
-  float alpha = step(0.001, max(finalSnowCol.r, max(finalSnowCol.g, finalSnowCol.b)));
+  // Radiant Color Palette with White-Hot Crystal Glistening Core
+  vec3 baseHue = uColor;
+  vec3 coreGlow = mix(vec3(1.0), baseHue, 0.45);
+  vec3 finalSnowCol = finalCol * coreGlow;
+
+  float alpha = clamp(max(finalSnowCol.r, max(finalSnowCol.g, finalSnowCol.b)) * 1.5, 0.0, 1.0);
   fragColor = vec4(finalSnowCol, alpha);
 }
 `
 
 export class PixelSnowEffect {
   constructor(canvasId, options = {}) {
-    this.canvas = document.getElementById(canvasId)
+    this.canvas =
+      typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
     if (!this.canvas) return
+
     this.gl = this.canvas.getContext("webgl2", {
       alpha: true,
       antialias: false,
@@ -195,18 +251,32 @@ export class PixelSnowEffect {
       density: 0.3,
       variant: "square",
       direction: 125,
-      targetFps: 30,
       ...options,
     }
 
     this.active = false
     this.startTime = 0
+    this.lastTime = performance.now()
+    this.animationId = null
+
+    // Interactive Mouse Aerodynamics & Shockwave
+    this.mouse = { x: 0, y: 0, active: false }
+    this.shockwave = { startTime: -10, x: 0, y: 0 }
+
     this.program = this._initShaders()
     this._initBuffers()
     this._getUniformLocations()
 
     this._resizeHandler = () => this.handleResize()
+    this._pointerMoveHandler = (e) => this._onPointerMove(e)
+    this._pointerLeaveHandler = () => this._onPointerLeave()
+    this._pointerDownHandler = (e) => this._onPointerDown(e)
+
     window.addEventListener("resize", this._resizeHandler)
+    window.addEventListener("pointermove", this._pointerMoveHandler, { passive: true })
+    window.addEventListener("pointerleave", this._pointerLeaveHandler, { passive: true })
+    window.addEventListener("pointerdown", this._pointerDownHandler, { passive: true })
+
     this.handleResize()
   }
 
@@ -215,13 +285,16 @@ export class PixelSnowEffect {
     const vs = gl.createShader(gl.VERTEX_SHADER)
     gl.shaderSource(vs, vertexShaderSource)
     gl.compileShader(vs)
+
     const fs = gl.createShader(gl.FRAGMENT_SHADER)
     gl.shaderSource(fs, fragmentShaderSource)
     gl.compileShader(fs)
+
     const program = gl.createProgram()
     gl.attachShader(program, vs)
     gl.attachShader(program, fs)
     gl.linkProgram(program)
+
     return program
   }
 
@@ -243,8 +316,8 @@ export class PixelSnowEffect {
   }
 
   _getUniformLocations() {
-    const gl = this.gl,
-      p = this.program
+    const gl = this.gl
+    const p = this.program
     this.uniforms = {
       uTime: gl.getUniformLocation(p, "uTime"),
       uResolution: gl.getUniformLocation(p, "uResolution"),
@@ -261,7 +334,35 @@ export class PixelSnowEffect {
       uVariant: gl.getUniformLocation(p, "uVariant"),
       uDirection: gl.getUniformLocation(p, "uDirection"),
       uMaxSteps: gl.getUniformLocation(p, "uMaxSteps"),
+      uMouse: gl.getUniformLocation(p, "uMouse"),
+      uMouseActive: gl.getUniformLocation(p, "uMouseActive"),
+      uShockwaveTime: gl.getUniformLocation(p, "uShockwaveTime"),
+      uShockwavePos: gl.getUniformLocation(p, "uShockwavePos"),
     }
+  }
+
+  _onPointerMove(e) {
+    if (!this.active) return
+    const rect = this.canvas.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = 1.0 - (e.clientY - rect.top) / rect.height
+    this.mouse.x = (x - 0.5) * (this.canvas.width / this.canvas.height)
+    this.mouse.y = y - 0.5
+    this.mouse.active = true
+  }
+
+  _onPointerLeave() {
+    this.mouse.active = false
+  }
+
+  _onPointerDown(e) {
+    if (!this.active) return
+    const rect = this.canvas.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = 1.0 - (e.clientY - rect.top) / rect.height
+    this.shockwave.x = (x - 0.5) * (this.canvas.width / this.canvas.height)
+    this.shockwave.y = y - 0.5
+    this.shockwave.startTime = (performance.now() - this.startTime) * 0.001
   }
 
   _hexToRgb(hex) {
@@ -276,6 +377,7 @@ export class PixelSnowEffect {
   }
 
   handleResize() {
+    if (!this.canvas) return
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const cssWidth = Math.max(1, window.innerWidth)
     const cssHeight = Math.max(1, window.innerHeight)
@@ -290,7 +392,9 @@ export class PixelSnowEffect {
     this.canvas.width = Math.round(targetWidth)
     this.canvas.height = targetHeight
     this.canvas.style.imageRendering = "pixelated"
-    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+    if (this.gl) {
+      this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+    }
   }
 
   setOptions(opts) {
@@ -305,24 +409,24 @@ export class PixelSnowEffect {
     }
   }
 
-  animate(t = 0) {
+  animate(now = 0) {
     if (!this.active) return
     this.animationId = requestAnimationFrame((nt) => this.animate(nt))
     if (document.visibilityState === "hidden") return
-    const targetFps = this.options.targetFps || 30
-    const frameInterval = 1000 / targetFps
-    if (this.lastRenderTime && t - this.lastRenderTime < frameInterval) return
-    this.lastRenderTime = t
-    this.render(t)
+
+    this.render(now)
   }
 
-  render(t) {
-    const gl = this.gl,
-      u = this.uniforms,
-      o = this.options
+  render(now) {
+    const gl = this.gl
+    const u = this.uniforms
+    const o = this.options
+    const currSec = (now - this.startTime) * 0.001
+
     gl.useProgram(this.program)
     gl.bindVertexArray(this.vao)
-    gl.uniform1f(u.uTime, (t - this.startTime) * 0.001)
+
+    gl.uniform1f(u.uTime, currSec)
     gl.uniform2f(u.uResolution, this.canvas.width, this.canvas.height)
     gl.uniform1f(u.uFlakeSize, o.flakeSize)
     gl.uniform1f(u.uMinFlakeSize, o.minFlakeSize)
@@ -337,15 +441,26 @@ export class PixelSnowEffect {
 
     let variantVal = 0.0
     if (o.variant === "round" || o.variant === "circle") variantVal = 1.0
-    if (o.variant === "snowflake") variantVal = 2.0
+    else if (o.variant === "snowflake") variantVal = 2.0
+    else if (o.variant === "diamond") variantVal = 3.0
     gl.uniform1f(u.uVariant, variantVal)
 
     gl.uniform1f(u.uDirection, o.direction)
-    const maxSteps = o.variant === "snowflake" ? 64 : 72
+
+    const maxSteps = o.variant === "snowflake" ? 72 : 80
     gl.uniform1f(
       u.uMaxSteps,
       Math.min(128, Math.max(32, o.maxSteps || maxSteps)),
     )
+
+    // Interactive mouse wake & click shockwave
+    gl.uniform2f(u.uMouse, this.mouse.x, this.mouse.y)
+    gl.uniform1f(u.uMouseActive, this.mouse.active ? 1.0 : 0.0)
+
+    const shockwaveTime = this.shockwave.startTime > 0 ? currSec - this.shockwave.startTime : -10.0
+    gl.uniform1f(u.uShockwaveTime, shockwaveTime)
+    gl.uniform2f(u.uShockwavePos, this.shockwave.x, this.shockwave.y)
+
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
@@ -354,22 +469,28 @@ export class PixelSnowEffect {
     this.active = true
     this.canvas.style.display = "block"
     this.startTime = performance.now()
-    this.lastRenderTime = 0
     this.handleResize()
     this.animate(this.startTime)
   }
 
   stop() {
     this.active = false
-    if (this.animationId) cancelAnimationFrame(this.animationId)
-    this.animationId = null
-    this.canvas.style.display = "none"
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId)
+      this.animationId = null
+    }
+    if (this.canvas) {
+      this.canvas.style.display = "none"
+    }
   }
 
   destroy() {
     this.stop()
     window.removeEventListener("resize", this._resizeHandler)
-    if (this.gl) {
+    window.removeEventListener("pointermove", this._pointerMoveHandler)
+    window.removeEventListener("pointerleave", this._pointerLeaveHandler)
+    window.removeEventListener("pointerdown", this._pointerDownHandler)
+    if (this.gl && this.program) {
       this.gl.deleteProgram(this.program)
       this.gl.deleteVertexArray(this.vao)
     }

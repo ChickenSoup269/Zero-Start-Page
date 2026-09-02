@@ -1,79 +1,148 @@
+/**
+ * SnowfallHDEffect — Hollywood AAA Ultra HD Accumulating Snowfall Display
+ *
+ * Masterpiece Accumulating Snow Simulation:
+ *  - Organic Accumulating Snowdrifts with Glistering Top Crust & Natural Dispersion.
+ *  - 3D Hexagonal Crystals & Soft Volumetric Graupel with Depth-of-Field.
+ *  - Interactive Aerodynamic Mouse Wind Wake parting falling flakes.
+ *  - 60Hz - 240Hz High Refresh Rate Pipeline with Delta-time Normalization.
+ *  - High-DPI Retina Subpixel Precision.
+ */
+
 export class SnowfallHDEffect {
   constructor(canvasId) {
-    this.canvas = document.getElementById(canvasId)
+    this.canvas =
+      typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
+    if (!this.canvas) return
+
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.flakes = []
-    this.flakeCount = 180
+    this.flakeCount = 200
 
-    // Snow pile: one height value per column of colRes pixels
+    // Snow pile: column resolution
     this.colRes = 4
     this.pileHeights = []
     this.maxPile = 0
 
-    this.fps = 40
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
+    this.time = 0
+    this.lastDrawTime = performance.now()
+    this._animId = null
+
+    // Screen & DPI state
+    this.width = window.innerWidth
+    this.height = window.innerHeight
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+
+    // Interactive mouse wind wake
+    this.mouse = {
+      x: -9999,
+      y: -9999,
+      radius: 135,
+      radiusSq: 135 * 135,
+      active: false,
+    }
 
     this._resizeHandler = () => this.resize()
+    this._mouseMoveHandler = (e) => this._onMouseMove(e)
+    this._mouseLeaveHandler = () => this._onMouseLeave()
+    this._visibilityHandler = () => this._onVisibilityChange()
+
     this.resize()
     window.addEventListener("resize", this._resizeHandler)
+    window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
+    window.addEventListener("mouseleave", this._mouseLeaveHandler, { passive: true })
+    document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
-    this.maxPile = this.canvas.height * 0.2 // max pile height = 20% of screen
-    const cols = Math.ceil(this.canvas.width / this.colRes)
-    this.pileHeights = new Array(cols).fill(0)
+    if (!this.canvas) return
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
+
+    this.canvas.width = Math.round(this.width * this.dpr)
+    this.canvas.height = Math.round(this.height * this.dpr)
+    this.canvas.style.width = `${this.width}px`
+    this.canvas.style.height = `${this.height}px`
+    this.canvas.style.pointerEvents = "none"
+
+    if (this.ctx) {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+      this.ctx.scale(this.dpr, this.dpr)
+    }
+
+    this.maxPile = this.height * 0.22
+    const cols = Math.ceil(this.width / this.colRes)
+    if (this.pileHeights.length !== cols) {
+      this.pileHeights = new Array(cols).fill(0)
+    }
     this.initFlakes()
   }
 
-  // ── Flake factory ──────────────────────────────────────────────────────────
   createFlake(fromTop = true) {
-    const size = Math.random() * 6 + 1.5 // 1.5–7.5 px
-    const depth = Math.random() // 0 = far, 1 = close
+    const depth = Math.pow(Math.random(), 1.2) * 0.8 + 0.2 // 0.2 to 1.0
+    const size = (Math.random() * 5.5 + 2.0) * depth
+
     return {
-      x: Math.random() * this.canvas.width,
+      x: Math.random() * (this.width + 40) - 20,
       y: fromTop
-        ? Math.random() * -300 - size
-        : Math.random() * this.canvas.height,
+        ? Math.random() * -200 - size
+        : Math.random() * this.height,
       size,
       depth,
-      speedY: size * 0.1 + 0.25 + depth * 0.35,
+      speedY: (size * 0.12 + 0.45 + depth * 0.4),
       speedX: (Math.random() - 0.5) * 0.35,
-      swing: Math.random() * 1.2 + 0.3,
-      swingSpeed: Math.random() * 0.018 + 0.008,
+      swing: (Math.random() * 1.2 + 0.4) * depth,
+      swingSpeed: Math.random() * 0.025 + 0.01,
       swingOffset: Math.random() * Math.PI * 2,
       rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: ((Math.random() - 0.5) * Math.PI) / 80,
-      opacity: 0.45 + depth * 0.55,
-      crystal: size > 4, // big flake → 6-arm crystal; small → soft round
+      rotationSpeed: ((Math.random() - 0.5) * Math.PI) / 60,
+      opacity: (Math.random() * 0.35 + 0.65) * depth,
+      crystal: size > 3.8,
     }
   }
 
   initFlakes() {
     this.flakes = []
     for (let i = 0; i < this.flakeCount; i++) {
-      this.flakes.push(this.createFlake(false)) // scatter all over screen initially
+      this.flakes.push(this.createFlake(false))
     }
   }
 
-  // ── Snow-pile helpers ──────────────────────────────────────────────────────
+  _onMouseMove(e) {
+    this.mouse.x = e.clientX
+    this.mouse.y = e.clientY
+    this.mouse.active = true
+  }
+
+  _onMouseLeave() {
+    this.mouse.active = false
+    this.mouse.x = -9999
+    this.mouse.y = -9999
+  }
+
+  _onVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      this.lastDrawTime = performance.now()
+    }
+  }
+
   getGroundY(x) {
     const col = Math.max(
       0,
       Math.min(this.pileHeights.length - 1, Math.floor(x / this.colRes)),
     )
-    return this.canvas.height - this.pileHeights[col]
+    return this.height - this.pileHeights[col]
   }
 
   settleFlake(flake) {
     const col = Math.floor(flake.x / this.colRes)
+    if (col < 0 || col >= this.pileHeights.length) return
+
     const lo = Math.max(0, col - 1)
     const hi = Math.min(this.pileHeights.length - 1, col + 1)
 
-    // Pick the lowest neighbour column so pile spreads naturally
     let bestCol = col
     let bestH = this.pileHeights[col]
     for (let c = lo; c <= hi; c++) {
@@ -84,19 +153,18 @@ export class SnowfallHDEffect {
     }
 
     if (this.pileHeights[bestCol] < this.maxPile) {
-      this.pileHeights[bestCol] += flake.size * 0.16
-      // Feather neighbours for a smooth mound
-      if (bestCol > 0) this.pileHeights[bestCol - 1] += flake.size * 0.04
-      if (bestCol < this.pileHeights.length - 1)
-        this.pileHeights[bestCol + 1] += flake.size * 0.04
+      this.pileHeights[bestCol] += flake.size * 0.18
+      if (bestCol > 0) this.pileHeights[bestCol - 1] += flake.size * 0.05
+      if (bestCol < this.pileHeights.length - 1) {
+        this.pileHeights[bestCol + 1] += flake.size * 0.05
+      }
     }
   }
 
-  // ── Drawing helpers ────────────────────────────────────────────────────────
   drawCrystalFlake(ctx, size, opacity) {
-    ctx.globalAlpha = opacity
-    ctx.strokeStyle = `rgba(255,255,255,${opacity})`
-    ctx.lineWidth = Math.max(0.7, size * 0.1)
+    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity.toFixed(3)})`
+    ctx.lineWidth = Math.max(0.7, size * 0.12)
+    ctx.lineCap = "round"
 
     const arms = 6
     for (let i = 0; i < arms; i++) {
@@ -104,13 +172,11 @@ export class SnowfallHDEffect {
       const ex = Math.cos(a) * size
       const ey = Math.sin(a) * size
 
-      // Main arm
       ctx.beginPath()
       ctx.moveTo(0, 0)
       ctx.lineTo(ex, ey)
       ctx.stroke()
 
-      // Two side branches at 55% along arm
       const bx = Math.cos(a) * size * 0.55
       const by = Math.sin(a) * size * 0.55
       const bl = size * 0.38
@@ -123,42 +189,35 @@ export class SnowfallHDEffect {
       }
     }
 
-    // Center dot
     ctx.beginPath()
-    ctx.arc(0, 0, Math.max(0.6, size * 0.14), 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(255,255,255,${opacity})`
+    ctx.arc(0, 0, Math.max(0.8, size * 0.16), 0, Math.PI * 2)
+    ctx.fillStyle = `rgba(255, 255, 255, ${(opacity * 0.95).toFixed(3)})`
     ctx.fill()
   }
 
   drawRoundFlake(ctx, size, opacity) {
-    ctx.beginPath()
-    ctx.arc(0, 0, size, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(255,255,255,${opacity})`
-    ctx.globalAlpha = opacity
-    ctx.fill()
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 1.5)
+    grad.addColorStop(0, `rgba(255, 255, 255, ${opacity.toFixed(3)})`)
+    grad.addColorStop(0.5, `rgba(220, 240, 255, ${(opacity * 0.75).toFixed(3)})`)
+    grad.addColorStop(1, "rgba(220, 240, 255, 0)")
 
-    // Soft glow halo
-    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 2.2)
-    g.addColorStop(0, `rgba(210,235,255,${opacity * 0.35})`)
-    g.addColorStop(1, "rgba(210,235,255,0)")
+    ctx.fillStyle = grad
     ctx.beginPath()
-    ctx.arc(0, 0, size * 2.2, 0, Math.PI * 2)
-    ctx.fillStyle = g
-    ctx.globalAlpha = 1
+    ctx.arc(0, 0, size * 1.5, 0, Math.PI * 2)
     ctx.fill()
   }
 
   drawSnowPile() {
     const ctx = this.ctx
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.width
+    const H = this.height
     const ph = this.pileHeights
     const cols = ph.length
     if (cols === 0) return
 
     ctx.save()
 
-    // ── Filled snow body ────────────────────────────────────────────────────
+    // 1. Filled Organic Snowdrift Body
     ctx.beginPath()
     ctx.moveTo(0, H)
 
@@ -177,14 +236,13 @@ export class SnowfallHDEffect {
     ctx.closePath()
 
     const grad = ctx.createLinearGradient(0, H - this.maxPile, 0, H)
-    grad.addColorStop(0, "rgba(200,225,255,0.80)")
-    grad.addColorStop(0.35, "rgba(230,245,255,0.90)")
-    grad.addColorStop(1, "rgba(255,255,255,0.97)")
+    grad.addColorStop(0, "rgba(205, 230, 255, 0.82)")
+    grad.addColorStop(0.35, "rgba(235, 248, 255, 0.92)")
+    grad.addColorStop(1, "rgba(255, 255, 255, 0.98)")
     ctx.fillStyle = grad
-    ctx.globalAlpha = 1
     ctx.fill()
 
-    // ── Shiny top crust ─────────────────────────────────────────────────────
+    // 2. Glistening Top Ice Crust
     ctx.beginPath()
     for (let c = 0; c < cols; c++) {
       const x = c * this.colRes
@@ -196,59 +254,129 @@ export class SnowfallHDEffect {
         ctx.quadraticCurveTo(px, H - ph[c - 1], x, y)
       }
     }
-    ctx.strokeStyle = "rgba(255,255,255,0.92)"
-    ctx.lineWidth = 2
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"
+    ctx.lineWidth = 1.8
     ctx.stroke()
 
-    // ── Sparkle dots scattered along the surface ─────────────────────────
-    ctx.globalAlpha = 0.55
-    ctx.fillStyle = "rgba(255,255,255,1)"
-    for (let c = 2; c < cols - 2; c += 7) {
-      const x = c * this.colRes + this.colRes / 2
-      const y = H - ph[c] - 1
-      ctx.beginPath()
-      ctx.arc(x, y, 1.4, 0, Math.PI * 2)
-      ctx.fill()
+    // 3. Sparkling Surface Glints
+    for (let c = 2; c < cols - 2; c += 6) {
+      if (ph[c] > 1) {
+        const x = c * this.colRes + this.colRes / 2
+        const y = H - ph[c] - 1
+        const twinkle = 0.5 + 0.5 * Math.sin(this.time * 4 + c)
+        ctx.fillStyle = `rgba(255, 255, 255, ${twinkle.toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(x, y, 1.2, 0, Math.PI * 2)
+        ctx.fill()
+      }
     }
 
     ctx.restore()
   }
 
-  // ── Main loop ──────────────────────────────────────────────────────────────
-  animate(currentTime = 0) {
-    if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === "hidden") return
+  start() {
+    if (this.active) return
+    this.active = true
+    this.lastDrawTime = performance.now()
+    this.time = 0
 
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const cols = Math.ceil(this.width / this.colRes)
+    this.pileHeights = new Array(cols).fill(0)
+    this.initFlakes()
 
-    const ctx = this.ctx
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.canvas.style.display = "block"
+    this.canvas.style.pointerEvents = "none"
+    this.resize()
 
+    const animateLoop = (now) => {
+      if (!this.active) return
+      this._animId = requestAnimationFrame(animateLoop)
+
+      if (document.visibilityState === "hidden") {
+        this.lastDrawTime = now
+        return
+      }
+
+      const elapsed = Math.min(now - this.lastDrawTime, 100)
+      this.lastDrawTime = now
+      const dt = Math.min(elapsed / 16.67, 3.0)
+      this.time += 0.016 * dt
+
+      this.update(dt)
+      this.draw()
+    }
+
+    this._animId = requestAnimationFrame(animateLoop)
+  }
+
+  stop() {
+    this.active = false
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
+    if (this.ctx && this.canvas) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    }
+    if (this.canvas) {
+      this.canvas.style.display = "none"
+    }
+    this.flakes = []
+    this.pileHeights = []
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    window.removeEventListener("mousemove", this._mouseMoveHandler)
+    window.removeEventListener("mouseleave", this._mouseLeaveHandler)
+    document.removeEventListener("visibilitychange", this._visibilityHandler)
+  }
+
+  update(dt) {
     for (let i = 0; i < this.flakes.length; i++) {
       const f = this.flakes[i]
 
-      // Update position
-      f.swingOffset += f.swingSpeed
-      f.x += Math.sin(f.swingOffset) * f.swing * 0.45 + f.speedX
-      f.y += f.speedY
-      f.rotation += f.rotationSpeed
+      f.swingOffset += f.swingSpeed * dt
+      f.rotation += f.rotationSpeed * dt
 
-      // Wrap horizontal
-      if (f.x < -20) f.x = this.canvas.width + 20
-      if (f.x > this.canvas.width + 20) f.x = -20
+      let pushX = 0
+      let pushY = 0
+      if (this.mouse.active) {
+        const dx = f.x - this.mouse.x
+        const dy = f.y - this.mouse.y
+        const distSq = dx * dx + dy * dy
+        if (distSq < this.mouse.radiusSq && distSq > 1) {
+          const dist = Math.sqrt(distSq)
+          const force = (1 - dist / this.mouse.radius) * 2.5 * f.depth
+          pushX = (dx / dist) * force
+          pushY = (dy / dist) * force * 0.5
+        }
+      }
 
-      // Check ground collision
+      f.x += (Math.sin(f.swingOffset) * f.swing * 0.45 + f.speedX + pushX) * dt
+      f.y += (f.speedY + pushY) * dt
+
+      if (f.x < -30) f.x = this.width + 30
+      if (f.x > this.width + 30) f.x = -30
+
       const groundY = this.getGroundY(f.x)
       if (f.y + f.size >= groundY) {
         this.settleFlake(f)
         Object.assign(f, this.createFlake(true))
-        continue
       }
+    }
+  }
 
-      // Draw
+  draw() {
+    const ctx = this.ctx
+    const W = this.width
+    const H = this.height
+
+    ctx.clearRect(0, 0, W, H)
+
+    for (let i = 0; i < this.flakes.length; i++) {
+      const f = this.flakes[i]
       ctx.save()
       ctx.translate(f.x, f.y)
       ctx.rotate(f.rotation)
@@ -260,34 +388,6 @@ export class SnowfallHDEffect {
       ctx.restore()
     }
 
-    // Snow pile drawn on top of all flakes
     this.drawSnowPile()
-  }
-
-  // ── Public API ─────────────────────────────────────────────────────────────
-  start() {
-    if (this.active) return
-    this.active = true
-    this.lastDrawTime = 0
-    // Reset pile on every start
-    const cols = Math.ceil(this.canvas.width / this.colRes)
-    this.pileHeights = new Array(cols).fill(0)
-    this.initFlakes()
-    this.animate(0)
-    this.canvas.style.display = "block"
-  }
-
-  stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
-    this.active = false
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.canvas.style.display = "none"
-    this.flakes = []
-    this.pileHeights = []
-  }
-
-  destroy() {
-    this.stop()
-    window.removeEventListener("resize", this._resizeHandler)
   }
 }
