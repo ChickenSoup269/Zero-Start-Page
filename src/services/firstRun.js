@@ -662,231 +662,321 @@ async function promptFirstRunBookmarkLayout(renderBookmarks) {
 
 function getFirstRunSettingsGuideSteps(i18n) {
   return [
+    // -------------------------------------------------------------
+    // CHƯƠNG 1: BẮT ĐẦU & MÀN HÌNH CHÍNH (OVERVIEW & SCREEN ESSENTIALS)
+    // -------------------------------------------------------------
     {
+      chapterId: "overview",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
       virtualTarget: "center-screen",
       icon: "fa-solid fa-hand-wave",
       title: i18n.first_run_tour_welcome_title || "Welcome to Startpage! 🎉",
       text:
         i18n.first_run_tour_welcome_desc ||
-        "Thank you for installing the extension. Let's take a quick look at the main features to get you started!",
+        "Welcome to Zero Startpage - Ultra-fast, distraction-free start tab with endless customization.",
+      features: [
+        i18n.first_run_tour_welcome_f1 || "Minimalist, distraction-free and ultra fast load times",
+        i18n.first_run_tour_welcome_f2 || "100% customizable wallpaper, colors, typography and layout",
+        i18n.first_run_tour_welcome_f3 || "Built-in productivity widgets: Notepad, Todo, Calendar, Weather",
+      ],
       placement: "center",
       skipSidebarScroll: true,
     },
     {
+      chapterId: "overview",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
       selector: "#search-container",
       icon: "fa-solid fa-magnifying-glass",
       title: i18n.first_run_tour_search_title || "Smart Search",
       text:
         i18n.first_run_tour_search_desc ||
-        "Type keywords or URLs to search. Press Tab or the Google icon to quickly switch between different search engines.",
+        "Smart omnibox search with instant engine switching and multimodal search support.",
+      features: [
+        i18n.first_run_tour_search_f1 || "10+ search engines: Google, Perplexity, Gemini, YouTube, GitHub...",
+        i18n.first_run_tour_search_f2 || "Press Tab key to quickly switch between search engines",
+        i18n.first_run_tour_search_f3 || "Paste images or search via Google Lens & Gemini AI",
+      ],
       placement: "bottom",
       skipSidebarScroll: true,
     },
     {
-      selector: "#settings-toggle",
-      icon: "fa-solid fa-gear",
-      title: i18n.first_run_tour_settings_title || "Unlimited Customization",
-      text:
-        i18n.first_run_tour_settings_desc ||
-        "Click this Gear icon to open the Settings panel. Here you can change Wallpapers, Colors, Fonts, Effects, and much more!",
-      placement: "bottom",
-      skipSidebarScroll: true,
-    },
-    {
+      chapterId: "overview",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
       selector: "#bookmarks-container",
       icon: "fa-solid fa-bookmark",
       title: i18n.first_run_tour_bookmarks_title || "Bookmark Management",
       text:
         i18n.first_run_tour_bookmarks_desc ||
-        "Here you can create, drag to rearrange, and group your favorite website shortcuts. Right-click them for more options.",
+        "Manage and access your favorite websites easily with 6 flexible layout modes.",
+      features: [
+        i18n.first_run_tour_bookmarks_f1 || "Drag & drop to organize your favorite shortcuts freely",
+        i18n.first_run_tour_bookmarks_f2 || "6 layout options: Grid, Taskbar Dock, Sidebar folder tree...",
+        i18n.first_run_tour_bookmarks_f3 || "Right-click bookmarks for instant edit, icon styling, and options",
+      ],
       placement: "bottom",
       skipSidebarScroll: true,
     },
     {
-      selector: "#settings-sidebar .sidebar-header",
-      icon: "fa-solid fa-sliders",
-      title: i18n.first_run_guide_settings_title || "Settings hub",
+      chapterId: "overview",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      selector: "#settings-toggle",
+      icon: "fa-solid fa-gear",
+      title: i18n.first_run_tour_settings_title || "Unlimited Customization",
       text:
-        i18n.first_run_guide_settings_desc ||
-        "This sidebar is where you tune your start page. The guide will walk through the main areas you can customize.",
+        i18n.first_run_tour_settings_desc ||
+        "Explore the comprehensive Settings hub with 100+ customization toggles and Quick Access bar.",
+      features: [
+        i18n.first_run_tour_settings_f1 || "Quick Access bar for instant Todo, Notepad, Calendar, Weather, Music...",
+        i18n.first_run_tour_settings_f2 || "Table of Contents button inside settings jumps directly to any option",
+        i18n.first_run_tour_settings_f3 || "Instant settings search bar finds any option in milliseconds",
+      ],
+      placement: "bottom",
+      skipSidebarScroll: true,
     },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 2: GIAO DIỆN & CHỦ ĐỀ (APPEARANCE & THEMES)
+    // -------------------------------------------------------------
     {
-      selector: "#sidebar-toc-toggle",
-      icon: "fa-solid fa-list-ul",
-      title: i18n.sidebar_toc || "Table of Contents",
-      text:
-        i18n.first_run_guide_toc_desc ||
-        "Click the Table of Contents button anytime to quickly jump to any section or feature in the sidebar.",
-    },
-    {
-      selector: ".settings-nav-container",
-      icon: "fa-solid fa-layer-group",
-      title: i18n.settings_nav_title || "Categories & Search",
-      text:
-        i18n.first_run_guide_nav_desc ||
-        "Use the 4 category tabs (Appearance, Background, Widgets, System) and instant search bar to find any setting quickly.",
-    },
-    {
-      selector: "#language-select",
-      icon: "fa-solid fa-language",
-      title: i18n.settings_language || "Language",
-      text:
-        i18n.first_run_guide_language_desc ||
-        "Change the interface language here. You can also open the custom language tools if you want to add another translation.",
-    },
-    {
-      selector: "#page-title-input",
-      icon: "fa-solid fa-heading",
-      title: i18n.settings_page_title || "Page title",
-      text:
-        i18n.first_run_guide_page_title_desc ||
-        "Set the browser tab title and the small tab icon so this page feels like your own workspace.",
-    },
-    {
+      chapterId: "appearance",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
       selector: '[data-section-id="themes"], [data-settings-partial="themes"]',
       icon: "fa-solid fa-palette",
       title: i18n.settings_themes || "Themes",
       text:
         i18n.first_run_guide_themes_desc ||
-        "Start from a theme preset, save your current look, try style presets, or open Theme Web Beta to browse shared looks.",
+        "Curated presets and community Theme Web hub allow transforming your entire look in one click.",
+      features: [
+        i18n.first_run_tour_themes_f1 || "Curated presets: Dark, Light, Cyberpunk, Forest, Sunset...",
+        i18n.first_run_tour_themes_f2 || "Theme Web Beta: Discover and apply community shared styles",
+        i18n.first_run_tour_themes_f3 || "Save your current custom look as a personal theme preset",
+      ],
     },
     {
-      selector:
-        '[data-section-id="background"], [data-settings-partial="background"]',
-      icon: "fa-solid fa-image",
-      title: i18n.settings_bg || "Background",
-      text:
-        i18n.first_run_guide_background_desc ||
-        "Add an image, video, color, Unsplash photo, or saved local background. This section also controls blur, brightness, fit, and saved galleries.",
-    },
-    {
+      chapterId: "appearance",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
       selector: "#accent-color-group",
       icon: "fa-solid fa-droplet",
-      title: i18n.settings_accent || "Accent color",
+      title: i18n.settings_accent || "Accent Color",
       text:
         i18n.first_run_guide_accent_desc ||
-        "Pick the main accent color, extract it from the current background, or let widgets follow the same color system.",
+        "The primary Accent Color defines high-impact highlights across the entire user interface.",
+      features: [
+        i18n.first_run_tour_accent_f1 || "Choose vivid preset colors or pick any custom HEX color",
+        i18n.first_run_tour_accent_f2 || "Auto-extract harmonized accent color directly from background",
+        i18n.first_run_tour_accent_f3 || "Sync accent color across widget borders, icons, buttons and glow effects",
+      ],
     },
     {
-      selector:
-        '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
-      icon: "fa-solid fa-fill-drip",
-      title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
-      text:
-        i18n.first_run_guide_gradient_desc ||
-        "Build gradient, SVG wave, and multi-color backgrounds. The Visual Preset Hub can copy or apply a full shareable visual bundle.",
-    },
-    {
-      selector:
-        '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
-      icon: "fa-solid fa-wand-magic-sparkles",
-      title: i18n.settings_animated_backgrounds || "Animated backgrounds",
-      text:
-        i18n.first_run_guide_animated_desc ||
-        "Use richer animated backgrounds such as gradient motion, silk, light pillars, liquid light, or splash cursor effects.",
-    },
-    {
-      selector:
-        '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
-      icon: "fa-solid fa-star",
-      title: i18n.settings_effect || "Effects",
-      text:
-        i18n.first_run_guide_effects_desc ||
-        "Choose overlay effects and tune their colors. These are lighter visual layers that sit above your background.",
-    },
-    {
+      chapterId: "appearance",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
       selector: '[data-section-id="font"], [data-settings-partial="font"]',
       icon: "fa-solid fa-font",
-      title: i18n.settings_font || "Font",
+      title: i18n.settings_font || "Typography & Google Fonts",
       text:
         i18n.first_run_guide_font_desc ||
-        "Change the general font, clock font, or load and save a Google Font for later.",
+        "Customize general interface typography and clock digits using the entire Google Fonts library.",
+      features: [
+        i18n.first_run_tour_font_f1 || "Curated popular typography presets optimized for clean legibility",
+        i18n.first_run_tour_font_f2 || "Load and save any font from Google Fonts by font name",
+        i18n.first_run_tour_font_f3 || "Set custom typography separately for clock digits and date",
+      ],
     },
     {
-      selector:
-        '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
+      chapterId: "appearance",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
+      selector: '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
+      icon: "fa-solid fa-heading",
+      title: i18n.settings_custom_title || "Custom Title",
+      text:
+        i18n.first_run_guide_custom_title_desc ||
+        "Display a personalized welcome greeting or inspirational quote prominently on the home screen.",
+      features: [
+        i18n.first_run_tour_title_f1 || "Add personal greeting or motivational quotes on screen",
+        i18n.first_run_tour_title_f2 || "Free move: Drag & position the title anywhere on screen",
+        i18n.first_run_tour_title_f3 || "Tune font size, custom color, neon glow outline and text shadow",
+      ],
+    },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 3: HÌNH NỀN & HIỆU ỨNG ĐỘNG (WALLPAPERS & SHADERS)
+    // -------------------------------------------------------------
+    {
+      chapterId: "background",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      selector: '[data-section-id="background"], [data-settings-partial="background"]',
+      icon: "fa-solid fa-image",
+      title: i18n.settings_bg || "Wallpaper Gallery",
+      text:
+        i18n.first_run_guide_background_desc ||
+        "Extensive wallpaper gallery supporting HD static images, looping MP4 videos, and Unsplash library.",
+      features: [
+        i18n.first_run_tour_bg_f1 || "Upload HD/4K images or smooth looping MP4 video wallpapers",
+        i18n.first_run_tour_bg_f2 || "Search and load millions of curated photos from Unsplash",
+        i18n.first_run_tour_bg_f3 || "Adjust background blur, brightness dimming and screen fitting modes",
+      ],
+    },
+    {
+      chapterId: "background",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      selector: '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
+      icon: "fa-solid fa-fill-drip",
+      title: i18n.settings_gradient_multi_title || "Gradient V2 & SVG Waves",
+      text:
+        i18n.first_run_guide_gradient_desc ||
+        "Multi-color dynamic gradient generator and relaxing animated SVG ocean wave layers.",
+      features: [
+        i18n.first_run_tour_grad_f1 || "Multi-color animated gradients with ultra smooth 60fps performance",
+        i18n.first_run_tour_grad_f2 || "Animated SVG wave layer with customizable speed and wave amplitude",
+        i18n.first_run_tour_grad_f3 || "Visual Preset Hub: Copy or apply complete shareable visual presets",
+      ],
+    },
+    {
+      chapterId: "background",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      selector: '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
+      icon: "fa-solid fa-wand-magic-sparkles",
+      title: i18n.settings_animated_backgrounds || "Animated Shaders",
+      text:
+        i18n.first_run_guide_animated_desc ||
+        "Vibrant GPU shader canvas layers including Silk wave, cybernetic Light Pillars, and interactive fluid.",
+      features: [
+        i18n.first_run_tour_anim_f1 || "Silk Shader: Soft flowing 3D ribbon cloth simulation",
+        i18n.first_run_tour_anim_f2 || "Light Pillars: Majestic glowing cybernetic vertical light beams",
+        i18n.first_run_tour_anim_f3 || "Liquid Ether & Splash Cursor: Interactive fluid ripples following your mouse",
+      ],
+    },
+    {
+      chapterId: "background",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      selector: '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
+      icon: "fa-solid fa-star",
+      title: i18n.settings_effect || "Overlay Effects",
+      text:
+        i18n.first_run_guide_effects_desc ||
+        "Cinematic lightweight overlay effects layered over wallpapers to enhance ambient atmosphere.",
+      features: [
+        i18n.first_run_tour_eff_f1 || "Pixel Snow: Retro pixel snowfall simulation",
+        i18n.first_run_tour_eff_f2 || "Fireflies: Glowing night fireflies drifting across your screen",
+        i18n.first_run_tour_eff_f3 || "Northern Lights Aurora & cinematic shooting star meteors",
+      ],
+    },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 4: ĐỒNG HỒ & LỊCH ÂM (DATE, CLOCK & LUNAR CALENDAR)
+    // -------------------------------------------------------------
+    {
+      chapterId: "clock",
+      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/6: Date & Clock",
+      selector: '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
       icon: "fa-solid fa-clock",
-      title: i18n.settings_date_format || "Date & Clock",
+      title: i18n.settings_date_format || "Clock Styles & Customization",
       text:
         i18n.first_run_guide_clock_desc ||
-        "Customize time format, date format, clock style, colors, size, and display mode.",
+        "Over 10+ distinct clock styles ranging from modern digital and flip clock to vintage analog.",
+      features: [
+        i18n.first_run_tour_clock_f1 || "10+ clock styles: Modern digital, Flip clock, Vintage analog, Minimalist",
+        i18n.first_run_tour_clock_f2 || "Toggle 12h / 24h format and custom date string formats",
+        i18n.first_run_tour_clock_f3 || "Free Move clock mode: Drag and position the clock anywhere",
+      ],
     },
     {
-      selector:
-        '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
+      chapterId: "clock",
+      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/6: Date & Clock",
+      selector: '[data-target-selector="#lunar-date"], #show-lunar-calendar-checkbox-clock',
+      icon: "fa-solid fa-moon",
+      title: i18n.settings_clock_show_lunar_calendar || "Lunar Calendar",
+      text:
+        i18n.first_run_guide_lunar_desc ||
+        "Built-in Lunar Calendar integrated directly into the clock and calendar widget.",
+      features: [
+        i18n.first_run_tour_lunar_f1 || "Accurate traditional Lunar calendar display",
+        i18n.first_run_tour_lunar_f2 || "View Can Chi zodiac signs and lunar phases",
+        i18n.first_run_tour_lunar_f3 || "Target spotlight automatically highlights lunar date on screen",
+      ],
+    },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 5: LỐI TẮT & TAB NHÓM (BOOKMARKS & GROUP TABS)
+    // -------------------------------------------------------------
+    {
+      chapterId: "bookmarks",
+      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/6: Bookmarks & Groups",
+      selector: '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
       icon: "fa-solid fa-bookmark",
-      title: i18n.settings_custom_bookmark || "Bookmarks",
+      title: i18n.settings_custom_bookmark || "Bookmark Layouts & Icons",
       text:
         i18n.first_run_guide_bookmarks_desc ||
-        "Tune bookmark layout, icon size, spacing, background style, drag behavior, and the newer bookmark group tab controls.",
+        "Comprehensive personalization of bookmark layout and appearance to match your browsing habits.",
+      features: [
+        i18n.first_run_tour_bklayout_f1 || "6 layouts: Default Grid, Bottom Taskbar Dock, Sidebar tree...",
+        i18n.first_run_tour_bklayout_f2 || "Tune icon size, typography, border radius and item padding",
+        i18n.first_run_tour_bklayout_f3 || "Isolated contrast background ensures icons and text are always legible",
+      ],
     },
     {
-      selector: "#bookmark-group-bg-color-picker",
+      chapterId: "bookmarks",
+      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/6: Bookmarks & Groups",
+      selector: "#bookmark-group-bg-color-picker, .bookmark-groups-container",
       icon: "fa-regular fa-folder",
       title: i18n.settings_bookmark_group_header || "Group Tabs Interface",
       text:
         i18n.first_run_guide_bookmark_groups_desc ||
-        "Customize bookmark group tabs with background and text colors, opacity, font size, counts, borders, and interaction behavior.",
+        "Organize bookmarks into categorised tabs (Work, Study, Entertainment, Dev Tools...).",
+      features: [
+        i18n.first_run_tour_bkgroups_f1 || "Create folder tabs to organize hundreds of bookmarks cleanly",
+        i18n.first_run_tour_bkgroups_f2 || "Customize tab group background, text colors, opacity and borders",
+        i18n.first_run_tour_bkgroups_f3 || "Smart overflow badge (+N) clearly shows hidden bookmarks count",
+      ],
     },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 6: BỐ CỤC, WIDGETS & ĐỒNG BỘ (LAYOUT & CLOUD SYNC)
+    // -------------------------------------------------------------
     {
-      selector:
-        '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
-      icon: "fa-solid fa-heading",
-      title: i18n.settings_custom_title || "Custom title",
-      text:
-        i18n.first_run_guide_custom_title_desc ||
-        "Show a personal title, move it freely, and adjust its color, size, shadow, border, and effects.",
-    },
-    {
+      chapterId: "system",
+      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
       selector: '[data-section-id="layout"], [data-settings-partial="layout"]',
       icon: "fa-solid fa-layer-group",
-      title: i18n.settings_layout || "Layout",
+      title: i18n.settings_layout || "Layout & Widget Controls",
       text:
         i18n.first_run_guide_layout_desc ||
-        "Turn page modules on or off, flip layout direction, adjust quick controls, and replay this guide when needed.",
+        "Toggle individual page widgets on or off and manage screen orientation and quick layout controls.",
+      features: [
+        i18n.first_run_tour_layout_f1 || "Toggle widgets: Todo, Notepad, Calendar, Weather, Music player",
+        i18n.first_run_tour_layout_f2 || "Flip layout direction for personalized screen orientation",
+        i18n.first_run_tour_layout_f3 || "Reset layout to default or replay this guide anytime",
+      ],
     },
     {
-      virtualTarget: "chrome-bottom-bar",
-      placement: "bottom",
-      icon: "fa-brands fa-chrome",
-      title: i18n.first_run_guide_chrome_bar_title || "Chrome bottom bar",
-      text:
-        i18n.first_run_guide_chrome_bar_desc ||
-        "If you see Customize Chrome or Thanh tuy chinh Chrome at the bottom of the new tab page, right-click that bar and choose Hide customize Chrome bar.",
-    },
-    {
-      selector: "#show-top-right-controls-checkbox",
-      icon: "fa-brands fa-google",
-      title: i18n.google_apps_tooltip || "Google Apps",
-      text:
-        i18n.first_run_guide_google_apps_desc ||
-        "Show or hide the Google Apps corner. Open the apps menu to search, drag apps, resize the popup, show names, and customize app icons.",
-    },
-    {
-      selector: "#search-engine-select",
-      icon: "fa-solid fa-magnifying-glass",
-      title: i18n.settings_group_search || "Search Bar",
-      text:
-        i18n.first_run_guide_search_desc ||
-        "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
-    },
-    {
-      selector:
-        '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
+      chapterId: "system",
+      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
+      selector: '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
       icon: "fa-solid fa-cloud",
-      title: i18n.settings_data_sync || "Data & Sync",
+      title: i18n.settings_data_sync || "Google Drive Sync & Backup",
       text:
         i18n.first_run_guide_data_sync_desc ||
-        "Enable Google Drive sync to securely back up and restore your settings and bookmarks across devices. You can also configure auto-backup intervals.",
+        "Secure cloud synchronization with your personal private Google Drive account.",
+      features: [
+        i18n.first_run_tour_sync_f1 || "Auto-backup settings and bookmarks to your private Google Drive",
+        i18n.first_run_tour_sync_f2 || "Instantly restore your complete setup on any new device",
+        i18n.first_run_tour_sync_f3 || "One-click Export/Import local JSON backup files",
+      ],
     },
     {
-      selector:
-        '[data-section-id="about-project"], [data-settings-partial="about-project"]',
+      chapterId: "system",
+      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
+      selector: '[data-section-id="about-project"], [data-settings-partial="about-project"]',
       icon: "fa-solid fa-circle-info",
       title: i18n.first_run_guide_donate_title || "About Project & Support",
       text:
         i18n.first_run_guide_donate_desc ||
-        "Learn more about this project, view release history, or support the developer. If you find the extension useful, please consider rating it. Thank you! :))",
+        "100% free open-source project created with passion for the community.",
+      features: [
+        i18n.first_run_tour_about_f1 || "100% open-source on GitHub, privacy-focused and transparent",
+        i18n.first_run_tour_about_f2 || "View latest release changelog and upcoming roadmap",
+        i18n.first_run_tour_about_f3 || "Please rate 5 stars on Chrome Web Store to support the developer!",
+      ],
     },
   ]
 }
@@ -1072,9 +1162,13 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
     overlay.innerHTML = `
       <div class="first-run-tour-spotlight" aria-hidden="true"></div>
       <div class="first-run-tour-card" role="dialog" aria-live="polite">
-        <div class="first-run-tour-kicker"></div>
+        <div class="first-run-tour-header-row">
+          <div class="first-run-tour-chapter-badge"></div>
+          <div class="first-run-tour-kicker"></div>
+        </div>
         <h3 class="first-run-tour-title"></h3>
         <p class="first-run-tour-text"></p>
+        <div class="first-run-tour-features-list"></div>
         <div class="first-run-tour-progress"></div>
         <div class="first-run-tour-shortcuts" aria-label="Keyboard shortcuts">
           <span><kbd>←</kbd> <span data-role="back"></span></span>
@@ -1082,7 +1176,8 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
           <span><kbd>Esc</kbd> <span data-role="skip"></span></span>
         </div>
         <div class="first-run-tour-actions">
-          <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-skip"></button>
+          <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-skip-all"></button>
+          <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-skip-section"></button>
           <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-back"></button>
           <button type="button" class="dialog-btn dialog-btn-primary first-run-tour-next"></button>
         </div>
@@ -1096,14 +1191,17 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
     const spotlight = overlay.querySelector(".first-run-tour-spotlight")
     const card = overlay.querySelector(".first-run-tour-card")
+    const chapterBadge = overlay.querySelector(".first-run-tour-chapter-badge")
     const kicker = overlay.querySelector(".first-run-tour-kicker")
     const title = overlay.querySelector(".first-run-tour-title")
     const text = overlay.querySelector(".first-run-tour-text")
+    const featuresList = overlay.querySelector(".first-run-tour-features-list")
     const progress = overlay.querySelector(".first-run-tour-progress")
     const shortcutBack = overlay.querySelector('[data-role="back"]')
     const shortcutNext = overlay.querySelector('[data-role="next"]')
     const shortcutSkip = overlay.querySelector('[data-role="skip"]')
-    const skipBtn = overlay.querySelector(".first-run-tour-skip")
+    const skipAllBtn = overlay.querySelector(".first-run-tour-skip-all")
+    const skipSectionBtn = overlay.querySelector(".first-run-tour-skip-section")
     const backBtn = overlay.querySelector(".first-run-tour-back")
     const nextBtn = overlay.querySelector(".first-run-tour-next")
     let renderToken = 0
@@ -1228,6 +1326,13 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       spotlight.style.width = `${rect.width + 16}px`
       spotlight.style.height = `${rect.height + 16}px`
 
+      if (step.chapterTitle) {
+        chapterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> <span>${escapeHtml(step.chapterTitle)}</span>`
+        chapterBadge.style.display = "inline-flex"
+      } else {
+        chapterBadge.style.display = "none"
+      }
+
       kicker.innerHTML = `<i class="${step.icon}"></i><span>${(
         i18n.first_run_guide_step_label || "Step {current} of {total}"
       )
@@ -1235,11 +1340,31 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
         .replace("{total}", steps.length)}</span>`
       title.textContent = step.title
       text.textContent = step.text
+
+      if (step.features && step.features.length) {
+        featuresList.innerHTML = step.features
+          .map(
+            (f) =>
+              `<div class="first-run-tour-feature-item"><i class="fa-solid fa-circle-check"></i><span>${escapeHtml(f)}</span></div>`,
+          )
+          .join("")
+        featuresList.style.display = "flex"
+      } else {
+        featuresList.innerHTML = ""
+        featuresList.style.display = "none"
+      }
+
       progress.style.setProperty(
         "--first-run-tour-progress",
         `${((index + 1) / steps.length) * 100}%`,
       )
-      skipBtn.textContent = i18n.first_run_guide_skip || "Skip"
+
+      skipAllBtn.textContent = i18n.first_run_guide_skip_all || "Skip All"
+      skipSectionBtn.textContent = i18n.first_run_guide_skip_section || "Skip Section"
+      
+      const hasNextChapter = steps.some((s, i) => i > index && s.chapterId && s.chapterId !== step.chapterId)
+      skipSectionBtn.style.display = hasNextChapter ? "inline-flex" : "none"
+
       backBtn.textContent = i18n.first_run_guide_back || "Back"
       shortcutBack.textContent = i18n.first_run_guide_back || "Back"
       shortcutNext.textContent = i18n.first_run_guide_next || "Next"
@@ -1253,13 +1378,29 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       overlay.classList.add("is-ready")
     }
 
+    const skipToNextChapter = () => {
+      const currentChapter = steps[index]?.chapterId
+      if (!currentChapter) {
+        finish("skipped")
+        return
+      }
+      const nextIndex = steps.findIndex((s, i) => i > index && s.chapterId !== currentChapter)
+      if (nextIndex !== -1) {
+        index = nextIndex
+        renderStep()
+      } else {
+        finish("completed")
+      }
+    }
+
     const onKeyDown = (event) => {
       if (event.key === "Escape") finish("skipped")
       if (event.key === "ArrowRight") nextBtn.click()
       if (event.key === "ArrowLeft" && index > 0) backBtn.click()
     }
 
-    skipBtn.addEventListener("click", () => finish("skipped"))
+    skipAllBtn.addEventListener("click", () => finish("skipped"))
+    skipSectionBtn.addEventListener("click", skipToNextChapter)
     backBtn.addEventListener("click", () => {
       if (index > 0) {
         index -= 1
