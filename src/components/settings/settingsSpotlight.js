@@ -6,22 +6,23 @@
 
 const TARGET_MAP = {
   // Clock & Date
-  "date-clock": "#clock",
-  "free-move-clock-checkbox": "#clock",
+  "date-clock": "#clock-date-wrap",
+  "clock-container": "#clock",
+  "free-move-clock-checkbox": "#clock-date-wrap",
   "short-weekday-checkbox": "#date",
-  "hide-seconds-checkbox": "#time",
+  "hide-seconds-checkbox": "#clock",
   "show-lunar-calendar-checkbox-clock": "#lunar-date",
   "clock-lunar-mode-select": "#lunar-date",
-  "clock-display-select": "#clock",
+  "clock-display-select": "#clock-date-wrap",
   "date-format-grid": "#date",
   "clock-style-grid": "#clock",
-  "clock-style-setting-group": "#clock",
+  "clock-style-setting-group": "#clock-date-wrap",
   "clock-font-family": "#clock",
   "clock-font-size-slider": "#clock",
   "clock-font-weight-select": "#clock",
   "clock-color-picker": "#clock",
-  "time-format": "#time",
-  "clock-align": "#clock",
+  "time-format": "#clock",
+  "clock-align": "#clock-date-wrap",
   "analog-clock-theme": "#clock",
 
   // Search Bar
@@ -31,7 +32,7 @@ const TARGET_MAP = {
   "search-bar-width-slider": "#search-container",
   "search-bar-blur-slider": "#search-container",
   "search-bar-radius-slider": "#search-container",
-  "search-engine-select": "#search-engine-icon",
+  "search-engine-select": "#search-engine-selector",
   "show-search-ai-icon-checkbox": "#search-ai-btn",
 
   // Bookmarks
@@ -51,22 +52,22 @@ const TARGET_MAP = {
   "hide-bookmark-bg-checkbox": ".bookmark-grid",
 
   // Custom Title
-  "custom-title": "#custom-title-text",
-  "show-custom-title-checkbox": "#custom-title-text",
-  "custom-title-input": "#custom-title-text",
-  "custom-title-font-family": "#custom-title-text",
-  "custom-title-font-size": "#custom-title-text",
-  "custom-title-color": "#custom-title-text",
-  "custom-title-align": "#custom-title-text",
+  "custom-title": "#custom-title-display",
+  "show-custom-title-checkbox": "#custom-title-display",
+  "custom-title-input": "#custom-title-display",
+  "custom-title-font-family": "#custom-title-display",
+  "custom-title-font-size": "#custom-title-display",
+  "custom-title-color": "#custom-title-display",
+  "custom-title-align": "#custom-title-display",
 
   // Quick Access
-  "quick-access": ".quick-access-bar",
-  "show-quick-access-bg-checkbox": ".quick-access-bar",
-  "quick-access-horizontal-checkbox": ".quick-access-bar",
-  "quick-access-border-visible-checkbox": ".quick-access-bar",
-  "quick-access-skin-select": ".quick-access-bar",
-  "quick-access-button-radius-select": ".quick-access-bar",
-  "quick-access-bar-radius-select": ".quick-access-bar",
+  "quick-access": "#quick-access-bar",
+  "show-quick-access-bg-checkbox": "#quick-access-bar",
+  "quick-access-horizontal-checkbox": "#quick-access-bar",
+  "quick-access-border-visible-checkbox": "#quick-access-bar",
+  "quick-access-skin-select": "#quick-access-bar",
+  "quick-access-button-radius-select": "#quick-access-bar",
+  "quick-access-bar-radius-select": "#quick-access-bar",
   "quick-access-toggle-radius-select": "#settings-toggle",
 
   // Widgets
@@ -91,23 +92,40 @@ function resolveTargetElement(settingEl) {
   const directSelector =
     settingEl.getAttribute("data-target-selector") ||
     settingEl.querySelector("[data-target-selector]")?.getAttribute("data-target-selector")
-  let target = null
   if (directSelector) {
-    target = document.querySelector(directSelector)
-  } else if (targetId && TARGET_MAP[targetId]) {
-    target = document.querySelector(TARGET_MAP[targetId])
-  } else if (sectionId && TARGET_MAP[sectionId]) {
-    target = document.querySelector(TARGET_MAP[sectionId])
-  } else if (tabName === "clock") {
-    target = document.getElementById("clock") || document.getElementById("clock-container")
+    const el = document.querySelector(directSelector)
+    if (el) return ensureVisibleTarget(el)
+  }
+
+  // 2. ID / Name mapping
+  const inputEl = settingEl.querySelector("input, select, textarea, button[id]")
+  const targetId = settingEl.id || inputEl?.id || settingEl.dataset?.groupId
+  if (targetId && TARGET_MAP[targetId]) {
+    const el = document.querySelector(TARGET_MAP[targetId])
+    if (el) return ensureVisibleTarget(el)
+  }
+
+  // 3. Parent section mapping
+  const parentSection = settingEl.closest(".settings-section")
+  const sectionId = parentSection?.dataset?.sectionId
+  if (sectionId && TARGET_MAP[sectionId]) {
+    const el = document.querySelector(TARGET_MAP[sectionId])
+    if (el) return ensureVisibleTarget(el)
+  }
+
+  // 4. Tab name mapping
+  const tabName = parentSection?.dataset?.settingsTab
+  let target = null
+  if (tabName === "clock") {
+    target = document.getElementById("clock-date-wrap") || document.getElementById("clock")
   } else if (tabName === "search") {
     target = document.getElementById("search-container")
   } else if (tabName === "bookmarks") {
-    target = document.getElementById("bookmarks-container") || document.querySelector(".bookmark-container")
+    target = document.getElementById("bookmarks-container") || document.querySelector(".bookmark-container") || document.getElementById("bookmarks")
   } else if (tabName === "custom-title") {
-    target = document.getElementById("custom-title-text")
+    target = document.getElementById("custom-title-display") || document.getElementById("custom-title-text")
   } else if (tabName === "quick-access") {
-    target = document.querySelector(".quick-access-bar")
+    target = document.getElementById("quick-access-bar") || document.querySelector(".side-controls")
   }
 
   return ensureVisibleTarget(target)
@@ -170,7 +188,7 @@ export function clearTargetHighlight() {
 }
 
 /**
- * Initializes hover listener and locate button triggers inside the settings container
+ * Initializes hover & focus listener inside the settings sidebar
  */
 export function initSettingsSpotlight(sidebarEl) {
   const container = sidebarEl || document.getElementById("settings-sidebar")
@@ -178,12 +196,12 @@ export function initSettingsSpotlight(sidebarEl) {
 
   let hoverDebounce = null
 
-  // Delegated mouseover / mouseout for instant, lightweight target highlighting
+  // 1. Mouseover (bubbles from child setting items)
   container.addEventListener(
-    "mouseenter",
+    "mouseover",
     (e) => {
       const settingItem = e.target.closest(
-        ".setting-item, .setting-item-row, .clock-style-card, .style-preset-btn, .setting-group-title, .section-toggle",
+        ".setting-item, .setting-item-row, .clock-style-card, .style-preset-btn, .setting-group, .settings-section",
       )
       if (!settingItem) return
 
@@ -193,32 +211,57 @@ export function initSettingsSpotlight(sidebarEl) {
         if (target) {
           highlightTarget(target)
         }
-      }, 80)
+      }, 40)
     },
-    { capture: true, passive: true },
+    { passive: true },
+  )
+
+  // 2. Mouseout (clear when leaving setting items)
+  container.addEventListener(
+    "mouseout",
+    (e) => {
+      const settingItem = e.target.closest(
+        ".setting-item, .setting-item-row, .clock-style-card, .style-preset-btn, .setting-group, .settings-section",
+      )
+      if (!settingItem) return
+
+      // If moving within the same setting item, don't clear
+      if (e.relatedTarget && settingItem.contains(e.relatedTarget)) return
+
+      if (hoverDebounce) clearTimeout(hoverDebounce)
+      clearTargetHighlight()
+    },
+    { passive: true },
+  )
+
+  // 3. Focusin / Focusout (keyboard accessibility)
+  container.addEventListener(
+    "focusin",
+    (e) => {
+      const settingItem = e.target.closest(".setting-item, .setting-item-row, .setting-group, .settings-section")
+      if (settingItem) {
+        const target = resolveTargetElement(settingItem)
+        if (target) highlightTarget(target)
+      }
+    },
+    { passive: true },
   )
 
   container.addEventListener(
-    "mouseleave",
-    (e) => {
-      const settingItem = e.target.closest(
-        ".setting-item, .setting-item-row, .clock-style-card, .style-preset-btn, .setting-group-title, .section-toggle",
-      )
-      if (settingItem) {
-        if (hoverDebounce) clearTimeout(hoverDebounce)
-        clearTargetHighlight()
-      }
+    "focusout",
+    () => {
+      clearTargetHighlight()
     },
-    { capture: true, passive: true },
+    { passive: true },
   )
 
-  // Clear highlight when mouse exits settings sidebar entirely
+  // 4. Clear highlight when mouse leaves settings sidebar entirely
   container.addEventListener("mouseleave", () => {
     if (hoverDebounce) clearTimeout(hoverDebounce)
     clearTargetHighlight()
   })
 
-  // Clear highlight when sidebar closes
+  // 5. Clear highlight when sidebar closes
   const observer = new MutationObserver(() => {
     if (!document.body.classList.contains("sidebar-open")) {
       clearTargetHighlight()
