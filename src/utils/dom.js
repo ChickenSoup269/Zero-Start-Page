@@ -704,12 +704,33 @@ export let plantGrowthColorPicker = document.getElementById(
 export let plantGrowthColorSetting = document.getElementById(
   "plant-growth-color-setting",
 )
+export let plantGrowthModeSelect = document.getElementById(
+  "plant-growth-mode-select",
+)
+export let plantGrowthCustomColorWrap = document.getElementById(
+  "plant-growth-custom-color-wrap",
+)
 
+export let oceanFishStyleSelect = document.getElementById(
+  "ocean-fish-style-select",
+)
 export let oceanFishColorPicker = document.getElementById(
   "ocean-fish-color-picker",
 )
 export let oceanFishColorSetting = document.getElementById(
   "ocean-fish-color-setting",
+)
+export let lightPillarsColorSetting = document.getElementById(
+  "light-pillars-color-setting",
+)
+export let lightPillarsModeSelect = document.getElementById(
+  "light-pillars-mode-select",
+)
+export let lightPillarsCustomColorWrap = document.getElementById(
+  "light-pillars-custom-color-wrap",
+)
+export let lightPillarsColorPicker = document.getElementById(
+  "light-pillars-color-picker",
 )
 export let floatingLinesColorPicker = document.getElementById(
   "floating-lines-color-picker",
@@ -739,6 +760,39 @@ export let wavyLinesColorPicker = document.getElementById(
 )
 export let wavyLinesColorSetting = document.getElementById(
   "wavy-lines-color-setting",
+)
+export let wavyLinesModeSelect = document.getElementById(
+  "wavy-lines-mode-select",
+)
+export let wavyLinesSingleColorWrap = document.getElementById(
+  "wavy-lines-single-color-wrap",
+)
+export let tetFireworksSetting = document.getElementById(
+  "tet-fireworks-setting",
+)
+export let tetFireworksSoundToggle = document.getElementById(
+  "tet-fireworks-sound-toggle",
+)
+export let tetFireworksCustomText1Input = document.getElementById(
+  "tet-fireworks-custom-text-1",
+)
+export let tetFireworksCustomText2Input = document.getElementById(
+  "tet-fireworks-custom-text-2",
+)
+export let tetFireworksCustomText3Input = document.getElementById(
+  "tet-fireworks-custom-text-3",
+)
+export let tetFireworksCustomText4Input = document.getElementById(
+  "tet-fireworks-custom-text-4",
+)
+export let tetFireworksCustomText5Input = document.getElementById(
+  "tet-fireworks-custom-text-5",
+)
+export let tetFireworksCustomText6Input = document.getElementById(
+  "tet-fireworks-custom-text-6",
+)
+export let tetFireworksTypeSelect = document.getElementById(
+  "tet-fireworks-type-select",
 )
 export let oceanWaveColorPicker = document.getElementById(
   "ocean-wave-color-picker",
@@ -2701,8 +2755,17 @@ export function refreshDOMReferences() {
   plantGrowthColorSetting = document.getElementById(
     "plant-growth-color-setting",
   )
+  plantGrowthModeSelect = document.getElementById("plant-growth-mode-select")
+  plantGrowthCustomColorWrap = document.getElementById(
+    "plant-growth-custom-color-wrap",
+  )
+  oceanFishStyleSelect = document.getElementById("ocean-fish-style-select")
   oceanFishColorPicker = document.getElementById("ocean-fish-color-picker")
   oceanFishColorSetting = document.getElementById("ocean-fish-color-setting")
+  lightPillarsColorSetting = document.getElementById("light-pillars-color-setting")
+  lightPillarsModeSelect = document.getElementById("light-pillars-mode-select")
+  lightPillarsCustomColorWrap = document.getElementById("light-pillars-custom-color-wrap")
+  lightPillarsColorPicker = document.getElementById("light-pillars-color-picker")
   floatingLinesColorPicker = document.getElementById(
     "floating-lines-color-picker",
   )
@@ -2724,6 +2787,35 @@ export function refreshDOMReferences() {
   musicBarsColorSetting = document.getElementById("music-bars-color-setting")
   wavyLinesColorPicker = document.getElementById("wavy-lines-color-picker")
   wavyLinesColorSetting = document.getElementById("wavy-lines-color-setting")
+  wavyLinesModeSelect = document.getElementById("wavy-lines-mode-select")
+  wavyLinesSingleColorWrap = document.getElementById(
+    "wavy-lines-single-color-wrap",
+  )
+  tetFireworksSetting = document.getElementById("tet-fireworks-setting")
+  tetFireworksSoundToggle = document.getElementById(
+    "tet-fireworks-sound-toggle",
+  )
+  tetFireworksCustomText1Input = document.getElementById(
+    "tet-fireworks-custom-text-1",
+  )
+  tetFireworksCustomText2Input = document.getElementById(
+    "tet-fireworks-custom-text-2",
+  )
+  tetFireworksCustomText3Input = document.getElementById(
+    "tet-fireworks-custom-text-3",
+  )
+  tetFireworksCustomText4Input = document.getElementById(
+    "tet-fireworks-custom-text-4",
+  )
+  tetFireworksCustomText5Input = document.getElementById(
+    "tet-fireworks-custom-text-5",
+  )
+  tetFireworksCustomText6Input = document.getElementById(
+    "tet-fireworks-custom-text-6",
+  )
+  tetFireworksTypeSelect = document.getElementById(
+    "tet-fireworks-type-select",
+  )
   oceanWaveColorPicker = document.getElementById("ocean-wave-color-picker")
   oceanWaveColorSetting = document.getElementById("ocean-wave-color-setting")
   oceanWavePositionSetting = document.getElementById(

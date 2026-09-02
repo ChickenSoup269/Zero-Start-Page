@@ -5191,7 +5191,29 @@ function createUpdateSettingsInputs(effectInstances) {
         ).toFixed(2)
       }
     }
-    DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
+    if (DOM.plantGrowthColorPicker) {
+      DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
+    }
+    if (DOM.plantGrowthModeSelect) {
+      DOM.plantGrowthModeSelect.value = settings.plantGrowthMode || "enchanted"
+    }
+    if (DOM.plantGrowthCustomColorWrap) {
+      DOM.plantGrowthCustomColorWrap.style.display =
+        (settings.plantGrowthMode || "enchanted") === "custom" ? "block" : "none"
+    }
+    if (DOM.oceanFishStyleSelect) {
+      DOM.oceanFishStyleSelect.value = settings.oceanFishStyle || "cartoon"
+    }
+    if (DOM.lightPillarsModeSelect) {
+      DOM.lightPillarsModeSelect.value = settings.lightPillarsMode || "arctic"
+    }
+    if (DOM.lightPillarsCustomColorWrap) {
+      DOM.lightPillarsCustomColorWrap.style.display =
+        (settings.lightPillarsMode || "arctic") === "custom" ? "block" : "none"
+    }
+    if (DOM.lightPillarsColorPicker) {
+      DOM.lightPillarsColorPicker.value = settings.lightPillarsColor || "#88ccff"
+    }
     DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
     DOM.floatingLinesColorPicker.value =
       settings.floatingLinesColor || "#ffffff"
@@ -5225,8 +5247,50 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.musicBarsColorPicker) {
       DOM.musicBarsColorPicker.value = settings.musicBarsColor || "#8be9fd"
     }
-    DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
-    DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
+    if (DOM.wavyLinesColorPicker) {
+      DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
+    }
+    if (DOM.wavyLinesModeSelect) {
+      DOM.wavyLinesModeSelect.value = settings.wavyLinesMode || "single"
+    }
+    if (DOM.wavyLinesSingleColorWrap) {
+      DOM.wavyLinesSingleColorWrap.style.display =
+        (settings.wavyLinesMode || "single") === "single" ? "block" : "none"
+    }
+    if (DOM.tetFireworksCustomText1Input) {
+      DOM.tetFireworksCustomText1Input.value =
+        settings.tetFireworksText1 ?? "Chúc Mừng"
+    }
+    if (DOM.tetFireworksCustomText2Input) {
+      DOM.tetFireworksCustomText2Input.value =
+        settings.tetFireworksText2 ?? "Năm Mới"
+    }
+    if (DOM.tetFireworksCustomText3Input) {
+      DOM.tetFireworksCustomText3Input.value =
+        settings.tetFireworksText3 ?? "Vạn Sự"
+    }
+    if (DOM.tetFireworksCustomText4Input) {
+      DOM.tetFireworksCustomText4Input.value =
+        settings.tetFireworksText4 ?? "Như Ý"
+    }
+    if (DOM.tetFireworksCustomText5Input) {
+      DOM.tetFireworksCustomText5Input.value =
+        settings.tetFireworksText5 ?? "An Khang"
+    }
+    if (DOM.tetFireworksCustomText6Input) {
+      DOM.tetFireworksCustomText6Input.value =
+        settings.tetFireworksText6 ?? "Thịnh Vượng"
+    }
+    if (DOM.tetFireworksSoundToggle) {
+      DOM.tetFireworksSoundToggle.checked =
+        settings.tetFireworksSound === true
+    }
+    if (DOM.tetFireworksTypeSelect) {
+      DOM.tetFireworksTypeSelect.value = settings.tetFireworksType || "all"
+    }
+    if (DOM.oceanWaveColorPicker) {
+      DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
+    }
     const oceanWavePos = settings.oceanWavePosition || "bottom"
     DOM.oceanWavePosBottomBtn?.classList.toggle(
       "active",
@@ -5788,6 +5852,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.wavyLinesColorSetting)
       DOM.wavyLinesColorSetting.style.display =
         settings.effect === "wavyLines" ? "block" : "none"
+    if (DOM.tetFireworksSetting)
+      DOM.tetFireworksSetting.style.display =
+        settings.effect === "tetFireworks" ? "block" : "none"
     if (DOM.oceanWaveColorSetting)
       DOM.oceanWaveColorSetting.style.display =
         settings.effect === "oceanWave" ? "block" : "none"
@@ -5811,6 +5878,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lineShinyModeSetting)
       DOM.lineShinyModeSetting.style.display =
         settings.effect === "lineShiny" ? "block" : "none"
+
+    if (DOM.lightPillarsColorSetting)
+      DOM.lightPillarsColorSetting.style.display =
+        settings.effect === "lightPillars" ? "block" : "none"
 
     if (DOM.rainbowDirectionSetting)
       DOM.rainbowDirectionSetting.style.display =

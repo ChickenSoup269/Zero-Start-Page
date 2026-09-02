@@ -401,11 +401,54 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.plantGrowthModeSelect?.addEventListener("change", () => {
+    const mode = DOM.plantGrowthModeSelect.value
+    updateSetting("plantGrowthMode", mode)
+    saveSettings()
+    if (DOM.plantGrowthCustomColorWrap) {
+      DOM.plantGrowthCustomColorWrap.style.display =
+        mode === "custom" ? "block" : "none"
+    }
+    if (effectInstances.plantGrowthEffect) {
+      effectInstances.plantGrowthEffect.setMode(mode)
+    }
+  })
+
+  DOM.oceanFishStyleSelect?.addEventListener("change", () => {
+    const style = DOM.oceanFishStyleSelect.value
+    updateSetting("oceanFishStyle", style)
+    saveSettings()
+    if (effectInstances.oceanFishEffect) {
+      effectInstances.oceanFishEffect.setStyle(style)
+    }
+  })
+
   DOM.oceanFishColorPicker?.addEventListener("change", () => {
     updateSetting("oceanFishColor", DOM.oceanFishColorPicker.value)
     saveSettings()
     if (effectInstances.oceanFishEffect) {
       effectInstances.oceanFishEffect.color = DOM.oceanFishColorPicker.value
+    }
+  })
+
+  DOM.lightPillarsModeSelect?.addEventListener("change", () => {
+    const mode = DOM.lightPillarsModeSelect.value
+    updateSetting("lightPillarsMode", mode)
+    saveSettings()
+    if (DOM.lightPillarsCustomColorWrap) {
+      DOM.lightPillarsCustomColorWrap.style.display =
+        mode === "custom" ? "block" : "none"
+    }
+    if (effectInstances.lightPillarsEffect) {
+      effectInstances.lightPillarsEffect.setMode(mode)
+    }
+  })
+
+  DOM.lightPillarsColorPicker?.addEventListener("change", () => {
+    updateSetting("lightPillarsColor", DOM.lightPillarsColorPicker.value)
+    saveSettings()
+    if (effectInstances.lightPillarsEffect) {
+      effectInstances.lightPillarsEffect.color = DOM.lightPillarsColorPicker.value
     }
   })
 
@@ -467,6 +510,59 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     saveSettings()
     if (effectInstances.wavyLinesEffect)
       effectInstances.wavyLinesEffect.color = DOM.wavyLinesColorPicker.value
+  })
+
+  DOM.wavyLinesModeSelect?.addEventListener("change", () => {
+    const mode = DOM.wavyLinesModeSelect.value
+    updateSetting("wavyLinesMode", mode)
+    saveSettings()
+    if (DOM.wavyLinesSingleColorWrap) {
+      DOM.wavyLinesSingleColorWrap.style.display =
+        mode === "single" ? "block" : "none"
+    }
+    if (effectInstances.wavyLinesEffect) {
+      effectInstances.wavyLinesEffect.setMode(mode)
+    }
+  })
+
+  const bindTetTextInput = (inputEl, settingKey, optionKey) => {
+    inputEl?.addEventListener("input", () => {
+      const val = inputEl.value
+      updateSetting(settingKey, val)
+      if (effectInstances.tetFireworksEffect) {
+        effectInstances.tetFireworksEffect.setOptions({ [optionKey]: val })
+      }
+    })
+    inputEl?.addEventListener("change", () => saveSettings())
+  }
+
+  bindTetTextInput(DOM.tetFireworksCustomText1Input, "tetFireworksText1", "text1")
+  bindTetTextInput(DOM.tetFireworksCustomText2Input, "tetFireworksText2", "text2")
+  bindTetTextInput(DOM.tetFireworksCustomText3Input, "tetFireworksText3", "text3")
+  bindTetTextInput(DOM.tetFireworksCustomText4Input, "tetFireworksText4", "text4")
+  bindTetTextInput(DOM.tetFireworksCustomText5Input, "tetFireworksText5", "text5")
+  bindTetTextInput(DOM.tetFireworksCustomText6Input, "tetFireworksText6", "text6")
+
+  DOM.tetFireworksSoundToggle?.addEventListener("change", () => {
+    const enabled = DOM.tetFireworksSoundToggle.checked
+    updateSetting("tetFireworksSound", enabled)
+    saveSettings()
+    if (effectInstances.tetFireworksEffect) {
+      effectInstances.tetFireworksEffect.setOptions({ soundEnabled: enabled })
+      if (enabled && effectInstances.tetFireworksEffect.audio) {
+        effectInstances.tetFireworksEffect.audio.unlock()
+        effectInstances.tetFireworksEffect.audio.playDetonation(true)
+      }
+    }
+  })
+
+  DOM.tetFireworksTypeSelect?.addEventListener("change", () => {
+    const type = DOM.tetFireworksTypeSelect.value
+    updateSetting("tetFireworksType", type)
+    saveSettings()
+    if (effectInstances.tetFireworksEffect) {
+      effectInstances.tetFireworksEffect.setOptions({ type })
+    }
   })
 
   DOM.oceanWaveColorPicker?.addEventListener("change", () => {

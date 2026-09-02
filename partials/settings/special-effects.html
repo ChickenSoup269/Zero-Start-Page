@@ -1153,15 +1153,34 @@
 
                         <!-- Plant Growth Setting -->
                         <div id="plant-growth-color-setting" class="setting-item" style="display: none;">
-                            <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Plant
-                                Color</label>
-                            <div class="color-picker-wrapper">
-                                <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                            <label for="plant-growth-mode-select" data-i18n="setting_plant_growth_mode">Botanical Theme</label>
+                            <select id="plant-growth-mode-select" class="styled-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="enchanted" data-i18n="plant_growth_mode_enchanted">Enchanted Forest (Rừng Thần Thoại)</option>
+                                <option value="sakura" data-i18n="plant_growth_mode_sakura">Sakura Cherry Blossom (Hoa Anh Đào)</option>
+                                <option value="cyberpunk" data-i18n="plant_growth_mode_cyberpunk">Cyberpunk Neon Flora (Dạ Quang)</option>
+                                <option value="autumn" data-i18n="plant_growth_mode_autumn">Autumn Golden Canopy (Rừng Thu Phong)</option>
+                                <option value="custom" data-i18n="plant_growth_mode_custom">Custom Color (Màu Tùy Chọn)</option>
+                            </select>
+
+                            <div id="plant-growth-custom-color-wrap" style="display: none;">
+                                <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Custom Plant Color</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Ocean Fish Color -->
+                        <!-- Ocean Fish Setting -->
                         <div id="ocean-fish-color-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-fish-style-select" data-i18n="setting_ocean_fish_style">Fish Style</label>
+                            <select id="ocean-fish-style-select" class="styled-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="cartoon" data-i18n="ocean_fish_style_cartoon">Cartoon (Hoạt Hình Dễ Thương)</option>
+                                <option value="pixel" data-i18n="ocean_fish_style_pixel">Retro Pixel (Điện Tử 8-Bit)</option>
+                                <option value="classic" data-i18n="ocean_fish_style_classic">Classic (Cổ Điển Lúc Đầu)</option>
+                                <option value="realistic" data-i18n="ocean_fish_style_realistic">Realistic 3D (Đại Dương Chân Thực)</option>
+                                <option value="mixed" data-i18n="ocean_fish_style_mixed">Mixed (Hỗn Hợp Đa Dạng)</option>
+                            </select>
+
                             <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish
                                 Color</label>
                             <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
@@ -1197,11 +1216,59 @@
                                 Color</label>
                             <input type="color" id="music-bars-color-picker" value="#8be9fd" />
                         </div>
-                        <!-- Wavy Lines Color -->
+                        <!-- Wavy Lines Settings -->
                         <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
-                            <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave
-                                Color</label>
-                            <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                            <label for="wavy-lines-mode-select" data-i18n="setting_wavy_lines_mode">Wave Color Mode</label>
+                            <select id="wavy-lines-mode-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="single" data-i18n="wavy_lines_mode_single">Single Color</option>
+                                <option value="multicolor" data-i18n="wavy_lines_mode_multicolor">Multi-Color (Distinct Per Line)</option>
+                                <option value="rainbow" data-i18n="wavy_lines_mode_rainbow">Rainbow Spectrum</option>
+                                <option value="cyberpunk" data-i18n="wavy_lines_mode_cyberpunk">Neon Cyberpunk</option>
+                                <option value="sunset" data-i18n="wavy_lines_mode_sunset">Sunset Glow</option>
+                                <option value="pastel" data-i18n="wavy_lines_mode_pastel">Pastel Dream</option>
+                            </select>
+
+                            <div id="wavy-lines-single-color-wrap">
+                                <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave
+                                    Color</label>
+                                <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                            </div>
+                        </div>
+
+                        <!-- Tết Fireworks Settings -->
+                        <div id="tet-fireworks-setting" class="setting-item" style="display: none;">
+                            <!-- Sound simulation toggle -->
+                            <div class="setting-item-row" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="tet-fireworks-sound-toggle" data-i18n="setting_tet_fireworks_sound" style="margin-bottom: 0; cursor: pointer;">
+                                    Enable Sound Simulation (Âm thanh pháo hoa)
+                                </label>
+                                <input type="checkbox" id="tet-fireworks-sound-toggle" class="styled-checkbox" />
+                            </div>
+
+                            <label data-i18n="setting_tet_fireworks_custom_texts">Custom Fireworks Texts / Names (Max 6)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                                <input type="text" id="tet-fireworks-custom-text-1" class="setting-input" placeholder="Text 1 (e.g. Chúc Mừng)" maxlength="25" />
+                                <input type="text" id="tet-fireworks-custom-text-2" class="setting-input" placeholder="Text 2 (e.g. Năm Mới)" maxlength="25" />
+                                <input type="text" id="tet-fireworks-custom-text-3" class="setting-input" placeholder="Text 3 (e.g. Vạn Sự)" maxlength="25" />
+                                <input type="text" id="tet-fireworks-custom-text-4" class="setting-input" placeholder="Text 4 (e.g. Như Ý)" maxlength="25" />
+                                <input type="text" id="tet-fireworks-custom-text-5" class="setting-input" placeholder="Text 5 (e.g. An Khang)" maxlength="25" />
+                                <input type="text" id="tet-fireworks-custom-text-6" class="setting-input" placeholder="Text 6 (e.g. Thịnh Vượng)" maxlength="25" />
+                            </div>
+
+                            <label for="tet-fireworks-type-select" data-i18n="setting_tet_fireworks_type">Firework Shell Type</label>
+                            <select id="tet-fireworks-type-select" class="styled-select" style="width: 100%;">
+                                <option value="all" data-i18n="tet_fireworks_type_all">All Shells (Grand Show)</option>
+                                <option value="text" data-i18n="tet_fireworks_type_text">Custom Text / Name Formation</option>
+                                <option value="heart" data-i18n="tet_fireworks_type_heart">Radiant Heart (Trái Tim)</option>
+                                <option value="palm" data-i18n="tet_fireworks_type_palm">Palm Tree (Dừa Cảnh Hoàng Kim)</option>
+                                <option value="saturn" data-i18n="tet_fireworks_type_saturn">Saturn Ring (Sao Thổ)</option>
+                                <option value="galaxy" data-i18n="tet_fireworks_type_galaxy">Spiral Galaxy (Ngân Hà Xoắn Ốc)</option>
+                                <option value="brocade_crown" data-i18n="tet_fireworks_type_brocade">Brocade Crown (Vương Miện Gấm)</option>
+                                <option value="chrysanthemum" data-i18n="tet_fireworks_type_chrysanthemum">Chrysanthemum (Hoa Cúc Vàng)</option>
+                                <option value="peony" data-i18n="tet_fireworks_type_peony">Peony (Mẫu Đơn Đa Tầng)</option>
+                                <option value="crossette" data-i18n="tet_fireworks_type_crossette">Crossette (Sao Tách Tia)</option>
+                                <option value="willow" data-i18n="tet_fireworks_type_willow">Golden Willow (Liễu Rủ Vàng)</option>
+                            </select>
                         </div>
                         <!-- Ocean Wave Color -->
                         <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
@@ -1217,6 +1284,22 @@
                                     data-i18n="direction_left">Left</button>
                                 <button id="rainbow-dir-right" class="btn-group-item"
                                     data-i18n="direction_right">Right</button>
+                            </div>
+                        </div>
+
+                        <!-- Light Pillars Setting -->
+                        <div id="light-pillars-color-setting" class="setting-item" style="display: none;">
+                            <label for="light-pillars-mode-select" data-i18n="setting_light_pillars_mode">Theme Atmosphere</label>
+                            <select id="light-pillars-mode-select" class="styled-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="arctic" data-i18n="light_pillars_mode_arctic">Arctic Polar (Băng Cực Lam)</option>
+                                <option value="aurora" data-i18n="light_pillars_mode_aurora">Aurora Borealis (Cực Quang Lục)</option>
+                                <option value="golden" data-i18n="light_pillars_mode_golden">Golden Nightglow (Hoàng Kim Phố)</option>
+                                <option value="custom" data-i18n="light_pillars_mode_custom">Custom Color (Tùy Chọn)</option>
+                            </select>
+
+                            <div id="light-pillars-custom-color-wrap" style="display: none;">
+                                <label for="light-pillars-color-picker" data-i18n="setting_light_pillars_color">Pillars Color</label>
+                                <input type="color" id="light-pillars-color-picker" value="#88ccff" />
                             </div>
                         </div>
 
@@ -1287,8 +1370,8 @@
                                 <select id="pixel-snow-hq-variant-select" class="full-width">
                                     <option value="square" data-i18n="pixel_blast_square">Square</option>
                                     <option value="circle" data-i18n="pixel_cubes_circle">Circle</option>
-                                    <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake
-                                        (HQ)</option>
+                                    <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake (HQ)</option>
+                                    <option value="diamond" data-i18n="pixel_snow_variant_diamond">Diamond Crystal</option>
                                 </select>
                             </div>
 

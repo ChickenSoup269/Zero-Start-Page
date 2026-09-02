@@ -517,6 +517,7 @@ export const THEMEABLE_KEYS = [
   "rainHDColor",
   "musicBarsColor",
   "wavyLinesColor",
+  "wavyLinesMode",
   "cloudDriftMood",
   "shinyColor",
   "lineShinyColor",

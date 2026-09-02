@@ -172,6 +172,7 @@ export function createEffectFactories(settings) {
       new WavyLinesEffect(
         "effect-canvas",
         settings.wavyLinesColor || "#00bcd4",
+        settings.wavyLinesMode || "single",
       ),
     oceanWaveEffect: () =>
       new OceanWaveEffect(
@@ -199,7 +200,14 @@ export function createEffectFactories(settings) {
         angle: parseInt(settings.sunbeamAngle) || 0,
         mode: settings.sunbeamMode || "default",
       }),
-    lightPillarsEffect: () => new LightPillarsEffect("effect-canvas"),
+    lightPillarsEffect: () =>
+      new LightPillarsEffect(
+        "effect-canvas",
+        settings.lightPillarsColor || "#88ccff",
+        {
+          mode: settings.lightPillarsMode || "arctic",
+        },
+      ),
     pixelWeatherEffect: () =>
       new PixelWeatherEffect(
         "effect-canvas",
@@ -213,7 +221,17 @@ export function createEffectFactories(settings) {
         settings.lineShinyColor || "#ffffff",
         settings.lineShinyMode || "default",
       ),
-    tetFireworksEffect: () => new TetFireworksEffect("effect-canvas", {}),
+    tetFireworksEffect: () =>
+      new TetFireworksEffect("effect-canvas", {
+        text1: settings.tetFireworksText1 ?? "Chúc Mừng",
+        text2: settings.tetFireworksText2 ?? "Năm Mới",
+        text3: settings.tetFireworksText3 ?? "Vạn Sự",
+        text4: settings.tetFireworksText4 ?? "Như Ý",
+        text5: settings.tetFireworksText5 ?? "An Khang",
+        text6: settings.tetFireworksText6 ?? "Thịnh Vượng",
+        type: settings.tetFireworksType || "all",
+        soundEnabled: settings.tetFireworksSound ?? false,
+      }),
     reunificationDayEffect: () =>
       new ReunificationDayEffect("effect-canvas", {}),
     halloweenEffect: () => new HalloweenEffect("effect-canvas", {}),
@@ -249,14 +267,17 @@ export function createEffectFactories(settings) {
         settings.meteorColor || settings.starColor || "#ffffff",
       ),
     plantGrowthEffect: () =>
-      new PlantGrowthEffect(
-        "effect-canvas",
-        settings.plantGrowthColor || "#4caf50",
-      ),
+      new PlantGrowthEffect("effect-canvas", {
+        color: settings.plantGrowthColor || "#4caf50",
+        mode: settings.plantGrowthMode || "enchanted",
+      }),
     oceanFishEffect: () =>
       new OceanFishEffect(
         "effect-canvas",
         settings.oceanFishColor || "#ff7f50",
+        {
+          style: settings.oceanFishStyle || "cartoon",
+        },
       ),
     floatingLinesEffect: () =>
       new FloatingLinesEffect(
