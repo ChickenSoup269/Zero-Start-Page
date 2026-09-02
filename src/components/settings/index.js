@@ -55,6 +55,7 @@ import {
   createUpdateSettingsInputs,
 } from "./settingsApplier.js"
 import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
+import { initSettingsSpotlight } from "./settingsSpotlight.js"
 import {
   renderLocalBackgrounds,
   renderUserColors,
@@ -1677,5 +1678,6 @@ export async function initSettings() {
     }
   }
 
+  initSettingsSpotlight()
   applySettings()
 }
