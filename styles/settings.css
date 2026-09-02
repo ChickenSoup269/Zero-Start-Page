@@ -2388,38 +2388,39 @@ body.sidebar-light .section-live-badge {
 }
 
 .setting-group.collapsible-group {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 12px);
+  padding: 10px 14px;
   transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .setting-group.collapsible-group:hover {
-  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.3);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .setting-group.collapsible-group.expanded {
-  background: linear-gradient(180deg, rgba(var(--accent-color-rgb, 129, 140, 248), 0.12) 0%, rgba(20, 24, 33, 0.7) 100%) !important;
-  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.55) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.25), 0 0 16px rgba(var(--accent-color-rgb, 129, 140, 248), 0.12) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.5) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.2) !important;
+  padding: 12px 14px 14px;
 }
 
 /* ── Collapsible setting group ─────────────────────────────────────────────── */
 .setting-group.collapsible-group > .group-header {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
   margin-bottom: 0;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.4px;
   cursor: pointer;
   user-select: none;
-  padding: 2px 0;
+  padding: 4px 0;
   transition: color 0.2s ease, border-color 0.2s ease, padding 0.2s ease;
 }
 
@@ -2429,37 +2430,60 @@ body.sidebar-light .section-live-badge {
 
 .setting-group.collapsible-group.expanded > .group-header {
   color: #ffffff !important;
-  border-bottom: 1px solid rgba(var(--accent-color-rgb, 129, 140, 248), 0.3) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   padding-bottom: 10px;
   margin-bottom: 12px;
 }
 
 .setting-group.collapsible-group > .group-header i.group-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.12);
   color: var(--accent-color);
-  font-size: 1.1rem;
-  transition: filter 0.25s ease;
+  border: 1px solid rgba(var(--accent-color-rgb, 129, 140, 248), 0.22);
+  font-size: 0.88rem;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
 }
 
 .setting-group.collapsible-group.expanded > .group-header i.group-icon {
+  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.22) !important;
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.45) !important;
   color: var(--accent-color) !important;
-  filter: drop-shadow(0 0 10px rgba(var(--accent-color-rgb, 129, 140, 248), 0.7)) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 129, 140, 248), 0.3) !important;
 }
 
 .setting-group.collapsible-group > .group-header .group-chevron {
   margin-left: auto;
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .setting-group.collapsible-group.expanded > .group-header .group-chevron {
   transform: rotate(180deg);
+  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.18) !important;
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.35) !important;
   color: var(--accent-color) !important;
-  filter: drop-shadow(0 0 8px rgba(var(--accent-color-rgb, 129, 140, 248), 0.5)) !important;
 }
 
 .setting-group.collapsible-group > .group-header:hover .group-chevron {
-  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .setting-group.collapsible-group > .group-body {
@@ -2470,13 +2494,13 @@ body.sidebar-light .section-live-badge {
 
 /* Light Mode / Sidebar-light Support */
 body.sidebar-light .setting-group.collapsible-group {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 body.sidebar-light .setting-group.collapsible-group:hover {
   background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.3);
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.35);
 }
 
 body.sidebar-light .setting-group.collapsible-group > .group-header {
@@ -2484,14 +2508,36 @@ body.sidebar-light .setting-group.collapsible-group > .group-header {
 }
 
 body.sidebar-light .setting-group.collapsible-group.expanded {
-  background: linear-gradient(180deg, rgba(var(--accent-color-rgb, 99, 102, 241), 0.06) 0%, #ffffff 100%);
-  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.45);
-  box-shadow: 0 6px 20px rgba(var(--accent-color-rgb, 99, 102, 241), 0.12), 0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.15);
+  background: #ffffff !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.45) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group > .group-header i.group-icon {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.08);
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
+}
+
+body.sidebar-light .setting-group.collapsible-group.expanded > .group-header i.group-icon {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.15) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.35) !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group > .group-header .group-chevron {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #64748b;
+}
+
+body.sidebar-light .setting-group.collapsible-group.expanded > .group-header .group-chevron {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.12) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.3) !important;
+  color: var(--accent-color) !important;
 }
 
 body.sidebar-light .setting-group.collapsible-group.expanded > .group-header {
-  color: #0f172a;
-  border-bottom-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
+  color: #0f172a !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .setting-sub-header {

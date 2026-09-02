@@ -406,12 +406,29 @@ body.quick-access-white .group-header {
 
 body.sidebar-light .group-icon,
 body.quick-access-white .group-icon {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.08) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
   color: var(--accent-color, #2563eb) !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group.expanded .group-icon,
+body.quick-access-white .setting-group.collapsible-group.expanded .group-icon {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.15) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.35) !important;
 }
 
 body.sidebar-light .group-chevron,
 body.quick-access-white .group-chevron {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
   color: #475569 !important;
+}
+
+body.sidebar-light .setting-group.collapsible-group.expanded .group-chevron,
+body.quick-access-white .setting-group.collapsible-group.expanded .group-chevron {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.12) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.3) !important;
+  color: var(--accent-color) !important;
 }
 
 body.sidebar-light .setting-item-row,
