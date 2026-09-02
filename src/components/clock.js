@@ -2049,9 +2049,9 @@ export function updateTime() {
       `
     }
   } else if (dateClockStyle === "prism-stack") {
-    const weekday = isTimer
+    const rawWeekday = isTimer
       ? timerLabel
-      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(/^<span class="weekday-part">|<\/span>$/g, "")
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
@@ -2093,11 +2093,11 @@ export function updateTime() {
           ampmEl.style.display = "none"
         }
       }
-      if (metaEl && metaEl.textContent !== weekday) metaEl.textContent = weekday
-      const targetDateText = isTimer ? countdownLabel : dateStr
+      if (metaEl && metaEl.textContent !== rawWeekday) metaEl.textContent = rawWeekday
+      const targetDateHtml = isTimer ? countdownLabel : dateStr
       if (dateEl) {
-        if (targetDateText) {
-          if (dateEl.textContent !== targetDateText) dateEl.textContent = targetDateText
+        if (targetDateHtml) {
+          if (dateEl.innerHTML !== targetDateHtml) dateEl.innerHTML = targetDateHtml
           dateEl.style.display = "block"
         } else {
           dateEl.style.display = "none"
@@ -2105,13 +2105,20 @@ export function updateTime() {
       }
       if (hourHand) hourHand.style.setProperty("--mini-hand-rotation", `${analogHourDeg}deg`)
       if (minuteHand) minuteHand.style.setProperty("--mini-hand-rotation", `${analogMinuteDeg}deg`)
-      if (secondHand) secondHand.style.setProperty("--mini-hand-rotation", `${analogSecondDeg}deg`)
+      if (secondHand) {
+        if (ss) {
+          secondHand.style.setProperty("--mini-hand-rotation", `${analogSecondDeg}deg`)
+          secondHand.style.display = "block"
+        } else {
+          secondHand.style.display = "none"
+        }
+      }
     } else {
       clockElement.innerHTML = `
         <div class="prism-stack-clock">
           <div class="prism-stack-glass-glare" aria-hidden="true"></div>
           <div class="prism-stack-top-row">
-            <div class="prism-stack-meta">${weekday}</div>
+            <div class="prism-stack-meta">${rawWeekday}</div>
             <div class="prism-stack-mini-clock" aria-hidden="true" title="Precision Chronograph">
               <span class="prism-stack-mini-mark mark-12"></span>
               <span class="prism-stack-mini-mark mark-3"></span>
@@ -2135,15 +2142,15 @@ export function updateTime() {
       `
     }
   } else if (dateClockStyle === "metro-panel") {
-    const weekday = isTimer
+    const rawWeekday = isTimer
       ? countdownLabel
-      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(/^<span class="weekday-part">|<\/span>$/g, "")
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
     clockElement.innerHTML = `
       <div class="metro-panel-clock">
-        <div class="metro-panel-label">${weekday}</div>
+        <div class="metro-panel-label">${rawWeekday}</div>
         <div class="metro-panel-time">
           <span class="metro-panel-hour">${hh}</span>
           <span class="metro-panel-colon">:</span>
@@ -2155,7 +2162,7 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "aurora-ribbon") {
-    const weekday = isTimer
+    const rawWeekday = isTimer
       ? countdownLabel
       : getSafeWeekday(
           now,
@@ -2163,14 +2170,14 @@ export function updateTime() {
           settings.shortWeekday,
           tz,
           settings,
-        ).toUpperCase()
+        ).replace(/^<span class="weekday-part">|<\/span>$/g, "").toUpperCase()
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
     clockElement.innerHTML = `
       <div class="aurora-ribbon-clock">
         <div class="aurora-ribbon-top">
-          <span class="aurora-ribbon-weekday">${weekday}</span>
+          <span class="aurora-ribbon-weekday">${rawWeekday}</span>
           ${ampm ? `<span class="aurora-ribbon-ampm">${ampm}</span>` : ""}
         </div>
         <div class="aurora-ribbon-time">
@@ -2183,16 +2190,16 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "lunar-orbit") {
-    const weekday = isTimer
+    const rawWeekday = isTimer
       ? timerLabel
-      : getSafeWeekday(now, langCode, true, tz, settings)
+      : getSafeWeekday(now, langCode, true, tz, settings).replace(/^<span class="weekday-part">|<\/span>$/g, "")
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
     const lunarParts = getVietnameseLunarParts(now, tz)
     const orbDay = isTimer ? (timerH > 0 ? hh : mm) : lunarParts.day
     const orbMonth = isTimer ? (timerH > 0 ? "HR" : "MIN") : lunarParts.month
-    const orbLabel = isTimer ? weekday : lunarParts.label
+    const orbLabel = isTimer ? rawWeekday : lunarParts.label
     const dateLine = isTimer
       ? countdownLabel
       : dateStr
