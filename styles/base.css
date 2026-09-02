@@ -6831,15 +6831,15 @@ body.date-clock-style-prism-stack .prism-stack-clock {
   flex-direction: column;
   box-sizing: border-box;
   width: fit-content;
-  min-width: min(290px, 88vw);
-  max-width: min(390px, 92vw);
+  min-width: min(260px, 86vw);
+  max-width: min(350px, 90vw);
   margin: 0 auto;
-  padding: 12px 18px 14px;
-  border-radius: 16px;
+  padding: 10px 16px 12px;
+  border-radius: 14px;
   background: rgba(15, 23, 42, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 16px 36px -8px rgba(0, 0, 0, 0.5),
+    0 14px 32px -8px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px) saturate(160%);
@@ -6852,38 +6852,46 @@ body.date-clock-style-prism-stack .prism-stack-clock {
 
 body.date-clock-style-prism-stack .prism-stack-clock:hover {
   transform: translateY(-2px);
-  border-color: rgba(var(--prism-accent-rgb), 0.4);
+  border-color: rgba(var(--prism-accent-rgb), 0.45);
   box-shadow:
-    0 20px 42px -8px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(var(--prism-accent-rgb), 0.15),
+    0 18px 38px -8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(var(--prism-accent-rgb), 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Glass Glare Specular Light Flare Sweep on Hover */
+/* Glass Glare Specular Light Flare Sweep on Hover (Perfect Full Coverage) */
 body.date-clock-style-prism-stack .prism-stack-glass-glare {
   position: absolute;
-  top: -60%;
-  left: -60%;
-  width: 50%;
-  height: 220%;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.04) 42%,
-    rgba(255, 255, 255, 0.28) 50%,
-    rgba(255, 255, 255, 0.04) 58%,
-    transparent 70%
-  );
-  transform: rotate(25deg);
+  inset: 0;
+  border-radius: inherit;
   pointer-events: none;
   z-index: 5;
-  opacity: 0;
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  overflow: hidden;
 }
 
-body.date-clock-style-prism-stack .prism-stack-clock:hover .prism-stack-glass-glare {
+body.date-clock-style-prism-stack .prism-stack-glass-glare::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  left: -120px;
+  width: 70px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.04) 75%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  opacity: 0;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+body.date-clock-style-prism-stack .prism-stack-clock:hover .prism-stack-glass-glare::after {
   opacity: 1;
-  transform: rotate(25deg) translateX(360px);
+  transform: skewX(-25deg) translateX(600px);
 }
 
 /* Subtle Prism Top Accent Line */
@@ -6910,7 +6918,7 @@ body.date-clock-style-prism-stack .prism-stack-top-row {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 2;
@@ -6918,9 +6926,9 @@ body.date-clock-style-prism-stack .prism-stack-top-row {
 
 body.date-clock-style-prism-stack .prism-stack-meta {
   font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
   color: var(--prism-accent);
   opacity: 0.92;
@@ -6929,8 +6937,8 @@ body.date-clock-style-prism-stack .prism-stack-meta {
 /* Precision Mini Chronograph Dial */
 body.date-clock-style-prism-stack .prism-stack-mini-clock {
   position: relative;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
@@ -6996,12 +7004,12 @@ body.date-clock-style-prism-stack .prism-stack-time {
   gap: 2px;
   width: 100%;
   font-family: var(--font-clock, 'Inter', -apple-system, sans-serif);
-  font-size: var(--clock-size, clamp(2.4rem, 7vw, 3.4rem));
+  font-size: var(--clock-size, clamp(2.2rem, 6.8vw, 3.2rem));
   font-weight: 800;
   line-height: 1;
   letter-spacing: var(--clock-letter-spacing, -0.5px);
   color: var(--clock-color, #ffffff);
-  padding: 6px 0 4px;
+  padding: 4px 0 3px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 2;
@@ -7025,8 +7033,8 @@ body.date-clock-style-prism-stack .prism-stack-ss {
   background: rgba(var(--prism-accent-rgb), 0.12);
   border: 1px solid rgba(var(--prism-accent-rgb), 0.28);
   border-radius: 6px;
-  padding: 2px 6px;
-  margin-left: 6px;
+  padding: 2px 5px;
+  margin-left: 5px;
   align-self: center;
 }
 
