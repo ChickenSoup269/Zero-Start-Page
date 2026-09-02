@@ -494,7 +494,7 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".omp-date-line"))
         dateTargets.push(clockElement.querySelector(".omp-sys-info"))
       } else if (style === "aquarium") {
-        dateTargets.push(clockElement.querySelector(".aquarium-date-text"))
+        dateTargets.push(dateElement)
       }
     }
   }
@@ -3620,9 +3620,7 @@ export function updateTime() {
       const ssEl = existingTank.querySelector(".aquarium-ss")
       const ssColonEl = existingTank.querySelector(".aquarium-ss-colon")
       const ampmEl = existingTank.querySelector(".aquarium-ampm")
-      const dateEl = existingTank.querySelector(".aquarium-date-text")
-      const clockWrap = existingTank.querySelector(".aquarium-clock-inner")
-      const dateWrap = existingTank.querySelector(".aquarium-date-pill")
+      const clockWrap = existingTank.querySelector(".aquarium-clock-content")
 
       if (hhEl && hhEl.textContent !== displayHH) hhEl.textContent = displayHH
       if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
@@ -3644,119 +3642,184 @@ export function updateTime() {
           ampmEl.style.display = "none"
         }
       }
-      if (dateEl && dateEl.textContent !== formattedDateFull) {
-        dateEl.textContent = formattedDateFull
-      }
       if (clockWrap) clockWrap.style.display = shouldShowClock ? "flex" : "none"
-      if (dateWrap) dateWrap.style.display = shouldShowDate ? "inline-flex" : "none"
     } else {
-      // Generate fish elements
+      // 8-Bit Retro Pixel Art Marine Species & Aquascape
       const FISH_DATA = [
         {
           id: "fish-clown",
-          name: "Clownfish",
+          name: "8-Bit Clownfish (Nemo)",
           svg: `
-            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+            <svg class="aquarium-fish-svg" viewBox="0 0 24 14" shape-rendering="crispEdges">
+              <!-- Tail -->
               <g class="aquarium-fish-tail">
-                <path d="M12 18 C6 10, 2 8, 2 18 C2 28, 6 26, 12 18 Z" fill="#ff6b35"/>
-                <path d="M4 18 C3 14, 2 13, 2 18 C2 23, 3 22, 4 18 Z" fill="#ffffff" opacity="0.9"/>
-                <path d="M2 18 C1 13, 0 12, 0 18 C0 24, 1 23, 2 18 Z" fill="#111111"/>
+                <rect x="0" y="3" width="2" height="8" fill="#f97316"/>
+                <rect x="2" y="4" width="2" height="6" fill="#ffffff"/>
+                <rect x="4" y="5" width="2" height="4" fill="#18181b"/>
               </g>
-              <path d="M28 8 C36 4, 44 8, 48 11 C42 12, 34 10, 28 8 Z" fill="#ff6b35"/>
-              <path d="M30 28 C36 32, 42 30, 46 25 C40 26, 34 27, 30 28 Z" fill="#ff6b35"/>
-              <ellipse cx="36" cy="18" rx="22" ry="11" fill="#ff6b35"/>
-              <path d="M26 10 C29 14, 29 22, 26 26 C23 22, 23 14, 26 10 Z" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
-              <path d="M38 7 C42 12, 42 24, 38 29 C35 24, 35 12, 38 7 Z" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
-              <path d="M49 12 C51 15, 51 21, 49 24 C48 21, 48 15, 49 12 Z" fill="#ffffff" stroke="#111111" stroke-width="0.6"/>
-              <circle cx="50" cy="15" r="2.8" fill="#ffffff"/>
-              <circle cx="51" cy="15" r="1.4" fill="#111111"/>
-              <circle cx="51.5" cy="14.5" r="0.5" fill="#ffffff"/>
+              <!-- Body -->
+              <rect x="6" y="3" width="14" height="8" fill="#f97316"/>
+              <rect x="8" y="2" width="10" height="10" fill="#f97316"/>
+              <rect x="10" y="1" width="6" height="12" fill="#ea580c"/>
+              <!-- White Stripes -->
+              <rect x="8" y="2" width="2" height="10" fill="#ffffff"/>
+              <rect x="14" y="1" width="2" height="12" fill="#ffffff"/>
+              <rect x="19" y="3" width="2" height="8" fill="#ffffff"/>
+              <!-- Black Outlines -->
+              <rect x="7" y="2" width="1" height="10" fill="#18181b"/>
+              <rect x="10" y="1" width="1" height="12" fill="#18181b"/>
+              <rect x="13" y="1" width="1" height="12" fill="#18181b"/>
+              <rect x="16" y="1" width="1" height="12" fill="#18181b"/>
+              <rect x="18" y="3" width="1" height="8" fill="#18181b"/>
+              <!-- Eye -->
+              <rect x="19" y="4" width="3" height="3" fill="#ffffff"/>
+              <rect x="20" y="5" width="2" height="2" fill="#09090b"/>
+              <rect x="20" y="4" width="1" height="1" fill="#ffffff"/>
+              <!-- Fins -->
+              <rect x="11" y="0" width="4" height="1" fill="#ea580c"/>
+              <rect x="11" y="13" width="4" height="1" fill="#ea580c"/>
               <g class="aquarium-fish-fin">
-                <ellipse cx="40" cy="20" rx="5" ry="3" fill="#ff8c5a" stroke="#111111" stroke-width="0.5" transform="rotate(-15 40 20)"/>
+                <rect x="12" y="8" width="3" height="2" fill="#ffffff"/>
+                <rect x="13" y="9" width="3" height="2" fill="#ea580c"/>
               </g>
             </svg>
           `,
         },
         {
           id: "fish-tang",
-          name: "Blue Tang",
+          name: "8-Bit Regal Blue Tang (Dory)",
           svg: `
-            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+            <svg class="aquarium-fish-svg" viewBox="0 0 24 14" shape-rendering="crispEdges">
+              <!-- Yellow Tail -->
               <g class="aquarium-fish-tail">
-                <polygon points="14,18 2,8 5,18 2,28" fill="#ffd100"/>
-                <path d="M14 18 L6 13 L8 18 L6 23 Z" fill="#00d2ff"/>
+                <rect x="0" y="2" width="2" height="10" fill="#facc15"/>
+                <rect x="2" y="3" width="2" height="8" fill="#facc15"/>
+                <rect x="4" y="4" width="2" height="6" fill="#38bdf8"/>
+                <rect x="0" y="2" width="4" height="1" fill="#18181b"/>
+                <rect x="0" y="11" width="4" height="1" fill="#18181b"/>
               </g>
-              <path d="M26 7 C38 4, 46 8, 50 12 C42 11, 32 9, 26 7 Z" fill="#0052cc"/>
-              <path d="M28 29 C38 32, 46 28, 48 24 C40 25, 32 27, 28 29 Z" fill="#0052cc"/>
-              <ellipse cx="36" cy="18" rx="20" ry="12" fill="#0066ff"/>
-              <path d="M22 18 C28 14, 38 12, 46 16 C42 22, 30 24, 22 18 Z" fill="#0c1b33"/>
-              <polygon points="20,18 10,13 14,18 10,23" fill="#ffd100"/>
-              <circle cx="49" cy="14" r="2.5" fill="#ffffff"/>
-              <circle cx="50" cy="14" r="1.3" fill="#0c1b33"/>
-              <circle cx="50.4" cy="13.6" r="0.4" fill="#ffffff"/>
+              <!-- Royal Blue Body -->
+              <rect x="6" y="3" width="14" height="8" fill="#2563eb"/>
+              <rect x="8" y="2" width="11" height="10" fill="#2563eb"/>
+              <rect x="10" y="1" width="7" height="12" fill="#1d4ed8"/>
+              <!-- Black Pattern -->
+              <rect x="6" y="4" width="6" height="3" fill="#09090b"/>
+              <rect x="10" y="3" width="7" height="2" fill="#09090b"/>
+              <rect x="15" y="4" width="3" height="3" fill="#09090b"/>
+              <rect x="8" y="8" width="8" height="2" fill="#09090b"/>
+              <!-- Blue Center inside Black Loop -->
+              <rect x="9" y="5" width="4" height="2" fill="#38bdf8"/>
+              <!-- Eye -->
+              <rect x="18" y="4" width="3" height="3" fill="#ffffff"/>
+              <rect x="19" y="5" width="2" height="2" fill="#09090b"/>
+              <rect x="19" y="4" width="1" height="1" fill="#ffffff"/>
+              <!-- Pectoral Fin with Yellow Tip -->
               <g class="aquarium-fish-fin">
-                <ellipse cx="38" cy="21" rx="4.5" ry="2.5" fill="#ffd100" transform="rotate(-10 38 21)"/>
+                <rect x="13" y="8" width="3" height="2" fill="#2563eb"/>
+                <rect x="15" y="8" width="2" height="2" fill="#facc15"/>
               </g>
             </svg>
           `,
         },
         {
           id: "fish-koi",
-          name: "Golden Koi",
+          name: "8-Bit Golden Koi",
           svg: `
-            <svg class="aquarium-fish-svg" viewBox="0 0 68 36" fill="none">
+            <svg class="aquarium-fish-svg" viewBox="0 0 26 14" shape-rendering="crispEdges">
+              <!-- Flowing Pixel Tail -->
               <g class="aquarium-fish-tail">
-                <path d="M16 18 C8 6, 0 4, 0 18 C0 32, 8 30, 16 18 Z" fill="#ff9f1c" opacity="0.9"/>
-                <path d="M16 18 C10 10, 4 8, 2 18 C4 28, 10 26, 16 18 Z" fill="#ffe49e" opacity="0.8"/>
+                <rect x="0" y="1" width="2" height="12" fill="#fbbf24"/>
+                <rect x="2" y="2" width="2" height="10" fill="#fde68a"/>
+                <rect x="4" y="4" width="2" height="6" fill="#f59e0b"/>
               </g>
-              <path d="M26 6 C36 2, 46 5, 52 11 C44 9, 34 8, 26 6 Z" fill="#ff9f1c"/>
-              <ellipse cx="38" cy="18" rx="21" ry="11" fill="#ffb703"/>
-              <path d="M30 11 C35 10, 40 13, 38 18 C34 16, 31 14, 30 11 Z" fill="#d90429"/>
-              <path d="M42 12 C46 13, 48 16, 45 19 C43 17, 42 14, 42 12 Z" fill="#d90429"/>
-              <circle cx="51" cy="15" r="2.6" fill="#ffffff"/>
-              <circle cx="52" cy="15" r="1.3" fill="#111111"/>
-              <circle cx="52.4" cy="14.5" r="0.4" fill="#ffffff"/>
+              <!-- Body -->
+              <rect x="6" y="3" width="16" height="8" fill="#f59e0b"/>
+              <rect x="8" y="2" width="12" height="10" fill="#f59e0b"/>
+              <rect x="10" y="1" width="8" height="12" fill="#fbbf24"/>
+              <!-- Red Kohaku Patches -->
+              <rect x="10" y="2" width="4" height="4" fill="#ef4444"/>
+              <rect x="16" y="3" width="3" height="4" fill="#ef4444"/>
+              <rect x="8" y="7" width="5" height="3" fill="#ffffff"/>
+              <!-- Barbels (Whiskers) -->
+              <rect x="24" y="8" width="2" height="1" fill="#d97706"/>
+              <!-- Eye -->
+              <rect x="20" y="4" width="3" height="3" fill="#ffffff"/>
+              <rect x="21" y="5" width="2" height="2" fill="#18181b"/>
+              <rect x="21" y="4" width="1" height="1" fill="#ffffff"/>
+              <!-- Fins -->
               <g class="aquarium-fish-fin">
-                <path d="M38 20 C34 26, 30 28, 32 23 C34 21, 36 20, 38 20 Z" fill="#ffe49e" opacity="0.95"/>
+                <rect x="13" y="9" width="4" height="2" fill="#fde68a"/>
+                <rect x="14" y="11" width="3" height="2" fill="#fbbf24"/>
               </g>
             </svg>
           `,
         },
         {
-          id: "fish-emerald",
-          name: "Emerald Guppy",
+          id: "fish-neon",
+          name: "8-Bit Neon Tetra",
           svg: `
-            <svg class="aquarium-fish-svg" viewBox="0 0 64 36" fill="none">
+            <svg class="aquarium-fish-svg" viewBox="0 0 24 12" shape-rendering="crispEdges">
+              <!-- Clear Pixel Tail -->
               <g class="aquarium-fish-tail">
-                <path d="M14 18 C6 8, 1 7, 0 18 C1 29, 6 28, 14 18 Z" fill="#06d6a0"/>
-                <path d="M12 18 C7 11, 3 10, 2 18 C3 26, 7 25, 12 18 Z" fill="#118ab2" opacity="0.8"/>
+                <rect x="0" y="2" width="2" height="8" fill="#e2e8f0"/>
+                <rect x="2" y="3" width="2" height="6" fill="#94a3b8"/>
+                <rect x="4" y="4" width="2" height="4" fill="#64748b"/>
               </g>
-              <ellipse cx="36" cy="18" rx="19" ry="9" fill="#06d6a0"/>
-              <path d="M26 12 C34 10, 44 12, 48 16 C40 18, 30 16, 26 12 Z" fill="#118ab2" opacity="0.7"/>
-              <circle cx="48" cy="15" r="2.3" fill="#ffffff"/>
-              <circle cx="49" cy="15" r="1.2" fill="#073b4c"/>
-              <circle cx="49.3" cy="14.6" r="0.4" fill="#ffffff"/>
+              <!-- Torpedo Body -->
+              <rect x="6" y="3" width="14" height="6" fill="#0f172a"/>
+              <rect x="8" y="2" width="10" height="8" fill="#0f172a"/>
+              <!-- Bright Neon Cyan Stripe -->
+              <rect x="6" y="3" width="14" height="2" fill="#22d3ee"/>
+              <rect x="8" y="2" width="8" height="1" fill="#67e8f9"/>
+              <!-- Bright Neon Red Belly -->
+              <rect x="6" y="6" width="9" height="3" fill="#f43f5e"/>
+              <rect x="8" y="7" width="6" height="2" fill="#e11d48"/>
+              <!-- Eye -->
+              <rect x="18" y="3" width="3" height="3" fill="#ffffff"/>
+              <rect x="19" y="4" width="2" height="2" fill="#020617"/>
+              <rect x="19" y="3" width="1" height="1" fill="#22d3ee"/>
+              <!-- Fin -->
               <g class="aquarium-fish-fin">
-                <ellipse cx="38" cy="20" rx="4" ry="2" fill="#05c08f" transform="rotate(-15 38 20)"/>
+                <rect x="13" y="7" width="2" height="2" fill="#94a3b8"/>
               </g>
             </svg>
           `,
         },
         {
-          id: "fish-coral",
-          name: "Coral Damselfish",
+          id: "fish-puffer",
+          name: "8-Bit Cute Pufferfish",
           svg: `
-            <svg class="aquarium-fish-svg" viewBox="0 0 60 34" fill="none">
+            <svg class="aquarium-fish-svg" viewBox="0 0 22 16" shape-rendering="crispEdges">
+              <!-- Tail -->
               <g class="aquarium-fish-tail">
-                <polygon points="12,17 2,8 5,17 2,26" fill="#f72585"/>
+                <rect x="0" y="6" width="2" height="4" fill="#fbbf24"/>
+                <rect x="2" y="5" width="2" height="6" fill="#f59e0b"/>
               </g>
-              <ellipse cx="34" cy="17" rx="18" ry="10" fill="#7209b7"/>
-              <path d="M24 10 C32 8, 40 10, 44 14 C36 15, 28 14, 24 10 Z" fill="#f72585" opacity="0.85"/>
-              <circle cx="45" cy="14" r="2.4" fill="#ffffff"/>
-              <circle cx="46" cy="14" r="1.2" fill="#3a0ca3"/>
-              <circle cx="46.3" cy="13.6" r="0.4" fill="#ffffff"/>
+              <!-- Round Puffer Body -->
+              <rect x="4" y="3" width="14" height="10" fill="#fde047"/>
+              <rect x="6" y="1" width="10" height="14" fill="#fde047"/>
+              <rect x="7" y="0" width="8" height="16" fill="#eab308"/>
+              <!-- Spikes -->
+              <rect x="5" y="1" width="2" height="2" fill="#ca8a04"/>
+              <rect x="11" y="0" width="2" height="2" fill="#ca8a04"/>
+              <rect x="15" y="1" width="2" height="2" fill="#ca8a04"/>
+              <rect x="4" y="7" width="2" height="2" fill="#ca8a04"/>
+              <rect x="5" y="13" width="2" height="2" fill="#ca8a04"/>
+              <rect x="11" y="14" width="2" height="2" fill="#ca8a04"/>
+              <rect x="15" y="13" width="2" height="2" fill="#ca8a04"/>
+              <!-- White Belly -->
+              <rect x="8" y="9" width="8" height="5" fill="#ffffff"/>
+              <!-- Big Cute Anime Eye -->
+              <rect x="14" y="4" width="4" height="4" fill="#ffffff"/>
+              <rect x="15" y="5" width="3" height="3" fill="#0f172a"/>
+              <rect x="15" y="5" width="1" height="1" fill="#ffffff"/>
+              <!-- Cute Blush Cheeks -->
+              <rect x="13" y="8" width="2" height="1" fill="#f43f5e"/>
+              <!-- Mouth -->
+              <rect x="18" y="8" width="2" height="2" fill="#d97706"/>
+              <!-- Pectoral Fin -->
               <g class="aquarium-fish-fin">
-                <ellipse cx="36" cy="19" rx="3.8" ry="2" fill="#4cc9f0" transform="rotate(-10 36 19)"/>
+                <rect x="9" y="7" width="2" height="2" fill="#fde047"/>
               </g>
             </svg>
           `,
@@ -3773,73 +3836,105 @@ export function updateTime() {
         `
       }
 
-      // Seaweed SVG stems with multi-layer depth (Background & Foreground)
+      // 8-Bit Pixel Seaweed & Flora
       const seaweedHtml = showSeaweed
         ? `
         <div class="aquarium-plants-layer">
-          <!-- Background Deep Seaweed -->
+          <!-- Background Pixel Seaweed -->
           <div class="aquarium-seaweed-bg-cluster aquarium-seaweed-left-bg">
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-deep-1" viewBox="0 0 50 130" preserveAspectRatio="none">
-              <path d="M25 130 Q10 95 30 60 T20 0" stroke="#065f46" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M26 100 Q40 90 34 80 T26 90" fill="#047857" opacity="0.6"/>
-              <path d="M24 70 Q8 60 14 50 T24 60" fill="#065f46" opacity="0.6"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-bg" viewBox="0 0 20 80" shape-rendering="crispEdges">
+              <rect x="8" y="70" width="4" height="10" fill="#064e3b"/>
+              <rect x="6" y="60" width="4" height="10" fill="#065f46"/>
+              <rect x="8" y="50" width="4" height="10" fill="#047857"/>
+              <rect x="10" y="40" width="4" height="10" fill="#047857"/>
+              <rect x="8" y="30" width="4" height="10" fill="#059669"/>
+              <rect x="6" y="20" width="4" height="10" fill="#059669"/>
+              <rect x="8" y="10" width="4" height="10" fill="#10b981"/>
+              <rect x="10" y="0" width="4" height="10" fill="#34d399"/>
             </svg>
           </div>
           <div class="aquarium-seaweed-bg-cluster aquarium-seaweed-right-bg">
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-deep-2" viewBox="0 0 50 130" preserveAspectRatio="none">
-              <path d="M25 130 Q40 95 20 60 T30 0" stroke="#064e3b" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M25 100 Q10 90 16 80 T25 90" fill="#047857" opacity="0.6"/>
-              <path d="M26 68 Q42 58 36 48 T26 58" fill="#064e3b" opacity="0.6"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-bg" viewBox="0 0 20 80" shape-rendering="crispEdges">
+              <rect x="8" y="70" width="4" height="10" fill="#064e3b"/>
+              <rect x="10" y="60" width="4" height="10" fill="#065f46"/>
+              <rect x="8" y="50" width="4" height="10" fill="#047857"/>
+              <rect x="6" y="40" width="4" height="10" fill="#047857"/>
+              <rect x="8" y="30" width="4" height="10" fill="#059669"/>
+              <rect x="10" y="20" width="4" height="10" fill="#059669"/>
+              <rect x="8" y="10" width="4" height="10" fill="#10b981"/>
+              <rect x="6" y="0" width="4" height="10" fill="#34d399"/>
             </svg>
           </div>
 
-          <!-- Foreground Lush Seaweed -->
+          <!-- Foreground Pixel Seaweed -->
           <div class="aquarium-seaweed-cluster aquarium-seaweed-left">
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-1" viewBox="0 0 60 120" preserveAspectRatio="none">
-              <path d="M30 120 Q15 90 35 60 T25 0" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/>
-              <path d="M30 95 Q48 85 42 75 T32 85" fill="#34d399" opacity="0.9"/>
-              <path d="M28 65 Q10 55 18 45 T28 55" fill="#059669" opacity="0.9"/>
-              <path d="M30 35 Q46 25 40 15 T30 25" fill="#10b981" opacity="0.9"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-1" viewBox="0 0 20 80" shape-rendering="crispEdges">
+              <rect x="8" y="70" width="4" height="10" fill="#047857"/>
+              <rect x="10" y="60" width="4" height="10" fill="#059669"/>
+              <rect x="12" y="50" width="4" height="10" fill="#10b981"/>
+              <rect x="10" y="40" width="4" height="10" fill="#10b981"/>
+              <rect x="6" y="30" width="4" height="10" fill="#34d399"/>
+              <rect x="4" y="20" width="4" height="10" fill="#10b981"/>
+              <rect x="6" y="10" width="4" height="10" fill="#34d399"/>
+              <rect x="8" y="0" width="4" height="10" fill="#6ee7b7"/>
+              <!-- Pixel Leaves -->
+              <rect x="14" y="54" width="4" height="4" fill="#34d399"/>
+              <rect x="4" y="42" width="4" height="4" fill="#34d399"/>
+              <rect x="12" y="26" width="4" height="4" fill="#6ee7b7"/>
+              <rect x="0" y="14" width="4" height="4" fill="#a7f3d0"/>
             </svg>
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-2" viewBox="0 0 50 100" preserveAspectRatio="none">
-              <path d="M25 100 Q38 75 18 50 T28 0" stroke="#059669" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <path d="M22 75 Q8 65 14 55 T24 65" fill="#34d399" opacity="0.85"/>
-              <path d="M22 45 Q36 35 30 25 T20 35" fill="#10b981" opacity="0.85"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-2" viewBox="0 0 20 60" shape-rendering="crispEdges">
+              <rect x="8" y="50" width="4" height="10" fill="#047857"/>
+              <rect x="6" y="40" width="4" height="10" fill="#059669"/>
+              <rect x="8" y="30" width="4" height="10" fill="#10b981"/>
+              <rect x="10" y="20" width="4" height="10" fill="#34d399"/>
+              <rect x="8" y="10" width="4" height="10" fill="#6ee7b7"/>
+              <rect x="6" y="0" width="4" height="10" fill="#a7f3d0"/>
             </svg>
           </div>
 
           <div class="aquarium-seaweed-cluster aquarium-seaweed-right">
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-3" viewBox="0 0 60 120" preserveAspectRatio="none">
-              <path d="M30 120 Q45 90 25 60 T35 0" stroke="#047857" stroke-width="6" fill="none" stroke-linecap="round"/>
-              <path d="M32 95 Q14 85 20 75 T30 85" fill="#34d399" opacity="0.9"/>
-              <path d="M32 65 Q50 55 42 45 T32 55" fill="#10b981" opacity="0.9"/>
-              <path d="M30 35 Q14 25 20 15 T30 25" fill="#059669" opacity="0.9"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-3" viewBox="0 0 20 80" shape-rendering="crispEdges">
+              <rect x="8" y="70" width="4" height="10" fill="#047857"/>
+              <rect x="6" y="60" width="4" height="10" fill="#059669"/>
+              <rect x="4" y="50" width="4" height="10" fill="#10b981"/>
+              <rect x="6" y="40" width="4" height="10" fill="#10b981"/>
+              <rect x="10" y="30" width="4" height="10" fill="#34d399"/>
+              <rect x="12" y="20" width="4" height="10" fill="#10b981"/>
+              <rect x="10" y="10" width="4" height="10" fill="#34d399"/>
+              <rect x="8" y="0" width="4" height="10" fill="#6ee7b7"/>
+              <!-- Pixel Leaves -->
+              <rect x="0" y="54" width="4" height="4" fill="#34d399"/>
+              <rect x="12" y="42" width="4" height="4" fill="#34d399"/>
+              <rect x="2" y="26" width="4" height="4" fill="#6ee7b7"/>
+              <rect x="14" y="14" width="4" height="4" fill="#a7f3d0"/>
             </svg>
-            <svg class="aquarium-seaweed-svg aquarium-seaweed-4" viewBox="0 0 50 90" preserveAspectRatio="none">
-              <path d="M25 90 Q12 65 30 40 T22 0" stroke="#10b981" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-              <path d="M24 65 Q38 55 32 45 T22 55" fill="#6ee7b7" opacity="0.85"/>
-              <path d="M24 35 Q10 25 16 15 T26 25" fill="#059669" opacity="0.85"/>
+            <svg class="aquarium-seaweed-svg aquarium-seaweed-pixel-4" viewBox="0 0 20 60" shape-rendering="crispEdges">
+              <rect x="8" y="50" width="4" height="10" fill="#047857"/>
+              <rect x="10" y="40" width="4" height="10" fill="#059669"/>
+              <rect x="8" y="30" width="4" height="10" fill="#10b981"/>
+              <rect x="6" y="20" width="4" height="10" fill="#34d399"/>
+              <rect x="8" y="10" width="4" height="10" fill="#6ee7b7"/>
+              <rect x="10" y="0" width="4" height="10" fill="#a7f3d0"/>
             </svg>
           </div>
         </div>
       `
         : ""
 
-      // Bubbles elements with micro bubble streams
+      // 8-Bit Pixel Bubbles
       let bubblesHtml = ""
       if (showBubbles) {
         bubblesHtml = `
           <div class="aquarium-bubbles-layer">
-            <div class="aquarium-bubble bubble-1"></div>
-            <div class="aquarium-bubble bubble-2"></div>
-            <div class="aquarium-bubble bubble-3"></div>
-            <div class="aquarium-bubble bubble-4"></div>
-            <div class="aquarium-bubble bubble-5"></div>
-            <div class="aquarium-bubble bubble-6"></div>
-            <div class="aquarium-bubble bubble-7"></div>
-            <div class="aquarium-bubble bubble-8"></div>
-            <div class="aquarium-bubble bubble-9"></div>
-            <div class="aquarium-bubble bubble-10"></div>
+            <div class="aquarium-pixel-bubble bubble-1"></div>
+            <div class="aquarium-pixel-bubble bubble-2"></div>
+            <div class="aquarium-pixel-bubble bubble-3"></div>
+            <div class="aquarium-pixel-bubble bubble-4"></div>
+            <div class="aquarium-pixel-bubble bubble-5"></div>
+            <div class="aquarium-pixel-bubble bubble-6"></div>
+            <div class="aquarium-pixel-bubble bubble-7"></div>
+            <div class="aquarium-pixel-bubble bubble-8"></div>
             <div class="aquarium-micro-stream stream-left">
               <span class="micro-b m-1"></span>
               <span class="micro-b m-2"></span>
@@ -3863,64 +3958,65 @@ export function updateTime() {
              data-seaweed="${showSeaweed}"
              data-bubbles="${showBubbles}">
           
-          <!-- Underwater Ambient Lighting & Sunbeams -->
+          <!-- Pixel Top Bevel / Light Rim -->
+          <div class="aquarium-pixel-top-rim"></div>
+
+          <!-- Underwater Ambient 8-bit Water & Sunbeams -->
           <div class="aquarium-water-bg"></div>
           <div class="aquarium-sunbeams">
             <div class="aquarium-beam beam-1"></div>
             <div class="aquarium-beam beam-2"></div>
             <div class="aquarium-beam beam-3"></div>
           </div>
-          <div class="aquarium-caustics-layer"></div>
+          <div class="aquarium-pixel-caustics"></div>
           
-          <!-- Undulating Water Surface Waves -->
-          <div class="aquarium-water-surface">
-            <svg class="aquarium-wave-svg" viewBox="0 0 1200 30" preserveAspectRatio="none">
-              <path class="aquarium-wave-path wave-path-1" d="M0,15 C150,25 350,5 500,15 C650,25 850,5 1000,15 C1150,25 1250,10 1300,15 L1300,0 L0,0 Z" fill="rgba(255,255,255,0.22)"/>
-              <path class="aquarium-wave-path wave-path-2" d="M0,10 C200,3 400,20 600,10 C800,3 1000,20 1200,10 L1200,0 L0,0 Z" fill="rgba(255,255,255,0.14)"/>
-            </svg>
+          <!-- 8-Bit Stepped Pixel Surface Wave -->
+          <div class="aquarium-pixel-water-surface">
+            <div class="aquarium-pixel-wave-bar wave-bar-1"></div>
+            <div class="aquarium-pixel-wave-bar wave-bar-2"></div>
           </div>
 
-          <!-- Aquatic Flora & Bubbles Layer -->
+          <!-- Aquatic Pixel Flora & Bubbles Layer -->
           ${seaweedHtml}
           ${bubblesHtml}
 
-          <!-- Swimming Fish Layer -->
+          <!-- Swimming Pixel Fish Layer -->
           <div class="aquarium-fish-layer">
             ${fishHtml}
           </div>
 
-          <!-- Seabed Sand, Coral & Pebbles Base -->
+          <!-- 8-Bit Pixel Sand Floor & Coral Blocks Base -->
           <div class="aquarium-sand-floor">
-            <div class="aquarium-sand-texture"></div>
-            <div class="aquarium-pebble pebble-1"></div>
-            <div class="aquarium-pebble pebble-2"></div>
-            <div class="aquarium-pebble pebble-3"></div>
-            <div class="aquarium-pebble pebble-4"></div>
-            <div class="aquarium-coral-accent coral-left"></div>
-            <div class="aquarium-coral-accent coral-right"></div>
+            <div class="aquarium-pixel-sand-blocks"></div>
+            <div class="aquarium-pixel-rock rock-1"></div>
+            <div class="aquarium-pixel-rock rock-2"></div>
+            <div class="aquarium-pixel-pebble pebble-1"></div>
+            <div class="aquarium-pixel-pebble pebble-2"></div>
+            <div class="aquarium-pixel-pebble pebble-3"></div>
+            <div class="aquarium-pixel-coral coral-left"></div>
+            <div class="aquarium-pixel-coral coral-right"></div>
           </div>
 
-          <!-- Central Clock Content -->
-          <div class="aquarium-clock-content">
-            <div class="aquarium-clock-inner" style="${shouldShowClock ? "" : "display: none;"}">
-              <div class="aquarium-time-digits">
-                <span class="aquarium-hh">${displayHH}</span>
-                <span class="aquarium-colon"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
-                <span class="aquarium-mm">${mm}</span>
-                <span class="aquarium-colon aquarium-ss-colon" style="${showSec && ss ? "" : "display: none;"}"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
-                <span class="aquarium-ss" style="${showSec && ss ? "" : "display: none;"}">${ss || "00"}</span>
-              </div>
-              <span class="aquarium-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
+          <!-- Pixel Time Digits -->
+          <div class="aquarium-clock-content" style="${shouldShowClock ? "" : "display: none;"}">
+            <div class="aquarium-time-digits">
+              <span class="aquarium-hh">${displayHH}</span>
+              <span class="aquarium-colon"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
+              <span class="aquarium-mm">${mm}</span>
+              <span class="aquarium-colon aquarium-ss-colon" style="${showSec && ss ? "" : "display: none;"}"><span class="colon-dot top-dot"></span><span class="colon-dot bot-dot"></span></span>
+              <span class="aquarium-ss" style="${showSec && ss ? "" : "display: none;"}">${ss || "00"}</span>
             </div>
-
-            <div class="aquarium-date-pill" style="${shouldShowDate ? "" : "display: none;"}">
-              <span class="aquarium-date-icon"><i class="fa-solid fa-water"></i></span>
-              <span class="aquarium-date-text">${formattedDateFull}</span>
-            </div>
+            <span class="aquarium-ampm" style="${ampm ? "" : "display: none;"}">${ampm || ""}</span>
           </div>
 
-          <!-- Glass Highlights and Surface Reflections -->
-          <div class="aquarium-glass-sheen"></div>
+          <!-- 8-Bit Pixel Frame Corners -->
+          <div class="aquarium-pixel-corner corner-tl"></div>
+          <div class="aquarium-pixel-corner corner-tr"></div>
+          <div class="aquarium-pixel-corner corner-bl"></div>
+          <div class="aquarium-pixel-corner corner-br"></div>
+
+          <!-- 8-Bit CRT / Retro Pixel Overlay & Glare -->
+          <div class="aquarium-pixel-overlay"></div>
           <div class="aquarium-feed-container"></div>
         </div>
       `
@@ -4013,7 +4109,6 @@ export function updateTime() {
       "split-pill",
       "clock-3d",
       "macos-vintage",
-      "aquarium",
     ].includes(dateClockStyle) || isCustomAngleShowingInternalDate
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
