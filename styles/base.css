@@ -6859,6 +6859,33 @@ body.date-clock-style-prism-stack .prism-stack-clock:hover {
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
+/* Glass Glare Specular Light Flare Sweep on Hover */
+body.date-clock-style-prism-stack .prism-stack-glass-glare {
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 50%;
+  height: 220%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0.04) 58%,
+    transparent 70%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+body.date-clock-style-prism-stack .prism-stack-clock:hover .prism-stack-glass-glare {
+  opacity: 1;
+  transform: rotate(25deg) translateX(360px);
+}
+
 /* Subtle Prism Top Accent Line */
 body.date-clock-style-prism-stack .prism-stack-clock::before {
   content: "";
@@ -7020,17 +7047,18 @@ body.date-clock-style-prism-stack .prism-stack-ampm {
 /* Bottom Date */
 body.date-clock-style-prism-stack .prism-stack-date {
   font-family: var(--font-date, 'Inter', -apple-system, sans-serif);
-  font-size: var(--date-size, 0.8rem);
+  font-size: var(--date-size, 0.72rem);
   font-weight: 500;
-  letter-spacing: 0.3px;
-  color: var(--date-color, rgba(255, 255, 255, 0.78));
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.35px;
+  color: var(--date-color, rgba(255, 255, 255, 0.72));
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
   z-index: 2;
+  opacity: 0.85;
 }
 
 /* Light Mode Overrides */
