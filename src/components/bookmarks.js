@@ -2669,16 +2669,6 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
 
   const fallback = document.createElement("div")
   fallback.className = "bookmark-icon-fallback"
-  fallback.style.display = "flex"
-  fallback.style.justifyContent = "center"
-  fallback.style.alignItems = "center"
-  fallback.style.fontSize = "1.05rem"
-  fallback.style.fontWeight = "bold"
-  fallback.style.background = "rgba(255, 255, 255, 0.12)"
-  fallback.style.border = "1px solid rgba(255, 255, 255, 0.2)"
-  fallback.style.backdropFilter = "blur(16px) saturate(155%)"
-  fallback.style.boxShadow =
-    "inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.16)"
   indicator.appendChild(fallback)
 
   if (isSidebar || isTaskbarRight) {
