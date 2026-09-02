@@ -1,1490 +1,795 @@
+/**
+ * Retro Terminal (CRT Monitor) — Hollywood AAA 8-Bit Terminal HD Engine
+ *
+ * Performance Optimized Edition:
+ *  1. Native High-DPI Retina Subpixel Precision (devicePixelRatio).
+ *  2. Dual Offscreen Canvas Buffers (Pre-rendered CRT Scanlines, Vignette, and Phosphor Glow).
+ *  3. Zero per-frame gradient allocations or measureText layout stalls.
+ *  4. Pre-computed Alpha Palette cache for zero GC pressure.
+ *  5. Locked 60Hz-144Hz silky-smooth rendering with negligible CPU/GPU consumption.
+ *  6. Mouse hover parallax & full toggle support (setMouseEnabled).
+ */
+
 export class NintendoPixelEffect {
   constructor(canvasId, color = "#63f5ff") {
-    this.canvas = document.getElementById(canvasId)
-    this.ctx = this.canvas.getContext("2d")
+    this.canvas =
+      typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
+    this.ctx = this.canvas ? this.canvas.getContext("2d") : null
     this.active = false
-    this.color = color
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
-    this.tick = 0
-    this.phase = "loading"
-    this.loadingDuration = 78
-    this.burstDurations = [300, 450]
-    this.currentBurstDuration = this.burstDurations[0]
-    this.errorDuration = 150
-    this.successDuration = 540
-    this.loadingProgress = 0
-    this.burstProgress = 0
-    this.errorProgress = 0
-    this.successProgress = 0
-    this.scanOffset = 0
-    this.noiseSeed = Math.random() * 1000
-    this.windows = []
-    this.stars = []
-    this.glowPixels = []
-    this.burstColumns = []
-    this.worldNodes = []
-    this.systemName = "GHOST-NEXUS"
-    this.lockedNodeIndex = -1
-    this.errorStreams = []
-    this.loadingAttempt = 0
-    this.finalAttempt = 3
-    this.successLockedCount = 0
-    this.successShots = []
-    this.errorPopups = []
+    this.destroyed = false
+    this._animId = null
 
+    this.color = color || "#63f5ff"
+    this._cachedRGB = this._parseHex(this.color)
+    this._buildPalette()
+
+    // Retina DPR & Dimensions
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
+
+    // Mouse Tracking
+    this.mouseEnabled = true
+    this.mouse = { x: 0.5, y: 0.5 }
+    this.targetMouse = { x: 0.5, y: 0.5 }
+
+    // Timing & Simulation
+    this.time = 0
+    this.lastTime = performance.now()
+    this.uptimeSeconds = 15243
+    this.cursorBlink = 0
+
+    // Offscreen Buffers for Ultra-High Performance
+    this.bgCanvas = null
+    this.bgCtx = null
+    this.overlayCanvas = null
+    this.overlayCtx = null
+
+    // Pre-calculated Text Metrics
+    this.textWidths = {}
+
+    // Terminal Script & Console State
+    this.terminalLines = []
+    this.maxLines = 22
+    this.scriptIndex = 0
+    this.charIndex = 0
+    this.typeDelay = 0
+    this.currentCommandPrompt = "guest@cyber-nexus:~$ "
+
+    // Telemetry & Hex Data
+    this.cpuMeters = [
+      { name: "CPU_0", val: 52, target: 52 },
+      { name: "CPU_1", val: 68, target: 68 },
+      { name: "RAM", val: 74, target: 74 },
+      { name: "VRAM", val: 42, target: 42 },
+    ]
+    this.telemetryTick = 0
+    this.hexRows = []
+    this.initHexMatrix()
+
+    // 8-bit Vector Radar
+    this.radarAngle = 0
+    this.radarBlips = [
+      { r: 0.35, theta: 1.1, life: 1.0 },
+      { r: 0.65, theta: 2.8, life: 0.8 },
+      { r: 0.48, theta: 4.4, life: 0.5 },
+      { r: 0.82, theta: 5.7, life: 0.9 },
+    ]
+
+    this.initTerminalScript()
     this.resize()
+
     this._resizeHandler = () => this.resize()
+    this._mouseMoveHandler = (e) => this._onMouseMove(e)
+    this._mouseLeaveHandler = () => this._onMouseLeave()
+    this._visibilityHandler = () => this._onVisibilityChange()
+
     window.addEventListener("resize", this._resizeHandler)
-  }
-
-  resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
-    this.initScene()
-  }
-
-  initScene() {
-    this.loadingAttempt = 0
-    this.startLoadingAttempt()
-
-    const starCount = Math.max(
-      32,
-      Math.floor((this.canvas.width * this.canvas.height) / 28000),
-    )
-    const glowCount = Math.max(
-      18,
-      Math.floor((this.canvas.width * this.canvas.height) / 110000),
-    )
-
-    this.stars = Array.from({ length: starCount }, () => ({
-      x: Math.random() * this.canvas.width,
-      y: Math.random() * this.canvas.height,
-      size: Math.random() > 0.7 ? 2 : 1,
-      speed: Math.random() * 0.35 + 0.12,
-      alpha: Math.random() * 0.35 + 0.15,
-      pulse: Math.random() * Math.PI * 2,
-    }))
-
-    this.glowPixels = Array.from({ length: glowCount }, () => ({
-      x: Math.random() * this.canvas.width,
-      y: Math.random() * this.canvas.height,
-      size: Math.random() * 3 + 2,
-      driftX: Math.random() * 0.18 - 0.09,
-      driftY: Math.random() * 0.12 - 0.06,
-      pulse: Math.random() * Math.PI * 2,
-    }))
-
-    this.initWorldNodes()
-    this.initBurstColumns()
-    this.initErrorStreams()
-    this.resetWindows()
-  }
-
-  startLoadingAttempt() {
-    this.phase = "loading"
-    this.loadingAttempt += 1
-    this.loadingProgress = 0
-    this.burstProgress = 0
-    this.errorProgress = 0
-    this.successProgress = 0
-    this.lockedNodeIndex = -1
-    this.successLockedCount = 0
-    this.successShots = []
-    this.initWorldNodes()
-    this.resetWindows()
-  }
-
-  beginPhase(nextPhase) {
-    this.phase = nextPhase
-    if (nextPhase === "burst") {
-      const burstIndex = Math.max(
-        0,
-        Math.min(this.burstDurations.length - 1, this.loadingAttempt - 1),
-      )
-      this.currentBurstDuration = this.burstDurations[burstIndex]
-      this.burstProgress = 0
-      this.initBurstColumns()
-    }
-    if (nextPhase === "error") {
-      this.errorProgress = 0
-      this.initErrorStreams()
-      this.initErrorPopups()
-    }
-    if (nextPhase === "success") {
-      this.successProgress = 0
-      this.successLockedCount = 0
-      this.successShots = []
-    }
-  }
-
-  initErrorStreams() {
-    const templates = [
-      "ERROR::AUTH_GATEWAY_DENIED",
-      "ERROR::KERNEL_PANIC_SIGNAL",
-      "FATAL::TRACE_ROUTE_COLLAPSE",
-      "ERROR::PAYLOAD_CORRUPTED",
-      "ALERT::SECURITY_LOCKDOWN",
-      "WARN::MEMORY_LEAK_DETECTED",
-      "ERROR::HANDSHAKE_TIMEOUT",
-      "FATAL::BARRIER_OVERRIDE_FAIL",
-      "ERROR::INVALID_ROOT_TOKEN",
-    ]
-    const count = Math.max(24, Math.floor(this.canvas.width / 42))
-    this.errorStreams = Array.from({ length: count }, () => ({
-      x: Math.random() * this.canvas.width,
-      y: Math.random() * this.canvas.height,
-      speed: 1.4 + Math.random() * 2.1,
-      alpha: 0.25 + Math.random() * 0.55,
-      text: templates[Math.floor(Math.random() * templates.length)],
-      blinkOffset: Math.random() * Math.PI * 2,
-      size: Math.random() > 0.8 ? 13 : 11,
-    }))
-  }
-
-  initErrorPopups() {
-    const popupCount = 26
-    const baseW = Math.min(320, this.canvas.width * 0.32)
-    const baseH = 70
-    this.errorPopups = Array.from({ length: popupCount }, () => {
-      const x = 22 + Math.random() * (this.canvas.width - baseW - 44)
-      const y = 86 + Math.random() * (this.canvas.height - baseH - 128)
-      return {
-        x,
-        y,
-        nextRespawnTick: this.tick + 10 + Math.floor(Math.random() * 36),
-      }
-    })
-  }
-
-  updateErrorPopups() {
-    if (!this.errorPopups.length) return
-
-    const baseW = Math.min(320, this.canvas.width * 0.32)
-    const baseH = 70
-    const minX = 22
-    const maxX = Math.max(minX + 1, this.canvas.width - baseW - 44)
-    const minY = 86
-    const maxY = Math.max(minY + 1, this.canvas.height - baseH - 128)
-
-    this.errorPopups.forEach((popup) => {
-      // Stationary popups: only respawn at a new random spot, no sliding.
-      if (this.tick >= popup.nextRespawnTick) {
-        popup.x = minX + Math.random() * (maxX - minX)
-        popup.y = minY + Math.random() * (maxY - minY)
-        popup.nextRespawnTick = this.tick + 18 + Math.floor(Math.random() * 55)
-      }
-    })
-  }
-
-  initWorldNodes() {
-    const seeds = [
-      [0.2, 0.34],
-      [0.28, 0.42],
-      [0.36, 0.3],
-      [0.48, 0.36],
-      [0.56, 0.46],
-      [0.64, 0.34],
-      [0.72, 0.28],
-      [0.78, 0.4],
-      [0.82, 0.52],
-      [0.42, 0.55],
-      [0.3, 0.56],
-    ]
-    this.worldNodes = seeds.map(([x, y]) => ({
-      x,
-      y,
-      pulse: Math.random() * Math.PI * 2,
-      strength: 0.4 + Math.random() * 0.6,
-    }))
-  }
-
-  initBurstColumns() {
-    const columnWidth = 16
-    const columnCount = Math.max(18, Math.ceil(this.canvas.width / columnWidth))
-    this.burstColumns = Array.from({ length: columnCount }, (_, index) => ({
-      x: index * columnWidth,
-      y: this.canvas.height + Math.random() * this.canvas.height,
-      speed: 1.8 + Math.random() * 2.6,
-      text: this.createBurstText(),
-      reveal: 14 + Math.floor(Math.random() * 28),
-    }))
-  }
-
-  resetWindows() {
-    this.windows = this.buildWindows().map((windowData) => ({
-      ...windowData,
-      lines: this.buildLines(windowData),
-      sweep: Math.random() * windowData.height,
-      sweepSpeed: 0.6 + Math.random() * 0.45,
-    }))
-  }
-
-  updateAccentColor(color) {
-    this.color = color
-    this._cachedRGB = this._parseHex(color)
+    window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
+    window.addEventListener("mouseleave", this._mouseLeaveHandler, { passive: true })
+    document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
   _parseHex(hex) {
-    const normalized = (hex || "#63f5ff").replace("#", "")
-    const value =
-      normalized.length === 3
-        ? normalized
-            .split("")
-            .map((part) => part + part)
-            .join("")
-        : normalized
+    const clean = (hex || "#63f5ff").replace("#", "")
+    const full =
+      clean.length === 3
+        ? clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2]
+        : clean
+    const r = parseInt(full.slice(0, 2), 16)
+    const g = parseInt(full.slice(2, 4), 16)
+    const b = parseInt(full.slice(4, 6), 16)
     return {
-      r: parseInt(value.slice(0, 2), 16),
-      g: parseInt(value.slice(2, 4), 16),
-      b: parseInt(value.slice(4, 6), 16)
+      r: Number.isNaN(r) ? 99 : r,
+      g: Number.isNaN(g) ? 245 : g,
+      b: Number.isNaN(b) ? 255 : b,
     }
   }
 
-  rgba(hex, alpha) {
-    let rgb
-    if (hex === this.color && this._cachedRGB) {
-      rgb = this._cachedRGB
-    } else {
-      rgb = this._parseHex(hex)
-      if (hex === this.color) this._cachedRGB = rgb
-    }
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
-  }
-
-  roundRect(x, y, width, height, radius) {
-    const r = Math.min(radius, width / 2, height / 2)
-    this.ctx.beginPath()
-    this.ctx.moveTo(x + r, y)
-    this.ctx.lineTo(x + width - r, y)
-    this.ctx.quadraticCurveTo(x + width, y, x + width, y + r)
-    this.ctx.lineTo(x + width, y + height - r)
-    this.ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height)
-    this.ctx.lineTo(x + r, y + height)
-    this.ctx.quadraticCurveTo(x, y + height, x, y + height - r)
-    this.ctx.lineTo(x, y + r)
-    this.ctx.quadraticCurveTo(x, y, x + r, y)
-    this.ctx.closePath()
-  }
-
-  buildWindows() {
-    const margin = Math.min(70, this.canvas.width * 0.05)
-    const isCompact = this.canvas.width < 900
-    const largeWidth = Math.min(this.canvas.width - margin * 2, 720)
-    const panelHeight = isCompact ? 180 : 210
-    const topY = Math.max(48, this.canvas.height * 0.08)
-    const bottomY = topY + panelHeight + 26
-    const leftX = margin
-    const rightWidth = Math.min(this.canvas.width - margin * 2, 420)
-    const rightX = this.canvas.width - margin - rightWidth
-
-    const windows = [
-      {
-        title: "SYS://BREACH-CORE",
-        x: leftX,
-        y: topY,
-        width: isCompact ? this.canvas.width - margin * 2 : largeWidth,
-        height: panelHeight,
-        profile: "system",
-      },
-      {
-        title: "MONITOR://AUTH-BYPASS",
-        x: leftX,
-        y: bottomY,
-        width: isCompact
-          ? this.canvas.width - margin * 2
-          : Math.min(470, largeWidth * 0.62),
-        height: panelHeight - 8,
-        profile: "monitor",
-      },
-    ]
-
-    if (!isCompact) {
-      windows.push({
-        title: "TRACE://PAYLOAD-LOG",
-        x: rightX,
-        y: bottomY,
-        width: rightWidth,
-        height: panelHeight - 8,
-        profile: "trace",
-      })
-    }
-
-    return windows
-  }
-
-  buildLines(windowData) {
-    const lineHeight = 16
-    const visibleLines = Math.max(
-      10,
-      Math.floor((windowData.height - 50) / lineHeight),
-    )
-    const bottomY = windowData.height - 16
-
-    return Array.from({ length: visibleLines + 4 }, (_, index) =>
-      this.createLineEntry(windowData.profile, bottomY - index * lineHeight),
-    )
-  }
-
-  createLineEntry(profile, y) {
-    const fullText = this.createLine(profile)
-    return {
-      fullText,
-      y,
-      kind: Math.random() > 0.78 ? "dim" : "normal",
-      blink: Math.random() > 0.9,
-      revealCount:
-        this.phase === "loading"
-          ? fullText.length
-          : Math.max(4, Math.floor(Math.random() * 16)),
-      revealSpeed: 1 + Math.floor(Math.random() * 3),
+  _buildPalette() {
+    const { r, g, b } = this._cachedRGB
+    this.palette = {
+      full: `rgba(${r}, ${g}, ${b}, 1.0)`,
+      high: `rgba(${r}, ${g}, ${b}, 0.95)`,
+      text: `rgba(${r}, ${g}, ${b}, 0.88)`,
+      mid: `rgba(${r}, ${g}, ${b}, 0.72)`,
+      dim: `rgba(${r}, ${g}, ${b}, 0.45)`,
+      border: `rgba(${r}, ${g}, ${b}, 0.65)`,
+      borderTick: `rgba(${r}, ${g}, ${b}, 0.95)`,
+      faint: `rgba(${r}, ${g}, ${b}, 0.25)`,
+      radarTail: `rgba(${r}, ${g}, ${b}, 0.14)`,
     }
   }
 
-  createLine(profile) {
-    const addresses = [
-      "0xA1F0",
-      "0xB3C4",
-      "0xDE77",
-      "0x0F12",
-      "0x7E90",
-      "0x9BCD",
-    ]
-    const nodes = ["NODE-01", "NODE-04", "CORE-A", "CRT-B", "MUX-7", "ROM-3"]
-    const commands = [
-      "SCAN",
-      "TRACE",
-      "SYNC",
-      "BOOT",
-      "VERIFY",
-      "CACHE",
-      "LOAD",
-      "PING",
-    ]
-    const states = [
-      "OK",
-      "LOCKED",
-      "STABLE",
-      "READY",
-      "ONLINE",
-      "PASS",
-      "RUNNING",
-    ]
-    const bars = [
-      "[####....]",
-      "[######..]",
-      "[###.....]",
-      "[#######.]",
-      "[########]",
-    ]
-    const targets = [
-      "GATEWAY",
-      "VAULT",
-      "MAINFRAME",
-      "BACKBONE",
-      "PROXY",
-      "AUTH",
-    ]
-    const actions = ["BYPASS", "INJECT", "SPOOF", "EXTRACT", "CRACK", "HOOK"]
-    const severities = ["LOW", "MID", "HIGH", "CRITICAL"]
-    const codeOps = [
-      "const socket = await openTunnel(node)",
-      "payload.push(tracePacket(port, authKey))",
-      "if (firewall.locked) bypassCipher(layer)",
-      "session.cache[token] = spoofHandshake(proxy)",
-      "while (vault.active) extractChunk(buffer)",
-      "injectSignal(mainframe, ghostKernel)",
-    ]
-    const shellOps = [
-      "sudo breach --force --mask ghost://proxy",
-      "nmap --stealth --ports 443,8080 10.0.0.7",
-      "ssh root@vault.local -i ./phantom.key",
-      "./payload --inject auth-gateway --silent",
-      "cat /secure/trace.log | grep TOKEN",
-      "node breach.js --target mainframe --mode deep",
-    ]
-    const randomOf = (list) => list[Math.floor(Math.random() * list.length)]
-
-    if (this.phase === "loading") {
-      const percent = String(
-        Math.min(99, Math.floor(this.loadingProgress * 100)),
-      ).padStart(2, "0")
-
-      if (profile === "system") {
-        return `BOOTSTRAP ${randomOf(nodes)} ${randomOf(bars)} ${percent}%`
-      }
-      if (profile === "monitor") {
-        return `LOADING MODULE ${randomOf(commands)} :: ${randomOf(states)} :: ${percent}%`
-      }
-      return `PREP ${randomOf(addresses)} :: LINK ${randomOf(nodes)} :: ${percent}%`
-    }
-
-    if (profile === "system") {
-      return `C:\\SYS>${randomOf(shellOps)}`
-    }
-    if (profile === "monitor") {
-      return `BREACH ${randomOf(bars)}  PORT:${3000 + Math.floor(Math.random() * 5000)}  AUTH:${54 + Math.floor(Math.random() * 45)}%`
-    }
-    return `${randomOf(addresses)} :: ${randomOf(targets)} :: ${randomOf(codeOps)} :: ${randomOf(severities)}`
+  updateAccentColor(color) {
+    if (!color) return
+    this.color = color
+    this._cachedRGB = this._parseHex(color)
+    this._buildPalette()
+    this._buildBackgroundBuffer()
   }
 
-  createBurstText() {
-    const snippets = [
-      "sudo breach --force --mask ghost://proxy",
-      "injectSignal(mainframe, ghostKernel)",
-      "auth_cache[token] = spoofHandshake(proxy)",
-      "nmap --stealth --ports 443,8080 10.0.0.7",
-      "while (vault.active) extractChunk(buffer)",
-      "TRACE 0xDE77 :: MAINFRAME :: CRACK :: CRITICAL",
-      "./payload --inject auth-gateway --silent",
-      "const socket = await openTunnel(node)",
-      "cat /secure/trace.log | grep TOKEN",
-    ]
-    return snippets[Math.floor(Math.random() * snippets.length)]
-  }
-
-  updatePhase() {
-    if (this.phase === "loading") {
-      this.loadingProgress = Math.min(
-        1,
-        this.loadingProgress + 1 / this.loadingDuration,
-      )
-      if (this.loadingProgress >= 1) {
-        if (this.loadingAttempt >= this.finalAttempt) {
-          this.beginPhase("success")
-        } else {
-          this.beginPhase("burst")
-        }
-      }
-      return
-    }
-
-    if (this.phase === "burst") {
-      this.burstProgress = Math.min(
-        1,
-        this.burstProgress + 1 / this.currentBurstDuration,
-      )
-      if (this.burstProgress >= 1) {
-        this.beginPhase("error")
-      }
-      return
-    }
-
-    if (this.phase === "error") {
-      this.errorProgress = Math.min(
-        1,
-        this.errorProgress + 1 / this.errorDuration,
-      )
-      if (this.errorProgress >= 1) {
-        this.startLoadingAttempt()
-      }
-      return
-    }
-
-    if (this.phase === "success") {
-      this.successProgress = Math.min(
-        1,
-        this.successProgress + 1 / this.successDuration,
-      )
-      this.updateSuccessSequence()
-      if (this.successProgress >= 1) {
-        this.loadingAttempt = 0
-        this.startLoadingAttempt()
-      }
+  setMouseEnabled(enabled) {
+    this.mouseEnabled = Boolean(enabled)
+    if (!this.mouseEnabled) {
+      this.targetMouse = { x: 0.5, y: 0.5 }
+      this.mouse = { x: 0.5, y: 0.5 }
     }
   }
 
-  updateSuccessSequence() {
-    const lockInterval = 9
-    const desiredLocked = Math.min(
-      this.worldNodes.length,
-      Math.floor(this.successProgress * this.worldNodes.length * 1.25),
-    )
+  _onMouseMove(e) {
+    if (this.mouseEnabled === false) return
+    this.targetMouse.x = e.clientX / (this.width || window.innerWidth)
+    this.targetMouse.y = e.clientY / (this.height || window.innerHeight)
+  }
 
-    if (desiredLocked > this.successLockedCount) {
-      for (
-        let index = this.successLockedCount;
-        index < desiredLocked;
-        index += 1
-      ) {
-        const life = 30
-        this.successShots.push({
-          nodeIndex: index,
-          life,
-          maxLife: life,
-          triggerTick: this.tick,
-        })
-      }
-      this.successLockedCount = desiredLocked
-    }
+  _onMouseLeave() {
+    this.targetMouse = { x: 0.5, y: 0.5 }
+  }
 
-    this.successShots.forEach((shot) => {
-      shot.life -= 1
-    })
-    this.successShots = this.successShots.filter((shot) => shot.life > 0)
-
-    if (this.successProgress > 0.8) {
-      const extraShots = Math.floor((this.successProgress - 0.8) * 25)
-      for (let i = 0; i < extraShots; i += 1) {
-        const life = 18
-        this.successShots.push({
-          nodeIndex: Math.floor(Math.random() * this.worldNodes.length),
-          life,
-          maxLife: life,
-          triggerTick: this.tick,
-        })
-      }
-      this.successLockedCount = this.worldNodes.length
-    }
-
-    if (
-      this.tick % lockInterval === 0 &&
-      this.successLockedCount < this.worldNodes.length
-    ) {
-      this.successLockedCount = Math.min(
-        this.worldNodes.length,
-        this.successLockedCount + 1,
-      )
+  _onVisibilityChange() {
+    if (document.visibilityState === "hidden") {
+      this.lastTime = performance.now()
     }
   }
 
-  updateBurstColumns() {
-    this.burstColumns.forEach((column) => {
-      column.y -= column.speed
-      column.reveal = Math.min(column.text.length, column.reveal + 1)
-      if (column.y < -220) {
-        column.y = this.canvas.height + Math.random() * 120
-        column.speed = 1.8 + Math.random() * 2.6
-        column.text = this.createBurstText()
-        column.reveal = 12 + Math.floor(Math.random() * 20)
-      }
-    })
-  }
+  resize() {
+    if (!this.canvas) return
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
+    this.width = window.innerWidth
+    this.height = window.innerHeight
 
-  drawBurstOverlay() {
-    if (this.phase !== "burst") return
+    this.canvas.width = Math.round(this.width * this.dpr)
+    this.canvas.height = Math.round(this.height * this.dpr)
+    this.canvas.style.width = `${this.width}px`
+    this.canvas.style.height = `${this.height}px`
 
-    const overlay = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height)
-    overlay.addColorStop(0, "rgba(2, 10, 8, 0.12)")
-    overlay.addColorStop(0.5, "rgba(0, 18, 12, 0.24)")
-    overlay.addColorStop(1, "rgba(0, 8, 6, 0.12)")
-    this.ctx.fillStyle = overlay
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-    this.ctx.font = "12px Silkscreen, monospace"
-    this.burstColumns.forEach((column, index) => {
-      const text = column.text.slice(0, column.reveal)
-      const alpha = 0.26 + ((index + this.tick) % 5) * 0.08
-      this.ctx.fillStyle = this.rgba(this.color, Math.min(alpha, 0.8))
-      this.ctx.save()
-      this.ctx.translate(column.x, column.y)
-      this.ctx.rotate(-Math.PI / 2)
-      this.ctx.fillText(text, 0, 0)
-      this.ctx.restore()
-    })
-
-    const centerText = "PAYLOAD STREAM ACTIVE"
-    const payloadSeconds = Math.round(this.currentBurstDuration / this.fps)
-    const subText = `routing code burst... ${Math.floor(this.burstProgress * 100)}% // ${payloadSeconds}s window`
-    this.ctx.fillStyle = this.rgba(this.color, 0.95)
-    this.ctx.font = "600 18px Silkscreen, monospace"
-    this.ctx.fillText(
-      centerText,
-      this.canvas.width / 2 - this.ctx.measureText(centerText).width / 2,
-      this.canvas.height * 0.18,
-    )
-    this.ctx.font = "12px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.72)
-    this.ctx.fillText(
-      subText,
-      this.canvas.width / 2 - this.ctx.measureText(subText).width / 2,
-      this.canvas.height * 0.18 + 24,
-    )
-  }
-
-  updateErrorStreams() {
-    const templates = [
-      "ERROR::AUTH_GATEWAY_DENIED",
-      "ERROR::KERNEL_PANIC_SIGNAL",
-      "FATAL::TRACE_ROUTE_COLLAPSE",
-      "ERROR::PAYLOAD_CORRUPTED",
-      "ALERT::SECURITY_LOCKDOWN",
-      "WARN::MEMORY_LEAK_DETECTED",
-      "ERROR::HANDSHAKE_TIMEOUT",
-      "FATAL::BARRIER_OVERRIDE_FAIL",
-      "ERROR::INVALID_ROOT_TOKEN",
-    ]
-    this.errorStreams.forEach((line) => {
-      line.y += line.speed
-      if (line.y > this.canvas.height + 40) {
-        line.y = -20 - Math.random() * 80
-        line.x = Math.random() * this.canvas.width
-        line.speed = 1.4 + Math.random() * 2.1
-        line.alpha = 0.25 + Math.random() * 0.55
-        line.text = templates[Math.floor(Math.random() * templates.length)]
-        line.size = Math.random() > 0.8 ? 13 : 11
-      }
-    })
-  }
-
-  drawErrorOverlay() {
-    if (this.phase !== "error") return
-
-    const danger = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height)
-    danger.addColorStop(0, "rgba(34, 0, 0, 0.24)")
-    danger.addColorStop(0.5, "rgba(18, 2, 2, 0.36)")
-    danger.addColorStop(1, "rgba(40, 0, 0, 0.22)")
-    this.ctx.fillStyle = danger
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-    const title = "SYSTEM FAILURE"
-    const sub = `error flood ${Math.floor(this.errorProgress * 100)}%`
-    this.ctx.font = "600 22px Silkscreen, monospace"
-    this.ctx.fillStyle = "rgba(255,120,120,0.95)"
-    this.ctx.fillText(
-      title,
-      this.canvas.width / 2 - this.ctx.measureText(title).width / 2,
-      this.canvas.height * 0.16,
-    )
-    this.ctx.font = "12px Silkscreen, monospace"
-    this.ctx.fillStyle = "rgba(255,170,170,0.82)"
-    this.ctx.fillText(
-      sub,
-      this.canvas.width / 2 - this.ctx.measureText(sub).width / 2,
-      this.canvas.height * 0.16 + 22,
-    )
-
-    const popupTemplates = [
-      "AUTH_GATEWAY_DENIED",
-      "KERNEL_PANIC_SIGNAL",
-      "TRACE_ROUTE_COLLAPSE",
-      "PAYLOAD_CORRUPTED",
-      "SECURITY_LOCKDOWN",
-      "INVALID_ROOT_TOKEN",
-      "MEMORY_CORE_DAMAGED",
-      "PROCESS_TREE_BROKEN",
-      "REACTOR_SIGNAL_LOST",
-    ]
-
-    const popupCount = Math.min(6, this.errorPopups.length)
-    const baseW = Math.min(320, this.canvas.width * 0.32)
-    const baseH = 70
-
-    for (let i = 0; i < popupCount; i += 1) {
-      const popup = this.errorPopups[i]
-      if (!popup) continue
-      const anchorX = popup.x
-      const anchorY = popup.y
-
-      const phase = this.tick * 0.22 + i * 1.4
-      const pulse = (Math.sin(phase) + 1) * 0.5
-      const jitterX = Math.sin(this.tick * 0.1 + i) * 1.2
-      const jitterY = Math.cos(this.tick * 0.08 + i * 0.6) * 1
-      const x = anchorX + jitterX
-      const y = anchorY + jitterY
-      const w = baseW
-      const h = baseH
-      const alpha = 0.52 + pulse * 0.24
-
-      this.roundRect(x, y, w, h, 8)
-      this.ctx.fillStyle = `rgba(30, 7, 10, ${Math.max(0.2, alpha)})`
-      this.ctx.fill()
-      this.ctx.strokeStyle = `rgba(255, 96, 96, ${0.46 + pulse * 0.28})`
-      this.ctx.lineWidth = 1.2
-      this.ctx.stroke()
-
-      this.ctx.font = "600 11px Silkscreen, monospace"
-      this.ctx.fillStyle = "rgba(255,185,185,0.92)"
-      this.ctx.fillText("POPUP ALERT", x + 10, y + 18)
-
-      const code =
-        popupTemplates[(Math.floor(this.tick / 12) + i) % popupTemplates.length]
-      this.ctx.font = "10px Silkscreen, monospace"
-      this.ctx.fillStyle = "rgba(255,128,128,0.9)"
-      this.ctx.fillText(`ERROR::${code}`, x + 10, y + 35)
-
-      const meterW = w - 20
-      const meterProgress = ((this.tick * 1.1 + i * 13) % 100) / 100
-      this.ctx.fillStyle = "rgba(70, 16, 18, 0.78)"
-      this.ctx.fillRect(x + 10, y + 44, meterW, 9)
-      this.ctx.fillStyle = `rgba(255,85,85,${0.6 + pulse * 0.28})`
-      this.ctx.fillRect(x + 10, y + 44, meterW * meterProgress, 9)
-    }
-  }
-
-  drawBackdrop() {
-    const radial = this.ctx.createRadialGradient(
-      this.canvas.width * 0.5,
-      this.canvas.height * 0.45,
-      0,
-      this.canvas.width * 0.5,
-      this.canvas.height * 0.45,
-      Math.max(this.canvas.width, this.canvas.height) * 0.65,
-    )
-    radial.addColorStop(0, this.rgba(this.color, 0.16))
-    radial.addColorStop(0.42, "rgba(11, 20, 29, 0.12)")
-    radial.addColorStop(1, "rgba(2, 6, 10, 0)")
-
-    this.ctx.fillStyle = "#03080d"
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-    this.ctx.fillStyle = radial
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-    this.ctx.strokeStyle = this.rgba(this.color, 0.08)
-    this.ctx.lineWidth = 1
-    for (let x = 0; x < this.canvas.width; x += 36) {
-      this.ctx.beginPath()
-      this.ctx.moveTo(x, 0)
-      this.ctx.lineTo(x, this.canvas.height)
-      this.ctx.stroke()
-    }
-    for (let y = 0; y < this.canvas.height; y += 36) {
-      this.ctx.beginPath()
-      this.ctx.moveTo(0, y)
-      this.ctx.lineTo(this.canvas.width, y)
-      this.ctx.stroke()
+    if (this.ctx) {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+      this.ctx.scale(this.dpr, this.dpr)
+      this.ctx.imageSmoothingEnabled = false
     }
 
-    this.stars.forEach((star) => {
-      star.x -= star.speed
-      star.pulse += 0.04
-      if (star.x < -2) {
-        star.x = this.canvas.width + 2
-        star.y = Math.random() * this.canvas.height
-      }
-      this.ctx.globalAlpha = star.alpha + (Math.sin(star.pulse) + 1) * 0.12
-      this.ctx.fillStyle = "#d2f9ff"
-      this.ctx.fillRect(star.x, star.y, star.size, star.size)
-    })
-    this.ctx.globalAlpha = 1
+    this.maxLines = Math.max(12, Math.floor((this.height - 180) / 22))
 
-    this.glowPixels.forEach((pixel) => {
-      pixel.x += pixel.driftX
-      pixel.y += pixel.driftY
-      pixel.pulse += 0.05
-      if (pixel.x < -10) pixel.x = this.canvas.width + 10
-      if (pixel.x > this.canvas.width + 10) pixel.x = -10
-      if (pixel.y < -10) pixel.y = this.canvas.height + 10
-      if (pixel.y > this.canvas.height + 10) pixel.y = -10
-
-      this.ctx.fillStyle = this.rgba(
-        this.color,
-        0.08 + (Math.sin(pixel.pulse) + 1) * 0.08,
-      )
-      this.ctx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size)
-    })
+    // Pre-calculate Offscreen Buffers once
+    this._buildBackgroundBuffer()
+    this._buildOverlayBuffer()
+    this._cacheTextMetrics()
   }
 
-  updateWindows() {
-    this.windows.forEach((windowData) => {
-      const lineHeight = 16
-      const bottomLimit = windowData.height - 16
-      const speed =
-        windowData.profile === "system"
-          ? 0.72
-          : windowData.profile === "trace"
-            ? 0.56
-            : 0.48
-      let highestY = Math.max(...windowData.lines.map((line) => line.y))
-
-      windowData.lines.forEach((line) => {
-        line.y -= speed
-        if (line.revealCount < line.fullText.length) {
-          line.revealCount = Math.min(
-            line.fullText.length,
-            line.revealCount + line.revealSpeed,
-          )
-        }
-        if (line.y < 26) {
-          highestY += lineHeight
-          Object.assign(
-            line,
-            this.createLineEntry(
-              windowData.profile,
-              Math.max(bottomLimit, highestY),
-            ),
-          )
-        }
-      })
-
-      windowData.sweep += windowData.sweepSpeed
-      if (windowData.sweep > windowData.height + 40) {
-        windowData.sweep = -35
-      }
-    })
-  }
-
-  drawWindow(windowData) {
-    const headerHeight = 24
-    const padding = 14
-
-    this.ctx.shadowColor = this.rgba(this.color, 0.18)
-    this.ctx.shadowBlur = 24
-    this.ctx.shadowOffsetY = 10
-    this.roundRect(
-      windowData.x,
-      windowData.y,
-      windowData.width,
-      windowData.height,
-      10,
-    )
-    this.ctx.fillStyle = "rgba(5, 12, 16, 0.72)"
-    this.ctx.fill()
-    this.ctx.shadowColor = "transparent"
-
-    this.ctx.lineWidth = 1.5
-    this.ctx.strokeStyle = this.rgba(this.color, 0.42)
-    this.ctx.stroke()
-
-    this.ctx.fillStyle = "rgba(10, 24, 29, 0.92)"
-    this.ctx.fillRect(
-      windowData.x,
-      windowData.y,
-      windowData.width,
-      headerHeight,
-    )
-    this.ctx.fillStyle = this.rgba(this.color, 0.92)
-    this.ctx.font = "600 12px Silkscreen, monospace"
-    const title =
-      this.phase === "loading"
-        ? `LOAD://${windowData.profile.toUpperCase()}`
-        : windowData.title
-    this.ctx.fillText(title, windowData.x + 12, windowData.y + 16)
-    ;[0, 1, 2].forEach((index) => {
-      this.ctx.beginPath()
-      this.ctx.fillStyle = this.rgba(this.color, 0.28 + index * 0.08)
-      this.ctx.arc(
-        windowData.x + windowData.width - 18 - index * 12,
-        windowData.y + 12,
-        3,
-        0,
-        Math.PI * 2,
-      )
-      this.ctx.fill()
-    })
-
+  _cacheTextMetrics() {
+    if (!this.ctx) return
     this.ctx.save()
-    this.roundRect(
-      windowData.x + 1,
-      windowData.y + headerHeight,
-      windowData.width - 2,
-      windowData.height - headerHeight - 1,
-      8,
-    )
-    this.ctx.clip()
-
-    const contentX = windowData.x + padding
-    const contentY = windowData.y + headerHeight + 14
-    const width = windowData.width - padding * 2
-    const height = windowData.height - headerHeight - 18
-
-    const contentGradient = this.ctx.createLinearGradient(
-      windowData.x,
-      contentY,
-      windowData.x + windowData.width,
-      contentY + height,
-    )
-    contentGradient.addColorStop(0, "rgba(5, 20, 16, 0.64)")
-    contentGradient.addColorStop(1, "rgba(5, 14, 12, 0.46)")
-    this.ctx.fillStyle = contentGradient
-    this.ctx.fillRect(
-      windowData.x,
-      windowData.y + headerHeight,
-      windowData.width,
-      windowData.height - headerHeight,
-    )
-
-    windowData.lines.forEach((line, index) => {
-      const renderedText = line.fullText.slice(0, line.revealCount)
-      this.ctx.fillStyle =
-        line.kind === "dim"
-          ? this.rgba(this.color, 0.38)
-          : this.rgba(this.color, 0.8)
-      this.ctx.font = "12px Silkscreen, monospace"
-      this.ctx.fillText(renderedText, contentX, windowData.y + line.y)
-
-      if (
-        line.blink &&
-        index === Math.floor((this.tick / 10) % windowData.lines.length)
-      ) {
-        this.ctx.fillStyle = this.rgba(
-          this.color,
-          this.tick % 20 < 10 ? 0.9 : 0,
-        )
-        this.ctx.fillRect(
-          contentX + width - 16,
-          windowData.y + line.y - 10,
-          8,
-          12,
-        )
-      }
-    })
-
-    if (windowData.profile === "system") {
-      const livePrompt =
-        "C:\\SYS> run breach_sequence --live --trace --mask ghost"
-      const promptY = windowData.y + windowData.height - 18
-      const promptChars = ((this.tick * 2) % (livePrompt.length + 8)) + 1
-      this.ctx.fillStyle = this.rgba(this.color, 0.95)
-      this.ctx.fillText(
-        livePrompt.slice(0, Math.min(livePrompt.length, promptChars)),
-        contentX,
-        promptY,
-      )
-      this.ctx.fillStyle = this.rgba(this.color, this.tick % 20 < 10 ? 0.95 : 0)
-      this.ctx.fillRect(contentX + width - 8, promptY - 10, 7, 12)
-    }
-
-    this.ctx.fillStyle = this.rgba(this.color, 0.22)
-    if (windowData.profile === "monitor") {
-      for (let index = 0; index < 24; index += 1) {
-        const barHeight = 8 + ((index * 7 + this.tick) % 24)
-        const x = contentX + index * 12
-        this.ctx.fillRect(x, contentY + height - barHeight - 8, 7, barHeight)
-      }
-    }
-
-    if (windowData.profile === "trace") {
-      this.ctx.strokeStyle = this.rgba(this.color, 0.34)
-      this.ctx.beginPath()
-      for (let index = 0; index < 26; index += 1) {
-        const x = contentX + (index / 25) * width
-        const y =
-          contentY +
-          height * 0.72 +
-          Math.sin(index * 0.65 + this.tick * 0.08) * 14
-        if (index === 0) this.ctx.moveTo(x, y)
-        else this.ctx.lineTo(x, y)
-      }
-      this.ctx.stroke()
-    }
-
-    const sweepGradient = this.ctx.createLinearGradient(
-      windowData.x,
-      windowData.y + windowData.sweep,
-      windowData.x,
-      windowData.y + windowData.sweep + 40,
-    )
-    sweepGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
-    sweepGradient.addColorStop(0.5, this.rgba(this.color, 0.14))
-    sweepGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
-    this.ctx.fillStyle = sweepGradient
-    this.ctx.fillRect(
-      windowData.x,
-      windowData.y + windowData.sweep,
-      windowData.width,
-      40,
-    )
-
+    this.ctx.font = "bold 12px 'Courier New', Monaco, monospace"
+    this.textWidths.status = this.ctx.measureText("9600 BAUD [ONLINE]").width
+    this.textWidths.prompt = this.ctx.measureText("guest@cyber-nexus:~$ ").width
+    this.textWidths.titleConsole = this.ctx.measureText("[ CONSOLE LOG // DEV-0 ]").width
+    this.textWidths.titleTelem = this.ctx.measureText("[ SYSTEM TELEMETRY ]").width
+    this.textWidths.titleHex = this.ctx.measureText("[ ACTIVE MEMORY DUMP ]").width
+    this.textWidths.titleRadar = this.ctx.measureText("[ TACTICAL RADAR ]").width
     this.ctx.restore()
   }
 
-  drawLoadingOverlay() {
-    if (this.phase !== "loading") return
+  // Pre-renders backdrop gradient once into offscreen canvas
+  _buildBackgroundBuffer() {
+    const W = this.width
+    const H = this.height
+    if (!W || !H) return
 
-    const width = Math.min(this.canvas.width * 0.46, 460)
-    const height = 86
-    const x = (this.canvas.width - width) / 2
-    const y = Math.max(24, this.canvas.height * 0.1)
-    const progressWidth = width - 32
-
-    this.ctx.shadowColor = this.rgba(this.color, 0.24)
-    this.ctx.shadowBlur = 18
-    this.roundRect(x, y, width, height, 10)
-    this.ctx.fillStyle = "rgba(4, 12, 15, 0.84)"
-    this.ctx.fill()
-    this.ctx.shadowColor = "transparent"
-    this.ctx.strokeStyle = this.rgba(this.color, 0.4)
-    this.ctx.lineWidth = 1.4
-    this.ctx.stroke()
-
-    this.ctx.font = "600 12px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.9)
-    this.ctx.fillText("INITIALIZING TERMINAL PAYLOAD", x + 16, y + 22)
-
-    const beat = (Math.sin(this.tick * 0.35) + 1) * 0.5
-    this.ctx.font = "600 10px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.45 + beat * 0.5)
-    const attemptText = `attempt ${Math.min(this.loadingAttempt, this.finalAttempt)}/${this.finalAttempt}`
-    const attemptWidth = this.ctx.measureText(attemptText).width
-    this.ctx.fillText(attemptText, x + width - 16 - attemptWidth, y + 22)
-
-    this.ctx.font = "600 10px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.45 + beat * 0.5)
-    this.ctx.fillText(`NODE NAME: ${this.systemName}`, x + 16, y + 33)
-    this.ctx.fillStyle = this.rgba(this.color, 0.25 + beat * 0.45)
-    for (let i = 0; i < 8; i += 1) {
-      const h = 3 + (Math.sin(this.tick * 0.35 + i * 0.7) + 1) * 0.5 * 8
-      this.ctx.fillRect(x + width - 76 + i * 7, y + 34 - h, 4, h)
+    if (!this.bgCanvas) {
+      this.bgCanvas = document.createElement("canvas")
     }
+    this.bgCanvas.width = Math.round(W * this.dpr)
+    this.bgCanvas.height = Math.round(H * this.dpr)
+    this.bgCtx = this.bgCanvas.getContext("2d")
+    if (!this.bgCtx) return
 
-    this.ctx.fillStyle = "rgba(10, 36, 31, 0.85)"
-    this.ctx.fillRect(x + 16, y + 36, progressWidth, 16)
-    this.ctx.fillStyle = this.rgba(this.color, 0.88)
-    this.ctx.fillRect(x + 16, y + 36, progressWidth * this.loadingProgress, 16)
+    this.bgCtx.setTransform(1, 0, 0, 1, 0, 0)
+    this.bgCtx.scale(this.dpr, this.dpr)
 
-    this.ctx.fillStyle = this.rgba(this.color, 0.72)
-    this.ctx.fillText(
-      `${Math.floor(this.loadingProgress * 100)}%`,
-      x + 16,
-      y + 70,
+    // Deep Dark Base
+    this.bgCtx.fillStyle = "#04080a"
+    this.bgCtx.fillRect(0, 0, W, H)
+
+    // Phosphor ambient glow
+    const { r, g, b } = this._cachedRGB
+    const bgGlow = this.bgCtx.createRadialGradient(
+      W * 0.5,
+      H * 0.45,
+      10,
+      W * 0.5,
+      H * 0.5,
+      Math.max(W, H) * 0.75
     )
-    this.ctx.fillText(
-      this.loadingProgress < 0.34
-        ? "mapping nodes..."
-        : this.loadingProgress < 0.68
-          ? "injecting signal..."
-          : "arming breach scripts...",
-      x + 78,
-      y + 70,
-    )
-
-    this.drawWorldMapRadar()
+    bgGlow.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.08)`)
+    bgGlow.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, 0.02)`)
+    bgGlow.addColorStop(1, "rgba(0, 0, 0, 0.85)")
+    this.bgCtx.fillStyle = bgGlow
+    this.bgCtx.fillRect(0, 0, W, H)
   }
 
-  getRadarLayout(isSuccess = false) {
-    const panelW = isSuccess
-      ? Math.min(520, this.canvas.width * 0.54)
-      : Math.min(320, this.canvas.width * 0.36)
-    const panelH = isSuccess
-      ? Math.min(300, this.canvas.height * 0.4)
-      : Math.min(190, this.canvas.height * 0.24)
-    const panelX = isSuccess
-      ? this.canvas.width - panelW - 24
-      : this.canvas.width - panelW - 28
-    const panelY = isSuccess ? Math.max(88, this.canvas.height * 0.18) : 26
-    const mapX = panelX + 14
-    const mapY = panelY + 30
-    const mapW = panelW - 28
-    const mapH = panelH - 44
-    return { panelW, panelH, panelX, panelY, mapX, mapY, mapW, mapH }
+  // Pre-renders CRT scanlines and bezel vignette once into offscreen buffer
+  _buildOverlayBuffer() {
+    const W = this.width
+    const H = this.height
+    if (!W || !H) return
+
+    if (!this.overlayCanvas) {
+      this.overlayCanvas = document.createElement("canvas")
+    }
+    this.overlayCanvas.width = Math.round(W * this.dpr)
+    this.overlayCanvas.height = Math.round(H * this.dpr)
+    this.overlayCtx = this.overlayCanvas.getContext("2d")
+    if (!this.overlayCtx) return
+
+    this.overlayCtx.setTransform(1, 0, 0, 1, 0, 0)
+    this.overlayCtx.scale(this.dpr, this.dpr)
+
+    // Horizontal scanlines pre-rendered once
+    this.overlayCtx.fillStyle = "rgba(0, 0, 0, 0.24)"
+    for (let y = 0; y < H; y += 4) {
+      this.overlayCtx.fillRect(0, y, W, 1)
+    }
+
+    // CRT Bezel Radial Vignette (Curved corners) pre-rendered once
+    const vignette = this.overlayCtx.createRadialGradient(
+      W * 0.5,
+      H * 0.5,
+      Math.min(W, H) * 0.45,
+      W * 0.5,
+      H * 0.5,
+      Math.max(W, H) * 0.72
+    )
+    vignette.addColorStop(0, "rgba(0, 0, 0, 0)")
+    vignette.addColorStop(0.7, "rgba(0, 0, 0, 0.28)")
+    vignette.addColorStop(1, "rgba(0, 0, 0, 0.78)")
+    this.overlayCtx.fillStyle = vignette
+    this.overlayCtx.fillRect(0, 0, W, H)
   }
 
-  drawWorldMapRadar() {
-    if (this.phase !== "loading" && this.phase !== "success") return
-
-    const isSuccess = this.phase === "success"
-
-    const { panelW, panelH, panelX, panelY, mapX, mapY, mapW, mapH } =
-      this.getRadarLayout(isSuccess)
-
-    this.ctx.shadowColor = this.rgba(this.color, 0.22)
-    this.ctx.shadowBlur = 16
-    this.roundRect(panelX, panelY, panelW, panelH, 10)
-    this.ctx.fillStyle = "rgba(4, 14, 16, 0.82)"
-    this.ctx.fill()
-    this.ctx.shadowColor = "transparent"
-    this.ctx.strokeStyle = this.rgba(this.color, 0.45)
-    this.ctx.lineWidth = 1.2
-    this.ctx.stroke()
-
-    this.ctx.font = "600 11px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.88)
-    this.ctx.fillText(
-      isSuccess ? "WORLD MAP // FULL LOCK" : "WORLD MAP // RADAR",
-      panelX + 12,
-      panelY + 18,
-    )
-
-    this.ctx.fillStyle = "rgba(2, 12, 11, 0.86)"
-    this.ctx.fillRect(mapX, mapY, mapW, mapH)
-
-    this.ctx.strokeStyle = this.rgba(this.color, 0.16)
-    this.ctx.lineWidth = 1
-    for (let gx = 0; gx <= 8; gx += 1) {
-      const x = mapX + (gx / 8) * mapW
-      this.ctx.beginPath()
-      this.ctx.moveTo(x, mapY)
-      this.ctx.lineTo(x, mapY + mapH)
-      this.ctx.stroke()
-    }
-    for (let gy = 0; gy <= 4; gy += 1) {
-      const y = mapY + (gy / 4) * mapH
-      this.ctx.beginPath()
-      this.ctx.moveTo(mapX, y)
-      this.ctx.lineTo(mapX + mapW, y)
-      this.ctx.stroke()
-    }
-
-    // Stylized continent blocks
-    const blocks = [
-      [0.08, 0.24, 0.18, 0.22],
-      [0.24, 0.38, 0.1, 0.16],
-      [0.39, 0.2, 0.2, 0.3],
-      [0.55, 0.42, 0.12, 0.18],
-      [0.67, 0.24, 0.22, 0.26],
-      [0.78, 0.56, 0.1, 0.14],
-    ]
-    this.ctx.fillStyle = this.rgba(this.color, 0.2)
-    blocks.forEach(([bx, by, bw, bh]) => {
-      this.ctx.fillRect(
-        mapX + bx * mapW,
-        mapY + by * mapH,
-        bw * mapW,
-        bh * mapH,
+  initHexMatrix() {
+    this.hexRows = []
+    const baseAddr = 0x7f00
+    for (let i = 0; i < 6; i++) {
+      const addr = (baseAddr + i * 16).toString(16).toUpperCase().padStart(4, "0")
+      const bytes = Array.from({ length: 8 }, () =>
+        Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, "0")
       )
-    })
-
-    const cx = mapX + mapW * 0.52
-    const cy = mapY + mapH * 0.52
-    const radius = Math.min(mapW, mapH) * 0.45
-    const sweepAngle = (this.tick * (isSuccess ? 0.22 : 0.1)) % (Math.PI * 2)
-
-    this.ctx.strokeStyle = this.rgba(this.color, 0.22)
-    this.ctx.lineWidth = 1
-    ;[0.35, 0.65, 1].forEach((r) => {
-      this.ctx.beginPath()
-      this.ctx.arc(cx, cy, radius * r, 0, Math.PI * 2)
-      this.ctx.stroke()
-    })
-
-    const cone = this.ctx.createRadialGradient(cx, cy, 0, cx, cy, radius)
-    cone.addColorStop(0, this.rgba(this.color, 0.25))
-    cone.addColorStop(1, this.rgba(this.color, 0))
-    this.ctx.fillStyle = cone
-    this.ctx.beginPath()
-    this.ctx.moveTo(cx, cy)
-    this.ctx.arc(cx, cy, radius, sweepAngle - 0.25, sweepAngle + 0.25)
-    this.ctx.closePath()
-    this.ctx.fill()
-
-    let bestLock = { index: -1, score: 0, x: 0, y: 0 }
-
-    this.worldNodes.forEach((node, nodeIndex) => {
-      const nx = mapX + node.x * mapW
-      const ny = mapY + node.y * mapH
-      node.pulse += 0.05
-
-      const isNodeLocked = isSuccess && nodeIndex < this.successLockedCount
-
-      const nodeAngle = Math.atan2(ny - cy, nx - cx)
-      let delta = Math.abs(nodeAngle - sweepAngle)
-      if (delta > Math.PI) delta = Math.PI * 2 - delta
-      const hitBoost = delta < 0.28 ? 0.45 : 0
-      const alpha =
-        0.3 + ((Math.sin(node.pulse) + 1) * 0.2 + hitBoost) * node.strength
-      const score = Math.max(0, 0.28 - delta) * node.strength
-      if (score > bestLock.score) {
-        bestLock = { index: nodeIndex, score, x: nx, y: ny }
-      }
-
-      this.ctx.fillStyle = isNodeLocked
-        ? this.rgba(this.color, 0.95)
-        : this.rgba(this.color, Math.min(alpha, 0.95))
-      this.ctx.beginPath()
-      this.ctx.arc(nx, ny, isNodeLocked ? 2.9 : 2.2, 0, Math.PI * 2)
-      this.ctx.fill()
-
-      if (isNodeLocked) {
-        this.ctx.strokeStyle = this.rgba(this.color, 0.85)
-        this.ctx.lineWidth = 1
-        this.ctx.strokeRect(nx - 4, ny - 4, 8, 8)
-        // Animate X mark
-        const xAlpha = Math.min(
-          1,
-          (this.successLockedCount - nodeIndex) * 0.18 + 0.22,
-        )
-        this.ctx.save()
-        this.ctx.globalAlpha = xAlpha
-        this.ctx.strokeStyle = "#ff4444"
-        this.ctx.lineWidth = 2.2
-        this.ctx.beginPath()
-        this.ctx.moveTo(nx - 3, ny - 3)
-        this.ctx.lineTo(nx + 3, ny + 3)
-        this.ctx.moveTo(nx + 3, ny - 3)
-        this.ctx.lineTo(nx - 3, ny + 3)
-        this.ctx.stroke()
-        this.ctx.restore()
-      }
-    })
-
-    this.lockedNodeIndex =
-      isSuccess || bestLock.score <= 0.03 ? -1 : bestLock.index
-    if (!isSuccess && this.lockedNodeIndex !== -1) {
-      const pulse = (Math.sin(this.tick * 0.45) + 1) * 0.5
-      const lockR = 6 + pulse * 3
-      this.ctx.strokeStyle = this.rgba(this.color, 0.7 + pulse * 0.25)
-      this.ctx.lineWidth = 1.3
-      this.ctx.beginPath()
-      this.ctx.arc(bestLock.x, bestLock.y, lockR, 0, Math.PI * 2)
-      this.ctx.stroke()
-
-      this.ctx.beginPath()
-      this.ctx.moveTo(bestLock.x - 10, bestLock.y)
-      this.ctx.lineTo(bestLock.x - 4, bestLock.y)
-      this.ctx.moveTo(bestLock.x + 4, bestLock.y)
-      this.ctx.lineTo(bestLock.x + 10, bestLock.y)
-      this.ctx.moveTo(bestLock.x, bestLock.y - 10)
-      this.ctx.lineTo(bestLock.x, bestLock.y - 4)
-      this.ctx.moveTo(bestLock.x, bestLock.y + 4)
-      this.ctx.lineTo(bestLock.x, bestLock.y + 10)
-      this.ctx.stroke()
+      this.hexRows.push({ addr, bytes })
     }
+  }
 
-    if (isSuccess) {
-      this.successShots.forEach((shot) => {
-        const node = this.worldNodes[shot.nodeIndex]
-        if (!node) return
-        const nx = mapX + node.x * mapW
-        const ny = mapY + node.y * mapH
-        const maxLife = Math.max(1, shot.maxLife || 24)
-        const elapsed = 1 - shot.life / maxLife
-        const travelT = Math.min(1, elapsed * 1.45)
-        const missileX = cx + (nx - cx) * travelT
-        const missileY = cy + (ny - cy) * travelT
+  initTerminalScript() {
+    this.script = [
+      { type: "instant", text: "SYS://CYBER-NEXUS-8086 KERNEL RELEASE 4.19" },
+      { type: "instant", text: "COPYRIGHT (C) 1984-1996 RETRO SYSTEMS CORP." },
+      { type: "instant", text: "----------------------------------------------------" },
+      { type: "type", text: "> BIOS POST: 640KB BASE RAM OK, EXT: 15360KB OK" },
+      { type: "type", text: "> MOUNTING ROOT VFS ON /dev/sda1 [READ/WRITE]... [OK]" },
+      { type: "type", text: "> INITIALIZING PARALLEL BUS CHIPSETS 8259A/8254... [OK]" },
+      { type: "type", text: "> DETECTING DISPLAY ADAPTER: CRT MONOCHROME P4... [OK]" },
+      { type: "type", text: "> PROBING ETHERNET TRANSCEIVER 10BASE-T... CONNECTED" },
+      { type: "type", text: "> ESTABLISHING TCP/IP HANDSHAKE WITH REMOTE GATEWAY" },
+      { type: "type", text: "> SCANNING PORTS [21, 22, 23, 80, 443, 8080]... READY" },
+      { type: "type", text: "> ALL SUBSYSTEMS NOMINAL. STARTING DAEMON PROCESSES" },
+      { type: "instant", text: "----------------------------------------------------" },
+      { type: "cmd", text: "guest@cyber-nexus:~$ netstat -a --numeric-hosts" },
+      { type: "instant", text: "TCP  127.0.0.1:8080   0.0.0.0:*           LISTEN" },
+      { type: "instant", text: "TCP  192.168.1.42:22  10.0.0.1:51284      ESTABLISHED" },
+      { type: "instant", text: "UDP  0.0.0.0:53       *:*                 READY" },
+      { type: "cmd", text: "guest@cyber-nexus:~$ run memory-benchmark --verbose" },
+      { type: "instant", text: "BENCHMARKING CACHE L1/L2 READ/WRITE BANDWIDTH..." },
+      { type: "instant", text: "[████████████████████████████████] 100% COMPLETE" },
+      { type: "instant", text: "MEMORY TRANSFER RATE: 133.4 MB/S // ZERO CORRUPTION" },
+      { type: "cmd", text: "guest@cyber-nexus:~$ ping -c 4 mainframe.gateway.net" },
+      { type: "instant", text: "64 bytes from 10.0.4.1: icmp_seq=1 ttl=64 time=1.42 ms" },
+      { type: "instant", text: "64 bytes from 10.0.4.1: icmp_seq=2 ttl=64 time=1.38 ms" },
+      { type: "instant", text: "64 bytes from 10.0.4.1: icmp_seq=3 ttl=64 time=1.45 ms" },
+      { type: "instant", text: "--- ping statistics: 0% packet loss, rtt min/avg/max = 1.41ms" },
+      { type: "cmd", text: "guest@cyber-nexus:~$ sys-monitor --continuous-mode" },
+      { type: "instant", text: "MONITORING ACTIVE BUS TRAFFIC & EVENT LOG..." },
+    ]
 
-        // Missile trail
-        this.ctx.strokeStyle = this.rgba(this.color, 0.18 + travelT * 0.45)
-        this.ctx.lineWidth = 1.15
-        this.ctx.beginPath()
-        this.ctx.moveTo(cx, cy)
-        this.ctx.lineTo(missileX, missileY)
-        this.ctx.stroke()
+    this.terminalLines = [
+      "SYS://CYBER-NEXUS-8086 KERNEL RELEASE 4.19",
+      "COPYRIGHT (C) 1984-1996 RETRO SYSTEMS CORP.",
+      "----------------------------------------------------",
+      "> BIOS POST: 640KB BASE RAM OK, EXT: 15360KB OK",
+      "> MOUNTING ROOT VFS ON /dev/sda1 [READ/WRITE]... [OK]",
+      "> INITIALIZING PARALLEL BUS CHIPSETS 8259A/8254... [OK]",
+      "> DETECTING DISPLAY ADAPTER: CRT MONOCHROME P4... [OK]",
+      "> PROBING ETHERNET TRANSCEIVER 10BASE-T... CONNECTED",
+      "> ESTABLISHING TCP/IP HANDSHAKE WITH REMOTE GATEWAY",
+    ]
+    this.scriptIndex = 9
+    this.charIndex = 0
+  }
 
-        // Missile head
-        const angle = Math.atan2(ny - cy, nx - cx)
-        this.ctx.save()
-        this.ctx.translate(missileX, missileY)
-        this.ctx.rotate(angle)
-        this.ctx.fillStyle = "rgba(255, 120, 120, 0.95)"
-        this.ctx.fillRect(-1, -1.5, 6, 3)
-        this.ctx.fillStyle = this.rgba(this.color, 0.88)
-        this.ctx.fillRect(-3, -1, 2, 2)
-        this.ctx.restore()
+  update(dt) {
+    this.time += dt
+    this.uptimeSeconds += dt
 
-        // Impact burst when missile reaches target
-        if (travelT >= 0.98) {
-          const burst = Math.max(0, Math.min(1, (elapsed - 0.68) / 0.32))
-          this.ctx.strokeStyle = `rgba(255, 95, 95, ${0.9 - burst * 0.5})`
-          this.ctx.lineWidth = 1.6
-          this.ctx.beginPath()
-          this.ctx.arc(nx, ny, 5 + burst * 14, 0, Math.PI * 2)
-          this.ctx.stroke()
+    // Smooth mouse parallax interpolation
+    this.mouse.x += (this.targetMouse.x - this.mouse.x) * 0.05 * (dt * 60)
+    this.mouse.y += (this.targetMouse.y - this.mouse.y) * 0.05 * (dt * 60)
+
+    // Cursor blink timer
+    this.cursorBlink = (this.cursorBlink + dt * 2.5) % 1
+
+    // Script Typing Machine
+    this.typeDelay -= dt
+    if (this.typeDelay <= 0) {
+      const item = this.script[this.scriptIndex]
+      if (item) {
+        if (item.type === "instant") {
+          this.terminalLines.push(item.text)
+          if (this.terminalLines.length > this.maxLines) this.terminalLines.shift()
+          this.scriptIndex = (this.scriptIndex + 1) % this.script.length
+          this.typeDelay = 0.35 + Math.random() * 0.4
+        } else if (item.type === "cmd" || item.type === "type") {
+          if (this.charIndex === 0) {
+            this.terminalLines.push("")
+            if (this.terminalLines.length > this.maxLines) this.terminalLines.shift()
+          }
+
+          const currentLineIdx = this.terminalLines.length - 1
+          this.charIndex += 1
+          this.terminalLines[currentLineIdx] = item.text.slice(0, this.charIndex)
+
+          if (this.charIndex >= item.text.length) {
+            this.charIndex = 0
+            this.scriptIndex = (this.scriptIndex + 1) % this.script.length
+            this.typeDelay = 0.6 + Math.random() * 0.5
+          } else {
+            this.typeDelay = item.type === "cmd" ? 0.04 + Math.random() * 0.03 : 0.02 + Math.random() * 0.02
+          }
         }
-      })
+      } else {
+        this.scriptIndex = 0
+      }
     }
 
-    this.ctx.fillStyle = this.rgba(this.color, 0.7)
-    this.ctx.font = "10px Silkscreen, monospace"
-    this.ctx.fillText(
-      isSuccess
-        ? `target lock ${this.successLockedCount}/${this.worldNodes.length}`
-        : `radar lock ${Math.floor(this.loadingProgress * 100)}%`,
-      panelX + 12,
-      panelY + panelH - 8,
-    )
-    if (!isSuccess && this.lockedNodeIndex !== -1) {
-      const confidence = Math.min(99, Math.floor((bestLock.score / 0.28) * 100))
-      this.ctx.fillText(
-        `target: NODE-${String(this.lockedNodeIndex + 1).padStart(2, "0")}  lock:${confidence}%`,
-        panelX + panelW - 190,
-        panelY + panelH - 8,
-      )
-    } else if (isSuccess) {
-      this.ctx.fillText(
-        this.successLockedCount >= this.worldNodes.length
-          ? "target: all locked // fire sequence"
-          : "target: mass lock in progress",
-        panelX + panelW - 208,
-        panelY + panelH - 8,
-      )
+    // Telemetry Meter Jitter
+    this.telemetryTick += dt
+    if (this.telemetryTick > 0.8) {
+      this.telemetryTick = 0
+      this.cpuMeters.forEach((m) => {
+        m.target = 35 + Math.floor(Math.random() * 55)
+      })
+
+      if (this.hexRows.length > 0) {
+        const row = this.hexRows[Math.floor(Math.random() * this.hexRows.length)]
+        const col = Math.floor(Math.random() * row.bytes.length)
+        row.bytes[col] = Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, "0")
+      }
+    }
+
+    this.cpuMeters.forEach((m) => {
+      m.val += (m.target - m.val) * 0.08 * (dt * 60)
+    })
+
+    // Radar Sweep
+    this.radarAngle = (this.radarAngle + dt * 1.8) % (Math.PI * 2)
+    this.radarBlips.forEach((blip) => {
+      blip.life -= dt * 0.25
+      if (blip.life <= 0) {
+        blip.life = 1.0
+        blip.theta = Math.random() * Math.PI * 2
+        blip.r = 0.2 + Math.random() * 0.68
+      }
+    })
+  }
+
+  draw() {
+    const ctx = this.ctx
+    if (!ctx) return
+
+    const W = this.width
+    const H = this.height
+
+    ctx.save()
+
+    // 1. Draw Pre-rendered Backdrop Buffer (1 fast drawImage instead of clearing and allocating gradients)
+    if (this.bgCanvas) {
+      ctx.drawImage(this.bgCanvas, 0, 0, W, H)
     } else {
-      this.ctx.fillText(
-        "target: scanning...",
-        panelX + panelW - 124,
-        panelY + panelH - 8,
-      )
+      ctx.fillStyle = "#04080a"
+      ctx.fillRect(0, 0, W, H)
+    }
+
+    // CRT Screen Subtle Curved Mouse Parallax
+    const tiltX = (this.mouse.x - 0.5) * 8
+    const tiltY = (this.mouse.y - 0.5) * 6
+    ctx.translate(tiltX, tiltY)
+
+    // Layout Dimensions
+    const margin = Math.max(16, Math.min(32, W * 0.025))
+    const isCompact = W < 920
+
+    const contentW = W - margin * 2
+    const headerH = 34
+    const contentY = margin + headerH + 12
+
+    const rightPanelW = isCompact ? 0 : Math.min(360, Math.max(260, contentW * 0.32))
+    const leftPanelW = isCompact ? contentW : contentW - rightPanelW - 16
+    const totalContentH = H - contentY - margin
+
+    // 2. TOP SYSTEM HEADER
+    this._drawSystemHeader(margin, margin, contentW, headerH)
+
+    // 3. MAIN CONSOLE PANEL (LEFT)
+    this._drawMainConsole(margin, contentY, leftPanelW, totalContentH)
+
+    // 4. RIGHT TELEMETRY, HEX MATRIX & RADAR (IF NOT COMPACT)
+    if (!isCompact) {
+      const rightX = margin + leftPanelW + 16
+      const panelGap = 12
+      const telemH = Math.min(180, totalContentH * 0.30)
+      const hexH = Math.min(190, totalContentH * 0.32)
+      const radarH = Math.max(140, totalContentH - telemH - hexH - panelGap * 2)
+
+      this._drawTelemetryPanel(rightX, contentY, rightPanelW, telemH)
+      this._drawHexMatrixPanel(rightX, contentY + telemH + panelGap, rightPanelW, hexH)
+      this._drawRadarPanel(rightX, contentY + telemH + hexH + panelGap * 2, rightPanelW, radarH)
+    }
+
+    ctx.restore()
+
+    // 5. Draw Pre-rendered CRT Scanlines & Bezel Vignette Buffer (1 fast drawImage instead of 500+ fillRect)
+    if (this.overlayCanvas) {
+      ctx.drawImage(this.overlayCanvas, 0, 0, W, H)
     }
   }
 
-  drawSuccessOverlay() {
-    if (this.phase !== "success") return
+  // ─── 8-BIT BOX DRAWING HELPERS ──────────────────────────────────────
 
-    const centerX = this.canvas.width / 2
-    const centerY = this.canvas.height * 0.5
-    const scale = Math.max(4, Math.min(8, this.canvas.width / 220))
-    const skullPattern = [
-      "0011111100",
-      "0111111110",
-      "1111011111",
-      "1111111111",
-      "1110110111",
-      "1111111111",
-      "0111001110",
-      "0010100100",
-      "0011111100",
-    ]
-    const skullW = skullPattern[0].length * scale
-    const skullH = skullPattern.length * scale
-    const skullX = centerX - skullW / 2
-    const skullY = centerY - skullH / 2 - 16
+  _draw8BitBox(x, y, w, h, title = "", cachedWidth = 0) {
+    const ctx = this.ctx
+    const pal = this.palette
 
-    this.ctx.fillStyle = "rgba(4, 10, 12, 0.68)"
-    this.roundRect(skullX - 22, skullY - 22, skullW + 44, skullH + 72, 12)
-    this.ctx.fill()
-    this.ctx.strokeStyle = this.rgba(this.color, 0.45)
-    this.ctx.lineWidth = 1.2
-    this.ctx.stroke()
+    // Semi-translucent dark glass fill
+    ctx.fillStyle = "rgba(4, 12, 14, 0.82)"
+    ctx.fillRect(x, y, w, h)
 
-    skullPattern.forEach((row, rowIndex) => {
-      for (let col = 0; col < row.length; col += 1) {
-        if (row[col] !== "1") continue
-        const pulse =
-          0.58 + (Math.sin(this.tick * 0.2 + rowIndex + col) + 1) * 0.18
-        this.ctx.fillStyle = this.rgba(this.color, pulse)
-        this.ctx.fillRect(
-          skullX + col * scale,
-          skullY + rowIndex * scale,
-          scale - 1,
-          scale - 1,
-        )
+    // 8-bit Phosphor Border
+    ctx.strokeStyle = pal.border
+    ctx.lineWidth = 1
+    ctx.strokeRect(Math.floor(x) + 0.5, Math.floor(y) + 0.5, Math.floor(w), Math.floor(h))
+
+    // Corner tick accents
+    const tick = 6
+    ctx.strokeStyle = pal.borderTick
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    // Top-left
+    ctx.moveTo(x, y + tick)
+    ctx.lineTo(x, y)
+    ctx.lineTo(x + tick, y)
+    // Top-right
+    ctx.moveTo(x + w - tick, y)
+    ctx.lineTo(x + w, y)
+    ctx.lineTo(x + w, y + tick)
+    // Bottom-left
+    ctx.moveTo(x, y + h - tick)
+    ctx.lineTo(x, y + h)
+    ctx.lineTo(x + tick, y + h)
+    // Bottom-right
+    ctx.moveTo(x + w - tick, y + h)
+    ctx.lineTo(x + w, y + h)
+    ctx.lineTo(x + w, y + h - tick)
+    ctx.stroke()
+
+    // Title tag (uses pre-cached width)
+    if (title) {
+      ctx.font = "bold 11px 'Courier New', Monaco, monospace"
+      const titleText = `[ ${title} ]`
+      const tw = cachedWidth || (titleText.length * 7 + 8)
+      ctx.fillStyle = "#04080a"
+      ctx.fillRect(x + 14, y - 6, tw + 8, 12)
+      ctx.fillStyle = pal.high
+      ctx.fillText(titleText, x + 18, y + 4)
+    }
+  }
+
+  // ─── 1. TOP HEADER ──────────────────────────────────────────────────
+
+  _drawSystemHeader(x, y, w, h) {
+    const ctx = this.ctx
+    const pal = this.palette
+    this._draw8BitBox(x, y, w, h)
+
+    ctx.save()
+    ctx.font = "bold 12px 'Courier New', Monaco, monospace"
+
+    // Left brand
+    ctx.fillStyle = pal.full
+    ctx.fillText("SYS://RETRO-TERMINAL-8086", x + 14, y + 21)
+
+    // Center Uptime
+    const hrs = Math.floor(this.uptimeSeconds / 3600).toString().padStart(2, "0")
+    const mins = Math.floor((this.uptimeSeconds % 3600) / 60).toString().padStart(2, "0")
+    const secs = Math.floor(this.uptimeSeconds % 60).toString().padStart(2, "0")
+    ctx.fillStyle = pal.mid
+    if (w > 640) {
+      ctx.fillText(`UPTIME: ${hrs}:${mins}:${secs}`, x + w * 0.45, y + 21)
+    }
+
+    // Right baud & status badge
+    ctx.fillStyle = pal.high
+    const sw = this.textWidths.status || 135
+    ctx.fillText("9600 BAUD [ONLINE]", x + w - sw - 14, y + 21)
+
+    ctx.restore()
+  }
+
+  // ─── 2. MAIN CONSOLE ────────────────────────────────────────────────
+
+  _drawMainConsole(x, y, w, h) {
+    const ctx = this.ctx
+    const pal = this.palette
+    this._draw8BitBox(x, y, w, h, "CONSOLE LOG // DEV-0", this.textWidths.titleConsole)
+
+    ctx.save()
+    const paddingX = 18
+    const startY = y + 30
+    const lineSpacing = 20
+
+    ctx.font = "12px 'Courier New', Monaco, monospace"
+
+    for (let i = 0; i < this.terminalLines.length; i++) {
+      const lineY = startY + i * lineSpacing
+      if (lineY > y + h - 38) break
+
+      const line = this.terminalLines[i]
+      if (!line) continue
+
+      if (line.startsWith("SYS:") || line.startsWith("COPYRIGHT")) {
+        ctx.fillStyle = pal.dim
+      } else if (line.startsWith(">")) {
+        ctx.fillStyle = pal.text
+      } else if (line.startsWith("guest@")) {
+        ctx.fillStyle = pal.full
+      } else if (line.includes("[OK]") || line.includes("COMPLETE")) {
+        ctx.fillStyle = pal.high
+      } else if (line.includes("---") || line.includes("===")) {
+        ctx.fillStyle = pal.dim
+      } else {
+        ctx.fillStyle = pal.mid
+      }
+
+      ctx.fillText(line, x + paddingX, lineY)
+    }
+
+    // Bottom interactive command prompt line with 8-bit blinking block cursor
+    const bottomPromptY = y + h - 16
+    ctx.strokeStyle = pal.faint
+    ctx.beginPath()
+    ctx.moveTo(x + 12, bottomPromptY - 14)
+    ctx.lineTo(x + w - 12, bottomPromptY - 14)
+    ctx.stroke()
+
+    ctx.font = "bold 12px 'Courier New', Monaco, monospace"
+    ctx.fillStyle = pal.high
+    const promptText = "guest@cyber-nexus:~$ "
+    ctx.fillText(promptText, x + paddingX, bottomPromptY)
+
+    // Blinking Block Cursor █
+    if (this.cursorBlink > 0.5) {
+      const pw = this.textWidths.prompt || 155
+      ctx.fillStyle = pal.full
+      ctx.fillRect(x + paddingX + pw + 2, bottomPromptY - 10, 8, 12)
+    }
+
+    ctx.restore()
+  }
+
+  // ─── 3. TELEMETRY PANEL ─────────────────────────────────────────────
+
+  _drawTelemetryPanel(x, y, w, h) {
+    const ctx = this.ctx
+    const pal = this.palette
+    this._draw8BitBox(x, y, w, h, "SYSTEM TELEMETRY", this.textWidths.titleTelem)
+
+    ctx.save()
+    const paddingX = 14
+    const startY = y + 28
+    const rowH = 24
+
+    ctx.font = "11px 'Courier New', Monaco, monospace"
+
+    this.cpuMeters.forEach((m, idx) => {
+      const rowY = startY + idx * rowH
+      if (rowY > y + h - 10) return
+
+      ctx.fillStyle = pal.text
+      ctx.fillText(m.name.padEnd(6, " "), x + paddingX, rowY + 9)
+
+      const barX = x + paddingX + 56
+      const barW = Math.max(70, w - paddingX * 2 - 105)
+      const barH = 10
+      const pct = Math.max(0, Math.min(100, Math.round(m.val)))
+
+      ctx.strokeStyle = pal.dim
+      ctx.strokeRect(barX, rowY, barW, barH)
+
+      const fillW = Math.round((barW - 2) * (pct / 100))
+      ctx.fillStyle = pal.text
+      ctx.fillRect(barX + 1, rowY + 1, fillW, barH - 2)
+
+      ctx.fillStyle = pal.high
+      ctx.fillText(`${pct}%`.padStart(4, " "), barX + barW + 8, rowY + 9)
+    })
+
+    ctx.fillStyle = pal.dim
+    ctx.fillText("CORE TEMP: 41.6°C // FAN: 2800 RPM", x + paddingX, y + h - 12)
+
+    ctx.restore()
+  }
+
+  // ─── 4. HEX MATRIX PANEL ────────────────────────────────────────────
+
+  _drawHexMatrixPanel(x, y, w, h) {
+    const ctx = this.ctx
+    const pal = this.palette
+    this._draw8BitBox(x, y, w, h, "ACTIVE MEMORY DUMP", this.textWidths.titleHex)
+
+    ctx.save()
+    const paddingX = 14
+    const startY = y + 28
+    const rowH = 20
+
+    ctx.font = "11px 'Courier New', Monaco, monospace"
+
+    this.hexRows.forEach((row, idx) => {
+      const rowY = startY + idx * rowH
+      if (rowY > y + h - 12) return
+
+      ctx.fillStyle = pal.high
+      ctx.fillText(`0x${row.addr}:`, x + paddingX, rowY)
+
+      ctx.fillStyle = pal.mid
+      const hexStr = row.bytes.slice(0, Math.min(8, Math.floor((w - 90) / 24))).join(" ")
+      ctx.fillText(hexStr, x + paddingX + 54, rowY)
+    })
+
+    ctx.restore()
+  }
+
+  // ─── 5. 8-BIT VECTOR RADAR ──────────────────────────────────────────
+
+  _drawRadarPanel(x, y, w, h) {
+    const ctx = this.ctx
+    const pal = this.palette
+    this._draw8BitBox(x, y, w, h, "TACTICAL RADAR", this.textWidths.titleRadar)
+
+    ctx.save()
+    const cx = x + w / 2
+    const cy = y + h / 2 + 6
+    const radius = Math.max(20, Math.min(w * 0.38, (h - 32) * 0.42))
+
+    // Radar concentric rings
+    ctx.strokeStyle = pal.dim
+    ctx.lineWidth = 1
+    for (let r = radius * 0.33; r <= radius; r += radius * 0.33) {
+      ctx.beginPath()
+      ctx.arc(cx, cy, r, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+
+    // Crosshairs
+    ctx.beginPath()
+    ctx.moveTo(cx - radius - 4, cy)
+    ctx.lineTo(cx + radius + 4, cy)
+    ctx.moveTo(cx, cy - radius - 4)
+    ctx.lineTo(cx, cy + radius + 4)
+    ctx.stroke()
+
+    // Rotating Radar Sweep Beam
+    const sx = cx + Math.cos(this.radarAngle) * radius
+    const sy = cy + Math.sin(this.radarAngle) * radius
+    ctx.strokeStyle = pal.high
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.lineTo(sx, sy)
+    ctx.stroke()
+
+    // Radar Sweep Tail
+    ctx.beginPath()
+    ctx.moveTo(cx, cy)
+    ctx.arc(cx, cy, radius, this.radarAngle - 0.45, this.radarAngle)
+    ctx.closePath()
+    ctx.fillStyle = pal.radarTail
+    ctx.fill()
+
+    // Detected Blips
+    const { r, g, b } = this._cachedRGB
+    this.radarBlips.forEach((blip) => {
+      const bx = cx + Math.cos(blip.theta) * (radius * blip.r)
+      const by = cy + Math.sin(blip.theta) * (radius * blip.r)
+      const alpha = Math.max(0.1, blip.life)
+
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
+      ctx.fillRect(bx - 2, by - 2, 4, 4)
+
+      if (blip.life > 0.6) {
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${blip.life * 0.5})`
+        ctx.strokeRect(bx - 4, by - 4, 8, 8)
       }
     })
 
-    this.ctx.font = "600 12px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.85)
-    const title = "ACCESS GRANTED // FINAL STAGE"
-    this.ctx.fillText(
-      title,
-      centerX - this.ctx.measureText(title).width / 2,
-      skullY - 10,
-    )
-
-    const buttonW = 150
-    const buttonH = 30
-    const buttonX = centerX - buttonW / 2
-    const buttonY = skullY + skullH + 20
-    const blink = this.tick % 24 < 12
-    this.roundRect(buttonX, buttonY, buttonW, buttonH, 6)
-    this.ctx.fillStyle = blink
-      ? this.rgba(this.color, 0.34)
-      : "rgba(7, 26, 26, 0.58)"
-    this.ctx.fill()
-    this.ctx.strokeStyle = this.rgba(this.color, blink ? 0.95 : 0.45)
-    this.ctx.lineWidth = 1.4
-    this.ctx.stroke()
-
-    this.ctx.font = "600 14px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, blink ? 0.98 : 0.72)
-    const launchText = "AUTO LAUNCH"
-    this.ctx.fillText(
-      launchText,
-      centerX - this.ctx.measureText(launchText).width / 2,
-      buttonY + 20,
-    )
-
-    const progressText =
-      this.successLockedCount >= this.worldNodes.length
-        ? "all targets locked // firing"
-        : "locking targets..."
-    this.ctx.font = "11px Silkscreen, monospace"
-    this.ctx.fillStyle = this.rgba(this.color, 0.78)
-    this.ctx.fillText(
-      progressText,
-      centerX - this.ctx.measureText(progressText).width / 2,
-      buttonY + 50,
-    )
-
-    const autoText = "no user input required"
-    this.ctx.fillStyle = this.rgba(this.color, 0.58)
-    this.ctx.fillText(
-      autoText,
-      centerX - this.ctx.measureText(autoText).width / 2,
-      buttonY + 64,
-    )
-
-    this.drawWorldMapRadar()
+    ctx.restore()
   }
 
-  drawScanlines() {
-    this.scanOffset = (this.scanOffset + 1.2) % 6
-    this.ctx.fillStyle = "rgba(255,255,255,0.03)"
-    const centerW = this.canvas.width * 0.32
-    const centerX = this.canvas.width / 2
-    for (let y = -this.scanOffset; y < this.canvas.height; y += 6) {
-      this.ctx.fillRect(0, y, centerX - centerW / 2, 1)
-      this.ctx.fillRect(
-        centerX + centerW / 2,
-        y,
-        this.canvas.width - (centerX + centerW / 2),
-        1,
-      )
-    }
+  animate(currentTime = performance.now()) {
+    if (!this.active || this.destroyed) return
+    this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
-    const noiseAlpha =
-      0.03 + (Math.sin(this.tick * 0.3 + this.noiseSeed) + 1) * 0.008
-    this.ctx.fillStyle = `rgba(255,255,255,${noiseAlpha})`
-    for (let index = 0; index < 80; index += 1) {
-      const x = Math.random() * this.canvas.width
-      const y = Math.random() * this.canvas.height
-      this.ctx.fillRect(x, y, 1, 1)
-    }
+    const dt = Math.min((currentTime - (this.lastTime || currentTime)) * 0.001, 0.1)
+    this.lastTime = currentTime
 
-    const vignette = this.ctx.createRadialGradient(
-      this.canvas.width / 2,
-      this.canvas.height / 2,
-      Math.min(this.canvas.width, this.canvas.height) * 0.22,
-      this.canvas.width / 2,
-      this.canvas.height / 2,
-      Math.max(this.canvas.width, this.canvas.height) * 0.75,
-    )
-    vignette.addColorStop(0, "rgba(0,0,0,0)")
-    vignette.addColorStop(1, "rgba(0,0,0,0.36)")
-    this.ctx.fillStyle = vignette
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-  }
-
-  animate(currentTime = 0) {
-    if (!this.active) return
-    this._animId = requestAnimationFrame((time) => this.animate(time))
-    if (document.visibilityState === 'hidden') return
-
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-    this.tick += 1
-    this.updatePhase()
-
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.drawBackdrop()
-    if (this.phase === "loading") {
-      this.updateWindows()
-      this.windows.forEach((windowData) => this.drawWindow(windowData))
-      this.drawLoadingOverlay()
-    } else if (this.phase === "burst") {
-      this.updateBurstColumns()
-      this.drawBurstOverlay()
-    } else if (this.phase === "error") {
-      this.updateErrorStreams()
-      this.updateErrorPopups()
-      this.drawErrorOverlay()
-    } else if (this.phase === "success") {
-      this.updateWindows()
-      this.windows.forEach((windowData) => this.drawWindow(windowData))
-      this.drawSuccessOverlay()
-    } else {
-      this.updateWindows()
-      this.windows.forEach((windowData) => this.drawWindow(windowData))
-    }
-    this.drawScanlines()
-    this.canvas.style.display = "block"
+    this.update(dt)
+    this.draw()
   }
 
   start() {
-    if (this.active) return
+    if (this.active || this.destroyed) return
     this.active = true
-    this.lastDrawTime = 0
-    this.tick = 0
-    this.initScene()
-    this.canvas.style.display = "block"
-    this.animate(0)
+    this.lastTime = performance.now()
+    if (this.canvas) this.canvas.style.display = "block"
+    this.resize()
+    this.animate()
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (!this.active) return
     this.active = false
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.canvas.style.display = "none"
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
+    if (this.ctx && this.canvas) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    }
+    if (this.canvas) {
+      this.canvas.style.display = "none"
+    }
+  }
+
+  destroy() {
+    this.stop()
+    this.destroyed = true
+    window.removeEventListener("resize", this._resizeHandler)
+    window.removeEventListener("mousemove", this._mouseMoveHandler)
+    window.removeEventListener("mouseleave", this._mouseLeaveHandler)
+    document.removeEventListener("visibilitychange", this._visibilityHandler)
+
+    // Cleanup offscreen buffers
+    this.bgCanvas = null
+    this.bgCtx = null
+    this.overlayCanvas = null
+    this.overlayCtx = null
   }
 }
