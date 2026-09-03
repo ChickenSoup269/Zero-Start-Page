@@ -570,6 +570,17 @@
                             </div>
                         </div>
 
+                        <!-- Aurora Musical Notes Simulation -->
+                        <div id="aurora-wave-notes-setting" class="setting-item" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="aurora-wave-notes-toggle" data-i18n="setting_aurora_wave_notes" style="margin-bottom: 0;">Musical Notes (Mô phỏng Nốt nhạc)</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="aurora-wave-notes-toggle" checked />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Hacker Setting -->
                         <div id="hacker-color-setting" class="setting-item" style="display: none;">
                             <label for="hacker-mode-select" data-i18n="setting_hacker_mode">Hacker Mode</label>
@@ -684,7 +695,16 @@
                                     data-i18n="settings_pixel_weather_density">Density</span> <span
                                     id="pixel-weather-density-val">1.0</span></label>
                             <input type="range" id="pixel-weather-density-slider" min="0.2" max="3.0" step="0.1"
-                                value="1.0">
+                                value="1.0" style="margin-bottom: 12px;">
+
+                            <!-- Pixel Weather Mist & Vapor -->
+                            <div id="pixel-weather-mist-setting" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                                <label for="pixel-weather-mist-toggle" data-i18n="settings_pixel_weather_mist" style="margin-bottom: 0;">Atmospheric Mist & Vapor (Hơi nước)</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="pixel-weather-mist-toggle" checked />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <!-- Sky Lanterns Settings -->
@@ -743,6 +763,33 @@
                                 <option value="chill" data-i18n="rain_mode_chill">Chill Window & Bokeh</option>
                                 <option value="storm" data-i18n="rain_mode_storm">Cinematic Storm & Lightning</option>
                             </select>
+                        </div>
+
+                        <!-- Rain Fall Speed -->
+                        <div id="rain-speed-setting" class="setting-item" style="display: none;">
+                            <label for="rain-speed-slider">
+                                <span data-i18n="setting_rain_speed">Fall Speed</span>: <span id="rain-speed-val">1.0x</span>
+                            </label>
+                            <input type="range" id="rain-speed-slider" min="0.3" max="2.5" step="0.1" value="1.0" />
+                        </div>
+
+                        <!-- Rain Density -->
+                        <div id="rain-density-setting" class="setting-item" style="display: none;">
+                            <label for="rain-density-slider">
+                                <span data-i18n="setting_rain_density">Rain Density</span>: <span id="rain-density-val">1.0x</span>
+                            </label>
+                            <input type="range" id="rain-density-slider" min="0.3" max="2.5" step="0.1" value="1.0" />
+                        </div>
+
+                        <!-- Rain Atmospheric Mist & Vapor -->
+                        <div id="rain-mist-setting" class="setting-item" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="rain-mist-toggle" data-i18n="setting_rain_mist" style="margin-bottom: 0;">Atmospheric Mist & Vapor (Hơi nước)</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="rain-mist-toggle" checked />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <!-- Fireflies Color -->
@@ -1262,6 +1309,15 @@
                             <label for="music-bars-color-picker" data-i18n="setting_music_bars_color">Bars
                                 Color</label>
                             <input type="color" id="music-bars-color-picker" value="#8be9fd" />
+                        </div>
+                        <div id="music-bars-notes-setting" class="setting-item" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="music-bars-notes-toggle" data-i18n="setting_music_bars_notes" style="margin-bottom: 0;">Musical Notes (Mô phỏng Nốt nhạc)</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="music-bars-notes-toggle" checked />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
                         <!-- Wavy Lines Settings -->
                         <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">

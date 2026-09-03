@@ -88,7 +88,10 @@ import {
   renderTabIconPreview,
 } from "./tabIcon.js"
 import { initFaPicker } from "./faPicker.js"
-import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
+import {
+  applyAccentFromCurrentBackground,
+  applyAccentFromMusicThumbnail,
+} from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js"
@@ -2618,9 +2621,43 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  // Dynamic M3 Color (Extract from music thumbnail)
+  if (DOM.m3DynamicMusicBtn) {
+    DOM.m3DynamicMusicBtn.addEventListener("click", async () => {
+      const origHtml = DOM.m3DynamicMusicBtn.innerHTML
+      DOM.m3DynamicMusicBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`
+      try {
+        const color = await applyAccentFromMusicThumbnail({
+          DOM,
+          handleSettingUpdate,
+          fallbackRandom: false,
+          silent: false,
+        })
+        if (color) {
+          showToast(`M3 accent updated from music: ${color.toUpperCase()}`, {
+            type: "success",
+          })
+        } else {
+          showToast("No music thumbnail currently available", {
+            type: "info",
+          })
+        }
+      } catch (e) {
+        console.error("M3 music color extraction failed:", e)
+      } finally {
+        DOM.m3DynamicMusicBtn.innerHTML = origHtml
+      }
+    })
+  }
+
   DOM.m3AutoBgToggle?.addEventListener("change", async () => {
     const enabled = DOM.m3AutoBgToggle.checked === true
     updateSetting("m3AutoAccentFromBg", enabled)
+    // Mutually exclusive: turn off auto music when auto background is enabled
+    if (enabled) {
+      updateSetting("m3AutoAccentFromMusic", false)
+      if (DOM.m3AutoMusicToggle) DOM.m3AutoMusicToggle.checked = false
+    }
     saveSettings()
     if (enabled) {
       ;[0, 650, 1400].forEach((delay) => {
@@ -2636,6 +2673,51 @@ export function setupGeneralEventHandlers(
           })
         }, delay)
       })
+    }
+  })
+
+  DOM.m3AutoMusicToggle?.addEventListener("change", async () => {
+    const enabled = DOM.m3AutoMusicToggle.checked === true
+    updateSetting("m3AutoAccentFromMusic", enabled)
+    // Mutually exclusive: turn off auto background when auto music is enabled
+    if (enabled) {
+      updateSetting("m3AutoAccentFromBg", false)
+      if (DOM.m3AutoBgToggle) DOM.m3AutoBgToggle.checked = false
+    }
+    saveSettings()
+    if (enabled) {
+      try {
+        const color = await applyAccentFromMusicThumbnail({
+          DOM,
+          handleSettingUpdate,
+          fallbackRandom: false,
+          silent: true,
+        })
+        if (color) {
+          showToast(`M3 accent updated from music: ${color.toUpperCase()}`, {
+            type: "success",
+          })
+        }
+      } catch (err) {
+        console.warn("Initial auto music M3 accent update failed:", err)
+      }
+    }
+  })
+
+  // Listen to track/thumbnail changes for auto music M3 accent
+  window.addEventListener("musicThumbnailChange", async (e) => {
+    if (getSettings().m3AutoAccentFromMusic !== true) return
+    const thumbUrl = e.detail?.thumbnail
+    if (!thumbUrl) return
+    try {
+      await applyAccentFromMusicThumbnail({
+        DOM,
+        handleSettingUpdate,
+        thumbnailUrl: thumbUrl,
+        silent: true,
+      })
+    } catch (err) {
+      console.warn("Auto music M3 accent update failed:", err)
     }
   })
 
@@ -5302,6 +5384,62 @@ export function setupGeneralEventHandlers(
       if (effectInstances.starFallEffect && effectInstances.starFallEffect.setMode) {
         effectInstances.starFallEffect.setMode(e.target.value)
       }
+      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setMode) {
+        effectInstances.galaxyEffect.setMode(e.target.value)
+      }
+      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setMode) {
+        effectInstances.rainHDEffect.setMode(e.target.value)
+      }
+    })
+  }
+
+  if (DOM.rainSpeedSlider) {
+    DOM.rainSpeedSlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.rainSpeedVal) DOM.rainSpeedVal.textContent = `${val.toFixed(1)}x`
+      handleSettingUpdate("rainSpeed", val)
+      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setSpeed) {
+        effectInstances.starFallEffect.setSpeed(val)
+      }
+      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setSpeed) {
+        effectInstances.galaxyEffect.setSpeed(val)
+      }
+      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setSpeed) {
+        effectInstances.rainHDEffect.setSpeed(val)
+      }
+    })
+  }
+
+  if (DOM.rainDensitySlider) {
+    DOM.rainDensitySlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.rainDensityVal) DOM.rainDensityVal.textContent = `${val.toFixed(1)}x`
+      handleSettingUpdate("rainDensity", val)
+      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setDensity) {
+        effectInstances.starFallEffect.setDensity(val)
+      }
+      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setDensity) {
+        effectInstances.galaxyEffect.setDensity(val)
+      }
+      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setDensity) {
+        effectInstances.rainHDEffect.setDensity(val)
+      }
+    })
+  }
+
+  if (DOM.rainMistToggle) {
+    DOM.rainMistToggle.addEventListener("change", (e) => {
+      const checked = e.target.checked
+      handleSettingUpdate("rainMist", checked)
+      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setMist) {
+        effectInstances.starFallEffect.setMist(checked)
+      }
+      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setMist) {
+        effectInstances.galaxyEffect.setMist(checked)
+      }
+      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setMist) {
+        effectInstances.rainHDEffect.setMist(checked)
+      }
     })
   }
 
@@ -5311,12 +5449,18 @@ export function setupGeneralEventHandlers(
       if (effectInstances.firefliesEffect && effectInstances.firefliesEffect.setMode) {
         effectInstances.firefliesEffect.setMode(e.target.value)
       }
+      if (effectInstances.firefliesHDEffect && effectInstances.firefliesHDEffect.setMode) {
+        effectInstances.firefliesHDEffect.setMode(e.target.value)
+      }
     })
   }
 
   if (DOM.pixelWeatherStyleSelect) {
     DOM.pixelWeatherStyleSelect.addEventListener("change", (e) => {
       handleSettingUpdate("pixelWeatherStyle", e.target.value)
+      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setMode) {
+        effectInstances.pixelWeatherEffect.setMode(e.target.value)
+      }
     })
   }
   if (DOM.pixelWeatherResolutionSlider) {
@@ -5325,6 +5469,9 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherResolutionVal)
         DOM.pixelWeatherResolutionVal.textContent = val
       handleSettingUpdate("pixelWeatherResolution", val)
+      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setOptions) {
+        effectInstances.pixelWeatherEffect.setOptions({ resolution: val })
+      }
     })
   }
 
@@ -5334,6 +5481,13 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherSpeedVal)
         DOM.pixelWeatherSpeedVal.textContent = val.toFixed(1)
       handleSettingUpdate("pixelWeatherSpeed", val)
+      if (effectInstances.pixelWeatherEffect) {
+        if (effectInstances.pixelWeatherEffect.setSpeed) {
+          effectInstances.pixelWeatherEffect.setSpeed(val)
+        } else if (effectInstances.pixelWeatherEffect.setOptions) {
+          effectInstances.pixelWeatherEffect.setOptions({ speed: val })
+        }
+      }
     })
   }
 
@@ -5343,6 +5497,9 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherSizeVal)
         DOM.pixelWeatherSizeVal.textContent = val.toFixed(1)
       handleSettingUpdate("pixelWeatherSize", val)
+      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setOptions) {
+        effectInstances.pixelWeatherEffect.setOptions({ size: val })
+      }
     })
   }
 
@@ -5352,6 +5509,27 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherDensityVal)
         DOM.pixelWeatherDensityVal.textContent = val.toFixed(1)
       handleSettingUpdate("pixelWeatherDensity", val)
+      if (effectInstances.pixelWeatherEffect) {
+        if (effectInstances.pixelWeatherEffect.setDensity) {
+          effectInstances.pixelWeatherEffect.setDensity(val)
+        } else if (effectInstances.pixelWeatherEffect.setOptions) {
+          effectInstances.pixelWeatherEffect.setOptions({ density: val })
+        }
+      }
+    })
+  }
+
+  if (DOM.pixelWeatherMistToggle) {
+    DOM.pixelWeatherMistToggle.addEventListener("change", (e) => {
+      const checked = e.target.checked
+      handleSettingUpdate("pixelWeatherMist", checked)
+      if (effectInstances.pixelWeatherEffect) {
+        if (effectInstances.pixelWeatherEffect.setMist) {
+          effectInstances.pixelWeatherEffect.setMist(checked)
+        } else if (effectInstances.pixelWeatherEffect.setOptions) {
+          effectInstances.pixelWeatherEffect.setOptions({ mist: checked })
+        }
+      }
     })
   }
 
@@ -10046,6 +10224,12 @@ export function setupGeneralEventHandlers(
 
     if (key === "sidebarUseM3Accent" && DOM.m3SidebarToggle) {
       DOM.m3SidebarToggle.checked = value === true
+    }
+    if (key === "m3AutoAccentFromBg" && DOM.m3AutoBgToggle) {
+      DOM.m3AutoBgToggle.checked = value === true
+    }
+    if (key === "m3AutoAccentFromMusic" && DOM.m3AutoMusicToggle) {
+      DOM.m3AutoMusicToggle.checked = value === true
     }
     if (key === "m3PaletteStyle" && DOM.m3PaletteStyleSelect) {
       DOM.m3PaletteStyleSelect.value = value || "tonalSpot"

@@ -3303,6 +3303,7 @@ function createApplySettings(effectInstances) {
             resolution: settings.pixelWeatherResolution || 1,
             speed: settings.pixelWeatherSpeed || 1.0,
             size: settings.pixelWeatherSize || 1.0,
+            mist: settings.pixelWeatherMist !== undefined ? settings.pixelWeatherMist : true,
           }),
         )
       }
@@ -3312,6 +3313,14 @@ function createApplySettings(effectInstances) {
       if (selectedEffect.setMode) {
         const mode = effectToStart === "rainHD" ? "storm" : (settings.rainMode || "chill")
         selectedEffect.setMode(mode)
+      }
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          speed: settings.rainSpeed !== undefined ? settings.rainSpeed : 1.0,
+          density: settings.rainDensity !== undefined ? settings.rainDensity : 1.0,
+          mist: settings.rainMist !== undefined ? settings.rainMist : true,
+          color: effectToStart === "rainHD" ? (settings.rainHDColor || "#99ccff") : (settings.starColor || "#99ccff"),
+        })
       }
     }
 
@@ -3405,8 +3414,21 @@ function createApplySettings(effectInstances) {
           transparent: settings.auroraWaveTransparent !== false,
           backgroundColor: settings.auroraWaveBgColor || "#000000",
           bgOpacity: settings.auroraWaveBgOpacity ?? 0.15,
+          notes: settings.auroraWaveNotes !== false,
         }),
       )
+    }
+
+    if (
+      effectToStart === "musicBars" &&
+      selectedEffect
+    ) {
+      if (selectedEffect.updateColor) {
+        selectedEffect.updateColor(settings.musicBarsColor || "#8be9fd")
+      }
+      if (selectedEffect.setNotes) {
+        selectedEffect.setNotes(settings.musicBarsNotes !== false)
+      }
     }
 
     if (
@@ -4711,6 +4733,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.m3AutoBgToggle) {
       DOM.m3AutoBgToggle.checked = settings.m3AutoAccentFromBg === true
     }
+    if (DOM.m3AutoMusicToggle) {
+      DOM.m3AutoMusicToggle.checked = settings.m3AutoAccentFromMusic === true
+    }
     if (DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = settings.widgetUseM3Accent === true
     }
@@ -5304,6 +5329,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.musicBarsColorPicker) {
       DOM.musicBarsColorPicker.value = settings.musicBarsColor || "#8be9fd"
     }
+    if (DOM.musicBarsNotesToggle) {
+      DOM.musicBarsNotesToggle.checked = settings.musicBarsNotes !== false
+    }
     if (DOM.wavyLinesColorPicker) {
       DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
     }
@@ -5380,6 +5408,26 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.effect === "rainHD"
           ? "storm"
           : settings.rainMode || "chill"
+
+    const isRainEffect = settings.effect === "galaxy" || settings.effect === "rainHD"
+    if (DOM.rainSpeedSetting)
+      DOM.rainSpeedSetting.style.display = isRainEffect ? "block" : "none"
+    if (DOM.rainSpeedSlider)
+      DOM.rainSpeedSlider.value = settings.rainSpeed !== undefined ? settings.rainSpeed : 1.0
+    if (DOM.rainSpeedVal)
+      DOM.rainSpeedVal.textContent = `${(settings.rainSpeed !== undefined ? settings.rainSpeed : 1.0).toFixed(1)}x`
+
+    if (DOM.rainDensitySetting)
+      DOM.rainDensitySetting.style.display = isRainEffect ? "block" : "none"
+    if (DOM.rainDensitySlider)
+      DOM.rainDensitySlider.value = settings.rainDensity !== undefined ? settings.rainDensity : 1.0
+    if (DOM.rainDensityVal)
+      DOM.rainDensityVal.textContent = `${(settings.rainDensity !== undefined ? settings.rainDensity : 1.0).toFixed(1)}x`
+
+    if (DOM.rainMistSetting)
+      DOM.rainMistSetting.style.display = isRainEffect ? "block" : "none"
+    if (DOM.rainMistToggle)
+      DOM.rainMistToggle.checked = settings.rainMist !== undefined ? Boolean(settings.rainMist) : true
     if (DOM.firefliesColorSetting)
       DOM.firefliesColorSetting.style.display =
         settings.effect === "fireflies" || settings.effect === "firefliesHD"
@@ -5515,6 +5563,12 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
         settings.effect === "pixelWeather" ? "block" : "none"
+      if (DOM.pixelWeatherMistToggle) {
+        DOM.pixelWeatherMistToggle.checked =
+          settings.pixelWeatherMist !== undefined
+            ? Boolean(settings.pixelWeatherMist)
+            : true
+      }
     }
     if (DOM.pixelSnowHQSettings) {
       DOM.pixelSnowHQSettings.style.display =
@@ -5739,6 +5793,14 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.auroraWaveBgSetting.style.display =
         settings.effect === "auroraWave" ? "block" : "none"
     }
+    if (DOM.auroraWaveNotesSetting) {
+      DOM.auroraWaveNotesSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveNotesToggle) {
+      DOM.auroraWaveNotesToggle.checked =
+        settings.auroraWaveNotes !== false
+    }
 
     if (DOM.auroraWaveColorPicker) {
       DOM.auroraWaveColorPicker.value = settings.auroraWaveColor || "#00bcd4"
@@ -5930,6 +5992,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.rainHDColorSetting.style.display = "none"
     if (DOM.musicBarsColorSetting)
       DOM.musicBarsColorSetting.style.display =
+        settings.effect === "musicBars" ? "block" : "none"
+    if (DOM.musicBarsNotesSetting)
+      DOM.musicBarsNotesSetting.style.display =
         settings.effect === "musicBars" ? "block" : "none"
     if (DOM.wavyLinesColorSetting)
       DOM.wavyLinesColorSetting.style.display =

@@ -125,10 +125,12 @@ export let randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )
 export let m3DynamicColorBtn = document.getElementById("m3-dynamic-color-btn")
+export let m3DynamicMusicBtn = document.getElementById("m3-dynamic-music-btn")
 export let m3PaletteStyleSelect = document.getElementById(
   "m3-palette-style-select",
 )
 export let m3AutoBgToggle = document.getElementById("m3-auto-bg-toggle")
+export let m3AutoMusicToggle = document.getElementById("m3-auto-music-toggle")
 export let saveAccentColorBtn = document.getElementById("save-accent-color-btn")
 export let userAccentColorsGallery = document.getElementById(
   "user-accent-colors-gallery",
@@ -376,6 +378,14 @@ export let starColorPicker = document.getElementById("star-color-picker")
 export let starColorSetting = document.getElementById("star-color-setting")
 export let rainModeSetting = document.getElementById("rain-mode-setting")
 export let rainModeSelect = document.getElementById("rain-mode-select")
+export let rainSpeedSetting = document.getElementById("rain-speed-setting")
+export let rainSpeedSlider = document.getElementById("rain-speed-slider")
+export let rainSpeedVal = document.getElementById("rain-speed-val")
+export let rainDensitySetting = document.getElementById("rain-density-setting")
+export let rainDensitySlider = document.getElementById("rain-density-slider")
+export let rainDensityVal = document.getElementById("rain-density-val")
+export let rainMistSetting = document.getElementById("rain-mist-setting")
+export let rainMistToggle = document.getElementById("rain-mist-toggle")
 export let firefliesColorPicker = document.getElementById("fireflies-color-picker")
 export let firefliesColorSetting = document.getElementById("fireflies-color-setting")
 export let firefliesModeSetting = document.getElementById("fireflies-mode-setting")
@@ -514,6 +524,12 @@ export let auroraWaveBgOpacityVal = document.getElementById(
 )
 export let auroraWaveBgSetting = document.getElementById(
   "aurora-wave-bg-setting",
+)
+export let auroraWaveNotesSetting = document.getElementById(
+  "aurora-wave-notes-setting",
+)
+export let auroraWaveNotesToggle = document.getElementById(
+  "aurora-wave-notes-toggle",
 )
 
 export let snowfallColorPicker = document.getElementById(
@@ -765,6 +781,12 @@ export let musicBarsColorPicker = document.getElementById(
 export let musicBarsColorSetting = document.getElementById(
   "music-bars-color-setting",
 )
+export let musicBarsNotesSetting = document.getElementById(
+  "music-bars-notes-setting",
+)
+export let musicBarsNotesToggle = document.getElementById(
+  "music-bars-notes-toggle",
+)
 export let wavyLinesColorPicker = document.getElementById(
   "wavy-lines-color-picker",
 )
@@ -895,6 +917,12 @@ export let pixelWeatherDensitySlider = document.getElementById(
 )
 export let pixelWeatherDensityVal = document.getElementById(
   "pixel-weather-density-val",
+)
+export let pixelWeatherMistSetting = document.getElementById(
+  "pixel-weather-mist-setting",
+)
+export let pixelWeatherMistToggle = document.getElementById(
+  "pixel-weather-mist-toggle",
 )
 
 export let skyLanternsTypeSelect = document.getElementById(
@@ -2383,8 +2411,10 @@ export function refreshDOMReferences() {
   accentColorModeDefault = document.getElementById("accent-color-mode-default")
   randomAccentColorBtn = document.getElementById("random-accent-color-btn")
   m3DynamicColorBtn = document.getElementById("m3-dynamic-color-btn")
+  m3DynamicMusicBtn = document.getElementById("m3-dynamic-music-btn")
   m3PaletteStyleSelect = document.getElementById("m3-palette-style-select")
   m3AutoBgToggle = document.getElementById("m3-auto-bg-toggle")
+  m3AutoMusicToggle = document.getElementById("m3-auto-music-toggle")
   saveAccentColorBtn = document.getElementById("save-accent-color-btn")
   userAccentColorsGallery = document.getElementById(
     "user-accent-colors-gallery",
@@ -2557,6 +2587,14 @@ export function refreshDOMReferences() {
   starColorSetting = document.getElementById("star-color-setting")
   rainModeSetting = document.getElementById("rain-mode-setting")
   rainModeSelect = document.getElementById("rain-mode-select")
+  rainSpeedSetting = document.getElementById("rain-speed-setting")
+  rainSpeedSlider = document.getElementById("rain-speed-slider")
+  rainSpeedVal = document.getElementById("rain-speed-val")
+  rainDensitySetting = document.getElementById("rain-density-setting")
+  rainDensitySlider = document.getElementById("rain-density-slider")
+  rainDensityVal = document.getElementById("rain-density-val")
+  rainMistSetting = document.getElementById("rain-mist-setting")
+  rainMistToggle = document.getElementById("rain-mist-toggle")
   firefliesColorPicker = document.getElementById("fireflies-color-picker")
   firefliesColorSetting = document.getElementById("fireflies-color-setting")
   firefliesModeSetting = document.getElementById("fireflies-mode-setting")
@@ -2656,6 +2694,8 @@ export function refreshDOMReferences() {
   )
   auroraWaveBgOpacityVal = document.getElementById("aurora-wave-bg-opacity-val")
   auroraWaveBgSetting = document.getElementById("aurora-wave-bg-setting")
+  auroraWaveNotesSetting = document.getElementById("aurora-wave-notes-setting")
+  auroraWaveNotesToggle = document.getElementById("aurora-wave-notes-toggle")
   snowfallColorPicker = document.getElementById("snowfall-color-picker")
   snowfallColorSetting = document.getElementById("snowfall-color-setting")
   fallingLeavesSettledSkinSelect = document.getElementById(
@@ -2823,6 +2863,8 @@ export function refreshDOMReferences() {
   rainHDColorSetting = document.getElementById("rain-hd-color-setting")
   musicBarsColorPicker = document.getElementById("music-bars-color-picker")
   musicBarsColorSetting = document.getElementById("music-bars-color-setting")
+  musicBarsNotesSetting = document.getElementById("music-bars-notes-setting")
+  musicBarsNotesToggle = document.getElementById("music-bars-notes-toggle")
   wavyLinesColorPicker = document.getElementById("wavy-lines-color-picker")
   wavyLinesColorSetting = document.getElementById("wavy-lines-color-setting")
   wavyLinesModeSelect = document.getElementById("wavy-lines-mode-select")
@@ -2901,6 +2943,10 @@ export function refreshDOMReferences() {
     "pixel-weather-density-slider",
   )
   pixelWeatherDensityVal = document.getElementById("pixel-weather-density-val")
+  pixelWeatherMistSetting = document.getElementById(
+    "pixel-weather-mist-setting",
+  )
+  pixelWeatherMistToggle = document.getElementById("pixel-weather-mist-toggle")
   skyLanternsTypeSelect = document.getElementById("sky-lanterns-type-select")
   skyLanternsSetting = document.getElementById("sky-lanterns-setting")
   pixelRunColorPicker = document.getElementById("pixel-run-color-picker")

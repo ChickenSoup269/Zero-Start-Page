@@ -69,8 +69,13 @@ export function createEffectFactories(settings) {
     starFallEffect: () =>
       new StarFall(
         "effect-canvas",
-        settings.starColor,
+        settings.starColor || "#99ccff",
         settings.rainMode || "chill",
+        {
+          speed: settings.rainSpeed !== undefined ? settings.rainSpeed : 1.0,
+          density: settings.rainDensity !== undefined ? settings.rainDensity : 1.0,
+          mist: settings.rainMist !== undefined ? settings.rainMist : true,
+        },
       ),
     firefliesEffect: () =>
       new FirefliesEffect(
@@ -144,6 +149,15 @@ export function createEffectFactories(settings) {
       new AuroraWaveEffect(
         "effect-canvas",
         settings.auroraWaveColor || "#00bcd4",
+        {
+          brightness: settings.auroraWaveBrightness !== undefined ? settings.auroraWaveBrightness : 0.65,
+          speed: settings.auroraWaveSpeed !== undefined ? settings.auroraWaveSpeed : 1.0,
+          waveAmplitude: settings.auroraWaveAmplitude || 70,
+          transparent: settings.auroraWaveTransparent !== false,
+          backgroundColor: settings.auroraWaveBgColor || "#000000",
+          bgOpacity: settings.auroraWaveBgOpacity ?? 0.15,
+          notes: settings.auroraWaveNotes !== false,
+        },
       ),
     northernLightsEffect: () =>
       new NorthernLightsEffect("effect-canvas", {
@@ -170,12 +184,22 @@ export function createEffectFactories(settings) {
     gridScanEffect: () =>
       new GridScanEffect("effect-canvas", settings.gridScanColor || "#00ffcc"),
     rainHDEffect: () =>
-      new RainHDEffect("effect-canvas", settings.rainHDColor || "#99ccff"),
-    musicBarsEffect: () =>
-      new MusicBarsEffect(
+      new RainHDEffect("effect-canvas", settings.rainHDColor || "#99ccff", {
+        mode: "storm",
+        speed: settings.rainSpeed !== undefined ? settings.rainSpeed : 1.0,
+        density: settings.rainDensity !== undefined ? settings.rainDensity : 1.0,
+        mist: settings.rainMist !== undefined ? settings.rainMist : true,
+      }),
+    musicBarsEffect: () => {
+      const effect = new MusicBarsEffect(
         "effect-canvas",
         settings.musicBarsColor || "#8be9fd",
-      ),
+      )
+      if (settings.musicBarsNotes !== undefined) {
+        effect.setNotes(settings.musicBarsNotes !== false)
+      }
+      return effect
+    },
     rainbowEffect: () =>
       new RainbowBackground(
         "effect-canvas",
@@ -203,8 +227,12 @@ export function createEffectFactories(settings) {
           speed: settings.cloudDriftSpeed !== undefined ? settings.cloudDriftSpeed : 1.0,
         },
       ),
-    firefliesHDEffect: () => new FirefliesHD("effect-canvas"),
-    autumnLeavesEffect: () => new AutumnLeavesEffect("effect-canvas"),
+    firefliesHDEffect: () =>
+      new FirefliesHD(
+        "effect-canvas",
+        settings.firefliesColor || "#ffe855",
+        settings.firefliesMode || "enchanted",
+      ),
     greenLeavesEffect: () => new GreenLeavesEffect("effect-canvas"),
     fallingLeavesSettledEffect: () =>
       new FallingLeavesSettledEffect(
@@ -229,6 +257,13 @@ export function createEffectFactories(settings) {
       new PixelWeatherEffect(
         "effect-canvas",
         settings.pixelWeatherStyle || "snow",
+        {
+          resolution: settings.pixelWeatherResolution || 1,
+          speed: settings.pixelWeatherSpeed !== undefined ? settings.pixelWeatherSpeed : 1.0,
+          size: settings.pixelWeatherSize !== undefined ? settings.pixelWeatherSize : 1.0,
+          density: settings.pixelWeatherDensity !== undefined ? settings.pixelWeatherDensity : 1.0,
+          mist: settings.pixelWeatherMist !== undefined ? settings.pixelWeatherMist : true,
+        },
       ),
     shinyEffect: () =>
       new ShinyEffect("effect-canvas", settings.shinyColor || "#ff0000"),

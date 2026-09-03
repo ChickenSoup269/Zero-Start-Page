@@ -61,6 +61,8 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     saveSettings()
     if (effectInstances.firefliesEffect)
       effectInstances.firefliesEffect.updateColor(DOM.firefliesColorPicker.value)
+    if (effectInstances.firefliesHDEffect)
+      effectInstances.firefliesHDEffect.updateColor(DOM.firefliesColorPicker.value)
   })
 
   DOM.meteorColorPicker?.addEventListener("change", () => {
@@ -509,7 +511,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
 
   if (DOM.musicBarsColorPicker) {
-    DOM.musicBarsColorPicker?.addEventListener("change", () => {
+    DOM.musicBarsColorPicker.addEventListener("input", (e) => {
+      const val = e.target.value
+      updateSetting("musicBarsColor", val)
+      if (effectInstances.musicBarsEffect) {
+        effectInstances.musicBarsEffect.updateColor(val)
+      }
+    })
+    DOM.musicBarsColorPicker.addEventListener("change", () => {
       updateSetting("musicBarsColor", DOM.musicBarsColorPicker.value)
       saveSettings()
       if (effectInstances.musicBarsEffect) {
@@ -519,6 +528,19 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       }
     })
   }
+
+  DOM.musicBarsNotesToggle?.addEventListener("change", (e) => {
+    const isChecked = e.target.checked
+    updateSetting("musicBarsNotes", isChecked)
+    saveSettings()
+    if (effectInstances.musicBarsEffect) {
+      if (effectInstances.musicBarsEffect.setNotes) {
+        effectInstances.musicBarsEffect.setNotes(isChecked)
+      } else if (effectInstances.musicBarsEffect.setOptions) {
+        effectInstances.musicBarsEffect.setOptions({ notes: isChecked })
+      }
+    }
+  })
 
   DOM.wavyLinesColorPicker?.addEventListener("change", () => {
     updateSetting("wavyLinesColor", DOM.wavyLinesColorPicker.value)
@@ -1059,6 +1081,19 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   DOM.auroraWaveBgOpacitySlider?.addEventListener("change", () =>
     saveSettings(),
   )
+
+  DOM.auroraWaveNotesToggle?.addEventListener("change", (e) => {
+    const isChecked = e.target.checked
+    updateSetting("auroraWaveNotes", isChecked)
+    saveSettings()
+    if (effectInstances.auroraWaveEffect) {
+      if (effectInstances.auroraWaveEffect.setNotes) {
+        effectInstances.auroraWaveEffect.setNotes(isChecked)
+      } else if (effectInstances.auroraWaveEffect.setOptions) {
+        effectInstances.auroraWaveEffect.setOptions({ notes: isChecked })
+      }
+    }
+  })
   DOM.synthwaveGridColorPicker?.addEventListener("change", () => {
     updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
     saveSettings()
