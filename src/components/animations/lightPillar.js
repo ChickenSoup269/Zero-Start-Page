@@ -272,7 +272,7 @@ export class LightPillarEffect {
           d = max(d, bound) + h * h * 0.0625 / k;
           d = abs(d) * 0.15 + 0.015;
 
-          float grad = clamp((18.0 - p.y) / 36.0, 0.0, 1.0);
+          float grad = clamp((30.0 - p.y) / 60.0, 0.0, 1.0);
           vec3 layerCol = mix(uBottomColor, uTopColor, grad);
           
           // Add some internal "dust" or particles

@@ -223,8 +223,8 @@ export class LightPillarsEffect {
   _preRenderPillars() {
     this.pillarCanvases = {}
     const hues = this._getHuesForMode()
-    const pWidth = 140
-    const pHeight = 1600
+    const pWidth = 160
+    const pHeight = 2600
 
     for (let i = 0; i < hues.length; i++) {
       const hue = hues[i]
@@ -233,13 +233,15 @@ export class LightPillarsEffect {
       offCanvas.height = pHeight
       const offCtx = offCanvas.getContext("2d")
 
-      // Step 1: Longitudinal Atmospheric Falloff (Top/Bottom soft fade)
+      // Step 1: Extended Longitudinal Atmospheric Falloff (Smooth top & bottom fade over great length)
       const vertGrad = offCtx.createLinearGradient(0, 0, 0, pHeight)
-      vertGrad.addColorStop(0, `hsla(${hue}, 90%, 65%, 0)`)
-      vertGrad.addColorStop(0.12, `hsla(${hue}, 90%, 65%, 0.45)`)
-      vertGrad.addColorStop(0.5, `hsla(${hue}, 90%, 70%, 0.85)`)
-      vertGrad.addColorStop(0.88, `hsla(${hue}, 90%, 65%, 0.45)`)
-      vertGrad.addColorStop(1, `hsla(${hue}, 90%, 65%, 0)`)
+      vertGrad.addColorStop(0, `hsla(${hue}, 95%, 65%, 0)`)
+      vertGrad.addColorStop(0.05, `hsla(${hue}, 95%, 65%, 0.35)`)
+      vertGrad.addColorStop(0.18, `hsla(${hue}, 95%, 70%, 0.85)`)
+      vertGrad.addColorStop(0.5, `hsla(${hue}, 95%, 75%, 0.95)`)
+      vertGrad.addColorStop(0.82, `hsla(${hue}, 95%, 70%, 0.85)`)
+      vertGrad.addColorStop(0.95, `hsla(${hue}, 95%, 65%, 0.35)`)
+      vertGrad.addColorStop(1, `hsla(${hue}, 95%, 65%, 0)`)
 
       offCtx.fillStyle = vertGrad
       offCtx.fillRect(0, 0, pWidth, pHeight)
@@ -248,25 +250,25 @@ export class LightPillarsEffect {
       offCtx.globalCompositeOperation = "destination-in"
       const horizGrad = offCtx.createLinearGradient(0, 0, pWidth, 0)
       horizGrad.addColorStop(0, "rgba(0,0,0,0)")
-      horizGrad.addColorStop(0.2, "rgba(0,0,0,0.12)")
-      horizGrad.addColorStop(0.4, "rgba(0,0,0,0.65)")
+      horizGrad.addColorStop(0.18, "rgba(0,0,0,0.12)")
+      horizGrad.addColorStop(0.38, "rgba(0,0,0,0.7)")
       horizGrad.addColorStop(0.5, "rgba(0,0,0,1.0)")
-      horizGrad.addColorStop(0.6, "rgba(0,0,0,0.65)")
-      horizGrad.addColorStop(0.8, "rgba(0,0,0,0.12)")
+      horizGrad.addColorStop(0.62, "rgba(0,0,0,0.7)")
+      horizGrad.addColorStop(0.82, "rgba(0,0,0,0.12)")
       horizGrad.addColorStop(1, "rgba(0,0,0,0)")
 
       offCtx.fillStyle = horizGrad
       offCtx.fillRect(0, 0, pWidth, pHeight)
 
-      // Step 3: Intense White-Hot Radiant Core Spine down the center
+      // Step 3: Intense White-Hot Radiant Core Spine down the entire length
       offCtx.globalCompositeOperation = "lighter"
       const coreGrad = offCtx.createLinearGradient(pWidth * 0.44, 0, pWidth * 0.56, 0)
       coreGrad.addColorStop(0, "rgba(255, 255, 255, 0)")
-      coreGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.95)")
+      coreGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.96)")
       coreGrad.addColorStop(1, "rgba(255, 255, 255, 0)")
 
       offCtx.fillStyle = coreGrad
-      offCtx.fillRect(pWidth * 0.44, pHeight * 0.08, pWidth * 0.12, pHeight * 0.84)
+      offCtx.fillRect(pWidth * 0.44, pHeight * 0.03, pWidth * 0.12, pHeight * 0.94)
 
       this.pillarCanvases[hue] = offCanvas
     }
@@ -407,7 +409,7 @@ export class LightPillarsEffect {
     const H = this.height || window.innerHeight
 
     this.pillars = []
-    const count = Math.max(16, Math.min(28, Math.floor(W / 80)))
+    const count = Math.max(18, Math.min(30, Math.floor(W / 70)))
 
     for (let i = 0; i < count; i++) {
       // 3 Depth Strata Z ∈ [0.2, 1.0]
@@ -419,11 +421,11 @@ export class LightPillarsEffect {
 
       // Horizontal spacing with organic jitter
       const x = (i / count) * W + (Math.random() - 0.5) * (W / count * 0.9)
-      const width = (45 + Math.random() * 75) * (0.6 + z * 0.7)
-      // Generous towering height extending gracefully beyond screen boundaries
-      const height = H * (1.3 + Math.random() * 0.6) * (0.8 + z * 0.3)
-      // Anchor position centered vertically to allow full top & bottom soft fade
-      const y = -height * 0.25 + (Math.random() - 0.5) * (H * 0.2)
+      const width = (55 + Math.random() * 85) * (0.65 + z * 0.7)
+      // Extra-long towering height extending far beyond screen boundaries (top & bottom)
+      const height = H * (2.6 + Math.random() * 0.8) * (0.85 + z * 0.35)
+      // Center vertical anchor so the pillar covers the whole screen and extends far above and below
+      const y = -height * 0.5 + H * 0.5 + (Math.random() - 0.5) * (H * 0.15)
 
       const pillar = {
         id: i,
@@ -434,7 +436,7 @@ export class LightPillarsEffect {
         width,
         height,
         driftSpeed: (Math.random() - 0.5) * 0.08 * (0.5 + z * 0.6),
-        baseAlpha: (0.2 + Math.random() * 0.4) * (0.55 + z * 0.6),
+        baseAlpha: (0.22 + Math.random() * 0.42) * (0.55 + z * 0.6),
         currentAlpha: 0,
         // Atmospheric shimmer & wave
         shimmerPhase: Math.random() * Math.PI * 2,
