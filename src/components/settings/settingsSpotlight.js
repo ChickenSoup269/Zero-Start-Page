@@ -7,6 +7,7 @@
 const TARGET_MAP = {
   // Clock & Date
   "date-clock": "#clock-date-wrap",
+  "clock-date-wrap": "#clock-date-wrap",
   "clock-container": "#clock",
   "free-move-clock-checkbox": "#clock-date-wrap",
   "short-weekday-checkbox": "#date",
@@ -24,6 +25,8 @@ const TARGET_MAP = {
   "time-format": "#clock",
   "clock-align": "#clock-date-wrap",
   "analog-clock-theme": "#clock",
+  "clock-shadow-checkbox": "#clock",
+  "clock-blur-slider": "#clock",
 
   // Search Bar
   "search-settings": "#search-container",
@@ -34,31 +37,61 @@ const TARGET_MAP = {
   "search-bar-radius-slider": "#search-container",
   "search-engine-select": "#search-engine-selector",
   "show-search-ai-icon-checkbox": "#search-ai-btn",
+  "search-bg-color-picker": "#search-container",
+  "search-text-color-picker": "#search-container",
+  "search-border-color-picker": "#search-container",
 
   // Bookmarks
   "bookmark-custom": "#bookmarks-container",
   "show-bookmarks-checkbox": "#bookmarks-container",
   "bookmark-layout": "#bookmarks-container",
   "bookmark-layout-bg-style": "#bookmarks-container",
+  "bookmark-layout-bg-style-row": "#bookmarks-container",
   "bookmark-layout-bg-color": "#bookmarks-container",
+  "bookmark-layout-bg-color-row": "#bookmarks-container",
   "bookmark-group-tabs": ".bookmark-groups-container",
   "show-bookmark-groups-checkbox": ".bookmark-groups-container",
   "bookmark-group-use-accent": ".bookmark-groups-container",
   "bookmark-group-auto-contrast": ".bookmark-groups-container",
-  "bookmark-icon-size-slider": ".bookmark-grid",
-  "bookmark-font-size-slider": ".bookmark-grid",
-  "bookmark-item-style": ".bookmark-grid",
-  "hide-bookmark-text-checkbox": ".bookmark-grid",
-  "hide-bookmark-bg-checkbox": ".bookmark-grid",
+  "bookmark-icon-size-slider": "#bookmarks-container",
+  "bookmark-font-size-slider": "#bookmarks-container",
+  "bookmark-item-style": "#bookmarks-container",
+  "bookmark-item-style-row": "#bookmarks-container",
+  "hide-bookmark-text-checkbox": "#bookmarks-container",
+  "hide-bookmark-bg": "#bookmarks-container",
+  "hide-bookmark-bg-checkbox": "#bookmarks-container",
+  "bookmark-long-text": "#bookmarks-container",
+  "bookmark-full-text": "#bookmarks-container",
+  "bookmark-macos-hover": "#bookmarks-container",
+  "bookmark-limit-20": "#bookmarks-container",
+  "show-add-bookmark-button": "#bookmarks-container",
+  "enable-bookmark-drag": "#bookmarks-container",
+  "bookmark-keep-nested-folders": "#bookmarks-container",
+  "bookmark-open-new-tab": "#bookmarks-container",
+  "bookmark-sidebar-width-input": "#bookmarks-container",
 
   // Custom Title
   "custom-title": "#custom-title-display",
   "show-custom-title-checkbox": "#custom-title-display",
+  "free-move-custom-title-checkbox": "#custom-title-display",
   "custom-title-input": "#custom-title-display",
   "custom-title-font-family": "#custom-title-display",
   "custom-title-font-size": "#custom-title-display",
   "custom-title-color": "#custom-title-display",
   "custom-title-align": "#custom-title-display",
+  "custom-title-text": "#custom-title-display",
+  "custom-title-direction": "#custom-title-display",
+  "custom-title-order": "#custom-title-display",
+  "custom-title-word-wrap": "#custom-title-display",
+  "custom-title-animation": "#custom-title-display",
+  "custom-title-animation-loop": "#custom-title-display",
+  "custom-title-multicolor": "#custom-title-display",
+  "custom-title-shadow-color": "#custom-title-display",
+  "custom-title-shadow-blur": "#custom-title-display",
+  "custom-title-shadow-y": "#custom-title-display",
+  "custom-title-border-color": "#custom-title-display",
+  "custom-title-border-size": "#custom-title-display",
+  "custom-title-line-spacing": "#custom-title-display",
 
   // Quick Access
   "quick-access": "#quick-access-bar",
@@ -70,13 +103,54 @@ const TARGET_MAP = {
   "quick-access-bar-radius-select": "#quick-access-bar",
   "quick-access-toggle-radius-select": "#settings-toggle",
 
-  // Widgets
-  "weather-settings": ".weather-widget",
-  "music-settings": "#music-player",
+  // Widgets & Individual Options
+  "weather-settings": "#weather-container",
+  "show-weather-checkbox": "#weather-container",
+  "weather-unit-select": "#weather-container",
+  "weather-api-mode-select": "#weather-container",
+  "weather-container": "#weather-container",
+
+  "music-settings": "#music-player-container",
+  "show-music-checkbox": "#music-player-container",
+  "music-player-container": "#music-player-container",
+
   "todo-settings": "#todo-container",
+  "show-todo-checkbox": "#todo-container",
+  "todo-show-checkboxes": "#todo-container",
+  "todo-container": "#todo-container",
+
   "notepad-settings": "#notepad-container",
-  "quotes-settings": "#quote-container",
-  "calendar-settings": "#gregorian-calendar",
+  "show-notepad-checkbox": "#notepad-container",
+  "notepad-container": "#notepad-container",
+
+  "quotes-settings": "#daily-quotes",
+  "show-quotes-checkbox": "#daily-quotes",
+  "daily-quotes": "#daily-quotes",
+
+  "calendar-settings": "#full-calendar-container",
+  "show-calendar-checkbox": "#full-calendar-container",
+  "full-calendar-container": "#full-calendar-container",
+
+  "show-habits-checkbox": "#habit-tracker-container",
+  "habit-color-mode-select": "#habit-tracker-container",
+  "habit-tracker-container": "#habit-tracker-container",
+
+  "show-timer-checkbox": "#timer-component",
+  "hide-timer-alarm-dropdown-checkbox": "#timer-component",
+  "timer-alarm-sound-select": "#timer-component",
+  "timer-component": "#timer-component",
+
+  "show-rss-checkbox": "#rss-container",
+  "rss-container": "#rss-container",
+
+  "show-ambient-checkbox": "#ambient-sounds-container",
+  "ambient-sounds-container": "#ambient-sounds-container",
+
+  "show-ai-assistant-checkbox": "#ai-assistant-container",
+  "ai-assistant-container": "#ai-assistant-container",
+
+  "calculator-settings": "#calculator-container",
+  "calculator-container": "#calculator-container",
 }
 
 let activeSpotlightElement = null
@@ -132,15 +206,14 @@ function resolveTargetElement(settingEl) {
 }
 
 function ensureVisibleTarget(el) {
-  if (!el) return null
+  if (!el || !document.body.contains(el)) return null
   let current = el
   while (current && current !== document.body) {
     const style = window.getComputedStyle(current)
     if (style.display === "none" || style.visibility === "hidden" || (current.offsetWidth === 0 && current.offsetHeight === 0)) {
-      current = current.parentElement
-      continue
+      return null
     }
-    return current
+    current = current.parentElement
   }
   return el
 }
@@ -149,21 +222,34 @@ function ensureVisibleTarget(el) {
  * Highlights a target DOM element with glowing spotlight
  */
 export function highlightTarget(targetEl, { autoClearMs = 0 } = {}) {
-  if (activeSpotlightElement && activeSpotlightElement !== targetEl) {
-    activeSpotlightElement.classList.remove("setting-target-spotlight-active")
-  }
-
   if (spotlightTimeout) {
     clearTimeout(spotlightTimeout)
     spotlightTimeout = null
   }
 
   if (!targetEl || !document.body.contains(targetEl)) {
-    activeSpotlightElement = null
+    clearTargetHighlight()
     return
   }
 
+  // Already highlighting this exact element - keep it active without re-triggering
+  if (activeSpotlightElement === targetEl) {
+    targetEl.classList.remove("setting-target-spotlight-fadeout")
+    return
+  }
+
+  // Switching from another target element - fade out the previous one smoothly
+  if (activeSpotlightElement && activeSpotlightElement !== targetEl) {
+    const prev = activeSpotlightElement
+    prev.classList.remove("setting-target-spotlight-active")
+    prev.classList.add("setting-target-spotlight-fadeout")
+    setTimeout(() => {
+      prev.classList.remove("setting-target-spotlight-fadeout")
+    }, 280)
+  }
+
   activeSpotlightElement = targetEl
+  targetEl.classList.remove("setting-target-spotlight-fadeout")
   targetEl.classList.add("setting-target-spotlight-active")
 
   if (autoClearMs > 0) {
@@ -174,7 +260,7 @@ export function highlightTarget(targetEl, { autoClearMs = 0 } = {}) {
 }
 
 /**
- * Clears any active target spotlight
+ * Clears any active target spotlight with a smooth fade-out
  */
 export function clearTargetHighlight() {
   if (spotlightTimeout) {
@@ -182,8 +268,13 @@ export function clearTargetHighlight() {
     spotlightTimeout = null
   }
   if (activeSpotlightElement) {
-    activeSpotlightElement.classList.remove("setting-target-spotlight-active")
+    const el = activeSpotlightElement
     activeSpotlightElement = null
+    el.classList.remove("setting-target-spotlight-active")
+    el.classList.add("setting-target-spotlight-fadeout")
+    setTimeout(() => {
+      el.classList.remove("setting-target-spotlight-fadeout")
+    }, 280)
   }
 }
 
@@ -195,6 +286,7 @@ export function initSettingsSpotlight(sidebarEl) {
   if (!container) return
 
   let hoverDebounce = null
+  let clearDebounce = null
 
   // 1. Mouseover (bubbles from child setting items)
   container.addEventListener(
@@ -205,18 +297,24 @@ export function initSettingsSpotlight(sidebarEl) {
       )
       if (!settingItem) return
 
+      // Cancel any pending unhover clear when entering a setting item
+      if (clearDebounce) {
+        clearTimeout(clearDebounce)
+        clearDebounce = null
+      }
+
       if (hoverDebounce) clearTimeout(hoverDebounce)
       hoverDebounce = setTimeout(() => {
         const target = resolveTargetElement(settingItem)
         if (target) {
           highlightTarget(target)
         }
-      }, 40)
+      }, 50)
     },
     { passive: true },
   )
 
-  // 2. Mouseout (clear when leaving setting items)
+  // 2. Mouseout (debounced clear when leaving setting items to avoid jitter between rows)
   container.addEventListener(
     "mouseout",
     (e) => {
@@ -228,8 +326,17 @@ export function initSettingsSpotlight(sidebarEl) {
       // If moving within the same setting item, don't clear
       if (e.relatedTarget && settingItem.contains(e.relatedTarget)) return
 
-      if (hoverDebounce) clearTimeout(hoverDebounce)
-      clearTargetHighlight()
+      if (hoverDebounce) {
+        clearTimeout(hoverDebounce)
+        hoverDebounce = null
+      }
+
+      // Debounce clearing to prevent flicker when cursor transitions between adjacent rows
+      if (clearDebounce) clearTimeout(clearDebounce)
+      clearDebounce = setTimeout(() => {
+        clearTargetHighlight()
+        clearDebounce = null
+      }, 100)
     },
     { passive: true },
   )
@@ -240,6 +347,10 @@ export function initSettingsSpotlight(sidebarEl) {
     (e) => {
       const settingItem = e.target.closest(".setting-item, .setting-item-row, .setting-group, .settings-section")
       if (settingItem) {
+        if (clearDebounce) {
+          clearTimeout(clearDebounce)
+          clearDebounce = null
+        }
         const target = resolveTargetElement(settingItem)
         if (target) highlightTarget(target)
       }
@@ -250,14 +361,25 @@ export function initSettingsSpotlight(sidebarEl) {
   container.addEventListener(
     "focusout",
     () => {
-      clearTargetHighlight()
+      if (clearDebounce) clearTimeout(clearDebounce)
+      clearDebounce = setTimeout(() => {
+        clearTargetHighlight()
+        clearDebounce = null
+      }, 100)
     },
     { passive: true },
   )
 
   // 4. Clear highlight when mouse leaves settings sidebar entirely
   container.addEventListener("mouseleave", () => {
-    if (hoverDebounce) clearTimeout(hoverDebounce)
+    if (hoverDebounce) {
+      clearTimeout(hoverDebounce)
+      hoverDebounce = null
+    }
+    if (clearDebounce) {
+      clearTimeout(clearDebounce)
+      clearDebounce = null
+    }
     clearTargetHighlight()
   })
 
