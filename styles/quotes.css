@@ -7,7 +7,7 @@
   z-index: 1040;
   text-align: center;
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
+  border-radius: 8px !important;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);

@@ -113,9 +113,9 @@
   --space-6: 48px;
   --space-7: 56px;
   --space-8: 64px;
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-edge: rgba(255, 255, 255, 0.2); /* For rim lighting effect */

@@ -203,7 +203,7 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md, 8px) !important;
   width: 90%;
   max-width: 420px;
   max-height: min(86vh, 760px);
@@ -266,9 +266,9 @@
   padding: var(--space-2) var(--space-2);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
+  border-radius: 6px !important;
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   outline: none;
   transition: all 0.25s ease;
   box-sizing: border-box;
@@ -299,11 +299,11 @@
 .dialog-btn {
   flex: 1 1 0;
   width: 0;
-  height: 44px;
-  border-radius: var(--radius-sm);
+  height: 36px;
+  border-radius: 6px !important;
   border: none;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.25s ease;
   display: flex;

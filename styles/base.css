@@ -9269,28 +9269,28 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.03);
+  height: 44px;
+  background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  font-size: 1.3rem;
+  border-radius: 8px;
+  font-size: 1.15rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .theme-icon-grid .icon-option:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .theme-icon-grid .icon-option.active {
   background: var(--accent-color);
   color: var(--accent-contrast-color, #1a1a2e);
   border-color: var(--accent-color);
-  box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
-  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 2;
 }
 
@@ -9396,28 +9396,28 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.03);
+  height: 44px;
+  background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  font-size: 1.3rem;
+  border-radius: 8px;
+  font-size: 1.15rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .theme-icon-grid .icon-option:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .theme-icon-grid .icon-option.active {
   background: var(--accent-color);
   color: var(--accent-contrast-color, #1a1a2e);
   border-color: var(--accent-color);
-  box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
-  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 2;
 }
 
