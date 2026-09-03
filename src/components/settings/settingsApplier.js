@@ -3450,6 +3450,10 @@ function createApplySettings(effectInstances) {
         color: settings.northernLightsColor || "#00ff88",
         style: settings.northernLightsStyle || "hd",
         brightness: settings.northernLightsBrightness ?? 0.8,
+        speed: settings.northernLightsSpeed !== undefined ? settings.northernLightsSpeed : 1.0,
+        stars: settings.northernLightsStars !== false,
+        meteors: settings.northernLightsMeteors !== false,
+        transparent: settings.northernLightsTransparent !== false,
       })
     }
 
@@ -5249,6 +5253,21 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.northernLightsBrightnessSlider.value = b
       if (DOM.northernLightsBrightnessVal)
         DOM.northernLightsBrightnessVal.textContent = b.toFixed(1)
+    }
+    if (DOM.northernLightsSpeedSlider) {
+      const spd = settings.northernLightsSpeed !== undefined ? settings.northernLightsSpeed : 1.0
+      DOM.northernLightsSpeedSlider.value = spd
+      if (DOM.northernLightsSpeedVal)
+        DOM.northernLightsSpeedVal.textContent = `${spd.toFixed(1)}x`
+    }
+    if (DOM.northernLightsStarsToggle) {
+      DOM.northernLightsStarsToggle.checked = settings.northernLightsStars !== false
+    }
+    if (DOM.northernLightsMeteorsToggle) {
+      DOM.northernLightsMeteorsToggle.checked = settings.northernLightsMeteors !== false
+    }
+    if (DOM.northernLightsTransparentCheckbox) {
+      DOM.northernLightsTransparentCheckbox.checked = settings.northernLightsTransparent !== false
     }
     if (DOM.hackerModeSelect) {
       DOM.hackerModeSelect.value = settings.hackerMode || "hollywood"

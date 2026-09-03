@@ -139,6 +139,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.auraEffect.updateColor(DOM.auraColorPicker.value)
   })
 
+  DOM.northernLightsColorPicker?.addEventListener("input", (e) => {
+    const val = e.target.value
+    updateSetting("northernLightsColor", val)
+    if (effectInstances.northernLightsEffect) {
+      effectInstances.northernLightsEffect.setOptions({ color: val })
+    }
+  })
+
   DOM.northernLightsColorPicker?.addEventListener("change", () => {
     updateSetting("northernLightsColor", DOM.northernLightsColorPicker.value)
     saveSettings()
@@ -166,6 +174,48 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     if (effectInstances.northernLightsEffect)
       effectInstances.northernLightsEffect.setOptions({
         brightness: val,
+      })
+  })
+
+  DOM.northernLightsSpeedSlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.northernLightsSpeedSlider.value)
+    if (DOM.northernLightsSpeedVal)
+      DOM.northernLightsSpeedVal.textContent = `${val.toFixed(1)}x`
+    updateSetting("northernLightsSpeed", val)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        speed: val,
+      })
+  })
+
+  DOM.northernLightsStarsToggle?.addEventListener("change", () => {
+    const enabled = DOM.northernLightsStarsToggle.checked
+    updateSetting("northernLightsStars", enabled)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        stars: enabled,
+      })
+  })
+
+  DOM.northernLightsMeteorsToggle?.addEventListener("change", () => {
+    const enabled = DOM.northernLightsMeteorsToggle.checked
+    updateSetting("northernLightsMeteors", enabled)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        meteors: enabled,
+      })
+  })
+
+  DOM.northernLightsTransparentCheckbox?.addEventListener("change", () => {
+    const enabled = DOM.northernLightsTransparentCheckbox.checked
+    updateSetting("northernLightsTransparent", enabled)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        transparent: enabled,
       })
   })
 

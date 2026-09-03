@@ -427,6 +427,21 @@ export let northernLightsBrightnessSlider = document.getElementById(
 export let northernLightsBrightnessVal = document.getElementById(
   "northern-lights-brightness-val",
 )
+export let northernLightsSpeedSlider = document.getElementById(
+  "northern-lights-speed-slider",
+)
+export let northernLightsSpeedVal = document.getElementById(
+  "northern-lights-speed-val",
+)
+export let northernLightsStarsToggle = document.getElementById(
+  "northern-lights-stars-toggle",
+)
+export let northernLightsMeteorsToggle = document.getElementById(
+  "northern-lights-meteors-toggle",
+)
+export let northernLightsTransparentCheckbox = document.getElementById(
+  "northern-lights-transparent",
+)
 
 export let hackerColorPicker = document.getElementById("hacker-color-picker")
 export let hackerModeSelect = document.getElementById("hacker-mode-select")
@@ -2635,6 +2650,21 @@ export function refreshDOMReferences() {
   )
   northernLightsBrightnessVal = document.getElementById(
     "northern-lights-brightness-val",
+  )
+  northernLightsSpeedSlider = document.getElementById(
+    "northern-lights-speed-slider",
+  )
+  northernLightsSpeedVal = document.getElementById(
+    "northern-lights-speed-val",
+  )
+  northernLightsStarsToggle = document.getElementById(
+    "northern-lights-stars-toggle",
+  )
+  northernLightsMeteorsToggle = document.getElementById(
+    "northern-lights-meteors-toggle",
+  )
+  northernLightsTransparentCheckbox = document.getElementById(
+    "northern-lights-transparent",
   )
   hackerColorPicker = document.getElementById("hacker-color-picker")
   hackerModeSelect = document.getElementById("hacker-mode-select")

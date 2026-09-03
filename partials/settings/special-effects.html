@@ -582,7 +582,7 @@
                             <input type="color" id="aura-color-picker" value="#00ff73" />
                         </div>
 
-                        <!-- Northern Lights Color -->
+                        <!-- Northern Lights Color & Settings -->
                         <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
                             <div class="setting-item-row">
                                 <label for="northern-lights-color-picker"
@@ -599,6 +599,7 @@
                                     <option value="classic" data-i18n="aurora_style_classic">Classic (Old)
                                     </option>
                                     <option value="hd" data-i18n="aurora_style_hd">HD Cinematic</option>
+                                    <option value="ultra" data-i18n="aurora_style_ultra">Ultra HD</option>
                                 </select>
                             </div>
 
@@ -610,6 +611,34 @@
                                 </label>
                                 <input type="range" id="northern-lights-brightness-slider" min="0.2" max="1.5"
                                     step="0.1" value="0.8">
+                            </div>
+
+                            <div class="setting-item" style="margin-top: 10px;">
+                                <label for="northern-lights-speed-slider"
+                                    style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_aurora_speed">Speed</span>
+                                    <span id="northern-lights-speed-val">1.0x</span>
+                                </label>
+                                <input type="range" id="northern-lights-speed-slider" min="0.2" max="2.5"
+                                    step="0.1" value="1.0">
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 10px;">
+                                <label for="northern-lights-stars-toggle"
+                                    data-i18n="settings_aurora_stars">Stars & Stardust</label>
+                                <input type="checkbox" id="northern-lights-stars-toggle" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 10px;">
+                                <label for="northern-lights-meteors-toggle"
+                                    data-i18n="settings_aurora_meteors">Shooting Stars</label>
+                                <input type="checkbox" id="northern-lights-meteors-toggle" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 10px;">
+                                <label for="northern-lights-transparent"
+                                    data-i18n="setting_northern_lights_transparent">Transparent Background</label>
+                                <input type="checkbox" id="northern-lights-transparent" checked />
                             </div>
                         </div>
 

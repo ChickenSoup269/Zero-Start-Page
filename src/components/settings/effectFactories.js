@@ -164,6 +164,10 @@ export function createEffectFactories(settings) {
         color: settings.northernLightsColor || "#00ff88",
         style: settings.northernLightsStyle || "hd",
         brightness: settings.northernLightsBrightness ?? 0.8,
+        speed: settings.northernLightsSpeed !== undefined ? settings.northernLightsSpeed : 1.0,
+        stars: settings.northernLightsStars !== false,
+        meteors: settings.northernLightsMeteors !== false,
+        transparent: settings.northernLightsTransparent !== false,
       }),
     bubblesEffect: () =>
       new BubblesEffect("effect-canvas", settings.bubbleColor || "#60c8ff"),
