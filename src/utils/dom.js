@@ -440,6 +440,9 @@ export let pixelCubesShapeSelect = document.getElementById(
 export let pixelCubesColorSetting = document.getElementById(
   "pixel-cubes-color-setting",
 )
+export let pixelCubesShapeSetting = document.getElementById(
+  "pixel-cubes-shape-setting",
+)
 export let windModeSelect = document.getElementById("wind-mode-select")
 export let windModeSetting = document.getElementById("wind-mode-setting")
 export let jellyfishColorPicker = document.getElementById(
@@ -544,6 +547,12 @@ export let fallingLeavesSettledSkinSelect = document.getElementById(
 )
 export let fallingLeavesSettledSkinSetting = document.getElementById(
   "falling-leaves-settled-skin-setting",
+)
+export let fallingLeavesSettlingSetting = document.getElementById(
+  "falling-leaves-settling-setting",
+)
+export let fallingLeavesSettlingToggle = document.getElementById(
+  "falling-leaves-settling-toggle",
 )
 
 // Pixel Blast
@@ -2651,6 +2660,7 @@ export function refreshDOMReferences() {
   pixelCubesColorPicker = document.getElementById("pixel-cubes-color-picker")
   pixelCubesShapeSelect = document.getElementById("pixel-cubes-shape-select")
   pixelCubesColorSetting = document.getElementById("pixel-cubes-color-setting")
+  pixelCubesShapeSetting = document.getElementById("pixel-cubes-shape-setting")
   windModeSelect = document.getElementById("wind-mode-select")
   windModeSetting = document.getElementById("wind-mode-setting")
   jellyfishColorPicker = document.getElementById("jellyfish-color-picker")
@@ -2703,6 +2713,12 @@ export function refreshDOMReferences() {
   )
   fallingLeavesSettledSkinSetting = document.getElementById(
     "falling-leaves-settled-skin-setting",
+  )
+  fallingLeavesSettlingSetting = document.getElementById(
+    "falling-leaves-settling-setting",
+  )
+  fallingLeavesSettlingToggle = document.getElementById(
+    "falling-leaves-settling-toggle",
   )
   pixelBlastColorPicker = document.getElementById("pixel-blast-color-picker")
   pixelBlastVariantSelect = document.getElementById(

@@ -233,11 +233,29 @@ export function createEffectFactories(settings) {
         settings.firefliesColor || "#ffe855",
         settings.firefliesMode || "enchanted",
       ),
-    greenLeavesEffect: () => new GreenLeavesEffect("effect-canvas"),
-    fallingLeavesSettledEffect: () =>
-      new FallingLeavesSettledEffect(
+    autumnLeavesEffect: () =>
+      new AutumnLeavesEffect(
         "effect-canvas",
         settings.fallingLeavesSkin || "maple",
+        settings.fallingLeavesSettling || false,
+      ),
+    greenLeavesEffect: () =>
+      new AutumnLeavesEffect(
+        "effect-canvas",
+        settings.fallingLeavesSkin || "simple",
+        settings.fallingLeavesSettling || false,
+      ),
+    sakuraEffect: () =>
+      new AutumnLeavesEffect(
+        "effect-canvas",
+        settings.fallingLeavesSkin || "cherry",
+        settings.fallingLeavesSettling || false,
+      ),
+    fallingLeavesSettledEffect: () =>
+      new AutumnLeavesEffect(
+        "effect-canvas",
+        settings.fallingLeavesSkin || "maple",
+        true,
       ),
     sunbeamEffect: () =>
       new SunbeamEffect("effect-canvas", {

@@ -234,6 +234,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.pixelCubesColorPicker?.addEventListener("input", (e) => {
+    const val = e.target.value
+    updateSetting("pixelCubesColor", val)
+    if (effectInstances.pixelCubesEffect) {
+      effectInstances.pixelCubesEffect.updateColor(val)
+    }
+  })
   DOM.pixelCubesColorPicker?.addEventListener("change", () => {
     updateSetting("pixelCubesColor", DOM.pixelCubesColorPicker.value)
     saveSettings()
@@ -333,6 +340,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.bubblesEffect.updateColor(DOM.bubblesColorPicker.value)
   })
 
+  DOM.gridScanColorPicker?.addEventListener("input", (e) => {
+    const val = e.target.value
+    updateSetting("gridScanColor", val)
+    if (effectInstances.gridScanEffect) {
+      effectInstances.gridScanEffect.updateColor(val)
+    }
+  })
   DOM.gridScanColorPicker?.addEventListener("change", () => {
     updateSetting("gridScanColor", DOM.gridScanColorPicker.value)
     saveSettings()
@@ -875,22 +889,47 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       const skinType = fallingLeavesSelect.value
       updateSetting("fallingLeavesSkin", skinType)
       saveSettings()
+      if (effectInstances.autumnLeavesEffect) {
+        effectInstances.autumnLeavesEffect.setLeafType(skinType)
+      }
+      if (effectInstances.greenLeavesEffect) {
+        effectInstances.greenLeavesEffect.setLeafType(skinType)
+      }
       if (effectInstances.fallingLeavesSettledEffect) {
         effectInstances.fallingLeavesSettledEffect.setLeafType(skinType)
       }
     })
   }
 
+  DOM.fallingLeavesSettlingToggle?.addEventListener("change", (e) => {
+    const isSettling = e.target.checked
+    updateSetting("fallingLeavesSettling", isSettling)
+    saveSettings()
+    if (effectInstances.autumnLeavesEffect?.setSettling) {
+      effectInstances.autumnLeavesEffect.setSettling(isSettling)
+    }
+    if (effectInstances.greenLeavesEffect?.setSettling) {
+      effectInstances.greenLeavesEffect.setSettling(isSettling)
+    }
+  })
+
   // Pixel Blast
   if (DOM.pixelBlastColorPicker) {
-    DOM.pixelBlastColorPicker?.addEventListener("change", (e) => {
+    DOM.pixelBlastColorPicker?.addEventListener("input", (e) => {
       const color = e.target.value
       updateSetting("pixelBlastColor", color)
       if (effectInstances.pixelBlastEffect) {
         effectInstances.pixelBlastEffect.setOptions({ color })
       }
     })
-    DOM.pixelBlastColorPicker?.addEventListener("change", () => saveSettings())
+    DOM.pixelBlastColorPicker?.addEventListener("change", (e) => {
+      const color = e.target.value
+      updateSetting("pixelBlastColor", color)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ color })
+      }
+      saveSettings()
+    })
   }
 
   if (DOM.pixelBlastVariantSelect) {
@@ -1094,6 +1133,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       }
     }
   })
+  DOM.synthwaveGridColorPicker?.addEventListener("input", () => {
+    updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
+    if (effectInstances.neonGridEffect) {
+      effectInstances.neonGridEffect.updateColor(
+        "grid",
+        DOM.synthwaveGridColorPicker.value,
+      )
+    }
+  })
   DOM.synthwaveGridColorPicker?.addEventListener("change", () => {
     updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
     saveSettings()
@@ -1105,6 +1153,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.synthwaveSunColorPicker?.addEventListener("input", () => {
+    updateSetting("synthwaveSunColor", DOM.synthwaveSunColorPicker.value)
+    if (effectInstances.neonGridEffect) {
+      effectInstances.neonGridEffect.updateColor(
+        "sun",
+        DOM.synthwaveSunColorPicker.value,
+      )
+    }
+  })
   DOM.synthwaveSunColorPicker?.addEventListener("change", () => {
     updateSetting("synthwaveSunColor", DOM.synthwaveSunColorPicker.value)
     saveSettings()
@@ -1210,6 +1267,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.cinematicBokehColor1Picker?.addEventListener("input", () => {
+    updateSetting("cinematicBokehColor1", DOM.cinematicBokehColor1Picker.value)
+    if (effectInstances.cinematicBokehEffect) {
+      effectInstances.cinematicBokehEffect.updateColor(
+        "color1",
+        DOM.cinematicBokehColor1Picker.value,
+      )
+    }
+  })
   DOM.cinematicBokehColor1Picker?.addEventListener("change", () => {
     updateSetting("cinematicBokehColor1", DOM.cinematicBokehColor1Picker.value)
     saveSettings()
@@ -1221,6 +1287,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.cinematicBokehColor2Picker?.addEventListener("input", () => {
+    updateSetting("cinematicBokehColor2", DOM.cinematicBokehColor2Picker.value)
+    if (effectInstances.cinematicBokehEffect) {
+      effectInstances.cinematicBokehEffect.updateColor(
+        "color2",
+        DOM.cinematicBokehColor2Picker.value,
+      )
+    }
+  })
   DOM.cinematicBokehColor2Picker?.addEventListener("change", () => {
     updateSetting("cinematicBokehColor2", DOM.cinematicBokehColor2Picker.value)
     saveSettings()

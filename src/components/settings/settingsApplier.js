@@ -802,6 +802,8 @@ export const EFFECTS_WITH_CUSTOM_SETTINGS = new Set([
   "jellyfish",
   "sakura",
   "snowfall",
+  "autumnLeaves",
+  "greenLeaves",
   "fallingLeavesSettled",
   "bubbles",
   "flashlight",
@@ -3595,12 +3597,17 @@ function createApplySettings(effectInstances) {
     // Also start after a lazy factory finishes loading: in that case the
     // saved effect value has not changed, but the instance is newly created.
     if (shouldStartSelectedEffect) {
-      // Apply saved leaf type for falling leaves settled effect
+      // Apply saved leaf type for leaves effects
       if (
-        effectToStart === "fallingLeavesSettled" &&
+        (effectToStart === "autumnLeaves" ||
+          effectToStart === "greenLeaves" ||
+          effectToStart === "fallingLeavesSettled") &&
         selectedEffect.setLeafType
       ) {
-        selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
+        selectedEffect.setLeafType(
+          settings.fallingLeavesSkin ||
+            (effectToStart === "greenLeaves" ? "simple" : "maple"),
+        )
       }
 
       if (effectToStart === "meteor" && selectedEffect) {
@@ -5505,6 +5512,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.pixelCubesShapeSetting)
+      DOM.pixelCubesShapeSetting.style.display =
+        settings.effect === "pixelCubes" ? "block" : "none"
     if (DOM.windModeSetting) {
       DOM.windModeSetting.style.display =
         settings.effect === "wind" ? "block" : "none"
@@ -5846,9 +5856,24 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.snowfallColorSetting.style.display =
         settings.effect === "snowfall" ? "block" : "none"
     }
+    const isLeafEffect = [
+      "autumnLeaves",
+      "greenLeaves",
+      "sakura",
+      "fallingLeavesSettled",
+    ].includes(settings.effect)
     if (DOM.fallingLeavesSettledSkinSetting) {
-      DOM.fallingLeavesSettledSkinSetting.style.display =
-        settings.effect === "fallingLeavesSettled" ? "block" : "none"
+      DOM.fallingLeavesSettledSkinSetting.style.display = isLeafEffect
+        ? "block"
+        : "none"
+    }
+    if (DOM.fallingLeavesSettlingSetting) {
+      DOM.fallingLeavesSettlingSetting.style.display = isLeafEffect
+        ? "flex"
+        : "none"
+    }
+    if (DOM.fallingLeavesSettlingToggle) {
+      DOM.fallingLeavesSettlingToggle.checked = !!settings.fallingLeavesSettling
     }
     if (DOM.fallingLeavesSettledSkinSelect) {
       DOM.fallingLeavesSettledSkinSelect.value =

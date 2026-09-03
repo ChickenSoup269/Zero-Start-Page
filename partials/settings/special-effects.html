@@ -128,11 +128,6 @@
                         <span class="effect-name" data-i18n="effect_jellyfish">Jellyfish</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
-                    <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
-                        <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
-                        <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
-                        <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
-                    </button>
                     <button class="effect-item" data-value="snowfall" data-search="snow snowfall winter">
                         <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
                         <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
@@ -209,21 +204,9 @@
                         <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
-                    <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
-                        <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
-                        <span class="effect-name" data-i18n="effect_autumn_leaves">Autumn Leaves</span>
-                        <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
-                    </button>
-                    <button class="effect-item" data-value="greenLeaves" data-search="green leaves wind">
-                        <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
-                        <span class="effect-name" data-i18n="effect_green_leaves">Green Leaves</span>
-                        <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
-                    </button>
-                    <button class="effect-item" data-value="fallingLeavesSettled"
-                        data-search="falling leaves settled ground pile accumulate">
+                    <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall maple green wind ginkgo settled sakura cherry blossom hoa anh dao la roi la cay">
                         <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
-                        <span class="effect-name" data-i18n="effect_falling_leaves_settled">Settling
-                            Leaves</span>
+                        <span class="effect-name" data-i18n="effect_autumn_leaves">Falling Leaves</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
                     <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
@@ -544,17 +527,13 @@
                         </div>
 
                         <div id="aurora-wave-bg-setting" class="setting-item" style="display: none;">
-                            <div class="setting-item-row"
-                                style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                            <div class="setting-item-row">
                                 <label for="aurora-wave-transparent"
                                     data-i18n="setting_pixel_blast_transparent">Transparent
                                     Background</label>
-                                <label class="lcp-switch">
-                                    <input type="checkbox" id="aurora-wave-transparent" checked>
-                                    <span class="lcp-slider round"></span>
-                                </label>
+                                <input type="checkbox" id="aurora-wave-transparent" checked />
                             </div>
-                            <div id="aurora-wave-bg-color-container" style="margin-top: 10px; display: none;">
+                            <div id="aurora-wave-bg-color-container" class="setting-item-row" style="margin-top: 10px; display: none;">
                                 <label for="aurora-wave-bg-color-picker"
                                     data-i18n="setting_pixel_blast_bg_color">Background
                                     Color</label>
@@ -646,10 +625,13 @@
                             <label for="pixel-cubes-shape-select" style="margin-top: 10px; display: block;"
                                 data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
                             <select id="pixel-cubes-shape-select" style="width: 100%;">
-                                <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
-                                <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)
-                                </option>
+                                <option value="cube" data-i18n="pixel_cubes_cube">Cube (Hexahedron)</option>
                                 <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
+                                <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)</option>
+                                <option value="diamond" data-i18n="pixel_cubes_diamond">Diamond (Octahedron)</option>
+                                <option value="cylinder" data-i18n="pixel_cubes_cylinder">Hexagon (Prism)</option>
+                                <option value="ring" data-i18n="pixel_cubes_ring">Torus (Energy Ring)</option>
+                                <option value="mixed" data-i18n="pixel_cubes_mixed">Mixed Shapes (Universe)</option>
                             </select>
                         </div>
 
@@ -869,17 +851,23 @@
                         <!-- Falling Leaves Settled Skin -->
                         <div id="falling-leaves-settled-skin-setting" class="setting-item" style="display: none;">
                             <label for="falling-leaves-settled-skin" data-i18n="setting_falling_leaves_skin">Leaf
-                                Type</label>
+                                Type & Mixed Forest</label>
                             <select id="falling-leaves-settled-skin" class="full-width">
-                                <option value="maple" data-i18n="leaf_skin_maple">Maple Leaves</option>
-                                <option value="oak" data-i18n="leaf_skin_oak">Oak Leaves</option>
-                                <option value="simple" data-i18n="leaf_skin_simple">Simple Leaves</option>
-                                <option value="ginkgo" data-i18n="leaf_skin_ginkgo">Ginkgo Leaves</option>
-                                <option value="cherry" data-i18n="leaf_skin_cherry">Cherry Blossoms</option>
-                                <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals
-                                </option>
-                                <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
+                                <option value="mixed" data-i18n="leaf_skin_mixed">🍂 Mixed Forest (All Species Combined)</option>
+                                <option value="maple" data-i18n="leaf_skin_maple">🍁 Autumn Maple Leaves (Red/Orange)</option>
+                                <option value="simple" data-i18n="leaf_skin_simple">🍃 Summer Green Leaves (Wind Gusts)</option>
+                                <option value="ginkgo" data-i18n="leaf_skin_ginkgo">🍂 Golden Ginkgo Leaves</option>
+                                <option value="oak" data-i18n="leaf_skin_oak">🍁 Golden Oak Leaves</option>
+                                <option value="cherry" data-i18n="leaf_skin_cherry">🌸 Cherry Blossoms</option>
+                                <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">🌸 Sakura Petals</option>
+                                <option value="plum" data-i18n="leaf_skin_plum">🌺 Plum Blossoms</option>
                             </select>
+                        </div>
+
+                        <!-- Falling Leaves Ground Settling Toggle -->
+                        <div id="falling-leaves-settling-setting" class="setting-item-row" style="display: none; margin-top: 10px;">
+                            <label for="falling-leaves-settling-toggle" data-i18n="setting_falling_leaves_settling">Accumulate on Ground (Thảm lá tích tụ)</label>
+                            <input type="checkbox" id="falling-leaves-settling-toggle" />
                         </div>
 
                         <!-- Tet Fireworks Settings Removed -->
@@ -892,17 +880,13 @@
                         </div>
 
                         <div id="pixel-blast-bg-setting" class="setting-item" style="display: none;">
-                            <div class="setting-item-row"
-                                style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                            <div class="setting-item-row">
                                 <label for="pixel-blast-transparent"
                                     data-i18n="setting_pixel_blast_transparent">Transparent
                                     Background</label>
-                                <label class="lcp-switch">
-                                    <input type="checkbox" id="pixel-blast-transparent" checked>
-                                    <span class="lcp-slider round"></span>
-                                </label>
+                                <input type="checkbox" id="pixel-blast-transparent" checked />
                             </div>
-                            <div id="pixel-blast-bg-color-container" style="margin-top: 10px; display: none;">
+                            <div id="pixel-blast-bg-color-container" class="setting-item-row" style="margin-top: 10px; display: none;">
                                 <label for="pixel-blast-bg-color-picker"
                                     data-i18n="setting_pixel_blast_bg_color">Background
                                     Color</label>
@@ -914,10 +898,12 @@
                             <label for="pixel-blast-variant-select" data-i18n="setting_pixel_blast_variant">Pixel
                                 Shape</label>
                             <select id="pixel-blast-variant-select" class="full-width">
-                                <option value="square" data-i18n="pixel_blast_square">Square</option>
-                                <option value="circle" data-i18n="pixel_blast_circle">Circle</option>
-                                <option value="triangle" data-i18n="pixel_blast_triangle">Triangle</option>
-                                <option value="diamond" data-i18n="pixel_blast_diamond">Diamond</option>
+                                <option value="square" data-i18n="pixel_blast_square">Square (Quantum Pixel)</option>
+                                <option value="circle" data-i18n="pixel_blast_circle">Circle (Photon Orb)</option>
+                                <option value="triangle" data-i18n="pixel_blast_triangle">Triangle (Crystal Shard)</option>
+                                <option value="diamond" data-i18n="pixel_blast_diamond">Diamond (Prism Shard)</option>
+                                <option value="cross" data-i18n="pixel_blast_cross">Cross (Cyber Star)</option>
+                                <option value="mixed" data-i18n="pixel_blast_mixed">Mixed Elements (Universe)</option>
                             </select>
                         </div>
 
@@ -930,16 +916,12 @@
                         </div>
 
                         <div id="pixel-blast-liquid-setting" class="setting-item" style="display: none;">
-                            <div class="setting-item-row"
-                                style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                            <div class="setting-item-row">
                                 <label for="pixel-blast-liquid" data-i18n="setting_pixel_blast_liquid">Liquid
                                     Distortion</label>
-                                <label class="lcp-switch">
-                                    <input type="checkbox" id="pixel-blast-liquid" checked>
-                                    <span class="lcp-slider round"></span>
-                                </label>
+                                <input type="checkbox" id="pixel-blast-liquid" checked />
                             </div>
-                            <div id="pixel-blast-liquid-strength-container" style="margin-top: 10px;">
+                            <div id="pixel-blast-liquid-strength-container" class="setting-item" style="margin-top: 10px;">
                                 <label for="pixel-blast-liquid-strength-slider">
                                     <span data-i18n="setting_pixel_blast_liquid_strength">Distortion
                                         Strength</span>:
@@ -958,14 +940,10 @@
                             <input type="range" id="pixel-blast-cursor-radius-slider" min="50" max="500" step="10"
                                 value="150" />
 
-                            <div class="setting-item-row"
-                                style="margin-top: 10px; background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                            <div class="setting-item-row" style="margin-top: 10px;">
                                 <label for="pixel-blast-ripples" data-i18n="setting_pixel_blast_ripples">Enable
                                     Ripples (Click)</label>
-                                <label class="lcp-switch">
-                                    <input type="checkbox" id="pixel-blast-ripples" checked>
-                                    <span class="lcp-slider round"></span>
-                                </label>
+                                <input type="checkbox" id="pixel-blast-ripples" checked />
                             </div>
                         </div>
 
