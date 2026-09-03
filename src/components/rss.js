@@ -1,5 +1,5 @@
 import { fadeToggle } from "../utils/dom.js"
-import { getSettings } from "../services/state.js"
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { applyTranslations } from "../services/i18n.js"
 
 export class RssReader {

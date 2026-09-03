@@ -1,5 +1,5 @@
 import { fadeToggle } from "../utils/dom.js"
-import { getSettings } from "../services/state.js"
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { applyTranslations, geti18n } from "../services/i18n.js"
 import { showConfirm } from "../utils/dialog.js"
 
@@ -12,11 +12,11 @@ export class HabitTracker {
     // We will render the header dynamically to update the maxLevel label
     this.container.innerHTML = `
       <div class="habit-header-container"></div>
-      <div class="habit-add-form" style="display: none; margin-bottom: 10px; gap: 5px;">
-        <input type="text" class="habit-add-input" placeholder="New habit name..." data-i18n-placeholder="habit_prompt_name" style="flex: 1; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: var(--text-color); font-size: 0.85em; outline: none;">
-        <input type="color" class="habit-add-color" value="#4CAF50" style="width: 28px; height: 28px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;" title="Choose color">
-        <button class="habit-save-btn" style="padding: 4px 8px; border-radius: 4px; border: none; background: var(--accent-color, #4CAF50); color: #fff; cursor: pointer; font-size: 0.85em;"><i class="fa-solid fa-check"></i></button>
-        <button class="habit-cancel-btn" style="padding: 4px 8px; border-radius: 4px; border: none; background: rgba(255,255,255,0.2); color: var(--text-color); cursor: pointer; font-size: 0.85em;"><i class="fa-solid fa-xmark"></i></button>
+      <div class="habit-add-form" style="display: none; margin-bottom: 10px; gap: 6px; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); align-items: center;">
+        <input type="text" class="habit-add-input" placeholder="New habit name..." data-i18n-placeholder="habit_prompt_name" style="flex: 1; height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.25); color: var(--text-color); font-size: 0.82rem; outline: none; box-sizing: border-box;">
+        <input type="color" class="habit-add-color" value="#4CAF50" style="width: 32px; height: 32px; padding: 2px; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; cursor: pointer; background: rgba(0,0,0,0.2); box-sizing: border-box;" title="Choose color">
+        <button class="habit-save-btn" style="height: 32px; padding: 0 10px; border-radius: 6px; border: none; background: var(--accent-color, #4CAF50); color: var(--accent-contrast-color, #fff); cursor: pointer; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-check"></i></button>
+        <button class="habit-cancel-btn" style="height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: var(--text-color); cursor: pointer; font-size: 0.82rem; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="habit-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
     `
@@ -109,7 +109,13 @@ export class HabitTracker {
     if (saved) {
       try {
         const data = JSON.parse(saved)
-        this.habits = data.habits || []
+        this.habits = (data.habits || []).map((h) => ({
+          ...h,
+          name:
+            typeof h.name === "string"
+              ? h.name
+              : h.name?.name || String(h.name || ""),
+        }))
         if (data.maxLevel) this.maxLevel = data.maxLevel
       } catch (e) {}
     }
@@ -127,16 +133,16 @@ export class HabitTracker {
 
   render() {
     this.headerContainer.innerHTML = `
-      <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600;">
-        <span><i class="fa-solid fa-bars-progress"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <div style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px;">
-            <button class="habit-dec-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-minus" style="font-size: 0.8em;"></i></button>
-            <span style="font-size: 0.8em; opacity: 0.8; min-width: 14px; text-align: center;">${this.maxLevel}</span>
-            <button class="habit-inc-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-plus" style="font-size: 0.8em;"></i></button>
+      <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600; font-size: 0.95rem;">
+        <span class="habit-title"><i class="fa-solid fa-bars-progress" style="color: var(--accent-color); margin-right: 6px;"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <div class="habit-level-stepper" style="display: inline-flex; align-items: center; gap: 3px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 6px; height: 26px; box-sizing: border-box;">
+            <button class="habit-dec-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75;" title="-1"><i class="fa-solid fa-minus" style="font-size: 0.72rem;"></i></button>
+            <span style="font-size: 0.78rem; opacity: 0.85; min-width: 16px; text-align: center; font-weight: 600;">${this.maxLevel}</span>
+            <button class="habit-inc-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75;" title="+1"><i class="fa-solid fa-plus" style="font-size: 0.72rem;"></i></button>
           </div>
-          <button class="habit-add-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 4px;" title="Add"><i class="fa-solid fa-plus"></i></button>
-          <button class="habit-close-btn widget-close-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 2px;" title="Close"><i class="fa-solid fa-xmark"></i></button>
+          <button class="habit-add-btn" style="width: 26px; height: 26px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--text-color); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75; transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;" title="Add"><i class="fa-solid fa-plus" style="font-size: 0.82rem;"></i></button>
+          <button class="habit-close-btn widget-close-btn" style="width: 26px; height: 26px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--text-color); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75; transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;" title="Close"><i class="fa-solid fa-xmark" style="font-size: 0.82rem;"></i></button>
         </div>
       </div>
     `
@@ -157,12 +163,12 @@ export class HabitTracker {
     let gridHtml = ""
 
     if (this.habits.length === 0) {
-      gridHtml += `<div style="text-align: center; opacity: 0.6; font-size: 0.9em; padding: 10px 0;" data-i18n="habit_no_habits">No habits yet. Click + to add.</div>`
+      gridHtml += `<div style="text-align: center; opacity: 0.6; font-size: 0.85rem; padding: 14px 0;" data-i18n="habit_no_habits">No habits yet. Click + to add.</div>`
     } else {
       for (const habit of this.habits) {
-        gridHtml += `<div class="habit-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">`
+        gridHtml += `<div class="habit-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">`
 
-        gridHtml += `<div class="habit-squares-container" style="position: relative; flex: 1; display: flex; height: 28px; border-radius: 4px; overflow: hidden;">`
+        gridHtml += `<div class="habit-squares-container" style="position: relative; flex: 1; display: flex; height: 30px; border-radius: 6px; overflow: hidden; background: rgba(0,0,0,0.18); border: 1px solid rgba(255,255,255,0.07); padding: 2px; box-sizing: border-box;">`
         gridHtml += `<div class="habit-squares" style="display: flex; width: 100%; gap: 2px;">`
 
         const currentProgress = habit.progress || 0
@@ -171,7 +177,7 @@ export class HabitTracker {
 
         for (let i = 1; i <= this.maxLevel; i++) {
           const isFilled = i <= currentProgress
-          let color = "rgba(255,255,255,0.12)"
+          let color = "rgba(255,255,255,0.08)"
           if (isFilled) {
             if (colorMode === "gradient") {
               const hue = ((i - 1) / (this.maxLevel - 1)) * 120
@@ -183,19 +189,19 @@ export class HabitTracker {
             }
           }
 
-          gridHtml += `<div class="habit-square" data-no-drag="true" data-level="${i}" data-id="${habit.id}" style="flex: 1; height: 100%; background: ${color}; border-radius: 2px; cursor: pointer; transition: background 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);"></div>`
+          gridHtml += `<div class="habit-square" data-no-drag="true" data-level="${i}" data-id="${habit.id}" style="flex: 1; height: 100%; background: ${color}; border-radius: 3px; cursor: pointer; transition: background-color 0.18s ease;"></div>`
         }
         gridHtml += `</div>`
 
         // Text overlay
-        gridHtml += `<div class="habit-name" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; font-size: 0.85em; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 5px rgba(0,0,0,0.5); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 10px;">${habit.name}</div>`
+        gridHtml += `<div class="habit-name" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; font-size: 0.82rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.8); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 8px;">${habit.name}</div>`
 
         gridHtml += `</div>` // end habit-squares-container
 
         if (colorMode === "custom") {
-          gridHtml += `<input type="color" class="habit-change-color" data-id="${habit.id}" value="${habitColor}" style="width: 20px; height: 20px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent; opacity: 0.7; transition: 0.2s;" title="Change color">`
+          gridHtml += `<input type="color" class="habit-change-color" data-id="${habit.id}" value="${habitColor}" style="width: 22px; height: 22px; padding: 1px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; cursor: pointer; background: transparent; opacity: 0.75; transition: opacity 0.18s ease; box-sizing: border-box;" title="Change color">`
         }
-        gridHtml += `<button class="habit-delete-btn" data-id="${habit.id}" style="background: transparent; border: none; color: #ff5252; cursor: pointer; opacity: 0.7; padding: 4px; display: flex; align-items: center; justify-content: center; transition: 0.2s;"><i class="fa-solid fa-trash-can" style="font-size: 0.85em;"></i></button>`
+        gridHtml += `<button class="habit-delete-btn" data-id="${habit.id}" style="width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; color: #ff5252; cursor: pointer; opacity: 0.75; display: inline-flex; align-items: center; justify-content: center; transition: opacity 0.18s ease, background-color 0.18s ease;" title="Delete"><i class="fa-solid fa-trash-can" style="font-size: 0.8rem;"></i></button>`
         gridHtml += `</div>`
       }
     }
@@ -300,9 +306,21 @@ export class HabitTracker {
         e.stopPropagation()
         const id = e.currentTarget.dataset.id
         const habit = this.habits.find((h) => h.id === id)
-        const i18n = geti18n()
-        const title = i18n.habit_delete_title || "Delete Habit"
-        const message = `${i18n.habit_confirm_delete || "Delete this habit?"}<br><br><strong style="color: var(--accent-color, #4CAF50);">${habit ? habit.name : ""}</strong>`
+        const i18n = geti18n() || {}
+        const title =
+          typeof i18n.habit_delete_title === "string"
+            ? i18n.habit_delete_title
+            : "Delete Habit"
+        const confirmText =
+          typeof i18n.habit_confirm_delete === "string"
+            ? i18n.habit_confirm_delete
+            : "Delete this habit?"
+        const habitName = habit
+          ? typeof habit.name === "string"
+            ? habit.name
+            : habit.name?.name || String(habit.name || "")
+          : ""
+        const message = `${confirmText}<br><br><strong style="color: var(--accent-color, #4CAF50);">${habitName}</strong>`
 
         if (await showConfirm(message, title)) {
           this.habits = this.habits.filter((h) => h.id !== id)

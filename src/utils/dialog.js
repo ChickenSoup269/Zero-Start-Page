@@ -92,14 +92,33 @@ export function showAlert(message, title = null) {
 export function showConfirm(message, title = null) {
   return new Promise((resolve) => {
     const container = createDialogContainer()
-    const i18n = geti18n()
+    const i18n = geti18n() || {}
+
+    let displayMessage = message
+    let displayTitle = title
+
+    // Safeguard against objects or i18n dictionaries being passed as message
+    if (typeof message === "object" && message !== null) {
+      if (typeof message.message === "string") {
+        displayMessage = message.message
+        if (message.title && !displayTitle) displayTitle = message.title
+      } else if (typeof message.habit_confirm_delete === "string") {
+        displayMessage = message.habit_confirm_delete
+      } else {
+        try {
+          displayMessage = JSON.stringify(message)
+        } catch {
+          displayMessage = String(message)
+        }
+      }
+    }
 
     container.innerHTML = `
       <div class="custom-dialog custom-confirm">
-        ${title ? `<div class="dialog-header">${title}</div>` : ""}
+        ${displayTitle ? `<div class="dialog-header">${displayTitle}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-circle-question dialog-icon"></i>
-          <div class="dialog-message">${message}</div>
+          <div class="dialog-message">${displayMessage}</div>
         </div>
         <div class="dialog-footer">
           <button class="dialog-btn dialog-btn-secondary" id="confirm-cancel">

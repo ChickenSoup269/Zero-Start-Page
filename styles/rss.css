@@ -3,7 +3,7 @@
   max-height: 500px;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 12px 14px;
   gap: 10px;
   overflow: hidden;
   transition:
@@ -13,20 +13,21 @@
   top: 100px;
   left: 100px;
   z-index: 8995 !important;
+  border-radius: 8px !important;
 }
 
 .rss-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.1em;
+  font-size: 0.95rem;
   font-weight: 600;
   flex-shrink: 0;
 }
 
 .rss-tabs {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 6px;
   margin-bottom: 2px;
@@ -41,41 +42,67 @@
 }
 
 .rss-tab {
-  padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  font-size: 0.85em;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  opacity: 0.7;
-  transition: all 0.2s;
+  opacity: 0.75;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease,
+    color 0.18s ease;
   user-select: none;
   flex-shrink: 0;
 }
 
 .rss-tab:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 .rss-tab.active {
   opacity: 1;
-  background: var(--accent-color, #4facfe);
-  color: #fff;
+  background: var(--accent-color, #4a80f0);
+  border-color: transparent;
+  color: var(--accent-contrast-color, #fff);
   font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+}
+
+.rss-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .rss-actions button {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-color);
   cursor: pointer;
-  font-size: 0.9em;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+  font-size: 0.82rem;
+  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
 }
 
 .rss-actions button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
   opacity: 1;
 }
 
@@ -84,7 +111,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding-right: 5px;
 }
 
@@ -106,21 +133,25 @@
 }
 
 .rss-item {
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
   text-decoration: none;
   color: var(--text-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 0.9em;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  font-size: 0.86rem;
   line-height: 1.4;
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
-.rss-btn-save:hover {
-  background: rgba(255, 255, 255, 0.2);
+.rss-item img {
+  border-radius: 6px;
 }
 
 .rss-container.rss-mini {
@@ -231,22 +262,52 @@
 }
 
 .rss-input {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color);
-  padding: 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   font-family: inherit;
+  font-size: 0.82rem;
+  box-sizing: border-box;
+}
+
+.rss-input:focus {
+  outline: none;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+}
+
+.rss-preset-btn {
+  border-radius: 6px !important;
+  font-size: 0.76rem !important;
+  padding: 3px 8px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-color) !important;
+  cursor: pointer !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease !important;
+}
+
+.rss-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .rss-save-btn {
-  background: var(--accent-color, #4facfe);
-  color: #fff;
+  background: var(--accent-color, #4a80f0);
+  color: var(--accent-contrast-color, #fff);
   border: none;
-  padding: 8px;
-  border-radius: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 0.82rem;
+  transition: opacity 0.18s ease;
+}
+
+.rss-save-btn:hover {
+  opacity: 0.9;
 }
 
 /* RSS SKINS */
@@ -312,24 +373,24 @@ body.widgets-m3-accent .rss-container,
 .rss-source-link {
   font-size: 0.75em;
   padding: 3px 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
   text-decoration: none;
   color: inherit;
   transition: background 0.2s;
 }
 
 .rss-source-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .rss-scroll-top-btn {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  bottom: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   background: var(--accent-color, rgba(0, 0, 0, 0.7));
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -340,11 +401,11 @@ body.widgets-m3-accent .rss-container,
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity 0.3s,
+    opacity 0.25s,
     transform 0.2s,
     background 0.2s;
   z-index: 10;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .rss-scroll-top-btn.visible {
