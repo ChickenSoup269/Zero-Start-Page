@@ -45,7 +45,7 @@
             <div class="setting-label"><i class="fa-solid fa-water"></i> <span data-i18n="settings_svg_wave_title">SVG
                     Gradient
                     Wave</span></div>
-            <button id="svg-wave-toggle-btn" class="secondary-btn full-width">
+            <button id="svg-wave-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem;">
                 <i class="fa-solid fa-wave-square"></i>
                 <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave
                     Generator</span>
@@ -317,24 +317,22 @@
 
                 <!-- Action Buttons -->
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px;">
-                    <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize">
+                    <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize" style="border-radius: 8px; height: 32px; font-size: 0.8rem;">
                         <i class="fa-solid fa-dice"></i> <span data-i18n="settings_svg_wave_randomize">Randomize</span>
                     </button>
                     <button id="svg-wave-crazy-btn" class="secondary-btn"
-                        style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
+                        style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3); border-radius: 8px; height: 32px; font-size: 0.8rem;">
                         <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy</span>
                     </button>
-                    <button id="svg-wave-reset-btn" class="secondary-btn" title="Reset Default">
+                    <button id="svg-wave-reset-btn" class="secondary-btn" title="Reset Default" style="border-radius: 8px; height: 32px; font-size: 0.8rem;">
                         <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
                     </button>
                 </div>
-                <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px;">
-                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save
-                        Wave</span>
+                <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px; border-radius: 8px; height: 34px; font-size: 0.82rem;">
+                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save Wave</span>
                 </button>
-                <button id="svg-wave-close-btn" class="secondary-btn full-width svg-wave-close-control">
-                    <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close
-                        Controls</span>
+                <button id="svg-wave-close-btn" class="secondary-btn full-width svg-wave-close-control" style="border-radius: 8px; height: 34px; font-size: 0.82rem;">
+                    <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close Controls</span>
                 </button>
             </div>
 
@@ -367,7 +365,7 @@
         <div class="setting-group">
             <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
                     data-i18n="settings_gradient_title">Background Gradient</span></div>
-            <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
+            <button id="gradient-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem; margin-bottom: 12px;">
                 <i class="fa-solid fa-eye-slash"></i>
                 <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
             </button>
@@ -474,22 +472,22 @@
                         style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                             <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors"
-                                data-i18n-title="settings_accent_random">
+                                data-i18n-title="settings_accent_random" style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
                                 <i class="fa-solid fa-shuffle"></i> <span
-                                    data-i18n="settings_gradient_random_colors">Random
-                                    Colors</span>
+                                    data-i18n="settings_gradient_random_colors">Random Colors</span>
                             </button>
-                            <button id="gradient-reset-btn" class="secondary-btn" title="Reset Default">
+                            <button id="gradient-reset-btn" class="secondary-btn" title="Reset Default"
+                                style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
                                 <i class="fa-solid fa-rotate-left"></i> <span
                                     data-i18n="settings_reset_default">Reset</span>
                             </button>
                         </div>
-                        <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%;">
+                        <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%; border-radius: 8px; height: 34px; font-size: 0.8rem;">
                             <i class="fa-solid fa-wand-magic-sparkles"></i><span
                                 data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
                         </button>
                         <button id="save-gradient-btn" class="primary-btn"
-                            style="width: 100%; height: 44px; justify-content: center; gap: 10px; font-weight: 600;">
+                            style="width: 100%; height: 36px; border-radius: 8px; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.85rem;">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span data-i18n="settings_save_gradient">Save Gradient</span>
                         </button>
@@ -533,7 +531,7 @@
             <div class="setting-label"><i class="fa-solid fa-palette"></i> <span
                     data-i18n="settings_multi_color_title">Split Background
                     (Multi-Color)</span></div>
-            <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
+            <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem; margin-bottom: 10px;">
                 <i class="fa-solid fa-eye-slash"></i>
                 <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide
                     Controls</span>
@@ -664,24 +662,24 @@
                     </div>
                 </div>
                 <div id="multi-gradient-preview"
-                    style="width: 100%; height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
+                    style="width: 100%; height: 48px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                     <button id="random-multi-color-hue-btn" class="secondary-btn"
-                        data-i18n="settings_multi_color_random_hue"><i class="fa-solid fa-shuffle"></i> Random
-                        HUE</button>
+                        data-i18n="settings_multi_color_random_hue" style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-shuffle"></i> Random HUE</button>
                     <button id="random-multi-color-crazy-btn" class="secondary-btn"
-                        data-i18n="settings_multi_color_random_crazy"><i class="fa-solid fa-bolt"></i> Crazy</button>
+                        data-i18n="settings_multi_color_random_crazy" style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-bolt"></i> Crazy</button>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <button id="apply-multi-color-btn" class="secondary-btn" data-i18n="settings_multi_color_apply"><i
-                            class="fa-solid fa-check"></i> Apply</button>
-                    <button id="multi-color-reset-btn" class="secondary-btn" title="Reset Default">
+                    <button id="apply-multi-color-btn" class="secondary-btn" data-i18n="settings_multi_color_apply"
+                        style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-check"></i> Apply</button>
+                    <button id="multi-color-reset-btn" class="secondary-btn" title="Reset Default"
+                        style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
                         <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
                     </button>
                 </div>
                 <button id="save-multi-color-btn" class="primary-btn full-width" data-i18n="settings_multi_color_save"
-                    style="height: 40px; justify-content: center; gap: 8px; font-weight: 600;">
+                    style="height: 36px; border-radius: 8px; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.85rem;">
                     <i class="fa-solid fa-floppy-disk"></i> Save Preset
                 </button>
 
