@@ -188,16 +188,22 @@ export class FallingLeavesSettledEffect {
     const depth = Math.random() // 0 (far) to 1 (near)
     const baseSize = 9 + depth * 13
 
+    const baseSpecies = ["maple", "simple", "ginkgo", "oak", "cherryPetal"]
+    const specificType =
+      this.leafType === "mixed"
+        ? baseSpecies[Math.floor(Math.random() * baseSpecies.length)]
+        : this.leafType
+
     const sizeMultiplier =
-      this.leafType === "cherryPetal"
+      specificType === "cherryPetal"
         ? 1.35
-        : this.leafType === "cherry" || this.leafType === "plum"
+        : specificType === "cherry" || specificType === "plum"
           ? 1.25
-          : this.leafType === "ginkgo"
+          : specificType === "ginkgo"
             ? 1.15
             : 1.0
 
-    const paletteList = this.colorPalettes[this.leafType] || this.colorPalettes.maple
+    const paletteList = this.colorPalettes[specificType] || this.colorPalettes.maple
     const colorObj = paletteList[Math.floor(Math.random() * paletteList.length)]
 
     return {
@@ -207,6 +213,7 @@ export class FallingLeavesSettledEffect {
         : Math.random() * -300 - 30,
       z: depth,
       size: baseSize * sizeMultiplier,
+      species: specificType,
       color: colorObj,
 
       // Movement & Dynamics
@@ -472,8 +479,8 @@ export class FallingLeavesSettledEffect {
     }
   }
 
-  drawLeafShape(ctx, size) {
-    switch (this.leafType) {
+  drawLeafShape(ctx, size, species = this.leafType) {
+    switch (species) {
       case "maple":
         this.drawMapleLeaf(ctx, size)
         break
@@ -502,9 +509,9 @@ export class FallingLeavesSettledEffect {
 
   // ── Leaf Venation Details ──────────────────────────────────────────────────
 
-  drawVeins(ctx, size, opacity, veinColor) {
+  drawVeins(ctx, size, opacity, veinColor, species = this.leafType) {
     const s = size
-    const type = this.leafType
+    const type = species || this.leafType
 
     ctx.strokeStyle = veinColor || `rgba(0, 0, 0, ${opacity * 0.24})`
     ctx.lineWidth = Math.max(0.55, s * 0.045)
@@ -591,8 +598,10 @@ export class FallingLeavesSettledEffect {
     grad.addColorStop(0.4, baseColor)
     grad.addColorStop(1, tipColor)
 
+    const species = leaf.species || this.leafType
+
     // Render multi-petal flowers specially
-    if (this.leafType === "cherry" || this.leafType === "plum") {
+    if (species === "cherry" || species === "plum") {
       const petalCount = 5
       for (let i = 0; i < petalCount; i++) {
         ctx.save()
@@ -600,7 +609,7 @@ export class FallingLeavesSettledEffect {
         ctx.rotate(angle)
         ctx.translate(0, -s * 0.52)
 
-        if (this.leafType === "cherry") {
+        if (species === "cherry") {
           this.drawCherryPetal(ctx, s * 0.8)
         } else {
           ctx.beginPath()
@@ -632,7 +641,7 @@ export class FallingLeavesSettledEffect {
     }
 
     // Standard Leaf Geometry fill
-    this.drawLeafShape(ctx, s)
+    this.drawLeafShape(ctx, s, species)
     ctx.fillStyle = grad
     ctx.fill()
 
@@ -643,9 +652,9 @@ export class FallingLeavesSettledEffect {
 
     // Veins clipped to leaf shape
     ctx.save()
-    this.drawLeafShape(ctx, s)
+    this.drawLeafShape(ctx, s, species)
     ctx.clip()
-    this.drawVeins(ctx, s, leaf.opacity, c.vein)
+    this.drawVeins(ctx, s, leaf.opacity, c.vein, species)
     ctx.restore()
 
     // Subtle specular shine on upper side
