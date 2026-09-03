@@ -1,19 +1,22 @@
 /**
- * PixelCubes — Hollywood AAA Volumetric 3D Polyhedra Engine
+ * PixelCubes — Hollywood AAA Autonomous 3D Celestial Polyhedra Engine
  *
- * Implements the 6 Golden Principles:
- *  1. Volumetric 3D Shading & Translucent Facets:
- *     - Semi-translucent holographic glass faces with Lambertian diffuse lighting.
- *     - Luminous glowing wireframe edges and corner vertex photon nodes.
- *  2. True 3D Depth Sorting & Cosmic Fog:
- *     - Back-to-front Z-sorting with atmospheric depth fog attenuation.
- *  3. Interactive 3D Gyroscopic Parallax:
- *     - Mouse movement tilts and rotates the celestial coordinate system with inertia.
- *  4. Multi-Geometry Support:
- *     - Cube (Hexahedron), Triangle (Square Pyramid), and Circle (Geodesic Wireframe Sphere).
- *  5. 60Hz - 240Hz Delta Normalization & Native High-DPI Retina Subpixel Precision.
+ * Implements 6 Golden Principles:
+ *  1. Autonomous Smooth 3D Animation:
+ *     - Natural multi-axis cosmic rotation & infinite Z-depth orbital flight.
+ *     - Uncoupled from cursor disruption for seamless, cinematic ambient motion.
+ *  2. Rich 3D Polyhedra Geometries:
+ *     - Cube (Hexahedron), Sphere (Geodesic Wireframe), Pyramid (Square Pyramid),
+ *       Diamond (Octahedron), Hexagon (Prism), Torus (Energy Ring), and Mixed Universe.
+ *  3. Volumetric 3D Shading & Lambertian Illumination:
+ *     - Translucent facets, luminous glowing wireframes, and white-hot corner photon nodes.
+ *  4. True 3D Depth Sorting & Cosmic Fog:
+ *     - Back-to-front Z-sorting with deep-space atmospheric attenuation.
+ *  5. 60Hz - 240Hz Delta Normalization & Zero-Lag 1x Native Canvas.
  *  6. 100% Backward-Compatible API (updateColor, updateShape, start, stop, destroy, resize).
  */
+
+const SHAPES = ["cube", "circle", "triangle", "diamond", "cylinder", "ring", "mixed"]
 
 export class PixelCubes {
   constructor(canvas, color = "#00ff73", shape = "cube") {
@@ -27,31 +30,22 @@ export class PixelCubes {
     this.animationId = null
 
     this.color = color || "#00ff73"
-    this.shape = shape || "cube"
+    this.shape = SHAPES.includes(shape) ? shape : "cube"
     this._cacheColor()
 
     this.cubes = []
-    this.mouseEnabled = true
     this.angleY = 0
     this.angleX = 0
-    this.targetAngleX = 0
-    this.targetAngleY = 0
 
-    // High-DPI Retina
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
     this.lastTime = performance.now()
 
     this._resizeHandler = () => this.resize()
-    this._mouseMoveHandler = (e) => this._onMouseMove(e)
-    this._mouseLeaveHandler = () => this._onMouseLeave()
     this._visibilityHandler = () => this._onVisibilityChange()
 
     this.resize()
-    window.addEventListener("resize", this._resizeHandler)
-    window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
-    window.addEventListener("mouseleave", this._mouseLeaveHandler, { passive: true })
+    window.addEventListener("resize", this._resizeHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
@@ -82,27 +76,22 @@ export class PixelCubes {
   }
 
   updateShape(shape) {
-    if (["cube", "circle", "triangle"].includes(shape)) {
+    if (SHAPES.includes(shape)) {
       this.shape = shape
+      this.initCubes()
     }
   }
 
   resize() {
     if (!this.canvas) return
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
 
-    this.canvas.width = Math.round(this.width * this.dpr)
-    this.canvas.height = Math.round(this.height * this.dpr)
+    this.canvas.width = this.width
+    this.canvas.height = this.height
     this.canvas.style.width = `${this.width}px`
     this.canvas.style.height = `${this.height}px`
     this.canvas.style.pointerEvents = "none"
-
-    if (this.ctx) {
-      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
-      this.ctx.scale(this.dpr, this.dpr)
-    }
 
     this.initCubes()
   }
@@ -110,43 +99,30 @@ export class PixelCubes {
   initCubes() {
     this._cacheColor()
     this.cubes = []
-    const count = Math.min(Math.floor((this.width * this.height) / 28000), 55)
+    const count = Math.min(Math.floor((this.width * this.height) / 28000), 45)
+    const baseShapes = ["cube", "circle", "triangle", "diamond", "cylinder", "ring"]
 
     for (let i = 0; i < count; i++) {
+      const specificShape =
+        this.shape === "mixed"
+          ? baseShapes[Math.floor(Math.random() * baseShapes.length)]
+          : this.shape
+
       this.cubes.push({
-        x: (Math.random() - 0.5) * this.width * 1.4,
-        y: (Math.random() - 0.5) * this.height * 1.4,
-        z: Math.random() * 850 - 200,
-        size: Math.random() * 22 + 12,
+        x: (Math.random() - 0.5) * this.width * 1.3,
+        y: (Math.random() - 0.5) * this.height * 1.3,
+        z: Math.random() * 850 - 150,
+        vZ: 0.6 + Math.random() * 0.9,
+        size: Math.random() * 20 + 12,
+        shape: specificShape,
         rX: Math.random() * Math.PI * 2,
         rY: Math.random() * Math.PI * 2,
         rZ: Math.random() * Math.PI * 2,
-        sX: (Math.random() - 0.5) * 0.018,
-        sY: (Math.random() - 0.5) * 0.018,
-        sZ: (Math.random() - 0.5) * 0.018,
+        sX: (Math.random() - 0.5) * 0.016,
+        sY: (Math.random() - 0.5) * 0.016,
+        sZ: (Math.random() - 0.5) * 0.016,
       })
     }
-  }
-
-  setMouseEnabled(enabled) {
-    this.mouseEnabled = Boolean(enabled)
-    if (!this.mouseEnabled) {
-      this.targetAngleX = 0
-      this.targetAngleY = 0
-    }
-  }
-
-  _onMouseMove(e) {
-    if (this.mouseEnabled === false) return
-    const nx = (e.clientX / this.width - 0.5) * 2
-    const ny = (e.clientY / this.height - 0.5) * 2
-    this.targetAngleY = nx * 0.45
-    this.targetAngleX = -ny * 0.35
-  }
-
-  _onMouseLeave() {
-    this.targetAngleX = 0
-    this.targetAngleY = 0
   }
 
   _onVisibilityChange() {
@@ -204,24 +180,26 @@ export class PixelCubes {
     this.stop()
     this.destroyed = true
     window.removeEventListener("resize", this._resizeHandler)
-    window.removeEventListener("mousemove", this._mouseMoveHandler)
-    window.removeEventListener("mouseleave", this._mouseLeaveHandler)
     document.removeEventListener("visibilitychange", this._visibilityHandler)
   }
 
   update(dt) {
-    // Autonomous slow cosmic spin
-    this.angleY += 0.0018 * dt
-    this.angleX += 0.001 * dt
-
-    // Inertial gyro tracking from mouse
-    this.angleX += (this.targetAngleX - this.angleX) * 0.04 * dt
-    this.angleY += (this.targetAngleY - this.angleY) * 0.04 * dt
+    // Continuous Autonomous Cosmic Orbit (Zero mouse interference)
+    this.angleY += 0.0022 * dt
+    this.angleX += 0.0012 * dt
 
     for (let c of this.cubes) {
       c.rX += c.sX * dt
       c.rY += c.sY * dt
       c.rZ += c.sZ * dt
+
+      // Smooth forward cosmic drift
+      c.z -= c.vZ * dt
+      if (c.z < -200) {
+        c.z = 700 + Math.random() * 150
+        c.x = (Math.random() - 0.5) * this.width * 1.3
+        c.y = (Math.random() - 0.5) * this.height * 1.3
+      }
     }
   }
 
@@ -246,13 +224,13 @@ export class PixelCubes {
       let tz = c.x * sy + c.z * cy
       let ty = c.y * cx - tz * sx
       let pz = c.y * sx + tz * cx
-      let z = pz + 650
+      let z = pz + 620
 
-      if (z > 60) {
+      if (z > 50) {
         let scale = 420 / z
         let px = tx * scale + W / 2
         let py = ty * scale + H / 2
-        let alpha = Math.max(0, Math.min(1, (1050 - z) / 850))
+        let alpha = Math.max(0, Math.min(1, (980 - z) / 800))
 
         renderItems.push({
           c,
@@ -274,7 +252,10 @@ export class PixelCubes {
 
     for (const item of renderItems) {
       const { c, px, py, scale, alpha } = item
+      if (alpha <= 0.02) continue
+
       const s = c.size * scale
+      const shape = c.shape || this.shape
 
       const crx = Math.cos(c.rX)
       const srx = Math.sin(c.rX)
@@ -296,9 +277,9 @@ export class PixelCubes {
         return { x: px + x3, y: py + y3, z: z3 }
       }
 
-      if (this.shape === "circle") {
-        // --- 3D Geodesic Wireframe Sphere with 3 Primary Great Circles ---
-        const steps = 16
+      if (shape === "circle") {
+        // --- 1. 3D Geodesic Wireframe Sphere ---
+        const steps = 14
         const rings = [[], [], []]
 
         for (let i = 0; i < steps; i++) {
@@ -310,17 +291,8 @@ export class PixelCubes {
           rings[2].push([cos, 0, sin])
         }
 
-        // Translucent central sphere glow
-        const glowGrad = ctx.createRadialGradient(px, py, 0, px, py, s * 1.1)
-        glowGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${(alpha * 0.16).toFixed(3)})`)
-        glowGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`)
-        ctx.fillStyle = glowGrad
-        ctx.beginPath()
-        ctx.arc(px, py, s * 1.1, 0, Math.PI * 2)
-        ctx.fill()
-
-        ctx.lineWidth = Math.max(0.8, 1.4 * scale)
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.85).toFixed(3)})`
+        ctx.lineWidth = Math.max(0.8, 1.3 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.82).toFixed(2)})`
 
         for (const ring of rings) {
           const p = ring.map(transformPoint)
@@ -330,17 +302,22 @@ export class PixelCubes {
           ctx.closePath()
           ctx.stroke()
         }
-      } else if (this.shape === "triangle") {
-        // --- 3D Square Pyramid with Translucent Lit Faces ---
+
+        // Central photon core
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.9).toFixed(2)})`
+        ctx.beginPath()
+        ctx.arc(px, py, Math.max(1, 1.5 * scale), 0, Math.PI * 2)
+        ctx.fill()
+      } else if (shape === "triangle") {
+        // --- 2. 3D Square Pyramid ---
         const v = [
-          [0, -1.2, 0], // Top apex
+          [0, -1.2, 0], // Apex
           [-1, 0.9, -1],
           [1, 0.9, -1],
           [1, 0.9, 1],
           [-1, 0.9, 1],
         ]
         const p = v.map(transformPoint)
-
         const faces = [
           [0, 1, 2],
           [0, 2, 3],
@@ -349,21 +326,15 @@ export class PixelCubes {
           [1, 2, 3, 4],
         ]
 
-        // Render translucent faces with Lambertian lighting
+        // Facets with Lambertian lighting
         for (const f of faces) {
           const v0 = p[f[0]]
           const v1 = p[f[1]]
           const v2 = p[f[2]]
-          const ax = v1.x - v0.x
-          const ay = v1.y - v0.y
-          const bx = v2.x - v0.x
-          const by = v2.y - v0.y
-          const normalZ = ax * by - ay * bx
-
+          const normalZ = (v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)
           if (normalZ > 0) {
-            // Front-facing
-            const faceShade = Math.min(1.0, Math.max(0.2, (normalZ / (s * s * 3)) * 0.5 + 0.3))
-            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.18 * faceShade).toFixed(3)})`
+            const faceShade = Math.min(1.0, Math.max(0.25, (normalZ / (s * s * 3)) * 0.5 + 0.35))
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.16 * faceShade).toFixed(2)})`
             ctx.beginPath()
             ctx.moveTo(v0.x, v0.y)
             for (let i = 1; i < f.length; i++) ctx.lineTo(p[f[i]].x, p[f[i]].y)
@@ -372,9 +343,9 @@ export class PixelCubes {
           }
         }
 
-        // Glowing Wireframe Edges
-        ctx.lineWidth = Math.max(0.9, 1.5 * scale)
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.9).toFixed(3)})`
+        // Wireframe
+        ctx.lineWidth = Math.max(0.8, 1.4 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.88).toFixed(2)})`
         ctx.beginPath()
         for (let f of faces) {
           ctx.moveTo(p[f[0]].x, p[f[0]].y)
@@ -383,15 +354,131 @@ export class PixelCubes {
         }
         ctx.stroke()
 
-        // Corner photon nodes
-        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`
+        // Vertex photon nodes
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.92).toFixed(2)})`
         for (let pt of p) {
           ctx.beginPath()
-          ctx.arc(pt.x, pt.y, Math.max(1, 1.8 * scale), 0, Math.PI * 2)
+          ctx.arc(pt.x, pt.y, Math.max(1, 1.6 * scale), 0, Math.PI * 2)
+          ctx.fill()
+        }
+      } else if (shape === "diamond") {
+        // --- 3. 3D Octahedron (Diamond) ---
+        const v = [
+          [0, -1.3, 0], // Top
+          [0, 1.3, 0],  // Bottom
+          [-1, 0, 0],
+          [1, 0, 0],
+          [0, 0, -1],
+          [0, 0, 1],
+        ]
+        const p = v.map(transformPoint)
+        const faces = [
+          [0, 2, 4],
+          [0, 4, 3],
+          [0, 3, 5],
+          [0, 5, 2],
+          [1, 4, 2],
+          [1, 3, 4],
+          [1, 5, 3],
+          [1, 2, 5],
+        ]
+
+        for (const f of faces) {
+          const v0 = p[f[0]]
+          const v1 = p[f[1]]
+          const v2 = p[f[2]]
+          const normalZ = (v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)
+          if (normalZ > 0) {
+            const faceShade = Math.min(1.0, Math.max(0.25, (normalZ / (s * s * 3)) * 0.5 + 0.4))
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.18 * faceShade).toFixed(2)})`
+            ctx.beginPath()
+            ctx.moveTo(v0.x, v0.y)
+            ctx.lineTo(v1.x, v1.y)
+            ctx.lineTo(v2.x, v2.y)
+            ctx.closePath()
+            ctx.fill()
+          }
+        }
+
+        ctx.lineWidth = Math.max(0.8, 1.4 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.9).toFixed(2)})`
+        ctx.beginPath()
+        for (let f of faces) {
+          ctx.moveTo(p[f[0]].x, p[f[0]].y)
+          ctx.lineTo(p[f[1]].x, p[f[1]].y)
+          ctx.lineTo(p[f[2]].x, p[f[2]].y)
+          ctx.lineTo(p[f[0]].x, p[f[0]].y)
+        }
+        ctx.stroke()
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(2)})`
+        for (let pt of p) {
+          ctx.beginPath()
+          ctx.arc(pt.x, pt.y, Math.max(1, 1.6 * scale), 0, Math.PI * 2)
+          ctx.fill()
+        }
+      } else if (shape === "cylinder") {
+        // --- 4. 3D Hexagonal Prism ---
+        const v = []
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2
+          v.push([Math.cos(a) * 0.9, -1.0, Math.sin(a) * 0.9])
+          v.push([Math.cos(a) * 0.9, 1.0, Math.sin(a) * 0.9])
+        }
+        const p = v.map(transformPoint)
+
+        ctx.lineWidth = Math.max(0.8, 1.3 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.85).toFixed(2)})`
+
+        // Top & Bottom caps
+        ctx.beginPath()
+        ctx.moveTo(p[0].x, p[0].y)
+        for (let i = 2; i < 12; i += 2) ctx.lineTo(p[i].x, p[i].y)
+        ctx.closePath()
+        ctx.moveTo(p[1].x, p[1].y)
+        for (let i = 3; i < 12; i += 2) ctx.lineTo(p[i].x, p[i].y)
+        ctx.closePath()
+
+        // Side pillars
+        for (let i = 0; i < 12; i += 2) {
+          ctx.moveTo(p[i].x, p[i].y)
+          ctx.lineTo(p[i + 1].x, p[i + 1].y)
+        }
+        ctx.stroke()
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.9).toFixed(2)})`
+        for (let pt of p) {
+          ctx.beginPath()
+          ctx.arc(pt.x, pt.y, Math.max(0.8, 1.4 * scale), 0, Math.PI * 2)
+          ctx.fill()
+        }
+      } else if (shape === "ring") {
+        // --- 5. 3D Torus (Energy Ring) ---
+        const segs = 16
+        const ringPts = []
+        for (let i = 0; i < segs; i++) {
+          const a = (i / segs) * Math.PI * 2
+          ringPts.push([Math.cos(a) * 1.2, 0, Math.sin(a) * 1.2])
+        }
+        const p = ringPts.map(transformPoint)
+
+        ctx.lineWidth = Math.max(1.0, 2.0 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.9).toFixed(2)})`
+        ctx.beginPath()
+        ctx.moveTo(p[0].x, p[0].y)
+        for (let i = 1; i < p.length; i++) ctx.lineTo(p[i].x, p[i].y)
+        ctx.closePath()
+        ctx.stroke()
+
+        // Ring orbital photon sparks
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(2)})`
+        for (let i = 0; i < p.length; i += 2) {
+          ctx.beginPath()
+          ctx.arc(p[i].x, p[i].y, Math.max(1, 1.8 * scale), 0, Math.PI * 2)
           ctx.fill()
         }
       } else {
-        // --- 3D Volumetric Holographic Hexahedron (Cube) ---
+        // --- 6. 3D Volumetric Holographic Hexahedron (Cube) ---
         const v = [
           [-1, -1, -1],
           [1, -1, -1],
@@ -403,30 +490,24 @@ export class PixelCubes {
           [-1, 1, 1],
         ]
         const p = v.map(transformPoint)
-
         const faces = [
-          [0, 1, 2, 3], // Back
-          [4, 5, 6, 7], // Front
-          [0, 4, 7, 3], // Left
-          [1, 5, 6, 2], // Right
-          [0, 1, 5, 4], // Top
-          [3, 2, 6, 7], // Bottom
+          [0, 1, 2, 3],
+          [4, 5, 6, 7],
+          [0, 4, 7, 3],
+          [1, 5, 6, 2],
+          [0, 1, 5, 4],
+          [3, 2, 6, 7],
         ]
 
-        // Translucent holographic face fills with 3D Lambertian normal illumination
+        // Translucent face fills with Lambertian illumination
         for (const f of faces) {
           const v0 = p[f[0]]
           const v1 = p[f[1]]
           const v2 = p[f[2]]
-          const ax = v1.x - v0.x
-          const ay = v1.y - v0.y
-          const bx = v2.x - v0.x
-          const by = v2.y - v0.y
-          const normalZ = ax * by - ay * bx
-
+          const normalZ = (v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)
           if (normalZ > 0) {
-            const faceShade = Math.min(1.0, Math.max(0.2, (normalZ / (s * s * 3)) * 0.5 + 0.35))
-            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.16 * faceShade).toFixed(3)})`
+            const faceShade = Math.min(1.0, Math.max(0.25, (normalZ / (s * s * 3)) * 0.5 + 0.35))
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.16 * faceShade).toFixed(2)})`
             ctx.beginPath()
             ctx.moveTo(v0.x, v0.y)
             for (let i = 1; i < 4; i++) ctx.lineTo(p[f[i]].x, p[f[i]].y)
@@ -436,8 +517,8 @@ export class PixelCubes {
         }
 
         // Luminous crisp wireframe edges
-        ctx.lineWidth = Math.max(0.9, 1.5 * scale)
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.92).toFixed(3)})`
+        ctx.lineWidth = Math.max(0.8, 1.4 * scale)
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(alpha * 0.9).toFixed(2)})`
         ctx.beginPath()
         for (let f of faces) {
           ctx.moveTo(p[f[0]].x, p[f[0]].y)
@@ -447,10 +528,10 @@ export class PixelCubes {
         ctx.stroke()
 
         // Glowing corner nodes
-        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`
+        ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(2)})`
         for (let pt of p) {
           ctx.beginPath()
-          ctx.arc(pt.x, pt.y, Math.max(1, 1.8 * scale), 0, Math.PI * 2)
+          ctx.arc(pt.x, pt.y, Math.max(1, 1.6 * scale), 0, Math.PI * 2)
           ctx.fill()
         }
       }

@@ -1,21 +1,20 @@
 import { hexToRgb } from "../../utils/colors.js"
 
 /**
- * GridScanEffect — Hollywood AAA 3D Cyber Volume Scanner Engine
+ * GridScanEffect — Hollywood AAA Autonomous 3D Cyber Scanner Engine
  *
- * Implements the 6 Golden Principles:
- *  1. Volumetric 3D Laser Scanning Planes:
- *     - Multi-tier scanning wave train advancing through 3D depth.
- *     - Perspective cyber grid floor/ceiling illuminated by passing wavefronts.
- *  2. Cybernetic Target Reticles & Radar Pulse Rings:
- *     - 3D floating corner brackets with targeting crosshairs.
+ * Implements 6 Golden Principles:
+ *  1. Autonomous Smooth 3D Cyber Radar:
+ *     - Uncoupled from cursor disruption for seamless, cinematic ambient scanning.
+ *     - Subtle organic drone camera breathing & infinite forward scanning wave train.
+ *  2. Volumetric 3D Laser Scanning Planes & Cyber Grids:
+ *     - Multi-tier scanning wave frames advancing through 3D depth.
+ *     - Perspective cyber grid floor/ceiling illuminated dynamically by passing wavefronts.
+ *  3. Cybernetic Target Reticles & Radar Pulse Shockwaves:
+ *     - Floating 3D holographic corner brackets with central targeting crosshairs.
  *     - Expanding radar pulse rings when the scan wave sweeps over a target.
- *  3. Interactive 3D Gimbal Camera:
- *     - Smooth mouse gyro parallax tilting the entire 3D holographic projection.
- *  4. 60Hz - 240Hz Delta Normalization:
- *     - Constant, silky smooth scanning speed regardless of display refresh rate.
- *  5. Native High-DPI Retina Subpixel Rendering.
- *  6. 100% Backward-Compatible API (updateColor, start, stop, destroy, resize).
+ *  4. 60Hz - 240Hz Delta Normalization & Zero-Lag Native Canvas.
+ *  5. 100% Backward-Compatible API (updateColor, start, stop, destroy, resize).
  */
 
 export class GridScanEffect {
@@ -38,40 +37,29 @@ export class GridScanEffect {
     this.pulseRings = []
     this.scanZ = 2000
 
-    // High-DPI Retina
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
-
-    // 3D Gimbal Camera Parallax
-    this.mouseEnabled = true
-    this.mouse = { x: 0.5, y: 0.5 }
-    this.targetMouse = { x: 0.5, y: 0.5 }
     this.gimbal = { x: 0, y: 0 }
 
     this._resizeHandler = () => this.resize()
-    this._mouseMoveHandler = (e) => this._onMouseMove(e)
-    this._mouseLeaveHandler = () => this._onMouseLeave()
     this._visibilityHandler = () => this._onVisibilityChange()
 
     this.resize()
-    window.addEventListener("resize", this._resizeHandler)
-    window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
-    window.addEventListener("mouseleave", this._mouseLeaveHandler, { passive: true })
+    window.addEventListener("resize", this._resizeHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
   initParticles() {
     this.particles = []
-    const count = 75
+    const count = 65
     for (let i = 0; i < count; i++) {
       this.particles.push({
         x: (Math.random() - 0.5) * 3200,
         y: (Math.random() - 0.5) * 2200,
         z: Math.random() * 2400,
-        size: 16 + Math.random() * 24,
+        size: 15 + Math.random() * 22,
         rot: Math.random() * Math.PI * 2,
-        speed: 0.6 + Math.random() * 1.6,
+        speed: 0.8 + Math.random() * 1.5,
         wasHighlighted: false,
       })
     }
@@ -79,42 +67,16 @@ export class GridScanEffect {
 
   resize() {
     if (!this.canvas) return
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
 
-    this.canvas.width = Math.round(this.width * this.dpr)
-    this.canvas.height = Math.round(this.height * this.dpr)
+    this.canvas.width = this.width
+    this.canvas.height = this.height
     this.canvas.style.width = `${this.width}px`
     this.canvas.style.height = `${this.height}px`
     this.canvas.style.pointerEvents = "none"
 
-    if (this.ctx) {
-      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
-      this.ctx.scale(this.dpr, this.dpr)
-    }
-
     this.initParticles()
-  }
-
-  setMouseEnabled(enabled) {
-    this.mouseEnabled = Boolean(enabled)
-    if (!this.mouseEnabled) {
-      this.targetMouse = { x: 0.5, y: 0.5 }
-      this.mouse = { x: 0.5, y: 0.5 }
-      this.gimbal = { x: 0, y: 0 }
-    }
-  }
-
-  _onMouseMove(e) {
-    if (this.mouseEnabled === false) return
-    this.targetMouse.x = e.clientX / this.width
-    this.targetMouse.y = e.clientY / this.height
-  }
-
-  _onMouseLeave() {
-    this.targetMouse.x = 0.5
-    this.targetMouse.y = 0.5
   }
 
   _onVisibilityChange() {
@@ -179,22 +141,18 @@ export class GridScanEffect {
     this.stop()
     this.destroyed = true
     window.removeEventListener("resize", this._resizeHandler)
-    window.removeEventListener("mousemove", this._mouseMoveHandler)
-    window.removeEventListener("mouseleave", this._mouseLeaveHandler)
     document.removeEventListener("visibilitychange", this._visibilityHandler)
   }
 
   update(dt) {
     this.time += 0.012 * dt
 
-    // Gimbal interpolation
-    this.mouse.x += (this.targetMouse.x - this.mouse.x) * 0.05 * dt
-    this.mouse.y += (this.targetMouse.y - this.mouse.y) * 0.05 * dt
-    this.gimbal.x = (this.mouse.x - 0.5) * 220
-    this.gimbal.y = (this.mouse.y - 0.5) * 160
+    // Subtle autonomous gimbal breathing (Zero cursor disruption)
+    this.gimbal.x = Math.sin(this.time * 0.45) * 16
+    this.gimbal.y = Math.cos(this.time * 0.35) * 12
 
     // Advance 3D scanning wavefront train
-    this.scanZ -= 3.8 * dt
+    this.scanZ -= 4.2 * dt
     if (this.scanZ < -1500) this.scanZ = 2500
 
     const waveOffsets = [0, 400, 800, 1200, 1600, 2000]
@@ -214,20 +172,19 @@ export class GridScanEffect {
       for (const offset of waveOffsets) {
         let wZ = this.scanZ + offset
         if (wZ > 2500) wZ -= 4000
-        if (Math.abs(p.z - wZ) < 80) {
+        if (Math.abs(p.z - wZ) < 85) {
           isHigh = true
           break
         }
       }
 
-      if (isHigh && !p.wasHighlighted && this.pulseRings.length < 35 && p.z > -400) {
+      if (isHigh && !p.wasHighlighted && this.pulseRings.length < 30 && p.z > -400) {
         p.wasHighlighted = true
         this.pulseRings.push({
           x: p.x,
           y: p.y,
           z: p.z,
           radius: p.size * 0.8,
-          maxRadius: p.size * 3.5,
           alpha: 1.0,
           decay: 0.035,
         })
@@ -253,7 +210,7 @@ export class GridScanEffect {
     ctx.rotate(angle)
 
     ctx.strokeStyle = `rgba(${rgbStr}, ${opacity.toFixed(3)})`
-    ctx.lineWidth = highlight > 0.4 ? 1.8 : 1.2
+    ctx.lineWidth = highlight > 0.4 ? 1.8 : 1.1
 
     // Bracket corner
     ctx.beginPath()
@@ -262,11 +219,11 @@ export class GridScanEffect {
     ctx.lineTo(0, size)
     ctx.stroke()
 
-    // Central target reticle dot on highlight
+    // Central white-hot target photon dot on highlight
     if (highlight > 0.3) {
-      ctx.fillStyle = `rgba(${rgbStr}, ${(opacity * 1.2).toFixed(3)})`
+      ctx.fillStyle = `rgba(255, 255, 255, ${(opacity * 1.3).toFixed(3)})`
       ctx.beginPath()
-      ctx.arc(0, 0, Math.max(1, size * 0.12), 0, Math.PI * 2)
+      ctx.arc(0, 0, Math.max(1, size * 0.14), 0, Math.PI * 2)
       ctx.fill()
     }
 
