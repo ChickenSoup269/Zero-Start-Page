@@ -1,15 +1,22 @@
 /**
- * DVDEffect — Hollywood AAA Ultra HD Iconic Nostalgic DVD Screen Saver
+ * DVDEffect — Authentic 8-Bit Pixel Art Retro Arcade DVD Screen Saver
  *
- * Masterpiece Retro Arcade & Cybernetic Physics:
- *  - Authentic Vector DVD Video Logo with Prismatic Laser Disc & 3D Beveled Sheen.
- *  - Wall Bounce Impact Sparks, Shockwave Ripples & Legendary Corner-Hit Supernova!
- *  - Holographic Ghost Trail with Chromatic Aberration (RGB Channel Split) & CRT Glitch.
- *  - Interactive Grab, Drag & Kinetic Fling Physics (Ném logo theo quán tính chuột).
- *  - High-DPI Retina Subpixel Precision & Delta-time Normalization (60Hz - 240Hz).
+ * Implements the 6 Golden Principles:
+ *  1. Pure 8-Bit Pixel Art Geometry:
+ *     - Pixelated bitmap matrix for the iconic "DVD" letters and stepped pixel laser disc ellipse.
+ *     - 8-bit retro micro-font for "V I D E O" and custom text rendering.
+ *     - Hard pixel drop shadows & crisp arcade borders.
+ *  2. Retro 8-Bit Collision Physics:
+ *     - Square pixel explosion debris upon wall bounces.
+ *     - Stepped pixel shockwave boxes.
+ *     - Legendary 8-bit Supernova Corner-Hit with multi-color particle fireworks.
+ *  3. 8-Bit Ghost Trails & Scanline CRT Glitch:
+ *     - Step-decay pixel shadow ghosts and horizontal line-shift scanline glitches.
+ *  4. Interactive Kinetic Physics:
+ *     - Grab, drag and fling the pixel logo with mouse velocity.
+ *  5. 60Hz - 240Hz Delta Normalization & Zero CPU Lag.
+ *  6. 100% Backward-Compatible API (setOptions, updateTitle, updateSpeed, etc.).
  */
-
-import { hexToRgb } from "../../utils/colors.js"
 
 const DVD_PALETTES = [
   "#00f0ff", // Cyber Cyan
@@ -20,10 +27,11 @@ const DVD_PALETTES = [
   "#ff6b00", // Solar Flare Orange
   "#38bdf8", // Sky Diamond
   "#f43f5e", // Crimson Ruby
+  "#ffffff", // Retro White
 ]
 
-// ── Wall Bounce Spark Particle ───────────────────────────────────────────────
-class WallSpark {
+// ── 8-Bit Square Pixel Spark ──────────────────────────────────────────────────
+class PixelSpark {
   constructor(x, y, vx, vy, color, isCorner = false) {
     this.x = x
     this.y = y
@@ -31,16 +39,16 @@ class WallSpark {
     this.vy = vy
     this.color = color
     this.alpha = 1.0
-    this.decay = isCorner ? Math.random() * 0.02 + 0.015 : Math.random() * 0.045 + 0.035
-    this.size = isCorner ? Math.random() * 3.5 + 2.0 : Math.random() * 2.5 + 1.2
+    this.decay = isCorner ? Math.random() * 0.02 + 0.015 : Math.random() * 0.05 + 0.035
+    this.size = isCorner ? Math.floor(Math.random() * 4 + 4) : Math.floor(Math.random() * 3 + 3)
     this.isCorner = isCorner
   }
 
   update(dt) {
     this.x += this.vx * dt
     this.y += this.vy * dt
-    this.vx *= 0.95
-    this.vy *= 0.95
+    this.vx *= 0.94
+    this.vy *= 0.94
     this.alpha -= this.decay * dt
     return this.alpha <= 0
   }
@@ -50,36 +58,37 @@ class WallSpark {
     ctx.save()
     ctx.fillStyle = this.color
     ctx.globalAlpha = this.alpha
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-    ctx.fill()
+    ctx.fillRect(Math.round(this.x), Math.round(this.y), this.size, this.size)
 
     if (this.alpha > 0.4) {
       ctx.fillStyle = "#ffffff"
-      ctx.globalAlpha = this.alpha * 0.9
-      ctx.beginPath()
-      ctx.arc(this.x, this.y, this.size * 0.45, 0, Math.PI * 2)
-      ctx.fill()
+      ctx.globalAlpha = this.alpha * 0.8
+      ctx.fillRect(
+        Math.round(this.x + this.size * 0.25),
+        Math.round(this.y + this.size * 0.25),
+        Math.max(1, Math.round(this.size * 0.5)),
+        Math.max(1, Math.round(this.size * 0.5)),
+      )
     }
     ctx.restore()
   }
 }
 
-// ── Impact Ripple Shockwave ──────────────────────────────────────────────────
-class ImpactShockwave {
-  constructor(x, y, color, maxRadius = 65) {
+// ── 8-Bit Stepped Pixel Shockwave Box ─────────────────────────────────────────
+class PixelShockwave {
+  constructor(x, y, color, maxRadius = 60) {
     this.x = x
     this.y = y
     this.color = color
     this.radius = 4
     this.maxRadius = maxRadius
     this.alpha = 0.9
-    this.speed = maxRadius / 14
+    this.speed = maxRadius / 12
   }
 
   update(dt) {
     this.radius += this.speed * dt
-    this.alpha -= 0.06 * dt
+    this.alpha -= 0.065 * dt
     return this.alpha <= 0 || this.radius >= this.maxRadius
   }
 
@@ -88,15 +97,37 @@ class ImpactShockwave {
     ctx.save()
     ctx.strokeStyle = this.color
     ctx.globalAlpha = this.alpha
-    ctx.lineWidth = Math.max(1, (1 - this.radius / this.maxRadius) * 3)
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
-    ctx.stroke()
+    ctx.lineWidth = 3
+    const r = Math.round(this.radius)
+    // 8-bit diamond / octagonal box shockwave
+    ctx.strokeRect(Math.round(this.x - r), Math.round(this.y - r), r * 2, r * 2)
     ctx.restore()
   }
 }
 
-// ── Main DVDEffect Class ─────────────────────────────────────────────────────
+// ── 8-Bit DVD Bitmap Matrix (36 columns x 18 rows) ───────────────────────────
+// 1 = Main Body, 2 = Highlight/White Core, 3 = Subtitle / Disc Rim, 4 = Disc Inner
+const DVD_BITMAP_ROWS = [
+  " 1111111000000110000011000011111110 ",
+  " 1122221100001111000111100112222110 ",
+  " 1120002110001111000111100112000211 ",
+  " 1120000210001111000111100112000021 ",
+  " 1120000211000111000111000112000021 ",
+  " 1120000211000111000111000112000021 ",
+  " 1120000210000011000110000112000021 ",
+  " 1120002110000011101110000112000211 ",
+  " 1122221100000001101100000112222110 ",
+  " 111111100000000011100000011111110 ",
+  " 0000000000000000000000000000000000 ",
+  " 0033333333333333333333333333333300 ",
+  " 3300000000000000000000000000000033 ",
+  " 3003003033303330033330033330000003 ",
+  " 3003003003003003030000030003000003 ",
+  " 3000303003003003033300030003000003 ",
+  " 3000303003003003030000030003000003 ",
+  " 0330030033303330033330033330000330 ",
+]
+
 export class DVDEffect {
   constructor(canvasId, options = {}) {
     this.canvas =
@@ -111,11 +142,16 @@ export class DVDEffect {
     this.trail = options.trail || false
     this.glitch = options.glitch || false
 
+    this.pixelSize = 4
+    this.bitmapWidth = 36
+    this.bitmapHeight = 18
+
+    this.boxWidth = this.bitmapWidth * this.pixelSize
+    this.boxHeight = this.bitmapHeight * this.pixelSize
+
     this.width = window.innerWidth
     this.height = window.innerHeight
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
-    this.boxWidth = 160
-    this.boxHeight = 85
 
     this.items = []
     this.sparks = []
@@ -170,12 +206,16 @@ export class DVDEffect {
   }
 
   updateBoxSize() {
-    if (!this.ctx) return
-    this.ctx.font = "italic 900 48px 'Impact', 'Segoe UI Black', sans-serif"
-    const textToMeasure = this.title.toUpperCase() === "DVD" ? "DVD" : this.title
-    const metrics = this.ctx.measureText(textToMeasure)
-    this.boxWidth = Math.max(120, Math.round(metrics.width + 36))
-    this.boxHeight = this.title.toUpperCase() === "DVD" ? 82 : 68
+    if (this.title.toUpperCase() === "DVD") {
+      this.pixelSize = 4
+      this.boxWidth = 36 * this.pixelSize
+      this.boxHeight = 18 * this.pixelSize
+    } else {
+      this.pixelSize = 4
+      const charWidth = 6 * this.pixelSize
+      this.boxWidth = Math.max(120, this.title.length * charWidth + 24)
+      this.boxHeight = 16 * this.pixelSize
+    }
   }
 
   syncItems() {
@@ -189,8 +229,6 @@ export class DVDEffect {
         dy: Math.sin(angle) * spd,
         currentColor: this.getRandomColor(),
         history: [],
-        glowPhase: Math.random() * Math.PI * 2,
-        isCornerStreak: false,
       })
     }
     while (this.items.length > this.cloneCount) {
@@ -213,6 +251,7 @@ export class DVDEffect {
     if (this.ctx) {
       this.ctx.setTransform(1, 0, 0, 1, 0, 0)
       this.ctx.scale(this.dpr, this.dpr)
+      this.ctx.imageSmoothingEnabled = false
     }
 
     this.updateBoxSize()
@@ -326,8 +365,8 @@ export class DVDEffect {
   }
 
   _emitBounceSparks(x, y, normalX, normalY, color, isCorner = false) {
-    const count = isCorner ? 40 : 14
-    this.shockwaves.push(new ImpactShockwave(x, y, color, isCorner ? 140 : 65))
+    const count = isCorner ? 48 : 16
+    this.shockwaves.push(new PixelShockwave(x, y, color, isCorner ? 140 : 65))
 
     for (let i = 0; i < count; i++) {
       const angle = isCorner
@@ -336,109 +375,85 @@ export class DVDEffect {
       const speed = isCorner ? Math.random() * 8.5 + 3.0 : Math.random() * 5.0 + 1.8
       const vx = Math.cos(angle) * speed
       const vy = Math.sin(angle) * speed
-      this.sparks.push(new WallSpark(x, y, vx, vy, color, isCorner))
+      const sparkColor = isCorner && Math.random() > 0.5 ? this.getRandomColor() : color
+      this.sparks.push(new PixelSpark(x, y, vx, vy, sparkColor, isCorner))
     }
   }
 
-  // ── Render Authentic Masterpiece DVD Logo ───────────────────────────────────
+  // ── Render 8-Bit Pixel DVD Logo ─────────────────────────────────────────────
   drawItem(item, x, y, alpha = 1.0, isGlitch = false, isGhost = false) {
     const ctx = this.ctx
-    const resolvedColor = this.getResolvedColor(item.currentColor)
-    const bw = this.boxWidth
-    const bh = this.boxHeight
-    const cx = x + bw / 2
-    const cy = y + bh / 2
+    const color = this.getResolvedColor(item.currentColor)
+    const pSize = this.pixelSize
 
     ctx.save()
     ctx.globalAlpha = alpha
 
-    // Glitch Chromatic Aberration & Translation
-    if (isGlitch && Math.random() > 0.72) {
-      const offX = (Math.random() - 0.5) * 14
-      const offY = (Math.random() - 0.5) * 8
-      ctx.translate(offX, offY)
+    let posX = Math.round(x)
+    let posY = Math.round(y)
+
+    // 8-bit Scanline / Glitch Jitter
+    if (isGlitch && Math.random() > 0.68) {
+      posX += Math.round((Math.random() - 0.5) * 16)
+      posY += Math.round((Math.random() - 0.5) * 8)
     }
 
     if (this.title.toUpperCase() === "DVD") {
-      // 1. Prismatic Laser Disc Oval Underneath
-      const discY = cy + 18
-      const discRadiusX = bw * 0.44
-      const discRadiusY = 11
-
-      ctx.save()
-      ctx.beginPath()
-      ctx.ellipse(cx, discY, discRadiusX, discRadiusY, 0, 0, Math.PI * 2)
-
-      const discGrad = ctx.createLinearGradient(cx - discRadiusX, discY, cx + discRadiusX, discY)
-      discGrad.addColorStop(0, "rgba(255, 255, 255, 0.15)")
-      discGrad.addColorStop(0.3, resolvedColor)
-      discGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.95)")
-      discGrad.addColorStop(0.7, resolvedColor)
-      discGrad.addColorStop(1, "rgba(255, 255, 255, 0.15)")
-
-      ctx.strokeStyle = discGrad
-      ctx.lineWidth = 2.4
-      ctx.stroke()
-
-      // Inner disc spindle hole
-      ctx.beginPath()
-      ctx.ellipse(cx, discY, discRadiusX * 0.32, discRadiusY * 0.32, 0, 0, Math.PI * 2)
-      ctx.strokeStyle = resolvedColor
-      ctx.lineWidth = 1.2
-      ctx.stroke()
-      ctx.restore()
-
-      // 2. Iconic 3D Stylized "DVD" Lettering
-      ctx.font = "italic 900 48px 'Impact', 'Segoe UI Black', sans-serif"
-      ctx.textAlign = "center"
-      ctx.textBaseline = "middle"
-
-      // Glowing Aura Shadow
+      // Draw 8-Bit Hard Drop Shadow first
       if (!isGhost) {
-        ctx.shadowColor = resolvedColor
-        ctx.shadowBlur = 16
+        ctx.fillStyle = "rgba(0, 0, 0, 0.45)"
+        for (let r = 0; r < DVD_BITMAP_ROWS.length; r++) {
+          const rowStr = DVD_BITMAP_ROWS[r]
+          for (let c = 0; c < rowStr.length; c++) {
+            if (rowStr[c] !== " " && rowStr[c] !== "0") {
+              ctx.fillRect(posX + (c + 1) * pSize, posY + (r + 1) * pSize, pSize, pSize)
+            }
+          }
+        }
       }
 
-      // Metallic Top Gradient Fill
-      const textGrad = ctx.createLinearGradient(cx, cy - 32, cx, cy + 8)
-      textGrad.addColorStop(0, "#ffffff")
-      textGrad.addColorStop(0.45, "#ffffff")
-      textGrad.addColorStop(0.55, resolvedColor)
-      textGrad.addColorStop(1.0, resolvedColor)
-
-      ctx.fillStyle = textGrad
-      ctx.fillText("DVD", cx, cy - 8)
-
-      // 3. Subtitle "VIDEO" with tracking
-      ctx.font = "900 13px 'Arial Black', sans-serif"
-      ctx.fillStyle = resolvedColor
-      ctx.shadowBlur = isGhost ? 0 : 8
-      ctx.fillText("V I D E O", cx, cy + 25)
+      // Draw 8-Bit DVD Pixel Grid
+      for (let r = 0; r < DVD_BITMAP_ROWS.length; r++) {
+        const rowStr = DVD_BITMAP_ROWS[r]
+        for (let c = 0; c < rowStr.length; c++) {
+          const val = rowStr[c]
+          if (val === "1") {
+            // Main Body Color
+            ctx.fillStyle = color
+            ctx.fillRect(posX + c * pSize, posY + r * pSize, pSize, pSize)
+          } else if (val === "2") {
+            // Hot White Pixel Core
+            ctx.fillStyle = "#ffffff"
+            ctx.fillRect(posX + c * pSize, posY + r * pSize, pSize, pSize)
+          } else if (val === "3") {
+            // Subtitle & Rim Color
+            ctx.fillStyle = isGhost ? color : "#ffffff"
+            ctx.fillRect(posX + c * pSize, posY + r * pSize, pSize, pSize)
+          }
+        }
+      }
     } else {
-      // Custom Text Holographic Badge Box
+      // Custom Text in 8-Bit Pixel Arcade Box
+      if (!isGhost) {
+        // 8-Bit Stepped Border Box
+        ctx.fillStyle = "rgba(0, 0, 0, 0.55)"
+        ctx.fillRect(posX, posY, this.boxWidth, this.boxHeight)
+        ctx.strokeStyle = color
+        ctx.lineWidth = pSize
+        ctx.strokeRect(posX + pSize / 2, posY + pSize / 2, this.boxWidth - pSize, this.boxHeight - pSize)
+      }
+
+      ctx.font = `900 ${Math.round(9 * pSize)}px 'Press Start 2P', 'Courier New', monospace`
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
 
       if (!isGhost) {
-        ctx.shadowColor = resolvedColor
-        ctx.shadowBlur = 16
-
-        // Rounded Holographic Pill Container
-        ctx.strokeStyle = `rgba(255, 255, 255, 0.4)`
-        ctx.lineWidth = 1.5
-        ctx.beginPath()
-        ctx.roundRect(x + 4, y + 4, bw - 8, bh - 8, 12)
-        ctx.stroke()
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
+        ctx.fillText(this.title, posX + this.boxWidth / 2 + 2, posY + this.boxHeight / 2 + 2)
       }
 
-      ctx.font = "italic 900 40px 'Impact', 'Segoe UI Black', sans-serif"
-      const textGrad = ctx.createLinearGradient(cx, y + 8, cx, y + bh - 8)
-      textGrad.addColorStop(0, "#ffffff")
-      textGrad.addColorStop(0.5, resolvedColor)
-      textGrad.addColorStop(1, resolvedColor)
-
-      ctx.fillStyle = textGrad
-      ctx.fillText(this.title, cx, cy)
+      ctx.fillStyle = color
+      ctx.fillText(this.title, posX + this.boxWidth / 2, posY + this.boxHeight / 2)
     }
 
     ctx.restore()
@@ -469,7 +484,7 @@ export class DVDEffect {
       // Ghost trail history
       if (this.trail) {
         item.history.push({ x: item.x, y: item.y })
-        if (item.history.length > 20) {
+        if (item.history.length > 18) {
           item.history.shift()
         }
       }
@@ -544,12 +559,12 @@ export class DVDEffect {
 
     // 3. Draw DVD Logo Items
     this.items.forEach((item) => {
-      // Ghost Trail with Holographic Quadratic Decay
+      // 8-bit Ghost Trail
       if (this.trail && item.history.length > 0) {
-        for (let i = 0; i < item.history.length; i += 2) {
+        for (let i = 0; i < item.history.length; i += 3) {
           const hist = item.history[i]
           const progress = (i + 1) / item.history.length
-          const alpha = Math.pow(progress, 2.2) * 0.3
+          const alpha = progress * 0.28
           this.drawItem(item, hist.x, hist.y, alpha, false, true)
         }
       }
