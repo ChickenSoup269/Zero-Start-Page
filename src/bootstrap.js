@@ -1,28 +1,59 @@
 async function hydrateSettingsPartials() {
-  const placeholders = document.querySelectorAll(
-    "[data-settings-partial][data-src]",
+  const placeholders = Array.from(
+    document.querySelectorAll("[data-settings-partial][data-src]"),
   )
-  await Promise.all(
-    [...placeholders].map(async (placeholder) => {
-      const src = placeholder.getAttribute("data-src")
-      if (!src) return
+  if (!placeholders.length) return
 
-      try {
-        const isExtension = typeof chrome !== "undefined" && chrome.runtime?.id
-        const fetchOpts = isExtension ? {} : { cache: "no-store" }
-        let response
-        try {
-          response = await fetch(src, fetchOpts)
-        } catch (fetchErr) {
-          response = await fetch(src)
-        }
-        if (!response.ok) throw new Error(`Failed to load ${src}`)
-        placeholder.outerHTML = await response.text()
-      } catch (error) {
-        console.error("Could not hydrate settings partial:", error)
-      }
-    }),
+  let activeTab = "appearance"
+  try {
+    activeTab =
+      localStorage.getItem("startpage_settings_active_tab") || "appearance"
+  } catch (e) {}
+
+  // Prioritize active tab partials and common partials (footer, layout controls)
+  const isHighPriority = (el) => {
+    const tab = el.getAttribute("data-settings-tab")
+    const partial = el.getAttribute("data-settings-partial")
+    return (
+      !tab ||
+      tab === activeTab ||
+      partial === "sidebar-footer" ||
+      partial === "layout-controls-popup"
+    )
+  }
+
+  const highPriorityPlaceholders = placeholders.filter(isHighPriority)
+  const lowPriorityPlaceholders = placeholders.filter(
+    (el) => !isHighPriority(el),
   )
+
+  const loadPlaceholder = async (placeholder) => {
+    const src = placeholder.getAttribute("data-src")
+    if (!src) return
+
+    try {
+      const isExtension = typeof chrome !== "undefined" && chrome.runtime?.id
+      const fetchOpts = isExtension ? {} : { cache: "no-store" }
+      let response
+      try {
+        response = await fetch(src, fetchOpts)
+      } catch (fetchErr) {
+        response = await fetch(src)
+      }
+      if (!response.ok) throw new Error(`Failed to load ${src}`)
+      placeholder.outerHTML = await response.text()
+    } catch (error) {
+      console.error("Could not hydrate settings partial:", error)
+    }
+  }
+
+  // 1. Hydrate active tab first so visible content is ready immediately
+  await Promise.all(highPriorityPlaceholders.map(loadPlaceholder))
+
+  // 2. Hydrate remaining partials
+  if (lowPriorityPlaceholders.length) {
+    await Promise.all(lowPriorityPlaceholders.map(loadPlaceholder))
+  }
 }
 
 function afterFirstPaint(callback) {
@@ -77,6 +108,7 @@ function needsSettingsAtBoot() {
       settings.liquidEtherActive ||
       settings.splashCursorActive ||
       settings.m3AutoAccentFromBg ||
+      settings.m3AutoAccentFromMusic ||
       isVideo ||
       isCustomBg,
     )
@@ -108,7 +140,9 @@ const hydrateSettingsPartialsWhenVisible = () => {
     const triggerHydrateEarly = () => {
       hydrate()
     }
-    const settingsBtn = document.getElementById("settings-btn")
+    const settingsBtn =
+      document.getElementById("settings-toggle") ||
+      document.getElementById("settings-btn")
     if (settingsBtn) {
       settingsBtn.addEventListener("mouseenter", triggerHydrateEarly, {
         once: true,

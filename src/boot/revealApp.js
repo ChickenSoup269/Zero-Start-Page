@@ -31,6 +31,7 @@ export function needsSettingsAtBoot(settings) {
     settings.liquidEtherActive ||
     settings.splashCursorActive ||
     settings.m3AutoAccentFromBg ||
+    settings.m3AutoAccentFromMusic ||
     isVideo ||
     isCustomBg,
   )

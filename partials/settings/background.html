@@ -593,12 +593,17 @@
                                 class="fa-solid fa-wand-magic-sparkles" style="margin-right: 6px;"></i>Dynamic Color
                             (M3)</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <button id="m3-dynamic-color-btn" class="primary-btn full-width"
-                            style="border-radius: 6px; background: var(--accent-color); color: var(--accent-contrast-color, #000); border: none; font-weight: 600; padding: 10px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract from
-                                Background</span>
+                            style="border-radius: 6px; background: var(--accent-color); color: var(--accent-contrast-color, #000); border: none; font-weight: 600; padding: 10px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract from Background</span>
                         </button>
+                        <button id="m3-dynamic-music-btn" class="secondary-btn full-width"
+                            style="border-radius: 6px; font-weight: 600; padding: 10px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fa-solid fa-music"></i> <span data-i18n="settings_m3_dynamic_music">Extract from Music</span>
+                        </button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
                         <label class="setting-item-row accent-auto-bg-row"
                             style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); cursor: pointer;">
                             <div>
@@ -634,6 +639,15 @@
                                     background changes</small>
                             </div>
                             <input type="checkbox" id="m3-auto-bg-toggle">
+                        </label>
+                        <label class="setting-item-row accent-auto-bg-row"
+                            style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); cursor: pointer;">
+                            <div>
+                                <span data-i18n="settings_m3_auto_music" style="font-weight: 500;">Auto match music thumbnail</span>
+                                <small data-i18n="settings_m3_auto_music_hint"
+                                    style="opacity: 0.7; margin-top: 2px; display: block;">Update M3 accent when music track changes (disables background match)</small>
+                            </div>
+                            <input type="checkbox" id="m3-auto-music-toggle">
                         </label>
                         <label class="setting-item-row accent-auto-bg-row"
                             style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.02); cursor: pointer;">

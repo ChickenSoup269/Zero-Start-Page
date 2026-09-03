@@ -206,6 +206,7 @@ export class MusicPlayer {
     this.pollTimeout = null
     this.inactivePollCount = 0
     this.currentThumbnail = ""
+    window.activeMusicPlayer = this
     this.visualizer = new MusicVisualizer()
     this._duration = 0
     this._isSeeking = false
@@ -1199,6 +1200,16 @@ export class MusicPlayer {
 
       const applyThumb = (url) => {
         if (this._currentThumbRequestId !== requestId) return
+        this.currentThumbnail = url
+        window.currentMusicThumbnail = url
+        try {
+          localStorage.setItem("musicPlayerLastThumbnail", url)
+        } catch (e) {}
+        window.dispatchEvent(
+          new CustomEvent("musicThumbnailChange", {
+            detail: { thumbnail: url, isPlaying: this.isPlaying },
+          }),
+        )
         this.disc.style.backgroundImage = `url("${url}")`
         this.disc.style.backgroundSize = "cover"
         this.disc.style.backgroundPosition = "center"

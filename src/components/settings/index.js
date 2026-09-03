@@ -54,7 +54,10 @@ import {
   createApplySettings,
   createUpdateSettingsInputs,
 } from "./settingsApplier.js"
-import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
+import {
+  applyAccentFromCurrentBackground,
+  applyAccentFromMusicThumbnail,
+} from "./dynamicAccent.js"
 import { initSettingsSpotlight } from "./settingsSpotlight.js"
 import {
   renderLocalBackgrounds,
@@ -293,6 +296,27 @@ export async function initSettings() {
         })
       }, delay)
     })
+  }
+
+  const scheduleMusicAutoAccentUpdate = (thumbnailUrl) => {
+    ;[80, 450].forEach((delay) => {
+      setTimeout(() => {
+        if (getSettings().m3AutoAccentFromMusic !== true) return
+        applyAccentFromMusicThumbnail({
+          DOM: DOM_EXPORTS,
+          handleSettingUpdate,
+          thumbnailUrl,
+          fallbackRandom: false,
+          silent: true,
+        }).catch((err) => {
+          console.warn("Auto music M3 accent update failed:", err)
+        })
+      }, delay)
+    })
+  }
+
+  if (getSettings().m3AutoAccentFromMusic === true) {
+    scheduleMusicAutoAccentUpdate()
   }
 
   const autoAccentBackgroundKeys = new Set([
@@ -1054,6 +1078,7 @@ export async function initSettings() {
   // Expose for global access (e.g. from context menu)
   window.appHandleSettingUpdate = handleSettingUpdate
   window.appScheduleAutoAccentUpdate = scheduleAutoAccentUpdate
+  window.appScheduleMusicAutoAccentUpdate = scheduleMusicAutoAccentUpdate
 
   // Bridge shared helpers expected by settingsApplier/updateSettingsInputs.
   effects.DOM = DOM_EXPORTS

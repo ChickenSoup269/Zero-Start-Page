@@ -392,3 +392,82 @@ export async function applyAccentFromCurrentBackground(options = {}) {
 
   return color
 }
+
+export const getCurrentMusicThumbnailUrl = () => {
+  if (typeof window !== "undefined") {
+    if (window.currentMusicThumbnail) return window.currentMusicThumbnail
+    if (window.activeMusicPlayer?.currentThumbnail)
+      return window.activeMusicPlayer.currentThumbnail
+
+    const disc = document.querySelector(".music-player-container .disc")
+    if (disc && disc.style.backgroundImage) {
+      const url = parseCssUrl(disc.style.backgroundImage)
+      if (url) return url
+    }
+
+    const bgBlur = document.querySelector(
+      ".music-player-container .music-bg-blur",
+    )
+    if (bgBlur && bgBlur.style.backgroundImage) {
+      const url = parseCssUrl(bgBlur.style.backgroundImage)
+      if (url) return url
+    }
+
+    try {
+      const saved = localStorage.getItem("musicPlayerLastThumbnail")
+      if (saved) return saved
+    } catch (e) {}
+  }
+  return null
+}
+
+export async function pickAccentFromMusicThumbnail(options = {}) {
+  const {
+    thumbnailUrl = getCurrentMusicThumbnailUrl(),
+    fallbackRandom = false,
+  } = options
+
+  if (thumbnailUrl) {
+    try {
+      const rgb = await extractAverageColor(thumbnailUrl)
+      if (rgb) return rgbToHexObject(rgb)
+    } catch (err) {
+      console.warn("Could not extract M3 accent from music thumbnail:", err)
+    }
+  }
+
+  return fallbackRandom ? getRandomHexColor() : null
+}
+
+export async function applyAccentFromMusicThumbnail(options = {}) {
+  const {
+    DOM,
+    handleSettingUpdate,
+    thumbnailUrl = getCurrentMusicThumbnailUrl(),
+    fallbackRandom = false,
+    silent = false,
+  } = options
+
+  const color = await pickAccentFromMusicThumbnail({
+    thumbnailUrl,
+    fallbackRandom,
+  })
+
+  if (!color) {
+    if (!silent) {
+      console.warn("No suitable music thumbnail found for M3 accent")
+    }
+    return null
+  }
+
+  if (DOM?.accentColorPicker) DOM.accentColorPicker.value = color
+  if (DOM?.accentColorHexInput) {
+    DOM.accentColorHexInput.value = color.toUpperCase()
+  }
+  handleSettingUpdate?.("accentColor", color)
+  document
+    .querySelectorAll(".accent-color-preset")
+    .forEach((button) => button.classList.remove("active"))
+
+  return color
+}
