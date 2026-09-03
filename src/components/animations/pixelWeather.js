@@ -120,8 +120,54 @@ const NES_LEAF_PALETTES = [
   { hi: "#b8e986", main: "#6fa832", sh: "#3b6912" }, // Autumn Olive
 ]
 
+// ── 8-Bit Pixel Steam / Ground Vapor (Hơi nước bốc lên) ─────────────────────
+class PixelVapor {
+  constructor(x, y, vx, vy, isStorm = false) {
+    this.x = x
+    this.y = y
+    this.vx = vx
+    this.vy = vy
+    this.life = 1.0
+    this.decay = 0.012 + Math.random() * 0.012
+    this.isStorm = isStorm
+    this.sizeStep = Math.random() < 0.5 ? 2 : 3
+  }
+
+  update(dt, windX = 0) {
+    this.x += (this.vx + windX * 0.12) * dt
+    this.y += this.vy * dt
+    this.life -= this.decay * dt
+    return this.life <= 0
+  }
+
+  draw(ctx, pixelSize) {
+    if (this.life <= 0.02) return
+    const pScale = Math.max(2, pixelSize)
+    const gx = Math.floor(this.x / pScale) * pScale
+    const gy = Math.floor(this.y / pScale) * pScale
+
+    const alpha = Math.min(1.0, this.life * 0.75)
+    const color = this.isStorm
+      ? `rgba(180, 205, 235, ${alpha.toFixed(3)})`
+      : `rgba(225, 242, 255, ${alpha.toFixed(3)})`
+
+    ctx.fillStyle = color
+    if (this.sizeStep === 3) {
+      ctx.fillRect(gx, gy, pScale, pScale)
+      if (this.life > 0.28) {
+        ctx.fillRect(gx - pScale, gy, pScale, pScale)
+        ctx.fillRect(gx + pScale, gy, pScale, pScale)
+        ctx.fillRect(gx, gy - pScale, pScale, pScale)
+      }
+    } else {
+      ctx.fillRect(gx, gy, pScale * 2, pScale)
+      ctx.fillRect(gx + pScale * 0.5, gy - pScale, pScale, pScale)
+    }
+  }
+}
+
 export class PixelWeatherEffect {
-  constructor(canvasId, mode = "snow") {
+  constructor(canvasId, mode = "snow", options = {}) {
     this.canvas =
       typeof canvasId === "string"
         ? document.getElementById(canvasId)
@@ -139,10 +185,11 @@ export class PixelWeatherEffect {
 
     // Configuration
     this.mode = mode // 'snow', 'rain', 'wind', 'storm'
-    this.resFactor = 1
-    this.speedMul = 1.0
-    this.sizeMul = 1.0
-    this.densityMul = 1.0
+    this.resFactor = options.resolution || 1
+    this.speedMul = options.speed !== undefined ? options.speed : 1.0
+    this.sizeMul = options.size !== undefined ? options.size : 1.0
+    this.densityMul = options.density !== undefined ? options.density : 1.0
+    this.mist = options.mist !== undefined ? Boolean(options.mist) : true
 
     // Timing & DPR
     this.lastTime = 0
@@ -155,6 +202,7 @@ export class PixelWeatherEffect {
     this.splashes = []
     this.clouds = []
     this.windDashes = []
+    this.vapors = []
 
     // 8-Bit Lightning
     this.lightning = {
@@ -211,6 +259,7 @@ export class PixelWeatherEffect {
     this._buildParticles()
     this._buildClouds()
     this._buildWindDashes()
+    this.vapors = []
   }
 
   setMode(mode) {
@@ -220,11 +269,36 @@ export class PixelWeatherEffect {
     if (this.mode !== mode) {
       this.mode = mode
       this.splashes = []
+      this.vapors = []
       this.stormWind = 0
       this.lightning.active = false
       this._buildParticles()
       this._buildClouds()
       this._buildWindDashes()
+    }
+  }
+
+  setSpeed(val) {
+    const num = parseFloat(val)
+    if (!isNaN(num) && num > 0) {
+      this.speedMul = num
+    }
+  }
+
+  setDensity(val) {
+    const num = parseFloat(val)
+    if (!isNaN(num) && num > 0) {
+      this.densityMul = num
+      this._buildParticles()
+      this._buildClouds()
+      this._buildWindDashes()
+    }
+  }
+
+  setMist(enable) {
+    this.mist = Boolean(enable)
+    if (!this.mist) {
+      this.vapors = []
     }
   }
 
@@ -240,6 +314,12 @@ export class PixelWeatherEffect {
     if (opts.speed !== undefined) this.speedMul = opts.speed
     if (opts.size !== undefined && opts.size !== this.sizeMul) {
       this.sizeMul = opts.size
+    }
+    if (opts.mist !== undefined) {
+      this.mist = Boolean(opts.mist)
+      if (!this.mist) {
+        this.vapors = []
+      }
     }
 
     if (rebuild) {
@@ -371,6 +451,7 @@ export class PixelWeatherEffect {
     this.splashes = []
     this.clouds = []
     this.windDashes = []
+    this.vapors = []
   }
 
   destroy() {
@@ -650,7 +731,7 @@ export class PixelWeatherEffect {
         p.x += (p.vx + windX) * speedMul * dt
         p.y += p.vy * speedMul * dt
 
-        // Ground Impact -> Spawn 8-bit splash pop
+        // Ground Impact -> Spawn 8-bit splash pop & vapor
         if (p.y > H - 15) {
           this.splashes.push({
             type: "rain_impact",
@@ -661,6 +742,15 @@ export class PixelWeatherEffect {
             life: 1.0,
             decay: 0.15,
           })
+
+          // Spawn ground steam / vapor puff when mist option is enabled
+          if (this.mist && Math.random() < 0.4 && this.vapors.length < 50) {
+            const windShift = this.mode === "storm" ? this.stormWind * 0.12 : 0
+            const vx = (Math.random() - 0.5) * 0.8 + windShift
+            const vy = -(0.35 + Math.random() * 0.6) * speedMul
+            this.vapors.push(new PixelVapor(p.x, H - 10, vx, vy, this.mode === "storm"))
+          }
+
           Object.assign(p, this._makeParticle(W, H, false))
         }
         if (p.x < -60 || p.x > W + 100) {
@@ -742,6 +832,26 @@ export class PixelWeatherEffect {
       if (this.lightning.timer <= 0) {
         this.lightning.active = false
       }
+    }
+
+    // 8. Update Atmospheric Ground Vapors (Hơi nước)
+    if (this.mist && (this.mode === "rain" || this.mode === "storm")) {
+      const maxVapors = Math.floor((this.mode === "storm" ? 45 : 30) * this.densityMul)
+      if (this.vapors.length < maxVapors && Math.random() < 0.15 * dt) {
+        const windShift = this.mode === "storm" ? this.stormWind * 0.1 : 0
+        const vx = (Math.random() - 0.5) * 0.6 + windShift
+        const vy = -(0.25 + Math.random() * 0.45) * speedMul
+        this.vapors.push(new PixelVapor(Math.random() * W, H - 6 - Math.random() * 10, vx, vy, this.mode === "storm"))
+      }
+
+      const windX = this.mode === "storm" ? this.stormWind : 0
+      for (let i = this.vapors.length - 1; i >= 0; i--) {
+        if (this.vapors[i].update(dt, windX)) {
+          this.vapors.splice(i, 1)
+        }
+      }
+    } else if (this.vapors.length > 0) {
+      this.vapors = []
     }
   }
 
@@ -918,7 +1028,8 @@ export class PixelWeatherEffect {
 
       // --- 3B. 8-BIT RAIN DROP STREAKS ---
       else if (p.type === "rain") {
-        const pScale = Math.max(2, Math.floor(pixelSize * 0.9))
+        const isFar = p.layer === 0
+        const pScale = Math.max(2, Math.floor(pixelSize * (isFar ? 0.8 : 1.0)))
         const gx = Math.floor(p.x / pScale) * pScale
         const gy = Math.floor(p.y / pScale) * pScale
         const isStorm = this.mode === "storm"
@@ -928,8 +1039,14 @@ export class PixelWeatherEffect {
           const stepX = gx + s * pScale * slant
           const stepY = gy - s * pScale * 2
 
-          // Head pixel is white, tail pixels are cyan
-          ctx.fillStyle = s === 0 ? "#ffffff" : "#7ec8f8"
+          // Head pixel is white-hot core, trailing pixels transition to cyber-cyan
+          if (s === 0) {
+            ctx.fillStyle = isFar ? "#e8f4ff" : "#ffffff"
+          } else if (s === 1) {
+            ctx.fillStyle = isFar ? "#8fd4ff" : "#b0e2ff"
+          } else {
+            ctx.fillStyle = isFar ? "#4fa8e8" : "#6cc4f8"
+          }
           ctx.fillRect(stepX, stepY, pScale, pScale * 2)
         }
       }
@@ -999,6 +1116,29 @@ export class PixelWeatherEffect {
         // Spark pixel
         ctx.fillStyle = s.color || "#ffffff"
         ctx.fillRect(gx, gy, pScale, pScale)
+      }
+    }
+
+    // 5. Render 8-Bit Atmospheric Ground Vapors & Low Mist
+    if (this.mist && (this.mode === "rain" || this.mode === "storm")) {
+      // 5A. Low-altitude Dither Mist Band at Ground Level
+      const mistHeight = Math.min(64, Math.floor(H * 0.12))
+      const mistBands = Math.floor(mistHeight / pixelSize)
+      const isStorm = this.mode === "storm"
+
+      for (let b = 0; b < mistBands; b++) {
+        const by = H - mistHeight + b * pixelSize
+        const factor = (b / mistBands)
+        const alpha = factor * (isStorm ? 0.08 : 0.05)
+        ctx.fillStyle = isStorm
+          ? `rgba(140, 165, 205, ${alpha.toFixed(3)})`
+          : `rgba(200, 225, 255, ${alpha.toFixed(3)})`
+        ctx.fillRect(0, by, W, pixelSize)
+      }
+
+      // 5B. Render Rising Pixel Vapor Puffs
+      for (let i = 0; i < this.vapors.length; i++) {
+        this.vapors[i].draw(ctx, pixelSize)
       }
     }
   }

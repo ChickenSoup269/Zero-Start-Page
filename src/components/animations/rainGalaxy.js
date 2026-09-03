@@ -12,6 +12,12 @@
  *       and dual-pass ion glow channels (completely independent of mouse input).
  *     - Kinetic ballistic bounce droplets and expanding ground puddle ripples.
  *
+ * Advanced Hollywood AAA Controls:
+ *  - Fall Speed (Độ rơi mưa): Dynamic scaling from serene drizzle to torrential storm.
+ *  - Rain Density (Độ dày mưa): Multi-tier particle count scaling.
+ *  - Atmospheric Mist & Ground Vapor (Hơi nước bốc lên): Rising buoyant vapor wisps from ground impacts
+ *    and soft atmospheric rain curtain gradients.
+ *
  * Implements 60Hz - 240Hz Delta Normalization & Native Retina High-DPI Scaling.
  */
 
@@ -92,19 +98,20 @@ class GlassWindowDroplet {
     this.trail = []
   }
 
-  update(dt, width, height, mouse) {
+  update(dt, width, height, mouse, speedMultiplier = 1.0) {
     if (mouse.active) {
       const dx = this.x - mouse.x
       const dy = this.y - mouse.y
       const distSq = dx * dx + dy * dy
       const radius = 100
+
       if (distSq < radius * radius && distSq > 4) {
         const dist = Math.sqrt(distSq)
         const push = (1 - dist / radius) * 5 * dt
         this.x += (dx / dist) * push
         this.y += (dy / dist) * push * 0.5
         this.isSliding = true
-        this.slideSpeed = Math.max(this.slideSpeed, 3.0)
+        this.slideSpeed = Math.max(this.slideSpeed, 3.0 * speedMultiplier)
       }
     }
 
@@ -112,7 +119,7 @@ class GlassWindowDroplet {
       this.meanderPhase += this.meanderSpeed * dt
       const swayX = Math.sin(this.meanderPhase) * 0.6
       this.x += swayX * dt
-      this.y += this.slideSpeed * dt
+      this.y += this.slideSpeed * speedMultiplier * dt
 
       if (Math.random() < 0.25 && this.trail.length < 12) {
         this.trail.push({ x: this.x, y: this.y, r: this.r * 0.4, alpha: 0.35 })
@@ -127,10 +134,10 @@ class GlassWindowDroplet {
         this.reset(width, height, false)
       }
     } else {
-      this.mass += 0.0003 * dt
+      this.mass += 0.0003 * dt * speedMultiplier
       if (this.mass > 1.25) {
         this.isSliding = true
-        this.slideSpeed = 1.2 + Math.random() * 2.0
+        this.slideSpeed = (1.2 + Math.random() * 2.0) * speedMultiplier
       }
     }
   }
@@ -195,10 +202,10 @@ class RainSplash {
     this.decay = 0.03 + Math.random() * 0.02
   }
 
-  update(dt) {
-    this.vy += this.gravity * dt
-    this.x += this.vx * dt
-    this.y += this.vy * dt
+  update(dt, speedMultiplier = 1.0) {
+    this.vy += this.gravity * dt * speedMultiplier
+    this.x += this.vx * dt * speedMultiplier
+    this.y += this.vy * dt * speedMultiplier
     this.alpha -= this.decay * dt
     return this.alpha <= 0
   }
@@ -234,8 +241,8 @@ class RainRipple {
     this.alpha = 0.55
   }
 
-  update(dt) {
-    this.r += this.speed * dt
+  update(dt, speedMultiplier = 1.0) {
+    this.r += this.speed * dt * (0.8 + 0.2 * speedMultiplier)
     this.alpha = Math.max(0, 0.55 * (1 - this.r / this.maxR))
     return this.r >= this.maxR || this.alpha <= 0
   }
@@ -253,7 +260,50 @@ class RainRipple {
   }
 }
 
-// ── 3D Raindrop Streak ───────────────────────────────────────────────────────
+// ── Rising Ground Vapor / Mist Wisp (Hơi nước bốc lên) ────────────────────────
+class GroundVaporParticle {
+  constructor(x, y, rgb, windAngle, speedMultiplier = 1.0) {
+    this.x = x + (Math.random() - 0.5) * 36
+    this.y = y
+    this.rgb = rgb
+    this.vx = Math.sin(windAngle) * (0.6 + Math.random() * 1.0) * speedMultiplier + (Math.random() - 0.5) * 0.3
+    this.vy = -(0.3 + Math.random() * 0.6) * speedMultiplier
+    this.r = 14 + Math.random() * 12
+    this.maxR = this.r * (2.2 + Math.random() * 1.5)
+    this.alpha = 0.11 + Math.random() * 0.09
+    this.maxAlpha = this.alpha
+    this.life = 1.0
+    this.decay = 0.007 + Math.random() * 0.007
+  }
+
+  update(dt, windAngle, speedMultiplier = 1.0) {
+    this.vx += Math.sin(windAngle) * 0.04 * dt
+    this.x += this.vx * dt
+    this.y += this.vy * dt
+    this.r += (this.maxR - this.r) * 0.02 * dt
+    this.life -= this.decay * dt
+    this.alpha = this.maxAlpha * Math.max(0, this.life)
+    return this.life <= 0
+  }
+
+  draw(ctx) {
+    if (this.alpha <= 0.003) return
+    const rgb = this.rgb
+    ctx.save()
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r)
+    grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.alpha.toFixed(3)})`)
+    grad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(this.alpha * 0.45).toFixed(3)})`)
+    grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+
+    ctx.fillStyle = grad
+    ctx.beginPath()
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.restore()
+  }
+}
+
+// ── 3D Raindrop Streak (Hollywood AAA Teardrop Blade) ────────────────────────
 class Raindrop3D {
   constructor(width, height, rgb, isStorm = false, initial = false) {
     this.rgb = rgb
@@ -261,24 +311,25 @@ class Raindrop3D {
   }
 
   reset(width, height, isStorm = false, initial = false) {
-    this.x = Math.random() * (width + 240) - 120
+    this.x = Math.random() * (width + 260) - 130
     this.y = initial ? Math.random() * height : -40 - Math.random() * 100
 
     // 3D Depth Layer Z in [0.18, 1.0]
     this.z = Math.pow(Math.random(), 1.2) * 0.82 + 0.18
 
-    const lenBase = isStorm ? 30 : 24
+    const lenBase = isStorm ? 32 : 24
     const spdBase = isStorm ? 26 : 20
 
-    this.length = (lenBase + Math.random() * 32) * (0.4 + 0.6 * this.z)
-    this.speed = (spdBase + Math.random() * 20) * (0.45 + 0.55 * this.z)
+    this.baseLength = (lenBase + Math.random() * 32) * (0.4 + 0.6 * this.z)
+    this.baseSpeed = (spdBase + Math.random() * 20) * (0.45 + 0.55 * this.z)
     this.lineWidth = Math.max(0.7, 0.5 + (isStorm ? 1.8 : 1.5) * this.z)
     this.opacity = (0.45 + Math.random() * 0.4) * (0.35 + 0.65 * this.z)
   }
 
-  update(width, height, dt, windAngle, mouse, effect, isStorm = false) {
-    const vx = Math.sin(windAngle) * this.speed
-    const vy = Math.cos(windAngle) * this.speed
+  update(width, height, dt, windAngle, mouse, effect, isStorm = false, speedMultiplier = 1.0) {
+    const effSpeed = this.baseSpeed * speedMultiplier
+    const vx = Math.sin(windAngle) * effSpeed
+    const vy = Math.cos(windAngle) * effSpeed
 
     let pushX = 0
     let pushY = 0
@@ -293,7 +344,7 @@ class Raindrop3D {
         pushX = (dx / dist) * force * 1.3
         pushY = (dy / dist) * force * 0.4
 
-        if (this.z > 0.7 && Math.random() < 0.1) {
+        if (this.z > 0.7 && Math.random() < 0.08) {
           effect.spawnSplash(this.x, this.y, true)
         }
       }
@@ -309,18 +360,21 @@ class Raindrop3D {
       this.reset(width, height, isStorm, false)
     }
 
-    if (this.x < -120 || this.x > width + 120) {
+    if (this.x < -140 || this.x > width + 140) {
       this.reset(width, height, isStorm, false)
     }
   }
 
-  draw(ctx, rgb, windAngle) {
+  draw(ctx, rgb, windAngle, speedMultiplier = 1.0) {
+    const currentLength = this.baseLength * (0.8 + 0.25 * speedMultiplier)
     const cosA = Math.cos(windAngle)
     const sinA = Math.sin(windAngle)
-    const tx = this.x - sinA * this.length
-    const ty = this.y - cosA * this.length
+    const tx = this.x - sinA * currentLength
+    const ty = this.y - cosA * currentLength
 
     ctx.save()
+
+    // Aerodynamic Teardrop Linear Gradient
     const grad = ctx.createLinearGradient(tx, ty, this.x, this.y)
     grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
     grad.addColorStop(0.55, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(this.opacity * 0.45).toFixed(3)})`)
@@ -335,7 +389,8 @@ class Raindrop3D {
     ctx.lineTo(this.x, this.y)
     ctx.stroke()
 
-    if (this.z > 0.75) {
+    // White-Hot Photon Tip at head
+    if (this.z > 0.72) {
       ctx.fillStyle = `rgba(255, 255, 255, ${(this.opacity * 0.95).toFixed(3)})`
       ctx.beginPath()
       ctx.arc(this.x, this.y, this.lineWidth * 0.55, 0, Math.PI * 2)
@@ -348,7 +403,7 @@ class Raindrop3D {
 
 // ── Main Unified StarFall (Rain) Engine ──────────────────────────────────────
 export class StarFall {
-  constructor(canvasId, color = "#99ccff", mode = "chill") {
+  constructor(canvasId, color = "#99ccff", mode = "chill", options = {}) {
     this.canvas =
       typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
     if (!this.canvas) return
@@ -362,12 +417,18 @@ export class StarFall {
     // Mode: "chill" or "storm"
     this.mode = mode === "storm" ? "storm" : "chill"
 
+    // Advanced Options (Speed, Density, Mist)
+    this.speed = typeof options.speed === "number" ? options.speed : 1.0
+    this.density = typeof options.density === "number" ? options.density : 1.0
+    this.mist = options.mist !== undefined ? Boolean(options.mist) : true
+
     // Collections
     this.stars = []
     this.glassDrops = []
     this.bokehLights = []
     this.splashes = []
     this.ripples = []
+    this.vapors = []
     this.starCount = 160
 
     // Wind Dynamics
@@ -417,6 +478,27 @@ export class StarFall {
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
+  // ── Color API ─────────────────────────────────────────────────────────────
+  get color() {
+    return this.starColor
+  }
+
+  set color(val) {
+    this.updateColor(val)
+  }
+
+  updateColor(newColor) {
+    if (!newColor) return
+    this.starColor = newColor
+    this.rgb = hexToRgb(newColor) || { r: 153, g: 204, b: 255 }
+    this.stars.forEach((s) => (s.rgb = this.rgb))
+    this.bokehLights.forEach((b) => {
+      if (Math.random() < 0.5) b.rgb = { ...this.rgb }
+    })
+    this.vapors.forEach((v) => (v.rgb = this.rgb))
+  }
+
+  // ── Mode API ──────────────────────────────────────────────────────────────
   setMode(mode) {
     const valid = mode === "storm" ? "storm" : "chill"
     if (this.mode !== valid) {
@@ -426,6 +508,55 @@ export class StarFall {
     }
   }
 
+  // ── Advanced Rain Options (Speed, Density, Mist) ───────────────────────────
+  setSpeed(val) {
+    const num = parseFloat(val)
+    if (!isNaN(num) && num > 0) {
+      this.speed = Math.max(0.2, Math.min(3.0, num))
+    }
+  }
+
+  setDensity(val) {
+    const num = parseFloat(val)
+    if (!isNaN(num) && num > 0) {
+      this.density = Math.max(0.2, Math.min(3.0, num))
+      this._updateEntityDensity()
+    }
+  }
+
+  setMist(enable) {
+    this.mist = Boolean(enable)
+    if (!this.mist) {
+      this.vapors = []
+    }
+  }
+
+  setOptions(options = {}) {
+    if (options.speed !== undefined) this.setSpeed(options.speed)
+    if (options.density !== undefined) this.setDensity(options.density)
+    if (options.mist !== undefined) this.setMist(options.mist)
+    if (options.color) this.updateColor(options.color)
+    if (options.mode) this.setMode(options.mode)
+  }
+
+  _updateEntityDensity() {
+    const divisor = this.mode === "storm" ? 6.5 : 8.5
+    const baseCount = Math.floor(this.width / divisor)
+    this.starCount = Math.max(40, Math.min(600, Math.floor(baseCount * this.density)))
+
+    const isStorm = this.mode === "storm"
+    // Expand or shrink stars array dynamically
+    if (this.stars.length < this.starCount) {
+      const toAdd = this.starCount - this.stars.length
+      for (let i = 0; i < toAdd; i++) {
+        this.stars.push(new Raindrop3D(this.width, this.height, this.rgb, isStorm, true))
+      }
+    } else if (this.stars.length > this.starCount) {
+      this.stars.length = this.starCount
+    }
+  }
+
+  // ── Lifecycle & Resize ────────────────────────────────────────────────────
   resize() {
     if (!this.canvas) return
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -444,7 +575,8 @@ export class StarFall {
     }
 
     const divisor = this.mode === "storm" ? 6.5 : 8.5
-    this.starCount = Math.max(120, Math.min(300, Math.floor(this.width / divisor)))
+    const baseCount = Math.floor(this.width / divisor)
+    this.starCount = Math.max(40, Math.min(600, Math.floor(baseCount * this.density)))
     this.createEntities()
   }
 
@@ -460,7 +592,8 @@ export class StarFall {
     // 2. Window Glass Droplets (Chill mode only)
     this.glassDrops = []
     if (!isStorm) {
-      const glassCount = Math.min(45, Math.max(20, Math.floor(this.width / 45)))
+      const baseGlassCount = Math.floor(this.width / 45)
+      const glassCount = Math.min(80, Math.max(15, Math.floor(baseGlassCount * this.density)))
       for (let i = 0; i < glassCount; i++) {
         this.glassDrops.push(new GlassWindowDroplet(this.width, this.height))
       }
@@ -469,17 +602,25 @@ export class StarFall {
     // 3. Cozy Lofi Bokeh Lights (Chill mode only)
     this.bokehLights = []
     if (!isStorm) {
-      const bokehCount = Math.min(18, Math.max(8, Math.floor(this.width / 110)))
+      const bokehCount = Math.min(20, Math.max(8, Math.floor(this.width / 110)))
       for (let i = 0; i < bokehCount; i++) {
         this.bokehLights.push(new CozyBokehLight(this.width, this.height, this.rgb))
       }
     }
+
+    // 4. Reset vapor wisps
+    this.vapors = []
   }
 
   spawnSplash(x, y, isAirDeflect = false) {
     const rgb = this.rgb
     if (!isAirDeflect) {
       this.ripples.push(new RainRipple(x, y, rgb))
+
+      // Rising ground vapor wisp spawned from raindrop impact
+      if (this.mist && Math.random() < 0.32 && this.vapors.length < 50) {
+        this.vapors.push(new GroundVaporParticle(x, y - 2, this.rgb, this.windAngle, this.speed))
+      }
     }
 
     const count = isAirDeflect ? 2 + Math.floor(Math.random() * 2) : 3 + Math.floor(Math.random() * 3)
@@ -558,16 +699,6 @@ export class StarFall {
     }
   }
 
-  updateColor(newColor) {
-    if (!newColor) return
-    this.starColor = newColor
-    this.rgb = hexToRgb(newColor) || { r: 153, g: 204, b: 255 }
-    this.stars.forEach((s) => (s.rgb = this.rgb))
-    this.bokehLights.forEach((b) => {
-      if (Math.random() < 0.5) b.rgb = { ...this.rgb }
-    })
-  }
-
   _onMouseMove(e) {
     this.mouse.x = e.clientX
     this.mouse.y = e.clientY
@@ -593,7 +724,6 @@ export class StarFall {
         this.splashes.push(new RainSplash(cx, cy, Math.cos(angle) * spd, Math.sin(angle) * spd, this.rgb))
       }
     }
-    // Notice: Lightning is NEVER triggered by mouse click!
   }
 
   _onVisibilityChange() {
@@ -653,6 +783,7 @@ export class StarFall {
     this.bokehLights = []
     this.splashes = []
     this.ripples = []
+    this.vapors = []
     this.lightning.active = false
   }
 
@@ -671,8 +802,9 @@ export class StarFall {
     const H = this.height
     const now = performance.now()
     const isStorm = this.mode === "storm"
+    const spd = this.speed
 
-    // 1. Wind Dynamics
+    // 1. Wind Dynamics (Oscillating breeze with harmonic gust)
     this.windTimer += 0.016 * dt
     if (this.windTimer >= (isStorm ? 3.0 : 4.0)) {
       this.windTimer = 0
@@ -706,26 +838,42 @@ export class StarFall {
       this.bokehLights[i].update(dt, W, H)
     }
 
-    // 4. Update 3D Rain Drops
+    // 4. Update 3D Rain Drops (Scaled by Fall Speed)
     for (let i = 0; i < this.stars.length; i++) {
-      this.stars[i].update(W, H, dt, this.windAngle, this.mouse, this, isStorm)
+      this.stars[i].update(W, H, dt, this.windAngle, this.mouse, this, isStorm, spd)
     }
 
     // 5. Update Glass Droplets (Chill mode)
     for (let i = 0; i < this.glassDrops.length; i++) {
-      this.glassDrops[i].update(dt, W, H, this.mouse)
+      this.glassDrops[i].update(dt, W, H, this.mouse, spd)
     }
 
     // 6. Update Splashes & Ripples
     for (let i = this.splashes.length - 1; i >= 0; i--) {
-      if (this.splashes[i].update(dt)) {
+      if (this.splashes[i].update(dt, spd)) {
         this.splashes.splice(i, 1)
       }
     }
 
     for (let i = this.ripples.length - 1; i >= 0; i--) {
-      if (this.ripples[i].update(dt)) {
+      if (this.ripples[i].update(dt, spd)) {
         this.ripples.splice(i, 1)
+      }
+    }
+
+    // 7. Update Ground Vapor Wisps (Atmospheric mist)
+    if (this.mist) {
+      const maxVapors = isStorm ? 48 : 36
+      if (this.vapors.length < maxVapors && Math.random() < (isStorm ? 0.28 : 0.16) * this.density) {
+        this.vapors.push(
+          new GroundVaporParticle(Math.random() * W, H - 4 - Math.random() * 12, this.rgb, this.windAngle, spd)
+        )
+      }
+
+      for (let i = this.vapors.length - 1; i >= 0; i--) {
+        if (this.vapors[i].update(dt, this.windAngle, spd)) {
+          this.vapors.splice(i, 1)
+        }
       }
     }
   }
@@ -736,6 +884,7 @@ export class StarFall {
     const H = this.height
     const rgb = this.rgb
     const isStorm = this.mode === "storm"
+    const spd = this.speed
 
     ctx.clearRect(0, 0, W, H)
 
@@ -746,12 +895,31 @@ export class StarFall {
       }
     }
 
-    // 2. Atmospheric Rain Mist Curtain
-    const mist = ctx.createLinearGradient(0, 0, 0, H * (isStorm ? 0.4 : 0.5))
-    mist.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${isStorm ? 0.05 : 0.06})`)
-    mist.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-    ctx.fillStyle = mist
-    ctx.fillRect(0, 0, W, H)
+    // 2. Atmospheric Rain Mist Curtain & Ground Haze (If mist enabled)
+    if (this.mist) {
+      const mistOpacity = (isStorm ? 0.07 : 0.048) * Math.min(1.4, this.density)
+
+      // Top-down falling rain atmospheric haze
+      const mist = ctx.createLinearGradient(0, 0, 0, H * (isStorm ? 0.55 : 0.45))
+      mist.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${mistOpacity.toFixed(3)})`)
+      mist.addColorStop(0.7, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(mistOpacity * 0.4).toFixed(3)})`)
+      mist.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+      ctx.fillStyle = mist
+      ctx.fillRect(0, 0, W, H)
+
+      // Ground rising mist curtain
+      const groundMist = ctx.createLinearGradient(0, H - 85, 0, H)
+      groundMist.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+      groundMist.addColorStop(0.65, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(mistOpacity * 0.85).toFixed(3)})`)
+      groundMist.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(mistOpacity * 0.5).toFixed(3)})`)
+      ctx.fillStyle = groundMist
+      ctx.fillRect(0, H - 85, W, 85)
+
+      // Render rising ground vapor particles
+      for (let i = 0; i < this.vapors.length; i++) {
+        this.vapors[i].draw(ctx)
+      }
+    }
 
     // 3. Ground Puddle Ripples
     for (let i = 0; i < this.ripples.length; i++) {
@@ -761,7 +929,7 @@ export class StarFall {
     // 4. 3D Raindrop Streaks
     this.stars.sort((a, b) => a.z - b.z)
     for (let i = 0; i < this.stars.length; i++) {
-      this.stars[i].draw(ctx, rgb, this.windAngle)
+      this.stars[i].draw(ctx, rgb, this.windAngle, spd)
     }
 
     // 5. Clinging Windowpane Droplets (Chill mode foreground glass)
@@ -817,8 +985,6 @@ export class StarFall {
           ctx.lineTo(seg.x2, seg.y2)
         }
       }
-      ctx.stroke()
-
       ctx.restore()
     }
   }
