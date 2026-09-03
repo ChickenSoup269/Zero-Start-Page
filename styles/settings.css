@@ -9590,16 +9590,45 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   animation: slideDown 0.3s ease-out;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Meteor Color Setting Customization */
+#meteor-color-setting {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 10px;
 }
+
+#meteor-color-setting input[type="color"] {
+  width: 100%;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+#meteor-color-setting input[type="color"]:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+#meteor-color-setting .range-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+#meteor-color-setting input[type="range"] {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
 
 /* Material Design 3 dynamic accent layer */
 .settings-sidebar {
