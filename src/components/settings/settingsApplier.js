@@ -797,6 +797,7 @@ export const EFFECTS_WITH_CUSTOM_SETTINGS = new Set([
   "sunbeam",
   "lightPillars",
   "tetFireworks",
+  "reunificationDay",
   "pixelSnowHQ",
   "skyLanterns",
   "jellyfish",
@@ -3458,7 +3459,7 @@ function createApplySettings(effectInstances) {
     }
 
     if (effectToStart === "oceanWave" && selectedEffect) {
-      selectedEffect.updateColor?.(settings.oceanWaveColor || "#0077b6")
+      selectedEffect.updateColor?.(settings.oceanWaveColor || "#ffffff")
       selectedEffect.setPosition?.(settings.oceanWavePosition || "bottom")
     }
 
@@ -5333,11 +5334,54 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lightPillarsColorPicker) {
       DOM.lightPillarsColorPicker.value = settings.lightPillarsColor || "#88ccff"
     }
-    DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
-    DOM.floatingLinesColorPicker.value =
-      settings.floatingLinesColor || "#ffffff"
-    DOM.floatingLinesAngleInput.value = settings.floatingLinesAngle || 0
-    DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
+    if (DOM.floatingLinesColorPicker) {
+      DOM.floatingLinesColorPicker.value =
+        settings.floatingLinesColor || "#ffffff"
+    }
+    if (DOM.floatingLinesAngleInput) {
+      DOM.floatingLinesAngleInput.value = settings.floatingLinesAngle || 0
+    }
+    if (DOM.floatingLinesAngleValue) {
+      DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
+    }
+    if (DOM.floatingLinesSpeedInput) {
+      DOM.floatingLinesSpeedInput.value = settings.floatingLinesSpeed !== undefined ? settings.floatingLinesSpeed : 1.0
+    }
+    if (DOM.floatingLinesSpeedValue) {
+      DOM.floatingLinesSpeedValue.textContent = `${(settings.floatingLinesSpeed !== undefined ? settings.floatingLinesSpeed : 1.0).toFixed(1)}x`
+    }
+    if (DOM.floatingLinesCountInput) {
+      DOM.floatingLinesCountInput.value = settings.floatingLinesCount !== undefined ? settings.floatingLinesCount : 4
+    }
+    if (DOM.floatingLinesCountValue) {
+      DOM.floatingLinesCountValue.textContent = `${settings.floatingLinesCount !== undefined ? settings.floatingLinesCount : 4}`
+    }
+    if (DOM.floatingLinesTransparentToggle) {
+      DOM.floatingLinesTransparentToggle.checked = !!settings.floatingLinesTransparent
+    }
+
+    // Hyperspace 3D
+    if (DOM.hyperspaceStyleSelect) {
+      DOM.hyperspaceStyleSelect.value = settings.hyperspaceStyle || "warpDrive"
+    }
+    if (DOM.hyperspaceColorPicker) {
+      DOM.hyperspaceColorPicker.value = settings.hyperspaceColor || settings.accentColor || "#00e5ff"
+    }
+    if (DOM.hyperspaceSpeedSlider) {
+      DOM.hyperspaceSpeedSlider.value = settings.hyperspaceSpeed !== undefined ? settings.hyperspaceSpeed : 1.8
+    }
+    if (DOM.hyperspaceSpeedValue) {
+      DOM.hyperspaceSpeedValue.textContent = `${(settings.hyperspaceSpeed !== undefined ? settings.hyperspaceSpeed : 1.8).toFixed(1)}x`
+    }
+    if (DOM.hyperspaceStarCountSlider) {
+      DOM.hyperspaceStarCountSlider.value = settings.hyperspaceStarCount !== undefined ? settings.hyperspaceStarCount : 1100
+    }
+    if (DOM.hyperspaceStarCountValue) {
+      DOM.hyperspaceStarCountValue.textContent = `${settings.hyperspaceStarCount !== undefined ? settings.hyperspaceStarCount : 1100}`
+    }
+    if (DOM.hyperspaceTransparentToggle) {
+      DOM.hyperspaceTransparentToggle.checked = !!settings.hyperspaceTransparent
+    }
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
 
@@ -5410,8 +5454,46 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.tetFireworksTypeSelect) {
       DOM.tetFireworksTypeSelect.value = settings.tetFireworksType || "all"
     }
+    if (DOM.reunificationDayModeSelect) {
+      DOM.reunificationDayModeSelect.value =
+        settings.reunificationDayMode || "30_04"
+    }
+    if (DOM.reunificationDayPalaceToggle) {
+      DOM.reunificationDayPalaceToggle.checked =
+        settings.reunificationDayPalace !== false
+    }
+    if (DOM.reunificationDayTanksToggle) {
+      DOM.reunificationDayTanksToggle.checked =
+        settings.reunificationDayTanks !== false
+    }
+    if (DOM.reunificationDayDovesToggle) {
+      DOM.reunificationDayDovesToggle.checked =
+        settings.reunificationDayDoves !== false
+    }
+    if (DOM.reunificationDayTextsToggle) {
+      DOM.reunificationDayTextsToggle.checked =
+        settings.reunificationDayTexts !== false
+    }
+    if (DOM.reunificationDayClickToggle) {
+      DOM.reunificationDayClickToggle.checked =
+        settings.reunificationDayClick !== false
+    }
+    if (DOM.reunificationDaySpeedSlider) {
+      const spd =
+        settings.reunificationDaySpeed !== undefined
+          ? settings.reunificationDaySpeed
+          : 1.0
+      DOM.reunificationDaySpeedSlider.value = spd
+      if (DOM.reunificationDaySpeedVal) {
+        DOM.reunificationDaySpeedVal.textContent = `${Number(spd).toFixed(1)}x`
+      }
+    }
+    if (DOM.reunificationDayTransparentCheckbox) {
+      DOM.reunificationDayTransparentCheckbox.checked =
+        settings.reunificationDayTransparent !== false
+    }
     if (DOM.oceanWaveColorPicker) {
-      DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
+      DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#ffffff"
     }
     const oceanWavePos = settings.oceanWavePosition || "bottom"
     DOM.oceanWavePosBottomBtn?.classList.toggle(
@@ -6043,6 +6125,30 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.floatingLinesAngleSetting)
       DOM.floatingLinesAngleSetting.style.display =
         settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.floatingLinesSpeedSetting)
+      DOM.floatingLinesSpeedSetting.style.display =
+        settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.floatingLinesCountSetting)
+      DOM.floatingLinesCountSetting.style.display =
+        settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.floatingLinesTransparentSetting)
+      DOM.floatingLinesTransparentSetting.style.display =
+        settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.hyperspaceStyleSetting)
+      DOM.hyperspaceStyleSetting.style.display =
+        settings.effect === "hyperspace" ? "block" : "none"
+    if (DOM.hyperspaceColorSetting)
+      DOM.hyperspaceColorSetting.style.display =
+        settings.effect === "hyperspace" ? "block" : "none"
+    if (DOM.hyperspaceSpeedSetting)
+      DOM.hyperspaceSpeedSetting.style.display =
+        settings.effect === "hyperspace" ? "block" : "none"
+    if (DOM.hyperspaceStarCountSetting)
+      DOM.hyperspaceStarCountSetting.style.display =
+        settings.effect === "hyperspace" ? "block" : "none"
+    if (DOM.hyperspaceTransparentSetting)
+      DOM.hyperspaceTransparentSetting.style.display =
+        settings.effect === "hyperspace" ? "block" : "none"
     if (DOM.rainHDColorSetting)
       DOM.rainHDColorSetting.style.display = "none"
     if (DOM.musicBarsColorSetting)
@@ -6057,12 +6163,63 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.tetFireworksSetting)
       DOM.tetFireworksSetting.style.display =
         settings.effect === "tetFireworks" ? "block" : "none"
+    if (DOM.reunificationDaySetting)
+      DOM.reunificationDaySetting.style.display =
+        settings.effect === "reunificationDay" ? "block" : "none"
+    if (DOM.oceanWaveMoodSetting)
+      DOM.oceanWaveMoodSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
     if (DOM.oceanWaveColorSetting)
       DOM.oceanWaveColorSetting.style.display =
-        settings.effect === "oceanWave" ? "block" : "none"
+        settings.effect === "oceanWave" && settings.oceanWaveMood === "custom"
+          ? "flex"
+          : "none"
     if (DOM.oceanWavePositionSetting)
       DOM.oceanWavePositionSetting.style.display =
         settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWaveStyleSetting)
+      DOM.oceanWaveStyleSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWaveLayerSetting)
+      DOM.oceanWaveLayerSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWaveSpeedSetting)
+      DOM.oceanWaveSpeedSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWaveAmplitudeSetting)
+      DOM.oceanWaveAmplitudeSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWaveOpacitySetting)
+      DOM.oceanWaveOpacitySetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+
+    if (DOM.oceanWaveMoodSelect)
+      DOM.oceanWaveMoodSelect.value = settings.oceanWaveMood || "white"
+    if (DOM.oceanWaveColorPicker)
+      DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#ffffff"
+    if (DOM.oceanWaveStyleSelect)
+      DOM.oceanWaveStyleSelect.value = settings.oceanWaveStyle || "smooth"
+    if (DOM.oceanWaveLayerSlider) {
+      const layers = settings.oceanWaveLayerCount !== undefined ? settings.oceanWaveLayerCount : 3
+      DOM.oceanWaveLayerSlider.value = layers
+      if (DOM.oceanWaveLayerVal) DOM.oceanWaveLayerVal.textContent = layers
+    }
+    if (DOM.oceanWaveSpeedSlider) {
+      const spd = settings.oceanWaveSpeed !== undefined ? settings.oceanWaveSpeed : 1.0
+      DOM.oceanWaveSpeedSlider.value = spd
+      if (DOM.oceanWaveSpeedVal) DOM.oceanWaveSpeedVal.textContent = `${spd.toFixed(1)}x`
+    }
+    if (DOM.oceanWaveAmplitudeSlider) {
+      const amp = settings.oceanWaveAmplitude !== undefined ? settings.oceanWaveAmplitude : 35
+      DOM.oceanWaveAmplitudeSlider.value = amp
+      if (DOM.oceanWaveAmplitudeVal) DOM.oceanWaveAmplitudeVal.textContent = amp
+    }
+    if (DOM.oceanWaveOpacitySlider) {
+      const op = settings.oceanWaveOpacity !== undefined ? settings.oceanWaveOpacity : 0.65
+      DOM.oceanWaveOpacitySlider.value = op
+      if (DOM.oceanWaveOpacityVal) DOM.oceanWaveOpacityVal.textContent = op.toFixed(2)
+    }
+
     if (DOM.cloudDriftColorSetting)
       DOM.cloudDriftColorSetting.style.display =
         settings.effect === "cloudDrift" ? "block" : "none"

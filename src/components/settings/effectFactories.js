@@ -218,8 +218,16 @@ export function createEffectFactories(settings) {
     oceanWaveEffect: () =>
       new OceanWaveEffect(
         "effect-canvas",
-        settings.oceanWaveColor || "#0077b6",
+        settings.oceanWaveColor || "#ffffff",
         settings.oceanWavePosition || "bottom",
+        {
+          mood: settings.oceanWaveMood || "white",
+          layerCount: settings.oceanWaveLayerCount !== undefined ? settings.oceanWaveLayerCount : 3,
+          speed: settings.oceanWaveSpeed !== undefined ? settings.oceanWaveSpeed : 1.0,
+          amplitude: settings.oceanWaveAmplitude !== undefined ? settings.oceanWaveAmplitude : 35,
+          opacity: settings.oceanWaveOpacity !== undefined ? settings.oceanWaveOpacity : 0.65,
+          style: settings.oceanWaveStyle || "smooth",
+        },
       ),
     cloudDriftEffect: () =>
       new CloudDriftEffect(
@@ -307,7 +315,16 @@ export function createEffectFactories(settings) {
         soundEnabled: settings.tetFireworksSound ?? false,
       }),
     reunificationDayEffect: () =>
-      new ReunificationDayEffect("effect-canvas", {}),
+      new ReunificationDayEffect("effect-canvas", {
+        mode: settings.reunificationDayMode || "30_04",
+        palace: settings.reunificationDayPalace !== false,
+        tanks: settings.reunificationDayTanks !== false,
+        doves: settings.reunificationDayDoves !== false,
+        texts: settings.reunificationDayTexts !== false,
+        clickLaunch: settings.reunificationDayClick !== false,
+        speed: settings.reunificationDaySpeed ?? 1.0,
+        transparent: settings.reunificationDayTransparent !== false,
+      }),
     halloweenEffect: () => new HalloweenEffect("effect-canvas", {}),
     skyLanternsEffect: () =>
       new SkyLanternsEffect("effect-canvas", {
@@ -354,11 +371,13 @@ export function createEffectFactories(settings) {
         },
       ),
     floatingLinesEffect: () =>
-      new FloatingLinesEffect(
-        "effect-canvas",
-        settings.floatingLinesColor || "#ffffff",
-        settings.floatingLinesAngle || 0,
-      ),
+      new FloatingLinesEffect("effect-canvas", {
+        color: settings.floatingLinesColor || "#ffffff",
+        angle: settings.floatingLinesAngle || 0,
+        speed: settings.floatingLinesSpeed !== undefined ? settings.floatingLinesSpeed : 1.0,
+        count: settings.floatingLinesCount !== undefined ? settings.floatingLinesCount : 4,
+        transparent: !!settings.floatingLinesTransparent,
+      }),
     pixelBlastEffect: () =>
       new PixelBlastEffect("effect-canvas", {
         variant: settings.pixelBlastVariant || "square",
@@ -393,7 +412,13 @@ export function createEffectFactories(settings) {
         settings.jellyfishType || "jellyfish",
       ),
     hyperspaceEffect: () =>
-      new HyperspaceEffect("effect-canvas", settings.accentColor),
+      new HyperspaceEffect("effect-canvas", {
+        color: settings.hyperspaceColor || settings.accentColor || "#00e5ff",
+        style: settings.hyperspaceStyle || "warpDrive",
+        speed: settings.hyperspaceSpeed !== undefined ? settings.hyperspaceSpeed : 1.8,
+        count: settings.hyperspaceStarCount !== undefined ? settings.hyperspaceStarCount : 1100,
+        transparent: !!settings.hyperspaceTransparent,
+      }),
     pixelSnowHQEffect: () =>
       new PixelSnowEffect("pixel-snow-hq-canvas", {
         color: settings.pixelSnowHQColor,

@@ -461,6 +461,37 @@ export let northernLightsTransparentCheckbox = document.getElementById(
   "northern-lights-transparent",
 )
 
+export let reunificationDaySetting = document.getElementById(
+  "reunification-day-setting",
+)
+export let reunificationDayModeSelect = document.getElementById(
+  "reunification-day-mode-select",
+)
+export let reunificationDayPalaceToggle = document.getElementById(
+  "reunification-day-palace-toggle",
+)
+export let reunificationDayTanksToggle = document.getElementById(
+  "reunification-day-tanks-toggle",
+)
+export let reunificationDayDovesToggle = document.getElementById(
+  "reunification-day-doves-toggle",
+)
+export let reunificationDayTextsToggle = document.getElementById(
+  "reunification-day-texts-toggle",
+)
+export let reunificationDayClickToggle = document.getElementById(
+  "reunification-day-click-toggle",
+)
+export let reunificationDaySpeedSlider = document.getElementById(
+  "reunification-day-speed-slider",
+)
+export let reunificationDaySpeedVal = document.getElementById(
+  "reunification-day-speed-val",
+)
+export let reunificationDayTransparentCheckbox = document.getElementById(
+  "reunification-day-transparent",
+)
+
 export let hackerColorPicker = document.getElementById("hacker-color-picker")
 export let hackerModeSelect = document.getElementById("hacker-mode-select")
 export let hackerColorSetting = document.getElementById("hacker-color-setting")
@@ -815,6 +846,66 @@ export let floatingLinesAngleValue = document.getElementById(
 export let floatingLinesAngleSetting = document.getElementById(
   "floating-lines-angle-setting",
 )
+export let floatingLinesSpeedInput = document.getElementById(
+  "floating-lines-speed-input",
+)
+export let floatingLinesSpeedValue = document.getElementById(
+  "floating-lines-speed-value",
+)
+export let floatingLinesSpeedSetting = document.getElementById(
+  "floating-lines-speed-setting",
+)
+export let floatingLinesCountInput = document.getElementById(
+  "floating-lines-count-input",
+)
+export let floatingLinesCountValue = document.getElementById(
+  "floating-lines-count-value",
+)
+export let floatingLinesCountSetting = document.getElementById(
+  "floating-lines-count-setting",
+)
+export let floatingLinesTransparentToggle = document.getElementById(
+  "floating-lines-transparent-toggle",
+)
+export let floatingLinesTransparentSetting = document.getElementById(
+  "floating-lines-transparent-setting",
+)
+export let hyperspaceStyleSetting = document.getElementById(
+  "hyperspace-style-setting",
+)
+export let hyperspaceStyleSelect = document.getElementById(
+  "hyperspace-style-select",
+)
+export let hyperspaceColorSetting = document.getElementById(
+  "hyperspace-color-setting",
+)
+export let hyperspaceColorPicker = document.getElementById(
+  "hyperspace-color-picker",
+)
+export let hyperspaceSpeedSetting = document.getElementById(
+  "hyperspace-speed-setting",
+)
+export let hyperspaceSpeedSlider = document.getElementById(
+  "hyperspace-speed-slider",
+)
+export let hyperspaceSpeedValue = document.getElementById(
+  "hyperspace-speed-value",
+)
+export let hyperspaceStarCountSetting = document.getElementById(
+  "hyperspace-star-count-setting",
+)
+export let hyperspaceStarCountSlider = document.getElementById(
+  "hyperspace-star-count-slider",
+)
+export let hyperspaceStarCountValue = document.getElementById(
+  "hyperspace-star-count-value",
+)
+export let hyperspaceTransparentSetting = document.getElementById(
+  "hyperspace-transparent-setting",
+)
+export let hyperspaceTransparentToggle = document.getElementById(
+  "hyperspace-transparent-toggle",
+)
 export let rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export let rainHDColorSetting = document.getElementById("rain-hd-color-setting")
 export let musicBarsColorPicker = document.getElementById(
@@ -885,6 +976,22 @@ export let oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
 export let oceanWavePosRightBtn = document.getElementById(
   "ocean-wave-pos-right",
 )
+export let oceanWaveMoodSetting = document.getElementById("ocean-wave-mood-setting")
+export let oceanWaveMoodSelect = document.getElementById("ocean-wave-mood-select")
+export let oceanWaveStyleSetting = document.getElementById("ocean-wave-style-setting")
+export let oceanWaveStyleSelect = document.getElementById("ocean-wave-style-select")
+export let oceanWaveLayerSetting = document.getElementById("ocean-wave-layer-setting")
+export let oceanWaveLayerSlider = document.getElementById("ocean-wave-layer-slider")
+export let oceanWaveLayerVal = document.getElementById("ocean-wave-layer-val")
+export let oceanWaveSpeedSetting = document.getElementById("ocean-wave-speed-setting")
+export let oceanWaveSpeedSlider = document.getElementById("ocean-wave-speed-slider")
+export let oceanWaveSpeedVal = document.getElementById("ocean-wave-speed-val")
+export let oceanWaveAmplitudeSetting = document.getElementById("ocean-wave-amplitude-setting")
+export let oceanWaveAmplitudeSlider = document.getElementById("ocean-wave-amplitude-slider")
+export let oceanWaveAmplitudeVal = document.getElementById("ocean-wave-amplitude-val")
+export let oceanWaveOpacitySetting = document.getElementById("ocean-wave-opacity-setting")
+export let oceanWaveOpacitySlider = document.getElementById("ocean-wave-opacity-slider")
+export let oceanWaveOpacityVal = document.getElementById("ocean-wave-opacity-val")
 export let cloudDriftColorPicker = document.getElementById(
   "cloud-drift-color-picker",
 )
@@ -2705,6 +2812,35 @@ export function refreshDOMReferences() {
   northernLightsTransparentCheckbox = document.getElementById(
     "northern-lights-transparent",
   )
+
+  reunificationDaySetting = document.getElementById("reunification-day-setting")
+  reunificationDayModeSelect = document.getElementById(
+    "reunification-day-mode-select",
+  )
+  reunificationDayPalaceToggle = document.getElementById(
+    "reunification-day-palace-toggle",
+  )
+  reunificationDayTanksToggle = document.getElementById(
+    "reunification-day-tanks-toggle",
+  )
+  reunificationDayDovesToggle = document.getElementById(
+    "reunification-day-doves-toggle",
+  )
+  reunificationDayTextsToggle = document.getElementById(
+    "reunification-day-texts-toggle",
+  )
+  reunificationDayClickToggle = document.getElementById(
+    "reunification-day-click-toggle",
+  )
+  reunificationDaySpeedSlider = document.getElementById(
+    "reunification-day-speed-slider",
+  )
+  reunificationDaySpeedVal = document.getElementById(
+    "reunification-day-speed-val",
+  )
+  reunificationDayTransparentCheckbox = document.getElementById(
+    "reunification-day-transparent",
+  )
   hackerColorPicker = document.getElementById("hacker-color-picker")
   hackerModeSelect = document.getElementById("hacker-mode-select")
   hackerColorSetting = document.getElementById("hacker-color-setting")
@@ -2944,6 +3080,66 @@ export function refreshDOMReferences() {
   floatingLinesAngleSetting = document.getElementById(
     "floating-lines-angle-setting",
   )
+  floatingLinesSpeedInput = document.getElementById(
+    "floating-lines-speed-input",
+  )
+  floatingLinesSpeedValue = document.getElementById(
+    "floating-lines-speed-value",
+  )
+  floatingLinesSpeedSetting = document.getElementById(
+    "floating-lines-speed-setting",
+  )
+  floatingLinesCountInput = document.getElementById(
+    "floating-lines-count-input",
+  )
+  floatingLinesCountValue = document.getElementById(
+    "floating-lines-count-value",
+  )
+  floatingLinesCountSetting = document.getElementById(
+    "floating-lines-count-setting",
+  )
+  floatingLinesTransparentToggle = document.getElementById(
+    "floating-lines-transparent-toggle",
+  )
+  floatingLinesTransparentSetting = document.getElementById(
+    "floating-lines-transparent-setting",
+  )
+  hyperspaceStyleSetting = document.getElementById(
+    "hyperspace-style-setting",
+  )
+  hyperspaceStyleSelect = document.getElementById(
+    "hyperspace-style-select",
+  )
+  hyperspaceColorSetting = document.getElementById(
+    "hyperspace-color-setting",
+  )
+  hyperspaceColorPicker = document.getElementById(
+    "hyperspace-color-picker",
+  )
+  hyperspaceSpeedSetting = document.getElementById(
+    "hyperspace-speed-setting",
+  )
+  hyperspaceSpeedSlider = document.getElementById(
+    "hyperspace-speed-slider",
+  )
+  hyperspaceSpeedValue = document.getElementById(
+    "hyperspace-speed-value",
+  )
+  hyperspaceStarCountSetting = document.getElementById(
+    "hyperspace-star-count-setting",
+  )
+  hyperspaceStarCountSlider = document.getElementById(
+    "hyperspace-star-count-slider",
+  )
+  hyperspaceStarCountValue = document.getElementById(
+    "hyperspace-star-count-value",
+  )
+  hyperspaceTransparentSetting = document.getElementById(
+    "hyperspace-transparent-setting",
+  )
+  hyperspaceTransparentToggle = document.getElementById(
+    "hyperspace-transparent-toggle",
+  )
   rainHDColorPicker = document.getElementById("rain-hd-color-picker")
   rainHDColorSetting = document.getElementById("rain-hd-color-setting")
   musicBarsColorPicker = document.getElementById("music-bars-color-picker")
@@ -2990,6 +3186,22 @@ export function refreshDOMReferences() {
   oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
   oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
   oceanWavePosRightBtn = document.getElementById("ocean-wave-pos-right")
+  oceanWaveMoodSetting = document.getElementById("ocean-wave-mood-setting")
+  oceanWaveMoodSelect = document.getElementById("ocean-wave-mood-select")
+  oceanWaveStyleSetting = document.getElementById("ocean-wave-style-setting")
+  oceanWaveStyleSelect = document.getElementById("ocean-wave-style-select")
+  oceanWaveLayerSetting = document.getElementById("ocean-wave-layer-setting")
+  oceanWaveLayerSlider = document.getElementById("ocean-wave-layer-slider")
+  oceanWaveLayerVal = document.getElementById("ocean-wave-layer-val")
+  oceanWaveSpeedSetting = document.getElementById("ocean-wave-speed-setting")
+  oceanWaveSpeedSlider = document.getElementById("ocean-wave-speed-slider")
+  oceanWaveSpeedVal = document.getElementById("ocean-wave-speed-val")
+  oceanWaveAmplitudeSetting = document.getElementById("ocean-wave-amplitude-setting")
+  oceanWaveAmplitudeSlider = document.getElementById("ocean-wave-amplitude-slider")
+  oceanWaveAmplitudeVal = document.getElementById("ocean-wave-amplitude-val")
+  oceanWaveOpacitySetting = document.getElementById("ocean-wave-opacity-setting")
+  oceanWaveOpacitySlider = document.getElementById("ocean-wave-opacity-slider")
+  oceanWaveOpacityVal = document.getElementById("ocean-wave-opacity-val")
   cloudDriftColorPicker = document.getElementById("cloud-drift-color-picker")
   cloudDriftColorSetting = document.getElementById("cloud-drift-color-setting")
   cloudDriftMoodSelect = document.getElementById("cloud-drift-mood-select")

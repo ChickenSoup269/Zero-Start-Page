@@ -1305,6 +1305,80 @@
                                 style="width: 100%;">
                         </div>
 
+                        <!-- Floating Lines Speed -->
+                        <div id="floating-lines-speed-setting" class="setting-item" style="display: none;">
+                            <div class="flex-space-between" style="margin-bottom: 8px;">
+                                <label data-i18n="settings_floating_lines_speed" style="font-weight: 600;">Flow Speed</label>
+                                <span id="floating-lines-speed-value" class="bg-slider-value">1.0x</span>
+                            </div>
+                            <input type="range" id="floating-lines-speed-input" min="0.2" max="3.0" step="0.1" value="1.0"
+                                style="width: 100%;">
+                        </div>
+
+                        <!-- Floating Lines Count (Density) -->
+                        <div id="floating-lines-count-setting" class="setting-item" style="display: none;">
+                            <div class="flex-space-between" style="margin-bottom: 8px;">
+                                <label data-i18n="settings_floating_lines_count" style="font-weight: 600;">Line Density</label>
+                                <span id="floating-lines-count-value" class="bg-slider-value">4</span>
+                            </div>
+                            <input type="range" id="floating-lines-count-input" min="2" max="8" step="1" value="4"
+                                style="width: 100%;">
+                        </div>
+
+                        <!-- Floating Lines Transparent Background -->
+                        <div id="floating-lines-transparent-setting" class="setting-item" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="floating-lines-transparent-toggle" data-i18n="setting_floating_lines_transparent" style="margin-bottom: 0;">Transparent Background</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="floating-lines-transparent-toggle" />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Hyperspace 3D Settings -->
+                        <div id="hyperspace-style-setting" class="setting-item" style="display: none;">
+                            <label for="hyperspace-style-select" data-i18n="settings_hyperspace_style">Hyperspace Style</label>
+                            <select id="hyperspace-style-select" class="styled-select" style="width: 100%; margin-top: 5px;">
+                                <option value="warpDrive" data-i18n="hyperspace_style_warp">Starfield Warp (Xuyên Không Vũ Trụ)</option>
+                                <option value="cyberTunnel" data-i18n="hyperspace_style_cyber">Cyber Tunnel (Hầm Lục Giác Neon)</option>
+                                <option value="vortexHole" data-i18n="hyperspace_style_vortex">Cosmic Vortex (Hố Giun Xoáy Lốc)</option>
+                            </select>
+                        </div>
+
+                        <div id="hyperspace-color-setting" class="setting-item" style="display: none;">
+                            <label for="hyperspace-color-picker" data-i18n="settings_hyperspace_color">Warp Light Color</label>
+                            <input type="color" id="hyperspace-color-picker" value="#00e5ff" style="margin-top: 5px;" />
+                        </div>
+
+                        <div id="hyperspace-speed-setting" class="setting-item" style="display: none;">
+                            <div class="flex-space-between" style="margin-bottom: 8px;">
+                                <label data-i18n="settings_hyperspace_speed" style="font-weight: 600;">Warp Speed</label>
+                                <span id="hyperspace-speed-value" class="bg-slider-value">1.8x</span>
+                            </div>
+                            <input type="range" id="hyperspace-speed-slider" min="0.2" max="6.0" step="0.1" value="1.8"
+                                style="width: 100%;">
+                        </div>
+
+                        <div id="hyperspace-star-count-setting" class="setting-item" style="display: none;">
+                            <div class="flex-space-between" style="margin-bottom: 8px;">
+                                <label data-i18n="settings_hyperspace_star_count" style="font-weight: 600;">Star Density</label>
+                                <span id="hyperspace-star-count-value" class="bg-slider-value">1100</span>
+                            </div>
+                            <input type="range" id="hyperspace-star-count-slider" min="300" max="2500" step="50" value="1100"
+                                style="width: 100%;">
+                        </div>
+
+                        <div id="hyperspace-transparent-setting" class="setting-item" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="hyperspace-transparent-toggle" data-i18n="setting_hyperspace_transparent" style="margin-bottom: 0;">Transparent Background</label>
+                                <label class="switch" style="margin: 0;">
+                                    <input type="checkbox" id="hyperspace-transparent-toggle" />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Rain HD Color -->
                         <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
                             <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain
@@ -1380,11 +1454,69 @@
                                 <option value="willow" data-i18n="tet_fireworks_type_willow">Golden Willow (Liễu Rủ Vàng)</option>
                             </select>
                         </div>
-                        <!-- Ocean Wave Color -->
-                        <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
-                            <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave
-                                Color</label>
-                            <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+
+                        <!-- Reunification Day Settings (Chào mừng 30/04 & 02/09) -->
+                        <div id="reunification-day-setting" class="setting-item" style="display: none;">
+                            <div class="setting-item" style="margin-bottom: 12px;">
+                                <label for="reunification-day-mode-select" data-i18n="setting_reunification_mode">
+                                    Celebration Theme (Chủ đề ngày lễ)
+                                </label>
+                                <select id="reunification-day-mode-select" class="styled-select" style="width: 100%;">
+                                    <option value="30_04" data-i18n="reunification_mode_30_04">30/04 - Giải Phóng Miền Nam (1975)</option>
+                                    <option value="02_09" data-i18n="reunification_mode_02_09">02/09 - Quốc Khánh Việt Nam (1945)</option>
+                                    <option value="both" data-i18n="reunification_mode_both">Kết hợp tự động chuyển đổi</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-palace-toggle" data-i18n="setting_reunification_palace" style="margin-bottom: 0; cursor: pointer;">
+                                    Monuments & Architecture (Dinh Độc Lập / Lăng Bác)
+                                </label>
+                                <input type="checkbox" id="reunification-day-palace-toggle" class="styled-checkbox" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-tanks-toggle" data-i18n="setting_reunification_tanks" style="margin-bottom: 0; cursor: pointer;">
+                                    Historic Tank 390 (Xe tăng 390 lịch sử)
+                                </label>
+                                <input type="checkbox" id="reunification-day-tanks-toggle" class="styled-checkbox" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-doves-toggle" data-i18n="setting_reunification_doves" style="margin-bottom: 0; cursor: pointer;">
+                                    Peace Doves (Chim bồ câu hòa bình)
+                                </label>
+                                <input type="checkbox" id="reunification-day-doves-toggle" class="styled-checkbox" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-texts-toggle" data-i18n="setting_reunification_texts" style="margin-bottom: 0; cursor: pointer;">
+                                    Celebration Slogans & Quotes (Dòng chữ chào mừng)
+                                </label>
+                                <input type="checkbox" id="reunification-day-texts-toggle" class="styled-checkbox" checked />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-click-toggle" data-i18n="setting_reunification_click" style="margin-bottom: 0; cursor: pointer;">
+                                    Click / Tap to Launch Fireworks (Bắn pháo hoa khi chạm)
+                                </label>
+                                <input type="checkbox" id="reunification-day-click-toggle" class="styled-checkbox" checked />
+                            </div>
+
+                            <div class="setting-item" style="margin-top: 10px; margin-bottom: 10px;">
+                                <label for="reunification-day-speed-slider" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="setting_reunification_speed">Fireworks Speed / Intensity</span>
+                                    <span id="reunification-day-speed-val">1.0x</span>
+                                </label>
+                                <input type="range" id="reunification-day-speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" />
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="reunification-day-transparent" data-i18n="setting_reunification_transparent" style="margin-bottom: 0; cursor: pointer;">
+                                    Transparent Background (Nền trong suốt)
+                                </label>
+                                <input type="checkbox" id="reunification-day-transparent" class="styled-checkbox" checked />
+                            </div>
                         </div>
                         <!-- Rainbow Direction -->
                         <div id="rainbow-direction-setting" class="setting-item" style="display: none;">
@@ -1415,8 +1547,7 @@
 
                         <!-- Ocean Wave Position -->
                         <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
-                            <label data-i18n="setting_ocean_wave_position" for="cloud-drift-color-picker">Wave
-                                Position</label>
+                            <label data-i18n="setting_ocean_wave_position">Wave Position</label>
                             <div class="btn-group">
                                 <button id="ocean-wave-pos-bottom" class="btn-group-item active"
                                     data-i18n="position_bottom">Bottom</button>
@@ -1427,6 +1558,70 @@
                                 <button id="ocean-wave-pos-right" class="btn-group-item"
                                     data-i18n="position_right">Right</button>
                             </div>
+                        </div>
+
+                        <!-- Ocean Wave Mood / Palette -->
+                        <div id="ocean-wave-mood-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-mood-select" data-i18n="setting_ocean_wave_mood">Wave Atmosphere</label>
+                            <select id="ocean-wave-mood-select" class="styled-select" style="width: 100%;">
+                                <option value="white" data-i18n="ocean_wave_mood_white">Minimalist White (Default)</option>
+                                <option value="natural" data-i18n="ocean_wave_mood_natural">Natural Sea</option>
+                                <option value="sunset" data-i18n="ocean_wave_mood_sunset">Sunset Glow</option>
+                                <option value="sunrise" data-i18n="ocean_wave_mood_sunrise">Sunrise Dawn</option>
+                                <option value="custom" data-i18n="ocean_wave_mood_custom">Custom Color</option>
+                            </select>
+                        </div>
+
+                        <!-- Ocean Wave Custom Color -->
+                        <div id="ocean-wave-color-setting" class="setting-item-row" style="display: none;">
+                            <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
+                            <input type="color" id="ocean-wave-color-picker" value="#ffffff" />
+                        </div>
+
+                        <!-- Ocean Wave Style -->
+                        <div id="ocean-wave-style-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-style-select" data-i18n="setting_ocean_wave_style">Wave Style</label>
+                            <select id="ocean-wave-style-select" class="styled-select" style="width: 100%;">
+                                <option value="smooth" data-i18n="ocean_wave_style_smooth">Smooth Wave (Default)</option>
+                                <option value="ocean" data-i18n="ocean_wave_style_ocean">Ocean Swell</option>
+                                <option value="calm" data-i18n="ocean_wave_style_calm">Calm Tide</option>
+                            </select>
+                        </div>
+
+                        <!-- Ocean Wave Layer Count -->
+                        <div id="ocean-wave-layer-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-layer-slider">
+                                <span data-i18n="setting_ocean_wave_layers">Wave Layers</span>:
+                                <span id="ocean-wave-layer-val">3</span>
+                            </label>
+                            <input type="range" id="ocean-wave-layer-slider" min="1" max="6" step="1" value="3" />
+                        </div>
+
+                        <!-- Ocean Wave Speed -->
+                        <div id="ocean-wave-speed-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-speed-slider">
+                                <span data-i18n="setting_ocean_wave_speed">Wave Speed</span>:
+                                <span id="ocean-wave-speed-val">1.0x</span>
+                            </label>
+                            <input type="range" id="ocean-wave-speed-slider" min="0.2" max="3.0" step="0.1" value="1.0" />
+                        </div>
+
+                        <!-- Ocean Wave Amplitude / Height -->
+                        <div id="ocean-wave-amplitude-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-amplitude-slider">
+                                <span data-i18n="setting_ocean_wave_amplitude">Wave Height</span>:
+                                <span id="ocean-wave-amplitude-val">35</span>px
+                            </label>
+                            <input type="range" id="ocean-wave-amplitude-slider" min="10" max="100" step="5" value="35" />
+                        </div>
+
+                        <!-- Ocean Wave Opacity -->
+                        <div id="ocean-wave-opacity-setting" class="setting-item" style="display: none;">
+                            <label for="ocean-wave-opacity-slider">
+                                <span data-i18n="setting_ocean_wave_opacity">Wave Opacity</span>:
+                                <span id="ocean-wave-opacity-val">0.65</span>
+                            </label>
+                            <input type="range" id="ocean-wave-opacity-slider" min="0.1" max="1.0" step="0.05" value="0.65" />
                         </div>
                         <!-- Cloud Drift Color -->
                         <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">

@@ -534,35 +534,136 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
 
   let floatingLinesTimer = null
-  DOM.floatingLinesColorPicker?.addEventListener("change", () => {
-    // Update live color in effect if it's not too heavy,
-    // but debounce the saving and state update to prevent lag
+  const handleFloatingLinesColor = () => {
+    const val = DOM.floatingLinesColorPicker.value
     if (effectInstances.floatingLinesEffect) {
-      effectInstances.floatingLinesEffect.updateColor(
-        DOM.floatingLinesColorPicker.value,
-      )
+      effectInstances.floatingLinesEffect.updateColor(val)
     }
-
     clearTimeout(floatingLinesTimer)
     floatingLinesTimer = setTimeout(() => {
-      updateSetting("floatingLinesColor", DOM.floatingLinesColorPicker.value)
+      updateSetting("floatingLinesColor", val)
       saveSettings()
     }, 250)
-  })
+  }
+  DOM.floatingLinesColorPicker?.addEventListener("input", handleFloatingLinesColor)
+  DOM.floatingLinesColorPicker?.addEventListener("change", handleFloatingLinesColor)
 
   DOM.floatingLinesAngleInput?.addEventListener("input", () => {
-    const angle = parseInt(DOM.floatingLinesAngleInput.value)
-    DOM.floatingLinesAngleValue.textContent = `${angle}°`
-
+    const angle = parseInt(DOM.floatingLinesAngleInput.value) || 0
+    if (DOM.floatingLinesAngleValue) {
+      DOM.floatingLinesAngleValue.textContent = `${angle}°`
+    }
     if (effectInstances.floatingLinesEffect) {
       effectInstances.floatingLinesEffect.setAngle(angle)
     }
-
     clearTimeout(floatingLinesTimer)
     floatingLinesTimer = setTimeout(() => {
       updateSetting("floatingLinesAngle", angle)
       saveSettings()
     }, 250)
+  })
+
+  DOM.floatingLinesSpeedInput?.addEventListener("input", () => {
+    const speed = parseFloat(DOM.floatingLinesSpeedInput.value) || 1.0
+    if (DOM.floatingLinesSpeedValue) {
+      DOM.floatingLinesSpeedValue.textContent = `${speed.toFixed(1)}x`
+    }
+    if (effectInstances.floatingLinesEffect) {
+      effectInstances.floatingLinesEffect.setSpeed(speed)
+    }
+    clearTimeout(floatingLinesTimer)
+    floatingLinesTimer = setTimeout(() => {
+      updateSetting("floatingLinesSpeed", speed)
+      saveSettings()
+    }, 250)
+  })
+
+  DOM.floatingLinesCountInput?.addEventListener("input", () => {
+    const count = parseInt(DOM.floatingLinesCountInput.value) || 4
+    if (DOM.floatingLinesCountValue) {
+      DOM.floatingLinesCountValue.textContent = `${count}`
+    }
+    if (effectInstances.floatingLinesEffect) {
+      effectInstances.floatingLinesEffect.setCount(count)
+    }
+    clearTimeout(floatingLinesTimer)
+    floatingLinesTimer = setTimeout(() => {
+      updateSetting("floatingLinesCount", count)
+      saveSettings()
+    }, 250)
+  })
+
+  DOM.floatingLinesTransparentToggle?.addEventListener("change", () => {
+    const isTransparent = DOM.floatingLinesTransparentToggle.checked
+    if (effectInstances.floatingLinesEffect) {
+      effectInstances.floatingLinesEffect.setTransparent(isTransparent)
+    }
+    updateSetting("floatingLinesTransparent", isTransparent)
+    saveSettings()
+  })
+
+  // Hyperspace 3D Controls
+  let hyperspaceTimer = null
+  DOM.hyperspaceStyleSelect?.addEventListener("change", () => {
+    const style = DOM.hyperspaceStyleSelect.value
+    if (effectInstances.hyperspaceEffect) {
+      effectInstances.hyperspaceEffect.setStyle(style)
+    }
+    updateSetting("hyperspaceStyle", style)
+    saveSettings()
+  })
+
+  const handleHyperspaceColor = () => {
+    const color = DOM.hyperspaceColorPicker.value
+    if (effectInstances.hyperspaceEffect) {
+      effectInstances.hyperspaceEffect.updateColor(color)
+    }
+    clearTimeout(hyperspaceTimer)
+    hyperspaceTimer = setTimeout(() => {
+      updateSetting("hyperspaceColor", color)
+      saveSettings()
+    }, 250)
+  }
+  DOM.hyperspaceColorPicker?.addEventListener("input", handleHyperspaceColor)
+  DOM.hyperspaceColorPicker?.addEventListener("change", handleHyperspaceColor)
+
+  DOM.hyperspaceSpeedSlider?.addEventListener("input", () => {
+    const speed = parseFloat(DOM.hyperspaceSpeedSlider.value) || 4.0
+    if (DOM.hyperspaceSpeedValue) {
+      DOM.hyperspaceSpeedValue.textContent = `${speed.toFixed(1)}x`
+    }
+    if (effectInstances.hyperspaceEffect) {
+      effectInstances.hyperspaceEffect.setSpeed(speed)
+    }
+    clearTimeout(hyperspaceTimer)
+    hyperspaceTimer = setTimeout(() => {
+      updateSetting("hyperspaceSpeed", speed)
+      saveSettings()
+    }, 250)
+  })
+
+  DOM.hyperspaceStarCountSlider?.addEventListener("input", () => {
+    const count = parseInt(DOM.hyperspaceStarCountSlider.value) || 1200
+    if (DOM.hyperspaceStarCountValue) {
+      DOM.hyperspaceStarCountValue.textContent = `${count}`
+    }
+    if (effectInstances.hyperspaceEffect) {
+      effectInstances.hyperspaceEffect.setStarCount(count)
+    }
+    clearTimeout(hyperspaceTimer)
+    hyperspaceTimer = setTimeout(() => {
+      updateSetting("hyperspaceStarCount", count)
+      saveSettings()
+    }, 250)
+  })
+
+  DOM.hyperspaceTransparentToggle?.addEventListener("change", () => {
+    const isTransparent = DOM.hyperspaceTransparentToggle.checked
+    if (effectInstances.hyperspaceEffect) {
+      effectInstances.hyperspaceEffect.setTransparent(isTransparent)
+    }
+    updateSetting("hyperspaceTransparent", isTransparent)
+    saveSettings()
   })
 
   DOM.rainHDColorPicker?.addEventListener("change", () => {
@@ -666,6 +767,82 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  // Reunification & National Day (30/04 & 02/09)
+  DOM.reunificationDayModeSelect?.addEventListener("change", () => {
+    const mode = DOM.reunificationDayModeSelect.value
+    updateSetting("reunificationDayMode", mode)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ mode })
+    }
+  })
+
+  DOM.reunificationDayPalaceToggle?.addEventListener("change", () => {
+    const val = DOM.reunificationDayPalaceToggle.checked
+    updateSetting("reunificationDayPalace", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ palace: val })
+    }
+  })
+
+  DOM.reunificationDayTanksToggle?.addEventListener("change", () => {
+    const val = DOM.reunificationDayTanksToggle.checked
+    updateSetting("reunificationDayTanks", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ tanks: val })
+    }
+  })
+
+  DOM.reunificationDayDovesToggle?.addEventListener("change", () => {
+    const val = DOM.reunificationDayDovesToggle.checked
+    updateSetting("reunificationDayDoves", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ doves: val })
+    }
+  })
+
+  DOM.reunificationDayTextsToggle?.addEventListener("change", () => {
+    const val = DOM.reunificationDayTextsToggle.checked
+    updateSetting("reunificationDayTexts", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ texts: val })
+    }
+  })
+
+  DOM.reunificationDayClickToggle?.addEventListener("change", () => {
+    const val = DOM.reunificationDayClickToggle.checked
+    updateSetting("reunificationDayClick", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ clickLaunch: val })
+    }
+  })
+
+  DOM.reunificationDaySpeedSlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.reunificationDaySpeedSlider.value)
+    if (DOM.reunificationDaySpeedVal) {
+      DOM.reunificationDaySpeedVal.textContent = `${val.toFixed(1)}x`
+    }
+    updateSetting("reunificationDaySpeed", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ speed: val })
+    }
+  })
+
+  DOM.reunificationDayTransparentCheckbox?.addEventListener("change", () => {
+    const val = DOM.reunificationDayTransparentCheckbox.checked
+    updateSetting("reunificationDayTransparent", val)
+    saveSettings()
+    if (effectInstances.reunificationDayEffect) {
+      effectInstances.reunificationDayEffect.setOptions({ transparent: val })
+    }
+  })
+
   DOM.oceanWaveColorPicker?.addEventListener("change", () => {
     updateSetting("oceanWaveColor", DOM.oceanWaveColorPicker.value)
     saveSettings()
@@ -715,6 +892,67 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     if (effectInstances.oceanWaveEffect)
       effectInstances.oceanWaveEffect.setPosition("right")
     updateOceanWavePosBtns("right")
+  })
+
+  DOM.oceanWaveMoodSelect?.addEventListener("change", () => {
+    const val = DOM.oceanWaveMoodSelect.value
+    updateSetting("oceanWaveMood", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateMood(val)
+    }
+    if (DOM.oceanWaveColorSetting) {
+      DOM.oceanWaveColorSetting.style.display = val === "custom" ? "flex" : "none"
+    }
+  })
+
+  DOM.oceanWaveStyleSelect?.addEventListener("change", () => {
+    const val = DOM.oceanWaveStyleSelect.value
+    updateSetting("oceanWaveStyle", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateStyle(val)
+    }
+  })
+
+  DOM.oceanWaveLayerSlider?.addEventListener("input", () => {
+    const val = parseInt(DOM.oceanWaveLayerSlider.value)
+    if (DOM.oceanWaveLayerVal) DOM.oceanWaveLayerVal.textContent = val
+    updateSetting("oceanWaveLayerCount", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateLayerCount(val)
+    }
+  })
+
+  DOM.oceanWaveSpeedSlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.oceanWaveSpeedSlider.value)
+    if (DOM.oceanWaveSpeedVal) DOM.oceanWaveSpeedVal.textContent = `${val.toFixed(1)}x`
+    updateSetting("oceanWaveSpeed", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateSpeed(val)
+    }
+  })
+
+  DOM.oceanWaveAmplitudeSlider?.addEventListener("input", () => {
+    const val = parseInt(DOM.oceanWaveAmplitudeSlider.value)
+    if (DOM.oceanWaveAmplitudeVal) DOM.oceanWaveAmplitudeVal.textContent = val
+    updateSetting("oceanWaveAmplitude", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateAmplitude(val)
+    }
+  })
+
+  DOM.oceanWaveOpacitySlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.oceanWaveOpacitySlider.value)
+    if (DOM.oceanWaveOpacityVal) DOM.oceanWaveOpacityVal.textContent = val.toFixed(2)
+    updateSetting("oceanWaveOpacity", val)
+    saveSettings()
+    if (effectInstances.oceanWaveEffect) {
+      effectInstances.oceanWaveEffect.updateOpacity(val)
+    }
   })
 
   DOM.cloudDriftColorPicker?.addEventListener("change", () => {
