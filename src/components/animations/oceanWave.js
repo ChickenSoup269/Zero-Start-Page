@@ -1,14 +1,19 @@
 /**
- * OceanWaveEffect — Pure Original Ocean Wave (HD Edition)
+ * OceanWaveEffect — Ultra HD Minimalist Ocean Waves
  *
- * Preserves the exact original clean, minimalist wave design:
- *  - Native High-DPI Retina subpixel scaling (ultra-sharp anti-aliased curves).
- *  - Smooth display-rate Delta-Time animation (no 40 FPS lock/stutter).
- *  - No extra particles or unnecessary effects, purely original aesthetic in HD.
+ * Optimized for buttery smooth 60-144 FPS with full customization:
+ *  - Atmospheric Ocean Moods: "natural" (Natural Sea), "sunset" (Sunset Glow), "sunrise" (Sunrise Dawn), "white" (Minimalist White - default), "custom" (Custom Color)
+ *  - Configurable Wave Layers (1-6 layers, default 3)
+ *  - Wave Speed (0.2x - 3.0x, default 1.0x)
+ *  - Wave Height / Amplitude (10px - 100px, default 35px)
+ *  - Wave Opacity (0.1 - 1.0, default 0.65)
+ *  - Wave Style: "smooth" (Silky Smooth - default), "ocean" (Ocean Swell), "calm" (Calm Tide)
+ *  - Single-pass wave geometry with dynamic step sampling
+ *  - High-DPI Retina support with subpixel antialiasing
  */
 
 export class OceanWaveEffect {
-  constructor(canvasId, color = "#0077b6", position = "bottom") {
+  constructor(canvasId, color = "#ffffff", position = "bottom", options = {}) {
     this.canvas =
       typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
     if (!this.canvas) return
@@ -18,14 +23,20 @@ export class OceanWaveEffect {
     this.destroyed = false
     this._animId = null
 
-    this.color = color || "#0077b6"
+    this.color = color || "#ffffff"
     this.position = ["top", "bottom", "left", "right"].includes(position)
       ? position
       : "bottom"
     this.rgb = this._hexToRgb(this.color)
 
-    // Original wave layers
-    this.layerCount = 5
+    // Customizable Options with Silky Smooth Defaults
+    this.mood = options.mood || "white" // "white" | "natural" | "sunset" | "sunrise" | "custom"
+    this.layerCount = options.layerCount !== undefined ? Math.max(1, Math.min(6, parseInt(options.layerCount))) : 3
+    this.speed = options.speed !== undefined ? parseFloat(options.speed) : 1.0
+    this.amplitude = options.amplitude !== undefined ? parseFloat(options.amplitude) : 35
+    this.opacity = options.opacity !== undefined ? parseFloat(options.opacity) : 0.65
+    this.style = options.style || "smooth" // "smooth" | "ocean" | "calm"
+
     this.time = 0
     this.lastTime = performance.now()
 
@@ -38,7 +49,7 @@ export class OceanWaveEffect {
     this._visibilityHandler = () => this._onVisibilityChange()
 
     this.resize()
-    window.addEventListener("resize", this._resizeHandler)
+    window.addEventListener("resize", this._resizeHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
@@ -61,7 +72,7 @@ export class OceanWaveEffect {
   }
 
   _hexToRgb(color) {
-    if (!color) return { r: 0, g: 119, b: 182 }
+    if (!color) return { r: 255, g: 255, b: 255 }
     const hex = color.replace("#", "")
     if (hex.length === 6) {
       return {
@@ -77,7 +88,7 @@ export class OceanWaveEffect {
         b: parseInt(hex[2] + hex[2], 16),
       }
     }
-    return { r: 0, g: 119, b: 182 }
+    return { r: 255, g: 255, b: 255 }
   }
 
   updateColor(color) {
@@ -90,6 +101,133 @@ export class OceanWaveEffect {
     this.position = ["top", "bottom", "left", "right"].includes(position)
       ? position
       : "bottom"
+  }
+
+  updateMood(mood) {
+    if (["white", "natural", "sunset", "sunrise", "custom"].includes(mood)) {
+      this.mood = mood
+    }
+  }
+
+  updateLayerCount(count) {
+    if (count !== undefined && !isNaN(count)) {
+      this.layerCount = Math.max(1, Math.min(6, parseInt(count)))
+    }
+  }
+
+  updateSpeed(speed) {
+    if (speed !== undefined && !isNaN(speed)) {
+      this.speed = Math.max(0.1, Math.min(4.0, parseFloat(speed)))
+    }
+  }
+
+  updateAmplitude(amplitude) {
+    if (amplitude !== undefined && !isNaN(amplitude)) {
+      this.amplitude = Math.max(5, Math.min(120, parseFloat(amplitude)))
+    }
+  }
+
+  updateOpacity(opacity) {
+    if (opacity !== undefined && !isNaN(opacity)) {
+      this.opacity = Math.max(0.05, Math.min(1.0, parseFloat(opacity)))
+    }
+  }
+
+  updateStyle(style) {
+    if (["smooth", "ocean", "calm"].includes(style)) {
+      this.style = style
+    }
+  }
+
+  setOptions(opts = {}) {
+    if (opts.color !== undefined) this.updateColor(opts.color)
+    if (opts.position !== undefined) this.setPosition(opts.position)
+    if (opts.mood !== undefined) this.updateMood(opts.mood)
+    if (opts.layerCount !== undefined) this.updateLayerCount(opts.layerCount)
+    if (opts.speed !== undefined) this.updateSpeed(opts.speed)
+    if (opts.amplitude !== undefined) this.updateAmplitude(opts.amplitude)
+    if (opts.opacity !== undefined) this.updateOpacity(opts.opacity)
+    if (opts.style !== undefined) this.updateStyle(opts.style)
+  }
+
+  _getLayerColor(layerIdx, totalLayers) {
+    const t = totalLayers > 1 ? layerIdx / (totalLayers - 1) : 0.5
+    const mood = this.mood || "white"
+
+    if (mood === "custom") {
+      const rgb = this.rgb || this._hexToRgb(this.color)
+      const lum = 0.65 + t * 0.35
+      return {
+        r: Math.round(rgb.r * lum),
+        g: Math.round(rgb.g * lum),
+        b: Math.round(rgb.b * lum),
+        crestR: rgb.r,
+        crestG: rgb.g,
+        crestB: rgb.b,
+      }
+    }
+
+    if (mood === "natural") {
+      const palette = [
+        { r: 2, g: 62, b: 138 },    // Deep ocean blue
+        { r: 0, g: 119, b: 182 },   // Cerulean
+        { r: 0, g: 150, b: 199 },   // Ocean aqua
+        { r: 0, g: 180, b: 216 },   // Cyan
+        { r: 72, g: 202, b: 228 },  // Light turquoise
+      ]
+      return this._interpolatePalette(palette, t, { r: 224, g: 247, b: 250 })
+    }
+
+    if (mood === "sunset") {
+      const palette = [
+        { r: 58, g: 12, b: 163 },   // Twilight purple
+        { r: 114, g: 9, b: 183 },   // Dusk violet
+        { r: 247, g: 37, b: 133 },  // Coral rose
+        { r: 247, g: 127, b: 0 },   // Sunset amber
+        { r: 252, g: 191, b: 73 },  // Golden apricot
+      ]
+      return this._interpolatePalette(palette, t, { r: 255, g: 234, b: 167 })
+    }
+
+    if (mood === "sunrise") {
+      const palette = [
+        { r: 44, g: 62, b: 80 },    // Dawn indigo
+        { r: 52, g: 152, b: 219 },  // Morning azure
+        { r: 231, g: 111, b: 81 },  // Apricot dawn
+        { r: 244, g: 162, b: 97 },  // Peach blossom
+        { r: 233, g: 196, b: 106 }, // Morning sunshine
+      ]
+      return this._interpolatePalette(palette, t, { r: 255, g: 249, b: 219 })
+    }
+
+    // Default: white
+    const lum = Math.round(200 + t * 55)
+    return {
+      r: lum,
+      g: lum,
+      b: lum,
+      crestR: 255,
+      crestG: 255,
+      crestB: 255,
+    }
+  }
+
+  _interpolatePalette(palette, t, crestRgb) {
+    const pLen = palette.length - 1
+    const idx = t * pLen
+    const i0 = Math.floor(idx)
+    const i1 = Math.min(palette.length - 1, i0 + 1)
+    const f = idx - i0
+    const c0 = palette[i0]
+    const c1 = palette[i1]
+    return {
+      r: Math.round(c0.r + (c1.r - c0.r) * f),
+      g: Math.round(c0.g + (c1.g - c0.g) * f),
+      b: Math.round(c0.b + (c1.b - c0.b) * f),
+      crestR: crestRgb.r,
+      crestG: crestRgb.g,
+      crestB: crestRgb.b,
+    }
   }
 
   _onVisibilityChange() {
@@ -121,8 +259,8 @@ export class OceanWaveEffect {
 
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
-      this.time += 0.012 * dt
+      const dt = Math.min(elapsed / 16.67, 2.5)
+      this.time += 0.012 * this.speed * dt
 
       this.draw()
     }
@@ -160,56 +298,62 @@ export class OceanWaveEffect {
 
     ctx.clearRect(0, 0, W, H)
 
-    const rgb = this.rgb || this._hexToRgb(this.color)
     const isTop = this.position === "top"
     const isLeft = this.position === "left"
     const isRight = this.position === "right"
     const isVertical = isLeft || isRight
     const maxLen = isVertical ? H : W
 
-    // Draw from back layer to front layer (original design)
-    for (let i = 0; i < this.layerCount; i++) {
-      const t = i / (this.layerCount - 1) // 0 = back, 1 = front
+    // Dynamic step: 50-60 sampling points is mathematically optimal & buttery smooth
+    const step = Math.max(16, Math.floor(maxLen / 60))
+
+    const count = this.layerCount
+    const style = this.style
+
+    // Draw from back layer to front layer
+    for (let i = 0; i < count; i++) {
+      const t = count > 1 ? i / (count - 1) : 0.5
 
       let basePos = 0
-      if (isTop) basePos = H * (0.05 + t * 0.2)
-      else if (isLeft) basePos = W * (0.05 + t * 0.2)
-      else if (isRight) basePos = W * (0.45 + t * 0.35)
-      else basePos = H * (0.45 + t * 0.35) // bottom
+      const span = 0.22
+      if (isTop) basePos = H * (0.05 + t * span)
+      else if (isLeft) basePos = W * (0.05 + t * span)
+      else if (isRight) basePos = W * (0.58 + t * span)
+      else basePos = H * (0.58 + t * span) // bottom
 
-      // Amplitude decreases for back layers (perspective)
-      const amplitude = 30 + t * 45
+      // Amplitude & Harmonic calculations based on selected style
+      const baseAmp = this.amplitude * (0.75 + t * 0.45)
+      let freq1 = 0.0045 + i * 0.001
+      let freq2 = freq1 * 2.2
+      let harmFactor = 0.25
+      let layerSpeed = 0.55 + t * 0.55
 
-      // Frequency slightly varies per layer
-      const freq = 0.006 + i * 0.0008
+      if (style === "calm") {
+        harmFactor = 0.12
+        freq1 *= 0.8
+        freq2 = freq1 * 1.8
+      } else if (style === "ocean") {
+        harmFactor = 0.35
+        freq1 *= 1.2
+        freq2 = freq1 * 2.4
+      }
 
-      // Speed — front waves move faster
-      const speed = 0.4 + t * 0.7
+      const phaseOffset = i * (6.28 / count)
+      const alpha = (0.08 + t * 0.22) * this.opacity
 
-      // Phase offset so layers don't perfectly overlap
-      const phaseOffset = (i / this.layerCount) * Math.PI * 2
+      const col = this._getLayerColor(i, count)
+      const { r, g, b, crestR, crestG, crestB } = col
 
-      // Opacity: back layers transparent, front more opaque
-      const alpha = 0.08 + t * 0.25
+      const phase1 = this.time * layerSpeed + phaseOffset
+      const phase2 = this.time * layerSpeed * 0.7 + phaseOffset
 
-      // Slight color shift: back layers a bit darker
-      const lumFactor = 0.5 + t * 0.5
-      const r = Math.round(rgb.r * lumFactor)
-      const g = Math.round(rgb.g * lumFactor)
-      const b = Math.round(rgb.b * lumFactor)
-
-      const timeSpeedPhase = this.time * speed + phaseOffset
-      const timeSpeedPhase2 = this.time * speed * 0.7 + phaseOffset
-
+      // 1. Build smooth wave path
       ctx.beginPath()
-
-      // Build the wave path with smooth step
-      const step = 3
       for (let p = 0; p <= maxLen; p += step) {
         const offset =
           basePos +
-          Math.sin(p * freq + timeSpeedPhase) * amplitude +
-          Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
+          Math.sin(p * freq1 + phase1) * baseAmp +
+          Math.sin(p * freq2 + phase2) * (baseAmp * harmFactor)
 
         const px = isVertical ? offset : p
         const py = isVertical ? p : offset
@@ -221,7 +365,23 @@ export class OceanWaveEffect {
         }
       }
 
-      // Close path to the edge
+      // Edge close
+      if (maxLen % step !== 0) {
+        const offset =
+          basePos +
+          Math.sin(maxLen * freq1 + phase1) * baseAmp +
+          Math.sin(maxLen * freq2 + phase2) * (baseAmp * harmFactor)
+        const px = isVertical ? offset : maxLen
+        const py = isVertical ? maxLen : offset
+        ctx.lineTo(px, py)
+      }
+
+      // 2. Stroke Crest Line
+      ctx.strokeStyle = `rgba(${crestR},${crestG},${crestB},${Math.min(1.0, alpha + 0.22 * this.opacity).toFixed(2)})`
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+
+      // 3. Close polygon for boundary fill
       if (isTop) {
         ctx.lineTo(W, 0)
         ctx.lineTo(0, 0)
@@ -238,31 +398,8 @@ export class OceanWaveEffect {
       }
       ctx.closePath()
 
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha.toFixed(2)})`
       ctx.fill()
-
-      // Draw original crisp crest line on top of each wave (HD anti-aliased)
-      ctx.beginPath()
-      for (let p = 0; p <= maxLen; p += step) {
-        const offset =
-          basePos +
-          Math.sin(p * freq + timeSpeedPhase) * amplitude +
-          Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
-
-        const px = isVertical ? offset : p
-        const py = isVertical ? p : offset
-
-        if (p === 0) {
-          ctx.moveTo(px, py)
-        } else {
-          ctx.lineTo(px, py)
-        }
-      }
-      ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha + 0.15})`
-      ctx.lineWidth = 1.5
-      ctx.stroke()
     }
   }
 }
-
-
