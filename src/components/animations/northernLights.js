@@ -55,10 +55,18 @@ export class NorthernLightsEffect {
 
   _onResize() {
     if (!this.canvas) return
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
+
+    this.canvas.width = Math.floor(this.width * dpr)
+    this.canvas.height = Math.floor(this.height * dpr)
+    this.canvas.style.width = `${this.width}px`
+    this.canvas.style.height = `${this.height}px`
+
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+    this.ctx.scale(dpr, dpr)
+
     this._initStyles()
   }
 
@@ -134,8 +142,8 @@ export class NorthernLightsEffect {
   // =========================================================================
 
   _initClassic() {
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.width || window.innerWidth
+    const H = this.height || window.innerHeight
 
     this.planesClassic = [
       { speed: 0.25, amp: 0.32, alpha: 0.35, hueOff: -15, phase: Math.random() * Math.PI * 2 },
@@ -325,8 +333,8 @@ export class NorthernLightsEffect {
   // =========================================================================
 
   _initHD() {
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.width || window.innerWidth
+    const H = this.height || window.innerHeight
     const baseHsl = this._hexToHsl(this.color)
 
     this.curtainsHD = []
@@ -425,84 +433,88 @@ export class NorthernLightsEffect {
   }
 
   // =========================================================================
-  //  ULTRA HD MODE (NEW HYPER-REALISTIC VOLUMETRIC BOREALIS)
+  //  ULTRA HD MODE (HYPER-REALISTIC VOLUMETRIC BOREALIS WITH RADIANT OPTICALS)
   // =========================================================================
 
   _initUltra() {
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.width || window.innerWidth
+    const H = this.height || window.innerHeight
 
     this.curtainsUltra = [
       {
         z: 0.35,
-        baseYFrac: 0.25,
-        heightFrac: 0.5,
-        speed: 0.0005,
+        baseYFrac: 0.28,
+        heightFrac: 0.48,
+        speed: 0.0006,
         octaves: [
-          { freq: 0.0011, amp: 50, speed: 0.0007, phase: Math.random() * 6.28 },
-          { freq: 0.0026, amp: 26, speed: -0.0012, phase: Math.random() * 6.28 },
+          { freq: 0.0012, amp: 45, speed: 0.0008, phase: Math.random() * 6.28 },
+          { freq: 0.0028, amp: 22, speed: -0.0014, phase: Math.random() * 6.28 },
+          { freq: 0.0065, amp: 10, speed: 0.0022, phase: Math.random() * 6.28 },
         ],
-        hueOffset: -18,
-        opacity: 0.38,
-        segments: 44,
-        flutes: 18,
+        hueOffset: -22,
+        opacity: 0.45,
+        segments: 48,
+        flutes: 24,
       },
       {
         z: 0.6,
-        baseYFrac: 0.33,
-        heightFrac: 0.56,
-        speed: 0.0008,
+        baseYFrac: 0.36,
+        heightFrac: 0.55,
+        speed: 0.0009,
         octaves: [
-          { freq: 0.0014, amp: 70, speed: 0.0009, phase: Math.random() * 6.28 },
-          { freq: 0.0031, amp: 35, speed: -0.0016, phase: Math.random() * 6.28 },
+          { freq: 0.0015, amp: 65, speed: 0.0011, phase: Math.random() * 6.28 },
+          { freq: 0.0034, amp: 30, speed: -0.0018, phase: Math.random() * 6.28 },
+          { freq: 0.0075, amp: 14, speed: 0.0028, phase: Math.random() * 6.28 },
         ],
         hueOffset: 0,
-        opacity: 0.52,
-        segments: 52,
-        flutes: 22,
+        opacity: 0.65,
+        segments: 56,
+        flutes: 28,
       },
       {
         z: 0.85,
-        baseYFrac: 0.4,
+        baseYFrac: 0.44,
         heightFrac: 0.62,
-        speed: 0.0012,
+        speed: 0.0013,
         octaves: [
-          { freq: 0.0017, amp: 90, speed: 0.0013, phase: Math.random() * 6.28 },
-          { freq: 0.0038, amp: 44, speed: -0.0021, phase: Math.random() * 6.28 },
+          { freq: 0.0018, amp: 85, speed: 0.0015, phase: Math.random() * 6.28 },
+          { freq: 0.0042, amp: 40, speed: -0.0023, phase: Math.random() * 6.28 },
+          { freq: 0.0085, amp: 16, speed: 0.0034, phase: Math.random() * 6.28 },
         ],
-        hueOffset: 24,
-        opacity: 0.68,
-        segments: 60,
-        flutes: 26,
+        hueOffset: 25,
+        opacity: 0.78,
+        segments: 64,
+        flutes: 32,
       },
       {
         z: 1.0,
-        baseYFrac: 0.46,
+        baseYFrac: 0.5,
         heightFrac: 0.68,
-        speed: 0.0016,
+        speed: 0.0017,
         octaves: [
-          { freq: 0.0021, amp: 105, speed: 0.0017, phase: Math.random() * 6.28 },
-          { freq: 0.0048, amp: 50, speed: -0.0027, phase: Math.random() * 6.28 },
+          { freq: 0.0022, amp: 100, speed: 0.0019, phase: Math.random() * 6.28 },
+          { freq: 0.005, amp: 48, speed: -0.003, phase: Math.random() * 6.28 },
+          { freq: 0.01, amp: 18, speed: 0.0042, phase: Math.random() * 6.28 },
         ],
-        hueOffset: 48,
-        opacity: 0.78,
-        segments: 68,
-        flutes: 30,
+        hueOffset: 50,
+        opacity: 0.88,
+        segments: 72,
+        flutes: 36,
       },
     ]
 
-    this.starsUltra = Array.from({ length: 90 }, () => ({
+    this.starsUltra = Array.from({ length: 110 }, () => ({
       x: Math.random() * W,
-      y: Math.random() * (H * 0.75),
-      size: Math.random() * 1.5 + 0.4,
-      baseAlpha: Math.random() * 0.5 + 0.25,
-      twinkleSpeed: Math.random() * 0.03 + 0.01,
+      y: Math.random() * (H * 0.8),
+      size: Math.random() * 1.6 + 0.4,
+      baseAlpha: Math.random() * 0.55 + 0.3,
+      twinkleSpeed: Math.random() * 0.035 + 0.012,
       twinklePhase: Math.random() * Math.PI * 2,
     }))
 
-    this.stardustUltra = Array.from({ length: 40 }, () => this._createStardust(W, H, true))
+    this.stardustUltra = Array.from({ length: 48 }, () => this._createStardust(W, H, true))
     this.meteors = []
-    this.nextMeteorTime = Math.random() * 350 + 180
+    this.nextMeteorTime = Math.random() * 320 + 160
   }
 
   _createStardust(W, H, initial = false) {
@@ -523,7 +535,7 @@ export class NorthernLightsEffect {
   _spawnMeteor(W, H) {
     const startX = Math.random() * (W * 0.65)
     const startY = Math.random() * (H * 0.25)
-    const length = Math.random() * 130 + 80
+    const length = Math.random() * 140 + 85
     const angle = (Math.PI / 180) * (Math.random() * 18 + 26)
     const speed = Math.random() * 9 + 8
 
@@ -544,16 +556,39 @@ export class NorthernLightsEffect {
     const brightness = this.brightness
     if (!this._cachedHsl) this._cachedHsl = this._hexToHsl(this.color)
     const baseH = this._cachedHsl.h
-    const baseS = Math.max(this._cachedHsl.s, 68)
-    const baseL = Math.max(38, Math.min(this._cachedHsl.l, 65))
+    const baseS = Math.max(this._cachedHsl.s, 72)
+    const baseL = Math.max(42, Math.min(this._cachedHsl.l, 68))
 
+    // Background Void with soft atmospheric glow
     if (!this.transparent) {
       ctx.globalCompositeOperation = "source-over"
-      ctx.fillStyle = "rgb(2, 4, 15)"
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, H)
+      skyGrad.addColorStop(0, "rgb(1, 2, 8)")
+      skyGrad.addColorStop(0.55, "rgb(2, 5, 16)")
+      skyGrad.addColorStop(1, "rgb(4, 9, 24)")
+      ctx.fillStyle = skyGrad
       ctx.fillRect(0, 0, W, H)
     }
 
-    // 1. Stars
+    // 1. Ambient Celestial Glow beneath the aurora
+    ctx.save()
+    ctx.globalCompositeOperation = "screen"
+    const ambientGlow = ctx.createRadialGradient(
+      W * 0.5,
+      H * 0.45,
+      W * 0.05,
+      W * 0.5,
+      H * 0.45,
+      W * 0.65,
+    )
+    ambientGlow.addColorStop(0, `hsla(${baseH}, 90%, 55%, ${0.12 * brightness})`)
+    ambientGlow.addColorStop(0.5, `hsla(${(baseH + 35) % 360}, 85%, 45%, ${0.06 * brightness})`)
+    ambientGlow.addColorStop(1, "rgba(0, 0, 0, 0)")
+    ctx.fillStyle = ambientGlow
+    ctx.fillRect(0, 0, W, H)
+    ctx.restore()
+
+    // 2. Stars
     if (this.enableStars) {
       ctx.save()
       ctx.globalCompositeOperation = "screen"
@@ -570,12 +605,12 @@ export class NorthernLightsEffect {
       ctx.restore()
     }
 
-    // 2. Meteors
+    // 3. Meteors (Shooting Stars)
     if (this.enableMeteors) {
       this.nextMeteorTime -= 1 * dt * this.speed
       if (this.nextMeteorTime <= 0) {
         this._spawnMeteor(W, H)
-        this.nextMeteorTime = Math.random() * 400 + 200
+        this.nextMeteorTime = Math.random() * 380 + 190
       }
 
       if (this.meteors.length > 0) {
@@ -610,17 +645,14 @@ export class NorthernLightsEffect {
       }
     }
 
-    // 3. Volumetric Silk Curtains
-    ctx.save()
-    ctx.globalCompositeOperation = "screen"
-
+    // 4. Volumetric Silk Curtains with Local Slices & Caustic Folds
     for (let cIdx = 0; cIdx < this.curtainsUltra.length; cIdx++) {
       const curtain = this.curtainsUltra[cIdx]
       const z = curtain.z
       const baseY = H * curtain.baseYFrac
       const curtainHeight = H * curtain.heightFrac
       const hue = (baseH + curtain.hueOffset + 360) % 360
-      const hueMid = (hue + 25) % 360
+      const hueMid = (hue + 28) % 360
       const hueTop = (hue + 68) % 360
       const curtainAlpha = curtain.opacity * brightness
 
@@ -628,9 +660,8 @@ export class NorthernLightsEffect {
       const step = W / numSegs
       const botPts = []
       const topPts = []
-      let minTopY = H
-      let maxBotY = 0
 
+      // Generate accurate harmonic wave vertices
       for (let i = 0; i <= numSegs; i++) {
         const x = i * step
         let yWave = 0
@@ -640,90 +671,115 @@ export class NorthernLightsEffect {
         }
 
         const bY = baseY + yWave
-        const tY = bY - curtainHeight + Math.sin(x * 0.0028 + this.time * 0.45) * 30
-        if (tY < minTopY) minTopY = tY
-        if (bY > maxBotY) maxBotY = bY
+        const tY = bY - curtainHeight + Math.sin(x * 0.0028 + this.time * 0.45) * 35
         botPts.push({ x, y: bY })
         topPts.push({ x, y: tY })
       }
 
-      // Single gradient fill for whole curtain mesh
-      const grad = ctx.createLinearGradient(0, maxBotY, 0, minTopY)
-      grad.addColorStop(0, `hsla(${hue}, ${baseS}%, ${baseL + 12}%, 0)`)
-      grad.addColorStop(0.08, `hsla(${hue}, 100%, ${baseL + 16}%, ${curtainAlpha * 0.88})`)
-      grad.addColorStop(0.35, `hsla(${hueMid}, 95%, ${baseL + 10}%, ${curtainAlpha * 0.68})`)
-      grad.addColorStop(0.75, `hsla(${hueTop}, 85%, ${baseL + 5}%, ${curtainAlpha * 0.38})`)
-      grad.addColorStop(1.0, `hsla(${hueTop}, 80%, ${baseL}%, 0)`)
+      // Render Vertical Volumetric Ribbon Strips with local spectral gradients
+      ctx.save()
+      ctx.globalCompositeOperation = "screen"
 
-      ctx.beginPath()
-      ctx.moveTo(botPts[0].x, botPts[0].y)
-      for (let i = 1; i <= numSegs; i++) {
-        const xc = (botPts[i - 1].x + botPts[i].x) / 2
-        const yc = (botPts[i - 1].y + botPts[i].y) / 2
-        ctx.quadraticCurveTo(botPts[i - 1].x, botPts[i - 1].y, xc, yc)
-      }
-      ctx.lineTo(botPts[numSegs].x, botPts[numSegs].y)
-      ctx.lineTo(topPts[numSegs].x, topPts[numSegs].y)
-      for (let i = numSegs - 1; i >= 0; i--) {
-        const xc = (topPts[i + 1].x + topPts[i].x) / 2
-        const yc = (topPts[i + 1].y + topPts[i].y) / 2
-        ctx.quadraticCurveTo(topPts[i + 1].x, topPts[i + 1].y, xc, yc)
-      }
-      ctx.closePath()
-      ctx.fillStyle = grad
-      ctx.fill()
+      for (let i = 0; i < numSegs; i++) {
+        const p0b = botPts[i]
+        const p1b = botPts[i + 1]
+        const p0t = topPts[i]
+        const p1t = topPts[i + 1]
 
-      // Optical Ray Fluting Pillars
+        // Dynamic Fold Density / Caustics calculation
+        const dy = p1b.y - p0b.y
+        const foldFactor = 1.0 + Math.min(1.2, Math.abs(dy / step) * 1.5)
+        const stripAlpha = Math.min(1.0, curtainAlpha * foldFactor)
+
+        const midX = (p0b.x + p1b.x) * 0.5
+        const localBotY = (p0b.y + p1b.y) * 0.5
+        const localTopY = (p0t.y + p1t.y) * 0.5
+
+        const stripGrad = ctx.createLinearGradient(midX, localBotY + 10, midX, localTopY)
+        stripGrad.addColorStop(0, `hsla(${hue}, 100%, ${baseL + 10}%, 0)`)
+        stripGrad.addColorStop(0.06, `hsla(${hue}, 100%, ${baseL + 18}%, ${stripAlpha * 0.95})`)
+        stripGrad.addColorStop(0.32, `hsla(${hueMid}, 95%, ${baseL + 12}%, ${stripAlpha * 0.72})`)
+        stripGrad.addColorStop(0.72, `hsla(${hueTop}, 90%, ${baseL + 6}%, ${stripAlpha * 0.38})`)
+        stripGrad.addColorStop(1.0, `hsla(${hueTop}, 80%, ${baseL}%, 0)`)
+
+        ctx.beginPath()
+        ctx.moveTo(p0b.x, p0b.y)
+        ctx.lineTo(p1b.x, p1b.y)
+        ctx.lineTo(p1t.x, p1t.y)
+        ctx.lineTo(p0t.x, p0t.y)
+        ctx.closePath()
+        ctx.fillStyle = stripGrad
+        ctx.fill()
+      }
+
+      // 5. Optical Dancing Ray Fluting (Shimmering Vertical Field Columns)
       const numFlutes = curtain.flutes
       const fluteStep = Math.floor(numSegs / numFlutes)
-      ctx.lineWidth = step * 1.6 * z
 
-      for (let f = 1; f < numFlutes; f++) {
-        const idx = f * fluteStep
-        if (idx >= numSegs) break
+      for (let f = 0; f < numFlutes; f++) {
+        const idx = Math.min(numSegs - 1, f * fluteStep)
         const bx = botPts[idx].x
         const by = botPts[idx].y
-        const tx = topPts[idx].x + Math.sin(f * 0.9 + this.time * 1.5) * 18
+        const tx = topPts[idx].x + Math.sin(f * 0.8 + this.time * 1.4) * 22
         const ty = topPts[idx].y
-        const fAlpha = curtainAlpha * 0.48 * (Math.sin(f * 0.8 + this.time * 2.6) * 0.25 + 0.75)
-        const fGrad = ctx.createLinearGradient(bx, by, tx, ty)
-        fGrad.addColorStop(0, `hsla(${hue}, 100%, ${baseL + 22}%, ${fAlpha})`)
-        fGrad.addColorStop(0.45, `hsla(${hueMid}, 95%, ${baseL + 15}%, ${fAlpha * 0.65})`)
-        fGrad.addColorStop(1, `hsla(${hueTop}, 90%, ${baseL}%, 0)`)
-        ctx.strokeStyle = fGrad
+
+        const fPulse = Math.sin(f * 0.75 + this.time * 2.8) * 0.35 + 0.65
+        const fAlpha = curtainAlpha * 0.55 * fPulse * z
+
+        const rayGrad = ctx.createLinearGradient(bx, by, tx, ty)
+        rayGrad.addColorStop(0, `hsla(${hue}, 100%, ${baseL + 25}%, ${fAlpha})`)
+        rayGrad.addColorStop(0.4, `hsla(${hueMid}, 95%, ${baseL + 18}%, ${fAlpha * 0.7})`)
+        rayGrad.addColorStop(1, `hsla(${hueTop}, 90%, ${baseL}%, 0)`)
+
+        ctx.strokeStyle = rayGrad
+        ctx.lineWidth = Math.max(1.2, step * 1.8 * z)
         ctx.beginPath()
         ctx.moveTo(bx, by)
         ctx.lineTo(tx, ty)
         ctx.stroke()
       }
 
-      // Filament Ribbon Halo
-      ctx.beginPath()
-      ctx.moveTo(botPts[0].x, botPts[0].y)
+      ctx.restore()
+
+      // 6. Multi-tier Radiant Ionizing Filament Core (Active Lower Edge)
+      ctx.save()
+      ctx.globalCompositeOperation = "lighter"
+
+      const curvePath = new Path2D()
+      curvePath.moveTo(botPts[0].x, botPts[0].y)
       for (let i = 1; i <= numSegs; i++) {
-        const xc = (botPts[i - 1].x + botPts[i].x) / 2
-        const yc = (botPts[i - 1].y + botPts[i].y) / 2
-        ctx.quadraticCurveTo(botPts[i - 1].x, botPts[i - 1].y, xc, yc)
+        const xc = (botPts[i - 1].x + botPts[i].x) * 0.5
+        const yc = (botPts[i - 1].y + botPts[i].y) * 0.5
+        curvePath.quadraticCurveTo(botPts[i - 1].x, botPts[i - 1].y, xc, yc)
       }
-      ctx.strokeStyle = `hsla(${hue}, 100%, ${baseL + 25}%, ${curtainAlpha * 0.55})`
-      ctx.lineWidth = 3.8 * z
-      ctx.stroke()
+      curvePath.lineTo(botPts[numSegs].x, botPts[numSegs].y)
 
-      // White-Hot Photon Core
-      ctx.strokeStyle = `rgba(255, 255, 255, ${curtainAlpha * 0.75 * z})`
-      ctx.lineWidth = 1.3 * z
-      ctx.stroke()
+      // Tier A: Atmospheric Soft Diffusion Halo
+      ctx.strokeStyle = `hsla(${hue}, 100%, ${baseL + 15}%, ${curtainAlpha * 0.22 * z})`
+      ctx.lineWidth = 22 * z
+      ctx.stroke(curvePath)
+
+      // Tier B: Inner Neon Luminous Body
+      ctx.strokeStyle = `hsla(${hue}, 100%, ${baseL + 24}%, ${curtainAlpha * 0.6 * z})`
+      ctx.lineWidth = 6.5 * z
+      ctx.stroke(curvePath)
+
+      // Tier C: White-Hot Diamond Core Filament
+      ctx.strokeStyle = `rgba(255, 255, 255, ${curtainAlpha * 0.92 * z})`
+      ctx.lineWidth = 1.4 * z
+      ctx.stroke(curvePath)
+
+      ctx.restore()
     }
-    ctx.restore()
 
-    // 4. Stardust Embers
+    // 7. Stardust Luminescence Embers
     if (this.enableStars) {
       ctx.save()
       ctx.globalCompositeOperation = "lighter"
       for (let i = 0; i < this.stardustUltra.length; i++) {
         const p = this.stardustUltra[i]
         p.floatPhase += p.floatSpeed * dt * this.speed
-        p.x += (p.vx + Math.sin(p.floatPhase) * 0.35) * dt * this.speed
+        p.x += (p.vx + Math.sin(p.floatPhase) * 0.4) * dt * this.speed
         p.y += p.vy * dt * this.speed
         p.life -= p.decay * dt * this.speed
 
@@ -732,7 +788,7 @@ export class NorthernLightsEffect {
           continue
         }
 
-        const pAlpha = p.life * (p.life < 0.3 ? p.life / 0.3 : 1.0) * brightness * 0.8
+        const pAlpha = p.life * (p.life < 0.3 ? p.life / 0.3 : 1.0) * brightness * 0.85
         if (pAlpha > 0.02) {
           const pHue = (baseH + p.hueOffset + 360) % 360
           ctx.fillStyle = `hsla(${pHue}, 95%, 75%, ${pAlpha})`
@@ -740,9 +796,9 @@ export class NorthernLightsEffect {
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
           ctx.fill()
 
-          ctx.fillStyle = `hsla(${pHue}, 90%, 65%, ${pAlpha * 0.3})`
+          ctx.fillStyle = `hsla(${pHue}, 90%, 65%, ${pAlpha * 0.35})`
           ctx.beginPath()
-          ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2)
+          ctx.arc(p.x, p.y, p.size * 2.8, 0, Math.PI * 2)
           ctx.fill()
         }
       }
