@@ -75,19 +75,51 @@
                 data-i18n-placeholder="language_json_placeholder"
                 placeholder='Paste translated JSON here. Accepted: {"code":"es","name":"Español","translations":{...}} or raw {"settings_title":"..."}'></textarea>
         </div>
-        <div class="modal-footer">
-            <button type="button" id="download-language-github-btn" class="secondary-btn">
+        <div class="modal-footer language-modal-footer">
+            <button type="button" id="download-language-github-btn" class="secondary-btn custom-lang-btn lang-btn-github">
                 <i class="fa-brands fa-github"></i>
                 <span data-i18n="language_download_github">Download from GitHub</span>
             </button>
-            <button type="button" id="copy-language-prompt-btn" class="secondary-btn">
+            <button type="button" id="copy-language-prompt-btn" class="secondary-btn custom-lang-btn lang-btn-ai">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 <span data-i18n="language_copy_ai_prompt">Copy AI Prompt</span>
             </button>
-            <button type="button" id="install-language-json-btn" class="primary-btn">
+            <button type="button" id="install-language-json-btn" class="primary-btn custom-lang-btn lang-btn-install">
                 <i class="fa-solid fa-check"></i>
                 <span data-i18n="language_install">Install Language</span>
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- GitHub Languages Download Picker Modal -->
+<div id="github-language-modal" class="modal">
+    <div class="modal-content language-modal-content" style="max-width: 580px;">
+        <div class="modal-header">
+            <h2><i class="fa-brands fa-github"></i> <span data-i18n="language_github_download_title">Download Languages from GitHub</span></h2>
+            <span id="close-github-language-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="modal-body">
+            <p class="language-modal-lead" data-i18n="language_github_download_intro">Select a language to download directly from the official GitHub repository and install instantly.</p>
+            
+            <div class="github-lang-search-wrap" style="margin-bottom: 12px;">
+                <input type="text" id="github-lang-search-input" class="search-input" placeholder="Search language..." data-i18n-placeholder="language_search_placeholder" style="width: 100%;">
+            </div>
+
+            <div id="github-lang-list-container" class="github-lang-list">
+                <!-- Dynamically populated language cards -->
+            </div>
+
+            <div class="github-lang-custom-box" style="margin-top: 14px; padding: 12px; background: rgba(255, 255, 255, 0.04); border-radius: 8px; border: 1px dashed rgba(255, 255, 255, 0.15);">
+                <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 6px;" data-i18n="language_custom_code_title">Download other language by code:</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="github-custom-lang-input" placeholder="e.g. it, pt, pl, tr, nl..." style="flex: 1;">
+                    <button type="button" id="github-custom-lang-download-btn" class="secondary-btn">
+                        <i class="fa-solid fa-cloud-arrow-down"></i>
+                        <span data-i18n="language_download_btn">Download</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

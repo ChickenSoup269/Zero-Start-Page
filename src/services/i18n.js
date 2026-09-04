@@ -29,6 +29,18 @@ export function geti18n() {
   return i18n
 }
 
+export const BUNDLED_LANGUAGES = ["en", "vi", "de", "sv"]
+
+export function isLanguageDownloaded(code) {
+  if (!code) return false
+  const cleanCode = normalizeLanguageCode(code)
+  if (BUNDLED_LANGUAGES.includes(cleanCode)) return true
+  const settings = getSettings()
+  if (settings.customLanguages?.[cleanCode]?.translations) return true
+  if (sessionStorage.getItem(`startpageCachedI18n_v4_${cleanCode}`)) return true
+  return false
+}
+
 export const GITHUB_LOCALES_BASE_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/Zero-Start-Page/main/locales"
 export const CDN_LOCALES_BASE_URL =

@@ -22,6 +22,8 @@ import {
   normalizeLanguageCode,
   validateCustomLanguagePayload,
   fetchRemoteLanguage,
+  isLanguageDownloaded,
+  BUNDLED_LANGUAGES,
 } from "../../services/i18n.js"
 import {
   getLanguageGuideOption,
@@ -638,20 +640,46 @@ export function setupGeneralEventHandlers(
     localStorage.setItem(LANGUAGE_TOOLS_OPEN_KEY, isOpen ? "1" : "0")
   }
 
+  const SYSTEM_LANGUAGES = [
+    { code: "en", name: "English" },
+    { code: "vi", name: "Tiếng Việt" },
+    { code: "de", name: "Deutsch" },
+    { code: "sv", name: "Svenska" },
+  ]
+
   const renderCustomLanguageOptions = () => {
     if (!DOM.languageSelect) return
-    DOM.languageSelect
-      .querySelectorAll("option[data-custom-language='true']")
-      .forEach((option) => option.remove())
 
+    DOM.languageSelect.innerHTML = ""
     const customLanguages = getSettings().customLanguages || {}
-    Object.entries(customLanguages).forEach(([code, item]) => {
+
+    // Add system options: en, vi, de, sv
+    SYSTEM_LANGUAGES.forEach((item) => {
       const option = document.createElement("option")
-      option.value = code
-      option.dataset.customLanguage = "true"
-      option.textContent = item?.name ? `${item.name} (${code})` : code
+      option.value = item.code
+      option.textContent = item.name
+      if (!BUNDLED_LANGUAGES.includes(item.code)) {
+        if (isLanguageDownloaded(item.code)) {
+          option.dataset.badge = "DEMO"
+        } else {
+          option.dataset.downloadable = "true"
+        }
+      }
       DOM.languageSelect.appendChild(option)
     })
+
+    // Add any extra custom languages installed by user
+    Object.entries(customLanguages).forEach(([code, item]) => {
+      if (!SYSTEM_LANGUAGES.some((opt) => opt.code === code)) {
+        const option = document.createElement("option")
+        option.value = code
+        option.dataset.customLanguage = "true"
+        option.dataset.badge = "DEMO"
+        option.textContent = item?.name ? `${item.name} (${code})` : code
+        DOM.languageSelect.appendChild(option)
+      }
+    })
+
     const currentLang = getSettings().language || "en"
     DOM.languageSelect.value = currentLang
     if (DOM.deleteCustomLanguageBtn) {
@@ -664,25 +692,85 @@ export function setupGeneralEventHandlers(
     if (btnGroup) {
       btnGroup.innerHTML = ""
       Array.from(DOM.languageSelect.options).forEach((opt) => {
+        const code = opt.value
         const btn = document.createElement("div")
         btn.className = "clock-style-card compact-style-card"
-        btn.dataset.value = opt.value
-        if (opt.value === currentLang) btn.classList.add("active")
+        btn.dataset.value = code
+        if (code === currentLang) btn.classList.add("active")
 
         const textSpan = document.createElement("span")
         textSpan.className = "clock-style-name"
         textSpan.textContent = opt.textContent
         btn.appendChild(textSpan)
 
-        if (opt.dataset.badge) {
-          const badge = document.createElement("span")
-          badge.className = "lang-demo-badge"
-          badge.textContent = opt.dataset.badge
-          btn.appendChild(badge)
+        if (!BUNDLED_LANGUAGES.includes(code)) {
+          const isDownloaded = isLanguageDownloaded(code)
+          if (isDownloaded) {
+            const badge = document.createElement("span")
+            badge.className = "lang-demo-badge"
+            badge.textContent = "DEMO"
+            btn.appendChild(badge)
+          } else {
+            const downloadBadge = document.createElement("span")
+            downloadBadge.className = "lang-download-badge"
+            downloadBadge.title =
+              geti18n().language_click_to_download ||
+              "Click to download from GitHub"
+            downloadBadge.innerHTML =
+              '<i class="fa-solid fa-cloud-arrow-down"></i>'
+            btn.appendChild(downloadBadge)
+          }
         }
 
-        btn.onclick = () => {
+        btn.onclick = async () => {
           if (btn.classList.contains("active")) return
+
+          // If not downloaded yet, download from GitHub on click!
+          if (!BUNDLED_LANGUAGES.includes(code) && !isLanguageDownloaded(code)) {
+            const badge = btn.querySelector(".lang-download-badge")
+            if (badge) {
+              badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'
+            }
+            try {
+              const remoteData = await fetchRemoteLanguage(code)
+              if (remoteData) {
+                const guide = getLanguageGuideOption(code)
+                const langName =
+                  guide?.name || opt.textContent || code.toUpperCase()
+                const customLangs = {
+                  ...(getSettings().customLanguages || {}),
+                  [code]: {
+                    name: langName,
+                    translations: remoteData.translations || remoteData,
+                    updatedAt: new Date().toISOString(),
+                  },
+                }
+                updateSetting("customLanguages", customLangs)
+                handleSettingUpdate("language", code)
+                await loadLanguage(code)
+                applyTranslations()
+                renderCustomLanguageOptions()
+                populateUnsplashCollections(
+                  DOM.unsplashCategorySelect,
+                  getSettings(),
+                )
+                showAlert(
+                  `${langName} (${code}) ${geti18n().language_download_success || "downloaded and installed successfully!"}`,
+                )
+                return
+              }
+            } catch (err) {
+              if (badge) {
+                badge.innerHTML =
+                  '<i class="fa-solid fa-cloud-arrow-down"></i>'
+              }
+              showAlert(
+                `${geti18n().language_download_error || "Could not download language file from GitHub."}\n\n${err.message || err}`,
+              )
+              return
+            }
+          }
+
           DOM.languageSelect.value = opt.value
           DOM.languageSelect.dispatchEvent(new Event("change"))
         }
@@ -779,6 +867,150 @@ export function setupGeneralEventHandlers(
 
   const closeLanguageModal = () => {
     DOM.languageModal?.classList.remove("show")
+  }
+
+  const openGithubLanguageModal = () => {
+    DOM.githubLanguageModal?.classList.add("show")
+    if (DOM.githubLangSearchInput) DOM.githubLangSearchInput.value = ""
+    renderGithubLanguageList()
+  }
+
+  const closeGithubLanguageModal = () => {
+    DOM.githubLanguageModal?.classList.remove("show")
+  }
+
+  const renderGithubLanguageList = (filterText = "") => {
+    if (!DOM.githubLangListContainer) return
+    DOM.githubLangListContainer.innerHTML = ""
+
+    const availableLangs = [
+      { code: "de", name: "Deutsch", englishName: "German", flag: "🇩🇪" },
+      { code: "sv", name: "Svenska", englishName: "Swedish", flag: "🇸🇪" },
+    ]
+
+    const query = (filterText || "").toLowerCase().trim()
+    const filtered = query
+      ? availableLangs.filter(
+          (l) =>
+            l.name.toLowerCase().includes(query) ||
+            l.englishName.toLowerCase().includes(query) ||
+            l.code.toLowerCase().includes(query),
+        )
+      : availableLangs
+
+    if (filtered.length === 0) {
+      const emptyDiv = document.createElement("div")
+      emptyDiv.style.cssText =
+        "padding: 20px; text-align: center; opacity: 0.7; font-size: 0.9rem;"
+      emptyDiv.textContent =
+        geti18n().language_no_results || "No matching languages found."
+      DOM.githubLangListContainer.appendChild(emptyDiv)
+      return
+    }
+
+    const currentLang = getSettings().language || "en"
+
+    filtered.forEach((lang) => {
+      const isDownloaded = isLanguageDownloaded(lang.code)
+      const isCurrent = currentLang === lang.code
+
+      const card = document.createElement("div")
+      card.className = "github-lang-card"
+      card.dataset.code = lang.code
+
+      const infoDiv = document.createElement("div")
+      infoDiv.className = "github-lang-info"
+
+      const flagSpan = document.createElement("span")
+      flagSpan.className = "github-lang-flag"
+      flagSpan.textContent = lang.flag || "🌐"
+      infoDiv.appendChild(flagSpan)
+
+      const namesDiv = document.createElement("div")
+      namesDiv.className = "github-lang-names"
+
+      const nameStrong = document.createElement("strong")
+      nameStrong.className = "github-lang-name"
+      nameStrong.textContent = lang.name
+      namesDiv.appendChild(nameStrong)
+
+      const subSpan = document.createElement("span")
+      subSpan.className = "github-lang-sub"
+      subSpan.textContent = `${lang.englishName} (${lang.code})`
+      namesDiv.appendChild(subSpan)
+
+      infoDiv.appendChild(namesDiv)
+      card.appendChild(infoDiv)
+
+      const actionDiv = document.createElement("div")
+      actionDiv.className = "github-lang-action"
+
+      if (isDownloaded) {
+        const badge = document.createElement("span")
+        badge.className = "lang-demo-badge"
+        badge.innerHTML = '<i class="fa-solid fa-check"></i> DEMO'
+        actionDiv.appendChild(badge)
+
+        if (!isCurrent) {
+          const applyBtn = document.createElement("button")
+          applyBtn.type = "button"
+          applyBtn.className = "secondary-btn small"
+          applyBtn.textContent = geti18n().language_apply_btn || "Apply"
+          applyBtn.onclick = async () => {
+            handleSettingUpdate("language", lang.code)
+            await loadLanguage(lang.code)
+            applyTranslations()
+            renderCustomLanguageOptions()
+            renderGithubLanguageList(DOM.githubLangSearchInput?.value)
+            closeGithubLanguageModal()
+          }
+          actionDiv.appendChild(applyBtn)
+        }
+      } else {
+        const downloadBtn = document.createElement("button")
+        downloadBtn.type = "button"
+        downloadBtn.className = "primary-btn small"
+        downloadBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span>${geti18n().language_download_btn || "Download"}</span>`
+
+        downloadBtn.onclick = async () => {
+          downloadBtn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+          downloadBtn.disabled = true
+          try {
+            const remoteData = await fetchRemoteLanguage(lang.code)
+            if (remoteData) {
+              const customLangs = {
+                ...(getSettings().customLanguages || {}),
+                [lang.code]: {
+                  name: lang.name,
+                  translations: remoteData.translations || remoteData,
+                  updatedAt: new Date().toISOString(),
+                },
+              }
+              updateSetting("customLanguages", customLangs)
+              handleSettingUpdate("language", lang.code)
+              await loadLanguage(lang.code)
+              applyTranslations()
+              renderCustomLanguageOptions()
+              renderGithubLanguageList(DOM.githubLangSearchInput?.value)
+              showAlert(
+                `${lang.name} (${lang.code}) ${geti18n().language_download_success || "downloaded and installed successfully!"}`,
+              )
+            }
+          } catch (err) {
+            downloadBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span>${geti18n().language_download_btn || "Download"}</span>`
+            downloadBtn.disabled = false
+            showAlert(
+              `${geti18n().language_download_error || "Could not download language file from GitHub."}\n\n${err.message || err}`,
+            )
+          }
+        }
+        actionDiv.appendChild(downloadBtn)
+      }
+
+      card.appendChild(actionDiv)
+      DOM.githubLangListContainer.appendChild(card)
+    })
   }
 
   const clearLanguageModalInputs = () => {
@@ -1346,6 +1578,7 @@ export function setupGeneralEventHandlers(
 
     if (!clickedInSidebar && !clickedOnToggle) {
       DOM.settingsSidebar.classList.remove("open")
+      document.body.classList.remove("sidebar-open")
     }
   })
 
@@ -1906,17 +2139,35 @@ export function setupGeneralEventHandlers(
     }
   })
 
-  DOM.downloadLanguageGithubBtn?.addEventListener("click", async () => {
-    const guide = getSelectedLanguageGuide()
-    const code = normalizeLanguageCode(
-      DOM.languageCodeInput?.value || guide.code,
-    )
+  DOM.downloadLanguageGithubBtn?.addEventListener("click", () => {
+    closeLanguageModal()
+    openGithubLanguageModal()
+  })
+
+  DOM.closeGithubLanguageModalBtn?.addEventListener(
+    "click",
+    closeGithubLanguageModal,
+  )
+
+  DOM.githubLanguageModal?.addEventListener("click", (event) => {
+    if (event.target === DOM.githubLanguageModal) closeGithubLanguageModal()
+  })
+
+  DOM.githubLangSearchInput?.addEventListener("input", (e) => {
+    renderGithubLanguageList(e.target.value)
+  })
+
+  DOM.githubCustomLangDownloadBtn?.addEventListener("click", async () => {
+    const code = normalizeLanguageCode(DOM.githubCustomLangInput?.value)
     if (!code) {
-      showAlert(geti18n().language_invalid_code || "Please select a language.")
+      showAlert(
+        geti18n().language_invalid_code ||
+          "Please enter a language code, e.g. it, pt, pl, tr...",
+      )
       return
     }
 
-    const btn = DOM.downloadLanguageGithubBtn
+    const btn = DOM.githubCustomLangDownloadBtn
     const originalText = btn.innerHTML
     try {
       btn.innerHTML =
@@ -1928,7 +2179,28 @@ export function setupGeneralEventHandlers(
       btn.disabled = false
 
       if (remoteData) {
-        await installCustomLanguage(remoteData)
+        const langName =
+          remoteData.name ||
+          remoteData?.translations?.language_name ||
+          code.toUpperCase()
+        const customLangs = {
+          ...(getSettings().customLanguages || {}),
+          [code]: {
+            name: langName,
+            translations: remoteData.translations || remoteData,
+            updatedAt: new Date().toISOString(),
+          },
+        }
+        updateSetting("customLanguages", customLangs)
+        handleSettingUpdate("language", code)
+        await loadLanguage(code)
+        applyTranslations()
+        renderCustomLanguageOptions()
+        renderGithubLanguageList(DOM.githubLangSearchInput?.value)
+        if (DOM.githubCustomLangInput) DOM.githubCustomLangInput.value = ""
+        showAlert(
+          `${langName} (${code}) ${geti18n().language_download_success || "downloaded and installed successfully!"}`,
+        )
       }
     } catch (e) {
       if (btn) {
@@ -3311,20 +3583,25 @@ export function setupGeneralEventHandlers(
     // Apply to item preview
     previewItem.style.fontSize = fontSize
     previewItem.style.gap = gap
-    previewItem.style.color = textColor
-    previewItem.style.backgroundColor = hexToRgba(bgColor, bgOpacity)
-    previewItem.style.boxShadow = `0 4px ${shadowBlur} ${hexToRgba(shadowColor, shadowOpacity)}`
+    previewItem.style.background = "transparent"
+    previewItem.style.backgroundColor = "transparent"
+    previewItem.style.boxShadow = "none"
 
     if (previewIconBox) {
       previewIconBox.style.width = iconSize
       previewIconBox.style.height = iconSize
-      previewIconBox.style.fontSize = `calc(${iconSize} * 0.55)`
+      previewIconBox.style.fontSize = `calc(${iconSize} * 0.52)`
+      previewIconBox.style.backgroundColor = hexToRgba(bgColor, bgOpacity)
+      previewIconBox.style.boxShadow = `0 3px ${shadowBlur} ${hexToRgba(shadowColor, shadowOpacity)}`
     }
 
-    if (previewTitle && DOM.hideBookmarkText) {
-      previewTitle.style.display = DOM.hideBookmarkText.checked
-        ? "none"
-        : "block"
+    if (previewTitle) {
+      previewTitle.style.color = textColor
+      if (DOM.hideBookmarkText) {
+        previewTitle.style.display = DOM.hideBookmarkText.checked
+          ? "none"
+          : "block"
+      }
     }
 
     // Apply to group tab preview
@@ -3336,7 +3613,8 @@ export function setupGeneralEventHandlers(
 
   if (DOM.bookmarkFontSizeInput) {
     DOM.bookmarkFontSizeInput.addEventListener("input", () => {
-      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
+      if (DOM.bookmarkFontSizeValue)
+        DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
       throttleSettingUpdate(
         "bookmarkFontSize",
         Number(DOM.bookmarkFontSizeInput.value),
@@ -3345,7 +3623,8 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
-      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
+      if (DOM.bookmarkIconSizeValue)
+        DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
       throttleSettingUpdate(
         "bookmarkIconSize",
         Number(DOM.bookmarkIconSizeInput.value),
@@ -3363,7 +3642,8 @@ export function setupGeneralEventHandlers(
     }
 
     DOM.bookmarkGroupTextWidthInput.addEventListener("input", () => {
-      DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
+      if (DOM.bookmarkGroupTextWidthValue)
+        DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
       throttleSettingUpdate(
         "bookmarkGroupTextWidth",
         Number(DOM.bookmarkGroupTextWidthInput.value),
@@ -3372,7 +3652,8 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
-      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
+      if (DOM.bookmarkGapValue)
+        DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
       throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
       updateBookmarkLivePreview()
     })
@@ -3391,6 +3672,9 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkBgOpacityInput.addEventListener("input", () => {
+      if (DOM.bookmarkBgOpacityValue) {
+        DOM.bookmarkBgOpacityValue.textContent = `${DOM.bookmarkBgOpacityInput.value}%`
+      }
       throttleSettingUpdate(
         "bookmarkBgOpacity",
         Number(DOM.bookmarkBgOpacityInput.value),
@@ -3402,10 +3686,59 @@ export function setupGeneralEventHandlers(
     DOM.resetBookmarkBgBtn.addEventListener("click", () => {
       DOM.bookmarkBgColorPicker.value = "#ffffff"
       DOM.bookmarkBgOpacityInput.value = 100
+      if (DOM.bookmarkBgOpacityValue) {
+        DOM.bookmarkBgOpacityValue.textContent = "100%"
+      }
       throttleSettingUpdate("bookmarkBgColor", "#ffffff")
       throttleSettingUpdate("bookmarkBgOpacity", 100)
       updateBookmarkLivePreview()
     })
+
+    if (DOM.bookmarkShadowColorPicker) {
+      DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkShadowColor",
+          DOM.bookmarkShadowColorPicker.value,
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
+      DOM.bookmarkShadowColorPicker.addEventListener("change", () => {
+        throttleSettingUpdate(
+          "bookmarkShadowColor",
+          DOM.bookmarkShadowColorPicker.value,
+        )
+        updateBookmarkLivePreview()
+      })
+    }
+
+    if (DOM.bookmarkShadowOpacityInput) {
+      DOM.bookmarkShadowOpacityInput.addEventListener("input", () => {
+        if (DOM.bookmarkShadowOpacityValue) {
+          DOM.bookmarkShadowOpacityValue.textContent = `${DOM.bookmarkShadowOpacityInput.value}%`
+        }
+        throttleSettingUpdate(
+          "bookmarkShadowOpacity",
+          Number(DOM.bookmarkShadowOpacityInput.value),
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
+    }
+
+    if (DOM.bookmarkShadowBlurInput) {
+      DOM.bookmarkShadowBlurInput.addEventListener("input", () => {
+        if (DOM.bookmarkShadowBlurValue) {
+          DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}px`
+        }
+        throttleSettingUpdate(
+          "bookmarkShadowBlur",
+          Number(DOM.bookmarkShadowBlurInput.value),
+          true,
+        )
+        updateBookmarkLivePreview()
+      })
+    }
 
     if (DOM.bookmarkGroupBgColorPicker) {
       DOM.bookmarkGroupBgColorPicker.addEventListener("input", () => {
@@ -3426,6 +3759,9 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.bookmarkGroupBgOpacityInput) {
       DOM.bookmarkGroupBgOpacityInput.addEventListener("input", () => {
+        if (DOM.bookmarkGroupBgOpacityValue) {
+          DOM.bookmarkGroupBgOpacityValue.textContent = `${DOM.bookmarkGroupBgOpacityInput.value}%`
+        }
         throttleSettingUpdate(
           "bookmarkGroupBgOpacity",
           Number(DOM.bookmarkGroupBgOpacityInput.value),
@@ -3437,6 +3773,9 @@ export function setupGeneralEventHandlers(
       DOM.resetBookmarkGroupBgBtn.addEventListener("click", () => {
         DOM.bookmarkGroupBgColorPicker.value = "#ffffff"
         DOM.bookmarkGroupBgOpacityInput.value = 0
+        if (DOM.bookmarkGroupBgOpacityValue) {
+          DOM.bookmarkGroupBgOpacityValue.textContent = "0%"
+        }
         throttleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
         throttleSettingUpdate("bookmarkGroupBgOpacity", 0)
         updateBookmarkLivePreview()
@@ -3754,6 +4093,8 @@ export function setupGeneralEventHandlers(
       }
       if (DOM.bookmarkBgOpacityInput) {
         DOM.bookmarkBgOpacityInput.value = 100
+        if (DOM.bookmarkBgOpacityValue)
+          DOM.bookmarkBgOpacityValue.textContent = "100%"
         throttleSettingUpdate("bookmarkBgOpacity", 100)
       }
       if (DOM.bookmarkShadowColorPicker) {
@@ -3762,6 +4103,8 @@ export function setupGeneralEventHandlers(
       }
       if (DOM.bookmarkShadowOpacityInput) {
         DOM.bookmarkShadowOpacityInput.value = 24
+        if (DOM.bookmarkShadowOpacityValue)
+          DOM.bookmarkShadowOpacityValue.textContent = "24%"
         throttleSettingUpdate("bookmarkShadowOpacity", 24)
       }
       if (DOM.bookmarkShadowBlurInput) {
@@ -3784,6 +4127,8 @@ export function setupGeneralEventHandlers(
       }
       if (DOM.bookmarkGroupBgOpacityInput) {
         DOM.bookmarkGroupBgOpacityInput.value = 0
+        if (DOM.bookmarkGroupBgOpacityValue)
+          DOM.bookmarkGroupBgOpacityValue.textContent = "0%"
         throttleSettingUpdate("bookmarkGroupBgOpacity", 0)
       }
       if (DOM.bookmarkGroupTextColorPicker) {
