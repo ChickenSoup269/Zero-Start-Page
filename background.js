@@ -88,16 +88,20 @@ function rescueZombieTab(tab) {
   const isEmptyNewTab = !tab.url && !tab.pendingUrl
 
   if (isStartpageUrl || isEmptyNewTab || isLiteralNewTab) {
-    // PHÁT HIỆN DỰA TRÊN QUAN SÁT CỦA BẠN:
-    // Tab lỗi (chrome://newtab bị mất kết nối) sẽ có title là "New Tab", "Thẻ mới", rỗng, hoặc là một cái URL.
-    // Tab sống khỏe sẽ có title là "Start Page" (hoặc tên bạn đổi trong settings).
+    // Chỉ coi là zombie tab nếu title chứa thông báo lỗi crash / mất kết nối thực sự
+    const tabTitle = (tab.title || "").toLowerCase()
     const isZombieTitle =
-      !tab.title ||
-      tab.title === "New Tab" ||
-      tab.title === "Thẻ mới" ||
-      tab.title === "chrome://newtab/" ||
-      tab.title.includes("site can't be reached") ||
-      tab.title.includes("chrome-extension://")
+      tabTitle.includes("site can't be reached") ||
+      tabTitle.includes("không thể truy cập") ||
+      tabTitle.includes("không thể kết nối") ||
+      tabTitle.includes("err_") ||
+      tabTitle === "chrome://newtab/" ||
+      (tabTitle.includes("chrome-extension://") &&
+        (tabTitle.includes("err") ||
+          tabTitle.includes("error") ||
+          tabTitle.includes("failed") ||
+          tabTitle.includes("invalid") ||
+          tabTitle.includes("crashed")))
 
     if (isZombieTitle) {
       rescuedTabs.add(tab.id) // Chỉ thử 1 lần mỗi tab để tránh loop
@@ -352,8 +356,8 @@ function broadcastMediaState(state) {
 }
 
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
-  // 2. LƯỚI QUÉT CHÍ MẠNG: Chỉ chạy khi tab đã complete để không ngắt quãng quá trình tải
-  if (changeInfo.status === "complete" || changeInfo.title) {
+  // Chỉ kiểm tra cứu tab khi tab đã load xong status = "complete"
+  if (changeInfo.status === "complete") {
     rescueZombieTab(tab)
   }
 
