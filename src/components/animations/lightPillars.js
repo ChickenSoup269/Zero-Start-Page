@@ -44,8 +44,8 @@ export class LightPillarsEffect {
     this.height = 0
 
     // Simulation Entities
-    this.pillarCount = 22
-    this.crystalCount = 95
+    this.pillarCount = 10
+    this.crystalCount = 50
     this.pillars = []
     this.crystals = []
     this.sparkles = []
@@ -223,8 +223,8 @@ export class LightPillarsEffect {
   _preRenderPillars() {
     this.pillarCanvases = {}
     const hues = this._getHuesForMode()
-    const pWidth = 160
-    const pHeight = 2600
+    const pWidth = 96
+    const pHeight = 900
 
     for (let i = 0; i < hues.length; i++) {
       const hue = hues[i]
@@ -233,38 +233,38 @@ export class LightPillarsEffect {
       offCanvas.height = pHeight
       const offCtx = offCanvas.getContext("2d")
 
-      // Step 1: Extended Longitudinal Atmospheric Falloff (Smooth top & bottom fade over great length)
+      // Step 1: Extended Longitudinal Atmospheric Falloff
       const vertGrad = offCtx.createLinearGradient(0, 0, 0, pHeight)
       vertGrad.addColorStop(0, `hsla(${hue}, 95%, 65%, 0)`)
-      vertGrad.addColorStop(0.05, `hsla(${hue}, 95%, 65%, 0.35)`)
-      vertGrad.addColorStop(0.18, `hsla(${hue}, 95%, 70%, 0.85)`)
+      vertGrad.addColorStop(0.06, `hsla(${hue}, 95%, 65%, 0.35)`)
+      vertGrad.addColorStop(0.2, `hsla(${hue}, 95%, 70%, 0.85)`)
       vertGrad.addColorStop(0.5, `hsla(${hue}, 95%, 75%, 0.95)`)
-      vertGrad.addColorStop(0.82, `hsla(${hue}, 95%, 70%, 0.85)`)
-      vertGrad.addColorStop(0.95, `hsla(${hue}, 95%, 65%, 0.35)`)
+      vertGrad.addColorStop(0.8, `hsla(${hue}, 95%, 70%, 0.85)`)
+      vertGrad.addColorStop(0.94, `hsla(${hue}, 95%, 65%, 0.35)`)
       vertGrad.addColorStop(1, `hsla(${hue}, 95%, 65%, 0)`)
 
       offCtx.fillStyle = vertGrad
       offCtx.fillRect(0, 0, pWidth, pHeight)
 
-      // Step 2: Gaussian Lateral Curve (Smooth exponential decay across width)
+      // Step 2: Gaussian Lateral Curve
       offCtx.globalCompositeOperation = "destination-in"
       const horizGrad = offCtx.createLinearGradient(0, 0, pWidth, 0)
       horizGrad.addColorStop(0, "rgba(0,0,0,0)")
-      horizGrad.addColorStop(0.18, "rgba(0,0,0,0.12)")
-      horizGrad.addColorStop(0.38, "rgba(0,0,0,0.7)")
+      horizGrad.addColorStop(0.2, "rgba(0,0,0,0.15)")
+      horizGrad.addColorStop(0.4, "rgba(0,0,0,0.75)")
       horizGrad.addColorStop(0.5, "rgba(0,0,0,1.0)")
-      horizGrad.addColorStop(0.62, "rgba(0,0,0,0.7)")
-      horizGrad.addColorStop(0.82, "rgba(0,0,0,0.12)")
+      horizGrad.addColorStop(0.6, "rgba(0,0,0,0.75)")
+      horizGrad.addColorStop(0.8, "rgba(0,0,0,0.15)")
       horizGrad.addColorStop(1, "rgba(0,0,0,0)")
 
       offCtx.fillStyle = horizGrad
       offCtx.fillRect(0, 0, pWidth, pHeight)
 
-      // Step 3: Intense White-Hot Radiant Core Spine down the entire length
+      // Step 3: Intense White-Hot Radiant Core Spine
       offCtx.globalCompositeOperation = "lighter"
       const coreGrad = offCtx.createLinearGradient(pWidth * 0.44, 0, pWidth * 0.56, 0)
       coreGrad.addColorStop(0, "rgba(255, 255, 255, 0)")
-      coreGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.96)")
+      coreGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.95)")
       coreGrad.addColorStop(1, "rgba(255, 255, 255, 0)")
 
       offCtx.fillStyle = coreGrad
@@ -311,17 +311,17 @@ export class LightPillarsEffect {
       this.mouse.speed = Math.sqrt(this.mouse.vx * this.mouse.vx + this.mouse.vy * this.mouse.vy)
 
       // Fast mouse movement scatters sparkling diamond dust
-      if (this.mouse.speed > 7 && this.sparkles.length < 45) {
+      if (this.mouse.speed > 8 && this.sparkles.length < 25) {
         const hues = this._getHuesForMode()
         const hue = hues[Math.floor(Math.random() * hues.length)]
         this.sparkles.push({
-          x: mx + (Math.random() - 0.5) * 25,
-          y: my + (Math.random() - 0.5) * 25,
-          vx: this.mouse.vx * 0.12 + (Math.random() - 0.5) * 1.2,
-          vy: this.mouse.vy * 0.12 - 0.8 - Math.random() * 1.0,
-          size: 1.2 + Math.random() * 2.2,
+          x: mx + (Math.random() - 0.5) * 20,
+          y: my + (Math.random() - 0.5) * 20,
+          vx: this.mouse.vx * 0.1 + (Math.random() - 0.5),
+          vy: this.mouse.vy * 0.1 - 0.8 - Math.random() * 0.8,
+          size: 1.2 + Math.random() * 1.8,
           life: 1.0,
-          decay: 0.02 + Math.random() * 0.02,
+          decay: 0.03 + Math.random() * 0.03,
           hue,
         })
       }
@@ -409,23 +409,19 @@ export class LightPillarsEffect {
     const H = this.height || window.innerHeight
 
     this.pillars = []
-    const count = Math.max(18, Math.min(30, Math.floor(W / 70)))
+    const count = Math.max(5, Math.min(8, Math.floor(W / 240)))
 
     for (let i = 0; i < count; i++) {
-      // 3 Depth Strata Z ∈ [0.2, 1.0]
       let z
       const roll = Math.random()
-      if (roll < 0.35) z = 0.2 + Math.random() * 0.25 // Far: soft background mist columns
-      else if (roll < 0.75) z = 0.45 + Math.random() * 0.3 // Mid: classic shimmering pillars
-      else z = 0.75 + Math.random() * 0.25 // Near: brilliant, towering, white-hot
+      if (roll < 0.35) z = 0.25 + Math.random() * 0.25
+      else if (roll < 0.75) z = 0.5 + Math.random() * 0.25
+      else z = 0.75 + Math.random() * 0.25
 
-      // Horizontal spacing with organic jitter
-      const x = (i / count) * W + (Math.random() - 0.5) * (W / count * 0.9)
-      const width = (55 + Math.random() * 85) * (0.65 + z * 0.7)
-      // Extra-long towering height extending far beyond screen boundaries (top & bottom)
-      const height = H * (2.6 + Math.random() * 0.8) * (0.85 + z * 0.35)
-      // Center vertical anchor so the pillar covers the whole screen and extends far above and below
-      const y = -height * 0.5 + H * 0.5 + (Math.random() - 0.5) * (H * 0.15)
+      const x = (i / count) * W + (Math.random() - 0.5) * (W / count * 0.8)
+      const width = (45 + Math.random() * 55) * (0.65 + z * 0.7)
+      const height = H * (2.2 + Math.random() * 0.6)
+      const y = -height * 0.5 + H * 0.5
 
       const pillar = {
         id: i,
@@ -436,14 +432,12 @@ export class LightPillarsEffect {
         width,
         height,
         driftSpeed: (Math.random() - 0.5) * 0.08 * (0.5 + z * 0.6),
-        baseAlpha: (0.22 + Math.random() * 0.42) * (0.55 + z * 0.6),
+        baseAlpha: (0.2 + Math.random() * 0.28) * (0.55 + z * 0.6),
         currentAlpha: 0,
-        // Atmospheric shimmer & wave
         shimmerPhase: Math.random() * Math.PI * 2,
         shimmerSpeed: 0.012 + Math.random() * 0.02,
         wavePhase: Math.random() * Math.PI * 2,
         waveSpeed: 0.006 + Math.random() * 0.01,
-        // Thermal / Mouse pulse resonance
         pulseIntensity: 0,
         displaceX: 0,
       }
@@ -452,7 +446,6 @@ export class LightPillarsEffect {
       this.pillars.push(pillar)
     }
 
-    // Sort pillars depth-wise so distant ones render behind
     this.pillars.sort((a, b) => a.z - b.z)
   }
 
@@ -461,22 +454,22 @@ export class LightPillarsEffect {
     const H = this.height || window.innerHeight
 
     this.crystals = []
-    const count = Math.max(75, Math.min(160, Math.floor(W / 16)))
+    const count = Math.max(16, Math.min(28, Math.floor(W / 65)))
 
     for (let i = 0; i < count; i++) {
-      const z = 0.2 + Math.random() * 0.8
+      const z = 0.25 + Math.random() * 0.75
       this.crystals.push({
         x: Math.random() * W,
         y: Math.random() * H,
         z,
-        size: (1.0 + Math.random() * 2.6) * (0.5 + z * 0.7),
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -0.15 - Math.random() * 0.35 * (0.5 + z * 0.6), // Gentle upward thermal float
+        size: (1.0 + Math.random() * 2.0) * (0.5 + z * 0.7),
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: -0.15 - Math.random() * 0.25 * (0.5 + z * 0.6),
         pitch: Math.random() * Math.PI * 2,
         pitchSpeed: 0.015 + Math.random() * 0.03,
         roll: Math.random() * Math.PI * 2,
         rollSpeed: 0.02 + Math.random() * 0.035,
-        baseAlpha: 0.25 + Math.random() * 0.55,
+        baseAlpha: 0.25 + Math.random() * 0.4,
         twinklePhase: Math.random() * Math.PI * 2,
         twinkleSpeed: 0.03 + Math.random() * 0.05,
       })
@@ -496,27 +489,23 @@ export class LightPillarsEffect {
     for (let i = 0; i < this.pillars.length; i++) {
       const p = this.pillars[i]
 
-      // Slow atmospheric drift
       p.x += p.driftSpeed * dt
       if (p.x < -p.width) p.x = W + p.width
       else if (p.x > W + p.width) p.x = -p.width
 
-      // Shimmer & thermal breathing
       p.shimmerPhase += p.shimmerSpeed * dt
       p.wavePhase += p.waveSpeed * dt
       const shimmerFactor = 0.75 + 0.25 * Math.sin(p.shimmerPhase)
-      p.currentAlpha = p.baseAlpha * shimmerFactor * (1 + p.pulseIntensity * 0.55)
+      p.currentAlpha = p.baseAlpha * shimmerFactor * (1 + p.pulseIntensity * 0.5)
 
-      // Mouse Proximity: Triggers vertical light resonance in nearby pillar column
       if (mouseActive) {
         const distToCol = Math.abs(this.mouse.x - p.x)
-        const reactRadius = p.width * 1.6
+        const reactRadius = p.width * 1.5
         if (distToCol < reactRadius) {
           const proximity = 1 - distToCol / reactRadius
-          p.pulseIntensity = Math.min(1.0, p.pulseIntensity + proximity * 0.14 * dt)
-          // Gentle lateral cushion deflection away from cursor
+          p.pulseIntensity = Math.min(1.0, p.pulseIntensity + proximity * 0.12 * dt)
           const pushSign = this.mouse.x > p.x ? -1 : 1
-          p.displaceX += (pushSign * proximity * 15 * p.z - p.displaceX) * 0.1 * dt
+          p.displaceX += (pushSign * proximity * 12 * p.z - p.displaceX) * 0.1 * dt
         } else {
           p.pulseIntensity = Math.max(0, p.pulseIntensity - 0.03 * dt)
           p.displaceX *= Math.pow(0.92, dt)
@@ -528,17 +517,15 @@ export class LightPillarsEffect {
     }
 
     // 2. Update Hexagonal Ice Crystals
-    const thermalRadius = 150
+    const thermalRadius = 140
 
     for (let i = 0; i < this.crystals.length; i++) {
       const c = this.crystals[i]
 
-      // 3D Tumbling
       c.pitch += c.pitchSpeed * dt
       c.roll += c.rollSpeed * dt
       c.twinklePhase += c.twinkleSpeed * dt
 
-      // Thermal convection from mouse cursor (warm updraft)
       let updraftVx = 0
       let updraftVy = 0
 
@@ -548,16 +535,15 @@ export class LightPillarsEffect {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         if (dist < thermalRadius && dist > 1) {
-          const power = Math.pow((thermalRadius - dist) / thermalRadius, 1.2) * 2.5 * c.z
+          const power = ((thermalRadius - dist) / thermalRadius) * 2.0 * c.z
           updraftVx = (dx / dist) * power * 0.8
-          updraftVy = -power * 1.2
+          updraftVy = -power * 1.1
         }
       }
 
       c.x += (c.vx + updraftVx) * dt
       c.y += (c.vy + updraftVy) * dt
 
-      // Seamless boundaries
       if (c.y < -30) {
         c.y = H + 30
         c.x = Math.random() * W
@@ -573,8 +559,8 @@ export class LightPillarsEffect {
       const sp = this.sparkles[i]
       sp.x += sp.vx * dt
       sp.y += sp.vy * dt
-      sp.vx *= Math.pow(0.96, dt)
-      sp.vy *= Math.pow(0.96, dt)
+      sp.vx *= Math.pow(0.95, dt)
+      sp.vy *= Math.pow(0.95, dt)
       sp.life -= sp.decay * dt
 
       if (sp.life <= 0) {
@@ -587,10 +573,6 @@ export class LightPillarsEffect {
   /*                                 RENDERING                                  */
   /* -------------------------------------------------------------------------- */
 
-  /**
-   * Renders volumetric light pillars with seamless 2D Gaussian falloff.
-   * Completely eliminates harsh box cuts and achieves cinematic depth.
-   */
   _renderPillars(ctx) {
     const time = performance.now()
 
@@ -599,98 +581,61 @@ export class LightPillarsEffect {
       const offCanvas = this.pillarCanvases[p.hue]
       if (!offCanvas) continue
 
-      // Subtle atmospheric harmonic waver along X
-      const waveX = Math.sin(p.wavePhase + time * 0.0006) * 6
+      const waveX = Math.sin(p.wavePhase + time * 0.0006) * 5
       const posX = p.x + waveX + p.displaceX
 
-      ctx.save()
-      ctx.globalAlpha = Math.min(0.95, p.currentAlpha)
-
-      // Draw volumetric 2D Gaussian light pillar
+      ctx.globalAlpha = Math.min(0.92, p.currentAlpha)
       ctx.drawImage(offCanvas, posX - p.width * 0.5, p.y, p.width, p.height)
-
-      // Intense resonant filament for high-energy foreground pillars
-      if (p.z > 0.5 && p.pulseIntensity > 0.3) {
-        ctx.globalAlpha = Math.min(0.85, p.currentAlpha * p.pulseIntensity * p.z)
-        ctx.drawImage(offCanvas, posX - p.width * 0.25, p.y, p.width * 0.5, p.height)
-      }
-
-      ctx.restore()
     }
   }
 
-  /**
-   * Renders a tumbling hexagonal diamond dust crystal with specular facet reflection.
-   */
   _renderCrystal(c, ctx) {
     const s = c.size
     const z = c.z
 
-    const scaleX = Math.cos(c.roll)
-    const scaleY = Math.cos(c.pitch)
+    const scaleX = Math.max(0.2, Math.abs(Math.cos(c.roll)))
+    const scaleY = Math.max(0.2, Math.abs(Math.cos(c.pitch)))
 
-    const facetNormalAlignment = Math.abs(Math.sin(c.pitch) * Math.sin(c.roll))
-    const specularFlash = Math.pow(facetNormalAlignment, 3.5)
+    const facet = Math.abs(Math.sin(c.pitch) * Math.sin(c.roll))
+    const specularFlash = facet * facet
 
     const twinkle = (Math.sin(c.twinklePhase) + 1) * 0.5
-    const alpha = Math.max(0.08, Math.min(1, (c.baseAlpha * 0.6 + specularFlash * 0.85 + twinkle * 0.35) * z))
+    const alpha = Math.max(0.08, Math.min(1, (c.baseAlpha * 0.6 + specularFlash * 0.8 + twinkle * 0.3) * z))
 
-    ctx.save()
-    ctx.translate(c.x, c.y)
-    ctx.scale(Math.max(0.18, Math.abs(scaleX)), Math.max(0.18, Math.abs(scaleY)))
+    const hx = s * scaleX
+    const hy = s * scaleY
+
     ctx.globalAlpha = alpha
+    ctx.fillStyle = specularFlash > 0.4 ? "#ffffff" : `hsl(${this.palette.hsl.h}, 85%, 92%)`
 
-    // Hexagonal geometry
+    // Fast Diamond Polygon
     ctx.beginPath()
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI) / 3
-      const hx = Math.cos(angle) * s
-      const hy = Math.sin(angle) * s
-      if (i === 0) ctx.moveTo(hx, hy)
-      else ctx.lineTo(hx, hy)
-    }
+    ctx.moveTo(c.x, c.y - hy)
+    ctx.lineTo(c.x + hx, c.y)
+    ctx.lineTo(c.x, c.y + hy)
+    ctx.lineTo(c.x - hx, c.y)
     ctx.closePath()
-
-    ctx.fillStyle = specularFlash > 0.35 ? "#ffffff" : `hsl(${this.palette.hsl.h}, 85%, 92%)`
     ctx.fill()
-
-    // 4-Point Star Glint for brilliant crystal facets
-    if (z > 0.65 && s > 1.8 && specularFlash > 0.4) {
-      const spike = s * 3.0 * specularFlash
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"
-      ctx.lineWidth = Math.max(0.6, 0.85 * z)
-      ctx.beginPath()
-      ctx.moveTo(-spike, 0)
-      ctx.lineTo(spike, 0)
-      ctx.moveTo(0, -spike)
-      ctx.lineTo(0, spike)
-      ctx.stroke()
-    }
-
-    ctx.restore()
   }
 
   _renderSparkles(ctx) {
     for (let i = 0; i < this.sparkles.length; i++) {
       const sp = this.sparkles[i]
-      ctx.save()
+      const r = sp.size
       ctx.globalAlpha = Math.max(0, Math.min(1, sp.life))
       ctx.fillStyle = `hsl(${sp.hue}, 95%, 85%)`
 
-      const r = sp.size
       ctx.beginPath()
-      ctx.moveTo(sp.x, sp.y - r * 2.0)
+      ctx.moveTo(sp.x, sp.y - r * 1.8)
       ctx.lineTo(sp.x + r * 0.4, sp.y - r * 0.4)
-      ctx.lineTo(sp.x + r * 2.0, sp.y)
+      ctx.lineTo(sp.x + r * 1.8, sp.y)
       ctx.lineTo(sp.x + r * 0.4, sp.y + r * 0.4)
-      ctx.lineTo(sp.x, sp.y + r * 2.0)
+      ctx.lineTo(sp.x, sp.y + r * 1.8)
       ctx.lineTo(sp.x - r * 0.4, sp.y + r * 0.4)
-      ctx.lineTo(sp.x - r * 2.0, sp.y)
+      ctx.lineTo(sp.x - r * 1.8, sp.y)
       ctx.lineTo(sp.x - r * 0.4, sp.y - r * 0.4)
       ctx.closePath()
       ctx.fill()
-
-      ctx.restore()
     }
   }
 
@@ -701,29 +646,24 @@ export class LightPillarsEffect {
   animate(timestamp = 0) {
     if (!this.active || this.destroyed) return
 
-    // Delta-time normalization (smooth on 60Hz, 120Hz, 144Hz, 240Hz)
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 2.5)
 
-    // Physics update step
     this._update(dt)
 
-    // Clear Canvas
     this.ctx.clearRect(0, 0, this.width, this.height)
-
-    // Optical Additive Blending (Screen / Lighter for ethereal aurora brilliance)
     this.ctx.globalCompositeOperation = "lighter"
 
-    // 1. Render Light Pillars (Seamless 2D Gaussian Volumetric Light Beams)
+    // 1. Render Light Pillars
     this._renderPillars(this.ctx)
 
-    // 2. Render Hexagonal Ice Crystals
+    // 2. Render Ice Crystals
     for (let i = 0; i < this.crystals.length; i++) {
       this._renderCrystal(this.crystals[i], this.ctx)
     }
 
-    // 3. Render Interactive Diamond Dust Sparkles
+    // 3. Render Diamond Dust Sparkles
     if (this.sparkles.length > 0) {
       this._renderSparkles(this.ctx)
     }
