@@ -1189,9 +1189,9 @@
                 <!-- 3. Primary Text Colors -->
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
                     <div class="setting-item no-margin-top"
-                        style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px;">
+                        style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; min-height: 78px;">
                         <label
-                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px;">
+                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">
                             <i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_color">Clock Color</span>
                         </label>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -1200,9 +1200,9 @@
                         </div>
                     </div>
                     <div class="setting-item no-margin-top"
-                        style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px;">
+                        style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; min-height: 78px;">
                         <label
-                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px;">
+                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">
                             <i class="fa-solid fa-calendar-day"></i> <span data-i18n="settings_date_color">Date
                                 Color</span>
                         </label>
@@ -1299,7 +1299,7 @@
                             data-i18n="settings_clock_shadow_target">
                             <i class="fa-solid fa-sun"></i> Shadow / Glow Target
                         </label>
-                        <div class="clock-style-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
                             <div class="clock-style-card compact-style-card shadow-target-card" data-value="none">
                                 <i class="fa-solid fa-ban"></i>
                                 <span class="clock-style-name" data-i18n="settings_hue_text_mode_off"
