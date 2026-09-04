@@ -190,6 +190,24 @@ export let copyLanguagePromptBtn = document.getElementById(
 export let downloadLanguageGithubBtn = document.getElementById(
   "download-language-github-btn",
 )
+export let githubLanguageModal = document.getElementById(
+  "github-language-modal",
+)
+export let closeGithubLanguageModalBtn = document.getElementById(
+  "close-github-language-modal-btn",
+)
+export let githubLangSearchInput = document.getElementById(
+  "github-lang-search-input",
+)
+export let githubLangListContainer = document.getElementById(
+  "github-lang-list-container",
+)
+export let githubCustomLangInput = document.getElementById(
+  "github-custom-lang-input",
+)
+export let githubCustomLangDownloadBtn = document.getElementById(
+  "github-custom-lang-download-btn",
+)
 export let effectGrid = document.getElementById("effect-grid")
 export let effectSearch = document.getElementById("effect-search")
 export let activeEffectSettingsContainer = document.getElementById(
@@ -1332,6 +1350,9 @@ export let bookmarkBgColorPicker = document.getElementById(
 export let bookmarkBgOpacityInput = document.getElementById(
   "bookmark-bg-opacity-input",
 )
+export let bookmarkBgOpacityValue = document.getElementById(
+  "bookmark-bg-opacity-value",
+)
 export let resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
 export let resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
 export let resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
@@ -1342,6 +1363,9 @@ export let bookmarkShadowColorPicker = document.getElementById(
 )
 export let bookmarkShadowOpacityInput = document.getElementById(
   "bookmark-shadow-opacity-input",
+)
+export let bookmarkShadowOpacityValue = document.getElementById(
+  "bookmark-shadow-opacity-value",
 )
 export let bookmarkShadowBlurInput = document.getElementById(
   "bookmark-shadow-blur-input",
@@ -1356,6 +1380,9 @@ export let bookmarkGroupBgColorPicker = document.getElementById(
 )
 export let bookmarkGroupBgOpacityInput = document.getElementById(
   "bookmark-group-bg-opacity-input",
+)
+export let bookmarkGroupBgOpacityValue = document.getElementById(
+  "bookmark-group-bg-opacity-value",
 )
 export let resetBookmarkGroupBgBtn = document.getElementById(
   "reset-bookmark-group-bg-btn",
@@ -2483,6 +2510,18 @@ export function refreshDOMReferences() {
   downloadLanguageGithubBtn = document.getElementById(
     "download-language-github-btn",
   )
+  githubLanguageModal = document.getElementById("github-language-modal")
+  closeGithubLanguageModalBtn = document.getElementById(
+    "close-github-language-modal-btn",
+  )
+  githubLangSearchInput = document.getElementById("github-lang-search-input")
+  githubLangListContainer = document.getElementById(
+    "github-lang-list-container",
+  )
+  githubCustomLangInput = document.getElementById("github-custom-lang-input")
+  githubCustomLangDownloadBtn = document.getElementById(
+    "github-custom-lang-download-btn",
+  )
   effectGrid = document.getElementById("effect-grid")
   effectSearch = document.getElementById("effect-search")
   activeEffectSettingsContainer = document.getElementById(
@@ -3262,6 +3301,7 @@ export function refreshDOMReferences() {
   )
   bookmarkBgColorPicker = document.getElementById("bookmark-bg-color-picker")
   bookmarkBgOpacityInput = document.getElementById("bookmark-bg-opacity-input")
+  bookmarkBgOpacityValue = document.getElementById("bookmark-bg-opacity-value")
   resetBookmarkSizesBtn = document.getElementById("reset-bookmark-sizes-btn")
   resetBookmarkAppearanceBtn = document.getElementById("reset-bookmark-appearance-btn")
   resetBookmarkTabsBtn = document.getElementById("reset-bookmark-tabs-btn")
@@ -3272,6 +3312,9 @@ export function refreshDOMReferences() {
   )
   bookmarkShadowOpacityInput = document.getElementById(
     "bookmark-shadow-opacity-input",
+  )
+  bookmarkShadowOpacityValue = document.getElementById(
+    "bookmark-shadow-opacity-value",
   )
   bookmarkShadowBlurInput = document.getElementById(
     "bookmark-shadow-blur-input",
@@ -3284,6 +3327,9 @@ export function refreshDOMReferences() {
   )
   bookmarkGroupBgOpacityInput = document.getElementById(
     "bookmark-group-bg-opacity-input",
+  )
+  bookmarkGroupBgOpacityValue = document.getElementById(
+    "bookmark-group-bg-opacity-value",
   )
   resetBookmarkGroupBgBtn = document.getElementById(
     "reset-bookmark-group-bg-btn",

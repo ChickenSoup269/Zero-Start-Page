@@ -61,14 +61,13 @@
                 <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
                     style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                     = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 10px;">
                     <div class="setting-item no-margin-top">
                         <label for="bookmark-font-size-input"
-                            style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
                             <span><i class="fa-solid fa-text-height"></i> <span
                                     data-i18n="settings_bookmark_font_size">Font Size</span></span>
-                            <span id="bookmark-font-size-value"
-                                style="opacity: 0.8; font-family: monospace;">10px</span>
+                            <span id="bookmark-font-size-value" class="bg-slider-value">10px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn" data-step-target="bookmark-font-size-input"
@@ -82,11 +81,10 @@
 
                     <div class="setting-item no-margin-top">
                         <label for="bookmark-icon-size-input"
-                            style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
                             <span><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon
                                     Size</span></span>
-                            <span id="bookmark-icon-size-value"
-                                style="opacity: 0.8; font-family: monospace;">42px</span>
+                            <span id="bookmark-icon-size-value" class="bg-slider-value">42px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn" data-step-target="bookmark-icon-size-input"
@@ -113,10 +111,10 @@
 
                     <div class="setting-item no-margin-top">
                         <label for="bookmark-gap-input"
-                            style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
                             <span><i class="fa-solid fa-arrows-left-right"></i> <span
                                     data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
-                            <span id="bookmark-gap-value" style="opacity: 0.8; font-family: monospace;">8px</span>
+                            <span id="bookmark-gap-value" class="bg-slider-value">8px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn" data-step-target="bookmark-gap-input"
@@ -178,8 +176,9 @@
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 6px;">
                             <label for="bookmark-bg-opacity-input"
-                                style="font-size: 0.8rem; opacity: 0.8; display: flex; justify-content: space-between;">
+                                style="font-size: 0.8rem; opacity: 0.8; display: flex; justify-content: space-between; align-items: center;">
                                 <span data-i18n="settings_opacity">Opacity</span>
+                                <span id="bookmark-bg-opacity-value" class="bg-slider-value">100%</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn" data-step-target="bookmark-bg-opacity-input"
@@ -206,8 +205,9 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 6px;">
                                 <label for="bookmark-shadow-opacity-input"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                    style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; opacity: 0.8;">
                                     <span data-i18n="settings_opacity">Opacity</span>
+                                    <span id="bookmark-shadow-opacity-value" class="bg-slider-value">24%</span>
                                 </label>
                                 <div class="bg-slider-stepper-wrap">
                                     <button type="button" class="bg-step-btn"
@@ -222,10 +222,9 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 6px;">
                                 <label for="bookmark-shadow-blur-input"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                    style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; opacity: 0.8;">
                                     <span data-i18n="settings_bookmark_shadow_blur">Blur</span>
-                                    <span id="bookmark-shadow-blur-value"
-                                        style="opacity: 0.8; font-family: monospace;">8px</span>
+                                    <span id="bookmark-shadow-blur-value" class="bg-slider-value">8px</span>
                                 </label>
                                 <div class="bg-slider-stepper-wrap">
                                     <button type="button" class="bg-step-btn"
@@ -276,8 +275,9 @@
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 6px;">
                             <label for="bookmark-group-bg-opacity-input"
-                                style="font-size: 0.8rem; opacity: 0.8; display: flex; justify-content: space-between;">
+                                style="font-size: 0.8rem; opacity: 0.8; display: flex; justify-content: space-between; align-items: center;">
                                 <span data-i18n="settings_opacity">Opacity</span>
+                                <span id="bookmark-group-bg-opacity-value" class="bg-slider-value">0%</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn"
@@ -320,8 +320,7 @@
                         <label for="bookmark-group-font-size-input"
                             style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                             <span data-i18n="settings_bookmark_group_font_size">Font Size</span>
-                            <span id="bookmark-group-font-size-value"
-                                style="font-size: 0.8rem; opacity: 0.8; font-family: monospace;">14px</span>
+                            <span id="bookmark-group-font-size-value" class="bg-slider-value">14px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn" data-step-target="bookmark-group-font-size-input"
@@ -337,8 +336,7 @@
                         <label for="bookmark-group-text-width-input"
                             style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                             <span data-i18n="settings_bookmark_group_text_width">Folder Name Width</span>
-                            <span id="bookmark-group-text-width-value"
-                                style="font-size: 0.8rem; opacity: 0.8; font-family: monospace;">120px</span>
+                            <span id="bookmark-group-text-width-value" class="bg-slider-value">120px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn" data-step-target="bookmark-group-text-width-input"
@@ -354,8 +352,7 @@
                         <label for="bookmark-group-border-radius-input"
                             style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                             <span data-i18n="settings_bookmark_group_border_radius">Border Radius</span>
-                            <span id="bookmark-group-border-radius-value"
-                                style="font-size: 0.8rem; opacity: 0.8; font-family: monospace;">8px</span>
+                            <span id="bookmark-group-border-radius-value" class="bg-slider-value">8px</span>
                         </label>
                         <div class="bg-slider-stepper-wrap">
                             <button type="button" class="bg-step-btn"
@@ -521,9 +518,9 @@
                         </select>
                         <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 12px;">
                             <label for="bookmark-sidebar-width-input"
-                                style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 6px;">
+                                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; opacity: 0.8; margin-bottom: 6px;">
                                 <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
-                                <span id="bookmark-sidebar-width-value" style="font-family: monospace;">300px</span>
+                                <span id="bookmark-sidebar-width-value" class="bg-slider-value">300px</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn"

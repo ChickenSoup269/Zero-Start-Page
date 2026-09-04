@@ -4861,14 +4861,23 @@ function createUpdateSettingsInputs(effectInstances) {
           settings.quickAccessBorderVisible !== false
       }
 
-      DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
-      DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
+      if (DOM.bookmarkBgColorPicker)
+        DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
+      if (DOM.bookmarkBgOpacityInput) {
+        DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
+        if (DOM.bookmarkBgOpacityValue)
+          DOM.bookmarkBgOpacityValue.textContent = `${DOM.bookmarkBgOpacityInput.value}%`
+      }
 
       if (DOM.bookmarkGroupBgColorPicker) {
         DOM.bookmarkGroupBgColorPicker.value =
           settings.bookmarkGroupBgColor || "#ffffff"
+      }
+      if (DOM.bookmarkGroupBgOpacityInput) {
         DOM.bookmarkGroupBgOpacityInput.value =
           settings.bookmarkGroupBgOpacity ?? 0
+        if (DOM.bookmarkGroupBgOpacityValue)
+          DOM.bookmarkGroupBgOpacityValue.textContent = `${DOM.bookmarkGroupBgOpacityInput.value}%`
       }
       if (DOM.bookmarkGroupTextColorPicker) {
         DOM.bookmarkGroupTextColorPicker.value =
@@ -4949,6 +4958,8 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkShadowOpacityInput) {
         DOM.bookmarkShadowOpacityInput.value =
           settings.bookmarkShadowOpacity ?? 24
+        if (DOM.bookmarkShadowOpacityValue)
+          DOM.bookmarkShadowOpacityValue.textContent = `${DOM.bookmarkShadowOpacityInput.value}%`
       }
       if (DOM.bookmarkShadowBlurInput) {
         DOM.bookmarkShadowBlurInput.value = settings.bookmarkShadowBlur ?? 8

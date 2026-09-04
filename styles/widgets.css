@@ -11337,19 +11337,20 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.active {
 
 /* Default Grid Layout: Toggle is centered neatly below the widget */
 body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-groups-toggle {
-  position: absolute;
-  bottom: -16px;
-  left: 50%;
-  top: auto;
-  right: auto;
-  transform: translateX(-50%);
-  width: 36px;
-  height: 20px;
-  border-radius: 999px;
+  position: absolute !important;
+  bottom: -16px !important;
+  left: 50% !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: 36px !important;
+  height: 20px !important;
+  border-radius: 999px !important;
+  margin: 0 auto !important;
 }
 
 body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode).groups-hidden .bookmark-groups-toggle {
-  bottom: -12px;
+  bottom: -12px !important;
 }
 
 /* Auto-Hide Toggle (Reveals smoothly on Hover) */
@@ -11482,53 +11483,67 @@ body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container {
 /* 2. Taskbar Mode (Bottom Center) */
 body.bookmark-taskbar-mode .bookmark-widget {
   position: fixed !important;
-  bottom: var(--space-3) !important;
+  bottom: var(--space-3, 16px) !important;
   left: 50% !important;
   top: auto !important;
   right: auto !important;
   transform: translateX(-50%) !important;
-  display: flex;
-  flex-direction: column-reverse; /* Icons bottom, groups above */
-  align-items: center;
-  gap: 12px !important;
+  display: flex !important;
+  flex-direction: column-reverse !important; /* Icons bottom, groups above */
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
   z-index: 1000;
-  contain: layout;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: max-content !important;
+  max-width: 95vw !important;
+  box-sizing: border-box !important;
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid {
-  display: flex;
-  flex-direction: row;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   gap: var(--bookmark-gap-x, var(--space-1));
   background: rgba(0, 0, 0, 0.3) !important;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 90vw;
+  max-width: 90vw !important;
   width: fit-content !important;
   height: fit-content !important;
   min-height: auto !important;
-  overflow: visible;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 80vw;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  max-width: min(760px, calc(100vw - 36px)) !important;
   max-height: 180px;
   overflow-y: auto;
   overflow-x: hidden;
-  margin-bottom: 8px !important;
+  margin: 0 auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  box-sizing: border-box !important;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-toggle {
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static !important;
+  margin: 0 auto !important;
+  align-self: center !important;
 }
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container {
   transform: translateY(20px) scale(0.9);
@@ -11838,16 +11853,12 @@ body.bookmark-taskbar-right-mode .bookmark img:hover {
 
 /* Add Bookmark icon default restored */
 
-/* Force ALL layouts to be vertical (hàng dọc) */
-body.bookmark-taskbar-mode .bookmark-widget,
+/* Vertical sidebar / taskbar-left & right specific adjustments */
 body.bookmark-taskbar-left-mode .bookmark-widget,
-body.bookmark-taskbar-right-mode .bookmark-widget,
-body.bookmark-taskbar-right-mode .bookmark-widget,
 body.bookmark-taskbar-right-mode .bookmark-widget {
   flex-direction: row-reverse !important; /* Groups on inside, icons on outside */
 }
 
-body.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-taskbar-left-mode .bookmarks-grid,
 body.bookmark-taskbar-right-mode .bookmarks-grid {
   flex-direction: column !important; /* Force icons vertical */
@@ -11857,10 +11868,7 @@ body.bookmark-taskbar-right-mode .bookmarks-grid {
   overflow-x: hidden !important;
 }
 
-body.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-taskbar-left-mode .bookmark-groups-container,
-body.bookmark-taskbar-right-mode .bookmark-groups-container,
-body.bookmark-taskbar-right-mode .bookmark-groups-container,
 body.bookmark-taskbar-right-mode .bookmark-groups-container {
   flex-direction: column !important; /* Force groups vertical */
   align-items: flex-end !important;
@@ -11871,12 +11879,10 @@ body.bookmark-sidebar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-right-mode .bookmark-groups-toggle {
   position: static !important;
-  margin: 2px !important;
-  align-self: center;
+  margin: 0 auto !important;
+  align-self: center !important;
   background: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   width: 28px !important;
@@ -12047,19 +12053,23 @@ body.flip-layout.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
   right: -1px;
 }
 
-/* Taskbar Bottom/Left: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía trên grid */
+/* Taskbar Bottom: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía trên grid */
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle {
   width: 56px !important;
   height: 12px !important;
   border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
-  margin: 0 !important;
+  margin: 0 auto !important;
   padding: 0 !important;
   border-bottom: none !important;
   border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-  position: relative;
-  bottom: -1px;
+  position: relative !important;
+  bottom: -1px !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  align-self: center !important;
   backdrop-filter: blur(10px);
 }
 
