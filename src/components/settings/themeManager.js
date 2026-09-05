@@ -522,6 +522,7 @@ export const THEMEABLE_KEYS = [
   "shinyColor",
   "lineShinyColor",
   "lineShinyMode",
+  "nintendoPixelMode",
   "nintendoPixelColor",
   "northernLightsStyle",
   "northernLightsBrightness",

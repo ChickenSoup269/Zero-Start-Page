@@ -6256,9 +6256,30 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.lineShinyModeSetting.style.display =
         settings.effect === "lineShiny" ? "block" : "none"
 
-    if (DOM.lightPillarsColorSetting)
+    if (DOM.lightPillarsColorSetting) {
       DOM.lightPillarsColorSetting.style.display =
         settings.effect === "lightPillars" ? "block" : "none"
+      if (DOM.lightPillarsModeSelect) {
+        DOM.lightPillarsModeSelect.value = settings.lightPillarsMode || "arctic"
+      }
+      if (DOM.lightPillarsCustomColorWrap) {
+        DOM.lightPillarsCustomColorWrap.style.display =
+          settings.lightPillarsMode === "custom" ? "block" : "none"
+      }
+      if (DOM.lightPillarsColorPicker) {
+        DOM.lightPillarsColorPicker.value = settings.lightPillarsColor || "#88ccff"
+      }
+      const pCount =
+        settings.lightPillarsCount !== undefined
+          ? settings.lightPillarsCount
+          : 8
+      if (DOM.lightPillarsCountSlider) {
+        DOM.lightPillarsCountSlider.value = pCount
+      }
+      if (DOM.lightPillarsCountVal) {
+        DOM.lightPillarsCountVal.textContent = pCount
+      }
+    }
 
     if (DOM.rainbowDirectionSetting)
       DOM.rainbowDirectionSetting.style.display =
@@ -6292,6 +6313,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.nintendoPixelColorSetting)
       DOM.nintendoPixelColorSetting.style.display =
         settings.effect === "nintendoPixel" ? "block" : "none"
+    if (DOM.nintendoPixelModeSelect)
+      DOM.nintendoPixelModeSelect.value =
+        settings.nintendoPixelMode || "mainframe"
     if (DOM.nintendoPixelColorPicker)
       DOM.nintendoPixelColorPicker.value =
         settings.nintendoPixelColor || "#63f5ff"

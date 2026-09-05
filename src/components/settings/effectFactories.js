@@ -281,6 +281,10 @@ export function createEffectFactories(settings) {
         settings.lightPillarsColor || "#88ccff",
         {
           mode: settings.lightPillarsMode || "arctic",
+          count:
+            settings.lightPillarsCount !== undefined
+              ? settings.lightPillarsCount
+              : 8,
         },
       ),
     pixelWeatherEffect: () =>
@@ -336,6 +340,7 @@ export function createEffectFactories(settings) {
       new NintendoPixelEffect(
         "effect-canvas",
         settings.nintendoPixelColor || "#63f5ff",
+        settings.nintendoPixelMode || "mainframe",
       ),
     retroGameEffect: () =>
       new RetroGameEffect(

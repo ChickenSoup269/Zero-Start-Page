@@ -977,6 +977,13 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
         updateSetting("pixelWeatherDensity", 1.0)
       }
 
+      // Retro Terminal (CRT Monitor)
+      const npMode = document.getElementById("nintendo-pixel-mode-select")
+      if (npMode) {
+        npMode.value = "mainframe"
+        updateSetting("nintendoPixelMode", "mainframe")
+      }
+
       // Reset all color pickers in the active settings container to their HTML default value attribute
       const container = document.getElementById("active-effect-settings-body")
       if (container) {

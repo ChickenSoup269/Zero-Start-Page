@@ -1095,10 +1095,16 @@
                                 Color</label>
                             <input type="color" id="pixel-run-color-picker" value="#00e5ff" />
                         </div>
-                        <div id="nintendo-pixel-color-setting" class="setting-item-row" style="display: none;">
-                            <label for="nintendo-pixel-color-picker" data-i18n="setting_nintendo_pixel_color">Phosphor
-                                Glow</label>
-                            <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
+                        <div id="nintendo-pixel-color-setting" class="setting-item" style="display: none;">
+                            <label for="nintendo-pixel-mode-select" data-i18n="setting_nintendo_pixel_mode">Terminal Mode</label>
+                            <select id="nintendo-pixel-mode-select" class="styled-select" style="width: 100%; margin-bottom: 10px;">
+                                <option value="mainframe" data-i18n="nintendo_pixel_mode_mainframe">Mainframe HD (New - 8-Bit Command Terminal)</option>
+                                <option value="classic" data-i18n="nintendo_pixel_mode_classic">Classic (Old - Multi-Window Desktop)</option>
+                            </select>
+                            <div class="setting-item-row">
+                                <label for="nintendo-pixel-color-picker" data-i18n="setting_nintendo_pixel_color">Phosphor Glow</label>
+                                <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
+                            </div>
                         </div>
                         <div id="crt-scan-color-setting" class="setting-item-row" style="display: none;">
                             <label for="crt-scan-color-picker" data-i18n="setting_crt_scan_color">Scan Beam
@@ -1539,9 +1545,17 @@
                                 <option value="custom" data-i18n="light_pillars_mode_custom">Custom Color (Tùy Chọn)</option>
                             </select>
 
-                            <div id="light-pillars-custom-color-wrap" style="display: none;">
+                            <div id="light-pillars-custom-color-wrap" style="display: none; margin-bottom: 10px;">
                                 <label for="light-pillars-color-picker" data-i18n="setting_light_pillars_color">Pillars Color</label>
                                 <input type="color" id="light-pillars-color-picker" value="#88ccff" />
+                            </div>
+
+                            <div id="light-pillars-count-setting" class="setting-item-sub">
+                                <label for="light-pillars-count-slider">
+                                    <span data-i18n="setting_light_pillars_count">Pillar Count</span>:
+                                    <span id="light-pillars-count-val">8</span>
+                                </label>
+                                <input type="range" id="light-pillars-count-slider" min="2" max="25" step="1" value="8" />
                             </div>
                         </div>
 

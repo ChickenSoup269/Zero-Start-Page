@@ -44,7 +44,12 @@ export class LightPillarsEffect {
     this.height = 0
 
     // Simulation Entities
-    this.pillarCount = 10
+    this.pillarCount =
+      typeof options.count === "number"
+        ? options.count
+        : typeof options.pillarCount === "number"
+        ? options.pillarCount
+        : 8
     this.crystalCount = 50
     this.pillars = []
     this.crystals = []
@@ -98,6 +103,11 @@ export class LightPillarsEffect {
 
   set mode(val) {
     this.setMode(val)
+  }
+
+  setPillarCount(count) {
+    this.pillarCount = Math.max(2, Math.min(30, Number(count) || 8))
+    this._initPillars()
   }
 
   updateColor(hex) {
@@ -409,7 +419,10 @@ export class LightPillarsEffect {
     const H = this.height || window.innerHeight
 
     this.pillars = []
-    const count = Math.max(5, Math.min(8, Math.floor(W / 240)))
+    const count =
+      typeof this.pillarCount === "number"
+        ? Math.max(2, Math.min(30, this.pillarCount))
+        : Math.max(5, Math.min(8, Math.floor(W / 240)))
 
     for (let i = 0; i < count; i++) {
       let z
@@ -418,8 +431,10 @@ export class LightPillarsEffect {
       else if (roll < 0.75) z = 0.5 + Math.random() * 0.25
       else z = 0.75 + Math.random() * 0.25
 
-      const x = (i / count) * W + (Math.random() - 0.5) * (W / count * 0.8)
-      const width = (45 + Math.random() * 55) * (0.65 + z * 0.7)
+      const x =
+        ((i + 0.5) / count) * W +
+        (Math.random() - 0.5) * (W / count * 0.6)
+      const width = (42 + Math.random() * 52) * (0.65 + z * 0.7)
       const height = H * (2.2 + Math.random() * 0.6)
       const y = -height * 0.5 + H * 0.5
 

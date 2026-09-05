@@ -136,6 +136,7 @@ export const VISUAL_EFFECT_KEYS = [
   "shinyColor",
   "lineShinyColor",
   "lineShinyMode",
+  "nintendoPixelMode",
   "nintendoPixelColor",
   "crtScanColor",
   "crtScanFrequency",

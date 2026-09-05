@@ -533,6 +533,18 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.lightPillarsCountSlider?.addEventListener("input", () => {
+    const count = parseInt(DOM.lightPillarsCountSlider.value, 10) || 8
+    if (DOM.lightPillarsCountVal) {
+      DOM.lightPillarsCountVal.textContent = count
+    }
+    updateSetting("lightPillarsCount", count)
+    saveSettings()
+    if (effectInstances.lightPillarsEffect) {
+      effectInstances.lightPillarsEffect.setPillarCount(count)
+    }
+  })
+
   let floatingLinesTimer = null
   const handleFloatingLinesColor = () => {
     const val = DOM.floatingLinesColorPicker.value
@@ -1024,6 +1036,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     saveSettings()
     if (effectInstances.pixelRunEffect)
       effectInstances.pixelRunEffect.color = DOM.pixelRunColorPicker.value
+  })
+
+  DOM.nintendoPixelModeSelect?.addEventListener("change", () => {
+    updateSetting("nintendoPixelMode", DOM.nintendoPixelModeSelect.value)
+    saveSettings()
+    if (effectInstances.nintendoPixelEffect)
+      effectInstances.nintendoPixelEffect.setMode(
+        DOM.nintendoPixelModeSelect.value,
+      )
   })
 
   DOM.nintendoPixelColorPicker?.addEventListener("change", () => {

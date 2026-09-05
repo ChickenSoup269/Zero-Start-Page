@@ -44,23 +44,10 @@ export class HyperspaceEffect {
     this.fov = 340
     this.stars = []
 
-    // 3D Flight Camera & Mouse Steering
-    this.camera = {
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-    }
-
     this._updateRgb(this.color)
 
     this._resizeHandler = () => this.resize()
-    this._mouseMoveHandler = (e) => this._handleMouseMove(e)
-    this._mouseLeaveHandler = () => this._handleMouseLeave()
-
     window.addEventListener("resize", this._resizeHandler)
-    window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
-    document.addEventListener("mouseleave", this._mouseLeaveHandler)
 
     this.resize()
   }
@@ -96,18 +83,6 @@ export class HyperspaceEffect {
 
   setTransparent(transparent) {
     this.transparent = !!transparent
-  }
-
-  _handleMouseMove(e) {
-    const W = this.width || window.innerWidth
-    const H = this.height || window.innerHeight
-    this.camera.targetX = (e.clientX - W / 2) * 0.35
-    this.camera.targetY = (e.clientY - H / 2) * 0.35
-  }
-
-  _handleMouseLeave() {
-    this.camera.targetX = 0
-    this.camera.targetY = 0
   }
 
   resize() {
@@ -174,8 +149,6 @@ export class HyperspaceEffect {
   destroy() {
     this.stop()
     window.removeEventListener("resize", this._resizeHandler)
-    window.removeEventListener("mousemove", this._mouseMoveHandler)
-    document.removeEventListener("mouseleave", this._mouseLeaveHandler)
     this.stars = []
   }
 
@@ -189,17 +162,13 @@ export class HyperspaceEffect {
     const dt = Math.min(elapsed / 16.67, 3.0) // Normalize to 60fps
     this.lastTime = currentTime
 
-    this.time += 0.008 * dt
-
-    // Silky smooth camera steering towards cursor
-    this.camera.x += (this.camera.targetX - this.camera.x) * 0.04 * dt
-    this.camera.y += (this.camera.targetY - this.camera.y) * 0.04 * dt
+    this.time += 0.005 * dt
 
     const ctx = this.ctx
     const W = this.width
     const H = this.height
-    const cx = this.centerX + this.camera.x
-    const cy = this.centerY + this.camera.y
+    const cx = this.centerX
+    const cy = this.centerY
 
     // Background Rendering
     if (this.transparent) {
@@ -270,7 +239,7 @@ export class HyperspaceEffect {
     ctx.globalCompositeOperation = "lighter"
 
     const time = this.time
-    const speed = this.speed * 3.5
+    const speed = this.speed * 1.4
     const sides = 6 // Hexagonal Cyber Tunnel
     const ringSpacing = 160
     const tunnelRadius = 480
@@ -290,7 +259,7 @@ export class HyperspaceEffect {
       // Hexagonal vertices
       ctx.beginPath()
       for (let s = 0; s < sides; s++) {
-        const a = (s / sides) * Math.PI * 2 + this.time * 0.15
+        const a = (s / sides) * Math.PI * 2 + this.time * 0.1
         const px = cx + Math.cos(a) * r
         const py = cy + Math.sin(a) * r
         if (s === 0) ctx.moveTo(px, py)
@@ -304,7 +273,7 @@ export class HyperspaceEffect {
     const numBeams = 6
     const beamDist = Math.max(this.width, this.height) * 1.2
     for (let b = 0; b < numBeams; b++) {
-      const a = (b / numBeams) * Math.PI * 2 + this.time * 0.15
+      const a = (b / numBeams) * Math.PI * 2 + this.time * 0.1
       ctx.beginPath()
       ctx.strokeStyle = `rgba(${this._rgbStr}, 0.12)`
       ctx.lineWidth = 1.0
@@ -323,7 +292,7 @@ export class HyperspaceEffect {
 
     const arms = 3
     const maxRadius = Math.max(this.width, this.height) * 0.75
-    const rotSpeed = this.time * 0.6
+    const rotSpeed = this.time * 0.25
 
     for (let i = 0; i < arms; i++) {
       const baseAngle = (i / arms) * Math.PI * 2 + rotSpeed
@@ -348,9 +317,9 @@ export class HyperspaceEffect {
     const ctx = this.ctx
     const fov = this.fov
     const maxZ = this.maxZ
-    // Slower, serene, silky smooth speed step
-    const speedFactor = this.speed * 4.5 * dt
-    const streakMult = Math.min(2.0, 0.35 + this.speed * 0.12)
+    // Slower, serene, chill cruising speed
+    const speedFactor = this.speed * 1.4 * dt
+    const streakMult = Math.min(1.5, 0.22 + this.speed * 0.08)
     const isVortex = this.style === "vortexHole"
 
     ctx.save()
@@ -362,7 +331,7 @@ export class HyperspaceEffect {
 
       // Gentle vortex swirl
       if (isVortex) {
-        const angularVel = (0.006 * (1 + (maxZ - star.z) / maxZ * 2.0)) * dt
+        const angularVel = (0.003 * (1 + ((maxZ - star.z) / maxZ) * 1.5)) * dt
         star.angle += angularVel
         star.x = Math.cos(star.angle) * star.radius
         star.y = Math.sin(star.angle) * star.radius
@@ -394,7 +363,10 @@ export class HyperspaceEffect {
       }
 
       // Calculate streak tail in 3D
-      const tailZ = Math.min(maxZ, star.z + speedFactor * star.speedMultiplier * streakMult * (1 + (maxZ - star.z) / 450))
+      const tailZ = Math.min(
+        maxZ,
+        star.z + speedFactor * star.speedMultiplier * streakMult * (1 + (maxZ - star.z) / 600)
+      )
       const prevK = fov / tailZ
       const prevPx = cx + star.x * prevK
       const prevPy = cy + star.y * prevK
@@ -409,7 +381,7 @@ export class HyperspaceEffect {
       }
 
       const alpha = Math.min(1, Math.max(0.05, proximity * 1.15 * star.brightness * depthFade))
-      const lineWidth = Math.max(0.8, Math.min(3.8, k * star.size * 1.3))
+      const lineWidth = Math.max(0.8, Math.min(3.6, k * star.size * 1.2))
 
       // Draw Warp Streak Gradient
       const grad = ctx.createLinearGradient(prevPx, prevPy, px, py)
@@ -425,10 +397,10 @@ export class HyperspaceEffect {
       ctx.stroke()
 
       // Subtle bright pinpoint star head
-      if (proximity > 0.4 && depthFade > 0.3) {
+      if (proximity > 0.35 && depthFade > 0.25) {
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`
         ctx.beginPath()
-        ctx.arc(px, py, lineWidth * 0.5, 0, Math.PI * 2)
+        ctx.arc(px, py, lineWidth * 0.55, 0, Math.PI * 2)
         ctx.fill()
       }
     }

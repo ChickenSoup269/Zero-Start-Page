@@ -831,6 +831,12 @@ export let lightPillarsCustomColorWrap = document.getElementById(
 export let lightPillarsColorPicker = document.getElementById(
   "light-pillars-color-picker",
 )
+export let lightPillarsCountSlider = document.getElementById(
+  "light-pillars-count-slider",
+)
+export let lightPillarsCountVal = document.getElementById(
+  "light-pillars-count-val",
+)
 export let floatingLinesColorPicker = document.getElementById(
   "floating-lines-color-picker",
 )
@@ -1086,6 +1092,9 @@ export let pixelRunColorSetting = document.getElementById(
   "pixel-run-color-setting",
 )
 
+export let nintendoPixelModeSelect = document.getElementById(
+  "nintendo-pixel-mode-select",
+)
 export let nintendoPixelColorPicker = document.getElementById(
   "nintendo-pixel-color-picker",
 )
@@ -3065,6 +3074,8 @@ export function refreshDOMReferences() {
   lightPillarsModeSelect = document.getElementById("light-pillars-mode-select")
   lightPillarsCustomColorWrap = document.getElementById("light-pillars-custom-color-wrap")
   lightPillarsColorPicker = document.getElementById("light-pillars-color-picker")
+  lightPillarsCountSlider = document.getElementById("light-pillars-count-slider")
+  lightPillarsCountVal = document.getElementById("light-pillars-count-val")
   floatingLinesColorPicker = document.getElementById(
     "floating-lines-color-picker",
   )
@@ -3248,6 +3259,9 @@ export function refreshDOMReferences() {
   skyLanternsSetting = document.getElementById("sky-lanterns-setting")
   pixelRunColorPicker = document.getElementById("pixel-run-color-picker")
   pixelRunColorSetting = document.getElementById("pixel-run-color-setting")
+  nintendoPixelModeSelect = document.getElementById(
+    "nintendo-pixel-mode-select",
+  )
   nintendoPixelColorPicker = document.getElementById(
     "nintendo-pixel-color-picker",
   )
