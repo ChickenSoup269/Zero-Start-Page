@@ -66,6 +66,16 @@ function cleanHtmlDescription(value = "") {
   let text = decodeIcsText(value)
   // Clean google calendar blob tags
   text = text.replace(/<\/?html-blob[^>]*>/gi, "")
+  // Extract anchor links if text inside doesn't contain the url
+  text = text.replace(
+    /<a\s+(?:[^>]*?\s+)?href="([^"]*)"[^>]*>(.*?)<\/a>/gi,
+    (match, href, label) => {
+      if (label && href && !label.includes(href)) {
+        return `${label} (${href})`
+      }
+      return href || label
+    },
+  )
   // Convert line breaks and paragraph tags
   text = text.replace(/<br\s*\/?>/gi, "\n")
   text = text.replace(/<\/p>/gi, "\n\n")
@@ -97,8 +107,8 @@ function linkifyText(text = "") {
   )
 }
 
-function extractMeetingInfo(text = "", location = "", url = "") {
-  const combined = `${url} ${location} ${text}`
+function extractMeetingInfo(text = "", location = "", url = "", conference = "") {
+  const combined = `${conference} ${url} ${location} ${text}`
 
   // Google Meet
   const meetMatch = combined.match(/https?:\/\/meet\.google\.com\/[a-z0-9-]+/i)
@@ -119,7 +129,7 @@ function extractMeetingInfo(text = "", location = "", url = "") {
     return {
       meetingUrl: zoomMatch[0],
       meetingType: "zoom",
-      meetingLabel: "Zoom",
+      meetingLabel: "Zoom Meeting",
       iconClass: "fa-solid fa-video",
     }
   }
@@ -145,7 +155,7 @@ function extractMeetingInfo(text = "", location = "", url = "") {
     return {
       meetingUrl: webexMatch[0],
       meetingType: "webex",
-      meetingLabel: "Webex",
+      meetingLabel: "Cisco Webex",
       iconClass: "fa-solid fa-video",
     }
   }
@@ -158,6 +168,17 @@ function extractMeetingInfo(text = "", location = "", url = "") {
       meetingType: "skype",
       meetingLabel: "Skype",
       iconClass: "fa-brands fa-skype",
+    }
+  }
+
+  // Jitsi Meet
+  const jitsiMatch = combined.match(/https?:\/\/meet\.jit\.si\/[a-zA-Z0-9_-]+/i)
+  if (jitsiMatch) {
+    return {
+      meetingUrl: jitsiMatch[0],
+      meetingType: "jitsi",
+      meetingLabel: "Jitsi Meet",
+      iconClass: "fa-solid fa-video",
     }
   }
 
@@ -179,7 +200,43 @@ function extractLocationInfo(location = "") {
   }
 }
 
-function parseIcsDate(value = "") {
+function parseDateInTimezone(year, month, day, hour, min, sec, tzid) {
+  if (!tzid) {
+    return new Date(year, month - 1, day, hour, min, sec)
+  }
+  try {
+    const naiveUtc = new Date(Date.UTC(year, month - 1, day, hour, min, sec))
+    const dtf = new Intl.DateTimeFormat("en-US", {
+      timeZone: tzid,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    })
+    const parts = dtf.formatToParts(naiveUtc)
+    const map = {}
+    parts.forEach((p) => {
+      map[p.type] = p.value
+    })
+    const tzYear = Number(map.year)
+    const tzMonth = Number(map.month)
+    const tzDay = Number(map.day)
+    let tzHour = Number(map.hour)
+    if (tzHour === 24) tzHour = 0
+    const tzMin = Number(map.minute)
+    const tzSec = Number(map.second)
+    const tzAsUtc = new Date(Date.UTC(tzYear, tzMonth - 1, tzDay, tzHour, tzMin, tzSec))
+    const diff = tzAsUtc.getTime() - naiveUtc.getTime()
+    return new Date(naiveUtc.getTime() - diff)
+  } catch (_) {
+    return new Date(year, month - 1, day, hour, min, sec)
+  }
+}
+
+function parseIcsDate(value = "", params = "", defaultTzid = "") {
   const clean = String(value || "").trim()
   if (!clean) return null
 
@@ -205,15 +262,22 @@ function parseIcsDate(value = "") {
 
   const isUtc = !!dateTime[7]
   const year = Number(dateTime[1])
-  const month = Number(dateTime[2]) - 1
+  const month = Number(dateTime[2])
   const day = Number(dateTime[3])
   const hour = Number(dateTime[4])
   const min = Number(dateTime[5])
   const sec = Number(dateTime[6] || 0)
 
-  const date = isUtc
-    ? new Date(Date.UTC(year, month, day, hour, min, sec))
-    : new Date(year, month, day, hour, min, sec)
+  let date
+  let effectiveTzid = ""
+  if (isUtc) {
+    date = new Date(Date.UTC(year, month - 1, day, hour, min, sec))
+    effectiveTzid = "UTC"
+  } else {
+    const tzMatch = String(params || "").match(/TZID="?([^";:]+)"?/i)
+    effectiveTzid = tzMatch ? tzMatch[1] : defaultTzid
+    date = parseDateInTimezone(year, month, day, hour, min, sec, effectiveTzid)
+  }
 
   if (Number.isNaN(date.getTime())) return null
 
@@ -222,7 +286,94 @@ function parseIcsDate(value = "") {
     time: `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
     allDay: false,
     obj: date,
+    tzid: effectiveTzid,
   }
+}
+
+function parseIcsAttendee(line = "") {
+  const cnMatch = line.match(/CN="?([^";:]+)"?/i)
+  const mailMatch = line.match(/mailto:([^\s;>]+)/i)
+  const partstatMatch = line.match(/PARTSTAT=([A-Z-]+)/i)
+  const roleMatch = line.match(/ROLE=([A-Z-]+)/i)
+
+  const email = mailMatch ? mailMatch[1].trim() : ""
+  let name = cnMatch ? cnMatch[1].trim() : ""
+  if (!name && email) {
+    name = email.split("@")[0]
+  }
+
+  const partstat = partstatMatch ? partstatMatch[1].toUpperCase() : "NEEDS-ACTION"
+  const role = roleMatch ? roleMatch[1].toUpperCase() : "REQ-PARTICIPANT"
+
+  return {
+    name: name || "Khách",
+    email,
+    partstat, // ACCEPTED, DECLINED, TENTATIVE, NEEDS-ACTION
+    role,
+  }
+}
+
+function parseIcsAttachment(line = "", value = "") {
+  const fileMatch = line.match(/FILENAME="?([^";:]+)"?/i)
+  const url = String(value || "").trim()
+  if (!url || !/^https?:\/\//i.test(url)) return null
+
+  let name = fileMatch ? fileMatch[1].trim() : ""
+  if (!name) {
+    try {
+      const u = new URL(url)
+      const segments = u.pathname.split("/").filter(Boolean)
+      name = segments.pop() || u.hostname
+    } catch (_) {
+      name = "Tài liệu đính kèm"
+    }
+  }
+
+  return { name, url }
+}
+
+function getNthWeekdayOfMonth(year, month, byDayStr) {
+  const dayMap = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 }
+  const match = byDayStr.match(/([+-]?\d+)?([A-Z]{2})/)
+  if (!match) return null
+  const nth = parseInt(match[1] || "1", 10)
+  const targetWeekday = dayMap[match[2]]
+  if (targetWeekday === undefined) return null
+
+  if (nth > 0) {
+    let count = 0
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    for (let day = 1; day <= daysInMonth; day++) {
+      if (new Date(year, month, day).getDay() === targetWeekday) {
+        count++
+        if (count === nth) return day
+      }
+    }
+  } else if (nth < 0) {
+    let count = 0
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    for (let day = daysInMonth; day >= 1; day--) {
+      if (new Date(year, month, day).getDay() === targetWeekday) {
+        count--
+        if (count === nth) return day
+      }
+    }
+  }
+  return null
+}
+
+function formatDurationStr(durationMs) {
+  if (!durationMs || durationMs <= 0) return ""
+  const totalMins = Math.round(durationMs / 60000)
+  const hours = Math.floor(totalMins / 60)
+  const mins = totalMins % 60
+  if (hours > 0 && mins > 0) {
+    return `${hours} giờ ${mins} phút`
+  }
+  if (hours > 0) {
+    return `${hours} giờ`
+  }
+  return `${mins} phút`
 }
 
 function parseIcsDuration(value = "") {
@@ -265,15 +416,6 @@ function pushEventOccurrences(
 ) {
   const endObj = new Date(startObj.getTime() + durationMs)
   const startDateStr = formatDateStr(startObj)
-  const endDateStr = formatDateStr(endObj)
-
-  const startTimeStr = allDay ? "" : formatTimeStr(startObj)
-  const endTimeStr = allDay ? "" : formatTimeStr(endObj)
-  const timeRange = allDay
-    ? ""
-    : endTimeStr && endTimeStr !== startTimeStr
-      ? `${startTimeStr} - ${endTimeStr}`
-      : startTimeStr
 
   let currentObj = new Date(startObj)
   currentObj.setHours(0, 0, 0, 0)
@@ -284,6 +426,18 @@ function pushEventOccurrences(
     endMidnight.setDate(endMidnight.getDate() - 1)
   }
   endMidnight.setHours(0, 0, 0, 0)
+
+  // Inclusive end date for display
+  const displayEndObj = allDay && durationMs > 0 ? endMidnight : endObj
+  const endDateStr = formatDateStr(displayEndObj)
+
+  const startTimeStr = allDay ? "" : formatTimeStr(startObj)
+  const endTimeStr = allDay ? "" : formatTimeStr(endObj)
+  const timeRange = allDay
+    ? "Cả ngày"
+    : endTimeStr && endTimeStr !== startTimeStr
+      ? `${startTimeStr} - ${endTimeStr}`
+      : startTimeStr
 
   // Calculate total days
   const msPerDay = 24 * 60 * 60 * 1000
@@ -303,6 +457,12 @@ function pushEventOccurrences(
         time: startTimeStr,
         endTime: endTimeStr,
         timeRange,
+        duration: durationMs,
+        durationStr: allDay
+          ? totalDays > 1
+            ? `${totalDays} ngày`
+            : "Cả ngày"
+          : formatDurationStr(durationMs),
         startDate: startDateStr,
         endDate: endDateStr,
         isMultiDay: false,
@@ -325,16 +485,18 @@ function pushEventOccurrences(
 
       let dayTime = ""
       let dayTimeRange = ""
-      if (!allDay) {
+      if (allDay) {
+        dayTimeRange = `Cả ngày (Ngày ${dayOffset + 1}/${totalDays})`
+      } else {
         if (isFirst) {
           dayTime = startTimeStr
-          dayTimeRange = `Từ ${startTimeStr}`
+          dayTimeRange = `Từ ${startTimeStr} (Ngày 1/${totalDays})`
         } else if (isLast) {
           dayTime = endTimeStr
-          dayTimeRange = `Đến ${endTimeStr}`
+          dayTimeRange = `Đến ${endTimeStr} (Ngày ${totalDays}/${totalDays})`
         } else {
           dayTime = ""
-          dayTimeRange = "Cả ngày"
+          dayTimeRange = `Cả ngày (Ngày ${dayOffset + 1}/${totalDays})`
         }
       }
 
@@ -346,6 +508,8 @@ function pushEventOccurrences(
         time: dayTime,
         endTime: isLast ? endTimeStr : "",
         timeRange: dayTimeRange || timeRange,
+        duration: durationMs,
+        durationStr: allDay ? `${totalDays} ngày` : formatDurationStr(durationMs),
         startDate: startDateStr,
         endDate: endDateStr,
         isMultiDay: true,
@@ -362,7 +526,7 @@ function pushEventOccurrences(
   }
 }
 
-function expandIcsEvents(rawEvents) {
+function expandIcsEvents(rawEvents, defaultTzid = "", defaultCalName = "") {
   const events = []
   const maxOccurrences = 400
   const windowEnd = new Date()
@@ -370,18 +534,41 @@ function expandIcsEvents(rawEvents) {
   const windowStart = new Date()
   windowStart.setFullYear(windowStart.getFullYear() - 1) // 1 year behind
 
+  // 1. Separate master events and recurrence overrides
+  const masterEvents = []
+  const overrideEvents = []
+  const overrideMap = new Map()
+
   rawEvents.forEach((raw) => {
-    // Skip cancelled events
+    if (raw.RECURRENCE_ID) {
+      overrideEvents.push(raw)
+      const parsedRecId = parseIcsDate(
+        raw.RECURRENCE_ID,
+        raw.RECURRENCE_ID_PARAMS,
+        defaultTzid,
+      )
+      if (parsedRecId) {
+        const key = `${raw.UID}_${parsedRecId.date}`
+        overrideMap.set(key, raw)
+      }
+    } else {
+      masterEvents.push(raw)
+    }
+  })
+
+  // 2. Expand master events
+  masterEvents.forEach((raw) => {
+    // Skip cancelled events if not recurrent
     if (raw.STATUS && raw.STATUS.toUpperCase() === "CANCELLED") {
       return
     }
 
-    const start = parseIcsDate(raw.DTSTART)
+    const start = parseIcsDate(raw.DTSTART, raw.DTSTART_PARAMS, defaultTzid)
     if (!start) return
 
     let duration = 0
     if (raw.DTEND) {
-      const end = parseIcsDate(raw.DTEND)
+      const end = parseIcsDate(raw.DTEND, raw.DTEND_PARAMS, defaultTzid)
       if (end) {
         duration = Math.max(0, end.obj.getTime() - start.obj.getTime())
       }
@@ -395,18 +582,26 @@ function expandIcsEvents(rawEvents) {
     const rawDescription = raw.DESCRIPTION || ""
     const rawLocation = raw.LOCATION || ""
     const rawUrl = raw.URL || ""
+    const rawConference = raw.CONFERENCE || raw["X-GOOGLE-CONFERENCE"] || ""
 
     const title = decodeIcsText(rawSummary)
     const cleanDesc = cleanHtmlDescription(rawDescription)
     const locationInfo = extractLocationInfo(rawLocation)
-    const meetingInfo = extractMeetingInfo(rawDescription, rawLocation, rawUrl)
+    const meetingInfo = extractMeetingInfo(
+      rawDescription,
+      rawLocation,
+      rawUrl,
+      rawConference,
+    )
 
     // Extract organizer if available
     let organizer = ""
+    let organizerEmail = ""
     if (raw.ORGANIZER) {
       const cnMatch = raw.ORGANIZER.match(/CN="?([^";:]+)"?/i)
-      const mailMatch = raw.ORGANIZER.match(/mailto:([^\s;]+)/i)
+      const mailMatch = raw.ORGANIZER.match(/mailto:([^\s;>]+)/i)
       organizer = cnMatch ? cnMatch[1] : mailMatch ? mailMatch[1] : ""
+      organizerEmail = mailMatch ? mailMatch[1] : ""
     }
 
     const baseEvent = {
@@ -421,15 +616,19 @@ function expandIcsEvents(rawEvents) {
       meetingIcon: meetingInfo ? meetingInfo.iconClass : "",
       url: rawUrl,
       organizer,
+      organizerEmail,
       status: raw.STATUS ? raw.STATUS.toUpperCase() : "CONFIRMED",
+      attendees: Array.isArray(raw.ATTENDEES) ? raw.ATTENDEES : [],
+      attachments: Array.isArray(raw.ATTACHMENTS) ? raw.ATTACHMENTS : [],
       source: "google",
       allDay: start.allDay,
+      calendarName: defaultCalName || "",
     }
 
     const exdates = new Set()
     if (raw.EXDATE) {
       raw.EXDATE.forEach((ex) => {
-        const parsedEx = parseIcsDate(ex)
+        const parsedEx = parseIcsDate(ex, "", defaultTzid)
         if (parsedEx) exdates.add(parsedEx.date)
       })
     }
@@ -456,8 +655,13 @@ function expandIcsEvents(rawEvents) {
       const freq = rule.FREQ
       let untilDate = null
       if (rule.UNTIL) {
-        const u = parseIcsDate(rule.UNTIL)
-        if (u) untilDate = u.obj
+        const u = parseIcsDate(rule.UNTIL, "", defaultTzid)
+        if (u) {
+          untilDate = new Date(u.obj)
+          if (u.allDay) {
+            untilDate.setHours(23, 59, 59, 999)
+          }
+        }
       }
       const count = parseInt(rule.COUNT, 10) || null
       const interval = parseInt(rule.INTERVAL, 10) || 1
@@ -489,7 +693,10 @@ function expandIcsEvents(rawEvents) {
 
             if (dayObj >= start.obj && dayObj <= windowEnd) {
               if (untilDate && dayObj > untilDate) break
-              if (dayObj >= windowStart) {
+              const dateStr = formatDateStr(dayObj)
+              const overrideKey = `${eventUid}_${dateStr}`
+              // If an override exists for this occurrence, skip generating master occurrence
+              if (!overrideMap.has(overrideKey) && dayObj >= windowStart) {
                 pushEventOccurrences(
                   events,
                   baseEvent,
@@ -514,7 +721,10 @@ function expandIcsEvents(rawEvents) {
           if (untilDate && currentObj > untilDate) break
           if (currentObj > windowEnd) break
 
-          if (currentObj >= windowStart) {
+          const dateStr = formatDateStr(currentObj)
+          const overrideKey = `${eventUid}_${dateStr}`
+
+          if (!overrideMap.has(overrideKey) && currentObj >= windowStart) {
             pushEventOccurrences(
               events,
               baseEvent,
@@ -535,12 +745,19 @@ function expandIcsEvents(rawEvents) {
           } else if (freq === "WEEKLY") {
             currentObj.setDate(currentObj.getDate() + 7 * interval)
           } else if (freq === "MONTHLY") {
+            currentObj.setMonth(currentObj.getMonth() + interval)
             if (rule.BYMONTHDAY) {
               const bmd = parseInt(rule.BYMONTHDAY, 10)
-              currentObj.setMonth(currentObj.getMonth() + interval)
               currentObj.setDate(bmd)
-            } else {
-              currentObj.setMonth(currentObj.getMonth() + interval)
+            } else if (rule.BYDAY) {
+              const nthDay = getNthWeekdayOfMonth(
+                currentObj.getFullYear(),
+                currentObj.getMonth(),
+                rule.BYDAY,
+              )
+              if (nthDay) {
+                currentObj.setDate(nthDay)
+              }
             }
           } else if (freq === "YEARLY") {
             currentObj.setFullYear(currentObj.getFullYear() + interval)
@@ -552,11 +769,104 @@ function expandIcsEvents(rawEvents) {
     }
   })
 
+  // 3. Process active override events
+  overrideEvents.forEach((raw) => {
+    if (raw.STATUS && raw.STATUS.toUpperCase() === "CANCELLED") {
+      return // cancelled override is excluded
+    }
+    const start = parseIcsDate(raw.DTSTART, raw.DTSTART_PARAMS, defaultTzid)
+    if (!start) return
+
+    let duration = 0
+    if (raw.DTEND) {
+      const end = parseIcsDate(raw.DTEND, raw.DTEND_PARAMS, defaultTzid)
+      if (end) {
+        duration = Math.max(0, end.obj.getTime() - start.obj.getTime())
+      }
+    } else if (raw.DURATION) {
+      duration = parseIcsDuration(raw.DURATION)
+    } else if (!start.allDay) {
+      duration = 60 * 60 * 1000
+    }
+
+    const master = raw.UID ? masterEvents.find((m) => m.UID === raw.UID) : null
+    const rawSummary =
+      raw.SUMMARY || (master ? master.SUMMARY : "") || "(Không có tiêu đề)"
+    const rawDescription =
+      raw.DESCRIPTION !== undefined
+        ? raw.DESCRIPTION
+        : master?.DESCRIPTION || ""
+    const rawLocation =
+      raw.LOCATION !== undefined ? raw.LOCATION : master?.LOCATION || ""
+    const rawUrl = raw.URL || master?.URL || ""
+    const rawConference =
+      raw.CONFERENCE ||
+      raw["X-GOOGLE-CONFERENCE"] ||
+      master?.CONFERENCE ||
+      master?.["X-GOOGLE-CONFERENCE"] ||
+      ""
+
+    const title = decodeIcsText(rawSummary)
+    const cleanDesc = cleanHtmlDescription(rawDescription)
+    const locationInfo = extractLocationInfo(rawLocation)
+    const meetingInfo = extractMeetingInfo(
+      rawDescription,
+      rawLocation,
+      rawUrl,
+      rawConference,
+    )
+
+    let organizer = ""
+    let organizerEmail = ""
+    if (raw.ORGANIZER) {
+      const cnMatch = raw.ORGANIZER.match(/CN="?([^";:]+)"?/i)
+      const mailMatch = raw.ORGANIZER.match(/mailto:([^\s;>]+)/i)
+      organizer = cnMatch ? cnMatch[1] : mailMatch ? mailMatch[1] : ""
+      organizerEmail = mailMatch ? mailMatch[1] : ""
+    }
+
+    const baseEvent = {
+      title,
+      description: cleanDesc,
+      rawDescription,
+      location: locationInfo.text,
+      mapsUrl: locationInfo.mapsUrl,
+      meetingUrl: meetingInfo ? meetingInfo.meetingUrl : "",
+      meetingType: meetingInfo ? meetingInfo.meetingType : "",
+      meetingLabel: meetingInfo ? meetingInfo.meetingLabel : "",
+      meetingIcon: meetingInfo ? meetingInfo.iconClass : "",
+      url: rawUrl,
+      organizer,
+      organizerEmail,
+      status: raw.STATUS ? raw.STATUS.toUpperCase() : "CONFIRMED",
+      attendees: Array.isArray(raw.ATTENDEES) ? raw.ATTENDEES : [],
+      attachments: Array.isArray(raw.ATTACHMENTS) ? raw.ATTACHMENTS : [],
+      source: "google",
+      allDay: start.allDay,
+      calendarName: defaultCalName || "",
+      isModifiedInstance: true,
+    }
+
+    const eventUid = raw.UID || `${start.date}-${title}`
+    pushEventOccurrences(
+      events,
+      baseEvent,
+      eventUid,
+      start.obj,
+      duration,
+      start.allDay,
+      new Set(),
+      999,
+    )
+  })
+
+  // Sort events chronologically
+  events.sort((a, b) => a.startObj.getTime() - b.startObj.getTime())
   return events
 }
 
-function parseGoogleCalendarIcs(text) {
-  if (!text || typeof text !== "string") return []
+export function parseGoogleCalendarIcs(text) {
+  if (!text || typeof text !== "string") return { events: [], meta: {} }
 
   // RFC 5545 line unfolding: a CRLF/LF immediately followed by a space or tab is folded line
   const unfolded = text.replace(/\r\n[ \t]|\r[ \t]|\n[ \t]/g, "")
@@ -566,7 +876,27 @@ function parseGoogleCalendarIcs(text) {
   let current = null
   let nestedDepth = 0
 
+  let calName = ""
+  let calTimezone = ""
+  let calDesc = ""
+
   lines.forEach((line) => {
+    if (!line) return
+
+    // Calendar-level metadata
+    if (!current && line.includes(":")) {
+      const sepIdx = line.indexOf(":")
+      const propKey = line.slice(0, sepIdx).split(";")[0].toUpperCase()
+      const propVal = line.slice(sepIdx + 1).trim()
+      if (propKey === "X-WR-CALNAME") {
+        calName = decodeIcsText(propVal)
+      } else if (propKey === "X-WR-TIMEZONE") {
+        calTimezone = propVal
+      } else if (propKey === "X-WR-CALDESC") {
+        calDesc = decodeIcsText(propVal)
+      }
+    }
+
     if (line === "BEGIN:VEVENT") {
       current = {}
       nestedDepth = 0
@@ -599,32 +929,53 @@ function parseGoogleCalendarIcs(text) {
     const key = keyPart.split(";")[0].toUpperCase()
     const value = line.slice(separatorIndex + 1)
 
-    if (
+    if (key === "DTSTART") {
+      current.DTSTART = value
+      current.DTSTART_PARAMS = keyPart
+    } else if (key === "DTEND") {
+      current.DTEND = value
+      current.DTEND_PARAMS = keyPart
+    } else if (key === "RECURRENCE-ID") {
+      current.RECURRENCE_ID = value
+      current.RECURRENCE_ID_PARAMS = keyPart
+    } else if (key === "EXDATE") {
+      current.EXDATE = current.EXDATE || []
+      current.EXDATE.push(...value.split(","))
+    } else if (key === "ORGANIZER") {
+      current.ORGANIZER = line // keep full line for CN/mailto
+    } else if (key === "ATTENDEE") {
+      current.ATTENDEES = current.ATTENDEES || []
+      current.ATTENDEES.push(parseIcsAttendee(line))
+    } else if (key === "ATTACH") {
+      const att = parseIcsAttachment(line, value)
+      if (att) {
+        current.ATTACHMENTS = current.ATTACHMENTS || []
+        current.ATTACHMENTS.push(att)
+      }
+    } else if (key === "CONFERENCE" || key === "X-GOOGLE-CONFERENCE") {
+      current.CONFERENCE = value
+    } else if (
       key === "UID" ||
       key === "SUMMARY" ||
       key === "DESCRIPTION" ||
       key === "LOCATION" ||
-      key === "DTSTART" ||
-      key === "DTEND" ||
       key === "DURATION" ||
       key === "RRULE" ||
-      key === "EXDATE" ||
       key === "STATUS" ||
-      key === "URL" ||
-      key === "ORGANIZER"
+      key === "URL"
     ) {
-      if (key === "EXDATE") {
-        current.EXDATE = current.EXDATE || []
-        current.EXDATE.push(...value.split(","))
-      } else if (key === "ORGANIZER") {
-        current.ORGANIZER = line // keep full line for CN/mailto
-      } else {
-        current[key] = value
-      }
+      current[key] = value
     }
   })
 
-  return expandIcsEvents(rawEvents)
+  const events = expandIcsEvents(rawEvents, calTimezone, calName)
+  const meta = {
+    name: calName,
+    timezone: calTimezone,
+    description: calDesc,
+  }
+  events.meta = meta
+  return { events, meta }
 }
 
 export class FullCalendar {
@@ -662,6 +1013,7 @@ export class FullCalendar {
           Array.isArray(cached.events)
         ) {
           this.googleEvents = cached.events
+          this.googleCalendarMeta = cached.meta || {}
           this.googleCalendarLoadedUrl = cached.url
           this.lastSyncTime = cached.timestamp
             ? new Date(cached.timestamp)
@@ -670,7 +1022,11 @@ export class FullCalendar {
             const timeStr = formatTimeStr(this.lastSyncTime)
             const i18n = geti18n()
             const msg = i18n.calendar_last_synced || "Last synced: {time}"
-            this.googleCalendarStatus = msg.replace("{time}", timeStr)
+            const calPrefix = this.googleCalendarMeta?.name ? `[${this.googleCalendarMeta.name}] ` : ""
+            this.googleCalendarStatus = {
+              type: "info",
+              text: `${calPrefix}${msg.replace("{time}", timeStr)}`,
+            }
           }
         }
       }
@@ -679,12 +1035,13 @@ export class FullCalendar {
     }
   }
 
-  saveCachedGoogleEvents(events, url) {
+  saveCachedGoogleEvents(events, url, meta = {}) {
     try {
       const payload = {
         url,
         timestamp: Date.now(),
         events,
+        meta,
       }
       localStorage.setItem(GCAL_CACHE_KEY, JSON.stringify(payload))
       this.lastSyncTime = new Date()
@@ -746,6 +1103,12 @@ export class FullCalendar {
         this.saveGoogleCalendarUrl()
       } else if (e.target.closest("#calendar-google-refresh")) {
         this.refreshGoogleCalendar()
+      } else if (e.target.closest("#calendar-google-help")) {
+        const helpBox = this.container.querySelector("#calendar-google-help-box")
+        if (helpBox) {
+          helpBox.style.display =
+            helpBox.style.display === "none" ? "block" : "none"
+        }
       } else if (e.target.closest("#calendar-today-btn")) {
         this.goToToday()
       } else if (e.target.closest("#prev-month")) {
@@ -925,7 +1288,18 @@ export class FullCalendar {
     if (!url) {
       this.googleCalendarStatus =
         i18n.calendar_google_url_invalid ||
-        "Use a valid iCal URL (https://... or webcal://...)."
+        "Vui lòng nhập đường dẫn iCal hợp lệ (https://... hoặc webcal://...)."
+      this.render()
+      return
+    }
+
+    if (
+      url.includes("calendar.google.com/calendar") &&
+      !url.includes(".ics") &&
+      !url.includes("/ical/")
+    ) {
+      this.googleCalendarStatus =
+        "Vui lòng dùng link 'Địa chỉ bí mật ở định dạng iCal' (.ics) từ cài đặt Google Calendar, không phải link web trình duyệt."
       this.render()
       return
     }
@@ -942,7 +1316,7 @@ export class FullCalendar {
       if (!silent) {
         this.googleCalendarStatus =
           i18n.calendar_google_url_empty ||
-          "Paste your Google Calendar iCal URL."
+          "Dán đường dẫn iCal Google Calendar để tải sự kiện."
         this.render()
       }
       return
@@ -951,7 +1325,7 @@ export class FullCalendar {
     this.googleCalendarLoading = true
     this.googleCalendarStatus = silent
       ? ""
-      : i18n.calendar_google_loading || "Loading calendar events..."
+      : i18n.calendar_google_loading || "Đang tải dữ liệu lịch..."
     this.render()
 
     try {
@@ -961,15 +1335,16 @@ export class FullCalendar {
       // 1. Direct fetch with timeout
       try {
         const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 12000)
+        const timeoutId = setTimeout(() => controller.abort(), 9000)
         const response = await fetch(url, {
           cache: "no-store",
           signal: controller.signal,
         })
         clearTimeout(timeoutId)
         if (response.ok) {
-          text = await response.text()
-          if (text.includes("BEGIN:VCALENDAR")) {
+          const candidate = await response.text()
+          if (candidate.includes("BEGIN:VCALENDAR")) {
+            text = candidate
             fetchSuccess = true
           }
         }
@@ -980,19 +1355,34 @@ export class FullCalendar {
         )
       }
 
-      // 2. Fallback via CORS proxy if direct fetch is blocked
+      // 2. Fallback via CORS proxies in order of speed and stability
       if (!fetchSuccess) {
-        try {
-          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-          const proxyResponse = await fetch(proxyUrl, { cache: "no-store" })
-          if (proxyResponse.ok) {
-            text = await proxyResponse.text()
-            if (text.includes("BEGIN:VCALENDAR")) {
-              fetchSuccess = true
+        const proxyList = [
+          `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+          `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+        ]
+
+        for (const proxyUrl of proxyList) {
+          try {
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => controller.abort(), 10000)
+            const proxyResponse = await fetch(proxyUrl, {
+              cache: "no-store",
+              signal: controller.signal,
+            })
+            clearTimeout(timeoutId)
+            if (proxyResponse.ok) {
+              const candidate = await proxyResponse.text()
+              if (candidate.includes("BEGIN:VCALENDAR")) {
+                text = candidate
+                fetchSuccess = true
+                break
+              }
             }
+          } catch (proxyErr) {
+            console.warn(`Proxy iCal fetch failed (${proxyUrl})`, proxyErr)
           }
-        } catch (proxyErr) {
-          console.warn("Proxy iCal fetch failed", proxyErr)
         }
       }
 
@@ -1000,18 +1390,53 @@ export class FullCalendar {
         throw new Error("Could not retrieve valid iCal calendar data.")
       }
 
-      this.googleEvents = parseGoogleCalendarIcs(text)
+      const parseResult = parseGoogleCalendarIcs(text)
+      this.googleEvents = parseResult.events || []
+      this.googleCalendarMeta = parseResult.meta || {}
       this.googleCalendarLoadedUrl = url
-      this.saveCachedGoogleEvents(this.googleEvents, url)
+      this.saveCachedGoogleEvents(
+        this.googleEvents,
+        url,
+        this.googleCalendarMeta,
+      )
 
       const timeStr = formatTimeStr(new Date())
-      const loadedMsg = i18n.calendar_google_loaded || "Loaded {count} events."
-      this.googleCalendarStatus = `${loadedMsg.replace("{count}", this.googleEvents.length)} (${timeStr})`
+      const loadedMsg =
+        i18n.calendar_google_loaded || "Đã tải {count} sự kiện."
+      const calNamePrefix = this.googleCalendarMeta.name
+        ? `[${this.googleCalendarMeta.name}] `
+        : ""
+
+      const allBusy =
+        this.googleEvents.length > 0 &&
+        this.googleEvents.every(
+          (e) =>
+            e.title.trim().toLowerCase() === "busy" ||
+            e.title.trim().toLowerCase() === "bận",
+        )
+
+      if (allBusy) {
+        const busyNote =
+          i18n.calendar_google_busy_note ||
+          "Calendar events are showing in busy/free mode."
+        this.googleCalendarStatus = {
+          type: "info",
+          text: `${calNamePrefix}${loadedMsg.replace("{count}", this.googleEvents.length)} (${timeStr}) • ${busyNote}`,
+        }
+      } else {
+        this.googleCalendarStatus = {
+          type: "info",
+          text: `${calNamePrefix}${loadedMsg.replace("{count}", this.googleEvents.length)} (${timeStr})`,
+        }
+      }
     } catch (error) {
       console.warn("Failed to load calendar", error)
-      this.googleCalendarStatus =
-        i18n.calendar_google_error ||
-        "Could not load that calendar URL. Please check the link."
+      this.googleCalendarStatus = {
+        type: "warning",
+        text:
+          i18n.calendar_google_error ||
+          "Could not load that calendar URL. Please check the link.",
+      }
     } finally {
       this.googleCalendarLoading = false
       this.render()
@@ -1061,9 +1486,12 @@ export class FullCalendar {
 
     const header = document.createElement("div")
     header.className = "calendar-day-menu-header"
+    const countText = (
+      i18n.calendar_day_events_count || "{count} events"
+    ).replace("{count}", events.length)
     header.innerHTML = `
       <div class="calendar-day-menu-date"><i class="fa-regular fa-calendar"></i> ${formattedHeader}</div>
-      <div class="calendar-day-menu-count">${events.length} ${events.length === 1 ? "sự kiện" : "sự kiện"}</div>
+      <div class="calendar-day-menu-count">${countText}</div>
     `
     menu.appendChild(header)
 
@@ -1143,27 +1571,82 @@ export class FullCalendar {
     menu.className = "calendar-context-menu calendar-google-event-modal"
     menu.addEventListener("click", (e) => e.stopPropagation())
 
+    const calName =
+      event.calendarName ||
+      this.googleCalendarMeta?.name ||
+      "Google Calendar"
     const timeLabel =
       event.timeRange ||
       (event.allDay ? i18n.calendar_all_day || "Cả ngày" : event.time || "")
 
+    // Status badge
+    let statusPill = ""
+    if (event.status === "TENTATIVE") {
+      statusPill = `<span class="calendar-status-tag tentative"><i class="fa-solid fa-circle-question"></i> ${i18n.calendar_event_status_tentative || "Tentative"}</span>`
+    } else if (event.status === "CANCELLED") {
+      statusPill = `<span class="calendar-status-tag cancelled"><i class="fa-solid fa-circle-xmark"></i> ${i18n.calendar_event_status_cancelled || "Cancelled"}</span>`
+    } else {
+      statusPill = `<span class="calendar-status-tag confirmed"><i class="fa-solid fa-circle-check"></i> ${i18n.calendar_event_status_confirmed || "Confirmed"}</span>`
+    }
+
+    // Formatted date string
+    let dateRangeText = event.date
+    if (event.allDay) {
+      if (event.isMultiDay) {
+        const multiDayTemplate =
+          i18n.calendar_multiday_format ||
+          "{startDate} to {endDate} • {totalDays} days (Day {current}/{totalDays})"
+        dateRangeText = multiDayTemplate
+          .replace("{startDate}", event.startDate)
+          .replace("{endDate}", event.endDate)
+          .replace("{totalDays}", event.totalDays)
+          .replace("{current}", event.dayIndex)
+      } else {
+        dateRangeText = `${event.date} • ${i18n.calendar_all_day || "All Day"}`
+      }
+    } else {
+      const durationText = event.durationStr ? ` • ${event.durationStr}` : ""
+      dateRangeText = `${event.date} • ${timeLabel}${durationText}`
+    }
+
+    const isBusyTitle =
+      event.title.trim().toLowerCase() === "busy" ||
+      event.title.trim().toLowerCase() === "bận"
+
+    let busyBanner = ""
+    if (isBusyTitle) {
+      busyBanner = `
+        <div class="calendar-modal-busy-note" id="calendar-busy-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <div class="busy-note-text">${escapeHtml(i18n.calendar_busy_title_note || "This event shows as 'busy' per Google Calendar privacy settings. If you want to see personal event titles, you can switch to the Secret iCal link in Google Calendar Settings.")}</div>
+          <button type="button" class="busy-note-dismiss" title="${i18n.close || "Close"}"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      `
+    }
+
     let html = `
       <div class="calendar-modal-header">
         <div class="calendar-modal-title-row">
-          <span class="calendar-modal-badge"><i class="fa-brands fa-google"></i> Google Calendar</span>
+          <div class="calendar-modal-badges">
+            <span class="calendar-modal-badge"><i class="fa-brands fa-google"></i> ${escapeHtml(calName)}</span>
+            ${statusPill}
+          </div>
           <button class="calendar-modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <h4 class="calendar-modal-event-title">${escapeHtml(event.title)}</h4>
+        ${busyBanner}
       </div>
       <div class="calendar-modal-body">
         <div class="calendar-modal-meta-row">
           <i class="fa-regular fa-clock"></i>
-          <span>${escapeHtml(event.date)} • ${escapeHtml(timeLabel)}</span>
+          <span>${dateRangeText}</span>
         </div>
     `
 
     if (event.location) {
-      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`
+      const mapUrl =
+        event.mapsUrl ||
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`
       html += `
         <div class="calendar-modal-meta-row">
           <i class="fa-solid fa-location-dot"></i>
@@ -1182,9 +1665,14 @@ export class FullCalendar {
               <div class="meeting-url-text">${escapeHtml(event.meetingUrl)}</div>
             </div>
           </div>
-          <a href="${event.meetingUrl}" target="_blank" rel="noopener noreferrer" class="calendar-join-btn">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.calendar_join_meeting || "Join"}
-          </a>
+          <div class="meeting-card-actions">
+            <a href="${event.meetingUrl}" target="_blank" rel="noopener noreferrer" class="calendar-join-btn">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> ${i18n.calendar_join_meeting || "Tham gia"}
+            </a>
+            <button type="button" class="calendar-copy-meeting-btn" data-url="${escapeHtml(event.meetingUrl)}" title="Sao chép link phòng họp">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
         </div>
       `
     }
@@ -1192,7 +1680,7 @@ export class FullCalendar {
     if (event.description) {
       html += `
         <div class="calendar-modal-desc-section">
-          <div class="desc-label">${i18n.calendar_description || "Description:"}</div>
+          <div class="desc-label"><i class="fa-solid fa-align-left"></i> ${i18n.calendar_description || "Mô tả:"}</div>
           <div class="desc-content">${linkifyText(event.description)}</div>
         </div>
       `
@@ -1202,7 +1690,82 @@ export class FullCalendar {
       html += `
         <div class="calendar-modal-organizer">
           <i class="fa-regular fa-user"></i>
-          <span>${escapeHtml(event.organizer)}</span>
+          <div>
+            <span class="organizer-label">${i18n.calendar_organizer || "Organizer:"} </span>
+            <span class="organizer-val">${escapeHtml(event.organizer)}</span>
+          </div>
+        </div>
+      `
+    }
+
+    // Attendees list
+    if (Array.isArray(event.attendees) && event.attendees.length > 0) {
+      const attTitle = (
+        i18n.calendar_attendees_title || "Attendees ({count}):"
+      ).replace("{count}", event.attendees.length)
+      html += `
+        <div class="calendar-modal-attendees-section">
+          <div class="attendees-header"><i class="fa-solid fa-users"></i> ${escapeHtml(attTitle)}</div>
+          <div class="attendees-list">
+      `
+      event.attendees.slice(0, 10).forEach((att) => {
+        let icon = "fa-regular fa-clock"
+        let statusClass = "pending"
+        let statusTitle = i18n.calendar_attendee_pending || "Pending"
+        if (att.partstat === "ACCEPTED") {
+          icon = "fa-solid fa-circle-check"
+          statusClass = "accepted"
+          statusTitle = i18n.calendar_attendee_accepted || "Accepted"
+        } else if (att.partstat === "DECLINED") {
+          icon = "fa-solid fa-circle-xmark"
+          statusClass = "declined"
+          statusTitle = i18n.calendar_attendee_declined || "Declined"
+        } else if (att.partstat === "TENTATIVE") {
+          icon = "fa-solid fa-circle-question"
+          statusClass = "tentative"
+          statusTitle = i18n.calendar_attendee_tentative || "Tentative"
+        }
+        html += `
+          <div class="attendee-chip ${statusClass}" title="${escapeHtml(att.email ? `${att.name} (${att.email}) - ${statusTitle}` : `${att.name} - ${statusTitle}`)}">
+            <i class="${icon}"></i>
+            <span>${escapeHtml(att.name)}</span>
+          </div>
+        `
+      })
+      if (event.attendees.length > 10) {
+        const moreCount = event.attendees.length - 10
+        const moreText = (
+          i18n.calendar_attendees_more || "+{count} others"
+        ).replace("{count}", moreCount)
+        html += `<span class="attendees-more">${escapeHtml(moreText)}</span>`
+      }
+      html += `
+          </div>
+        </div>
+      `
+    }
+
+    // Attachments list
+    if (Array.isArray(event.attachments) && event.attachments.length > 0) {
+      const attHeader = (
+        i18n.calendar_attachments_title || "Attachments ({count}):"
+      ).replace("{count}", event.attachments.length)
+      html += `
+        <div class="calendar-modal-attachments-section">
+          <div class="attachments-header"><i class="fa-solid fa-paperclip"></i> ${escapeHtml(attHeader)}</div>
+          <div class="attachments-list">
+      `
+      event.attachments.forEach((att) => {
+        html += `
+          <a href="${escapeHtml(att.url)}" target="_blank" rel="noopener noreferrer" class="attachment-item">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>${escapeHtml(att.name)}</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        `
+      })
+      html += `
+          </div>
         </div>
       `
     }
@@ -1210,7 +1773,18 @@ export class FullCalendar {
     html += `
       </div>
       <div class="calendar-modal-footer">
-        <button class="calendar-modal-btn calendar-modal-close-btn" type="button">Đóng</button>
+        <div class="calendar-modal-actions-row">
+          <button class="calendar-modal-btn calendar-modal-copy-info-btn" type="button" title="${i18n.calendar_copy_details_title || "Copy event details"}">
+            <i class="fa-solid fa-copy"></i> ${i18n.calendar_copy_info || "Copy"}
+          </button>
+          <button class="calendar-modal-btn calendar-modal-save-local-btn" type="button" title="${i18n.calendar_save_local || "Save to Calendar"}">
+            <i class="fa-solid fa-bookmark"></i> ${i18n.calendar_save_local || "Save to Calendar"}
+          </button>
+          <a href="${event.url || "https://calendar.google.com/calendar/r"}" target="_blank" rel="noopener noreferrer" class="calendar-modal-btn calendar-modal-open-gcal-btn" title="${i18n.calendar_open_in_gcal_title || "Open on Google Calendar website"}">
+            <i class="fa-brands fa-google"></i> ${i18n.calendar_open_google_web || "Google"}
+          </a>
+        </div>
+        <button class="calendar-modal-btn calendar-modal-close-btn" type="button">${i18n.close || "Close"}</button>
       </div>
     `
 
@@ -1219,6 +1793,77 @@ export class FullCalendar {
       .querySelectorAll(".calendar-modal-close, .calendar-modal-close-btn")
       .forEach((btn) => {
         btn.addEventListener("click", () => this.hideContextMenu())
+      })
+
+    // Dismiss busy note
+    menu
+      .querySelector(".busy-note-dismiss")
+      ?.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const note = menu.querySelector("#calendar-busy-note")
+        if (note) note.style.display = "none"
+      })
+
+    // Copy meeting link
+    menu
+      .querySelector(".calendar-copy-meeting-btn")
+      ?.addEventListener("click", async (e) => {
+        const copyBtn = e.currentTarget
+        const urlToCopy = copyBtn.dataset.url
+        if (urlToCopy) {
+          try {
+            await navigator.clipboard.writeText(urlToCopy)
+            const icon = copyBtn.querySelector("i")
+            if (icon) {
+              icon.className = "fa-solid fa-check"
+              setTimeout(() => {
+                icon.className = "fa-solid fa-copy"
+              }, 1500)
+            }
+          } catch (_) {}
+        }
+      })
+
+    // Copy event details
+    menu
+      .querySelector(".calendar-modal-copy-info-btn")
+      ?.addEventListener("click", async (e) => {
+        const btn = e.currentTarget
+        const parts = [
+          `• ${event.title}`,
+          `• ${dateRangeText.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()}`,
+        ]
+        if (event.location) parts.push(`• [${i18n.calendar_location || "Location"}]: ${event.location}`)
+        if (event.meetingUrl)
+          parts.push(
+            `• [${event.meetingLabel || i18n.calendar_join_meeting || "Meeting"}]: ${event.meetingUrl}`,
+          )
+        if (event.description) parts.push(`• [${i18n.calendar_description || "Description"}]: ${event.description}`)
+        try {
+          await navigator.clipboard.writeText(parts.join("\n"))
+          btn.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n.calendar_copied || "Copied!"}`
+          setTimeout(() => {
+            btn.innerHTML = `<i class="fa-solid fa-copy"></i> ${i18n.calendar_copy_info || "Copy"}`
+          }, 1800)
+        } catch (_) {}
+      })
+
+    // Save to local calendar
+    menu
+      .querySelector(".calendar-modal-save-local-btn")
+      ?.addEventListener("click", (e) => {
+        const btn = e.currentTarget
+        try {
+          addCalendarEvent({
+            title: event.title,
+            date: event.date,
+            time: event.time || "",
+            endTime: event.endTime || "",
+            description: event.description || "",
+          })
+          btn.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n.calendar_saved || "Saved!"}`
+          btn.disabled = true
+        } catch (_) {}
       })
 
     document.body.appendChild(menu)
@@ -1292,22 +1937,22 @@ export class FullCalendar {
       </div>
       <div class="calendar-form-body">
         <label class="calendar-form-label">
-          <span>${i18n.calendar_event_title || "Tiêu đề"}</span>
-          <input type="text" class="calendar-form-input calendar-event-title-input" value="${escapeHtml(initialTitle)}" placeholder="Nhập tiêu đề sự kiện..." />
+          <span>${i18n.calendar_event_title || "Event Title"}</span>
+          <input type="text" class="calendar-form-input calendar-event-title-input" value="${escapeHtml(initialTitle)}" placeholder="${i18n.calendar_event_placeholder_title || "Enter event title..."}" />
         </label>
         <div class="calendar-form-row">
           <label class="calendar-form-label">
-            <span>${i18n.calendar_event_date || "Ngày"}</span>
+            <span>${i18n.calendar_event_date || "Date"}</span>
             <input type="date" class="calendar-form-input calendar-event-date-input" value="${escapeHtml(initialDate)}" />
           </label>
           <label class="calendar-form-label">
-            <span>${i18n.calendar_event_time || "Giờ"}</span>
+            <span>${i18n.calendar_event_time_label || i18n.calendar_event_time || "Time"}</span>
             <input type="time" class="calendar-form-input calendar-event-time-input" value="${escapeHtml(initialTime)}" />
           </label>
         </div>
         <label class="calendar-form-label">
-          <span>${i18n.calendar_event_desc || "Mô tả (tùy chọn)"}</span>
-          <textarea class="calendar-form-input calendar-event-desc-input" rows="2" placeholder="Ghi chú thêm...">${escapeHtml(initialDesc)}</textarea>
+          <span>${i18n.calendar_event_desc || "Description (optional)"}</span>
+          <textarea class="calendar-form-input calendar-event-desc-input" rows="2" placeholder="${i18n.calendar_event_placeholder_desc || "Additional notes..."}">${escapeHtml(initialDesc)}</textarea>
         </label>
       </div>
       <div class="calendar-form-actions">
@@ -1621,7 +2266,14 @@ export class FullCalendar {
     let lunarMonthHeader = ""
     if (this.showLunar) {
       const midDayLunar = convertSolar2Lunar(15, month + 1, year)
-      lunarMonthHeader = `Tháng ${midDayLunar.month}${midDayLunar.leap ? " nhuận" : ""} ÂL`
+      const leapText = midDayLunar.leap
+        ? (i18n.calendar_lunar_leap || " (Leap)")
+        : ""
+      const template =
+        i18n.calendar_lunar_month_header || "Lunar Month {month}{leap}"
+      lunarMonthHeader = template
+        .replace("{month}", midDayLunar.month)
+        .replace("{leap}", leapText)
     }
 
     const isCurrentMonthView =
@@ -1675,10 +2327,47 @@ export class FullCalendar {
       googlePanel.innerHTML = `
         <div class="calendar-google-input-row">
           <input id="calendar-google-url" type="url" autocomplete="off" spellcheck="false" placeholder="${i18n.calendar_google_url_placeholder || "Google Calendar iCal URL"}" value="${escapeHtml(normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl))}">
-          <button id="calendar-google-save" class="icon-btn" type="button" title="${i18n.settings_save || "Save"}"><i class="fa-solid fa-check"></i></button>
-          <button id="calendar-google-refresh" class="icon-btn ${this.googleCalendarLoading ? "is-loading" : ""}" type="button" title="${i18n.calendar_refresh || "Refresh"}" ${this.googleCalendarLoading ? "disabled" : ""}><i class="fa-solid fa-rotate ${this.googleCalendarLoading ? "fa-spin" : ""}"></i></button>
+          <button id="calendar-google-save" class="icon-btn" type="button" title="${i18n.calendar_save_link || i18n.settings_save || "Save link"}"><i class="fa-solid fa-check"></i></button>
+          <button id="calendar-google-refresh" class="icon-btn ${this.googleCalendarLoading ? "is-loading" : ""}" type="button" title="${i18n.calendar_sync_now || i18n.calendar_refresh || "Sync now"}" ${this.googleCalendarLoading ? "disabled" : ""}><i class="fa-solid fa-rotate ${this.googleCalendarLoading ? "fa-spin" : ""}"></i></button>
+          <button id="calendar-google-help" class="icon-btn" type="button" title="${i18n.calendar_help_btn_title || "iCal setup guide"}"><i class="fa-solid fa-circle-question"></i></button>
         </div>
-        ${this.googleCalendarStatus ? `<div class="calendar-google-status">${escapeHtml(this.googleCalendarStatus)}</div>` : ""}
+        ${
+          this.googleCalendarMeta?.name
+            ? `
+          <div class="calendar-google-meta-badges">
+            <span class="calendar-google-meta-chip"><i class="fa-solid fa-calendar-check"></i> ${escapeHtml(this.googleCalendarMeta.name)}</span>
+            ${this.googleCalendarMeta.timezone ? `<span class="calendar-google-meta-chip"><i class="fa-solid fa-earth-asia"></i> ${escapeHtml(this.googleCalendarMeta.timezone)}</span>` : ""}
+          </div>
+        `
+            : ""
+        }
+        ${
+          this.googleCalendarStatus
+            ? (typeof this.googleCalendarStatus === "object"
+                ? `<div class="calendar-google-status ${this.googleCalendarStatus.type === "warning" ? "is-warning" : ""}"><i class="fa-solid ${this.googleCalendarStatus.type === "warning" ? "fa-triangle-exclamation" : "fa-circle-info"}"></i> <span>${escapeHtml(this.googleCalendarStatus.text)}</span></div>`
+                : `<div class="calendar-google-status"><span>${escapeHtml(this.googleCalendarStatus)}</span></div>`)
+            : ""
+        }
+        <div id="calendar-google-help-box" class="calendar-google-help-box" style="display: none;">
+          <div class="help-box-title"><i class="fa-solid fa-circle-info"></i> ${i18n.calendar_help_title || "Google Calendar iCal link guide:"}</div>
+          <ol class="help-box-steps">
+            <li>${i18n.calendar_help_step1 || 'Open <b>Google Calendar</b> on desktop (<a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer">calendar.google.com</a>).'}</li>
+            <li>${i18n.calendar_help_step2 || 'In left sidebar under <b>My calendars</b> <i class="fa-solid fa-chevron-right"></i> click <b>3 dots</b> (<i class="fa-solid fa-ellipsis-vertical"></i>) on your calendar <i class="fa-solid fa-chevron-right"></i> choose <b>Settings and sharing</b>.'}</li>
+            <li>${i18n.calendar_help_step3_header || 'Scroll down to <b>Integrate calendar</b>, you can choose either option:'}
+              <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 6px; font-size: 0.72rem; line-height: 1.45;">
+                <div style="padding: 6px 8px; background: rgba(255,255,255,0.06); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                  <div style="font-weight: 600; color: var(--text-color);"><i class="fa-solid fa-globe" style="color: #60a5fa; margin-right: 5px;"></i> ${i18n.calendar_help_public_title || "1. Public address in iCal format"}</div>
+                  <div style="opacity: 0.85; margin-top: 2px;">${i18n.calendar_help_public_desc || "Suitable for shared or public calendars. By default Google Calendar protects privacy by showing 'busy' unless full details are set to public."}</div>
+                </div>
+                <div style="padding: 6px 8px; background: rgba(255,255,255,0.06); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                  <div style="font-weight: 600; color: var(--text-color);"><i class="fa-solid fa-key" style="color: #34d399; margin-right: 5px;"></i> ${i18n.calendar_help_private_title || "2. Secret address in iCal format"}</div>
+                  <div style="opacity: 0.85; margin-top: 2px;">${i18n.calendar_help_private_desc || "Suitable for your personal calendar. Displays all original titles, descriptions, locations and meeting links privately."}</div>
+                </div>
+              </div>
+            </li>
+            <li>${i18n.calendar_help_step4 || 'Copy your preferred link, paste it into the field above and click <b>Save (<i class="fa-solid fa-check"></i>)</b>.'}</li>
+          </ol>
+        </div>
       `
       this.container.appendChild(googlePanel)
     }
