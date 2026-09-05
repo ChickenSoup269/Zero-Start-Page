@@ -1370,6 +1370,8 @@
   "bookmark_open_behavior_new_desc": "Die Startseite geöffnet lassen und Lesezeichen daneben starten.",
   "settings_drag_note": "(Hinweis: Dies aktiviert auch das Neuanordnen deiner gespeicherten Hintergründe, Farben und Verläufe durch Ziehen)",
   "sidebar_toc": "Inhaltsverzeichnis",
+  "toc_search_placeholder": "Abschnitte filtern...",
+  "toc_empty_results": "Keine passenden Abschnitte gefunden",
   "settings_show_top_right": "Google Apps & Avatar anzeigen",
   "settings_allow_text_selection": "Textauswahl erlauben",
   "g_apps_favorites": "Deine Favoriten",

@@ -1496,6 +1496,8 @@
   "bookmark_open_behavior_new_desc": "Giữ Start Page lại và mở dấu trang ở một tab bên cạnh.",
   "settings_drag_note": "(Lưu ý: Tính năng này cũng cho phép sắp xếp lại hình nền, màu sắc và dải màu đã lưu bằng cách kéo thả)",
   "sidebar_toc": "Mục lục",
+  "toc_search_placeholder": "Tìm nhanh mục cài đặt...",
+  "toc_empty_results": "Không tìm thấy mục phù hợp",
   "settings_show_top_right": "Hiện ứng dụng Google & Ảnh đại diện",
   "settings_allow_text_selection": "Cho phép chọn văn bản",
   "g_apps_favorites": "Ứng dụng yêu thích",

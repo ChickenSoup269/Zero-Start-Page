@@ -1497,6 +1497,8 @@
   "bookmark_open_behavior_new_desc": "Keep the Start Page open and launch bookmarks beside it.",
   "settings_drag_note": "(Note: This also enables reordering for your saved backgrounds, colors, and gradients by dragging them)",
   "sidebar_toc": "Table of Contents",
+  "toc_search_placeholder": "Filter sections...",
+  "toc_empty_results": "No matching sections found",
   "settings_show_top_right": "Show Google Apps & Avatar",
   "settings_allow_text_selection": "Allow Text Selection",
   "g_apps_favorites": "Your favorites",

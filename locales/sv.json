@@ -1444,6 +1444,8 @@
   "bookmark_open_behavior_new_desc": "Håll startsidan öppen och starta bokmärken bredvid.",
   "settings_drag_note": "(Obs: Detta aktiverar även sortering av dina sparade bakgrunder, färger och toningar via dra-och-släpp)",
   "sidebar_toc": "Innehållsförteckning",
+  "toc_search_placeholder": "Filtrera sektioner...",
+  "toc_empty_results": "Inga matchande sektioner hittades",
   "settings_show_top_right": "Visa Google-appar och avatar",
   "settings_allow_text_selection": "Tillåt textmarkering",
   "g_apps_favorites": "Dina favoriter",
