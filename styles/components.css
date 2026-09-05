@@ -1058,9 +1058,9 @@ body.context-menu-macos .bookmark-edit-field {
 .context-menu {
   display: none;
   position: fixed;
-  min-width: 225px;
+  min-width: 230px;
   width: max-content;
-  max-width: 320px;
+  max-width: 350px;
   padding: 6px 7px;
   z-index: 10001;
   overflow: clip;
@@ -1225,6 +1225,351 @@ body.context-menu-none #context-menu .context-menu-header {
 .context-menu-item:active {
   filter: brightness(0.9);
 }
+
+/* ── Context Menu Specialized Item Styles (Cycle, Toggle, Radio) ── */
+.context-menu-cycle-item,
+.context-menu-toggle-item,
+.context-menu-radio-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+}
+
+.context-cycle-label,
+.context-toggle-label,
+.context-radio-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cycle Tags: [✓ Current] ➔ Next */
+/* Cycle Tags: [✓ Current] ➔ Next */
+.context-cycle-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 11px;
+}
+
+.context-tag-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
+  color: var(--accent-color, #a5b4fc) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.38);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-tag-current i {
+  width: auto !important;
+  font-size: 9.5px !important;
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+.context-tag-arrow {
+  font-size: 9px;
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.6);
+  display: inline-flex;
+  align-items: center;
+}
+
+.context-tag-arrow i {
+  width: auto !important;
+  font-size: 9px !important;
+  color: inherit !important;
+}
+
+.context-tag-next {
+  opacity: 0.75;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10.5px;
+  font-weight: 400;
+  max-width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Toggle Badges: [ Bật ] / [ Tắt ] */
+.context-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 11.5px;
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  transition: all 0.12s ease;
+}
+
+.context-status-badge.badge-on {
+  color: #4ade80 !important;
+  background: rgba(74, 222, 128, 0.18);
+  border: 1px solid rgba(74, 222, 128, 0.38);
+  font-weight: 500;
+}
+
+.context-status-badge.badge-on i {
+  width: auto !important;
+  font-size: 13.5px !important;
+  color: #4ade80 !important;
+  opacity: 1 !important;
+}
+
+.context-status-badge.badge-off {
+  color: rgba(255, 255, 255, 0.52) !important;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.context-status-badge.badge-off i {
+  width: auto !important;
+  font-size: 13.5px !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  opacity: 0.8 !important;
+}
+
+/* Radio active check badge */
+.context-radio-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  font-size: 10.5px;
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
+  color: var(--accent-color, #a5b4fc) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.35);
+  padding: 1px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.context-radio-active-badge i {
+  width: auto !important;
+  font-size: 9px !important;
+  color: inherit !important;
+}
+
+/* Hover effects for specialized items (Dark Mode / Default) */
+#context-menu .context-menu-item:hover .context-tag-current,
+#context-menu .menu-item:hover .context-tag-current,
+.context-menu .context-menu-item:hover .context-tag-current,
+.context-menu .menu-item:hover .context-tag-current {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
+}
+
+#context-menu .context-menu-item:hover .context-tag-arrow,
+#context-menu .context-menu-item:hover .context-tag-next,
+#context-menu .menu-item:hover .context-tag-arrow,
+#context-menu .menu-item:hover .context-tag-next,
+.context-menu .context-menu-item:hover .context-tag-arrow,
+.context-menu .context-menu-item:hover .context-tag-next,
+.context-menu .menu-item:hover .context-tag-arrow,
+.context-menu .menu-item:hover .context-tag-next {
+  color: #ffffff !important;
+  opacity: 0.95 !important;
+}
+
+#context-menu .context-menu-item:hover .context-status-badge,
+#context-menu .menu-item:hover .context-status-badge,
+.context-menu .context-menu-item:hover .context-status-badge,
+.context-menu .menu-item:hover .context-status-badge {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+}
+
+#context-menu .context-menu-item:hover .context-status-badge i,
+#context-menu .menu-item:hover .context-status-badge i,
+.context-menu .context-menu-item:hover .context-status-badge i,
+.context-menu .menu-item:hover .context-status-badge i {
+  color: #ffffff !important;
+}
+
+#context-menu .context-menu-item:hover .context-radio-active-badge,
+#context-menu .menu-item:hover .context-radio-active-badge,
+.context-menu .context-menu-item:hover .context-radio-active-badge,
+.context-menu .menu-item:hover .context-radio-active-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
+}
+
+/* ── macOS & Light Mode Context Menu Badges & Tags (High Contrast) ── */
+body.context-menu-macos .context-tag-current,
+body.context-menu-light .context-tag-current {
+  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05)) !important;
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a) !important;
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18)) !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-macos .context-tag-arrow,
+body.context-menu-light .context-tag-arrow {
+  color: rgba(20, 20, 24, 0.5) !important;
+}
+
+body.context-menu-macos .context-tag-arrow i,
+body.context-menu-light .context-tag-arrow i {
+  color: inherit !important;
+}
+
+body.context-menu-macos .context-tag-next,
+body.context-menu-light .context-tag-next {
+  color: rgba(20, 20, 24, 0.65) !important;
+  font-weight: 500 !important;
+}
+
+body.context-menu-macos .context-status-badge.badge-on,
+body.context-menu-light .context-status-badge.badge-on {
+  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.16) !important;
+  border: 1px solid rgba(34, 197, 94, 0.36) !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-macos .context-status-badge.badge-on i,
+body.context-menu-light .context-status-badge.badge-on i {
+  color: #16a34a !important;
+}
+
+body.context-menu-macos .context-status-badge.badge-off,
+body.context-menu-light .context-status-badge.badge-off {
+  color: rgba(30, 35, 45, 0.65) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  font-weight: 500 !important;
+}
+
+body.context-menu-macos .context-status-badge.badge-off i,
+body.context-menu-light .context-status-badge.badge-off i {
+  color: rgba(30, 35, 45, 0.55) !important;
+}
+
+body.context-menu-macos .context-radio-active-badge,
+body.context-menu-light .context-radio-active-badge {
+  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05)) !important;
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a) !important;
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18)) !important;
+  font-weight: 600 !important;
+}
+
+/* Hover effects for macOS and Light Mode: Crisp White on Blue (#007aff) */
+body.context-menu-macos #context-menu .menu-item:hover .context-tag-current,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-tag-current,
+body.context-menu-macos .context-menu .menu-item:hover .context-tag-current,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-tag-current,
+body.context-menu-light #context-menu .menu-item:hover .context-tag-current,
+body.context-menu-light #context-menu .context-menu-item:hover .context-tag-current,
+body.context-menu-light .context-menu .menu-item:hover .context-tag-current,
+body.context-menu-light .context-menu .context-menu-item:hover .context-tag-current {
+  background: rgba(255, 255, 255, 0.28) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-macos #context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-macos #context-menu .menu-item:hover .context-tag-next,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-tag-next,
+body.context-menu-macos .context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-macos .context-menu .menu-item:hover .context-tag-next,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-tag-next,
+body.context-menu-light #context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-light #context-menu .menu-item:hover .context-tag-next,
+body.context-menu-light #context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-light #context-menu .context-menu-item:hover .context-tag-next,
+body.context-menu-light .context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-light .context-menu .menu-item:hover .context-tag-next,
+body.context-menu-light .context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-light .context-menu .context-menu-item:hover .context-tag-next {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-macos #context-menu .menu-item:hover .context-status-badge,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-status-badge,
+body.context-menu-macos .context-menu .menu-item:hover .context-status-badge,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-status-badge,
+body.context-menu-light #context-menu .menu-item:hover .context-status-badge,
+body.context-menu-light #context-menu .context-menu-item:hover .context-status-badge,
+body.context-menu-light .context-menu .menu-item:hover .context-status-badge,
+body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-macos #context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-status-badge i,
+body.context-menu-macos .context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-status-badge i,
+body.context-menu-light #context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-light #context-menu .context-menu-item:hover .context-status-badge i,
+body.context-menu-light .context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge i {
+  color: #ffffff !important;
+}
+
+body.context-menu-macos #context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-macos #context-menu .context-menu-item:hover .context-radio-active-badge,
+body.context-menu-macos .context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-macos .context-menu .context-menu-item:hover .context-radio-active-badge,
+body.context-menu-light #context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-light #context-menu .context-menu-item:hover .context-radio-active-badge,
+body.context-menu-light .context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-light .context-menu .context-menu-item:hover .context-radio-active-badge {
+  background: rgba(255, 255, 255, 0.28) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  color: #ffffff !important;
+}
+
+/* ── Dynamic Thumbnail Color Mode Context Menu ── */
+.context-menu.context-menu-thumbnail-color-mode .context-tag-current {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.28) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.48) !important;
+  color: var(--accent-color, #c7d2fe) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
+}
+
+.context-menu.context-menu-thumbnail-color-mode .context-status-badge.badge-on {
+  background: rgba(74, 222, 128, 0.22) !important;
+  border-color: rgba(74, 222, 128, 0.42) !important;
+  color: #4ade80 !important;
+}
+
+.context-menu.context-menu-thumbnail-color-mode .context-status-badge.badge-off {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.context-menu.context-menu-thumbnail-color-mode .context-radio-active-badge {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.28) !important;
+  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.48) !important;
+  color: var(--accent-color, #c7d2fe) !important;
+}
+
 
 .menu-item.delete,
 .context-menu-item.delete,
@@ -1714,6 +2059,357 @@ body.context-menu-mini #context-menu .context-menu-divider,
 body.context-menu-mini .context-menu-separator {
   margin: 2px 3px !important;
   height: 1px !important;
+}
+
+/* =========================================
+   CONTEXT MENU DETAIL TOAST (HOVER PREVIEW)
+========================================= */
+.context-menu-detail-toast {
+  position: fixed;
+  z-index: 10050;
+  min-width: 200px;
+  max-width: 330px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+  transition:
+    opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.28),
+    0 0 20px rgba(var(--accent-color-rgb, 99, 102, 241), 0.12);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  font-family: inherit;
+  line-height: 1.35;
+}
+
+.context-menu-detail-toast.toast-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Default / Dark Theme */
+.context-menu-detail-toast.theme-dark {
+  background: linear-gradient(
+    165deg,
+    rgba(22, 26, 38, 0.97) 0%,
+    rgba(14, 16, 24, 0.98) 100%
+  );
+  color: #f8fafc;
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.38);
+}
+
+/* macOS Frosted Glass Theme */
+.context-menu-detail-toast.theme-macos {
+  background: rgba(250, 250, 252, 0.94);
+  color: #0f172a;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Light Theme */
+.context-menu-detail-toast.theme-light {
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+/* None / Acrylic Theme */
+.context-menu-detail-toast.theme-none {
+  background: rgba(25, 28, 38, 0.88);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Thumbnail Color Mode */
+.context-menu-detail-toast.context-menu-thumbnail-color-mode {
+  background: var(
+    --music-player-bg,
+    linear-gradient(
+      165deg,
+      rgba(22, 26, 38, 0.97) 0%,
+      rgba(14, 16, 24, 0.98) 100%
+    )
+  ) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.45) !important;
+}
+
+/* Toast Header */
+.cmd-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.cmd-toast-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cmd-toast-icon-wrap {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.18);
+  color: var(--accent-color, #818cf8);
+  font-size: 11px;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-icon-wrap,
+.context-menu-detail-toast.theme-light .cmd-toast-icon-wrap {
+  background: color-mix(in srgb, var(--accent-color, #2563eb) 15%, transparent);
+  color: var(--accent-color, #2563eb);
+}
+
+.cmd-toast-category {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+/* Toast Title */
+.cmd-toast-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+/* Toast Body Elements */
+.cmd-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Cycle Container */
+.cmd-toast-cycle-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-cycle-container,
+.context-menu-detail-toast.theme-light .cmd-toast-cycle-container {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.cmd-toast-state-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cmd-state-badge-label {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.65;
+  text-transform: uppercase;
+}
+
+.cmd-state-badge-val {
+  font-size: 11.5px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.cmd-toast-state-pill.current .cmd-state-badge-val {
+  color: var(--accent-color, #a5b4fc);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-state-pill.current .cmd-state-badge-val,
+.context-menu-detail-toast.theme-light .cmd-toast-state-pill.current .cmd-state-badge-val {
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+}
+
+.cmd-toast-cycle-arrow {
+  font-size: 11px;
+  opacity: 0.6;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+/* Toggle & Radio Badges */
+.cmd-toast-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.cmd-toast-status-badge.badge-on {
+  color: #4ade80 !important;
+  background: rgba(74, 222, 128, 0.18);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-on,
+.context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-on {
+  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.16) !important;
+  border: 1px solid rgba(34, 197, 94, 0.36) !important;
+}
+
+.cmd-toast-status-badge.badge-off {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-off,
+.context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-off {
+  color: #334155 !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+}
+
+.cmd-toast-radio-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+.cmd-toast-radio-badge.is-selected {
+  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.25);
+  color: var(--accent-color, #c7d2fe);
+  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.42);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-radio-badge.is-selected,
+.context-menu-detail-toast.theme-light .cmd-toast-radio-badge.is-selected {
+  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05));
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18));
+}
+
+/* Hint text */
+.cmd-toast-hint {
+  font-size: 11px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.3;
+  color: #f1f5f9;
+}
+
+.cmd-toast-hint i {
+  color: var(--accent-color, #818cf8);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-hint,
+.context-menu-detail-toast.theme-light .cmd-toast-hint {
+  color: #334155;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-hint i,
+.context-menu-detail-toast.theme-light .cmd-toast-hint i {
+  color: var(--accent-color, #2563eb);
+}
+
+/* Bookmark Details */
+.cmd-toast-bookmark-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-bookmark-info,
+.context-menu-detail-toast.theme-light .cmd-toast-bookmark-info {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cmd-toast-bm-title {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cmd-toast-bm-url {
+  font-size: 10.5px;
+  font-family: monospace, monospace;
+  opacity: 0.85;
+  color: #cbd5e1;
+  word-break: break-all;
+  max-height: 38px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  line-height: 1.25;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-bm-url,
+.context-menu-detail-toast.theme-light .cmd-toast-bm-url {
+  color: #475569;
+  opacity: 1;
+}
+
+.cmd-toast-bm-url i {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Detail description */
+.cmd-toast-detail-desc {
+  font-size: 11.5px;
+  opacity: 0.95;
+  color: #f1f5f9;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-detail-desc,
+.context-menu-detail-toast.theme-light .cmd-toast-detail-desc {
+  color: #1e293b;
+  opacity: 1;
 }
 
 /* Favorite Star Icon */

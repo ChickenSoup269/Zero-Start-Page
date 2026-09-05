@@ -35,11 +35,449 @@ let contextMenuTargetId = null // For groups or widget ids
 let contextMenuCallbacks = null
 let lastContextMenuX = 0
 let lastContextMenuY = 0
+let contextMenuTargetBookmark = null
+let hoverDetailTimer = null
+let currentHoveredMenuItem = null
+let contextMenuDetailToastEl = null
+
+function escapeHtml(str) {
+  if (!str) return ""
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+
+function getOrCreateDetailToast() {
+  if (!contextMenuDetailToastEl) {
+    contextMenuDetailToastEl = document.getElementById("context-menu-detail-toast")
+    if (!contextMenuDetailToastEl) {
+      contextMenuDetailToastEl = document.createElement("div")
+      contextMenuDetailToastEl.id = "context-menu-detail-toast"
+      contextMenuDetailToastEl.className = "context-menu-detail-toast"
+      contextMenuDetailToastEl.style.display = "none"
+      document.body.appendChild(contextMenuDetailToastEl)
+    }
+  }
+  return contextMenuDetailToastEl
+}
+
+function syncToastTheme(toast) {
+  if (!toast) return
+  toast.className = "context-menu-detail-toast"
+
+  if (document.body.classList.contains("context-menu-macos")) {
+    toast.classList.add("theme-macos")
+  } else if (document.body.classList.contains("context-menu-light")) {
+    toast.classList.add("theme-light")
+  } else if (document.body.classList.contains("context-menu-none")) {
+    toast.classList.add("theme-none")
+  } else {
+    toast.classList.add("theme-dark")
+  }
+
+  if (contextMenu.classList.contains("context-menu-thumbnail-color-mode")) {
+    toast.classList.add("context-menu-thumbnail-color-mode")
+    const styles = contextMenu.style
+    const accentColor = styles.getPropertyValue("--accent-color")
+    const accentColorRgb = styles.getPropertyValue("--accent-color-rgb")
+    const accentContrastColor = styles.getPropertyValue("--accent-contrast-color")
+    const musicPlayerBg = styles.getPropertyValue("--music-player-bg")
+    if (accentColor) toast.style.setProperty("--accent-color", accentColor)
+    if (accentColorRgb) toast.style.setProperty("--accent-color-rgb", accentColorRgb)
+    if (accentContrastColor) toast.style.setProperty("--accent-contrast-color", accentContrastColor)
+    if (musicPlayerBg) toast.style.setProperty("--music-player-bg", musicPlayerBg)
+  } else {
+    toast.style.removeProperty("--accent-color")
+    toast.style.removeProperty("--accent-color-rgb")
+    toast.style.removeProperty("--accent-contrast-color")
+    toast.style.removeProperty("--music-player-bg")
+  }
+}
+
+function positionDetailToast(toast, item) {
+  const itemRect = item.getBoundingClientRect()
+  const menuRect = contextMenu.getBoundingClientRect()
+
+  toast.style.display = "block"
+  toast.style.visibility = "hidden"
+
+  const toastRect = toast.getBoundingClientRect()
+  const margin = 10
+
+  // Default: place to the right of context menu
+  let x = menuRect.right + 10
+  // If overflows right window edge, flip to left of context menu
+  if (x + toastRect.width > window.innerWidth - margin) {
+    x = menuRect.left - toastRect.width - 10
+  }
+  // If also overflows left window edge, clamp inside viewport
+  if (x < margin) {
+    x = Math.max(margin, Math.min(window.innerWidth - toastRect.width - margin, menuRect.left))
+  }
+
+  // Vertical alignment with top of item
+  let y = itemRect.top - 2
+  if (y + toastRect.height > window.innerHeight - margin) {
+    y = window.innerHeight - toastRect.height - margin
+  }
+  if (y < margin) {
+    y = margin
+  }
+
+  toast.style.left = `${Math.round(x)}px`
+  toast.style.top = `${Math.round(y)}px`
+  toast.style.visibility = "visible"
+}
+
+function hasTruncatedText(element) {
+  if (!element) return false
+  if (element.scrollWidth > element.clientWidth + 1) return true
+  const textChildren = element.querySelectorAll(
+    "span, p, div, .context-cycle-label, .context-tag-current, .context-tag-next, .context-toggle-label, .context-radio-label"
+  )
+  for (const child of textChildren) {
+    if (child.scrollWidth > child.clientWidth + 1) return true
+  }
+  return false
+}
+
+export function hideContextMenuDetailToast() {
+  if (hoverDetailTimer) {
+    clearTimeout(hoverDetailTimer)
+    hoverDetailTimer = null
+  }
+  if (currentHoveredMenuItem) {
+    if (currentHoveredMenuItem.dataset.nativeTitle) {
+      currentHoveredMenuItem.setAttribute("title", currentHoveredMenuItem.dataset.nativeTitle)
+      delete currentHoveredMenuItem.dataset.nativeTitle
+    }
+    currentHoveredMenuItem = null
+  }
+  if (contextMenuDetailToastEl) {
+    contextMenuDetailToastEl.classList.remove("toast-visible")
+    contextMenuDetailToastEl.style.display = "none"
+  }
+}
+
+function showItemDetailToast(item) {
+  if (!contextMenu || contextMenu.style.display === "none") return
+  if (!item || item !== currentHoveredMenuItem) return
+
+  const i18n = geti18n()
+  const toast = getOrCreateDetailToast()
+
+  const itemType = item.dataset.itemType || ""
+  const isCycle = itemType === "cycle" || item.classList.contains("context-menu-cycle-item")
+  const isToggle = itemType === "toggle" || item.classList.contains("context-menu-toggle-item")
+  const isRadio = itemType === "radio" || item.classList.contains("context-menu-radio-item")
+  const isHeader = item.classList.contains("context-menu-header")
+  const isTruncated = hasTruncatedText(item)
+
+  const isBookmarkTarget =
+    (contextMenuTargetType === "bookmark" ||
+      contextMenuTargetType === "bookmarkStack" ||
+      contextMenuTargetType === "bookmarkStackItem") &&
+    contextMenuTargetBookmark
+
+  const iconEl = item.querySelector("i")
+  const iconClass = iconEl ? iconEl.className : "fa-solid fa-circle-info"
+
+  let label = ""
+  if (isCycle) {
+    label = item.dataset.label || item.querySelector(".context-cycle-label")?.textContent?.trim() || ""
+  } else if (isToggle) {
+    label = item.dataset.label || item.querySelector(".context-toggle-label")?.textContent?.trim() || ""
+  } else if (isRadio) {
+    label = item.dataset.label || item.querySelector(".context-radio-label")?.textContent?.trim() || ""
+  } else {
+    label = item.dataset.label || item.querySelector("span")?.textContent?.trim() || item.textContent?.trim() || ""
+  }
+
+  // Only show if the item has details to expand or is truncated or special
+  const hasTooltipTitle = Boolean(item.dataset.tooltipTitle)
+  if (!isCycle && !isToggle && !isRadio && !isBookmarkTarget && !isTruncated && !hasTooltipTitle && !isHeader) {
+    return
+  }
+
+  let categoryText = i18n.context_toast_cat_action || "Thao tác"
+  let bodyHtml = ""
+
+  if (isCycle) {
+    categoryText = i18n.context_toast_cat_cycle || "Tùy chọn vòng lặp"
+    const current =
+      item.dataset.current ||
+      item.querySelector(".context-tag-current")?.textContent?.trim() ||
+      ""
+    const next =
+      item.dataset.next ||
+      item.querySelector(".context-tag-next")?.textContent?.trim() ||
+      ""
+
+    bodyHtml = `
+      <div class="cmd-toast-cycle-container">
+        <div class="cmd-toast-state-pill current">
+          <span class="cmd-state-badge-label">${i18n.context_toast_current || "Hiện tại"}</span>
+          <span class="cmd-state-badge-val"><i class="fa-solid fa-check"></i> ${escapeHtml(current)}</span>
+        </div>
+        <div class="cmd-toast-cycle-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="cmd-toast-state-pill next">
+          <span class="cmd-state-badge-label">${i18n.context_toast_next || "Kế tiếp"}</span>
+          <span class="cmd-state-badge-val">${escapeHtml(next)}</span>
+        </div>
+      </div>
+      <div class="cmd-toast-hint">
+        <i class="fa-solid fa-lightbulb"></i>
+        <span>${i18n.context_toast_click_cycle || "Nhấp để chuyển sang"}: <strong>${escapeHtml(next)}</strong></span>
+      </div>
+    `
+  } else if (isToggle) {
+    categoryText = i18n.context_toast_cat_toggle || "Công tắc Bật/Tắt"
+    const isActive = item.dataset.isActive === "true" || item.classList.contains("is-active")
+    const onText = item.dataset.activeText || i18n.status_on || "Bật"
+    const offText = item.dataset.inactiveText || i18n.status_off || "Tắt"
+    const statusText = isActive ? onText : offText
+    const nextStatus = isActive ? offText : onText
+
+    bodyHtml = `
+      <div class="cmd-toast-toggle-container">
+        <span class="cmd-toast-status-badge ${isActive ? "badge-on" : "badge-off"}">
+          <i class="fa-solid ${isActive ? "fa-toggle-on" : "fa-toggle-off"}"></i>
+          <span>${i18n.context_toast_status || "Trạng thái"}: ${escapeHtml(statusText)}</span>
+        </span>
+      </div>
+      <div class="cmd-toast-hint">
+        <i class="fa-solid fa-lightbulb"></i>
+        <span>${isActive ? (i18n.context_toast_click_toggle_off || "Nhấp để Tắt") : (i18n.context_toast_click_toggle_on || "Nhấp để Bật")} (<i class="fa-solid fa-arrow-right"></i> ${escapeHtml(nextStatus)})</span>
+      </div>
+    `
+  } else if (isRadio) {
+    categoryText = i18n.context_toast_cat_radio || "Tùy chọn thiết lập"
+    const isSelected = item.dataset.isSelected === "true" || item.classList.contains("is-selected")
+    const selectedText = item.dataset.selectedTag || (i18n.context_toast_selected || "Đang dùng")
+
+    bodyHtml = `
+      <div class="cmd-toast-radio-container">
+        <span class="cmd-toast-radio-badge ${isSelected ? "is-selected" : ""}">
+          <i class="fa-solid ${isSelected ? "fa-circle-check" : "fa-circle"}"></i>
+          <span>${isSelected ? escapeHtml(selectedText) : (i18n.context_toast_unselected || "Chưa chọn")}</span>
+        </span>
+      </div>
+      ${!isSelected ? `
+        <div class="cmd-toast-hint">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span>${i18n.context_toast_click_select || "Nhấp để áp dụng tùy chọn này"}</span>
+        </div>
+      ` : ""}
+    `
+  } else if (isHeader) {
+    categoryText = i18n.context_header || "Mục được chọn"
+    bodyHtml = `
+      <div class="cmd-toast-detail-desc">
+        <span>${escapeHtml(label)}</span>
+      </div>
+    `
+  } else if (isBookmarkTarget) {
+    categoryText = i18n.context_toast_cat_bookmark || "Thông tin dấu trang"
+    bodyHtml = `
+      <div class="cmd-toast-bookmark-info">
+        <div class="cmd-toast-bm-title"><i class="fa-regular fa-bookmark"></i> ${escapeHtml(contextMenuTargetBookmark.title || "Bookmark")}</div>
+        ${contextMenuTargetBookmark.url ? `
+          <div class="cmd-toast-bm-url" title="${escapeHtml(contextMenuTargetBookmark.url)}">
+            <i class="fa-solid fa-link"></i> <span>${escapeHtml(contextMenuTargetBookmark.url)}</span>
+          </div>
+        ` : ""}
+      </div>
+    `
+  } else if (item.dataset.tooltipTitle) {
+    bodyHtml = `
+      <div class="cmd-toast-detail-desc">
+        <span>${escapeHtml(item.dataset.tooltipTitle)}</span>
+      </div>
+    `
+  } else if (isTruncated) {
+    bodyHtml = `
+      <div class="cmd-toast-detail-desc">
+        <span>${escapeHtml(label)}</span>
+      </div>
+    `
+  }
+
+  toast.innerHTML = `
+    <div class="cmd-toast-header">
+      <div class="cmd-toast-header-left">
+        <div class="cmd-toast-icon-wrap">
+          <i class="${iconClass}"></i>
+        </div>
+        <div class="cmd-toast-category">${escapeHtml(categoryText)}</div>
+      </div>
+    </div>
+    <div class="cmd-toast-title">${escapeHtml(label)}</div>
+    ${bodyHtml ? `<div class="cmd-toast-body">${bodyHtml}</div>` : ""}
+  `
+
+  syncToastTheme(toast)
+  positionDetailToast(toast, item)
+
+  requestAnimationFrame(() => {
+    toast.classList.add("toast-visible")
+  })
+}
+
+function handleContextMenuMouseOver(e) {
+  const item = e.target.closest(".context-menu-item, .menu-item, .context-menu-header")
+  if (!item || item === currentHoveredMenuItem) return
+
+  if (hoverDetailTimer) {
+    clearTimeout(hoverDetailTimer)
+    hoverDetailTimer = null
+  }
+
+  if (currentHoveredMenuItem && currentHoveredMenuItem !== item) {
+    if (currentHoveredMenuItem.dataset.nativeTitle) {
+      currentHoveredMenuItem.setAttribute("title", currentHoveredMenuItem.dataset.nativeTitle)
+      delete currentHoveredMenuItem.dataset.nativeTitle
+    }
+  }
+
+  if (contextMenuDetailToastEl) {
+    contextMenuDetailToastEl.classList.remove("toast-visible")
+    contextMenuDetailToastEl.style.display = "none"
+  }
+
+  currentHoveredMenuItem = item
+
+  // Temporarily suppress native browser tooltip so it doesn't pop up over our custom toast
+  if (item.hasAttribute("title")) {
+    item.dataset.nativeTitle = item.getAttribute("title")
+    item.removeAttribute("title")
+  }
+
+  hoverDetailTimer = setTimeout(() => {
+    showItemDetailToast(item)
+  }, 450)
+}
+
+function handleContextMenuMouseOut(e) {
+  const related = e.relatedTarget
+  if (currentHoveredMenuItem && (!related || !currentHoveredMenuItem.contains(related))) {
+    if (currentHoveredMenuItem.dataset.nativeTitle) {
+      currentHoveredMenuItem.setAttribute("title", currentHoveredMenuItem.dataset.nativeTitle)
+      delete currentHoveredMenuItem.dataset.nativeTitle
+    }
+    if (hoverDetailTimer) {
+      clearTimeout(hoverDetailTimer)
+      hoverDetailTimer = null
+    }
+    hideContextMenuDetailToast()
+  }
+}
 
 function createCustomMenuItem(label, iconClass, handler, extraClass = "") {
   const item = document.createElement("div")
   item.className = `context-menu-item custom-music-item ${extraClass}`.trim()
+  item.dataset.label = label
   item.innerHTML = `<i class="${iconClass}"></i> <span>${label}</span>`
+  item.onclick = (event) => {
+    event.stopPropagation()
+    handler()
+  }
+  return item
+}
+
+function createCycleMenuItem({
+  label,
+  currentLabel,
+  nextLabel,
+  iconClass,
+  handler,
+  extraClass = "",
+}) {
+  const item = document.createElement("div")
+  item.className =
+    `context-menu-item custom-music-item context-menu-cycle-item ${extraClass}`.trim()
+  item.dataset.itemType = "cycle"
+  item.dataset.label = label
+  item.dataset.current = currentLabel
+  item.dataset.next = nextLabel
+  item.dataset.tooltipTitle = `${label}: ${currentLabel} (-> ${nextLabel})`
+  item.innerHTML = `
+    <i class="${iconClass}"></i>
+    <span class="context-cycle-label">${label}</span>
+    <span class="context-cycle-tags">
+      <span class="context-tag-current"><i class="fa-solid fa-check"></i> ${currentLabel}</span>
+      <span class="context-tag-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+      <span class="context-tag-next">${nextLabel}</span>
+    </span>
+  `
+  item.onclick = (event) => {
+    event.stopPropagation()
+    handler()
+  }
+  return item
+}
+
+function createToggleMenuItem({
+  label,
+  isActive,
+  iconClass,
+  handler,
+  activeText = null,
+  inactiveText = null,
+  extraClass = "",
+}) {
+  const i18n = geti18n()
+  const item = document.createElement("div")
+  item.className =
+    `context-menu-item custom-music-item context-menu-toggle-item ${isActive ? "is-active" : ""} ${extraClass}`.trim()
+  const onText = activeText || i18n.status_on || "On"
+  const offText = inactiveText || i18n.status_off || "Off"
+  item.dataset.itemType = "toggle"
+  item.dataset.label = label
+  item.dataset.isActive = isActive ? "true" : "false"
+  item.dataset.activeText = onText
+  item.dataset.inactiveText = offText
+  item.dataset.status = isActive ? onText : offText
+  item.dataset.tooltipTitle = `${label}: ${isActive ? onText : offText}`
+  item.innerHTML = `
+    <i class="${iconClass}"></i>
+    <span class="context-toggle-label">${label}</span>
+    <span class="context-status-badge ${isActive ? "badge-on" : "badge-off"}">
+      <i class="fa-solid ${isActive ? "fa-toggle-on" : "fa-toggle-off"}"></i>
+      <span>${isActive ? onText : offText}</span>
+    </span>
+  `
+  item.onclick = (event) => {
+    event.stopPropagation()
+    handler()
+  }
+  return item
+}
+
+function createRadioMenuItem({
+  label,
+  isSelected,
+  iconClass,
+  handler,
+  extraClass = "",
+  activeText = "Đang dùng",
+}) {
+  const item = document.createElement("div")
+  item.className =
+    `context-menu-item custom-music-item context-menu-radio-item ${isSelected ? "is-selected" : ""} ${extraClass}`.trim()
+  const displayIcon = isSelected ? "fa-solid fa-check" : iconClass
+  const selectedTag = activeText || "Đang dùng"
+  item.dataset.itemType = "radio"
+  item.dataset.label = label
+  item.dataset.isSelected = isSelected ? "true" : "false"
+  item.dataset.selectedTag = selectedTag
+  item.innerHTML = `
+    <i class="${displayIcon}"></i>
+    <span class="context-radio-label">${label}</span>
+    ${isSelected ? `<span class="context-radio-active-badge"><i class="fa-solid fa-check"></i> ${selectedTag}</span>` : ""}
+  `
   item.onclick = (event) => {
     event.stopPropagation()
     handler()
@@ -339,12 +777,13 @@ function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
 
 function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
   const isHidden = settings.hideTimerAlarmDropdown === true
-  const toggleBtn = createCustomMenuItem(
-    isHidden
-      ? i18n.context_timer_show_alarm_sound || "Show alarm sound selector"
-      : i18n.context_timer_hide_alarm_sound || "Hide alarm sound selector",
-    isHidden ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark",
-    () => {
+  const toggleBtn = createToggleMenuItem({
+    label: i18n.settings_timer_alarm_sound || "Bộ chọn âm báo",
+    isActive: !isHidden,
+    iconClass: isHidden ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high",
+    activeText: i18n.status_on || "Hiện",
+    inactiveText: i18n.status_off || "Ẩn",
+    handler: () => {
       const nextValue = !isHidden
       const checkbox = document.getElementById(
         "hide-timer-alarm-dropdown-checkbox",
@@ -353,18 +792,19 @@ function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
       applyContextSetting("hideTimerAlarmDropdown", nextValue)
       hideContextMenu()
     },
-  )
+  })
   contextMenu.insertBefore(toggleBtn, beforeNode)
 }
 
 function addPomodoroStatsToggle(i18n, settings, beforeNode = menuLock) {
   const isHidden = settings.hidePomodoroStats === true
-  const toggleBtn = createCustomMenuItem(
-    isHidden
-      ? i18n.context_timer_show_pomodoro || "Show Pomodoro stats"
-      : i18n.context_timer_hide_pomodoro || "Hide Pomodoro stats",
-    isHidden ? "fa-solid fa-eye" : "fa-solid fa-eye-slash",
-    () => {
+  const toggleBtn = createToggleMenuItem({
+    label: i18n.context_timer_pomodoro || "Thống kê Pomodoro",
+    isActive: !isHidden,
+    iconClass: "fa-solid fa-chart-pie",
+    activeText: i18n.status_on || "Hiện",
+    inactiveText: i18n.status_off || "Ẩn",
+    handler: () => {
       const nextValue = !isHidden
       applyContextSetting("hidePomodoroStats", nextValue)
       // trigger re-render of pomodoro stats via layoutUpdated
@@ -378,7 +818,7 @@ function addPomodoroStatsToggle(i18n, settings, beforeNode = menuLock) {
       if (timerInstance) timerInstance.updatePomodoroStats()
       hideContextMenu()
     },
-  )
+  })
   contextMenu.insertBefore(toggleBtn, beforeNode)
 }
 
@@ -739,15 +1179,17 @@ function addBackgroundContextMenuItems(i18n) {
       "danger context-delete-item",
     ),
     createCustomMenuDivider(),
-    createCustomMenuItem(
-      `${i18n.bg_context_fit || "Fit"}: ${fitLabels[nextFit]}`,
-      "fa-solid fa-up-right-and-down-left-from-center",
-      () => {
+    createCycleMenuItem({
+      label: i18n.bg_context_fit || "Khớp ảnh nền",
+      currentLabel: fitLabels[currentFit] || currentFit,
+      nextLabel: fitLabels[nextFit] || nextFit,
+      iconClass: "fa-solid fa-up-right-and-down-left-from-center",
+      handler: () => {
         syncBackgroundControlValue("bgSize", nextFit)
         applyContextSetting("bgSize", nextFit)
         hideContextMenu()
       },
-    ),
+    }),
     createCustomMenuItem(
       i18n.bg_context_blur_more || "More blur",
       "fa-solid fa-droplet",
@@ -789,26 +1231,32 @@ function addBackgroundContextMenuItems(i18n) {
       },
     ),
     createCustomMenuDivider(),
-    createCustomMenuItem(
-      i18n.bg_context_zen_mode || "Zen Mode",
-      "fa-solid fa-peace",
-      () => {
+    createToggleMenuItem({
+      label: i18n.bg_context_zen_mode || "Zen Mode",
+      isActive: Boolean(settings.globalZenMode),
+      iconClass: "fa-solid fa-peace",
+      activeText: i18n.status_on || "Bật",
+      inactiveText: i18n.status_off || "Tắt",
+      handler: () => {
         const isZen = !settings.globalZenMode
         syncBackgroundControlValue("globalZenMode", isZen)
         applyContextSetting("globalZenMode", isZen)
         hideContextMenu()
       },
-    ),
-    createCustomMenuItem(
-      i18n.bg_context_ghost_mode || "Ghost Mode",
-      "fa-solid fa-ghost",
-      () => {
+    }),
+    createToggleMenuItem({
+      label: i18n.bg_context_ghost_mode || "Ghost Mode",
+      isActive: Boolean(settings.sideControlsGhostMode),
+      iconClass: "fa-solid fa-ghost",
+      activeText: i18n.status_on || "Bật",
+      inactiveText: i18n.status_off || "Tắt",
+      handler: () => {
         const isGhost = !settings.sideControlsGhostMode
         syncBackgroundControlValue("sideControlsGhostMode", isGhost)
         applyContextSetting("sideControlsGhostMode", isGhost)
         hideContextMenu()
       },
-    ),
+    }),
     createCustomMenuDivider(),
     createCustomMenuItem(
       i18n.bg_context_open_google || "Open regular Google",
@@ -834,15 +1282,13 @@ function addEffectContextMenuItems(effectId, i18n) {
   const effectName =
     effectItem?.querySelector(".effect-name")?.textContent?.trim() || effectId
 
-  const applyBtn = createCustomMenuItem(
-    isActiveEffect
-      ? i18n.effect_context_turn_off || "Turn off effect"
-      : (i18n.effect_context_apply || "Apply: {name}").replace(
-          "{name}",
-          effectName,
-        ),
-    isActiveEffect ? "fa-solid fa-ban" : "fa-solid fa-wand-magic-sparkles",
-    () => {
+  const applyBtn = createToggleMenuItem({
+    label: effectName,
+    isActive: isActiveEffect,
+    iconClass: isActiveEffect ? "fa-solid fa-wand-magic-sparkles" : "fa-regular fa-circle",
+    activeText: i18n.status_on || "Đang dùng",
+    inactiveText: i18n.status_off || "Chưa dùng",
+    handler: () => {
       applyContextSetting("effect", isActiveEffect ? "none" : effectId)
       document
         .querySelectorAll(".effect-item")
@@ -854,7 +1300,7 @@ function addEffectContextMenuItems(effectId, i18n) {
         )
       hideContextMenu()
     },
-  )
+  })
 
   const settingsBtn = createCustomMenuItem(
     i18n.effect_context_settings || "Effect settings",
@@ -1001,6 +1447,23 @@ export function showContextMenu(
   contextMenuCallbacks = callbacks
   lastContextMenuX = x || 0
   lastContextMenuY = y || 0
+
+  if (
+    (type === "bookmark" || type === "bookmarkStackItem") &&
+    typeof index === "number"
+  ) {
+    const bookmarks = getBookmarks()
+    if (bookmarks && bookmarks[index]) {
+      contextMenuTargetBookmark = {
+        title: bookmarks[index].title || "",
+        url: bookmarks[index].url || "",
+      }
+    } else {
+      contextMenuTargetBookmark = null
+    }
+  } else {
+    contextMenuTargetBookmark = null
+  }
 
   // Sync CSS variables from music player if in thumbnail-color-mode
   const musicContainer = document.querySelector(
@@ -1181,141 +1644,12 @@ export function showContextMenu(
       const borderKey = `${id === "daily-quotes" ? "quotes" : id}HideBorder`
       const isBorderHidden = settings[borderKey] === true
 
-      const skinBtn = document.createElement("div")
-      skinBtn.className = "context-menu-item custom-music-item"
-      skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.skin_default || "Default Skin" : i18n.skin_white_blur || "White Blur Skin"}</span>`
-      skinBtn.onclick = () => {
-        const newVal = isWhiteBlur ? "default" : "white-blur"
-        updateSetting(skinKey, newVal)
-        saveSettings(true)
-
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: skinKey, value: newVal },
-          }),
-        )
-
-        const widgetIdMap = {
-          todo: "todo-container",
-          timer: "timer-component",
-          calendar: "full-calendar-container",
-          weather: "weather-container",
-          notepad: "notepad-container",
-          "daily-quotes": "daily-quotes",
-          rss: "rss-container",
-          habitTracker: "habit-tracker-container",
-          ambientSounds: "ambient-sounds-container",
-          aiAssistant: "ai-assistant-container",
-        }
-        const el = document.getElementById(widgetIdMap[id] || id)
-        if (el) {
-          el.classList.toggle("skin-white-blur", newVal === "white-blur")
-          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
-          el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle(
-            "skin-light-transparent",
-            newVal === "light-transparent",
-          )
-        }
-        hideContextMenu()
-      }
-      contextMenu.insertBefore(skinBtn, menuLock)
-
-      const m3SkinBtn = document.createElement("div")
-      m3SkinBtn.className = "context-menu-item custom-music-item"
-      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.skin_default || "Default Skin" : i18n.skin_m3_accent || "M3 Accent Skin"}</span>`
-      m3SkinBtn.onclick = () => {
-        const newVal = isM3Accent ? "default" : "m3-accent"
-        updateSetting(skinKey, newVal)
-        saveSettings(true)
-
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: skinKey, value: newVal },
-          }),
-        )
-
-        const widgetIdMap = {
-          todo: "todo-container",
-          timer: "timer-component",
-          calendar: "full-calendar-container",
-          weather: "weather-container",
-          notepad: "notepad-container",
-          "daily-quotes": "daily-quotes",
-          rss: "rss-container",
-          habitTracker: "habit-tracker-container",
-          ambientSounds: "ambient-sounds-container",
-          aiAssistant: "ai-assistant-container",
-        }
-        const el = document.getElementById(widgetIdMap[id] || id)
-        if (el) {
-          el.classList.toggle("skin-white-blur", newVal === "white-blur")
-          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
-          el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle(
-            "skin-light-transparent",
-            newVal === "light-transparent",
-          )
-        }
-        hideContextMenu()
-      }
-      contextMenu.insertBefore(m3SkinBtn, menuLock)
-
-      const lightTransBtn = document.createElement("div")
-      lightTransBtn.className = "context-menu-item custom-music-item"
-      lightTransBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
-      lightTransBtn.onclick = () => {
-        const newVal = isLightTransparent ? "default" : "light-transparent"
-        updateSetting(skinKey, newVal)
-        saveSettings(true)
-
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: skinKey, value: newVal },
-          }),
-        )
-
-        const widgetIdMap = {
-          todo: "todo-container",
-          timer: "timer-component",
-          calendar: "full-calendar-container",
-          weather: "weather-container",
-          notepad: "notepad-container",
-          "daily-quotes": "daily-quotes",
-          rss: "rss-container",
-          habitTracker: "habit-tracker-container",
-          ambientSounds: "ambient-sounds-container",
-          aiAssistant: "ai-assistant-container",
-        }
-        const el = document.getElementById(widgetIdMap[id] || id)
-        if (el) {
-          el.classList.toggle("skin-white-blur", newVal === "white-blur")
-          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
-          el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle(
-            "skin-light-transparent",
-            newVal === "light-transparent",
-          )
-        }
-        hideContextMenu()
-      }
-      contextMenu.insertBefore(lightTransBtn, menuLock)
-
-      if (
-        id === "daily-quotes" ||
-        id === "weather" ||
-        id === "rss" ||
-        id === "todo" ||
-        id === "timer" ||
-        id === "habitTracker" ||
-        id === "ambientSounds" ||
-        id === "aiAssistant"
-      ) {
-        const transBtn = document.createElement("div")
-        transBtn.className = "context-menu-item custom-music-item"
-        transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
-        transBtn.onclick = () => {
-          const newVal = isTransparent ? "default" : "transparent"
+      const skinBtn = createRadioMenuItem({
+        label: i18n.skin_white_blur || "Kính mờ trắng",
+        isSelected: isWhiteBlur,
+        iconClass: "fa-solid fa-circle-half-stroke",
+        handler: () => {
+          const newVal = isWhiteBlur ? "default" : "white-blur"
           updateSetting(skinKey, newVal)
           saveSettings(true)
 
@@ -1326,12 +1660,14 @@ export function showContextMenu(
           )
 
           const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            calendar: "full-calendar-container",
             weather: "weather-container",
+            notepad: "notepad-container",
             "daily-quotes": "daily-quotes",
             rss: "rss-container",
             habitTracker: "habit-tracker-container",
-            todo: "todo-container",
-            timer: "timer-component",
             ambientSounds: "ambient-sounds-container",
             aiAssistant: "ai-assistant-container",
           }
@@ -1346,7 +1682,142 @@ export function showContextMenu(
             )
           }
           hideContextMenu()
-        }
+        },
+      })
+      contextMenu.insertBefore(skinBtn, menuLock)
+
+      const m3SkinBtn = createRadioMenuItem({
+        label: i18n.skin_m3_accent || "Màu Accent",
+        isSelected: isM3Accent,
+        iconClass: "fa-solid fa-palette",
+        handler: () => {
+          const newVal = isM3Accent ? "default" : "m3-accent"
+          updateSetting(skinKey, newVal)
+          saveSettings(true)
+
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: skinKey, value: newVal },
+            }),
+          )
+
+          const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            calendar: "full-calendar-container",
+            weather: "weather-container",
+            notepad: "notepad-container",
+            "daily-quotes": "daily-quotes",
+            rss: "rss-container",
+            habitTracker: "habit-tracker-container",
+            ambientSounds: "ambient-sounds-container",
+            aiAssistant: "ai-assistant-container",
+          }
+          const el = document.getElementById(widgetIdMap[id] || id)
+          if (el) {
+            el.classList.toggle("skin-white-blur", newVal === "white-blur")
+            el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
+            el.classList.toggle("skin-transparent", newVal === "transparent")
+            el.classList.toggle(
+              "skin-light-transparent",
+              newVal === "light-transparent",
+            )
+          }
+          hideContextMenu()
+        },
+      })
+      contextMenu.insertBefore(m3SkinBtn, menuLock)
+
+      const lightTransBtn = createRadioMenuItem({
+        label: i18n.skin_light_transparent || "Trong suốt sáng",
+        isSelected: isLightTransparent,
+        iconClass: "fa-solid fa-droplet",
+        handler: () => {
+          const newVal = isLightTransparent ? "default" : "light-transparent"
+          updateSetting(skinKey, newVal)
+          saveSettings(true)
+
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: skinKey, value: newVal },
+            }),
+          )
+
+          const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            calendar: "full-calendar-container",
+            weather: "weather-container",
+            notepad: "notepad-container",
+            "daily-quotes": "daily-quotes",
+            rss: "rss-container",
+            habitTracker: "habit-tracker-container",
+            ambientSounds: "ambient-sounds-container",
+            aiAssistant: "ai-assistant-container",
+          }
+          const el = document.getElementById(widgetIdMap[id] || id)
+          if (el) {
+            el.classList.toggle("skin-white-blur", newVal === "white-blur")
+            el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
+            el.classList.toggle("skin-transparent", newVal === "transparent")
+            el.classList.toggle(
+              "skin-light-transparent",
+              newVal === "light-transparent",
+            )
+          }
+          hideContextMenu()
+        },
+      })
+      contextMenu.insertBefore(lightTransBtn, menuLock)
+
+      if (
+        id === "daily-quotes" ||
+        id === "weather" ||
+        id === "rss" ||
+        id === "todo" ||
+        id === "timer" ||
+        id === "habitTracker" ||
+        id === "ambientSounds" ||
+        id === "aiAssistant"
+      ) {
+        const transBtn = createRadioMenuItem({
+          label: i18n.skin_transparent || "Trong suốt",
+          isSelected: isTransparent,
+          iconClass: "fa-solid fa-ghost",
+          handler: () => {
+            const newVal = isTransparent ? "default" : "transparent"
+            updateSetting(skinKey, newVal)
+            saveSettings(true)
+
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: skinKey, value: newVal },
+              }),
+            )
+
+            const widgetIdMap = {
+              weather: "weather-container",
+              "daily-quotes": "daily-quotes",
+              rss: "rss-container",
+              habitTracker: "habit-tracker-container",
+              todo: "todo-container",
+              timer: "timer-component",
+              ambientSounds: "ambient-sounds-container",
+              aiAssistant: "ai-assistant-container",
+            }
+            const el = document.getElementById(widgetIdMap[id] || id)
+            if (el) {
+              el.classList.toggle("skin-white-blur", newVal === "white-blur")
+              el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
+              el.classList.toggle("skin-transparent", newVal === "transparent")
+              el.classList.toggle(
+                "skin-light-transparent",
+                newVal === "light-transparent",
+              )
+            }
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(transBtn, menuLock)
       }
 
@@ -1357,48 +1828,36 @@ export function showContextMenu(
       if (["todo", "timer", "habitTracker"].includes(id)) {
         const settingKey = `${id}Mini`
         const isMini = settings[settingKey] === true
-        const miniBtn = document.createElement("div")
-        miniBtn.className = "context-menu-item custom-music-item"
+        const miniBtn = createToggleMenuItem({
+          label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+          isActive: isMini,
+          iconClass: "fa-solid fa-compress",
+          activeText: i18n.status_on || "Bật",
+          inactiveText: i18n.status_off || "Tắt",
+          handler: () => {
+            const widgetIdMap = {
+              todo: "todo-container",
+              timer: "timer-component",
+              habitTracker: "habit-tracker-container",
+              music: "music-player-container",
+            }
+            const el = document.getElementById(widgetIdMap[id])
 
-        const labels = {
-          todo: {
-            mini: i18n.todo_mini_size || "Mini Todo",
-            normal: i18n.todo_normal_size || "Normal Todo",
+            const newVal = !isMini
+            updateSetting(settingKey, newVal)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: settingKey, value: newVal },
+              }),
+            )
+
+            if (el) {
+              el.classList.toggle(`${id}-mini`, newVal)
+            }
+            hideContextMenu()
           },
-          timer: {
-            mini: i18n.timer_mini_size || "Mini Timer",
-            normal: i18n.timer_normal_size || "Normal Timer",
-          },
-          habitTracker: {
-            mini: i18n.habit_mini_size || "Mini Habit",
-            normal: i18n.habit_normal_size || "Normal Habit",
-          },
-        }
-
-        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
-        miniBtn.onclick = () => {
-          const widgetIdMap = {
-            todo: "todo-container",
-            timer: "timer-component",
-            habitTracker: "habit-tracker-container",
-            music: "music-player-container",
-          }
-          const el = document.getElementById(widgetIdMap[id])
-
-          const newVal = !isMini
-          updateSetting(settingKey, newVal)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: settingKey, value: newVal },
-            }),
-          )
-
-          if (el) {
-            el.classList.toggle(`${id}-mini`, newVal)
-          }
-          hideContextMenu()
-        }
+        })
         contextMenu.insertBefore(miniBtn, menuLock)
       }
 
@@ -1417,12 +1876,14 @@ export function showContextMenu(
 
         modes.forEach((mode) => {
           const isSelected = colorMode === mode.id
-          const icon = isSelected
-            ? "fa-solid fa-circle-dot"
-            : "fa-regular fa-circle"
-          const modeBtn = createCustomMenuItem(mode.label, icon, () => {
-            applyContextSetting("habitColorMode", mode.id)
-            hideContextMenu()
+          const modeBtn = createRadioMenuItem({
+            label: mode.label,
+            isSelected,
+            iconClass: "fa-solid fa-palette",
+            handler: () => {
+              applyContextSetting("habitColorMode", mode.id)
+              hideContextMenu()
+            },
           })
           contextMenu.insertBefore(modeBtn, menuLock)
         })
@@ -1431,108 +1892,104 @@ export function showContextMenu(
       if (id === "weather" || id === "rss") {
         const isMini = settings[`${id}Mini`] === true
         const isExpanded = settings[`${id}Expanded`] === true && !isMini
-        const miniBtn = document.createElement("div")
-        miniBtn.className = "context-menu-item custom-music-item"
 
-        const labels = {
-          weather: {
-            mini: i18n.weather_mini_size || "Thu nhỏ",
-            normal: i18n.weather_normal_size || "Kích thước chuẩn",
-            expand: i18n.weather_expand || "Phóng to",
-            collapse: i18n.weather_collapse || "Thu gọn",
-          },
-          rss: {
-            mini: "Thu nhỏ",
-            normal: "Kích thước chuẩn",
-            expand: "Phóng to",
-            collapse: "Thu gọn",
-          },
-        }
+        const miniBtn = createToggleMenuItem({
+          label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+          isActive: isMini,
+          iconClass: "fa-solid fa-compress",
+          activeText: i18n.status_on || "Bật",
+          inactiveText: i18n.status_off || "Tắt",
+          handler: () => {
+            const newVal = !isMini
+            updateSetting(`${id}Mini`, newVal)
+            if (newVal) updateSetting(`${id}Expanded`, false)
+            saveSettings(true)
 
-        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-compress" : "fa-compress-arrows-alt"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
-        miniBtn.onclick = () => {
-          const newVal = !isMini
-          updateSetting(`${id}Mini`, newVal)
-          if (newVal) updateSetting(`${id}Expanded`, false)
-          saveSettings(true)
-
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: `${id}Mini`, value: newVal },
-            }),
-          )
-          if (newVal) {
             window.dispatchEvent(
               new CustomEvent("layoutUpdated", {
-                detail: { key: `${id}Expanded`, value: false },
+                detail: { key: `${id}Mini`, value: newVal },
               }),
             )
-          }
+            if (newVal) {
+              window.dispatchEvent(
+                new CustomEvent("layoutUpdated", {
+                  detail: { key: `${id}Expanded`, value: false },
+                }),
+              )
+            }
 
-          const widgetIdMap = {
-            weather: "weather-container",
-            rss: "rss-container",
-          }
-          const el = document.getElementById(widgetIdMap[id])
-          if (el) {
-            el.classList.toggle(`${id}-mini`, newVal)
-            el.classList.toggle(`${id}-expanded`, false)
-          }
-          hideContextMenu()
-        }
+            const widgetIdMap = {
+              weather: "weather-container",
+              rss: "rss-container",
+            }
+            const el = document.getElementById(widgetIdMap[id])
+            if (el) {
+              el.classList.toggle(`${id}-mini`, newVal)
+              el.classList.toggle(`${id}-expanded`, false)
+            }
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(miniBtn, menuLock)
 
-        const expandBtn = document.createElement("div")
-        expandBtn.className = "context-menu-item custom-music-item"
-        expandBtn.innerHTML = `<i class="fa-solid ${isExpanded ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${isExpanded ? labels[id].collapse : labels[id].expand}</span>`
-        expandBtn.onclick = () => {
-          const newVal = !isExpanded
-          if (newVal) updateSetting(`${id}Mini`, false)
-          updateSetting(`${id}Expanded`, newVal)
-          saveSettings(true)
+        const expandBtn = createToggleMenuItem({
+          label: i18n.weather_expand || "Kích thước phóng to",
+          isActive: isExpanded,
+          iconClass: "fa-solid fa-up-right-and-down-left-from-center",
+          activeText: i18n.status_on || "Bật",
+          inactiveText: i18n.status_off || "Tắt",
+          handler: () => {
+            const newVal = !isExpanded
+            if (newVal) updateSetting(`${id}Mini`, false)
+            updateSetting(`${id}Expanded`, newVal)
+            saveSettings(true)
 
-          if (newVal) {
+            if (newVal) {
+              window.dispatchEvent(
+                new CustomEvent("layoutUpdated", {
+                  detail: { key: `${id}Mini`, value: false },
+                }),
+              )
+            }
             window.dispatchEvent(
               new CustomEvent("layoutUpdated", {
-                detail: { key: `${id}Mini`, value: false },
+                detail: { key: `${id}Expanded`, value: newVal },
               }),
             )
-          }
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: `${id}Expanded`, value: newVal },
-            }),
-          )
 
-          const widgetIdMap = {
-            weather: "weather-container",
-            rss: "rss-container",
-          }
-          const el = document.getElementById(widgetIdMap[id])
-          if (el) {
-            el.classList.toggle(`${id}-mini`, false)
-            el.classList.toggle(`${id}-expanded`, newVal)
-          }
-          hideContextMenu()
-        }
+            const widgetIdMap = {
+              weather: "weather-container",
+              rss: "rss-container",
+            }
+            const el = document.getElementById(widgetIdMap[id])
+            if (el) {
+              el.classList.toggle(`${id}-mini`, false)
+              el.classList.toggle(`${id}-expanded`, newVal)
+            }
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(expandBtn, menuLock)
 
         if (id === "weather") {
           const isFahrenheit = settings.weatherUnit === "fahrenheit"
-          const unitBtn = document.createElement("div")
-          unitBtn.className = "context-menu-item custom-music-item"
-          unitBtn.innerHTML = `<i class="fa-solid fa-temperature-half"></i> <span>${isFahrenheit ? i18n.weather_unit_celsius || "Chuyển sang °C" : i18n.weather_unit_fahrenheit || "Chuyển sang °F"}</span>`
-          unitBtn.onclick = () => {
-            const newVal = isFahrenheit ? "celsius" : "fahrenheit"
-            updateSetting("weatherUnit", newVal)
-            saveSettings(true)
-            window.dispatchEvent(
-              new CustomEvent("layoutUpdated", {
-                detail: { key: "weatherUnit", value: newVal },
-              }),
-            )
-            hideContextMenu()
-          }
+          const unitBtn = createCycleMenuItem({
+            label: i18n.weather_unit || "Đơn vị nhiệt độ",
+            currentLabel: isFahrenheit ? "°F" : "°C",
+            nextLabel: isFahrenheit ? "°C" : "°F",
+            iconClass: "fa-solid fa-temperature-half",
+            handler: () => {
+              const newVal = isFahrenheit ? "celsius" : "fahrenheit"
+              updateSetting("weatherUnit", newVal)
+              saveSettings(true)
+              window.dispatchEvent(
+                new CustomEvent("layoutUpdated", {
+                  detail: { key: "weatherUnit", value: newVal },
+                }),
+              )
+              hideContextMenu()
+            },
+          })
           contextMenu.insertBefore(unitBtn, menuLock)
         }
       }
@@ -1545,87 +2002,89 @@ export function showContextMenu(
           ? settings.calendarSize
           : "normal"
 
-        const sourceBtn = document.createElement("div")
-        sourceBtn.className = "context-menu-item custom-music-item"
-        sourceBtn.innerHTML = `<i class="fa-solid ${showSourceSwitcher ? "fa-eye-slash" : "fa-eye"}"></i> <span>${showSourceSwitcher ? i18n.calendar_hide_source_tabs || "Hide Calendar Source" : i18n.calendar_show_source_tabs || "Show Calendar Source"}</span>`
-        sourceBtn.onclick = () => {
-          const newVal = !showSourceSwitcher
-          updateSetting("calendarShowSourceSwitcher", newVal)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: "calendarShowSourceSwitcher", value: newVal },
-            }),
-          )
-          hideContextMenu()
-        }
+        const sourceBtn = createToggleMenuItem({
+          label: i18n.calendar_source_tabs || "Nguồn sự kiện lịch",
+          isActive: showSourceSwitcher,
+          iconClass: "fa-solid fa-calendar-days",
+          activeText: i18n.status_on || "Hiện",
+          inactiveText: i18n.status_off || "Ẩn",
+          handler: () => {
+            const newVal = !showSourceSwitcher
+            updateSetting("calendarShowSourceSwitcher", newVal)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "calendarShowSourceSwitcher", value: newVal },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(sourceBtn, menuLock)
 
-        const miniBtn = document.createElement("div")
-        miniBtn.className = "context-menu-item custom-music-item"
-        miniBtn.innerHTML = `<i class="fa-solid ${calendarSize === "mini" ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${calendarSize === "mini" ? i18n.calendar_normal_size || "Normal Calendar" : i18n.calendar_mini_size || "Mini Calendar"}</span>`
-        miniBtn.onclick = () => {
-          const newVal = calendarSize === "mini" ? "normal" : "mini"
-          updateSetting("calendarSize", newVal)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: "calendarSize", value: newVal },
-            }),
-          )
-          hideContextMenu()
+        const sizeOrder = ["normal", "mini", "expanded"]
+        const nextSize =
+          sizeOrder[(sizeOrder.indexOf(calendarSize) + 1) % sizeOrder.length]
+        const sizeLabels = {
+          normal: i18n.calendar_normal_size || "Chuẩn",
+          mini: i18n.calendar_mini_size || "Thu nhỏ",
+          expanded: i18n.calendar_expand_size || "Mở rộng",
         }
-        contextMenu.insertBefore(miniBtn, menuLock)
-
-        const expandBtn = document.createElement("div")
-        expandBtn.className = "context-menu-item custom-music-item"
-        expandBtn.innerHTML = `<i class="fa-solid ${calendarSize === "expanded" ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${calendarSize === "expanded" ? i18n.calendar_normal_size || "Normal Calendar" : i18n.calendar_expand_size || "Enlarge Calendar"}</span>`
-        expandBtn.onclick = () => {
-          const newVal = calendarSize === "expanded" ? "normal" : "expanded"
-          updateSetting("calendarSize", newVal)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: "calendarSize", value: newVal },
-            }),
-          )
-          hideContextMenu()
-        }
-        contextMenu.insertBefore(expandBtn, menuLock)
+        const sizeBtn = createCycleMenuItem({
+          label: i18n.calendar_size || "Kích thước lịch",
+          currentLabel: sizeLabels[calendarSize] || calendarSize,
+          nextLabel: sizeLabels[nextSize] || nextSize,
+          iconClass: "fa-solid fa-up-right-and-down-left-from-center",
+          handler: () => {
+            updateSetting("calendarSize", nextSize)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "calendarSize", value: nextSize },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
+        contextMenu.insertBefore(sizeBtn, menuLock)
       }
 
-      const borderBtn = document.createElement("div")
-      borderBtn.className = "context-menu-item custom-music-item"
-      borderBtn.innerHTML = `<i class="${isBorderHidden ? "fa-regular fa-square" : "fa-solid fa-border-all"}"></i> <span>${isBorderHidden ? i18n.menu_show_border || "Show Border" : i18n.menu_hide_border || "Hide Border"}</span>`
-      borderBtn.onclick = () => {
-        const newVal = !isBorderHidden
-        updateSetting(borderKey, newVal)
-        saveSettings(true)
+      const borderBtn = createToggleMenuItem({
+        label: i18n.menu_border || "Viền widget",
+        isActive: !isBorderHidden,
+        iconClass: "fa-solid fa-border-all",
+        activeText: i18n.status_on || "Hiện",
+        inactiveText: i18n.status_off || "Ẩn",
+        handler: () => {
+          const newVal = !isBorderHidden
+          updateSetting(borderKey, newVal)
+          saveSettings(true)
 
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: borderKey, value: newVal },
-          }),
-        )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: borderKey, value: newVal },
+            }),
+          )
 
-        const widgetIdMap = {
-          todo: "todo-container",
-          timer: "timer-component",
-          calendar: "full-calendar-container",
-          weather: "weather-container",
-          notepad: "notepad-container",
-          "daily-quotes": "daily-quotes",
-          rss: "rss-container",
-          habitTracker: "habit-tracker-container",
-          ambientSounds: "ambient-sounds-container",
-          aiAssistant: "ai-assistant-container",
-        }
-        const el = document.getElementById(widgetIdMap[id] || id)
-        if (el) {
-          el.classList.toggle("widget-border-hidden", newVal)
-        }
-        hideContextMenu()
-      }
+          const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            calendar: "full-calendar-container",
+            weather: "weather-container",
+            notepad: "notepad-container",
+            "daily-quotes": "daily-quotes",
+            rss: "rss-container",
+            habitTracker: "habit-tracker-container",
+            ambientSounds: "ambient-sounds-container",
+            aiAssistant: "ai-assistant-container",
+          }
+          const el = document.getElementById(widgetIdMap[id] || id)
+          if (el) {
+            el.classList.toggle("widget-border-hidden", newVal)
+          }
+          hideContextMenu()
+        },
+      })
       contextMenu.insertBefore(borderBtn, menuLock)
 
       if (id === "timer") {
@@ -1637,8 +2096,6 @@ export function showContextMenu(
         const sourceKey = "quotesSource"
         const currentSource = settings[sourceKey] || "local"
 
-        const sourceBtn = document.createElement("div")
-        sourceBtn.className = "context-menu-item custom-music-item"
         const sourceNames = {
           local: i18n.settings_quotes_source_local || "Local (Offline)",
           quotable: i18n.settings_quotes_source_quotable || "Quotable API",
@@ -1651,23 +2108,26 @@ export function showContextMenu(
         }
         const nextSource = nextSources[currentSource] || "local"
 
-        sourceBtn.innerHTML = `<i class="fa-solid fa-server"></i> <span>${i18n.settings_quotes_source || "API Source"}: ${sourceNames[currentSource]}</span>`
-        sourceBtn.onclick = () => {
-          updateSetting(sourceKey, nextSource)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: sourceKey, value: nextSource },
-            }),
-          )
-          hideContextMenu()
-        }
+        const sourceBtn = createCycleMenuItem({
+          label: i18n.settings_quotes_source || "Nguồn API",
+          currentLabel: sourceNames[currentSource] || currentSource,
+          nextLabel: sourceNames[nextSource] || nextSource,
+          iconClass: "fa-solid fa-server",
+          handler: () => {
+            updateSetting(sourceKey, nextSource)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: sourceKey, value: nextSource },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(sourceBtn, menuLock)
 
         const freqKey = "quotesUpdateFreq"
         const currentFreq = settings[freqKey] || "tab"
-        const freqBtn = document.createElement("div")
-        freqBtn.className = "context-menu-item custom-music-item"
         const freqNames = {
           tab: i18n.settings_quotes_freq_tab || "Every New Tab",
           hour: i18n.settings_quotes_freq_hour || "Every Hour",
@@ -1680,17 +2140,22 @@ export function showContextMenu(
         }
         const nextFreq = nextFreqs[currentFreq] || "tab"
 
-        freqBtn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> <span>${i18n.settings_quotes_update_freq || "Update Freq"}: ${freqNames[currentFreq]}</span>`
-        freqBtn.onclick = () => {
-          updateSetting(freqKey, nextFreq)
-          saveSettings(true)
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: freqKey, value: nextFreq },
-            }),
-          )
-          hideContextMenu()
-        }
+        const freqBtn = createCycleMenuItem({
+          label: i18n.settings_quotes_update_freq || "Tần suất làm mới",
+          currentLabel: freqNames[currentFreq] || currentFreq,
+          nextLabel: freqNames[nextFreq] || nextFreq,
+          iconClass: "fa-solid fa-clock-rotate-left",
+          handler: () => {
+            updateSetting(freqKey, nextFreq)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: freqKey, value: nextFreq },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         contextMenu.insertBefore(freqBtn, menuLock)
       }
     }
@@ -1704,167 +2169,187 @@ export function showContextMenu(
 
       // M3 Accent Skin
       const isM3Accent = settings.musicPlayerSkin === "m3-accent"
-      const m3SkinBtn = document.createElement("div")
-      m3SkinBtn.className = "context-menu-item custom-music-item"
-      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_m3_accent || "M3 Accent Skin"}</span>`
-      m3SkinBtn.onclick = () => {
-        const newSkin = isM3Accent ? "default" : "m3-accent"
-        updateSetting("musicPlayerSkin", newSkin)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerSkin", value: newSkin },
-          }),
-        )
-        hideContextMenu()
-      }
+      const m3SkinBtn = createRadioMenuItem({
+        label: i18n.skin_m3_accent || "Màu Accent",
+        isSelected: isM3Accent,
+        iconClass: "fa-solid fa-palette",
+        handler: () => {
+          const newSkin = isM3Accent ? "default" : "m3-accent"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerSkin", value: newSkin },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(m3SkinBtn)
 
       // Transparent Skin
       const isTransparent = settings.musicPlayerSkin === "transparent"
-      const transparentBtn = document.createElement("div")
-      transparentBtn.className = "context-menu-item custom-music-item"
-      transparentBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
-      transparentBtn.onclick = () => {
-        const newSkin = isTransparent ? "default" : "transparent"
-        updateSetting("musicPlayerSkin", newSkin)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerSkin", value: newSkin },
-          }),
-        )
-        hideContextMenu()
-      }
+      const transparentBtn = createRadioMenuItem({
+        label: i18n.skin_transparent || "Trong suốt",
+        isSelected: isTransparent,
+        iconClass: "fa-solid fa-ghost",
+        handler: () => {
+          const newSkin = isTransparent ? "default" : "transparent"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerSkin", value: newSkin },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(transparentBtn)
 
       // Light Transparent Skin
       const isLightTransparent =
         settings.musicPlayerSkin === "light-transparent"
-      const lightTransparentBtn = document.createElement("div")
-      lightTransparentBtn.className = "context-menu-item custom-music-item"
-      lightTransparentBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
-      lightTransparentBtn.onclick = () => {
-        const newSkin = isLightTransparent ? "default" : "light-transparent"
-        updateSetting("musicPlayerSkin", newSkin)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerSkin", value: newSkin },
-          }),
-        )
-        hideContextMenu()
-      }
+      const lightTransparentBtn = createRadioMenuItem({
+        label: i18n.skin_light_transparent || "Trong suốt sáng",
+        isSelected: isLightTransparent,
+        iconClass: "fa-solid fa-droplet",
+        handler: () => {
+          const newSkin = isLightTransparent ? "default" : "light-transparent"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerSkin", value: newSkin },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(lightTransparentBtn)
 
       // Thumbnail Background Skin
       const isThumbnailBg = settings.musicPlayerThumbnailBg === true
-      const thumbnailBgBtn = document.createElement("div")
-      thumbnailBgBtn.className = "context-menu-item custom-music-item"
-      thumbnailBgBtn.innerHTML = `<i class="fa-solid fa-image"></i> <span>${isThumbnailBg ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_thumbnail_bg || "Thumbnail Background"}</span>`
-      thumbnailBgBtn.onclick = () => {
-        const newVal = !isThumbnailBg
-        updateSetting("musicPlayerThumbnailBg", newVal)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerThumbnailBg", value: newVal },
-          }),
-        )
-        hideContextMenu()
-      }
+      const thumbnailBgBtn = createToggleMenuItem({
+        label: i18n.skin_thumbnail_bg || "Nền theo Thumbnail",
+        isActive: isThumbnailBg,
+        iconClass: "fa-solid fa-image",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const newVal = !isThumbnailBg
+          updateSetting("musicPlayerThumbnailBg", newVal)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerThumbnailBg", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(thumbnailBgBtn)
 
       // Heartbeat specific / General style specific skins
       if (musicStyle === "square-thumb") {
         // Vertical Card Skin for Square Thumb
         const isVerticalCard = settings.musicPlayerSkin === "vertical-card"
-        const verticalCardBtn = document.createElement("div")
-        verticalCardBtn.className = "context-menu-item custom-music-item"
-        verticalCardBtn.innerHTML = `<i class="fa-solid fa-mobile-screen"></i> <span>${isVerticalCard ? i18n.music_player_skin_square_thumb || "Square Thumb Skin" : i18n.music_player_skin_vertical_card || "Vertical Card Skin"}</span>`
-        verticalCardBtn.onclick = () => {
-          const newSkin = isVerticalCard ? "default" : "vertical-card"
-          updateSetting("musicPlayerSkin", newSkin)
-          saveSettings()
-          window.dispatchEvent(
-            new CustomEvent("settingsUpdated", {
-              detail: { key: "musicPlayerSkin", value: newSkin },
-            }),
-          )
-          hideContextMenu()
-        }
+        const verticalCardBtn = createRadioMenuItem({
+          label: i18n.music_player_skin_vertical_card || "Thẻ dọc",
+          isSelected: isVerticalCard,
+          iconClass: "fa-solid fa-mobile-screen",
+          handler: () => {
+            const newSkin = isVerticalCard ? "default" : "vertical-card"
+            updateSetting("musicPlayerSkin", newSkin)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("settingsUpdated", {
+                detail: { key: "musicPlayerSkin", value: newSkin },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         itemsToInsert.push(verticalCardBtn)
 
         // Horizontal Card Skin for Square Thumb
         const isHorizontalCard = settings.musicPlayerSkin === "horizontal-card"
-        const horizontalCardBtn = document.createElement("div")
-        horizontalCardBtn.className = "context-menu-item custom-music-item"
-        horizontalCardBtn.innerHTML = `<i class="fa-solid fa-money-check"></i> <span>${isHorizontalCard ? i18n.music_player_skin_square_thumb || "Square Thumb Skin" : i18n.music_player_skin_horizontal_card || "Horizontal Card Skin"}</span>`
-        horizontalCardBtn.onclick = () => {
-          const newSkin = isHorizontalCard ? "default" : "horizontal-card"
-          updateSetting("musicPlayerSkin", newSkin)
-          saveSettings()
-          window.dispatchEvent(
-            new CustomEvent("settingsUpdated", {
-              detail: { key: "musicPlayerSkin", value: newSkin },
-            }),
-          )
-          hideContextMenu()
-        }
+        const horizontalCardBtn = createRadioMenuItem({
+          label: i18n.music_player_skin_horizontal_card || "Thẻ ngang",
+          isSelected: isHorizontalCard,
+          iconClass: "fa-solid fa-money-check",
+          handler: () => {
+            const newSkin = isHorizontalCard ? "default" : "horizontal-card"
+            updateSetting("musicPlayerSkin", newSkin)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("settingsUpdated", {
+                detail: { key: "musicPlayerSkin", value: newSkin },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         itemsToInsert.push(horizontalCardBtn)
       } else if (musicStyle === "heartbeat") {
         // GameBoy Skin
         const isGameBoy = settings.musicPlayerSkin === "gameboy"
-        const gameboyBtn = document.createElement("div")
-        gameboyBtn.className = "context-menu-item custom-music-item"
-        gameboyBtn.innerHTML = `<i class="${isGameBoy ? "fa-solid fa-mobile-screen-button" : "fa-solid fa-gamepad"}"></i> <span>${isGameBoy ? i18n.music_player_skin_modern || "Giao diện Hiện đại" : i18n.music_player_skin_gameboy || "Giao diện GameBoy"}</span>`
-        gameboyBtn.onclick = () => {
-          const newSkin = isGameBoy ? "default" : "gameboy"
-          updateSetting("musicPlayerSkin", newSkin)
-          saveSettings()
-          window.dispatchEvent(
-            new CustomEvent("settingsUpdated", {
-              detail: { key: "musicPlayerSkin", value: newSkin },
-            }),
-          )
-          hideContextMenu()
-        }
+        const gameboyBtn = createRadioMenuItem({
+          label: i18n.music_player_skin_gameboy || "GameBoy",
+          isSelected: isGameBoy,
+          iconClass: "fa-solid fa-gamepad",
+          handler: () => {
+            const newSkin = isGameBoy ? "default" : "gameboy"
+            updateSetting("musicPlayerSkin", newSkin)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("settingsUpdated", {
+                detail: { key: "musicPlayerSkin", value: newSkin },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         itemsToInsert.push(gameboyBtn)
 
         // White Blur Skin for Heartbeat
         const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
-        const whiteSkinBtn = document.createElement("div")
-        whiteSkinBtn.className = "context-menu-item custom-music-item"
-        whiteSkinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Default Skin" : i18n.music_player_skin_white_blur || "White Blur Skin"}</span>`
-        whiteSkinBtn.onclick = () => {
-          const newSkin = isWhiteBlur ? "default" : "white-blur"
-          updateSetting("musicPlayerSkin", newSkin)
-          saveSettings()
-          window.dispatchEvent(
-            new CustomEvent("settingsUpdated", {
-              detail: { key: "musicPlayerSkin", value: newSkin },
-            }),
-          )
-          hideContextMenu()
-        }
+        const whiteSkinBtn = createRadioMenuItem({
+          label: i18n.skin_white_blur || "Kính mờ trắng",
+          isSelected: isWhiteBlur,
+          iconClass: "fa-solid fa-circle-half-stroke",
+          handler: () => {
+            const newSkin = isWhiteBlur ? "default" : "white-blur"
+            updateSetting("musicPlayerSkin", newSkin)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("settingsUpdated", {
+                detail: { key: "musicPlayerSkin", value: newSkin },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         itemsToInsert.push(whiteSkinBtn)
       } else {
         // White Blur Skin for other styles
         const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
-        const whiteSkinBtn = document.createElement("div")
-        whiteSkinBtn.className = "context-menu-item custom-music-item"
-        whiteSkinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Default Skin" : i18n.music_player_skin_white_blur || "White Blur Skin"}</span>`
-        whiteSkinBtn.onclick = () => {
-          const newSkin = isWhiteBlur ? "default" : "white-blur"
-          updateSetting("musicPlayerSkin", newSkin)
-          saveSettings()
-          window.dispatchEvent(
-            new CustomEvent("settingsUpdated", {
-              detail: { key: "musicPlayerSkin", value: newSkin },
-            }),
-          )
-          hideContextMenu()
-        }
+        const whiteSkinBtn = createRadioMenuItem({
+          label: i18n.skin_white_blur || "Kính mờ trắng",
+          isSelected: isWhiteBlur,
+          iconClass: "fa-solid fa-circle-half-stroke",
+          handler: () => {
+            const newSkin = isWhiteBlur ? "default" : "white-blur"
+            updateSetting("musicPlayerSkin", newSkin)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("settingsUpdated", {
+                detail: { key: "musicPlayerSkin", value: newSkin },
+              }),
+            )
+            hideContextMenu()
+          },
+        })
         itemsToInsert.push(whiteSkinBtn)
       }
 
@@ -1875,22 +2360,26 @@ export function showContextMenu(
 
       // --- 3. Shaking & Colors (Grouped together) ---
 
-      // Shaking Animation Toggler ("Bật bồng bềnh")
-      const isNoShaking = settings.musicPlayerNoShaking
-      const shakeBtn = document.createElement("div")
-      shakeBtn.className = "context-menu-item custom-music-item"
-      shakeBtn.innerHTML = `<i class="${isNoShaking ? "fa-solid fa-wand-magic-sparkles" : "fa-solid fa-anchor"}"></i> <span>${isNoShaking ? i18n.music_player_shaking_on || "Bật bồng bềnh" : i18n.music_player_no_shaking || "Tắt bồng bềnh"}</span>`
-      shakeBtn.onclick = () => {
-        const newVal = !isNoShaking
-        updateSetting("musicPlayerNoShaking", newVal)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerNoShaking", value: newVal },
-          }),
-        )
-        hideContextMenu()
-      }
+      // Shaking Animation Toggler ("Hiệu ứng bồng bềnh")
+      const isNoShaking = settings.musicPlayerNoShaking === true
+      const shakeBtn = createToggleMenuItem({
+        label: i18n.music_player_shaking || "Hiệu ứng bồng bềnh",
+        isActive: !isNoShaking,
+        iconClass: isNoShaking ? "fa-solid fa-anchor" : "fa-solid fa-wand-magic-sparkles",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const newVal = !isNoShaking
+          updateSetting("musicPlayerNoShaking", newVal)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerNoShaking", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(shakeBtn)
 
       // Color Mode (Cycle)
@@ -1910,64 +2399,65 @@ export function showContextMenu(
           (colorModes.indexOf(currentColorMode) + 1) % colorModes.length
         ]
 
-      let colorModeLabel =
-        i18n.music_player_color_brand || "Mặc định của Giao diện"
-      if (currentColorMode === false)
-        colorModeLabel = i18n.music_player_color_global || "Màu chủ đề chung"
-      else if (currentColorMode === "thumbnail")
-        colorModeLabel = i18n.music_player_color_thumb || "Màu theo Thumbnail"
-      else if (currentColorMode === "thumbnail-dynamic")
-        colorModeLabel =
-          i18n.music_player_color_thumb_dynamic || "Chuyển màu theo Thumbnail"
-      else if (currentColorMode === "rgb-flow")
-        colorModeLabel =
-          i18n.music_player_color_rgb_flow || "Chuyển màu RGB Rainbow"
-
-      const defaultColorBtn = document.createElement("div")
-      defaultColorBtn.className = "context-menu-item custom-music-item"
-      const waveColorPrefix =
-        i18n.music_player_wave_color ||
-        i18n.settings_music_use_default_color ||
-        "Màu sóng nhạc"
-      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>${waveColorPrefix}: ${colorModeLabel}</span>`
-      defaultColorBtn.onclick = () => {
-        updateSetting("musicPlayerUseDefaultColor", nextColorMode)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerUseDefaultColor", value: nextColorMode },
-          }),
-        )
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: "musicPlayerUseDefaultColor", value: nextColorMode },
-          }),
-        )
-        hideContextMenu()
+      const getColorModeTitle = (mode) => {
+        if (mode === true) return i18n.music_player_color_brand || "Mặc định"
+        if (mode === false) return i18n.music_player_color_global || "Màu chủ đề"
+        if (mode === "thumbnail") return i18n.music_player_color_thumb || "Thumbnail"
+        if (mode === "thumbnail-dynamic")
+          return i18n.music_player_color_thumb_dynamic || "Động Thumbnail"
+        if (mode === "rgb-flow") return i18n.music_player_color_rgb_flow || "RGB Rainbow"
+        return String(mode)
       }
+
+      const defaultColorBtn = createCycleMenuItem({
+        label: i18n.music_player_wave_color || "Màu sóng nhạc",
+        currentLabel: getColorModeTitle(currentColorMode),
+        nextLabel: getColorModeTitle(nextColorMode),
+        iconClass: "fa-solid fa-fill-drip",
+        handler: () => {
+          updateSetting("musicPlayerUseDefaultColor", nextColorMode)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: {
+                key: "musicPlayerUseDefaultColor",
+                value: nextColorMode,
+              },
+            }),
+          )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: {
+                key: "musicPlayerUseDefaultColor",
+                value: nextColorMode,
+              },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(defaultColorBtn)
 
       // Wave Background Color Toggler ("Màu nền theo nhạc")
       const isWaveBg = settings.musicPlayerWaveBgColor === true
-      const waveBgBtn = document.createElement("div")
-      waveBgBtn.className = "context-menu-item custom-music-item"
-      const waveBgText = isWaveBg
-        ? i18n.music_player_wave_bg_on ||
-          `${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${i18n.status_on || i18n.on || "Bật"}`
-        : i18n.music_player_wave_bg_off ||
-          `${i18n.music_player_wave_bg || "Màu nền theo nhạc"}: ${i18n.status_off || i18n.off || "Tắt"}`
-      waveBgBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${waveBgText}</span>`
-      waveBgBtn.onclick = () => {
-        const newVal = !isWaveBg
-        updateSetting("musicPlayerWaveBgColor", newVal)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerWaveBgColor", value: newVal },
-          }),
-        )
-        hideContextMenu()
-      }
+      const waveBgBtn = createToggleMenuItem({
+        label: i18n.music_player_wave_bg || "Màu nền theo nhạc",
+        isActive: isWaveBg,
+        iconClass: "fa-solid fa-droplet",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const newVal = !isWaveBg
+          updateSetting("musicPlayerWaveBgColor", newVal)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerWaveBgColor", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(waveBgBtn)
 
       // Source Icon Color Mode ("Icon nguồn")
@@ -1979,68 +2469,79 @@ export function showContextMenu(
             sourceIconModes.length
         ]
       const sourceIconModeLabels = {
-        brand: i18n.music_source_icon_brand || "Màu thương hiệu",
+        brand: i18n.music_source_icon_brand || "Thương hiệu",
         accent: i18n.music_source_icon_accent || "Màu accent",
         none: i18n.music_source_icon_none || "Không màu",
       }
-      const sourceIconBtn = document.createElement("div")
-      sourceIconBtn.className = "context-menu-item custom-music-item"
-      sourceIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.music_source_icon_context || "Icon nguồn"}: ${sourceIconModeLabels[currentIconMode]}</span>`
-      sourceIconBtn.onclick = () => {
-        updateSetting("musicSourceIconColorMode", nextIconMode)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: {
-              key: "musicSourceIconColorMode",
-              value: nextIconMode,
-            },
-          }),
-        )
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: {
-              key: "musicSourceIconColorMode",
-              value: nextIconMode,
-            },
-          }),
-        )
-        hideContextMenu()
-      }
+      const sourceIconBtn = createCycleMenuItem({
+        label: i18n.music_source_icon_context || "Icon nguồn",
+        currentLabel: sourceIconModeLabels[currentIconMode] || currentIconMode,
+        nextLabel: sourceIconModeLabels[nextIconMode] || nextIconMode,
+        iconClass: "fa-solid fa-icons",
+        handler: () => {
+          updateSetting("musicSourceIconColorMode", nextIconMode)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: {
+                key: "musicSourceIconColorMode",
+                value: nextIconMode,
+              },
+            }),
+          )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: {
+                key: "musicSourceIconColorMode",
+                value: nextIconMode,
+              },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(sourceIconBtn)
 
       // Real-time Audio Reactive Toggler ("Sóng nhạc Real-time")
       const isReactive = settings.musicRealAudioReactive === true
-      const audioReactiveBtn = document.createElement("div")
-      audioReactiveBtn.className = "context-menu-item custom-music-item"
-      audioReactiveBtn.innerHTML = `<i class="fa-solid ${isReactive ? "fa-bolt-lightning" : "fa-wave-square"}"></i> <span>${isReactive ? i18n.music_real_audio_reactive_on || "Sóng nhạc Real-time: Bật" : i18n.music_real_audio_reactive_off || "Sóng nhạc Real-time: Tắt"}</span>`
-      audioReactiveBtn.onclick = () => {
-        const newVal = !isReactive
-        window.dispatchEvent(
-          new CustomEvent("toggleMusicRealAudioReactive", {
-            detail: { value: newVal },
-          }),
-        )
-        hideContextMenu()
-      }
+      const audioReactiveBtn = createToggleMenuItem({
+        label: i18n.music_real_audio_reactive || "Sóng Real-time",
+        isActive: isReactive,
+        iconClass: isReactive ? "fa-solid fa-bolt-lightning" : "fa-solid fa-wave-square",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const newVal = !isReactive
+          window.dispatchEvent(
+            new CustomEvent("toggleMusicRealAudioReactive", {
+              detail: { value: newVal },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(audioReactiveBtn)
 
-      // CPU Saving Mode Toggler ("Chế độ sóng nhạc: Tiết kiệm CPU / Mặc định")
+      // CPU Saving Mode Toggler ("Tiết kiệm CPU")
       const isCpuSave = settings.musicVisualizerCpuSave !== false
-      const cpuSaveBtn = document.createElement("div")
-      cpuSaveBtn.className = "context-menu-item custom-music-item"
-      cpuSaveBtn.innerHTML = `<i class="fa-solid ${isCpuSave ? "fa-bolt" : "fa-leaf"}"></i> <span>${isCpuSave ? i18n.music_visualizer_mode_default || "Sóng nhạc: Mặc định" : i18n.music_visualizer_mode_cpusave || "Sóng nhạc: Tiết kiệm CPU"}</span>`
-      cpuSaveBtn.onclick = () => {
-        const newVal = !isCpuSave
-        updateSetting("musicVisualizerCpuSave", newVal)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicVisualizerCpuSave", value: newVal },
-          }),
-        )
-        hideContextMenu()
-      }
+      const cpuSaveBtn = createToggleMenuItem({
+        label: i18n.music_visualizer_mode_cpusave || "Tiết kiệm CPU",
+        isActive: isCpuSave,
+        iconClass: isCpuSave ? "fa-solid fa-leaf" : "fa-solid fa-bolt",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const newVal = !isCpuSave
+          updateSetting("musicVisualizerCpuSave", newVal)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicVisualizerCpuSave", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(cpuSaveBtn)
 
       // --- 4. Divider ---
@@ -2052,51 +2553,59 @@ export function showContextMenu(
 
       // Mini Mode Toggler
       const isMini = settings.musicMini === true
-      const miniBtn = document.createElement("div")
-      miniBtn.className = "context-menu-item custom-music-item"
-      miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? i18n.music_normal_size || "Normal Music" : i18n.music_mini_size || "Mini Music"}</span>`
-      miniBtn.onclick = () => {
-        const el = document.getElementById("music-player-container")
-        const newVal = !isMini
-        updateSetting("musicMini", newVal)
-        saveSettings(true)
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: "musicMini", value: newVal },
-          }),
-        )
-        if (el) {
-          el.classList.toggle("music-mini", newVal)
-        }
-        hideContextMenu()
-      }
+      const miniBtn = createToggleMenuItem({
+        label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+        isActive: isMini,
+        iconClass: "fa-solid fa-compress",
+        activeText: i18n.status_on || "Bật",
+        inactiveText: i18n.status_off || "Tắt",
+        handler: () => {
+          const el = document.getElementById("music-player-container")
+          const newVal = !isMini
+          updateSetting("musicMini", newVal)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "musicMini", value: newVal },
+            }),
+          )
+          if (el) {
+            el.classList.toggle("music-mini", newVal)
+          }
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(miniBtn)
 
       // Border Toggler
       const isMusicBorderHidden = settings.musicPlayerHideBorder === true
-      const musicBorderBtn = document.createElement("div")
-      musicBorderBtn.className = "context-menu-item custom-music-item"
-      musicBorderBtn.innerHTML = `<i class="${isMusicBorderHidden ? "fa-regular fa-square" : "fa-solid fa-border-all"}"></i> <span>${isMusicBorderHidden ? i18n.menu_show_border || "Show Border" : i18n.menu_hide_border || "Hide Border"}</span>`
-      musicBorderBtn.onclick = () => {
-        const newVal = !isMusicBorderHidden
-        updateSetting("musicPlayerHideBorder", newVal)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerHideBorder", value: newVal },
-          }),
-        )
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: "musicPlayerHideBorder", value: newVal },
-          }),
-        )
-        const container = document.getElementById("music-player-container")
-        const wrapper = container?.querySelector(".music-player-wrapper")
-        container?.classList.toggle("widget-border-hidden", newVal)
-        wrapper?.classList.toggle("widget-border-hidden", newVal)
-        hideContextMenu()
-      }
+      const musicBorderBtn = createToggleMenuItem({
+        label: i18n.menu_border || "Viền widget",
+        isActive: !isMusicBorderHidden,
+        iconClass: "fa-solid fa-border-all",
+        activeText: i18n.status_on || "Hiện",
+        inactiveText: i18n.status_off || "Ẩn",
+        handler: () => {
+          const newVal = !isMusicBorderHidden
+          updateSetting("musicPlayerHideBorder", newVal)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerHideBorder", value: newVal },
+            }),
+          )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "musicPlayerHideBorder", value: newVal },
+            }),
+          )
+          const container = document.getElementById("music-player-container")
+          const wrapper = container?.querySelector(".music-player-wrapper")
+          container?.classList.toggle("widget-border-hidden", newVal)
+          wrapper?.classList.toggle("widget-border-hidden", newVal)
+          hideContextMenu()
+        },
+      })
       itemsToInsert.push(musicBorderBtn)
 
       // Insert all sequentially before menuLock
@@ -2741,11 +3250,13 @@ export function showContextMenu(
 }
 
 export function hideContextMenu() {
+  hideContextMenuDetailToast()
   contextMenu.style.display = "none"
   contextMenuTargetIndex = -1
   contextMenuTargetType = "bookmark"
   contextMenuTargetId = null
   contextMenuCallbacks = null
+  contextMenuTargetBookmark = null
   const qrHover = document.getElementById("qr-hover-popover")
   if (qrHover) qrHover.style.display = "none"
   // Remove any quick-access popup that may have been opened
@@ -3279,4 +3790,13 @@ export function initContextMenu() {
       hideContextMenu()
     }
   })
+
+  contextMenu?.addEventListener("mouseover", handleContextMenuMouseOver)
+  contextMenu?.addEventListener("mouseout", handleContextMenuMouseOut)
+  contextMenu?.addEventListener("click", () => {
+    hideContextMenuDetailToast()
+  })
+
+  window.addEventListener("scroll", hideContextMenuDetailToast, { passive: true })
+  window.addEventListener("resize", hideContextMenuDetailToast, { passive: true })
 }

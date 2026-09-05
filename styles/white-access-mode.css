@@ -1117,7 +1117,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab:hover {
    12. CONTEXT MENU (MENU CHUỘT PHẢI KHI DÙNG WHITE ACCESS MODE MẶC ĐỊNH)
    ------------------------------------------------------------------------------ */
 body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu,
-body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu {
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) #context-menu,
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-context-menu {
   background: rgba(255, 255, 255, 0.98) !important;
   border: 1px solid rgba(0, 0, 0, 0.14) !important;
   box-shadow:
@@ -1126,6 +1127,29 @@ body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.co
   backdrop-filter: blur(28px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
   color: #0f172a !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-google-event-modal {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-modal-event-title {
+  color: #0f172a !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-modal-meta-row {
+  color: #334155 !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-modal-desc-section {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .calendar-modal-desc-section .desc-content {
+  color: #1e293b !important;
 }
 
 body.quick-access-white:not(.context-menu-macos):not(.context-menu-dark):not(.context-menu-m3):not(.context-menu-none) .context-menu .context-menu-header,
