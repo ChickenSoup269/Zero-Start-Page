@@ -1117,10 +1117,31 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
 
 function openExternalUrl(url) {
   if (window.chrome?.tabs?.create) {
-    window.chrome.tabs.create({ url })
+    try {
+      const res = window.chrome.tabs.create({ url })
+      if (res && typeof res.catch === "function") {
+        res.catch(() => {
+          window.open(
+            url.startsWith("chrome://") ? "https://www.google.com" : url,
+            "_blank",
+            "noopener,noreferrer",
+          )
+        })
+      }
+    } catch {
+      window.open(
+        url.startsWith("chrome://") ? "https://www.google.com" : url,
+        "_blank",
+        "noopener,noreferrer",
+      )
+    }
     return
   }
-  window.open(url, "_blank", "noopener,noreferrer")
+  window.open(
+    url.startsWith("chrome://") ? "https://www.google.com" : url,
+    "_blank",
+    "noopener,noreferrer",
+  )
 }
 
 function addBackgroundContextMenuItems(i18n) {
@@ -1264,6 +1285,14 @@ function addBackgroundContextMenuItems(i18n) {
       () => {
         hideContextMenu()
         openExternalUrl("https://www.google.com/webhp")
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_open_chrome_newtab || "Open Chrome New Tab (Google User)",
+      "fa-brands fa-chrome",
+      () => {
+        hideContextMenu()
+        openExternalUrl("chrome://new-tab-page")
       },
     ),
   ]
