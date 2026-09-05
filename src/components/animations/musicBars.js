@@ -21,33 +21,53 @@ class MusicalNoteParticle {
     this.x = initial ? Math.random() * W : -50 - Math.random() * 60
     this.waveIdx = waveIdx !== undefined ? waveIdx : Math.floor(Math.random() * 4)
     this.type = NOTE_TYPES[Math.floor(Math.random() * NOTE_TYPES.length)]
-    this.z = 0.4 + Math.random() * 0.6 // Parallax depth layer
-    this.baseScale = (0.75 + this.z * 0.5) * (this.type === "clef" ? 0.95 : 1.1)
-    this.speed = (0.5 + this.z * 0.7) * (0.85 + Math.random() * 0.3)
-    this.oscPhase = Math.random() * Math.PI * 2
-    this.oscSpeed = 0.02 + Math.random() * 0.015
-    this.pitchRoll = (Math.random() - 0.5) * 0.2
-    this.glowTimer = Math.random() * Math.PI * 2
-    this.glowSpeed = 0.025 + Math.random() * 0.025
+    this.z = 0.45 + Math.random() * 0.55 // Parallax depth layer
+    this.baseScale = (0.8 + this.z * 0.45) * (this.type === "clef" ? 0.95 : 1.1)
+
+    // Musical scale / harmonic staff line offset (creates melodic sound wave structure)
+    this.scaleDegree = Math.floor(Math.random() * 5) - 2 // -2, -1, 0, 1, 2
+    this.pitchOffset = this.scaleDegree * 16 * this.z
+
+    // Melodic wave flow dynamics
+    this.baseSpeed = (0.55 + this.z * 0.5) * (0.9 + Math.random() * 0.2)
+    this.harmonicPhase = Math.random() * Math.PI * 2
+    this.harmonicSpeed = 0.024 + Math.random() * 0.016
     this.waveAngle = 0
     this.y = H * 0.6
     this.excited = 0
+    this.beatReaction = 0
+    this.glowTimer = Math.random() * Math.PI * 2
+    this.sonicRipple = Math.random()
   }
 
-  update(dt, W, H, speedMul, getWaveY, mouse) {
-    const spd = this.speed * speedMul * dt * 60
-    this.x += spd
-    this.oscPhase += this.oscSpeed * dt * 60
-    this.glowTimer += this.glowSpeed * dt * 60
+  update(dt, W, H, speedMul, getWaveY, mouse, beatEnergy = 0) {
+    // 1. Acoustic wave surfing motion
+    // Wave slope and orbital acceleration
+    const currentWaveY = getWaveY(this.x, this.waveIdx)
+    const aheadWaveY = getWaveY(this.x + 16, this.waveIdx)
+    const slope = (aheadWaveY - currentWaveY) / 16
 
-    // Surf seamlessly along the fluid aurora sine wave
-    const waveY = getWaveY(this.x, this.waveIdx)
-    const floatOffset = Math.sin(this.oscPhase) * (12 * this.z)
-    this.y = waveY + floatOffset
+    // Particle surfing physics: subtle orbital acceleration on downhill slopes
+    const orbitalSpeedBonus = -slope * 0.35
+    const forwardSpd = Math.max(0.2, this.baseSpeed + orbitalSpeedBonus) * speedMul * dt * 60
+    this.x += forwardSpd
 
-    // Tangent slope angle
-    const nextY = getWaveY(this.x + 16, this.waveIdx)
-    this.waveAngle = Math.atan2(nextY - waveY, 16) * 0.7 + Math.sin(this.oscPhase * 0.7) * 0.1
+    // Harmonic wave phase & sonic ripple propagation
+    this.harmonicPhase += this.harmonicSpeed * dt * 60
+    this.glowTimer += (0.025 + beatEnergy * 0.04) * dt * 60
+    this.sonicRipple = (this.sonicRipple + 0.022 * dt * 60) % 1.0
+
+    // Sound wave vertical oscillation: harmonic bobbing + beat pulse levitation
+    const acousticBob = Math.sin(this.harmonicPhase) * (10 * this.z)
+    this.beatReaction += (beatEnergy - this.beatReaction) * Math.min(1.0, dt * 8.0)
+    const beatLevitation = this.beatReaction * 22 * this.z
+
+    this.y = currentWaveY + this.pitchOffset + acousticBob - beatLevitation
+
+    // Dynamic wave tangent orientation: notes lean naturally with the rise & fall of the sound wave
+    this.waveAngle =
+      Math.atan2(aheadWaveY - currentWaveY, 16) * 0.82 +
+      Math.sin(this.harmonicPhase) * 0.08
 
     // Interactive Mouse Cymatics (Key / String Plucking on Hover)
     if (mouse.active) {
@@ -56,13 +76,13 @@ class MusicalNoteParticle {
       const dist = Math.sqrt(dx * dx + dy * dy)
       if (dist < 130) {
         const force = 1 - dist / 130
-        this.excited = Math.min(1.0, this.excited + force * 0.3)
+        this.excited = Math.min(1.0, this.excited + force * 0.35)
         this.x += (dx / (dist || 1)) * force * 3.0 * dt * 60
         this.y += (dy / (dist || 1)) * force * 3.0 * dt * 60
       }
     }
     if (this.excited > 0.001) {
-      this.excited = Math.max(0, this.excited - 0.025 * dt * 60)
+      this.excited = Math.max(0, this.excited - 0.022 * dt * 60)
     }
 
     // Recycle on exiting right screen margin
@@ -72,21 +92,43 @@ class MusicalNoteParticle {
   }
 
   draw(ctx, rgbStr, baseHue) {
-    const scale = this.baseScale * (1 + this.excited * 0.3)
+    const beatScale = 1.0 + this.beatReaction * 0.22 + this.excited * 0.3
+    const scale = this.baseScale * beatScale
     const alpha = Math.min(
       1.0,
-      0.45 + this.z * 0.45 + Math.sin(this.glowTimer) * 0.14 + this.excited * 0.35,
+      0.48 +
+        this.z * 0.42 +
+        Math.sin(this.glowTimer) * 0.12 +
+        this.beatReaction * 0.28 +
+        this.excited * 0.3,
     )
     if (alpha <= 0.03) return
 
     ctx.save()
     ctx.translate(this.x, this.y)
-    ctx.rotate(this.waveAngle + this.pitchRoll + this.excited * 0.35)
+    ctx.rotate(this.waveAngle + this.excited * 0.35)
     ctx.scale(scale, scale)
 
-    const noteHue = (baseHue + 20 * (this.z - 0.5) + this.excited * 35 + 360) % 360
-    const neonColor = `hsla(${noteHue}, 92%, 70%, ${(alpha * 0.85).toFixed(2)})`
+    const noteHue =
+      (baseHue +
+        20 * (this.z - 0.5) +
+        this.beatReaction * 25 +
+        this.excited * 35 +
+        360) %
+      360
+    const neonColor = `hsla(${noteHue}, 94%, 72%, ${(alpha * 0.88).toFixed(2)})`
     const whiteColor = `rgba(255, 255, 255, ${alpha.toFixed(2)})`
+
+    // Acoustic Sound Wave Ripple (Expanding sonic ring emitted from note head)
+    const rRadius = 4 + this.sonicRipple * 20
+    const rAlpha = (1 - this.sonicRipple) * 0.4 * alpha
+    if (rAlpha > 0.01) {
+      ctx.beginPath()
+      ctx.ellipse(0, 0, rRadius, rRadius * 0.65, -0.52, 0, Math.PI * 2)
+      ctx.strokeStyle = `hsla(${noteHue}, 92%, 78%, ${rAlpha.toFixed(3)})`
+      ctx.lineWidth = 1.0
+      ctx.stroke()
+    }
 
     // Single-pass draw per layer
     this._renderVector(ctx, neonColor, whiteColor)
@@ -248,14 +290,19 @@ export class MusicBarsEffect {
 
   resize() {
     if (!this.canvas) return
-    // 1x native resolution ensures silky 60-144fps on all screens
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
     this.height = window.innerHeight
 
-    this.canvas.width = this.width
-    this.canvas.height = this.height
+    this.canvas.width = Math.round(this.width * this.dpr)
+    this.canvas.height = Math.round(this.height * this.dpr)
     this.canvas.style.width = `${this.width}px`
     this.canvas.style.height = `${this.height}px`
+
+    if (this.ctx) {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+      this.ctx.scale(this.dpr, this.dpr)
+    }
 
     this._buildWaves()
     this._buildGradients()
@@ -430,12 +477,15 @@ export class MusicBarsEffect {
   _buildNotes() {
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    const count = Math.max(7, Math.min(11, Math.floor(W / 180)))
+    const count = Math.max(8, Math.min(13, Math.floor(W / 150)))
 
-    this._notes = Array.from(
-      { length: count },
-      (_, i) => new MusicalNoteParticle(W, H, i % 4),
-    )
+    this._notes = Array.from({ length: count }, (_, i) => {
+      const note = new MusicalNoteParticle(W, H, i % 4)
+      note.x = (i / count) * W + (Math.random() - 0.5) * 40
+      note.scaleDegree = (i % 5) - 2
+      note.pitchOffset = note.scaleDegree * 16 * note.z
+      return note
+    })
   }
 
   _handleMouseMove(e) {
@@ -539,11 +589,12 @@ export class MusicBarsEffect {
       }
     }
 
-    // Update Musical Notes Simulation
+    // Update Musical Notes Simulation (Acoustic sound wave dynamics)
     if (this.notesEnabled && this._notes.length > 0) {
+      const beatEnergy = Math.min(1.0, bassPulse * 0.75 + midPulse * 0.35)
       const getWaveYBound = (x, waveIdx) => this._getWavePoint(this.waves[waveIdx] || this.waves[0], x, W, t)
       for (let i = 0; i < this._notes.length; i++) {
-        this._notes[i].update(dt, W, H, this.speed, getWaveYBound, this.mouse)
+        this._notes[i].update(dt, W, H, this.speed, getWaveYBound, this.mouse, beatEnergy)
       }
     }
   }
