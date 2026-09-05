@@ -122,11 +122,12 @@ export function createEffectFactories(settings) {
         settings.frostedOrbsDarkBg !== false, // default true
       ),
     blackHoleEffect: () =>
-      new BlackHoleBackground(
-        "effect-canvas",
-        settings.blackHoleAccretionColor || "#ff5500",
-        settings.blackHoleStarColor || "#ffffff",
-      ),
+      new BlackHoleBackground("effect-canvas", {
+        accretionColor: settings.blackHoleAccretionColor || "#ff5500",
+        glowColor: settings.blackHoleGlowColor || "#00d2ff",
+        starColor: settings.blackHoleStarColor || "#ffffff",
+        angle: settings.blackHoleAngle ?? 0,
+      }),
     interactiveFluidEffect: () =>
       new InteractiveFluidBackground(
         "effect-canvas",
@@ -329,7 +330,15 @@ export function createEffectFactories(settings) {
         speed: settings.reunificationDaySpeed ?? 1.0,
         transparent: settings.reunificationDayTransparent !== false,
       }),
-    halloweenEffect: () => new HalloweenEffect("effect-canvas", {}),
+    halloweenEffect: () =>
+      new HalloweenEffect("effect-canvas", {
+        mode: settings.halloweenMode || "all",
+        glowColor: settings.halloweenGlowColor || "#ff6a00",
+        density: settings.halloweenDensity ?? 35,
+        speed: settings.halloweenSpeed ?? 1.0,
+        mist: settings.halloweenMist !== false,
+        lightning: settings.halloweenLightning !== false,
+      }),
     skyLanternsEffect: () =>
       new SkyLanternsEffect("effect-canvas", {
         type: settings.skyLanternsType || "lantern",

@@ -1024,9 +1024,62 @@
                                 <input type="color" id="black-hole-accretion-color-picker" value="#ff5500" />
                             </div>
                             <div class="setting-item-row">
+                                <label for="black-hole-glow-color-picker"
+                                    data-i18n="setting_black_hole_glow_color">Corona & Photon Ring Color</label>
+                                <input type="color" id="black-hole-glow-color-picker" value="#00d2ff" />
+                            </div>
+                            <div class="setting-item-row">
                                 <label for="black-hole-star-color-picker" data-i18n="setting_black_hole_star_color">Star
                                     Color</label>
                                 <input type="color" id="black-hole-star-color-picker" value="#ffffff" />
+                            </div>
+                            <div id="black-hole-angle-setting" class="setting-item">
+                                <label for="black-hole-angle-input">
+                                    <span data-i18n="setting_black_hole_angle">Rotation Angle</span>:
+                                    <span id="black-hole-angle-value">0</span>°
+                                </label>
+                                <input type="range" id="black-hole-angle-input" min="-180" max="180" step="1" value="0" />
+                            </div>
+                        </div>
+
+                        <!-- Halloween Spooky Settings -->
+                        <div id="halloween-settings" style="display: none;">
+                            <div class="setting-item">
+                                <label for="halloween-mode-select" data-i18n="setting_halloween_mode">Halloween Theme</label>
+                                <select id="halloween-mode-select" class="full-width">
+                                    <option value="all" data-i18n="halloween_mode_all">🎃 Spooky All-Stars (Pumpkins, Ghosts, Bats, Spiders, Skulls, Candy)</option>
+                                    <option value="pumpkins" data-i18n="halloween_mode_pumpkins">🎃 Jack-o'-Lantern Glow (Pumpkins)</option>
+                                    <option value="ghosts" data-i18n="halloween_mode_ghosts">👻 Spectral Whispers (Ghosts & Wisps)</option>
+                                    <option value="bats" data-i18n="halloween_mode_bats">🦇 Vampire Flight (Bat Swarm)</option>
+                                    <option value="dark_night" data-i18n="halloween_mode_dark_night">💀 Gothic Night (Skulls, Spiders & Bats)</option>
+                                    <option value="sweet" data-i18n="halloween_mode_sweet">🍬 Trick or Treat (Candy Corn & Magic Hats)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="halloween-glow-color-picker" data-i18n="setting_halloween_glow_color">Spooky Glow Color</label>
+                                <input type="color" id="halloween-glow-color-picker" value="#ff6a00" />
+                            </div>
+                            <div class="setting-item">
+                                <label for="halloween-density-input">
+                                    <span data-i18n="setting_halloween_density">Entity Count</span>:
+                                    <span id="halloween-density-value">35</span>
+                                </label>
+                                <input type="range" id="halloween-density-input" min="10" max="80" step="5" value="35" />
+                            </div>
+                            <div class="setting-item">
+                                <label for="halloween-speed-input">
+                                    <span data-i18n="setting_halloween_speed">Fall Speed</span>:
+                                    <span id="halloween-speed-value">1.0</span>x
+                                </label>
+                                <input type="range" id="halloween-speed-input" min="0.3" max="3.0" step="0.1" value="1.0" />
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 6px;">
+                                <label for="halloween-mist-checkbox" data-i18n="setting_halloween_mist">Atmospheric Fog & Embers</label>
+                                <input type="checkbox" id="halloween-mist-checkbox" checked />
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 6px;">
+                                <label for="halloween-lightning-checkbox" data-i18n="setting_halloween_lightning">Occasional Spooky Lightning</label>
+                                <input type="checkbox" id="halloween-lightning-checkbox" checked />
                             </div>
                         </div>
 

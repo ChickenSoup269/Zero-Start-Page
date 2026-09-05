@@ -797,6 +797,7 @@ export const EFFECTS_WITH_CUSTOM_SETTINGS = new Set([
   "blackHole",
   "interactiveFluid",
   "cinematicBokeh",
+  "halloween",
   "auroraWave",
   "sunbeam",
   "lightPillars",
@@ -5620,6 +5621,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.blackHoleSettings)
       DOM.blackHoleSettings.style.display =
         settings.effect === "blackHole" ? "block" : "none"
+    if (DOM.halloweenSettings)
+      DOM.halloweenSettings.style.display =
+        settings.effect === "halloween" ? "block" : "none"
     if (DOM.interactiveFluidSettings)
       DOM.interactiveFluidSettings.style.display =
         settings.effect === "interactiveFluid" ? "block" : "none"
@@ -5663,9 +5667,49 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.blackHoleAccretionColorPicker.value =
         settings.blackHoleAccretionColor || "#ff5500"
     }
+    if (DOM.blackHoleGlowColorPicker) {
+      DOM.blackHoleGlowColorPicker.value =
+        settings.blackHoleGlowColor || "#00d2ff"
+    }
     if (DOM.blackHoleStarColorPicker) {
       DOM.blackHoleStarColorPicker.value =
         settings.blackHoleStarColor || "#ffffff"
+    }
+    if (DOM.blackHoleAngleInput) {
+      DOM.blackHoleAngleInput.value = String(settings.blackHoleAngle ?? 0)
+    }
+    if (DOM.blackHoleAngleValue) {
+      DOM.blackHoleAngleValue.textContent = String(settings.blackHoleAngle ?? 0)
+    }
+    if (DOM.halloweenModeSelect) {
+      DOM.halloweenModeSelect.value = settings.halloweenMode || "all"
+    }
+    if (DOM.halloweenGlowColorPicker) {
+      DOM.halloweenGlowColorPicker.value =
+        settings.halloweenGlowColor || "#ff6a00"
+    }
+    if (DOM.halloweenDensityInput) {
+      DOM.halloweenDensityInput.value = String(settings.halloweenDensity ?? 35)
+    }
+    if (DOM.halloweenDensityValue) {
+      DOM.halloweenDensityValue.textContent = String(
+        settings.halloweenDensity ?? 35,
+      )
+    }
+    if (DOM.halloweenSpeedInput) {
+      DOM.halloweenSpeedInput.value = String(settings.halloweenSpeed ?? 1.0)
+    }
+    if (DOM.halloweenSpeedValue) {
+      DOM.halloweenSpeedValue.textContent = String(
+        settings.halloweenSpeed ?? 1.0,
+      )
+    }
+    if (DOM.halloweenMistCheckbox) {
+      DOM.halloweenMistCheckbox.checked = settings.halloweenMist !== false
+    }
+    if (DOM.halloweenLightningCheckbox) {
+      DOM.halloweenLightningCheckbox.checked =
+        settings.halloweenLightning !== false
     }
     if (DOM.interactiveFluidColor1Picker) {
       DOM.interactiveFluidColor1Picker.value =
@@ -5921,12 +5965,10 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.effect === "auroraWave" ? "block" : "none"
     }
     if (DOM.auroraWaveNotesSetting) {
-      DOM.auroraWaveNotesSetting.style.display =
-        settings.effect === "auroraWave" ? "block" : "none"
+      DOM.auroraWaveNotesSetting.style.display = "none"
     }
     if (DOM.auroraWaveNotesToggle) {
-      DOM.auroraWaveNotesToggle.checked =
-        settings.auroraWaveNotes !== false
+      DOM.auroraWaveNotesToggle.checked = false
     }
 
     if (DOM.auroraWaveColorPicker) {

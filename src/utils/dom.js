@@ -657,8 +657,45 @@ export let blackHoleSettings = document.getElementById("black-hole-settings")
 export let blackHoleAccretionColorPicker = document.getElementById(
   "black-hole-accretion-color-picker",
 )
+export let blackHoleGlowColorPicker = document.getElementById(
+  "black-hole-glow-color-picker",
+)
 export let blackHoleStarColorPicker = document.getElementById(
   "black-hole-star-color-picker",
+)
+export let blackHoleAngleSetting = document.getElementById(
+  "black-hole-angle-setting",
+)
+export let blackHoleAngleInput = document.getElementById(
+  "black-hole-angle-input",
+)
+export let blackHoleAngleValue = document.getElementById(
+  "black-hole-angle-value",
+)
+export let halloweenSettings = document.getElementById("halloween-settings")
+export let halloweenModeSelect = document.getElementById(
+  "halloween-mode-select",
+)
+export let halloweenGlowColorPicker = document.getElementById(
+  "halloween-glow-color-picker",
+)
+export let halloweenDensityInput = document.getElementById(
+  "halloween-density-input",
+)
+export let halloweenDensityValue = document.getElementById(
+  "halloween-density-value",
+)
+export let halloweenSpeedInput = document.getElementById(
+  "halloween-speed-input",
+)
+export let halloweenSpeedValue = document.getElementById(
+  "halloween-speed-value",
+)
+export let halloweenMistCheckbox = document.getElementById(
+  "halloween-mist-checkbox",
+)
+export let halloweenLightningCheckbox = document.getElementById(
+  "halloween-lightning-checkbox",
 )
 export let interactiveFluidSettings = document.getElementById(
   "interactive-fluid-settings",
@@ -2961,8 +2998,27 @@ export function refreshDOMReferences() {
   blackHoleAccretionColorPicker = document.getElementById(
     "black-hole-accretion-color-picker",
   )
+  blackHoleGlowColorPicker = document.getElementById(
+    "black-hole-glow-color-picker",
+  )
   blackHoleStarColorPicker = document.getElementById(
     "black-hole-star-color-picker",
+  )
+  blackHoleAngleSetting = document.getElementById("black-hole-angle-setting")
+  blackHoleAngleInput = document.getElementById("black-hole-angle-input")
+  blackHoleAngleValue = document.getElementById("black-hole-angle-value")
+  halloweenSettings = document.getElementById("halloween-settings")
+  halloweenModeSelect = document.getElementById("halloween-mode-select")
+  halloweenGlowColorPicker = document.getElementById(
+    "halloween-glow-color-picker",
+  )
+  halloweenDensityInput = document.getElementById("halloween-density-input")
+  halloweenDensityValue = document.getElementById("halloween-density-value")
+  halloweenSpeedInput = document.getElementById("halloween-speed-input")
+  halloweenSpeedValue = document.getElementById("halloween-speed-value")
+  halloweenMistCheckbox = document.getElementById("halloween-mist-checkbox")
+  halloweenLightningCheckbox = document.getElementById(
+    "halloween-lightning-checkbox",
   )
   interactiveFluidSettings = document.getElementById(
     "interactive-fluid-settings",

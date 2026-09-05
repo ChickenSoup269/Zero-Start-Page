@@ -1523,6 +1523,18 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
+    updateSetting(
+      "blackHoleAccretionColor",
+      DOM.blackHoleAccretionColorPicker.value,
+    )
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "accretion",
+        DOM.blackHoleAccretionColorPicker.value,
+      )
+    }
+  })
   DOM.blackHoleAccretionColorPicker?.addEventListener("change", () => {
     updateSetting(
       "blackHoleAccretionColor",
@@ -1537,6 +1549,35 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.blackHoleGlowColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleGlowColor", DOM.blackHoleGlowColorPicker.value)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "glow",
+        DOM.blackHoleGlowColorPicker.value,
+      )
+    }
+  })
+  DOM.blackHoleGlowColorPicker?.addEventListener("change", () => {
+    updateSetting("blackHoleGlowColor", DOM.blackHoleGlowColorPicker.value)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "glow",
+        DOM.blackHoleGlowColorPicker.value,
+      )
+    }
+  })
+
+  DOM.blackHoleStarColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "star",
+        DOM.blackHoleStarColorPicker.value,
+      )
+    }
+  })
   DOM.blackHoleStarColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
     saveSettings()
@@ -1544,6 +1585,116 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.blackHoleEffect.updateColor(
         "star",
         DOM.blackHoleStarColorPicker.value,
+      )
+    }
+  })
+
+  DOM.blackHoleAngleInput?.addEventListener("input", () => {
+    const angle = Number(DOM.blackHoleAngleInput.value) || 0
+    if (DOM.blackHoleAngleValue) {
+      DOM.blackHoleAngleValue.textContent = String(angle)
+    }
+    updateSetting("blackHoleAngle", angle)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateAngle(angle)
+    }
+  })
+  DOM.blackHoleAngleInput?.addEventListener("change", () => {
+    const angle = Number(DOM.blackHoleAngleInput.value) || 0
+    if (DOM.blackHoleAngleValue) {
+      DOM.blackHoleAngleValue.textContent = String(angle)
+    }
+    updateSetting("blackHoleAngle", angle)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateAngle(angle)
+    }
+  })
+
+  DOM.halloweenModeSelect?.addEventListener("change", () => {
+    updateSetting("halloweenMode", DOM.halloweenModeSelect.value)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setMode(DOM.halloweenModeSelect.value)
+    }
+  })
+
+  DOM.halloweenGlowColorPicker?.addEventListener("input", () => {
+    updateSetting("halloweenGlowColor", DOM.halloweenGlowColorPicker.value)
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setGlowColor(
+        DOM.halloweenGlowColorPicker.value,
+      )
+    }
+  })
+  DOM.halloweenGlowColorPicker?.addEventListener("change", () => {
+    updateSetting("halloweenGlowColor", DOM.halloweenGlowColorPicker.value)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setGlowColor(
+        DOM.halloweenGlowColorPicker.value,
+      )
+    }
+  })
+
+  DOM.halloweenDensityInput?.addEventListener("input", () => {
+    const density = Number(DOM.halloweenDensityInput.value) || 35
+    if (DOM.halloweenDensityValue) {
+      DOM.halloweenDensityValue.textContent = String(density)
+    }
+    updateSetting("halloweenDensity", density)
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setDensity(density)
+    }
+  })
+  DOM.halloweenDensityInput?.addEventListener("change", () => {
+    const density = Number(DOM.halloweenDensityInput.value) || 35
+    if (DOM.halloweenDensityValue) {
+      DOM.halloweenDensityValue.textContent = String(density)
+    }
+    updateSetting("halloweenDensity", density)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setDensity(density)
+    }
+  })
+
+  DOM.halloweenSpeedInput?.addEventListener("input", () => {
+    const speed = Number(DOM.halloweenSpeedInput.value) || 1.0
+    if (DOM.halloweenSpeedValue) {
+      DOM.halloweenSpeedValue.textContent = String(speed)
+    }
+    updateSetting("halloweenSpeed", speed)
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setSpeed(speed)
+    }
+  })
+  DOM.halloweenSpeedInput?.addEventListener("change", () => {
+    const speed = Number(DOM.halloweenSpeedInput.value) || 1.0
+    if (DOM.halloweenSpeedValue) {
+      DOM.halloweenSpeedValue.textContent = String(speed)
+    }
+    updateSetting("halloweenSpeed", speed)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setSpeed(speed)
+    }
+  })
+
+  DOM.halloweenMistCheckbox?.addEventListener("change", () => {
+    updateSetting("halloweenMist", DOM.halloweenMistCheckbox.checked)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setMist(DOM.halloweenMistCheckbox.checked)
+    }
+  })
+
+  DOM.halloweenLightningCheckbox?.addEventListener("change", () => {
+    updateSetting("halloweenLightning", DOM.halloweenLightningCheckbox.checked)
+    saveSettings()
+    if (effectInstances.halloweenEffect) {
+      effectInstances.halloweenEffect.setLightning(
+        DOM.halloweenLightningCheckbox.checked,
       )
     }
   })

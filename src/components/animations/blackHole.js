@@ -18,7 +18,17 @@
  */
 
 export class BlackHoleBackground {
-  constructor(canvasId, accretionColor = "#ff5500", starColor = "#ffffff") {
+  constructor(canvasId, optionsOrAccretion = "#ff5500", starColor = "#ffffff") {
+    let opts = {}
+    if (typeof optionsOrAccretion === "object" && optionsOrAccretion !== null) {
+      opts = optionsOrAccretion
+    } else {
+      opts = {
+        accretionColor: optionsOrAccretion || "#ff5500",
+        starColor: starColor || "#ffffff",
+      }
+    }
+
     const origCanvas =
       typeof canvasId === "string"
         ? document.getElementById(canvasId)
@@ -60,9 +70,14 @@ export class BlackHoleBackground {
     this.time = 0
     this.mouseEnabled = true
 
-    this.accretionColor = accretionColor || "#ff5500"
-    this.starColor = starColor || "#ffffff"
+    this.accretionColor = opts.accretionColor || "#ff5500"
+    this.glowColor = opts.glowColor || "#00d2ff"
+    this.starColor = opts.starColor || "#ffffff"
+    this.angle = Number(opts.angle) || 0
+    this.angleRad = (this.angle * Math.PI) / 180.0
+
     this.rgbAccretion = this.hexToRgb(this.accretionColor)
+    this.rgbGlow = this.hexToRgb(this.glowColor)
     this.rgbStar = this.hexToRgb(this.starColor)
 
     this.mouse = { x: 0.5, y: 0.5 }
@@ -81,7 +96,9 @@ export class BlackHoleBackground {
       uniform vec2 u_resolution;
       uniform float u_time;
       uniform vec2 u_mouse;
+      uniform float u_angle;
       uniform vec3 u_accretionColor;
+      uniform vec3 u_glowColor;
       uniform vec3 u_starColor;
 
       mat2 rot(float a) {
@@ -137,8 +154,11 @@ export class BlackHoleBackground {
         float tiltY = clamp(mouseNorm.y * 0.18, -0.25, 0.25);
         float tiltX = clamp(mouseNorm.x * 0.18, -0.25, 0.25);
 
+        // Center offset with mouse parallax
         vec2 p = uv - vec2(tiltX * 0.32, tiltY * 0.32);
-        p = rot(tiltX * 0.2) * p;
+
+        // Full angle rotation of the black hole + mouse interactive roll
+        p = rot(u_angle + tiltX * 0.2) * p;
 
         float r = length(p);
         float theta = atan(p.y, p.x);
@@ -149,97 +169,112 @@ export class BlackHoleBackground {
         float rISCO = rH * 1.65;    // Innermost Stable Circular Orbit
 
         // 1. Spacetime Geodesic Deflection (Gravitational Lensing)
-        float deflection = (rH * rH * 1.82) / (r * r + 0.004);
+        float deflection = (rH * rH * 1.85) / (r * r + 0.0038);
         vec2 lensedP = p * (1.0 - deflection);
 
-        // Background Starfield with Einstein Ring distortion
-        float stars = getStars(lensedP);
+        // Counter-rotate stars so celestial starfield remains unrotated relative to screen,
+        // while stars curve dynamically along gravitational geodesics:
+        vec2 cosmicP = rot(-u_angle) * lensedP;
+        float stars = getStars(cosmicP);
         float einsteinRing = exp(-abs(r - rPh * 1.48) * 18.0) * 0.45;
-        vec3 starCol = u_starColor * (stars + einsteinRing * stars * 1.2);
+        vec3 starCol = u_starColor * (stars + einsteinRing * stars * 1.35);
+
+        // Subtle ambient cosmic nebula dust
+        float nebula = (sin(cosmicP.x * 3.5 + cosmicP.y * 3.0 + u_time * 0.12) * 0.5 + 0.5) * 0.035;
+        starCol += mix(u_glowColor, u_accretionColor, 0.5) * nebula * smoothstep(rH * 1.5, 0.9, r);
 
         // 2. High-speed Infalling Plunge Filaments (Matter cascading into the horizon)
-        float plungeSpiral = sin(theta * 2.5 - log(r + 0.004) * 14.0 + u_time * 4.2);
-        float plungeMask = smoothstep(rH * 0.98, rISCO, r) * exp(-abs(r - rH * 1.15) * 16.0);
-        float plungeStream = pow(clamp(plungeSpiral * 0.5 + 0.5, 0.0, 1.0), 2.5) * plungeMask * 0.75;
+        float plungeSpiral = sin(theta * 3.0 - log(r + 0.003) * 15.0 + u_time * 4.5);
+        float plungeMask = smoothstep(rH * 0.96, rISCO, r) * exp(-abs(r - rH * 1.15) * 16.0);
+        float plungeStream = pow(clamp(plungeSpiral * 0.5 + 0.5, 0.0, 1.0), 2.5) * plungeMask * 0.85;
 
         // Outer Infalling Accretion Spiral
         float spiralStream = sin(theta * 3.0 - log(r + 0.001) * 9.5 + u_time * 2.6) * 0.5 + 0.5;
-        spiralStream = pow(spiralStream, 3.2) * exp(-r * 2.5) * smoothstep(rH, rISCO, r);
+        spiralStream = pow(spiralStream, 3.0) * exp(-r * 2.4) * smoothstep(rH, rISCO, r);
 
         // 3. Primary Accretion Disk (3D Inclined Equatorial Plane)
-        float diskAspect = 0.30 + tiltY * 0.16;
+        float diskAspect = 0.28 + tiltY * 0.16;
         vec2 diskUV = vec2(p.x, p.y / diskAspect);
         float diskR = length(diskUV);
         float diskTheta = atan(diskUV.y, diskUV.x);
 
         float diskPlasma = getPlasma(diskTheta, diskR, 1.0, u_time);
 
-        // Softened Relativistic Doppler Beaming (approaching side on left is boosted)
-        float doppler = pow(max(1.0 + 0.95 * (p.x / (r + 0.02)), 0.18), 1.75);
+        // Relativistic Doppler Beaming (approaching side on left is boosted)
+        float doppler = pow(max(1.0 + 1.05 * (p.x / (r + 0.02)), 0.15), 1.85);
         diskPlasma *= doppler;
 
         // Accretion disk radial profile with smooth ISCO inner cutoff
-        float diskMask = smoothstep(rISCO, rISCO + 0.04, diskR) * exp(-(diskR - rISCO) * 2.6);
+        float diskMask = smoothstep(rISCO, rISCO + 0.035, diskR) * exp(-(diskR - rISCO) * 2.5);
 
         // 4. Secondary Gravitational Lensed Arcs (Upper and Lower Hat Rings)
-        float haloY = (abs(p.y) - rH * 0.88) / 0.72;
+        float haloY = (abs(p.y) - rH * 0.86) / 0.72;
         vec2 haloUV = vec2(p.x, haloY);
         float haloR = length(haloUV);
         float haloTheta = atan(haloUV.y, haloUV.x);
 
         float haloPlasma = getPlasma(haloTheta, haloR, 0.96, u_time) * doppler;
-        float haloMask = smoothstep(rISCO * 0.90, rISCO + 0.05, haloR) * exp(-(haloR - rISCO * 0.90) * 3.2);
+        float haloMask = smoothstep(rISCO * 0.88, rISCO + 0.04, haloR) * exp(-(haloR - rISCO * 0.88) * 3.0);
         haloMask *= smoothstep(0.0, 0.08, abs(p.y));
 
         // Combined Equatorial Disk and Gravitationally Bent Lensed Arcs with Suction
-        float totalPlasma = diskMask * diskPlasma * 1.15 + haloMask * haloPlasma * 0.85 + spiralStream * 0.45 + plungeStream * 0.65;
+        float totalPlasma = diskMask * diskPlasma * 1.2 + haloMask * haloPlasma * 0.9 + spiralStream * 0.5 + plungeStream * 0.75;
 
-        // 5. Multi-Order Concentric Photon Rings (Toned down, laser-crisp without glare)
-        float pr_sharp = exp(-abs(r - rPh) * 95.0) * 1.6;          // Refined primary photon ring
-        float pr_bloom = exp(-abs(r - rPh) * 22.0) * 0.75;         // Soft atmospheric halo
-        float pr_inner = exp(-abs(r - rH * 1.12) * 120.0) * 0.9;   // Secondary inner sub-ring
-        float pr_tertiary = exp(-abs(r - rH * 1.05) * 150.0) * 0.55; // Tertiary relativistic ring
+        // 5. Multi-Order Concentric Photon Rings (Crisp, High-Order Analytical Caustics)
+        float pr_sharp = exp(-abs(r - rPh) * 98.0) * 1.8;          // Primary photon sphere ring (n=1)
+        float pr_bloom = exp(-abs(r - rPh) * 22.0) * 0.85;         // Soft atmospheric photon halo
+        float pr_inner = exp(-abs(r - rH * 1.12) * 125.0) * 1.1;   // Secondary caustic sub-ring (n=2)
+        float pr_tertiary = exp(-abs(r - rH * 1.04) * 160.0) * 0.65; // Tertiary relativistic ring (n=3)
         float totalPhotonRings = pr_sharp + pr_bloom + pr_inner + pr_tertiary;
 
-        // 6. Polar Relativistic Jets & Corona Glow
-        float polarDist = abs(p.x) / (abs(p.y) * 0.55 + 0.1);
-        float polarJets = exp(-polarDist * 3.5) * exp(-abs(p.y) * 1.2) * (sin(u_time * 3.0 + p.y * 12.0) * 0.15 + 0.85);
-        polarJets *= smoothstep(rH * 0.8, rH * 2.0, abs(p.y)) * 0.20;
+        // 6. Polar Relativistic Jets & Synchrotron Corona (Magnetic Poles)
+        float polarDist = abs(p.x) / (abs(p.y) * 0.48 + 0.08);
+        float jetSpiral = sin(u_time * 4.2 + abs(p.y) * 18.0) * 0.2 + 0.8;
+        float polarJets = exp(-polarDist * 3.8) * exp(-abs(p.y) * 1.1) * jetSpiral;
+        polarJets *= smoothstep(rH * 0.75, rH * 2.2, abs(p.y)) * 0.35;
 
-        float anamorphicFlare = exp(-abs(p.y / diskAspect) * 16.0) * exp(-abs(p.x) * 1.8) * 0.22;
-        float coronaGlow = exp(-abs(r - rH * 1.25) * 14.0) * 0.45;
+        float anamorphicFlare = exp(-abs(p.y / diskAspect) * 14.0) * exp(-abs(p.x) * 1.6) * 0.28;
+        float coronaGlow = exp(-abs(r - rH * 1.22) * 12.0) * 0.55;
 
-        // 7. Gravitational Redshift & Rich Relativistic Color Grading
+        // 7. Gravitational Redshift & Rich Dual-Palette Color Grading
         float gravRedshift = clamp((r - rH) / (rISCO - rH + 0.02), 0.0, 1.0);
-        vec3 hotWhite = vec3(1.0, 0.97, 0.92);
-        vec3 blueHot = vec3(0.78, 0.90, 1.0);
-        vec3 deepRed = vec3(u_accretionColor.r * 1.35, u_accretionColor.g * 0.22, u_accretionColor.b * 0.05);
+        vec3 hotWhite = vec3(1.0, 0.98, 0.95);
+        vec3 glowCol = u_glowColor;
+        vec3 redshiftRim = vec3(u_accretionColor.r * 0.85, u_accretionColor.g * 0.18, u_accretionColor.b * 0.05);
 
-        // Base color shifted by gravitational time dilation near event horizon
-        vec3 diskBaseCol = mix(deepRed, u_accretionColor, gravRedshift);
-        vec3 accretionCore = mix(diskBaseCol, hotWhite, clamp(totalPlasma * 0.6 + pr_sharp * 0.4, 0.0, 0.85));
+        // Thermal plasma gradient across accretion disk
+        vec3 diskBaseCol = mix(redshiftRim, u_accretionColor, gravRedshift);
+        vec3 plasmaCore = mix(diskBaseCol, hotWhite, clamp(totalPlasma * 0.65 + pr_sharp * 0.45, 0.0, 0.9));
 
-        // Relativistic blueshift on approaching side (left side)
+        // Relativistic blueshift on approaching side (left side in rotated coordinate space)
         if (p.x < 0.0) {
-          accretionCore = mix(accretionCore, blueHot, clamp(-p.x * 0.85, 0.0, 0.4));
+          plasmaCore = mix(plasmaCore, glowCol, clamp(-p.x * 1.2, 0.0, 0.55));
         }
 
-        vec3 accretionGlow = diskBaseCol * (totalPlasma * 1.15 + coronaGlow * 0.4 + anamorphicFlare) + blueHot * polarJets;
-        vec3 color = starCol + accretionGlow + hotWhite * (totalPhotonRings * 0.38);
+        // Accretion glow with customizable glowCol for polar jets, corona and photon rings
+        vec3 accretionGlow = diskBaseCol * (totalPlasma * 1.2 + anamorphicFlare) 
+                           + glowCol * (coronaGlow * 0.65 + polarJets * 1.1)
+                           + mix(hotWhite, glowCol, 0.4) * (totalPhotonRings * 0.42);
 
-        // 8. Pitch Black Event Horizon Shadow (Pure Singularity)
-        float shadow = smoothstep(rH * 0.965, rH + 0.010, r);
+        vec3 color = starCol + accretionGlow;
+
+        // 8. Pitch Black Event Horizon Shadow (Singularity)
+        float shadow = smoothstep(rH * 0.965, rH + 0.008, r);
         color *= shadow;
 
-        // Ambient deep space background
-        vec3 cosmicBg = vec3(0.010, 0.012, 0.022);
+        // Subtle Ergosphere / Event Horizon Rim Outline (Aura)
+        float horizonRim = exp(-abs(r - rH) * 85.0) * 0.35 * shadow;
+        color += mix(glowCol, hotWhite, 0.5) * horizonRim;
+
+        // Deep cosmic void
+        vec3 cosmicBg = vec3(0.008, 0.010, 0.018);
         color = max(color, cosmicBg * shadow);
 
-        // Smooth cinematic vignette
+        // Cinematic vignette
         vec2 vigUv = gl_FragCoord.xy / u_resolution.xy;
         vigUv *= (1.0 - vigUv.yx);
         float vig = clamp(vigUv.x * vigUv.y * 16.0, 0.0, 1.0);
-        color *= mix(0.75, 1.0, vig);
+        color *= mix(0.72, 1.0, vig);
 
         gl_FragColor = vec4(color, 1.0);
       }
@@ -274,13 +309,39 @@ export class BlackHoleBackground {
     }
   }
 
+  updateAngle(deg) {
+    this.angle = Number(deg) || 0
+    this.angleRad = (this.angle * Math.PI) / 180.0
+  }
+
   updateColor(type, color) {
     if (type === "accretion") {
       this.accretionColor = color
       this.rgbAccretion = this.hexToRgb(color)
+    } else if (type === "glow" || type === "corona") {
+      this.glowColor = color
+      this.rgbGlow = this.hexToRgb(color)
     } else if (type === "star") {
       this.starColor = color
       this.rgbStar = this.hexToRgb(color)
+    }
+  }
+
+  setOptions(opts = {}) {
+    if (opts.accretionColor !== undefined) {
+      this.updateColor("accretion", opts.accretionColor)
+    }
+    if (opts.glowColor !== undefined) {
+      this.updateColor("glow", opts.glowColor)
+    }
+    if (opts.starColor !== undefined) {
+      this.updateColor("star", opts.starColor)
+    }
+    if (opts.angle !== undefined) {
+      this.updateAngle(opts.angle)
+    }
+    if (opts.mouseEnabled !== undefined) {
+      this.setMouseEnabled(opts.mouseEnabled)
     }
   }
 
@@ -326,7 +387,9 @@ export class BlackHoleBackground {
     this.uResLoc = gl.getUniformLocation(this.program, "u_resolution")
     this.uTimeLoc = gl.getUniformLocation(this.program, "u_time")
     this.uMouseLoc = gl.getUniformLocation(this.program, "u_mouse")
+    this.uAngleLoc = gl.getUniformLocation(this.program, "u_angle")
     this.uAccretionLoc = gl.getUniformLocation(this.program, "u_accretionColor")
+    this.uGlowLoc = gl.getUniformLocation(this.program, "u_glowColor")
     this.uStarLoc = gl.getUniformLocation(this.program, "u_starColor")
 
     return true
@@ -401,11 +464,18 @@ export class BlackHoleBackground {
     gl.uniform2f(this.uResLoc, this.canvas.width, this.canvas.height)
     gl.uniform1f(this.uTimeLoc, this.time)
     gl.uniform2f(this.uMouseLoc, this.mouse.x, this.mouse.y)
+    gl.uniform1f(this.uAngleLoc, this.angleRad)
     gl.uniform3f(
       this.uAccretionLoc,
       this.rgbAccretion[0],
       this.rgbAccretion[1],
       this.rgbAccretion[2],
+    )
+    gl.uniform3f(
+      this.uGlowLoc,
+      this.rgbGlow[0],
+      this.rgbGlow[1],
+      this.rgbGlow[2],
     )
     gl.uniform3f(
       this.uStarLoc,
