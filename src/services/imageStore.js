@@ -98,7 +98,7 @@ export async function getThumbnailUrl(id) {
 }
 
 /** Lưu Blob vào IndexedDB, trả về ID */
-export async function saveImage(blob, customId) {
+export async function saveImage(blob, customId, autoCache = true) {
   const id = customId || createMediaId("idb-img")
   const db = await openDb()
   await new Promise((resolve, reject) => {
@@ -112,7 +112,9 @@ export async function saveImage(blob, customId) {
     URL.revokeObjectURL(_thumbCache.get(id))
     _thumbCache.delete(id)
   }
-  _urlCacheSet(id, URL.createObjectURL(blob))
+  if (autoCache) {
+    _urlCacheSet(id, URL.createObjectURL(blob))
+  }
   return id
 }
 
@@ -312,8 +314,8 @@ export function isIdbMedia(id) {
 }
 
 /** Lưu Video Blob vào IndexedDB, trả về ID */
-export async function saveVideo(blob) {
-  const id = createMediaId("idb-video")
+export async function saveVideo(blob, customId = null, autoCache = true) {
+  const id = customId || createMediaId("idb-video")
   const db = await openDb()
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite")
@@ -321,7 +323,9 @@ export async function saveVideo(blob) {
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
-  _urlCacheSet(id, URL.createObjectURL(blob))
+  if (autoCache) {
+    _urlCacheSet(id, URL.createObjectURL(blob))
+  }
   return id
 }
 

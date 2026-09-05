@@ -6303,6 +6303,31 @@ body.sidebar-light .bg-9grid-btn.active {
   opacity: 0.6;
 }
 
+.bg-dropzone.upload-processing {
+  cursor: wait !important;
+  pointer-events: none;
+  border-color: var(--accent-color) !important;
+  background: rgba(var(--accent-color-rgb), 0.08) !important;
+}
+
+.bg-dropzone-progress-wrap {
+  width: 100%;
+  max-width: 280px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.bg-dropzone-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-color);
+  border-radius: 4px;
+  transition: width 0.25s ease;
+}
+
 /* Gallery Filter Pills */
 .bg-gallery-filter-pills {
   display: flex;

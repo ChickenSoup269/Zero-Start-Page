@@ -347,97 +347,386 @@ function extractUnsplashId(url) {
   return match ? match[1] : null
 }
 
-/** Helper to generate and save a thumbnail from a Blob (Image or Video) */
+/** Helper to generate a small thumbnail Blob from a Video with safety timeout and leak-free cleanup */
+function generateVideoThumbnailBlob(blobOrFile) {
+  return new Promise((resolve) => {
+    let resolved = false
+    let tempUrl = null
+    let vid = null
+
+    const finish = (result) => {
+      if (resolved) return
+      resolved = true
+      clearTimeout(timer)
+      if (tempUrl) {
+        try {
+          URL.revokeObjectURL(tempUrl)
+        } catch {}
+      }
+      if (vid) {
+        try {
+          vid.pause()
+          vid.removeAttribute("src")
+          vid.load()
+        } catch {}
+        vid = null
+      }
+      resolve(result)
+    }
+
+    // Safety timeout: 3.5s max to prevent hung decoders or broken video files
+    const timer = setTimeout(() => {
+      finish(null)
+    }, 3500)
+
+    try {
+      tempUrl =
+        typeof blobOrFile === "string"
+          ? blobOrFile
+          : URL.createObjectURL(blobOrFile)
+    } catch {
+      finish(null)
+      return
+    }
+
+    vid = document.createElement("video")
+    vid.muted = true
+    vid.playsInline = true
+    vid.preload = "auto"
+
+    const captureFrame = () => {
+      try {
+        const w = vid?.videoWidth || 0
+        const h = vid?.videoHeight || 0
+        if (w === 0 || h === 0) {
+          finish(null)
+          return
+        }
+        const MAX_THUMB = 240
+        let tw = w
+        let th = h
+        if (w > h) {
+          tw = MAX_THUMB
+          th = Math.round((h * MAX_THUMB) / w)
+        } else {
+          th = MAX_THUMB
+          tw = Math.round((w * MAX_THUMB) / h)
+        }
+        const canvas = document.createElement("canvas")
+        canvas.width = tw
+        canvas.height = th
+        const ctx = canvas.getContext("2d")
+        ctx.drawImage(vid, 0, 0, tw, th)
+        canvas.toBlob(
+          (blob) => {
+            canvas.width = 0
+            canvas.height = 0
+            finish(blob || null)
+          },
+          "image/jpeg",
+          0.72,
+        )
+      } catch {
+        finish(null)
+      }
+    }
+
+    vid.addEventListener("error", () => finish(null), { once: true })
+
+    vid.addEventListener(
+      "loadedmetadata",
+      () => {
+        const targetTime =
+          vid.duration > 1 ? Math.min(vid.duration * 0.15, 2.0) : 0
+        try {
+          vid.currentTime = targetTime
+        } catch {
+          setTimeout(captureFrame, 80)
+        }
+      },
+      { once: true },
+    )
+
+    vid.addEventListener(
+      "seeked",
+      () => {
+        setTimeout(captureFrame, 80)
+      },
+      { once: true },
+    )
+
+    vid.src = tempUrl
+  })
+}
+
+/** Helper to generate a small thumbnail Blob from an Image with leak-free cleanup */
+function generateImageThumbnailBlob(blobOrFile) {
+  return new Promise((resolve) => {
+    let tempUrl = null
+    try {
+      tempUrl =
+        typeof blobOrFile === "string"
+          ? blobOrFile
+          : URL.createObjectURL(blobOrFile)
+    } catch {
+      resolve(null)
+      return
+    }
+
+    const img = new Image()
+    const timer = setTimeout(() => {
+      if (tempUrl) {
+        try {
+          URL.revokeObjectURL(tempUrl)
+        } catch {}
+      }
+      img.src = ""
+      resolve(null)
+    }, 4000)
+
+    img.onload = () => {
+      clearTimeout(timer)
+      try {
+        const w = img.width || 0
+        const h = img.height || 0
+        if (w === 0 || h === 0) {
+          if (tempUrl) URL.revokeObjectURL(tempUrl)
+          img.src = ""
+          resolve(null)
+          return
+        }
+
+        const MAX_THUMB = 240
+        let tw = w
+        let th = h
+        if (w > h) {
+          tw = MAX_THUMB
+          th = Math.round((h * MAX_THUMB) / w)
+        } else {
+          th = MAX_THUMB
+          tw = Math.round((w * MAX_THUMB) / h)
+        }
+
+        const canvas = document.createElement("canvas")
+        canvas.width = tw
+        canvas.height = th
+        const ctx = canvas.getContext("2d")
+        ctx.drawImage(img, 0, 0, tw, th)
+
+        canvas.toBlob(
+          (blob) => {
+            canvas.width = 0
+            canvas.height = 0
+            if (tempUrl) URL.revokeObjectURL(tempUrl)
+            img.src = ""
+            resolve(blob || null)
+          },
+          "image/jpeg",
+          0.72,
+        )
+      } catch {
+        if (tempUrl) URL.revokeObjectURL(tempUrl)
+        img.src = ""
+        resolve(null)
+      }
+    }
+
+    img.onerror = () => {
+      clearTimeout(timer)
+      if (tempUrl) URL.revokeObjectURL(tempUrl)
+      img.src = ""
+      resolve(null)
+    }
+
+    img.src = tempUrl
+  })
+}
+
+/**
+ * Process and compress an uploaded image file without Base64 strings.
+ * Generates both compressed background Blob and 240px thumbnail Blob in one pass.
+ */
+function processImageUpload(file, settings = getSettings()) {
+  return new Promise((resolve, reject) => {
+    let objectUrl = null
+    try {
+      objectUrl = URL.createObjectURL(file)
+    } catch (e) {
+      reject(e)
+      return
+    }
+
+    const img = new Image()
+    const timer = setTimeout(() => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+      img.src = ""
+      reject(new Error("Image processing timed out"))
+    }, 12000)
+
+    img.onload = () => {
+      clearTimeout(timer)
+      try {
+        const { maxSize: MAX_SIZE, quality } = getUploadImageProfile(settings)
+        let { width, height } = img
+        if (width <= 0 || height <= 0) {
+          if (objectUrl) URL.revokeObjectURL(objectUrl)
+          img.src = ""
+          reject(new Error("Invalid image dimensions"))
+          return
+        }
+
+        let fullW = width
+        let fullH = height
+        if (fullW > fullH) {
+          if (fullW > MAX_SIZE) {
+            fullH = Math.round((fullH * MAX_SIZE) / fullW)
+            fullW = MAX_SIZE
+          }
+        } else {
+          if (fullH > MAX_SIZE) {
+            fullW = Math.round((fullW * MAX_SIZE) / fullH)
+            fullH = MAX_SIZE
+          }
+        }
+
+        const canvas = document.createElement("canvas")
+        canvas.width = fullW
+        canvas.height = fullH
+        const ctx = canvas.getContext("2d")
+        ctx.drawImage(img, 0, 0, fullW, fullH)
+
+        canvas.toBlob(
+          (fullBlob) => {
+            if (!fullBlob) {
+              canvas.width = 0
+              canvas.height = 0
+              if (objectUrl) URL.revokeObjectURL(objectUrl)
+              img.src = ""
+              reject(new Error("Failed to compress image"))
+              return
+            }
+
+            // Create thumbnail directly from the canvas
+            const MAX_THUMB = 240
+            let tw = fullW
+            let th = fullH
+            if (tw > th) {
+              th = Math.round((th * MAX_THUMB) / tw)
+              tw = MAX_THUMB
+            } else {
+              tw = Math.round((tw * MAX_THUMB) / th)
+              th = MAX_THUMB
+            }
+
+            const thumbCanvas = document.createElement("canvas")
+            thumbCanvas.width = tw
+            thumbCanvas.height = th
+            const thumbCtx = thumbCanvas.getContext("2d")
+            thumbCtx.drawImage(canvas, 0, 0, tw, th)
+
+            // Immediately clear full canvas buffer
+            canvas.width = 0
+            canvas.height = 0
+
+            thumbCanvas.toBlob(
+              (thumbBlob) => {
+                thumbCanvas.width = 0
+                thumbCanvas.height = 0
+                if (objectUrl) URL.revokeObjectURL(objectUrl)
+                img.src = ""
+                resolve({ fullBlob, thumbBlob })
+              },
+              "image/jpeg",
+              0.72,
+            )
+          },
+          "image/jpeg",
+          quality,
+        )
+      } catch (err) {
+        if (objectUrl) URL.revokeObjectURL(objectUrl)
+        img.src = ""
+        reject(err)
+      }
+    }
+
+    img.onerror = () => {
+      clearTimeout(timer)
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+      img.src = ""
+      reject(new Error("Failed to decode image"))
+    }
+
+    img.src = objectUrl
+  })
+}
+
+/** Sequential queue for missing thumbnails to prevent concurrent video decodes and RAM spikes */
+const _thumbQueue = []
+let _isProcessingThumbQueue = false
+
+async function _enqueueThumbnailGeneration(bgId, isVideo, thumbLayer, item) {
+  _thumbQueue.push({ bgId, isVideo, thumbLayer, item })
+  if (_isProcessingThumbQueue) return
+  _isProcessingThumbQueue = true
+
+  while (_thumbQueue.length > 0) {
+    const task = _thumbQueue.shift()
+    try {
+      const cached = await getThumbnailUrl(task.bgId)
+      if (cached) {
+        if (task.thumbLayer) {
+          task.thumbLayer.style.backgroundImage = cssUrl(cached)
+        }
+        if (task.item) {
+          task.item.classList.remove("thumb-loading")
+        }
+        continue
+      }
+
+      const blob = await getImageBlob(task.bgId).catch(() => null)
+      if (blob) {
+        let thumbBlob = null
+        if (task.isVideo) {
+          thumbBlob = await generateVideoThumbnailBlob(blob)
+        } else {
+          thumbBlob = await generateImageThumbnailBlob(blob)
+        }
+
+        if (thumbBlob) {
+          const url = await saveThumbnail(task.bgId, thumbBlob)
+          if (task.thumbLayer) {
+            task.thumbLayer.style.backgroundImage = cssUrl(url)
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Thumbnail generation failed for", task.bgId, err)
+    } finally {
+      if (task.item) {
+        task.item.classList.remove("thumb-loading")
+      }
+    }
+    // Yield to main thread between items to allow browser GC and smooth 60fps
+    await new Promise((r) => setTimeout(r, 60))
+  }
+
+  _isProcessingThumbQueue = false
+}
+
+/** Helper to generate and save a thumbnail (backward compatibility) */
 async function _ensureThumbnail(id, blobOrUrl, isVideo) {
-  // Try to get existing thumbnail first
   const existing = await getThumbnailUrl(id)
   if (existing) return existing
 
-  return new Promise((resolve) => {
-    const MAX_THUMB = 240 // Optimized size for gallery
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
+  const thumbBlob = isVideo
+    ? await generateVideoThumbnailBlob(blobOrUrl)
+    : await generateImageThumbnailBlob(blobOrUrl)
 
-    const createThumbFromElement = (element, w, h) => {
-      if (w === 0 || h === 0) return resolve(null)
-      if (w > h) {
-        canvas.width = MAX_THUMB
-        canvas.height = Math.round((h * MAX_THUMB) / w)
-      } else {
-        canvas.height = MAX_THUMB
-        canvas.width = Math.round((w * MAX_THUMB) / h)
-      }
-      ctx.drawImage(element, 0, 0, canvas.width, canvas.height)
-      canvas.toBlob(
-        async (thumbBlob) => {
-          if (thumbBlob) {
-            resolve(await saveThumbnail(id, thumbBlob))
-          } else resolve(null)
-        },
-        "image/jpeg",
-        0.7,
-      ) // Good balance of quality/size
-    }
-
-    if (isVideo) {
-      const vid = document.createElement("video")
-      vid.muted = true
-      vid.preload = "metadata"
-      const tempUrl =
-        typeof blobOrUrl === "string"
-          ? blobOrUrl
-          : URL.createObjectURL(blobOrUrl)
-      vid.src = tempUrl
-
-      vid.addEventListener(
-        "loadedmetadata",
-        () => {
-          vid.currentTime = vid.duration > 0 ? vid.duration / 2 : 1.0
-        },
-        { once: true },
-      )
-
-      vid.addEventListener(
-        "seeked",
-        () => {
-          setTimeout(() => {
-            if (vid.videoWidth > 0)
-              createThumbFromElement(vid, vid.videoWidth, vid.videoHeight)
-            else resolve(null)
-            if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
-            vid.removeAttribute("src")
-            vid.load()
-          }, 150)
-        },
-        { once: true },
-      )
-
-      vid.addEventListener(
-        "error",
-        () => {
-          resolve(null)
-          if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
-        },
-        { once: true },
-      )
-    } else {
-      const img = new Image()
-      const tempUrl =
-        typeof blobOrUrl === "string"
-          ? blobOrUrl
-          : URL.createObjectURL(blobOrUrl)
-
-      img.onload = () => {
-        createThumbFromElement(img, img.width, img.height)
-        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
-      }
-      img.onerror = () => {
-        resolve(null)
-        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
-      }
-      img.src = tempUrl
-    }
-  })
+  if (thumbBlob) {
+    return await saveThumbnail(id, thumbBlob)
+  }
+  return null
 }
 
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
@@ -551,26 +840,12 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           item.classList.remove("thumb-loading")
         }
         getThumbnailUrl(bgId)
-          .then(async (thumbUrl) => {
+          .then((thumbUrl) => {
             if (thumbUrl) {
               thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
               item.classList.remove("thumb-loading")
             } else {
-              const blob = await getImageBlob(bgId).catch(() => null)
-              if (blob) {
-                const newThumb = await _ensureThumbnail(bgId, blob, isVideo)
-                if (newThumb) {
-                  thumbLayer.style.backgroundImage = cssUrl(newThumb)
-                  item.classList.remove("thumb-loading")
-                } else {
-                  const tempUrl = URL.createObjectURL(blob)
-                  thumbLayer.style.backgroundImage = cssUrl(tempUrl)
-                  item.classList.remove("thumb-loading")
-                  setTimeout(() => URL.revokeObjectURL(tempUrl), 1000)
-                }
-              } else {
-                item.classList.remove("thumb-loading")
-              }
+              _enqueueThumbnailGeneration(bgId, isVideo, thumbLayer, item)
             }
           })
           .catch(() => {
@@ -1074,6 +1349,195 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
   }
 }
 
+/**
+ * Unified batch media upload processor.
+ * Prevents UI freezing (yielding to main thread) and avoids RAM spikes (streamlined blob lifecycles).
+ */
+async function processMediaBatchUpload(files, { DOM, handleSettingUpdate }) {
+  const validFiles = Array.from(files || []).filter((f) => {
+    return (
+      f.type.startsWith("image/") ||
+      f.type.startsWith("video/") ||
+      /\.(jpe?g|png|webp|gif|bmp|avif|mp4|webm|mov|m4v|ogg)$/i.test(f.name || "")
+    )
+  })
+
+  if (!validFiles.length) return
+
+  const dropzone = document.getElementById("local-bg-dropzone")
+  const dropzoneTitle = dropzone?.querySelector(".bg-dropzone-title")
+  const dropzoneSubtitle = dropzone?.querySelector(".bg-dropzone-subtitle")
+  const dropzoneIcon = dropzone?.querySelector(".bg-dropzone-icon")
+
+  const origTitle = dropzoneTitle?.textContent || ""
+  const origSubtitle = dropzoneSubtitle?.textContent || ""
+  const origIconClass =
+    dropzoneIcon?.className || "fa-solid fa-cloud-arrow-up bg-dropzone-icon"
+
+  let progressWrap = dropzone?.querySelector(".bg-dropzone-progress-wrap")
+  let progressBar = dropzone?.querySelector(".bg-dropzone-progress-bar")
+
+  if (dropzone && !progressWrap) {
+    progressWrap = document.createElement("div")
+    progressWrap.className = "bg-dropzone-progress-wrap"
+    progressWrap.innerHTML = '<div class="bg-dropzone-progress-bar"></div>'
+    dropzone.appendChild(progressWrap)
+    progressBar = progressWrap.querySelector(".bg-dropzone-progress-bar")
+  }
+
+  const buttonsToDisable = [
+    DOM?.uploadLocalImageBtn,
+    DOM?.uploadLocalVideoBtn,
+    DOM?.localImageUpload,
+    DOM?.localVideoUpload,
+  ].filter(Boolean)
+
+  buttonsToDisable.forEach((el) => {
+    el.disabled = true
+    if (el.tagName === "BUTTON") el.style.opacity = "0.6"
+  })
+
+  if (dropzone) {
+    dropzone.classList.add("upload-processing")
+    if (dropzoneIcon) {
+      dropzoneIcon.className =
+        "fa-solid fa-spinner fa-spin bg-dropzone-icon"
+    }
+    if (progressWrap) progressWrap.style.display = "block"
+    if (progressBar) progressBar.style.width = "0%"
+  }
+
+  const i18n = geti18n()
+  const setProgress = (current, total, filename) => {
+    const pct = Math.round((current / total) * 100)
+    if (progressBar) progressBar.style.width = `${pct}%`
+    if (dropzoneTitle) {
+      dropzoneTitle.textContent = `${i18n.loading || "Processing"} (${current}/${total})`
+    }
+    if (dropzoneSubtitle) {
+      dropzoneSubtitle.textContent = filename || ""
+    }
+  }
+
+  let lastSavedId = null
+  let savedCount = 0
+  const total = validFiles.length
+  const settings = getSettings()
+
+  try {
+    for (let i = 0; i < total; i++) {
+      const file = validFiles[i]
+      const isLast = i === total - 1
+      setProgress(i + 1, total, file.name || `File ${i + 1}`)
+
+      // Small break between items: lets browser paint UI updates and run GC
+      await new Promise((resolve) => setTimeout(resolve, 30))
+
+      const isVideo =
+        file.type.startsWith("video/") ||
+        /\.(mp4|webm|mov|m4v|ogg)$/i.test(file.name || "")
+      const isGif =
+        file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+      const isImage = !isVideo && !isGif
+
+      if (isVideo) {
+        if (file.size > 350 * 1024 * 1024) {
+          showAlert(
+            `"${file.name}" is larger than 350MB and was skipped to prevent storage quota exhaustion.`,
+          )
+          continue
+        }
+
+        try {
+          // 1. Generate small thumbnail directly from File Blob before saving
+          const thumbBlob = await generateVideoThumbnailBlob(file)
+
+          // 2. Save video to IndexedDB (auto-cache only the last one)
+          const id = await saveVideo(file, null, isLast)
+
+          // 3. Save thumbnail in parallel store
+          if (thumbBlob) {
+            await saveThumbnail(id, thumbBlob).catch(() => {})
+          }
+
+          settings.userBackgrounds.push(id)
+          lastSavedId = id
+          savedCount++
+        } catch (err) {
+          console.error("Failed to save video:", file.name, err)
+        }
+      } else if (isGif) {
+        try {
+          const id = await saveImage(
+            file,
+            `idb-gif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            isLast,
+          )
+
+          const thumbBlob = await generateImageThumbnailBlob(file).catch(
+            () => null,
+          )
+          if (thumbBlob) {
+            await saveThumbnail(id, thumbBlob).catch(() => {})
+          }
+
+          settings.userBackgrounds.push({
+            uid: "bg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
+            id,
+            type: "gif",
+            name: file.name || "GIF background",
+            date: new Date().toISOString(),
+          })
+          lastSavedId = id
+          savedCount++
+        } catch (err) {
+          console.error("Failed to save GIF:", file.name, err)
+        }
+      } else if (isImage) {
+        try {
+          const result = await processImageUpload(file, settings)
+          if (result && result.fullBlob) {
+            const id = await saveImage(result.fullBlob, null, isLast)
+            if (result.thumbBlob) {
+              await saveThumbnail(id, result.thumbBlob).catch(() => {})
+            }
+            settings.userBackgrounds.push(id)
+            lastSavedId = id
+            savedCount++
+          }
+        } catch (err) {
+          console.error("Failed to process image:", file.name, err)
+        }
+      }
+    }
+  } finally {
+    buttonsToDisable.forEach((el) => {
+      el.disabled = false
+      if (el.tagName === "BUTTON") el.style.opacity = ""
+    })
+
+    if (dropzone) {
+      dropzone.classList.remove("upload-processing")
+      if (dropzoneIcon) dropzoneIcon.className = origIconClass
+      if (dropzoneTitle) dropzoneTitle.textContent = origTitle
+      if (dropzoneSubtitle) dropzoneSubtitle.textContent = origSubtitle
+      if (progressWrap) progressWrap.style.display = "none"
+      if (progressBar) progressBar.style.width = "0%"
+    }
+
+    if (savedCount > 0) {
+      saveSettings()
+      maybeShowLocalBackgroundPerformanceWarning(
+        settings.userBackgrounds.length,
+      )
+      if (lastSavedId) {
+        handleSettingUpdate("background", lastSavedId)
+      }
+      renderLocalBackgrounds(DOM, handleSettingUpdate)
+    }
+  }
+}
+
 function setupFileUploads(DOM, handleSettingUpdate) {
   if (DOM.uploadLocalImageBtn) {
     DOM.uploadLocalImageBtn.addEventListener("click", () =>
@@ -1111,102 +1575,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       dropzone.classList.remove("dragover")
       const files = Array.from(e.dataTransfer?.files || [])
       if (!files.length) return
-
-      const videoFiles = files.filter((f) => f.type.startsWith("video/"))
-      const imageFiles = files.filter(
-        (f) => f.type.startsWith("image/") || /\.gif$/i.test(f.name || ""),
-      )
-
-      let lastSavedId = null
-      for (const file of videoFiles) {
-        try {
-          const id = await saveVideo(file)
-          getSettings().userBackgrounds.push(id)
-          lastSavedId = id
-        } catch (err) {
-          console.error("Failed to save video:", err)
-        }
-      }
-
-      for (const file of imageFiles) {
-        const isGif =
-          file.type === "image/gif" || /\.gif$/i.test(file.name || "")
-        if (isGif) {
-          try {
-            const id = await saveImage(
-              file,
-              `idb-gif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-            )
-            getSettings().userBackgrounds.push({
-              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
-              id,
-              type: "gif",
-              name: file.name || "GIF background",
-              date: new Date().toISOString(),
-            })
-            lastSavedId = id
-          } catch (err) {
-            console.error("Failed to save GIF:", err)
-          }
-          continue
-        }
-
-        try {
-          const id = await new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = (event) => {
-              const dataUrl = event.target.result
-              const img = new Image()
-              img.onload = () => {
-                const canvas = document.createElement("canvas")
-                const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
-                let { width, height } = img
-                if (width > height) {
-                  if (width > MAX_SIZE) {
-                    height = Math.round((height * MAX_SIZE) / width)
-                    width = MAX_SIZE
-                  }
-                } else {
-                  if (height > MAX_SIZE) {
-                    width = Math.round((width * MAX_SIZE) / height)
-                    height = MAX_SIZE
-                  }
-                }
-                canvas.width = width
-                canvas.height = height
-                canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-                canvas.toBlob(
-                  (blob) => {
-                    if (blob) {
-                      saveImage(blob).then(resolve).catch(reject)
-                    } else {
-                      reject(new Error("Failed to process image blob"))
-                    }
-                  },
-                  "image/jpeg",
-                  quality,
-                )
-              }
-              img.onerror = reject
-              img.src = dataUrl
-            }
-            reader.onerror = reject
-            reader.readAsDataURL(file)
-          })
-          getSettings().userBackgrounds.push(id)
-          lastSavedId = id
-        } catch (err) {
-          console.error("Failed to save image:", err)
-        }
-      }
-
-      if (lastSavedId) {
-        maybeShowLocalBackgroundPerformanceWarning(
-          getSettings().userBackgrounds.length,
-        )
-        handleSettingUpdate("background", lastSavedId)
-        renderLocalBackgrounds(DOM, handleSettingUpdate)
-      }
+      await processMediaBatchUpload(files, { DOM, handleSettingUpdate })
     }
 
     dropzone.addEventListener("dragover", handleDragOver)
@@ -1248,117 +1617,18 @@ function setupFileUploads(DOM, handleSettingUpdate) {
   if (DOM.localVideoUpload) {
     DOM.localVideoUpload.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files || [])
-      if (!files.length) return
-      let lastSavedId = null
-      try {
-        for (const file of files) {
-          const id = await saveVideo(file)
-          getSettings().userBackgrounds.push(id)
-          lastSavedId = id
-        }
-        maybeShowLocalBackgroundPerformanceWarning(
-          getSettings().userBackgrounds.length,
-        )
-        if (lastSavedId) handleSettingUpdate("background", lastSavedId)
-        renderLocalBackgrounds(DOM, handleSettingUpdate)
-      } catch (err) {
-        console.error("Failed to save video:", err)
-        showAlert(
-          "Failed to save one or more videos. They might be too large or storage is full.",
-        )
-      }
       e.target.value = null
+      if (!files.length) return
+      await processMediaBatchUpload(files, { DOM, handleSettingUpdate })
     })
   }
 
   if (DOM.localImageUpload) {
     DOM.localImageUpload.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files || [])
-      if (!files.length) return
-      let lastSavedId = null
-
-      for (const file of files) {
-        const isGif =
-          file.type === "image/gif" || /\.gif$/i.test(file.name || "")
-        if (isGif) {
-          try {
-            const id = await saveImage(
-              file,
-              `idb-gif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-            )
-            getSettings().userBackgrounds.push({
-              uid: "bg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
-              id,
-              type: "gif",
-              name: file.name || "GIF background",
-              date: new Date().toISOString(),
-            })
-            lastSavedId = id
-          } catch (err) {
-            console.error("Failed to save GIF:", err)
-            showAlert("Failed to save GIF image.")
-          }
-          continue
-        }
-
-        try {
-          const id = await new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = (event) => {
-              const dataUrl = event.target.result
-              const img = new Image()
-              img.onload = () => {
-                const canvas = document.createElement("canvas")
-                const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
-                let { width, height } = img
-                if (width > height) {
-                  if (width > MAX_SIZE) {
-                    height = Math.round((height * MAX_SIZE) / width)
-                    width = MAX_SIZE
-                  }
-                } else {
-                  if (height > MAX_SIZE) {
-                    width = Math.round((width * MAX_SIZE) / height)
-                    height = MAX_SIZE
-                  }
-                }
-                canvas.width = width
-                canvas.height = height
-                canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-                canvas.toBlob(
-                  (blob) => {
-                    if (blob) {
-                      saveImage(blob).then(resolve).catch(reject)
-                    } else {
-                      reject(new Error("Failed to process image blob"))
-                    }
-                  },
-                  "image/jpeg",
-                  quality,
-                )
-              }
-              img.onerror = reject
-              img.src = dataUrl
-            }
-            reader.onerror = reject
-            reader.readAsDataURL(file)
-          })
-          getSettings().userBackgrounds.push(id)
-          lastSavedId = id
-        } catch (err) {
-          console.error("Failed to save image:", err)
-          showAlert("Failed to read or save the selected file.")
-        }
-      }
-
-      if (lastSavedId) {
-        maybeShowLocalBackgroundPerformanceWarning(
-          getSettings().userBackgrounds.length,
-        )
-        handleSettingUpdate("background", lastSavedId)
-        renderLocalBackgrounds(DOM, handleSettingUpdate)
-      }
       e.target.value = null
+      if (!files.length) return
+      await processMediaBatchUpload(files, { DOM, handleSettingUpdate })
     })
   }
 }
