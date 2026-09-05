@@ -13335,8 +13335,9 @@ body[class] [id].setting-target-spotlight-active {
     0 0 0 5px rgba(var(--accent-color-rgb, 74, 128, 240), 0.22),
     0 4px 16px rgba(0, 0, 0, 0.24) !important;
   outline: none !important;
-  transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  animation: settingTargetBreathe 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate !important;
+  transition-property: box-shadow;
+  transition-duration: 0.22s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Smooth exit transition when unhovering - prevents abrupt snap/jitter */
@@ -13349,32 +13350,9 @@ body[class] [id].setting-target-spotlight-fadeout {
     0 0 0 0 transparent,
     0 0 0 transparent !important;
   outline: none !important;
-  transition: box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1) !important;
-  animation: none !important;
-}
-
-@keyframes settingTargetBreathe {
-  0% {
-    box-shadow:
-      0 0 0 2px var(--accent-color, #4a80f0),
-      0 0 0 4px rgba(var(--accent-color-rgb, 74, 128, 240), 0.16),
-      0 3px 12px rgba(0, 0, 0, 0.2);
-  }
-  100% {
-    box-shadow:
-      0 0 0 2px var(--accent-color, #4a80f0),
-      0 0 0 6px rgba(var(--accent-color-rgb, 74, 128, 240), 0.3),
-      0 6px 20px rgba(0, 0, 0, 0.26);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .setting-target-spotlight-active,
-  body .setting-target-spotlight-active,
-  body[class] .setting-target-spotlight-active,
-  body[class] [id].setting-target-spotlight-active {
-    animation: none !important;
-  }
+  transition-property: box-shadow;
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 body.sidebar-light .setting-target-spotlight-active,
@@ -13384,7 +13362,9 @@ body.sidebar-light[class] [id].setting-target-spotlight-active {
     0 0 0 2px var(--accent-color, #1a73e8),
     0 0 0 5px rgba(var(--accent-color-rgb, 26, 115, 232), 0.22),
     0 3px 12px rgba(0, 0, 0, 0.1) !important;
-  animation: settingTargetBreatheLight 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate !important;
+  transition-property: box-shadow;
+  transition-duration: 0.22s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.sidebar-light .setting-target-spotlight-fadeout,
@@ -13394,22 +13374,10 @@ body.sidebar-light[class] [id].setting-target-spotlight-fadeout {
     0 0 0 0 transparent,
     0 0 0 0 transparent,
     0 0 0 transparent !important;
-  animation: none !important;
-}
-
-@keyframes settingTargetBreatheLight {
-  0% {
-    box-shadow:
-      0 0 0 2px var(--accent-color, #1a73e8),
-      0 0 0 4px rgba(var(--accent-color-rgb, 26, 115, 232), 0.15),
-      0 2px 8px rgba(0, 0, 0, 0.06);
-  }
-  100% {
-    box-shadow:
-      0 0 0 2px var(--accent-color, #1a73e8),
-      0 0 0 6px rgba(var(--accent-color-rgb, 26, 115, 232), 0.28),
-      0 4px 14px rgba(0, 0, 0, 0.12);
-  }
+  outline: none !important;
+  transition-property: box-shadow;
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 .setting-target-badge {
