@@ -102,6 +102,40 @@
             </a>
         </div>
 
+        <!-- Theme Application Scope Panel -->
+        <div class="setting-group theme-scope-panel" id="theme-scope-panel"
+            style="margin-bottom: 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label style="font-weight: 600; font-size: 0.82rem; color: var(--accent-color); display: flex; align-items: center; gap: 6px; margin: 0;">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span data-i18n="theme_scope_title">Theme Application Scope</span>
+                </label>
+                <small style="opacity: 0.6; font-size: 0.72rem;" data-i18n="theme_scope_subtitle">Choose what changes</small>
+            </div>
+            <div class="theme-scope-chips" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <label class="theme-scope-chip" title="Accent colors, sidebar & glass transparency">
+                    <input type="checkbox" id="theme-scope-colors" checked>
+                    <span class="chip-label"><i class="fa-solid fa-palette"></i> <span data-i18n="theme_scope_colors">Colors & Glass</span></span>
+                </label>
+                <label class="theme-scope-chip" title="Special background effects (Snowfall, Hacker, Waves...)">
+                    <input type="checkbox" id="theme-scope-effects" checked>
+                    <span class="chip-label"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="theme_scope_effects">Effects</span></span>
+                </label>
+                <label class="theme-scope-chip" title="Clock style, layout & clock colors">
+                    <input type="checkbox" id="theme-scope-clock" checked>
+                    <span class="chip-label"><i class="fa-solid fa-clock"></i> <span data-i18n="theme_scope_clock">Clock Style</span></span>
+                </label>
+                <label class="theme-scope-chip" title="Global font & clock font">
+                    <input type="checkbox" id="theme-scope-fonts" checked>
+                    <span class="chip-label"><i class="fa-solid fa-font"></i> <span data-i18n="theme_scope_fonts">Fonts</span></span>
+                </label>
+                <label class="theme-scope-chip" title="Background wallpaper image or color">
+                    <input type="checkbox" id="theme-scope-background" checked>
+                    <span class="chip-label"><i class="fa-solid fa-image"></i> <span data-i18n="theme_scope_background">Background</span></span>
+                </label>
+            </div>
+        </div>
+
         <!-- Theme Category Filter Pills -->
         <div class="theme-category-filter-bar" id="theme-category-filter-bar">
             <button type="button" class="theme-filter-pill active" data-theme-filter="all"><i

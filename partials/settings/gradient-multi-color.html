@@ -6,709 +6,838 @@
     </h3>
     <div class="section-content">
 
-        <div class="setting-group">
-            <div class="setting-label"><i class="fa-solid fa-share-nodes"></i> <span
-                    data-i18n="visual_preset_hub_title">Visual Preset Hub</span></div>
-            <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
-                <div class="preset-code-header">
-                    <div>
-                        <strong data-i18n="visual_preset_bundle_title">Full visual bundle</strong>
-                        <small data-i18n="visual_preset_bundle_hint">Gradient, Multi-Color, SVG Wave, Effect
-                            and Theme</small>
+        <!-- GMC Sub-navigation (Segmented Pills Control) -->
+        <div class="gmc-tab-nav" role="tablist">
+            <button type="button" class="gmc-tab-btn active" data-gmc-target="gmc-pane-gradient">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span data-i18n="gmc_tab_gradient">Chuyển sắc</span>
+            </button>
+            <button type="button" class="gmc-tab-btn" data-gmc-target="gmc-pane-multi-color">
+                <i class="fa-solid fa-palette"></i>
+                <span data-i18n="gmc_tab_multi_color">Đa màu</span>
+            </button>
+            <button type="button" class="gmc-tab-btn" data-gmc-target="gmc-pane-svg-wave">
+                <i class="fa-solid fa-water"></i>
+                <span data-i18n="gmc_tab_svg_wave">Sóng SVG</span>
+            </button>
+            <button type="button" class="gmc-tab-btn" data-gmc-target="gmc-pane-presets">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span data-i18n="gmc_tab_preset_hub">Mã Preset</span>
+            </button>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- PANE 1: BACKGROUND GRADIENT (CHUYỂN SẮC)                  -->
+        <!-- ========================================================= -->
+        <div id="gmc-pane-gradient" class="gmc-tab-pane active">
+
+            <!-- Live Interactive Gradient Preview Card -->
+            <div class="gmc-preview-card">
+                <div id="gradient-live-preview-box" class="gmc-preview-viewport">
+                    <div class="gmc-preview-glass-bar">
+                        <div class="gmc-preview-tags">
+                            <span id="gradient-preview-type-badge" class="gmc-pill-badge primary">Linear 135°</span>
+                            <span id="gradient-preview-stops-badge" class="gmc-pill-badge secondary">2 Colors</span>
+                        </div>
+                        <button type="button" id="gradient-quick-copy-css-btn" class="gmc-code-copy-chip" title="Sao chép CSS Gradient">
+                            <i class="fa-solid fa-code"></i>
+                            <span data-i18n="gmc_copy_css">Copy CSS</span>
+                        </button>
                     </div>
-                    <span class="preset-code-chip">SPC1</span>
                 </div>
-                <div class="preset-code-actions">
-                    <button id="visual-preset-copy-code-btn" class="secondary-btn" type="button">
-                        <i class="fa-solid fa-copy"></i>
-                        <span data-i18n="visual_preset_copy">Copy Visual Bundle</span>
+            </div>
+
+            <!-- Curated Gradient Presets Palette -->
+            <div class="gmc-presets-section">
+                <div class="gmc-sub-label">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span data-i18n="gmc_quick_palettes">Gợi ý phối màu đẹp</span>
+                </div>
+                <div class="gmc-presets-grid" id="gradient-quick-presets-container">
+                    <button type="button" class="gmc-preset-chip" data-start="#ff512f" data-end="#dd2476" data-angle="135" title="Sunset Flare">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #ff512f, #dd2476);"></span>
+                        <span class="gmc-chip-title">Sunset</span>
                     </button>
-                    <button id="visual-preset-apply-code-btn" class="secondary-btn" type="button">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span data-i18n="visual_preset_apply">Apply Visual Code</span>
+                    <button type="button" class="gmc-preset-chip" data-start="#2b5876" data-end="#4e4376" data-angle="135" title="Ocean Deep">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #2b5876, #4e4376);"></span>
+                        <span class="gmc-chip-title">Ocean</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#00c6ff" data-end="#0072ff" data-angle="135" title="Cyber Neon">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #00c6ff, #0072ff);"></span>
+                        <span class="gmc-chip-title">Cyber</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#00b09b" data-end="#96c93d" data-angle="135" title="Aurora Sky">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #00b09b, #96c93d);"></span>
+                        <span class="gmc-chip-title">Aurora</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#8e2de2" data-end="#4a00e0" data-angle="135" title="Amethyst">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #8e2de2, #4a00e0);"></span>
+                        <span class="gmc-chip-title">Amethyst</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#ff758c" data-end="#ff7eb3" data-angle="135" title="Peach Velvet">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #ff758c, #ff7eb3);"></span>
+                        <span class="gmc-chip-title">Peachy</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#0f2027" data-end="#2c5364" data-angle="135" title="Dark Obsidian">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #0f2027, #2c5364);"></span>
+                        <span class="gmc-chip-title">Obsidian</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip" data-start="#f12711" data-end="#f5af19" data-angle="135" title="Hyper Electric">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #f12711, #f5af19);"></span>
+                        <span class="gmc-chip-title">Electric</span>
                     </button>
                 </div>
-                <textarea id="visual-preset-code-input" class="preset-code-input" rows="2"
-                    data-i18n-placeholder="visual_preset_placeholder"
-                    placeholder="Paste visual preset code here"></textarea>
-                <button class="preset-code-lines-toggle secondary-btn" type="button" data-preset-code-lines-toggle
-                    aria-expanded="false">
-                    <i class="fa-solid fa-list-ul"></i>
-                    <span data-i18n="preset_code_show_lines">Show codes</span>
+            </div>
+
+            <!-- Gradient Designer Controls Card -->
+            <div class="setting-group" style="margin-top: 14px;">
+                <button id="gradient-toggle-btn" class="secondary-btn full-width" style="display: none;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
                 </button>
-                <div id="visual-preset-code-lines" class="preset-code-lines"></div>
+                <div id="gradient-settings-body">
+                    <div class="gradient-config-card gmc-card">
+
+                        <!-- Primary Swatches: Start & End Color with Swap button -->
+                        <div class="gmc-color-pair-row">
+                            <div class="gmc-color-picker-box">
+                                <div class="gmc-picker-header">
+                                    <label data-i18n="gradient_start_color">Start Color</label>
+                                    <span id="gradient-start-hex-display" class="gmc-hex-text">#a8c0ff</span>
+                                </div>
+                                <div class="gmc-color-input-wrap">
+                                    <input type="color" id="gradient-start-picker" value="#a8c0ff" title="Pick a start color">
+                                </div>
+                            </div>
+
+                            <button type="button" id="gradient-swap-colors-btn" class="gmc-swap-btn" title="Đảo ngược màu">
+                                <i class="fa-solid fa-right-left"></i>
+                            </button>
+
+                            <div class="gmc-color-picker-box">
+                                <div class="gmc-picker-header">
+                                    <label data-i18n="gradient_end_color">End Color</label>
+                                    <span id="gradient-end-hex-display" class="gmc-hex-text">#3f2b96</span>
+                                </div>
+                                <div class="gmc-color-input-wrap">
+                                    <input type="color" id="gradient-end-picker" value="#3f2b96" title="Pick an end color">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gradient Geometry Settings -->
+                        <div class="bg-control-grid gmc-grid-controls">
+                            <div class="setting-item no-margin-top">
+                                <label for="gradient-type-select" data-i18n="settings_gradient_type"
+                                    class="gmc-field-label">Gradient Type</label>
+                                <select id="gradient-type-select" class="gmc-select">
+                                    <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                                    <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                                    <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                                </select>
+                            </div>
+
+                            <div id="gradient-angle-group" class="setting-item no-margin-top">
+                                <div class="flex-space-between" style="margin-bottom: 6px;">
+                                    <label data-i18n="settings_gradient_angle" class="gmc-field-label">Angle</label>
+                                    <span id="gradient-angle-value" class="bg-slider-value">135°</span>
+                                </div>
+                                <div class="bg-slider-stepper-wrap">
+                                    <button type="button" class="bg-step-btn" data-step-target="gradient-angle-input"
+                                        data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="gradient-angle-input" min="0" max="360" value="135"
+                                        class="bg-wheel-scrollable">
+                                    <button type="button" class="bg-step-btn" data-step-target="gradient-angle-input"
+                                        data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <div class="gmc-angle-quick-chips">
+                                    <button type="button" class="gmc-angle-chip" data-angle="0">0°</button>
+                                    <button type="button" class="gmc-angle-chip" data-angle="90">90°</button>
+                                    <button type="button" class="gmc-angle-chip active" data-angle="135">135°</button>
+                                    <button type="button" class="gmc-angle-chip" data-angle="180">180°</button>
+                                    <button type="button" class="gmc-angle-chip" data-angle="270">270°</button>
+                                </div>
+                            </div>
+
+                            <div id="gradient-position-group" class="setting-item no-margin-top"
+                                style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_position" class="gmc-field-label">Position</label>
+                                <select id="gradient-position-select" class="gmc-select">
+                                    <option value="center" data-i18n="settings_center">Center</option>
+                                    <option value="top" data-i18n="settings_top">Top</option>
+                                    <option value="bottom" data-i18n="settings_bottom">Bottom</option>
+                                    <option value="left" data-i18n="settings_left">Left</option>
+                                    <option value="right" data-i18n="settings_right">Right</option>
+                                    <option value="top left" data-i18n="settings_top_left">Top Left</option>
+                                    <option value="top right" data-i18n="settings_top_right">Top Right</option>
+                                    <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left</option>
+                                    <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right</option>
+                                </select>
+                            </div>
+
+                            <div id="gradient-radial-shape-group" class="setting-item no-margin-top"
+                                style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_radial_shape" class="gmc-field-label">Radial Shape</label>
+                                <select id="gradient-radial-shape-select" class="gmc-select">
+                                    <option value="circle" data-i18n="settings_circle">Circle</option>
+                                    <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item-row gmc-toggle-row" style="margin-top: 14px;">
+                            <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating Gradient</label>
+                            <input type="checkbox" id="gradient-repeating-toggle">
+                        </div>
+
+                        <!-- Extra Color Stops Container -->
+                        <div class="setting-item gmc-extra-colors-card"
+                            style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px; margin-top: 14px;">
+                            <div class="flex-space-between" style="margin-bottom: 8px;">
+                                <label style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; letter-spacing: 0.05em;"
+                                    data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
+                                <select id="gradient-extra-color-count" class="gmc-compact-select">
+                                    <option value="0">0 màu</option>
+                                    <option value="1">1 màu</option>
+                                    <option value="2">2 màu</option>
+                                    <option value="3">3 màu</option>
+                                    <option value="4">4 màu</option>
+                                    <option value="5">5 màu</option>
+                                </select>
+                            </div>
+                            <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container"></div>
+                            <input type="text" id="gradient-custom-colors" style="display: none;">
+                        </div>
+
+                        <!-- Action Buttons Row -->
+                        <div class="gmc-actions-wrap" style="margin-top: 16px;">
+                            <button id="save-gradient-btn" class="primary-btn full-width gmc-main-cta">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span data-i18n="settings_save_gradient">Save Gradient</span>
+                            </button>
+
+                            <div class="gmc-secondary-actions-grid">
+                                <button id="random-gradient-colors-btn" class="secondary-btn" title="Phối màu ngẫu nhiên"
+                                    data-i18n-title="settings_accent_random">
+                                    <i class="fa-solid fa-shuffle"></i>
+                                    <span data-i18n="settings_gradient_random_colors">Random</span>
+                                </button>
+                                <button id="generate-modern-gradient-btn" class="secondary-btn" title="Tự động tạo dải màu AI hiện đại">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="settings_gradient_generate_modern">AI Presets</span>
+                                </button>
+                                <button id="gradient-reset-btn" class="secondary-btn" title="Khôi phục mặc định"
+                                    data-i18n-title="settings_reset_default">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                    <span data-i18n="settings_reset_default">Reset</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">
+                            <i class="fa-solid fa-lightbulb"></i> Tip: Nhấn 'AI Presets' để tự động tạo phối màu gradient chuẩn thiết kế!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Gradients Gallery -->
+            <div class="setting-group gmc-gallery-group" style="margin-top: 16px;">
+                <div class="setting-label flex-space-between">
+                    <div>
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span data-i18n="settings_saved_gradients">Saved Gallery</span>
+                        <span id="count-gradient"></span>
+                    </div>
+                    <button id="gradient-select-mode-btn" class="secondary-btn gmc-mini-btn" data-i18n="bg_select_mode">
+                        <i class="fa-solid fa-check-double"></i> Select
+                    </button>
+                </div>
+
+                <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                    <span id="gradient-select-count" class="bg-select-count">0 selected</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button id="gradient-select-all-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="bg_select_all">Select All</button>
+                        <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn" style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;" data-i18n="menu_delete">Delete</button>
+                        <button id="gradient-select-cancel-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="cancel">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="user-gradients-gallery" class="local-bg-gallery gmc-cards-grid"></div>
             </div>
         </div>
 
-        <!-- SVG Gradient Wave Generator -->
-        <div class="setting-group" id="svg-wave-group">
-            <div class="setting-label"><i class="fa-solid fa-water"></i> <span data-i18n="settings_svg_wave_title">SVG
-                    Gradient
-                    Wave</span></div>
-            <button id="svg-wave-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem;">
-                <i class="fa-solid fa-wave-square"></i>
-                <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave
-                    Generator</span>
-            </button>
-            <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
+        <!-- ========================================================= -->
+        <!-- PANE 2: MULTI-COLOR (ĐA MÀU MẢNG / SPLIT BACKGROUND)      -->
+        <!-- ========================================================= -->
+        <div id="gmc-pane-multi-color" class="gmc-tab-pane" style="display: none;">
 
-                <!-- Core Shape & Geometry -->
-                <div class="setting-group"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-shapes"></i>
-                        Geometry</h4>
+            <!-- Multi-Color Preview Card -->
+            <div class="gmc-preview-card">
+                <div id="multi-gradient-preview" class="gmc-preview-viewport multi-preview">
+                    <div class="gmc-preview-glass-bar">
+                        <div class="gmc-preview-tags">
+                            <span id="multi-preview-type-badge" class="gmc-pill-badge primary">Linear 135°</span>
+                            <span id="multi-preview-stops-badge" class="gmc-pill-badge secondary">2 Colors (Smooth)</span>
+                        </div>
+                        <button type="button" id="multi-quick-copy-css-btn" class="gmc-code-copy-chip" title="Sao chép CSS Multi-Color">
+                            <i class="fa-solid fa-code"></i>
+                            <span data-i18n="gmc_copy_css">Copy CSS</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curated Multi-Color Quick Palettes -->
+            <div class="gmc-presets-section">
+                <div class="gmc-sub-label">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Phối màu Multi-Color gợi ý</span>
+                </div>
+                <div class="gmc-presets-grid" id="multi-color-quick-presets-container">
+                    <button type="button" class="gmc-preset-chip multi-chip" data-colors="#f72585,#7209b7,#3a0ca3,#4cc9f0" title="Neon City">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #f72585, #7209b7, #3a0ca3, #4cc9f0);"></span>
+                        <span class="gmc-chip-title">Neon City</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip multi-chip" data-colors="#ffbe0b,#fb5607,#ff006e,#8338ec" title="Sunset Pop">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #ffbe0b, #fb5607, #ff006e, #8338ec);"></span>
+                        <span class="gmc-chip-title">Sunset Pop</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip multi-chip" data-colors="#2d6a4f,#40916c,#52b788,#74c69d" title="Nordic Forest">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #2d6a4f, #40916c, #52b788, #74c69d);"></span>
+                        <span class="gmc-chip-title">Forest</span>
+                    </button>
+                    <button type="button" class="gmc-preset-chip multi-chip" data-colors="#1e293b,#334155,#475569,#64748b" title="Slate Glass">
+                        <span class="gmc-chip-thumb" style="background: linear-gradient(135deg, #1e293b, #334155, #475569, #64748b);"></span>
+                        <span class="gmc-chip-title">Slate</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Multi-Color Designer Controls Card -->
+            <div class="setting-group" style="margin-top: 14px;">
+                <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="display: none;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide Controls</span>
+                </button>
+                <div id="multi-color-settings-body">
+                    <div class="gradient-config-card gmc-card">
+
+                        <!-- Color Count & Mode Row -->
+                        <div class="gmc-field-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="multi-color-count-select" class="gmc-field-label" data-i18n="settings_multi_color_count">Colors Count</label>
+                                <select id="multi-color-count-select" class="gmc-select">
+                                    <option value="2" data-i18n="settings_colors_count_2">2 Colors</option>
+                                    <option value="3" data-i18n="settings_colors_count_3">3 Colors</option>
+                                    <option value="4" data-i18n="settings_colors_count_4">4 Colors</option>
+                                    <option value="5" data-i18n="settings_colors_count_5">5 Colors</option>
+                                    <option value="6" data-i18n="settings_colors_count_6">6 Colors</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item no-margin-top">
+                                <label class="gmc-field-label" data-i18n="settings_multi_color_mode">Mode</label>
+                                <div class="btn-group gmc-btn-group" style="margin-top: 0;">
+                                    <button type="button" class="btn-group-item multi-color-mode-btn active" data-mode="smooth"
+                                        data-i18n="settings_multi_color_smooth">Smooth</button>
+                                    <button type="button" class="btn-group-item multi-color-mode-btn" data-mode="blocks"
+                                        data-i18n="settings_multi_color_blocks">Blocks</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type & Geometry -->
+                        <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
+                            <label class="gmc-field-label" data-i18n="settings_gradient_type">Type</label>
+                            <select id="multi-color-type-select" class="gmc-select">
+                                <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                                <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                                <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                            </select>
+                        </div>
+
+                        <div id="multi-color-radial-conic-controls"
+                            style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                            <div class="setting-item no-margin-top">
+                                <label class="gmc-field-label" data-i18n="settings_gradient_position">Position</label>
+                                <select id="multi-color-position-select" class="gmc-select">
+                                    <option value="center" data-i18n="settings_center">Center</option>
+                                    <option value="top" data-i18n="settings_top">Top</option>
+                                    <option value="bottom" data-i18n="settings_bottom">Bottom</option>
+                                    <option value="left" data-i18n="settings_left">Left</option>
+                                    <option value="right" data-i18n="settings_right">Right</option>
+                                    <option value="top left" data-i18n="settings_top_left">Top Left</option>
+                                    <option value="top right" data-i18n="settings_top_right">Top Right</option>
+                                    <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left</option>
+                                    <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right</option>
+                                </select>
+                            </div>
+                            <div id="multi-color-radial-shape-group" class="setting-item no-margin-top">
+                                <label class="gmc-field-label" data-i18n="settings_gradient_radial_shape">Shape</label>
+                                <select id="multi-color-radial-shape-select" class="gmc-select">
+                                    <option value="circle" data-i18n="settings_circle">Circle</option>
+                                    <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item-row gmc-toggle-row" style="margin-bottom: 12px;">
+                            <label for="multi-color-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating Gradient</label>
+                            <input type="checkbox" id="multi-color-repeating-toggle">
+                        </div>
+
+                        <!-- Color Pickers Box -->
+                        <div class="setting-item no-margin-top" style="margin-bottom: 14px;">
+                            <label class="gmc-field-label">Color Palette</label>
+                            <div id="multi-color-pickers-container" class="gmc-multi-pickers-wrap"></div>
+                        </div>
+
+                        <!-- Divider Lines Box -->
+                        <div id="multi-color-divider-settings" class="gmc-divider-box" style="margin-bottom: 12px; display: none;">
+                            <div class="setting-item-row gmc-toggle-row" style="margin-bottom: 10px;">
+                                <label for="multi-color-dividers-toggle" data-i18n="settings_multi_color_dividers">Show Divider Lines</label>
+                                <input type="checkbox" id="multi-color-dividers-toggle" checked>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                                <label for="multi-color-line-color" class="gmc-field-label" data-i18n="settings_multi_color_line_color" style="margin:0;">Line Color:</label>
+                                <input type="color" id="multi-color-line-color" value="#ffffff"
+                                    style="flex: 1; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: none; cursor: pointer;">
+                            </div>
+
+                            <div class="setting-item no-margin-top" style="margin-bottom: 10px;">
+                                <div class="setting-label flex-space-between">
+                                    <span data-i18n="settings_multi_color_line_width" class="gmc-field-label">Line Width:</span>
+                                    <span><span id="multi-color-line-width-value">1.2</span>%</span>
+                                </div>
+                                <div class="bg-slider-stepper-wrap">
+                                    <button type="button" class="bg-step-btn" data-step-target="multi-color-line-width"
+                                        data-step="-0.1" title="-0.1%"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2"
+                                        class="bg-wheel-scrollable">
+                                    <button type="button" class="bg-step-btn" data-step-target="multi-color-line-width"
+                                        data-step="0.1" title="+0.1%"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <div class="setting-item-row gmc-toggle-row" style="margin-bottom: 10px;">
+                                    <label for="multi-color-free-line-angles"
+                                        data-i18n="settings_multi_color_free_line_angles">Free divider angles</label>
+                                    <input type="checkbox" id="multi-color-free-line-angles">
+                                </div>
+                                <div id="multi-color-line-angles-container"
+                                    style="display: none; flex-direction: column; gap: 8px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Angle Slider -->
+                        <div class="setting-item no-margin-top" style="margin-bottom: 14px;">
+                            <div class="setting-label flex-space-between">
+                                <span data-i18n="settings_multi_color_angle" class="gmc-field-label">Angle:</span>
+                                <span><span id="multi-gradient-angle-value">135</span>°</span>
+                            </div>
+                            <div class="bg-slider-stepper-wrap">
+                                <button type="button" class="bg-step-btn" data-step-target="multi-gradient-angle-input"
+                                    data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
+                                <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135"
+                                    class="bg-wheel-scrollable">
+                                <button type="button" class="bg-step-btn" data-step-target="multi-gradient-angle-input"
+                                    data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Multi-Color Action Buttons -->
+                        <div class="gmc-actions-wrap">
+                            <button id="save-multi-color-btn" class="primary-btn full-width gmc-main-cta" data-i18n="settings_multi_color_save">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Preset
+                            </button>
+
+                            <div class="gmc-secondary-actions-grid">
+                                <button id="apply-multi-color-btn" class="secondary-btn" title="Áp dụng phối màu đa mảng">
+                                    <i class="fa-solid fa-check"></i> <span data-i18n="settings_multi_color_apply">Apply</span>
+                                </button>
+                                <button id="random-multi-color-hue-btn" class="secondary-btn" title="Đổi sắc thái ngẫu nhiên">
+                                    <i class="fa-solid fa-shuffle"></i> <span data-i18n="settings_multi_color_random_hue">Random</span>
+                                </button>
+                                <button id="random-multi-color-crazy-btn" class="secondary-btn" title="Phối màu ngẫu nhiên đột phá">
+                                    <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_multi_color_random_crazy">Crazy</span>
+                                </button>
+                                <button id="multi-color-reset-btn" class="secondary-btn" title="Khôi phục mặc định"
+                                    data-i18n-title="settings_reset_default">
+                                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Multi-Color Presets Gallery -->
+            <div style="margin-top: 16px;" id="saved-multi-color-presets-group" class="setting-group gmc-gallery-group">
+                <div class="setting-label flex-space-between">
+                    <div>
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span data-i18n="settings_multi_color_saved_presets">Saved Presets</span>
+                        <span id="count-multi-color"></span>
+                    </div>
+                    <button id="multi-color-select-mode-btn" class="secondary-btn gmc-mini-btn" title="Select multiple to delete" data-i18n="bg_select_mode">
+                        <i class="fa-solid fa-check-double"></i> Select
+                    </button>
+                </div>
+                <div id="multi-color-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                    <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
+                        <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div id="saved-multi-color-presets" class="local-bg-gallery gmc-cards-grid"></div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- PANE 3: SVG GRADIENT WAVE (SÓNG NGHỆ THUẬT)               -->
+        <!-- ========================================================= -->
+        <div id="gmc-pane-svg-wave" class="gmc-tab-pane" style="display: none;">
+            <!-- Live Interactive Wave Preview Card -->
+            <div class="gmc-preview-card">
+                <div id="svg-wave-live-preview-box" class="gmc-preview-viewport wave-preview" style="background-color: #0c1222; background-size: cover; background-position: center; min-height: 85px;">
+                    <div class="gmc-preview-glass-bar">
+                        <div class="gmc-preview-tags">
+                            <span id="svg-wave-preview-lines-badge" class="gmc-pill-badge primary">5 Lines</span>
+                            <span id="svg-wave-preview-status-badge" class="gmc-pill-badge secondary">SVG Wave</span>
+                        </div>
+                        <button type="button" id="svg-wave-quick-apply-top-btn" class="gmc-code-copy-chip" title="Áp dụng hình nền sóng ngay">
+                            <i class="fa-solid fa-play"></i>
+                            <span data-i18n="settings_svg_wave_apply">Áp dụng</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-group" id="svg-wave-group">
+                <!-- Master Toggle Switch -->
+                <div class="setting-item-row gmc-toggle-row gmc-master-toggle-card" style="margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;">
+                    <div class="gmc-toggle-label-wrap">
+                        <label for="svg-wave-active" class="gmc-master-label" style="cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                            <i class="fa-solid fa-water" style="color: var(--accent-color, #38bdf8);"></i>
+                            <span data-i18n="settings_svg_wave_enable">Bật hiệu ứng Sóng SVG</span>
+                        </label>
+                        <span class="gmc-helper-note" data-i18n="settings_svg_wave_hint" style="font-size: 11px; opacity: 0.75; display: block; margin-top: 2px;">
+                            Hiển thị các dải sóng chuyển màu nghệ thuật làm hình nền
+                        </span>
+                    </div>
+                    <input type="checkbox" id="svg-wave-active">
+                </div>
+
+                <button id="svg-wave-toggle-btn" class="secondary-btn full-width" style="display: none;">
+                    <i class="fa-solid fa-wave-square"></i>
+                    <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave Generator</span>
+                </button>
+                <div id="svg-wave-settings" class="gmc-card" style="display: block; margin-top: 4px;">
+
+                    <!-- Section 1: Hình dạng sóng (Geometry) -->
+                    <div class="gmc-sub-label" style="margin-bottom: 12px;">
+                        <i class="fa-solid fa-shapes"></i>
+                        <span>Hình dạng sóng (Geometry)</span>
+                    </div>
                     <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                         <div class="setting-item no-margin-top">
-                            <label for="svg-wave-lines" style="display: flex; justify-content: space-between;">
+                            <label for="svg-wave-lines" class="flex-space-between">
                                 <span data-i18n="settings_svg_wave_lines">Lines</span>
-                                <span id="svg-wave-lines-value" style="opacity: 0.8; font-family: monospace;">5</span>
+                                <span id="svg-wave-lines-value" class="bg-slider-value">5</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-lines"
                                     data-step="-1" title="-1"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-lines" min="1" max="50" value="5"
-                                    class="bg-wheel-scrollable">
+                                <input type="range" id="svg-wave-lines" min="1" max="50" value="5" class="bg-wheel-scrollable">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-lines"
                                     data-step="1" title="+1"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="setting-item no-margin-top">
-                            <label for="svg-wave-smoothness" style="display: flex; justify-content: space-between;">
+                            <label for="svg-wave-smoothness" class="flex-space-between">
                                 <span data-i18n="settings_svg_wave_smoothness">Smoothness</span>
-                                <span id="svg-wave-smoothness-value"
-                                    style="opacity: 0.8; font-family: monospace;">0.5</span>
+                                <span id="svg-wave-smoothness-value" class="bg-slider-value">0.5</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-smoothness"
                                     data-step="-0.05" title="-0.05"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5"
-                                    class="bg-wheel-scrollable">
+                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5" class="bg-wheel-scrollable">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-smoothness"
                                     data-step="0.05" title="+0.05"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="setting-item no-margin-top">
-                            <label for="svg-wave-craziness" style="display: flex; justify-content: space-between;">
+                            <label for="svg-wave-craziness" class="flex-space-between">
                                 <span data-i18n="settings_svg_wave_craziness">Craziness</span>
-                                <span id="svg-wave-craziness-value"
-                                    style="opacity: 0.8; font-family: monospace;">30</span>
+                                <span id="svg-wave-craziness-value" class="bg-slider-value">30</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-craziness"
                                     data-step="-10" title="-10"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30"
-                                    class="bg-wheel-scrollable">
+                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30" class="bg-wheel-scrollable">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-craziness"
                                     data-step="10" title="+10"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="setting-item no-margin-top">
-                            <label for="svg-wave-offset-x" style="display: flex; justify-content: space-between;">
+                            <label for="svg-wave-offset-x" class="flex-space-between">
                                 <span data-i18n="settings_svg_wave_offset_x">Offset X</span>
-                                <span id="svg-wave-offset-x-value"
-                                    style="opacity: 0.8; font-family: monospace;">0</span>
+                                <span id="svg-wave-offset-x-value" class="bg-slider-value">0</span>
                             </label>
                             <div class="bg-slider-stepper-wrap">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-offset-x"
                                     data-step="-20" title="-20"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0"
-                                    class="bg-wheel-scrollable">
+                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0" class="bg-wheel-scrollable">
                                 <button type="button" class="bg-step-btn" data-step-target="svg-wave-offset-x"
                                     data-step="20" title="+20"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Amplitude & Angle -->
-                <div class="setting-group"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
-                            class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
-                    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                        <div class="setting-item no-margin-top">
-                            <label for="svg-wave-amp-x" style="display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
-                                <span id="svg-wave-amp-x-value" style="opacity: 0.8; font-family: monospace;">200</span>
-                            </label>
-                            <div class="bg-slider-stepper-wrap">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-x"
-                                    data-step="-20" title="-20"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200"
-                                    class="bg-wheel-scrollable">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-x"
-                                    data-step="20" title="+20"><i class="fa-solid fa-plus"></i></button>
-                            </div>
+                    <!-- Section 2: Biên độ & Hướng (Amplitude & Direction) -->
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); margin: 14px 0; padding-top: 14px;">
+                        <div class="gmc-sub-label" style="margin-bottom: 12px;">
+                            <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                            <span>Biên độ & Hướng (Amplitude & Direction)</span>
                         </div>
-                        <div class="setting-item no-margin-top">
-                            <label for="svg-wave-amp-y" style="display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
-                                <span id="svg-wave-amp-y-value" style="opacity: 0.8; font-family: monospace;">80</span>
-                            </label>
-                            <div class="bg-slider-stepper-wrap">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-y"
-                                    data-step="-10" title="-10"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80"
-                                    class="bg-wheel-scrollable">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-y"
-                                    data-step="10" title="+10"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="setting-item no-margin-top">
-                            <div class="wave-angle-header"
-                                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                <label for="svg-wave-angle" style="margin: 0;">
-                                    <span data-i18n="settings_svg_wave_angle">Angle</span>:
-                                    <span id="svg-wave-angle-value"
-                                        style="opacity: 0.8; font-family: monospace;">0</span>°
-                                </label>
-                                <div class="wave-angle-presets" style="display: flex; gap: 4px;">
-                                    <button class="wave-angle-preset-btn secondary-btn"
-                                        style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270" title="Left"><i
-                                            class="fa-solid fa-arrow-left"></i></button>
-                                    <button class="wave-angle-preset-btn secondary-btn"
-                                        style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90" title="Right"><i
-                                            class="fa-solid fa-arrow-right"></i></button>
-                                    <button class="wave-angle-preset-btn secondary-btn"
-                                        style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0" title="Top"><i
-                                            class="fa-solid fa-arrow-up"></i></button>
-                                    <button class="wave-angle-preset-btn secondary-btn"
-                                        style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180" title="Bottom"><i
-                                            class="fa-solid fa-arrow-down"></i></button>
-                                </div>
-                            </div>
-                            <div class="bg-slider-stepper-wrap">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-angle"
-                                    data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="svg-wave-angle" min="-360" max="360" value="0"
-                                    class="bg-wheel-scrollable">
-                                <button type="button" class="bg-step-btn" data-step-target="svg-wave-angle"
-                                    data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="setting-item-row"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                    <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill"
-                        style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill
-                        Shape</label>
-                    <input type="checkbox" id="svg-wave-fill" checked>
-                </div>
-
-                <!-- Colors -->
-                <div class="setting-group"
-                    style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
-                            class="fa-solid fa-palette"></i> Colors</h4>
-
-                    <div
-                        style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <label data-i18n="settings_svg_wave_start_color"
-                            style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
-                        <div id="svg-wave-start-preview"
-                            style="height:28px; border-radius:8px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                             <div class="setting-item no-margin-top">
-                                <label for="svg-wave-start-hue"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_hue">Hue</span>
-                                    <span id="svg-wave-start-hue-value" style="opacity:0.8;">200</span>
+                                <label for="svg-wave-amp-x" class="flex-space-between">
+                                    <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
+                                    <span id="svg-wave-amp-x-value" class="bg-slider-value">200</span>
                                 </label>
                                 <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-hue"
-                                        data-step="-5" title="-5"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-hue"
-                                        data-step="5" title="+5"><i class="fa-solid fa-plus"></i></button>
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-x"
+                                        data-step="-20" title="-20"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200" class="bg-wheel-scrollable">
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-x"
+                                        data-step="20" title="+20"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="svg-wave-start-sat"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_sat">Sat.</span>
-                                    <span id="svg-wave-start-sat-value" style="opacity:0.8;">70%</span>
+                                <label for="svg-wave-amp-y" class="flex-space-between">
+                                    <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
+                                    <span id="svg-wave-amp-y-value" class="bg-slider-value">80</span>
                                 </label>
                                 <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-sat"
-                                        data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-sat"
-                                        data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-y"
+                                        data-step="-10" title="-10"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80" class="bg-wheel-scrollable">
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-amp-y"
+                                        data-step="10" title="+10"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="svg-wave-start-light"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_light">Light</span>
-                                    <span id="svg-wave-start-light-value" style="opacity:0.8;">40%</span>
-                                </label>
+                                <div class="wave-angle-header flex-space-between" style="margin-bottom: 8px;">
+                                    <label for="svg-wave-angle" style="margin: 0;">
+                                        <span data-i18n="settings_svg_wave_angle">Angle</span>:
+                                        <span id="svg-wave-angle-value" class="bg-slider-value">0</span>°
+                                    </label>
+                                    <div class="wave-angle-presets" style="display: flex; gap: 4px;">
+                                        <button class="wave-angle-preset-btn secondary-btn gmc-dir-btn" data-angle="270" title="Left"><i class="fa-solid fa-arrow-left"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn gmc-dir-btn" data-angle="90" title="Right"><i class="fa-solid fa-arrow-right"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn gmc-dir-btn" data-angle="0" title="Top"><i class="fa-solid fa-arrow-up"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn gmc-dir-btn" data-angle="180" title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+                                    </div>
+                                </div>
                                 <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-light"
-                                        data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-start-light" min="0" max="100" value="40"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-light"
-                                        data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-angle"
+                                        data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="svg-wave-angle" min="-360" max="360" value="0" class="bg-wheel-scrollable">
+                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-angle"
+                                        data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label data-i18n="settings_svg_wave_end_color"
-                            style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
-                        <div id="svg-wave-end-preview"
-                            style="height:28px; border-radius:8px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
+                    <!-- Fill Toggle Switch -->
+                    <div class="setting-item-row gmc-toggle-row" style="margin: 6px 0 14px 0;">
+                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill" style="margin: 0; font-weight: 600;">
+                            <i class="fa-solid fa-fill"></i> Tô màu nền
+                        </label>
+                        <input type="checkbox" id="svg-wave-fill" checked>
+                    </div>
+
+                    <!-- Section 3: Màu sắc (Colors) -->
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); margin: 14px 0; padding-top: 14px;">
+                        <div class="gmc-sub-label" style="margin-bottom: 12px;">
+                            <i class="fa-solid fa-palette"></i>
+                            <span>Màu sắc (Colors)</span>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-end-hue"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_hue">Hue</span>
-                                    <span id="svg-wave-end-hue-value" style="opacity:0.8;">280</span>
-                                </label>
-                                <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-hue"
-                                        data-step="-5" title="-5"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-hue"
-                                        data-step="5" title="+5"><i class="fa-solid fa-plus"></i></button>
+
+                        <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                            <label data-i18n="settings_svg_wave_start_color" class="gmc-field-label">Start Color</label>
+                            <div id="svg-wave-start-preview" class="gmc-hsl-preview"></div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-start-hue" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                        <span id="svg-wave-start-hue-value">200</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-hue" data-step="-5" title="-5"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-hue" data-step="5" title="+5"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-start-sat" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                        <span id="svg-wave-start-sat-value">70%</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-sat" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-sat" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-start-light" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_light">Light</span>
+                                        <span id="svg-wave-start-light-value">40%</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-light" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-start-light" min="0" max="100" value="40" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-start-light" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-end-sat"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_sat">Sat.</span>
-                                    <span id="svg-wave-end-sat-value" style="opacity:0.8;">70%</span>
-                                </label>
-                                <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-sat"
-                                        data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-sat"
-                                        data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+
+                        <div>
+                            <label data-i18n="settings_svg_wave_end_color" class="gmc-field-label">End Color</label>
+                            <div id="svg-wave-end-preview" class="gmc-hsl-preview"></div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-end-hue" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                        <span id="svg-wave-end-hue-value">280</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-hue" data-step="-5" title="-5"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-hue" data-step="5" title="+5"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-end-sat" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                        <span id="svg-wave-end-sat-value">70%</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-sat" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-sat" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="svg-wave-end-light" class="flex-space-between gmc-sub-field">
+                                        <span data-i18n="settings_svg_wave_light">Light</span>
+                                        <span id="svg-wave-end-light-value">30%</span>
+                                    </label>
+                                    <div class="bg-slider-stepper-wrap">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-light" data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
+                                        <input type="range" id="svg-wave-end-light" min="0" max="100" value="30" class="bg-wheel-scrollable">
+                                        <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-light" data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-end-light"
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_svg_wave_light">Light</span>
-                                    <span id="svg-wave-end-light-value" style="opacity:0.8;">30%</span>
-                                </label>
-                                <div class="bg-slider-stepper-wrap">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-light"
-                                        data-step="-5" title="-5%"><i class="fa-solid fa-minus"></i></button>
-                                    <input type="range" id="svg-wave-end-light" min="0" max="100" value="30"
-                                        class="bg-wheel-scrollable">
-                                    <button type="button" class="bg-step-btn" data-step-target="svg-wave-end-light"
-                                        data-step="5" title="+5%"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px;">
-                    <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize" style="border-radius: 8px; height: 32px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-dice"></i> <span data-i18n="settings_svg_wave_randomize">Randomize</span>
-                    </button>
-                    <button id="svg-wave-crazy-btn" class="secondary-btn"
-                        style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3); border-radius: 8px; height: 32px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy</span>
-                    </button>
-                    <button id="svg-wave-reset-btn" class="secondary-btn" title="Reset Default" style="border-radius: 8px; height: 32px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
-                    </button>
-                </div>
-                <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px; border-radius: 8px; height: 34px; font-size: 0.82rem;">
-                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save Wave</span>
-                </button>
-                <button id="svg-wave-close-btn" class="secondary-btn full-width svg-wave-close-control" style="border-radius: 8px; height: 34px; font-size: 0.82rem;">
-                    <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close Controls</span>
-                </button>
-            </div>
-
-            <!-- Saved Waves Gallery (always visible) -->
-            <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                    <label data-i18n="settings_svg_wave_saved_label"
-                        style="font-size:0.8rem;opacity:0.7;margin-bottom:0;" for="aura-color-picker">Saved
-                        Waves</label>
-                    <span id="count-svg-wave"></span>
-                    <button id="svg-wave-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                        data-i18n="bg_select_mode"
-                        style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                </div>
-                <div id="svg-wave-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
-                    <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
-                    <div style="display: flex; gap: 6px;">
-                        <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i
-                                class="fa-solid fa-check-double"></i></button>
-                        <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                class="fa-solid fa-trash"></i></button>
-                        <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                class="fa-solid fa-xmark"></i></button>
-                    </div>
-                </div>
-                <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
-            </div>
-        </div>
-
-        <div class="setting-group">
-            <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
-                    data-i18n="settings_gradient_title">Background Gradient</span></div>
-            <button id="gradient-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem; margin-bottom: 12px;">
-                <i class="fa-solid fa-eye-slash"></i>
-                <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
-            </button>
-            <div id="gradient-settings-body">
-                <div class="gradient-config-card">
-                    <div class="gradient-swatch-grid">
-                        <div class="gradient-swatch">
-                            <label data-i18n="gradient_start_color">Start Color</label>
-                            <input type="color" id="gradient-start-picker" value="#a8c0ff" title="Pick a start color">
-                        </div>
-                        <div class="gradient-swatch">
-                            <label data-i18n="gradient_end_color">End Color</label>
-                            <input type="color" id="gradient-end-picker" value="#3f2b96" title="Pick an end color">
                         </div>
                     </div>
 
-                    <div class="bg-control-grid" style="display: flex; flex-direction: column; gap: 15px;">
-                        <div class="setting-item no-margin-top">
-                            <label for="gradient-type-select" data-i18n="settings_gradient_type"
-                                style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient
-                                Type</label>
-                            <select id="gradient-type-select" style="width: 100%;">
-                                <option value="linear" data-i18n="settings_gradient_type_linear">Linear
-                                </option>
-                                <option value="radial" data-i18n="settings_gradient_type_radial">Radial
-                                </option>
-                                <option value="conic" data-i18n="settings_gradient_type_conic">Conic
-                                </option>
-                            </select>
-                        </div>
-
-                        <div id="gradient-angle-group" class="setting-item no-margin-top">
-                            <div class="flex-space-between" style="margin-bottom: 8px;">
-                                <label data-i18n="settings_gradient_angle" style="font-weight: 600;">Angle</label>
-                                <span id="gradient-angle-value" class="bg-slider-value">135°</span>
-                            </div>
-                            <div class="bg-slider-stepper-wrap">
-                                <button type="button" class="bg-step-btn" data-step-target="gradient-angle-input"
-                                    data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="gradient-angle-input" min="0" max="360" value="135"
-                                    class="bg-wheel-scrollable">
-                                <button type="button" class="bg-step-btn" data-step-target="gradient-angle-input"
-                                    data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-
-                        <div id="gradient-position-group" class="setting-item no-margin-top"
-                            style="display: none; flex-direction: column;">
-                            <label data-i18n="settings_gradient_position"
-                                style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
-                            <select id="gradient-position-select" style="width: 100%;">
-                                <option value="center" data-i18n="settings_center">Center</option>
-                                <option value="top" data-i18n="settings_top">Top</option>
-                                <option value="bottom" data-i18n="settings_bottom">Bottom</option>
-                                <option value="left" data-i18n="settings_left">Left</option>
-                                <option value="right" data-i18n="settings_right">Right</option>
-                                <option value="top left" data-i18n="settings_top_left">Top Left</option>
-                                <option value="top right" data-i18n="settings_top_right">Top Right</option>
-                                <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left
-                                </option>
-                                <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right
-                                </option>
-                            </select>
-                        </div>
-
-                        <div id="gradient-radial-shape-group" class="setting-item no-margin-top"
-                            style="display: none; flex-direction: column;">
-                            <label data-i18n="settings_gradient_radial_shape"
-                                style="display: block; margin-bottom: 8px; font-weight: 600;">Radial
-                                Shape</label>
-                            <select id="gradient-radial-shape-select" style="width: 100%;">
-                                <option value="circle" data-i18n="settings_circle">Circle</option>
-                                <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="setting-item-row" style="margin-top: 15px;">
-                        <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
-                            Gradient</label>
-                        <input type="checkbox" id="gradient-repeating-toggle">
-                    </div>
-
-                    <div class="setting-item"
-                        style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
-                        <label
-                            style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;"
-                            data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
-                        <select id="gradient-extra-color-count"
-                            style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container">
-                        </div>
-                        <input type="text" id="gradient-custom-colors" style="display: none;">
-                    </div>
-
-                    <div class="background-inputs-grid"
-                        style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors"
-                                data-i18n-title="settings_accent_random" style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
-                                <i class="fa-solid fa-shuffle"></i> <span
-                                    data-i18n="settings_gradient_random_colors">Random Colors</span>
+                    <!-- SVG Wave Actions -->
+                    <div class="gmc-actions-wrap">
+                        <button id="svg-wave-save-btn" class="primary-btn full-width gmc-main-cta">
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save Wave</span>
+                        </button>
+                        <div class="gmc-secondary-actions-grid">
+                            <button id="svg-wave-apply-btn" class="secondary-btn" title="Áp dụng hình nền sóng ngay">
+                                <i class="fa-solid fa-play"></i> <span data-i18n="settings_svg_wave_apply">Áp dụng</span>
                             </button>
-                            <button id="gradient-reset-btn" class="secondary-btn" title="Reset Default"
-                                style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
-                                <i class="fa-solid fa-rotate-left"></i> <span
-                                    data-i18n="settings_reset_default">Reset</span>
+                            <button id="svg-wave-randomize-btn" class="secondary-btn" title="Tạo sóng ngẫu nhiên">
+                                <i class="fa-solid fa-dice"></i> <span data-i18n="settings_svg_wave_randomize">Random</span>
+                            </button>
+                            <button id="svg-wave-crazy-btn" class="secondary-btn" style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);" title="Chế độ sóng đột phá">
+                                <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy</span>
+                            </button>
+                            <button id="svg-wave-reset-btn" class="secondary-btn" title="Khôi phục mặc định"
+                                data-i18n-title="settings_reset_default">
+                                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
                             </button>
                         </div>
-                        <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%; border-radius: 8px; height: 34px; font-size: 0.8rem;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i><span
-                                data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
-                        </button>
-                        <button id="save-gradient-btn" class="primary-btn"
-                            style="width: 100%; height: 36px; border-radius: 8px; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.85rem;">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            <span data-i18n="settings_save_gradient">Save Gradient</span>
+                        <button id="svg-wave-close-btn" class="secondary-btn full-width svg-wave-close-control" style="display: none;">
+                            <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close Controls</span>
                         </button>
                     </div>
-                    <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets'
-                        for
-                        professionally picked color combinations!</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="setting-group">
-            <div class="setting-label">
-                <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved
-                    Gallery</span>
-                <span id="count-gradient"></span>
-            </div>
-            <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
-                <span id="gradient-select-count" class="bg-select-count">0 selected</span>
-                <div style="display: flex; gap: 6px;">
-                    <button id="gradient-select-all-btn" class="secondary-btn"
-                        style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="bg_select_all">Select
-                        All</button>
-                    <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"
-                        style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;"
-                        data-i18n="menu_delete">Delete</button>
-                    <button id="gradient-select-cancel-btn" class="secondary-btn"
-                        style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="cancel">Cancel</button>
-                </div>
-            </div>
-            <button id="gradient-select-mode-btn" class="secondary-btn full-width" style="margin-bottom: 12px;"
-                data-i18n="bg_select_mode">
-                <i class="fa-solid fa-check-double"></i> Select to Delete
-            </button>
-            <div id="user-gradients-gallery" class="local-bg-gallery"></div>
-        </div>
-
-
-        <!-- Multi-Color Split Background -->
-        <div class="setting-group">
-            <div class="setting-label"><i class="fa-solid fa-palette"></i> <span
-                    data-i18n="settings_multi_color_title">Split Background
-                    (Multi-Color)</span></div>
-            <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="border-radius: 8px; height: 36px; font-size: 0.85rem; margin-bottom: 10px;">
-                <i class="fa-solid fa-eye-slash"></i>
-                <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide
-                    Controls</span>
-            </button>
-            <div id="multi-color-settings-body">
-                <div class="setting-item" style="margin-bottom: 12px;">
-                    <label for="multi-color-count-select" style="font-size: 0.9rem;"
-                        data-i18n="settings_multi_color_count">Number of Colors:</label>
-                    <select id="multi-color-count-select" style="width: 100%; margin-top: 6px;">
-                        <option value="2" data-i18n="settings_colors_count_2">2 Colors</option>
-                        <option value="3" data-i18n="settings_colors_count_3">3 Colors</option>
-                        <option value="4" data-i18n="settings_colors_count_4">4 Colors</option>
-                        <option value="5" data-i18n="settings_colors_count_5">5 Colors</option>
-                        <option value="6" data-i18n="settings_colors_count_6">6 Colors</option>
-                    </select>
                 </div>
 
-                <div class="setting-item" style="margin-bottom: 12px;">
-                    <label data-i18n="settings_multi_color_mode">Mode:</label>
-                    <div class="btn-group" style="margin-top: 8px;">
-                        <button type="button" class="btn-group-item multi-color-mode-btn active" data-mode="smooth"
-                            data-i18n="settings_multi_color_smooth">Smooth</button>
-                        <button type="button" class="btn-group-item multi-color-mode-btn" data-mode="blocks"
-                            data-i18n="settings_multi_color_blocks">Blocks</button>
-                    </div>
-                </div>
-
-                <div class="setting-item" style="margin-bottom: 12px;">
-                    <label style="font-size: 0.85rem;" data-i18n="settings_gradient_type">Type:</label>
-                    <select id="multi-color-type-select" style="width: 100%; margin-top: 6px;">
-                        <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
-                        <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
-                        <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
-                    </select>
-                </div>
-
-                <div id="multi-color-radial-conic-controls"
-                    style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                    <div class="setting-item">
-                        <label style="font-size: 0.85rem;" data-i18n="settings_gradient_position">Position:</label>
-                        <select id="multi-color-position-select" style="width: 100%; margin-top: 6px;">
-                            <option value="center" data-i18n="settings_center">Center</option>
-                            <option value="top" data-i18n="settings_top">Top</option>
-                            <option value="bottom" data-i18n="settings_bottom">Bottom</option>
-                            <option value="left" data-i18n="settings_left">Left</option>
-                            <option value="right" data-i18n="settings_right">Right</option>
-                            <option value="top left" data-i18n="settings_top_left">Top Left</option>
-                            <option value="top right" data-i18n="settings_top_right">Top Right</option>
-                            <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left
-                            </option>
-                            <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right
-                            </option>
-                        </select>
-                    </div>
-                    <div id="multi-color-radial-shape-group" class="setting-item">
-                        <label style="font-size: 0.85rem;" data-i18n="settings_gradient_radial_shape">Shape:</label>
-                        <select id="multi-color-radial-shape-select" style="width: 100%; margin-top: 6px;">
-                            <option value="circle" data-i18n="settings_circle">Circle</option>
-                            <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="setting-item-row" style="margin-bottom: 12px;">
-                    <label for="multi-color-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
-                        Gradient</label>
-                    <input type="checkbox" id="multi-color-repeating-toggle">
-                </div>
-
-                <div id="multi-color-pickers-container"
-                    style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                    <!-- Color pickers will be generated here -->
-                </div>
-
-                <div id="multi-color-divider-settings" style="margin-bottom: 12px; display: none;">
-                    <div class="setting-item-row" style="margin-bottom: 10px;">
-                        <label for="multi-color-dividers-toggle" data-i18n="settings_multi_color_dividers">Show
-                            Divider Lines</label>
-                        <input type="checkbox" id="multi-color-dividers-toggle" checked>
-                    </div>
-
-                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
-                        <label for="multi-color-line-color" style="font-size: 0.85rem;"
-                            data-i18n="settings_multi_color_line_color">Line Color:</label>
-                        <input type="color" id="multi-color-line-color" value="#ffffff"
-                            style="flex: 1; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: none; cursor: pointer;">
-                    </div>
-
-                    <div class="setting-item" style="margin-bottom: 10px;">
-                        <div class="setting-label" style="display: flex; justify-content: space-between;">
-                            <span data-i18n="settings_multi_color_line_width">Line Width:</span>
-                            <span><span id="multi-color-line-width-value">1.2</span>%</span>
+                <!-- Saved Waves Gallery -->
+                <div id="user-svg-waves-gallery-wrap" style="margin-top:16px;" class="setting-group gmc-gallery-group">
+                    <div class="setting-label flex-space-between">
+                        <div>
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span data-i18n="settings_svg_wave_saved_label">Saved Waves</span>
+                            <span id="count-svg-wave"></span>
                         </div>
-                        <div class="bg-slider-stepper-wrap">
-                            <button type="button" class="bg-step-btn" data-step-target="multi-color-line-width"
-                                data-step="-0.1" title="-0.1%"><i class="fa-solid fa-minus"></i></button>
-                            <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2"
-                                class="bg-wheel-scrollable">
-                            <button type="button" class="bg-step-btn" data-step-target="multi-color-line-width"
-                                data-step="0.1" title="+0.1%"><i class="fa-solid fa-plus"></i></button>
-                        </div>
+                        <button id="svg-wave-select-mode-btn" class="secondary-btn gmc-mini-btn" title="Select multiple to delete" data-i18n="bg_select_mode">
+                            <i class="fa-solid fa-check-double"></i> Select
+                        </button>
                     </div>
-
-                    <div style="margin-top: 10px;">
-                        <div class="setting-item-row" style="margin-bottom: 10px;">
-                            <label for="multi-color-free-line-angles"
-                                data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
-                                line)</label>
-                            <input type="checkbox" id="multi-color-free-line-angles">
-                        </div>
-                        <div id="multi-color-line-angles-container"
-                            style="display: none; flex-direction: column; gap: 10px;"></div>
-                    </div>
-                </div>
-
-                <div class="setting-item" style="margin-bottom: 12px;">
-                    <div class="setting-label" style="display: flex; justify-content: space-between;">
-                        <span data-i18n="settings_multi_color_angle">Angle:</span>
-                        <span><span id="multi-gradient-angle-value">135</span>deg</span>
-                    </div>
-                    <div class="bg-slider-stepper-wrap">
-                        <button type="button" class="bg-step-btn" data-step-target="multi-gradient-angle-input"
-                            data-step="-15" title="-15°"><i class="fa-solid fa-minus"></i></button>
-                        <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135"
-                            class="bg-wheel-scrollable">
-                        <button type="button" class="bg-step-btn" data-step-target="multi-gradient-angle-input"
-                            data-step="15" title="+15°"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>
-                <div id="multi-gradient-preview"
-                    style="width: 100%; height: 48px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <button id="random-multi-color-hue-btn" class="secondary-btn"
-                        data-i18n="settings_multi_color_random_hue" style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-shuffle"></i> Random HUE</button>
-                    <button id="random-multi-color-crazy-btn" class="secondary-btn"
-                        data-i18n="settings_multi_color_random_crazy" style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-bolt"></i> Crazy</button>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <button id="apply-multi-color-btn" class="secondary-btn" data-i18n="settings_multi_color_apply"
-                        style="border-radius: 8px; height: 34px; font-size: 0.8rem;"><i class="fa-solid fa-check"></i> Apply</button>
-                    <button id="multi-color-reset-btn" class="secondary-btn" title="Reset Default"
-                        style="border-radius: 8px; height: 34px; font-size: 0.8rem;">
-                        <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
-                    </button>
-                </div>
-                <button id="save-multi-color-btn" class="primary-btn full-width" data-i18n="settings_multi_color_save"
-                    style="height: 36px; border-radius: 8px; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.85rem;">
-                    <i class="fa-solid fa-floppy-disk"></i> Save Preset
-                </button>
-
-                <!-- Saved Multi-Color Presets -->
-                <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label style="font-size: 0.9rem; margin-bottom: 0;"
-                            data-i18n="settings_multi_color_saved_presets" for="svg-wave-lines">Saved
-                            Presets</label>
-                        <span id="count-multi-color"></span>
-                        <button id="multi-color-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                            data-i18n="bg_select_mode"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="multi-color-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
-                        <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
+                    <div id="svg-wave-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                        <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
                         <div style="display: flex; gap: 6px;">
-                            <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
+                            <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
+                            <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
-                    <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
+                    <div id="user-svg-waves-gallery" class="local-bg-gallery gmc-cards-grid"></div>
                 </div>
             </div>
         </div>
+
+        <!-- ========================================================= -->
+        <!-- PANE 4: VISUAL PRESET HUB (BỘ MÃ PRESET BUNDLE)           -->
+        <!-- ========================================================= -->
+        <div id="gmc-pane-presets" class="gmc-tab-pane" style="display: none;">
+            <div class="setting-group">
+                <div class="preset-code-card preset-code-card-compact preset-code-card-premium gmc-card">
+                    <div class="preset-code-header">
+                        <div>
+                            <strong data-i18n="visual_preset_bundle_title">Full visual bundle</strong>
+                            <small data-i18n="visual_preset_bundle_hint" style="display: block; opacity: 0.7; margin-top: 2px;">Gradient, Multi-Color, SVG Wave, Effect and Theme</small>
+                        </div>
+                        <span class="preset-code-chip">SPC1</span>
+                    </div>
+                    <div class="preset-code-actions">
+                        <button id="visual-preset-copy-code-btn" class="secondary-btn" type="button" title="Sao chép toàn bộ cấu hình giao diện">
+                            <i class="fa-solid fa-copy"></i>
+                            <span data-i18n="visual_preset_copy">Copy Code</span>
+                        </button>
+                        <button id="visual-preset-apply-code-btn" class="secondary-btn" type="button" title="Áp dụng mã cấu hình giao diện">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span data-i18n="visual_preset_apply">Apply Code</span>
+                        </button>
+                    </div>
+                    <textarea id="visual-preset-code-input" class="preset-code-input" rows="2"
+                        data-i18n-placeholder="visual_preset_placeholder"
+                        placeholder="Paste visual preset code here"></textarea>
+                    <button class="preset-code-lines-toggle secondary-btn" type="button" data-preset-code-lines-toggle
+                        aria-expanded="false" style="margin-top: 8px;">
+                        <i class="fa-solid fa-list-ul"></i>
+                        <span data-i18n="preset_code_show_lines">Show codes</span>
+                    </button>
+                    <div id="visual-preset-code-lines" class="preset-code-lines"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

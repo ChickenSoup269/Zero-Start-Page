@@ -83,7 +83,10 @@ import {
   recompressSavedBackgroundImages,
   maybeShowLocalBackgroundPerformanceWarning,
 } from "./backgroundManager.js"
-import { renderUserGradients } from "./gradientManager.js"
+import {
+  renderUserGradients,
+  updateGradientLivePreview,
+} from "./gradientManager.js"
 import {
   getTabIconChars,
   applyTabIcon,
@@ -1814,6 +1817,9 @@ export function setupGeneralEventHandlers(
       `
       tocMenu.appendChild(tocHeader)
 
+      const tocList = document.createElement("div")
+      tocList.className = "toc-items-list"
+
       sections.forEach((section) => {
         let title = ""
         let iconClass = ""
@@ -1957,9 +1963,10 @@ export function setupGeneralEventHandlers(
               }
             }
           })
-          tocMenu.appendChild(item)
+          tocList.appendChild(item)
         }
       })
+      tocMenu.appendChild(tocList)
     }
 
     tocToggle.addEventListener("click", (e) => {
@@ -4685,6 +4692,7 @@ export function setupGeneralEventHandlers(
     }
 
     handleSettingUpdate(null, gradientConfig, true)
+    updateGradientLivePreview(DOM)
   }
 
   const showPresetCodeError = () => {
@@ -5506,6 +5514,24 @@ export function setupGeneralEventHandlers(
         radialShape: item.dataset.radialShape || "circle",
         uid: item.dataset.uid || null,
       }
+      if (DOM.gradientStartPicker && gradient.start) {
+        DOM.gradientStartPicker.value = gradient.start
+      }
+      if (DOM.gradientEndPicker && gradient.end) {
+        DOM.gradientEndPicker.value = gradient.end
+      }
+      if (DOM.gradientAngleInput && gradient.angle !== undefined) {
+        DOM.gradientAngleInput.value = gradient.angle
+        if (DOM.gradientAngleValue) {
+          DOM.gradientAngleValue.textContent = `${gradient.angle}°`
+        }
+      }
+      if (DOM.gradientTypeSelect && gradient.type) {
+        DOM.gradientTypeSelect.value = gradient.type
+      }
+      if (DOM.gradientRepeatingToggle) {
+        DOM.gradientRepeatingToggle.checked = gradient.repeating === true
+      }
       if (DOM.gradientExtraColorCount) {
         DOM.gradientExtraColorCount.value = String(gradient.extraColorCount)
       }
@@ -5522,6 +5548,7 @@ export function setupGeneralEventHandlers(
       updateSetting("activeBgUid", item.dataset.uid || null)
       handleSettingUpdate(null, gradient, true)
       updateSettingsInputs()
+      updateGradientLivePreview(DOM)
     }
   })
 
@@ -5557,8 +5584,31 @@ export function setupGeneralEventHandlers(
     effects.svgWaveEffect.update(getSvgWaveParams(getSettings()), fade)
     if (!effects.svgWaveEffect.active)
       effects.svgWaveEffect.start(getSvgWaveParams(getSettings()))
+    _updateSvgWavePreviewCard()
     window.appScheduleAutoAccentUpdate?.()
   }
+
+  function _updateSvgWavePreviewCard() {
+    const previewBox = document.getElementById("svg-wave-live-preview-box")
+    if (!previewBox || !effects?.svgWaveEffect) return
+    try {
+      const params = getSvgWaveParams(getSettings())
+      const thumbUri = effects.svgWaveEffect.generateThumbnailDataUri(params)
+      if (thumbUri) {
+        previewBox.style.backgroundImage = `url("${thumbUri}")`
+      }
+      const linesBadge = document.getElementById("svg-wave-preview-lines-badge")
+      if (linesBadge) {
+        linesBadge.textContent = `${params.lines || 5} Lines`
+      }
+      const statusBadge = document.getElementById("svg-wave-preview-status-badge")
+      if (statusBadge) {
+        statusBadge.textContent = params.fill ? "Filled" : "Outline"
+      }
+    } catch (_) {}
+  }
+  window.appUpdateSvgWavePreviewCard = _updateSvgWavePreviewCard
+  _updateSvgWavePreviewCard()
 
   DOM.svgWaveToggleBtn.addEventListener("click", () => {
     const isCurrentlyOpen =
@@ -5579,7 +5629,42 @@ export function setupGeneralEventHandlers(
     }
     applySettings()
     updateSettingsInputs()
+    _updateSvgWavePreviewCard()
   })
+
+  if (DOM.svgWaveActive) {
+    DOM.svgWaveActive.addEventListener("change", (e) => {
+      const active = e.target.checked
+      updateSetting("svgWaveActive", active)
+      if (active) {
+        updateSetting("background", null)
+        saveSettings()
+        _applyWaveFromInputs(true)
+      } else {
+        saveSettings()
+        if (effects.svgWaveEffect?.active) {
+          effects.svgWaveEffect.stop()
+        }
+        applySettings()
+      }
+      _updateSvgWavePreviewCard()
+      window.appScheduleAutoAccentUpdate?.()
+    })
+  }
+
+  const svgWaveApplyBtn = document.getElementById("svg-wave-apply-btn")
+  if (svgWaveApplyBtn) {
+    svgWaveApplyBtn.addEventListener("click", () => {
+      _applyWaveFromInputs(true)
+    })
+  }
+
+  const svgWaveTopApplyBtn = document.getElementById("svg-wave-quick-apply-top-btn")
+  if (svgWaveTopApplyBtn) {
+    svgWaveTopApplyBtn.addEventListener("click", () => {
+      _applyWaveFromInputs(true)
+    })
+  }
 
   DOM.svgWaveCrazyBtn.addEventListener("click", () => {
     const crazyParams = effects.svgWaveEffect.randomize()

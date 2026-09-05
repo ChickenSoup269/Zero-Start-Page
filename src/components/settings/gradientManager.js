@@ -289,6 +289,386 @@ function setupMultiSelect(DOM) {
     }
     updateGradientSelectCount()
   })
+
+  // Initialize modern Gradient & Multi-Color UI enhancements
+  initGradientMultiColorUI(DOM)
+}
+
+export function updateGradientLivePreview(DOM) {
+  const previewBox = document.getElementById("gradient-live-preview-box")
+  if (!previewBox) return
+
+  const startPicker =
+    DOM?.gradientStartPicker ||
+    document.getElementById("gradient-start-picker")
+  const endPicker =
+    DOM?.gradientEndPicker || document.getElementById("gradient-end-picker")
+  const angleInput =
+    DOM?.gradientAngleInput || document.getElementById("gradient-angle-input")
+  const typeSelect =
+    DOM?.gradientTypeSelect || document.getElementById("gradient-type-select")
+  const repeatingToggle =
+    DOM?.gradientRepeatingToggle ||
+    document.getElementById("gradient-repeating-toggle")
+  const extraCount =
+    DOM?.gradientExtraColorCount ||
+    document.getElementById("gradient-extra-color-count")
+  const customColors =
+    DOM?.gradientCustomColors ||
+    document.getElementById("gradient-custom-colors")
+  const positionSelect =
+    DOM?.gradientPositionSelect ||
+    document.getElementById("gradient-position-select")
+  const radialShapeSelect =
+    DOM?.gradientRadialShapeSelect ||
+    document.getElementById("gradient-radial-shape-select")
+
+  const config = {
+    start: startPicker?.value || "#a8c0ff",
+    end: endPicker?.value || "#3f2b96",
+    angle: Number(angleInput?.value ?? 135),
+    type: typeSelect?.value || "linear",
+    repeating: repeatingToggle?.checked === true,
+    extraColorCount:
+      extraCount?.value !== undefined ? Number(extraCount.value) : 0,
+    customColors: customColors?.value || "",
+    position: positionSelect?.value || "center",
+    radialShape: radialShapeSelect?.value || "circle",
+  }
+
+  const css = buildGradientCss(config)
+  previewBox.style.background = css
+
+  // Update badges
+  const typeBadge = document.getElementById("gradient-preview-type-badge")
+  if (typeBadge) {
+    const repPrefix = config.repeating ? "Repeating " : ""
+    if (config.type === "linear") {
+      typeBadge.textContent = `${repPrefix}Linear ${config.angle}°`
+    } else if (config.type === "radial") {
+      typeBadge.textContent = `${repPrefix}Radial (${config.radialShape})`
+    } else if (config.type === "conic") {
+      typeBadge.textContent = `${repPrefix}Conic ${config.angle}°`
+    }
+  }
+
+  const stopsBadge = document.getElementById("gradient-preview-stops-badge")
+  if (stopsBadge) {
+    const totalStops =
+      2 +
+      (config.customColors
+        ? (config.customColors.match(/#[0-9a-fA-F]{3,6}/g) || []).length
+        : config.extraColorCount)
+    stopsBadge.textContent = `${totalStops} Colors`
+  }
+
+  // Update hex display
+  const startHex = document.getElementById("gradient-start-hex-display")
+  if (startHex && startPicker) {
+    startHex.textContent = String(startPicker.value || "").toUpperCase()
+  }
+  const endHex = document.getElementById("gradient-end-hex-display")
+  if (endHex && endPicker) {
+    endHex.textContent = String(endPicker.value || "").toUpperCase()
+  }
+
+  // Update active angle chip
+  document.querySelectorAll(".gmc-angle-chip").forEach((chip) => {
+    chip.classList.toggle("active", Number(chip.dataset.angle) === config.angle)
+  })
+}
+
+export function initGradientMultiColorUI(DOM) {
+  const tabButtons = document.querySelectorAll(".gmc-tab-btn")
+  const panes = {
+    "gmc-pane-gradient": document.getElementById("gmc-pane-gradient"),
+    "gmc-pane-multi-color": document.getElementById("gmc-pane-multi-color"),
+    "gmc-pane-svg-wave": document.getElementById("gmc-pane-svg-wave"),
+    "gmc-pane-presets": document.getElementById("gmc-pane-presets"),
+  }
+
+  const switchTab = (targetId) => {
+    if (!targetId || !panes[targetId]) return
+    tabButtons.forEach((b) => {
+      b.classList.toggle("active", b.dataset.gmcTarget === targetId)
+    })
+    Object.entries(panes).forEach(([id, pane]) => {
+      if (pane) {
+        pane.style.display = id === targetId ? "block" : "none"
+      }
+    })
+    try {
+      localStorage.setItem("activeGmcTab", targetId)
+    } catch (_) {}
+
+    if (targetId === "gmc-pane-gradient") {
+      updateGradientLivePreview(DOM)
+    } else if (targetId === "gmc-pane-multi-color") {
+      window.updateMultiColorPreview?.()
+    } else if (targetId === "gmc-pane-svg-wave") {
+      try {
+        localStorage.setItem("startpage_svgWaveGeneratorOpen", "1")
+      } catch (_) {}
+      const waveSettings = document.getElementById("svg-wave-settings")
+      if (waveSettings) {
+        waveSettings.classList.remove("is-collapsed")
+      }
+      window.appUpdateSvgWavePreviewCard?.()
+    }
+  }
+
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchTab(btn.dataset.gmcTarget)
+    })
+  })
+
+  // Restore saved tab if exists
+  try {
+    const savedTab = localStorage.getItem("activeGmcTab")
+    if (savedTab && panes[savedTab]) {
+      switchTab(savedTab)
+    }
+  } catch (_) {}
+
+  // Swap button
+  const swapBtn = document.getElementById("gradient-swap-colors-btn")
+  if (swapBtn) {
+    swapBtn.addEventListener("click", () => {
+      const startPicker =
+        DOM?.gradientStartPicker ||
+        document.getElementById("gradient-start-picker")
+      const endPicker =
+        DOM?.gradientEndPicker || document.getElementById("gradient-end-picker")
+      if (!startPicker || !endPicker) return
+
+      const temp = startPicker.value
+      startPicker.value = endPicker.value
+      endPicker.value = temp
+
+      startPicker.dispatchEvent(new Event("input", { bubbles: true }))
+      startPicker.dispatchEvent(new Event("change", { bubbles: true }))
+      endPicker.dispatchEvent(new Event("input", { bubbles: true }))
+      endPicker.dispatchEvent(new Event("change", { bubbles: true }))
+      updateGradientLivePreview(DOM)
+    })
+  }
+
+  // Angle quick chips
+  const angleChips = document.querySelectorAll(".gmc-angle-chip")
+  angleChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const angle = chip.dataset.angle
+      const angleInput =
+        DOM?.gradientAngleInput ||
+        document.getElementById("gradient-angle-input")
+      const angleValue =
+        DOM?.gradientAngleValue ||
+        document.getElementById("gradient-angle-value")
+
+      if (angleInput && angle !== undefined) {
+        angleInput.value = angle
+        if (angleValue) angleValue.textContent = `${angle}°`
+        angleInput.dispatchEvent(new Event("input", { bubbles: true }))
+        angleInput.dispatchEvent(new Event("change", { bubbles: true }))
+        updateGradientLivePreview(DOM)
+      }
+    })
+  })
+
+  // Gradient preset chips
+  const presetChips = document.querySelectorAll(
+    "#gradient-quick-presets-container .gmc-preset-chip",
+  )
+  presetChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const start = chip.dataset.start
+      const end = chip.dataset.end
+      const angle = chip.dataset.angle
+
+      const startPicker =
+        DOM?.gradientStartPicker ||
+        document.getElementById("gradient-start-picker")
+      const endPicker =
+        DOM?.gradientEndPicker || document.getElementById("gradient-end-picker")
+      const angleInput =
+        DOM?.gradientAngleInput ||
+        document.getElementById("gradient-angle-input")
+      const angleValue =
+        DOM?.gradientAngleValue ||
+        document.getElementById("gradient-angle-value")
+      const extraCountSelect =
+        DOM?.gradientExtraColorCount ||
+        document.getElementById("gradient-extra-color-count")
+      const typeSelect =
+        DOM?.gradientTypeSelect ||
+        document.getElementById("gradient-type-select")
+      const repeatingToggle =
+        DOM?.gradientRepeatingToggle ||
+        document.getElementById("gradient-repeating-toggle")
+
+      // Reset extra colors to 0 for standard 2-color preset
+      if (extraCountSelect) {
+        extraCountSelect.value = "0"
+        extraCountSelect.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      if (typeSelect && typeSelect.value !== "linear") {
+        typeSelect.value = "linear"
+        typeSelect.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      if (repeatingToggle && repeatingToggle.checked) {
+        repeatingToggle.checked = false
+        repeatingToggle.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+
+      if (start && startPicker) {
+        startPicker.value = start
+        startPicker.dispatchEvent(new Event("input", { bubbles: true }))
+        startPicker.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      if (end && endPicker) {
+        endPicker.value = end
+        endPicker.dispatchEvent(new Event("input", { bubbles: true }))
+        endPicker.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      if (angle && angleInput) {
+        angleInput.value = angle
+        if (angleValue) angleValue.textContent = `${angle}°`
+        angleInput.dispatchEvent(new Event("input", { bubbles: true }))
+        angleInput.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+
+      updateGradientLivePreview(DOM)
+      const applyBtn =
+        DOM?.applyGradientBtn || document.getElementById("apply-gradient-btn")
+      if (applyBtn) {
+        applyBtn.click()
+      }
+    })
+  })
+
+  // Multi-color preset chips
+  const multiChips = document.querySelectorAll(
+    "#multi-color-quick-presets-container .gmc-preset-chip",
+  )
+  multiChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const colorsStr = chip.dataset.colors
+      if (!colorsStr) return
+      const colors = colorsStr.split(",")
+
+      const countSelect =
+        DOM?.multiColorCountSelect ||
+        document.getElementById("multi-color-count-select")
+      if (countSelect) {
+        countSelect.value = String(colors.length)
+        countSelect.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+
+      setTimeout(() => {
+        colors.forEach((col, idx) => {
+          const picker = document.getElementById(`multi-color-picker-${idx}`)
+          if (picker) {
+            picker.value = col
+            picker.dispatchEvent(new Event("input", { bubbles: true }))
+            picker.dispatchEvent(new Event("change", { bubbles: true }))
+          }
+        })
+        window.updateMultiColorPreview?.()
+        const applyBtn =
+          DOM?.applyMultiColorBtn ||
+          document.getElementById("apply-multi-color-btn")
+        if (applyBtn) {
+          applyBtn.click()
+        }
+      }, 60)
+    })
+  })
+
+  // Quick Copy CSS button
+  const copyCssBtn = document.getElementById("gradient-quick-copy-css-btn")
+  if (copyCssBtn) {
+    copyCssBtn.addEventListener("click", async () => {
+      const startPicker =
+        DOM?.gradientStartPicker ||
+        document.getElementById("gradient-start-picker")
+      const endPicker =
+        DOM?.gradientEndPicker || document.getElementById("gradient-end-picker")
+      const angleInput =
+        DOM?.gradientAngleInput ||
+        document.getElementById("gradient-angle-input")
+      const typeSelect =
+        DOM?.gradientTypeSelect ||
+        document.getElementById("gradient-type-select")
+      const repeatingToggle =
+        DOM?.gradientRepeatingToggle ||
+        document.getElementById("gradient-repeating-toggle")
+      const extraCount =
+        DOM?.gradientExtraColorCount ||
+        document.getElementById("gradient-extra-color-count")
+      const customColors =
+        DOM?.gradientCustomColors ||
+        document.getElementById("gradient-custom-colors")
+      const positionSelect =
+        DOM?.gradientPositionSelect ||
+        document.getElementById("gradient-position-select")
+      const radialShapeSelect =
+        DOM?.gradientRadialShapeSelect ||
+        document.getElementById("gradient-radial-shape-select")
+
+      const config = {
+        start: startPicker?.value || "#a8c0ff",
+        end: endPicker?.value || "#3f2b96",
+        angle: Number(angleInput?.value ?? 135),
+        type: typeSelect?.value || "linear",
+        repeating: repeatingToggle?.checked === true,
+        extraColorCount:
+          extraCount?.value !== undefined ? Number(extraCount.value) : 2,
+        customColors: customColors?.value || "",
+        position: positionSelect?.value || "center",
+        radialShape: radialShapeSelect?.value || "circle",
+      }
+
+      const css = `background: ${buildGradientCss(config)};`
+      try {
+        await navigator.clipboard.writeText(css)
+        const i18n = geti18n()
+        const origHTML = copyCssBtn.innerHTML
+        copyCssBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.gmc_copied_css || "Copied!"}</span>`
+        setTimeout(() => {
+          copyCssBtn.innerHTML = origHTML
+        }, 1500)
+      } catch (err) {
+        console.error("Failed to copy CSS:", err)
+      }
+    })
+  }
+
+  // Input sync
+  const inputsToListen = [
+    DOM?.gradientStartPicker ||
+      document.getElementById("gradient-start-picker"),
+    DOM?.gradientEndPicker || document.getElementById("gradient-end-picker"),
+    DOM?.gradientAngleInput || document.getElementById("gradient-angle-input"),
+    DOM?.gradientTypeSelect || document.getElementById("gradient-type-select"),
+    DOM?.gradientRepeatingToggle ||
+      document.getElementById("gradient-repeating-toggle"),
+    DOM?.gradientExtraColorCount ||
+      document.getElementById("gradient-extra-color-count"),
+    DOM?.gradientPositionSelect ||
+      document.getElementById("gradient-position-select"),
+    DOM?.gradientRadialShapeSelect ||
+      document.getElementById("gradient-radial-shape-select"),
+  ]
+
+  inputsToListen.forEach((input) => {
+    if (!input) return
+    input.addEventListener("input", () => updateGradientLivePreview(DOM))
+    input.addEventListener("change", () => updateGradientLivePreview(DOM))
+  })
+
+  // Initial preview update
+  updateGradientLivePreview(DOM)
 }
 
 function renderUserGradients(DOM) {
@@ -464,7 +844,13 @@ function renderUserGradients(DOM) {
     ).length
     gradSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
   }
+
+  updateGradientLivePreview(DOM)
 }
 
-export { renderUserGradients, setupMultiSelect as setupGradientMultiSelect }
-export { buildGradientCss }
+export {
+  renderUserGradients,
+  setupMultiSelect as setupGradientMultiSelect,
+  buildGradientCss,
+}
+

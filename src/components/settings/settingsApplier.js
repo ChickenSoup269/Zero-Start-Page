@@ -36,7 +36,11 @@ import {
   renderUserColors,
   updateActiveWallpaperBanner,
 } from "./backgroundManager.js"
-import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
+import {
+  renderUserGradients,
+  buildGradientCss,
+  updateGradientLivePreview,
+} from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { buildMultiColorCss } from "./multiColorManager.js"
 import {
@@ -5224,6 +5228,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.gradientCustomColors) {
       DOM.gradientCustomColors.value = settings.gradientCustomColors || ""
     }
+    updateGradientLivePreview(DOM)
 
     // Effect Color Inputs
     if (DOM.googleDriveSyncCheckbox) {
@@ -6398,21 +6403,18 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // SVG Wave Generator
     const waveActive = settings.svgWaveActive === true
-    const waveGeneratorOpen =
-      localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
     if (DOM.svgWaveSettings) {
       DOM.svgWaveSettings.style.display = "block"
-      DOM.svgWaveSettings.classList.toggle("is-collapsed", !waveGeneratorOpen)
+      DOM.svgWaveSettings.classList.remove("is-collapsed")
     }
-    DOM.svgWaveToggleBtn?.setAttribute(
-      "aria-expanded",
-      String(waveGeneratorOpen),
-    )
+    if (DOM.svgWaveActive) {
+      DOM.svgWaveActive.checked = waveActive
+    }
+    DOM.svgWaveToggleBtn?.setAttribute("aria-expanded", "true")
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()
-      DOM.svgWaveToggleLabel.textContent = waveGeneratorOpen
-        ? i18n.settings_svg_wave_close || "Close Wave Generator"
-        : i18n.settings_svg_wave_open || "Open Wave Generator"
+      DOM.svgWaveToggleLabel.textContent =
+        i18n.settings_svg_wave_close || "Close Wave Generator"
     }
 
     DOM.svgWaveAmpX.value = settings.svgWaveAmplitudeX ?? 200

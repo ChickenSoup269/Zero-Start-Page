@@ -532,6 +532,87 @@ export const THEMEABLE_KEYS = [
   "analogBlurBackground",
 ]
 
+export const THEME_KEY_GROUPS = {
+  background: [
+    "background",
+    "activeBgUid",
+    "unsplashLastCredit",
+  ],
+  colors: [
+    "accentColor",
+    "sidebarBg",
+    "panelBg",
+    "glassBg",
+    "glassBorder",
+    "glassEdge",
+    "hueTextMode",
+    "contextMenuStyle",
+    "analogBlurBackground",
+  ],
+  fonts: [
+    "font",
+    "clockFont",
+    "clockFontTarget",
+  ],
+  clock: [
+    "dateClockStyle",
+    "clockColor",
+    "dateColor",
+    "analogMarkerMode",
+    "sidestyleAlign",
+    "sidebarClockFlip",
+    "fliqloTheme",
+  ],
+  effects: [
+    "effect",
+    "hackerColor",
+    "oceanWaveColor",
+    "sakuraColor",
+    "bubbleColor",
+    "lightPillarsColor",
+    "plantGrowthColor",
+    "starColor",
+    "meteorColor",
+    "auraColor",
+    "northernLightsColor",
+    "pixelCubesColor",
+    "snowfallColor",
+    "sunbeamColor",
+    "sunbeamMode",
+    "rainHDColor",
+    "musicBarsColor",
+    "wavyLinesColor",
+    "wavyLinesMode",
+    "cloudDriftMood",
+    "shinyColor",
+    "lineShinyColor",
+    "lineShinyMode",
+    "nintendoPixelMode",
+    "nintendoPixelColor",
+    "northernLightsStyle",
+    "northernLightsBrightness",
+  ],
+}
+
+export function isThemeKeyInScope(key, settings) {
+  if (THEME_KEY_GROUPS.background.includes(key)) {
+    return settings.themeScopeBackground !== false
+  }
+  if (THEME_KEY_GROUPS.colors.includes(key)) {
+    return settings.themeScopeColors !== false
+  }
+  if (THEME_KEY_GROUPS.fonts.includes(key)) {
+    return settings.themeScopeFonts !== false
+  }
+  if (THEME_KEY_GROUPS.clock.includes(key)) {
+    return settings.themeScopeClock !== false
+  }
+  if (THEME_KEY_GROUPS.effects.includes(key)) {
+    return settings.themeScopeEffects !== false
+  }
+  return true
+}
+
 // Variable to store user's manual settings before a theme was applied
 let preThemeSnapshot = null
 
@@ -631,6 +712,41 @@ export function initThemeManager(
           saveSettings(true)
           if (window.appApplySettings) window.appApplySettings()
         },
+      })
+    }
+  })
+
+  // Theme Application Scope Controls
+  const scopeKeys = [
+    { id: "theme-scope-colors", key: "themeScopeColors" },
+    { id: "theme-scope-effects", key: "themeScopeEffects" },
+    { id: "theme-scope-clock", key: "themeScopeClock" },
+    { id: "theme-scope-fonts", key: "themeScopeFonts" },
+    { id: "theme-scope-background", key: "themeScopeBackground" },
+  ]
+
+  const reapplyActiveThemeIfAny = () => {
+    const currentTheme = getSettings().theme
+    if (!currentTheme) return
+    let themeData = THEMES[currentTheme]
+    if (!themeData && currentTheme.startsWith("user-")) {
+      const userThemes = getSettings().userThemes || []
+      const userTheme = userThemes.find((t) => t.id === currentTheme)
+      if (userTheme) themeData = userTheme.snapshot
+    }
+    if (themeData) {
+      applyTheme(themeData, updateSettingsInputs)
+    }
+  }
+
+  scopeKeys.forEach(({ id, key }) => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.checked = getSettings()[key] !== false
+      el.addEventListener("change", () => {
+        updateSetting(key, el.checked)
+        saveSettings(true)
+        reapplyActiveThemeIfAny()
       })
     }
   })
@@ -1107,7 +1223,16 @@ function captureUserSnapshot() {
 function restoreUserOriginalSettings(updateSettingsInputs) {
   if (!preThemeSnapshot) return
 
-  updateAllSettings(preThemeSnapshot)
+  const currentSettings = getSettings()
+  const restoreData = {}
+
+  Object.entries(preThemeSnapshot).forEach(([key, value]) => {
+    if (isThemeKeyInScope(key, currentSettings)) {
+      restoreData[key] = value
+    }
+  })
+
+  updateAllSettings(restoreData)
   preThemeSnapshot = null // Clear so next theme click takes a fresh snapshot
 
   if (updateSettingsInputs) updateSettingsInputs()
@@ -1116,11 +1241,14 @@ function restoreUserOriginalSettings(updateSettingsInputs) {
 }
 
 function applyTheme(themeData, updateSettingsInputs) {
+  const currentSettings = getSettings()
   const resetData = {}
 
-  // Reset to user's original state (or default if not set) first
-  // This ensures we don't overwrite custom effect colors not specified by the theme
+  // Reset to user's original state (or default if not set) first,
+  // but only for keys within the active theme application scope!
   THEMEABLE_KEYS.forEach((key) => {
+    if (!isThemeKeyInScope(key, currentSettings)) return
+
     if (preThemeSnapshot && preThemeSnapshot[key] !== undefined) {
       resetData[key] = preThemeSnapshot[key]
     } else if (defaultSettings[key] !== undefined) {
@@ -1128,7 +1256,15 @@ function applyTheme(themeData, updateSettingsInputs) {
     }
   })
 
-  const finalData = { ...resetData, ...themeData }
+  // Filter incoming theme data by active scope
+  const filteredThemeData = {}
+  Object.entries(themeData).forEach(([key, value]) => {
+    if (isThemeKeyInScope(key, currentSettings)) {
+      filteredThemeData[key] = value
+    }
+  })
+
+  const finalData = { ...resetData, ...filteredThemeData }
   updateAllSettings(finalData)
 
   if (updateSettingsInputs) updateSettingsInputs()

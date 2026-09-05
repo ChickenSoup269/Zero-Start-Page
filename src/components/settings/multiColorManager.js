@@ -489,6 +489,26 @@ export function setupMultiColorManager(applySettings) {
     }
 
     DOM.multiGradientPreview.style.background = backgroundCSS
+
+    // Update badges in live preview viewport
+    const typeBadge = document.getElementById("multi-preview-type-badge")
+    if (typeBadge) {
+      const repPrefix = repeating ? "Repeating " : ""
+      if (type === "linear") {
+        typeBadge.textContent = `${repPrefix}Linear ${angle}°`
+      } else if (type === "radial") {
+        typeBadge.textContent = `${repPrefix}Radial (${radialShape || "circle"})`
+      } else if (type === "conic") {
+        typeBadge.textContent = `${repPrefix}Conic ${angle}°`
+      } else {
+        typeBadge.textContent = `${repPrefix}${type}`
+      }
+    }
+
+    const stopsBadge = document.getElementById("multi-preview-stops-badge")
+    if (stopsBadge) {
+      stopsBadge.textContent = `${colors.length} Màu (${mode === "blocks" ? "Khối ô" : "Chuyển tiếp"})`
+    }
   }
 
   function updateTypeControlsVisibility() {
@@ -1277,6 +1297,71 @@ export function setupMultiColorManager(applySettings) {
 
     renderSavedMultiColors(DOM)
   })
+
+  // Quick copy CSS button in preview viewport
+  const copyBtn = document.getElementById("multi-quick-copy-css-btn")
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+      const colors = pickers.map((p) => p.value)
+      const angle = DOM.multiGradientAngleInput.value
+      const mode = getMode()
+      const dividerConfig = getDividerConfig()
+      const lineAngleConfig = getLineAngleConfig()
+      const type = DOM.multiColorTypeSelect.value
+      const repeating = DOM.multiColorRepeatingToggle.checked
+      const position = DOM.multiColorPositionSelect.value
+      const radialShape = DOM.multiColorRadialShapeSelect.value
+
+      let css = ""
+      if (mode === "blocks") {
+        css = generateSolidBlocksCSS(
+          colors,
+          parseInt(angle),
+          dividerConfig,
+          lineAngleConfig,
+          type,
+          position,
+          radialShape,
+          repeating,
+        )
+      } else {
+        const prefix = repeating ? `repeating-${type}-gradient` : `${type}-gradient`
+        let typeParams = ""
+        if (type === "linear") {
+          typeParams = `${angle}deg, `
+        } else if (type === "radial") {
+          typeParams = `${radialShape} at ${position}, `
+        } else if (type === "conic") {
+          typeParams = `from ${angle}deg at ${position}, `
+        }
+        const gradientStops = colors
+          .map((color, index) => {
+            const percent = (index / (colors.length - 1)) * 100
+            return `${color} ${percent}%`
+          })
+          .join(", ")
+        css = `${prefix}(${typeParams}${gradientStops})`
+      }
+
+      if (css) {
+        try {
+          await navigator.clipboard.writeText(`background: ${css};`)
+          const icon = copyBtn.querySelector("i")
+          if (icon) {
+            icon.className = "fas fa-check"
+            setTimeout(() => {
+              icon.className = "fas fa-copy"
+            }, 1800)
+          }
+        } catch (e) {
+          console.error("Failed to copy Multi-color CSS", e)
+        }
+      }
+    })
+  }
+
+  window.updateMultiColorPreview = updateMultiColorPreview
 
   window.addEventListener("multiColor:sync", syncFromSettings)
 
