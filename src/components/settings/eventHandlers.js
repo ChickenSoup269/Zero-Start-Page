@@ -1806,43 +1806,13 @@ export function setupGeneralEventHandlers(
       const tocHeader = document.createElement("div")
       tocHeader.className = "toc-header"
       tocHeader.innerHTML = `
-        <div class="toc-header-top">
-          <div class="toc-header-title">
-            <i class="fa-solid fa-list-ul"></i>
-            <span>${i18n.sidebar_toc || "Table of Contents"}</span>
-          </div>
-          <span class="toc-badge">${sections.length}</span>
+        <div class="toc-header-title">
+          <i class="fa-solid fa-list-ul"></i>
+          <span>${i18n.sidebar_toc || "Table of Contents"}</span>
         </div>
-        <div class="toc-search-wrap">
-          <i class="fa-solid fa-magnifying-glass toc-search-icon"></i>
-          <input type="text" class="toc-search-input" placeholder="${i18n.toc_search_placeholder || "Filter sections..."}" autocomplete="off" spellcheck="false" />
-          <button type="button" class="toc-search-clear" style="display: none;" title="Clear"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="toc-filter-tabs" role="tablist">
-          <button type="button" class="toc-filter-tab active" data-filter="all">${i18n.bg_filter_all || "All"}</button>
-          <button type="button" class="toc-filter-tab" data-filter="appearance">${i18n.settings_tab_appearance || "Appearance"}</button>
-          <button type="button" class="toc-filter-tab" data-filter="background">${i18n.settings_tab_background || "Background"}</button>
-          <button type="button" class="toc-filter-tab" data-filter="widgets">${i18n.settings_tab_widgets || "Widgets"}</button>
-          <button type="button" class="toc-filter-tab" data-filter="system">${i18n.settings_tab_system || "System"}</button>
-        </div>
+        <span class="toc-badge">${sections.length}</span>
       `
       tocMenu.appendChild(tocHeader)
-
-      const itemsListContainer = document.createElement("div")
-      itemsListContainer.className = "toc-items-list"
-      tocMenu.appendChild(itemsListContainer)
-
-      const emptyState = document.createElement("div")
-      emptyState.className = "toc-empty-state"
-      emptyState.style.display = "none"
-      emptyState.innerHTML = `
-        <i class="fa-solid fa-filter-circle-xmark"></i>
-        <span>${i18n.toc_empty_results || "No matching sections found"}</span>
-      `
-      tocMenu.appendChild(emptyState)
-
-      // Track categories to insert subtle group dividers
-      let lastGroupTab = null
 
       sections.forEach((section) => {
         let title = ""
@@ -1911,71 +1881,38 @@ export function setupGeneralEventHandlers(
         if (title && !addedTitles.has(title)) {
           addedTitles.add(title)
 
-          const targetTab = getElementTab(section) || "appearance"
+          const targetTab = getElementTab(section)
           const targetBgSubTab =
             targetTab === "background" ? getElementBgSubTab(section) : null
 
           let tabBadgeLabel = ""
-          let categoryBreadcrumb = ""
           if (targetTab === "appearance") {
             tabBadgeLabel = i18n.settings_tab_appearance || "Appearance"
-            categoryBreadcrumb = tabBadgeLabel
           } else if (targetTab === "background") {
-            if (targetBgSubTab === "media") {
+            if (targetBgSubTab === "media")
               tabBadgeLabel = i18n.bg_subtab_media || "Media"
-              categoryBreadcrumb = `${i18n.settings_tab_background || "Background"} • ${tabBadgeLabel}`
-            } else if (targetBgSubTab === "colors") {
+            else if (targetBgSubTab === "colors")
               tabBadgeLabel = i18n.bg_subtab_colors || "Colors"
-              categoryBreadcrumb = `${i18n.settings_tab_background || "Background"} • ${tabBadgeLabel}`
-            } else if (targetBgSubTab === "animated") {
+            else if (targetBgSubTab === "animated")
               tabBadgeLabel = i18n.bg_subtab_animated || "Live FX"
-              categoryBreadcrumb = `${i18n.settings_tab_background || "Background"} • ${tabBadgeLabel}`
-            } else if (targetBgSubTab === "adjust") {
+            else if (targetBgSubTab === "adjust")
               tabBadgeLabel = i18n.bg_subtab_adjust || "Adjust"
-              categoryBreadcrumb = `${i18n.settings_tab_background || "Background"} • ${tabBadgeLabel}`
-            } else {
-              tabBadgeLabel = i18n.settings_tab_background || "Background"
-              categoryBreadcrumb = tabBadgeLabel
-            }
+            else tabBadgeLabel = i18n.settings_tab_background || "Background"
           } else if (targetTab === "widgets") {
             tabBadgeLabel = i18n.settings_tab_widgets || "Widgets"
-            categoryBreadcrumb = tabBadgeLabel
           } else if (targetTab === "system") {
             tabBadgeLabel = i18n.settings_tab_system || "System"
-            categoryBreadcrumb = tabBadgeLabel
-          }
-
-          // Insert category group header when tab changes in default order
-          if (lastGroupTab !== targetTab) {
-            lastGroupTab = targetTab
-            const groupHeader = document.createElement("div")
-            groupHeader.className = `toc-group-header group-${targetTab}`
-            groupHeader.dataset.groupTab = targetTab
-            let groupIcon = "fa-palette"
-            if (targetTab === "background") groupIcon = "fa-image"
-            else if (targetTab === "widgets") groupIcon = "fa-shapes"
-            else if (targetTab === "system") groupIcon = "fa-gear"
-
-            groupHeader.innerHTML = `
-              <i class="fa-solid ${groupIcon}"></i>
-              <span>${categoryBreadcrumb.split("•")[0].trim()}</span>
-            `
-            itemsListContainer.appendChild(groupHeader)
           }
 
           const liveBadgeHtml = liveBadgeText
             ? `<span class="toc-live-badge">${liveBadgeText}</span>`
             : ""
           const badgeHtml = tabBadgeLabel
-            ? `<span class="toc-item-badge tab-${targetTab}">${tabBadgeLabel}</span>`
+            ? `<span class="toc-item-badge tab-${targetTab || "default"}">${tabBadgeLabel}</span>`
             : ""
 
           const item = document.createElement("div")
           item.className = "toc-item"
-          item.dataset.tab = targetTab
-          item.dataset.title = title.toLowerCase()
-          item.dataset.category = categoryBreadcrumb.toLowerCase()
-
           if (isSubItem) {
             item.classList.add("sub-item")
           }
@@ -1983,31 +1920,25 @@ export function setupGeneralEventHandlers(
             section.dataset.sectionId === "about-project" ||
             section.getAttribute("data-section-id") === "about-project" ||
             section.id === "about-project"
-
           if (isAboutProject) {
             item.classList.add("toc-highlight-glow")
             item.innerHTML = `
               <div class="toc-glow-mask">
                 <div class="toc-glow-rotator"></div>
               </div>
-              <div class="toc-item-icon-box">
-                <i class="${iconClass || "fa-solid fa-circle-info"}"></i>
-              </div>
+              <i class="${iconClass || "fa-solid fa-circle-info"}"></i>
               <span class="toc-item-title">${title}</span>
               ${liveBadgeHtml}
               ${badgeHtml}
             `
           } else {
             item.innerHTML = `
-              <div class="toc-item-icon-box">
-                <i class="${iconClass || "fa-solid fa-circle-dot"}"></i>
-              </div>
+              <i class="${iconClass || "fa-solid fa-chevron-right"}"></i>
               <span class="toc-item-title">${title}</span>
               ${liveBadgeHtml}
               ${badgeHtml}
             `
           }
-
           item.addEventListener("click", () => {
             // Close ToC popup immediately
             tocMenu.classList.remove("open")
@@ -2026,92 +1957,9 @@ export function setupGeneralEventHandlers(
               }
             }
           })
-          itemsListContainer.appendChild(item)
+          tocMenu.appendChild(item)
         }
       })
-
-      // Search and Tab Filter Logic
-      const searchInput = tocHeader.querySelector(".toc-search-input")
-      const searchClear = tocHeader.querySelector(".toc-search-clear")
-      const filterTabs = tocHeader.querySelectorAll(".toc-filter-tab")
-      let activeTabFilter = "all"
-
-      const applyFilters = () => {
-        const query = (searchInput?.value || "").trim().toLowerCase()
-        let visibleCount = 0
-
-        const items = itemsListContainer.querySelectorAll(".toc-item")
-        items.forEach((item) => {
-          const itemTab = item.dataset.tab || ""
-          const itemTitle = item.dataset.title || ""
-          const itemCategory = item.dataset.category || ""
-
-          const matchesTab =
-            activeTabFilter === "all" || itemTab === activeTabFilter
-          const matchesQuery =
-            !query || itemTitle.includes(query) || itemCategory.includes(query)
-
-          if (matchesTab && matchesQuery) {
-            item.style.display = ""
-            visibleCount++
-          } else {
-            item.style.display = "none"
-          }
-        })
-
-        // Update visibility of category group headers
-        const groupHeaders =
-          itemsListContainer.querySelectorAll(".toc-group-header")
-        groupHeaders.forEach((gh) => {
-          const ghTab = gh.dataset.groupTab
-          if (query) {
-            // If searching, hide group headers for a clean search result view
-            gh.style.display = "none"
-          } else if (activeTabFilter === "all") {
-            gh.style.display = ""
-          } else {
-            gh.style.display = ghTab === activeTabFilter ? "" : "none"
-          }
-        })
-
-        if (emptyState) {
-          emptyState.style.display = visibleCount === 0 ? "flex" : "none"
-        }
-        if (searchClear) {
-          searchClear.style.display = query ? "flex" : "none"
-        }
-      }
-
-      if (searchInput) {
-        searchInput.addEventListener("input", applyFilters)
-        searchInput.addEventListener("click", (e) => e.stopPropagation())
-      }
-      if (searchClear) {
-        searchClear.addEventListener("click", (e) => {
-          e.stopPropagation()
-          if (searchInput) {
-            searchInput.value = ""
-            searchInput.focus()
-            applyFilters()
-          }
-        })
-      }
-      filterTabs.forEach((tab) => {
-        tab.addEventListener("click", (e) => {
-          e.stopPropagation()
-          filterTabs.forEach((t) => t.classList.remove("active"))
-          tab.classList.add("active")
-          activeTabFilter = tab.dataset.filter || "all"
-          applyFilters()
-        })
-      })
-
-      // Auto-focus search input when opened
-      setTimeout(() => {
-        if (tocMenu.classList.contains("open")) {
-          searchInput?.focus()
-        }
-      }, 70)
     }
 
     tocToggle.addEventListener("click", (e) => {
