@@ -1993,26 +1993,18 @@ export function setupGeneralEventHandlers(
               <div class="toc-item-icon-box">
                 <i class="${iconClass || "fa-solid fa-circle-info"}"></i>
               </div>
-              <div class="toc-item-text-wrap">
-                <span class="toc-item-title">${title}</span>
-                <span class="toc-item-category">${categoryBreadcrumb}</span>
-              </div>
+              <span class="toc-item-title">${title}</span>
               ${liveBadgeHtml}
               ${badgeHtml}
-              <i class="fa-solid fa-chevron-right toc-item-arrow"></i>
             `
           } else {
             item.innerHTML = `
               <div class="toc-item-icon-box">
                 <i class="${iconClass || "fa-solid fa-circle-dot"}"></i>
               </div>
-              <div class="toc-item-text-wrap">
-                <span class="toc-item-title">${title}</span>
-                <span class="toc-item-category">${categoryBreadcrumb}</span>
-              </div>
+              <span class="toc-item-title">${title}</span>
               ${liveBadgeHtml}
               ${badgeHtml}
-              <i class="fa-solid fa-chevron-right toc-item-arrow"></i>
             `
           }
 

@@ -668,23 +668,23 @@ body.sidebar-m3-accent .settings-sidebar {
 
 .sidebar-toc-menu {
   position: absolute;
-  top: 62px;
-  left: 16px;
-  right: 16px;
-  background: rgba(18, 20, 28, 0.94);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  top: 58px;
+  left: 12px;
+  right: 12px;
+  background: rgba(18, 20, 28, 0.95);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
+  border-radius: 12px;
   z-index: 2001;
-  padding: 10px 10px 8px 10px;
-  max-height: calc(100% - 110px);
+  padding: 8px 8px 6px 8px;
+  max-height: min(440px, calc(100vh - 120px));
   display: none;
   flex-direction: column;
   box-shadow:
-    0 22px 50px rgba(0, 0, 0, 0.65),
+    0 16px 40px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
   transform-origin: 16px -8px;
 }
 
@@ -692,15 +692,15 @@ body.sidebar-m3-accent .settings-sidebar {
 .sidebar-toc-menu::before {
   content: "";
   position: absolute;
-  top: -7px;
+  top: -6px;
   left: 16px;
   transform: translateX(-50%) rotate(45deg);
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   background: rgba(18, 20, 28, 0.96);
   border-left: 1px solid rgba(255, 255, 255, 0.15);
   border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-top-left-radius: 3px;
+  border-top-left-radius: 2px;
   z-index: 10;
   box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.3);
 }
@@ -725,8 +725,8 @@ body.sidebar-m3-accent .settings-sidebar {
 
 .toc-header {
   flex-shrink: 0;
-  padding: 2px 2px 8px 2px;
-  margin-bottom: 6px;
+  padding: 0 0 6px 0;
+  margin-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -734,33 +734,34 @@ body.sidebar-m3-accent .settings-sidebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  padding: 0 4px;
+  margin-bottom: 5px;
+  padding: 0 2px;
 }
 
 .toc-header-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
+  gap: 6px;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   color: var(--accent-color);
 }
 
 .toc-header-title i {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
 }
 
 .toc-badge {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
+  padding: 1px 6px;
+  border-radius: 12px;
   background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.14);
   color: var(--accent-color);
   border: 1px solid rgba(var(--accent-color-rgb, 100, 150, 255), 0.25);
+  line-height: 1.2;
 }
 
 /* Quick Search Input */
@@ -768,26 +769,26 @@ body.sidebar-m3-accent .settings-sidebar {
   position: relative;
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .toc-search-icon {
   position: absolute;
-  left: 11px;
-  font-size: 0.78rem;
+  left: 9px;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.45);
   pointer-events: none;
 }
 
 .toc-search-input {
   width: 100%;
-  height: 32px;
-  padding: 0 30px 0 32px;
+  height: 27px;
+  padding: 0 26px 0 27px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 7px;
   color: #fff;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease;
@@ -796,18 +797,18 @@ body.sidebar-m3-accent .settings-sidebar {
 .toc-search-input:focus {
   border-color: var(--accent-color);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 100, 150, 255), 0.18);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 100, 150, 255), 0.18);
 }
 
 .toc-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.38);
 }
 
 .toc-search-clear {
   position: absolute;
-  right: 6px;
-  width: 20px;
-  height: 20px;
+  right: 5px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.12);
@@ -816,7 +817,7 @@ body.sidebar-m3-accent .settings-sidebar {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   transition: all 0.15s ease;
 }
 
@@ -828,10 +829,10 @@ body.sidebar-m3-accent .settings-sidebar {
 /* Category Filter Chips */
 .toc-filter-tabs {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   overflow-x: auto;
   scrollbar-width: none;
-  padding-bottom: 2px;
+  padding-bottom: 1px;
 }
 
 .toc-filter-tabs::-webkit-scrollbar {
@@ -839,16 +840,18 @@ body.sidebar-m3-accent .settings-sidebar {
 }
 
 .toc-filter-tab {
-  padding: 3px 9px;
-  border-radius: 20px;
+  padding: 2px 7px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.6);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.18s ease;
+  height: 21px;
+  line-height: 1;
 }
 
 .toc-filter-tab:hover {
@@ -891,124 +894,95 @@ body.sidebar-m3-accent .settings-sidebar {
 .toc-group-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.68rem;
+  gap: 5px;
+  font-size: 0.63rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.45);
-  padding: 8px 6px 4px 6px;
-  margin-top: 4px;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 5px 4px 2px 4px;
+  margin-top: 3px;
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
 .toc-group-header:first-child {
   margin-top: 0;
-  padding-top: 2px;
+  padding-top: 1px;
   border-top: none;
 }
 
 .toc-group-header i {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   opacity: 0.7;
 }
 
 /* Individual ToC Item */
 .toc-item {
-  padding: 6px 10px;
-  border-radius: 9px;
+  padding: 4px 7px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.82rem;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.78rem;
   font-weight: 500;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
+  min-height: 27px;
+  box-sizing: border-box;
   position: relative;
   border: 1px solid transparent;
 }
 
 .toc-item:hover {
   background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.12);
-  border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.25);
-  transform: translateX(3px);
+  border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.22);
+  transform: translateX(2px);
   color: #fff;
 }
 
 /* Item Icon Box */
 .toc-item-icon-box {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.06);
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-color);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
 }
 
 .toc-item:hover .toc-item-icon-box {
   background: var(--accent-color);
   color: var(--accent-contrast-color, #000);
   border-color: var(--accent-color);
-  transform: scale(1.06);
-}
-
-/* Item Texts */
-.toc-item-text-wrap {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  transform: scale(1.05);
 }
 
 .toc-item-title {
-  font-size: 0.81rem;
-  font-weight: 600;
+  font-size: 0.77rem;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.toc-item-category {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.42);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.toc-item:hover .toc-item-category {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.toc-item-arrow {
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.22);
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.toc-item:hover .toc-item-arrow {
-  color: var(--accent-color);
-  transform: translateX(2px);
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
+  min-width: 0;
 }
 
 .toc-item.sub-item {
-  padding-left: 22px;
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.68);
-  margin-left: 6px;
+  padding-left: 16px;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-left: 4px;
   border-left: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0 9px 9px 0;
+  border-radius: 0 6px 6px 0;
 }
 
 .toc-item.sub-item:hover {
@@ -1018,14 +992,14 @@ body.sidebar-m3-accent .settings-sidebar {
 
 /* Live and Category Badges */
 .toc-live-badge {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 500;
-  padding: 1.5px 6px;
-  border-radius: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  max-width: 90px;
+  max-width: 80px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1034,14 +1008,14 @@ body.sidebar-m3-accent .settings-sidebar {
 }
 
 .toc-item-badge {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.2px;
-  padding: 2px 7px;
-  border-radius: 6px;
+  letter-spacing: 0.15px;
+  padding: 1px 5px;
+  border-radius: 4px;
   flex-shrink: 0;
   text-transform: capitalize;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
   line-height: 1.2;
 }
 
@@ -8432,14 +8406,6 @@ body.sidebar-light .toc-item:hover .toc-item-icon-box {
 
 body.sidebar-light .toc-item-title {
   color: rgba(0, 0, 0, 0.88);
-}
-
-body.sidebar-light .toc-item-category {
-  color: rgba(0, 0, 0, 0.45);
-}
-
-body.sidebar-light .toc-item-arrow {
-  color: rgba(0, 0, 0, 0.25);
 }
 
 body.sidebar-light .toc-item.sub-item {
