@@ -1523,6 +1523,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  DOM.blackHoleCelestialSelect?.addEventListener("change", () => {
+    const celestialType = DOM.blackHoleCelestialSelect.value
+    updateSetting("blackHoleCelestialType", celestialType)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateCelestialType(celestialType)
+    }
+  })
+
   DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
     updateSetting(
       "blackHoleAccretionColor",
@@ -1545,6 +1554,46 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.blackHoleEffect.updateColor(
         "accretion",
         DOM.blackHoleAccretionColorPicker.value,
+      )
+    }
+  })
+
+  DOM.blackHoleCoreColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleCoreColor", DOM.blackHoleCoreColorPicker.value)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "core",
+        DOM.blackHoleCoreColorPicker.value,
+      )
+    }
+  })
+  DOM.blackHoleCoreColorPicker?.addEventListener("change", () => {
+    updateSetting("blackHoleCoreColor", DOM.blackHoleCoreColorPicker.value)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "core",
+        DOM.blackHoleCoreColorPicker.value,
+      )
+    }
+  })
+
+  DOM.blackHoleWhiteColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleWhiteColor", DOM.blackHoleWhiteColorPicker.value)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "white",
+        DOM.blackHoleWhiteColorPicker.value,
+      )
+    }
+  })
+  DOM.blackHoleWhiteColorPicker?.addEventListener("change", () => {
+    updateSetting("blackHoleWhiteColor", DOM.blackHoleWhiteColorPicker.value)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor(
+        "white",
+        DOM.blackHoleWhiteColorPicker.value,
       )
     }
   })
@@ -1586,6 +1635,28 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         "star",
         DOM.blackHoleStarColorPicker.value,
       )
+    }
+  })
+
+  DOM.blackHoleIntensityInput?.addEventListener("input", () => {
+    const intensity = parseFloat(DOM.blackHoleIntensityInput.value) || 1.0
+    if (DOM.blackHoleIntensityValue) {
+      DOM.blackHoleIntensityValue.textContent = intensity.toFixed(2)
+    }
+    updateSetting("blackHoleIntensity", intensity)
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateIntensity(intensity)
+    }
+  })
+  DOM.blackHoleIntensityInput?.addEventListener("change", () => {
+    const intensity = parseFloat(DOM.blackHoleIntensityInput.value) || 1.0
+    if (DOM.blackHoleIntensityValue) {
+      DOM.blackHoleIntensityValue.textContent = intensity.toFixed(2)
+    }
+    updateSetting("blackHoleIntensity", intensity)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateIntensity(intensity)
     }
   })
 

@@ -1018,10 +1018,28 @@
 
                         <!-- Black Hole Settings -->
                         <div id="black-hole-settings" style="display: none;">
+                            <div class="setting-item">
+                                <label for="black-hole-celestial-select" data-i18n="setting_black_hole_celestial">Celestial Object / Vũ Trụ</label>
+                                <select id="black-hole-celestial-select" class="full-width">
+                                    <option value="blackHole">Gargantua Black Hole (Lỗ Đen Vũ Trụ)</option>
+                                    <option value="earth">Earth & Moon 3D (Trái Đất & Mặt Trăng)</option>
+                                    <option value="galaxy">Spiral Galaxy 3D (Thiên Hà Xoắn Ốc)</option>
+                                </select>
+                            </div>
                             <div class="setting-item-row">
                                 <label for="black-hole-accretion-color-picker"
                                     data-i18n="setting_black_hole_accretion_color">Accretion Disk Color</label>
                                 <input type="color" id="black-hole-accretion-color-picker" value="#ff5500" />
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="black-hole-core-color-picker"
+                                    data-i18n="setting_black_hole_core_color">Core & Inner Stream Color</label>
+                                <input type="color" id="black-hole-core-color-picker" value="#ffcc00" />
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="black-hole-white-color-picker"
+                                    data-i18n="setting_black_hole_white_color">White Light & Highlight Color</label>
+                                <input type="color" id="black-hole-white-color-picker" value="#ffffff" />
                             </div>
                             <div class="setting-item-row">
                                 <label for="black-hole-glow-color-picker"
@@ -1032,6 +1050,13 @@
                                 <label for="black-hole-star-color-picker" data-i18n="setting_black_hole_star_color">Star
                                     Color</label>
                                 <input type="color" id="black-hole-star-color-picker" value="#ffffff" />
+                            </div>
+                            <div id="black-hole-intensity-setting" class="setting-item">
+                                <label for="black-hole-intensity-input">
+                                    <span data-i18n="setting_black_hole_intensity">Light & Glow Intensity</span>:
+                                    <span id="black-hole-intensity-value">1.0</span>x
+                                </label>
+                                <input type="range" id="black-hole-intensity-input" min="0.2" max="2.5" step="0.05" value="1.0" />
                             </div>
                             <div id="black-hole-angle-setting" class="setting-item">
                                 <label for="black-hole-angle-input">
@@ -1941,15 +1966,6 @@
                                     <input type="range" id="soft-aurora-color-speed-slider" min="0.1" max="5.0"
                                         step="0.1" value="1.0">
                                 </div>
-                                <div class="setting-item no-margin-top">
-                                    <label style="display: flex; justify-content: space-between;">
-                                        <span>Mouse Scale</span>
-                                        <span id="soft-aurora-mouse-influence-val"
-                                            style="color: var(--accent-color);">0.25</span>
-                                    </label>
-                                    <input type="range" id="soft-aurora-mouse-influence-slider" min="0.0" max="2.0"
-                                        step="0.05" value="0.25">
-                                </div>
                             </div>
 
                             <div class="setting-item" style="margin-top: 15px;">
@@ -1967,15 +1983,6 @@
                                     <input type="color" id="soft-aurora-bg-color-picker" value="#000000"
                                         style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
                                 </div>
-                            </div>
-
-                            <div class="setting-item-row" style="margin-top: 10px;">
-                                <label for="soft-aurora-mouse-checkbox" data-i18n="settings_cursor_trail_click">Mouse
-                                    Interaction</label>
-                                <label class="soft-aurora-switch" for="soft-aurora-mouse-checkbox">
-                                    <input type="checkbox" id="soft-aurora-mouse-checkbox" checked>
-                                    <span class="soft-aurora-switch-track"></span>
-                                </label>
                             </div>
                         </div>
                     </div><!-- /#active-effect-settings-body -->

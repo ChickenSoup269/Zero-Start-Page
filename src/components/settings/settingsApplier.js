@@ -3495,8 +3495,8 @@ function createApplySettings(effectInstances) {
           octaveDecay: settings.softAuroraOctaveDecay,
           layerOffset: settings.softAuroraLayerOffset,
           colorSpeed: settings.softAuroraColorSpeed,
-          enableMouseInteraction: settings.softAuroraEnableMouse,
-          mouseInfluence: settings.softAuroraMouseInfluence,
+          enableMouseInteraction: false,
+          mouseInfluence: 0,
           transparent: settings.softAuroraTransparent,
           backgroundColor: settings.softAuroraBackgroundColor,
         }),
@@ -5008,17 +5008,24 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.bookmarkGroupBorderHidden.checked =
           settings.bookmarkGroupBorderHidden === true
       }
-      if (settings.settingsSidebarWidth) {
-        document.documentElement.style.setProperty(
-          "--sidebar-width",
-          settings.settingsSidebarWidth + "px",
+      const swEarly = settings.settingsSidebarWidth || 500
+      document.documentElement.style.setProperty(
+        "--sidebar-width",
+        swEarly + "px",
+      )
+      if (DOM.settingsSidebarWidthInput)
+        DOM.settingsSidebarWidthInput.value = swEarly
+      if (DOM.settingsSidebarWidthValue)
+        DOM.settingsSidebarWidthValue.textContent =
+          swEarly + "px"
+      document
+        .querySelectorAll(
+          '.lcp-preset-btn[data-preset-target="settings-sidebar-width-input"], .sidebar-width-preset-btn, [data-sidebar-width]',
         )
-        if (DOM.settingsSidebarWidthInput)
-          DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth
-        if (DOM.settingsSidebarWidthValue)
-          DOM.settingsSidebarWidthValue.textContent =
-            settings.settingsSidebarWidth + "px"
-      }
+        .forEach((btn) => {
+          const v = btn.dataset.presetVal || btn.dataset.sidebarWidth
+          btn.classList.toggle("active", v === String(swEarly))
+        })
       if (settings.bookmarkSidebarWidth) {
         document.documentElement.style.setProperty(
           "--bookmark-group-text-width",
@@ -5663,9 +5670,21 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.frostedOrbsColor2Picker.value =
         settings.frostedOrbsColor2 || "#4facfe"
     }
+    if (DOM.blackHoleCelestialSelect) {
+      DOM.blackHoleCelestialSelect.value =
+        settings.blackHoleCelestialType || "blackHole"
+    }
     if (DOM.blackHoleAccretionColorPicker) {
       DOM.blackHoleAccretionColorPicker.value =
         settings.blackHoleAccretionColor || "#ff5500"
+    }
+    if (DOM.blackHoleCoreColorPicker) {
+      DOM.blackHoleCoreColorPicker.value =
+        settings.blackHoleCoreColor || "#ffcc00"
+    }
+    if (DOM.blackHoleWhiteColorPicker) {
+      DOM.blackHoleWhiteColorPicker.value =
+        settings.blackHoleWhiteColor || "#ffffff"
     }
     if (DOM.blackHoleGlowColorPicker) {
       DOM.blackHoleGlowColorPicker.value =
@@ -5674,6 +5693,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.blackHoleStarColorPicker) {
       DOM.blackHoleStarColorPicker.value =
         settings.blackHoleStarColor || "#ffffff"
+    }
+    if (DOM.blackHoleIntensityInput) {
+      DOM.blackHoleIntensityInput.value = String(
+        settings.blackHoleIntensity ?? 1.0,
+      )
+    }
+    if (DOM.blackHoleIntensityValue) {
+      const intens = Number(settings.blackHoleIntensity ?? 1.0)
+      DOM.blackHoleIntensityValue.textContent = intens.toFixed(2)
     }
     if (DOM.blackHoleAngleInput) {
       DOM.blackHoleAngleInput.value = String(settings.blackHoleAngle ?? 0)
@@ -6749,12 +6777,24 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.searchBarBlurVal.textContent = `${settings.searchBarBlur ?? 20}px`
       }
     }
+    const currentBlurStr = String(settings.searchBarBlur ?? 20)
+    document
+      .querySelectorAll(".blur-preset-btn, [data-blur]")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.blur === currentBlurStr)
+      })
     if (DOM.searchBarRadiusSlider) {
       DOM.searchBarRadiusSlider.value = settings.searchBarRadius ?? 20
       if (DOM.searchBarRadiusVal) {
         DOM.searchBarRadiusVal.textContent = `${settings.searchBarRadius ?? 20}px`
       }
     }
+    const currentRadiusStr = String(settings.searchBarRadius ?? 20)
+    document
+      .querySelectorAll(".radius-preset-btn, [data-radius]")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.radius === currentRadiusStr)
+      })
     if (DOM.lcpSearchBarWidth) {
       DOM.lcpSearchBarWidth.value = settings.searchBarWidth || 750
       if (DOM.lcpSearchBarWidthVal) {
@@ -6763,7 +6803,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     const currentWidthStr = String(settings.searchBarWidth || 750)
     document
-      .querySelectorAll(".lcp-preset-btn, .width-preset-btn")
+      .querySelectorAll(".lcp-preset-btn[data-width], .width-preset-btn")
       .forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.width === currentWidthStr)
       })
@@ -6787,17 +6827,24 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
-    if (settings.settingsSidebarWidth) {
-      document.documentElement.style.setProperty(
-        "--sidebar-width",
-        settings.settingsSidebarWidth + "px",
+    const sw = settings.settingsSidebarWidth || 500
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      sw + "px",
+    )
+    if (DOM.settingsSidebarWidthInput)
+      DOM.settingsSidebarWidthInput.value = sw
+    if (DOM.settingsSidebarWidthValue)
+      DOM.settingsSidebarWidthValue.textContent =
+        sw + "px"
+    document
+      .querySelectorAll(
+        '.lcp-preset-btn[data-preset-target="settings-sidebar-width-input"], .sidebar-width-preset-btn, [data-sidebar-width]',
       )
-      if (DOM.settingsSidebarWidthInput)
-        DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth
-      if (DOM.settingsSidebarWidthValue)
-        DOM.settingsSidebarWidthValue.textContent =
-          settings.settingsSidebarWidth + "px"
-    }
+      .forEach((btn) => {
+        const v = btn.dataset.presetVal || btn.dataset.sidebarWidth
+        btn.classList.toggle("active", v === String(sw))
+      })
     if (settings.bookmarkSidebarWidth) {
       document.documentElement.style.setProperty(
         "--bookmark-group-text-width",
@@ -6828,12 +6875,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.ghostControlsCheckbox) {
       DOM.ghostControlsCheckbox.checked =
         settings.sideControlsGhostMode === true
-    }
-    const smoothScrollCheckbox = document.getElementById(
-      "smooth-scroll-checkbox",
-    )
-    if (smoothScrollCheckbox) {
-      smoothScrollCheckbox.checked = settings.smoothScrollEnabled !== false
     }
     const perfHoverModeCheckbox = document.getElementById(
       "perf-hover-mode-checkbox",
@@ -7106,6 +7147,20 @@ function createUpdateSettingsInputs(effectInstances) {
     if (typeof updateMediaSaveButtonsState === "function") {
       updateMediaSaveButtonsState()
     }
+
+    // Sync all preset buttons across the settings UI
+    document
+      .querySelectorAll(".lcp-preset-btn[data-preset-target]")
+      .forEach((btn) => {
+        const targetId = btn.dataset.presetTarget
+        const targetInput = document.getElementById(targetId)
+        if (targetInput) {
+          btn.classList.toggle(
+            "active",
+            String(btn.dataset.presetVal) === String(targetInput.value),
+          )
+        }
+      })
   }
 }
 

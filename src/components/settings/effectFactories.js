@@ -124,9 +124,13 @@ export function createEffectFactories(settings) {
     blackHoleEffect: () =>
       new BlackHoleBackground("effect-canvas", {
         accretionColor: settings.blackHoleAccretionColor || "#ff5500",
+        coreColor: settings.blackHoleCoreColor || "#ffcc00",
+        whiteColor: settings.blackHoleWhiteColor || "#ffffff",
         glowColor: settings.blackHoleGlowColor || "#00d2ff",
         starColor: settings.blackHoleStarColor || "#ffffff",
+        intensity: settings.blackHoleIntensity ?? 1.0,
         angle: settings.blackHoleAngle ?? 0,
+        celestialType: settings.blackHoleCelestialType || "blackHole",
       }),
     interactiveFluidEffect: () =>
       new InteractiveFluidBackground(
@@ -483,7 +487,7 @@ export function createEffectFactories(settings) {
         noiseFrequency: settings.softAuroraNoiseFreq,
         bandHeight: settings.softAuroraBandHeight,
         bandSpread: settings.softAuroraBandSpread,
-        enableMouseInteraction: settings.softAuroraEnableMouse,
+        enableMouseInteraction: false,
       }),
     silkEffect: () =>
       new SilkEffect("silk-canvas", {

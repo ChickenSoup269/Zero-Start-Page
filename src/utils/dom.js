@@ -654,14 +654,32 @@ export let frostedOrbsDarkBgCheckbox = document.getElementById(
   "frosted-orbs-dark-bg",
 )
 export let blackHoleSettings = document.getElementById("black-hole-settings")
+export let blackHoleCelestialSelect = document.getElementById(
+  "black-hole-celestial-select",
+)
 export let blackHoleAccretionColorPicker = document.getElementById(
   "black-hole-accretion-color-picker",
+)
+export let blackHoleCoreColorPicker = document.getElementById(
+  "black-hole-core-color-picker",
+)
+export let blackHoleWhiteColorPicker = document.getElementById(
+  "black-hole-white-color-picker",
 )
 export let blackHoleGlowColorPicker = document.getElementById(
   "black-hole-glow-color-picker",
 )
 export let blackHoleStarColorPicker = document.getElementById(
   "black-hole-star-color-picker",
+)
+export let blackHoleIntensitySetting = document.getElementById(
+  "black-hole-intensity-setting",
+)
+export let blackHoleIntensityInput = document.getElementById(
+  "black-hole-intensity-input",
+)
+export let blackHoleIntensityValue = document.getElementById(
+  "black-hole-intensity-value",
 )
 export let blackHoleAngleSetting = document.getElementById(
   "black-hole-angle-setting",
@@ -2995,14 +3013,32 @@ export function refreshDOMReferences() {
   )
   frostedOrbsDarkBgCheckbox = document.getElementById("frosted-orbs-dark-bg")
   blackHoleSettings = document.getElementById("black-hole-settings")
+  blackHoleCelestialSelect = document.getElementById(
+    "black-hole-celestial-select",
+  )
   blackHoleAccretionColorPicker = document.getElementById(
     "black-hole-accretion-color-picker",
+  )
+  blackHoleCoreColorPicker = document.getElementById(
+    "black-hole-core-color-picker",
+  )
+  blackHoleWhiteColorPicker = document.getElementById(
+    "black-hole-white-color-picker",
   )
   blackHoleGlowColorPicker = document.getElementById(
     "black-hole-glow-color-picker",
   )
   blackHoleStarColorPicker = document.getElementById(
     "black-hole-star-color-picker",
+  )
+  blackHoleIntensitySetting = document.getElementById(
+    "black-hole-intensity-setting",
+  )
+  blackHoleIntensityInput = document.getElementById(
+    "black-hole-intensity-input",
+  )
+  blackHoleIntensityValue = document.getElementById(
+    "black-hole-intensity-value",
   )
   blackHoleAngleSetting = document.getElementById("black-hole-angle-setting")
   blackHoleAngleInput = document.getElementById("black-hole-angle-input")
