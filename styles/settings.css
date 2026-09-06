@@ -5811,7 +5811,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   padding: 18px 12px;
   background: rgba(255, 255, 255, 0.02);
   border: 1.5px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  border-radius: 8px;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: auto;
@@ -6075,7 +6075,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 6px;
   pointer-events: none;
   letter-spacing: 0.5px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -6123,7 +6123,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   gap: 5px;
   background: rgba(0, 0, 0, 0.3);
   padding: 6px;
-  border-radius: var(--radius-md, 10px);
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
   margin: 0;
@@ -6140,7 +6140,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   justify-content: center;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-sm, 7px);
+  border-radius: 6px;
   color: rgba(255, 255, 255, 0.75);
   font-size: 0.85rem;
   cursor: pointer;
@@ -6257,7 +6257,7 @@ body.sidebar-light .bg-9grid-btn.active {
 .bg-current-wallpaper-thumb {
   width: 72px;
   height: 48px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: 8px;
   background-size: cover;
   background-position: center;
   background-color: rgba(0, 0, 0, 0.4);
@@ -6405,9 +6405,9 @@ body.sidebar-light .bg-9grid-btn.active {
 .bg-dropzone-progress-wrap {
   width: 100%;
   max-width: 280px;
-  height: 5px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  border-radius: 6px;
   margin-top: 10px;
   overflow: hidden;
 }
@@ -6416,7 +6416,7 @@ body.sidebar-light .bg-9grid-btn.active {
   height: 100%;
   width: 0%;
   background: var(--accent-color);
-  border-radius: 4px;
+  border-radius: 6px;
   transition: width 0.25s ease;
 }
 
@@ -6439,7 +6439,7 @@ body.sidebar-light .bg-9grid-btn.active {
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
@@ -6491,7 +6491,7 @@ body.sidebar-light .bg-9grid-btn.active {
   border: 1px solid rgba(var(--accent-color-rgb), 0.3);
   color: #fff;
   padding: var(--space-1);
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
@@ -6550,7 +6550,7 @@ body.sidebar-light .bg-9grid-btn.active {
   height: 32px;
   padding: 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   flex-shrink: 0;
   background: none;
@@ -6562,7 +6562,7 @@ body.sidebar-light .bg-9grid-btn.active {
 
 .bg-picker-input-modern::-webkit-color-swatch {
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .unsplash-input-wrapper {
@@ -9769,7 +9769,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   text-decoration: none;
   transition: all 0.2s;
   padding: var(--space-1);
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -9786,7 +9786,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   color: #000;
   font-size: 0.6rem;
   padding: 2px var(--space-1);
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
   z-index: 2;
 }
@@ -9812,7 +9812,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
