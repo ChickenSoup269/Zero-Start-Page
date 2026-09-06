@@ -69,10 +69,12 @@ class MainframeEngine {
 
     // Telemetry Gauges
     this.cpuMeters = [
-      { name: "CPU_0", val: 52, target: 52 },
-      { name: "CPU_1", val: 68, target: 68 },
-      { name: "RAM", val: 74, target: 74 },
-      { name: "VRAM", val: 42, target: 42 },
+      { name: "CPU_0", val: 52, target: 52, unit: "%" },
+      { name: "CPU_1", val: 68, target: 68, unit: "%" },
+      { name: "RAM", val: 74, target: 74, unit: "%" },
+      { name: "VRAM", val: 42, target: 42, unit: "%" },
+      { name: "GRID", val: 98, target: 98, unit: "%" },
+      { name: "TEMP", val: 42, target: 42, unit: "°C" },
     ]
     this.telemetryTick = 0
     this.netHistory = Array.from({ length: 22 }, () => 30 + Math.random() * 20)
@@ -252,7 +254,7 @@ class MainframeEngine {
   initHexMatrix() {
     this.hexRows = []
     const baseAddr = 0x7f00
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 20; i++) {
       const addr = (baseAddr + i * 16).toString(16).toUpperCase().padStart(4, "0")
       const bytes = Array.from({ length: 8 }, () =>
         Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, "0")
@@ -263,18 +265,20 @@ class MainframeEngine {
 
   initWorldNodes() {
     const seeds = [
-      { r: 0.35, theta: 0.8, id: "TRK-01", dist: "4.2KM", threat: "HIGH" },
-      { r: 0.65, theta: 1.6, id: "TRK-02", dist: "11.8KM", threat: "MED" },
-      { r: 0.48, theta: 2.3, id: "TRK-03", dist: "7.5KM", threat: "HIGH" },
-      { r: 0.82, theta: 2.9, id: "TRK-04", dist: "16.4KM", threat: "LOW" },
-      { r: 0.55, theta: 3.7, id: "TRK-05", dist: "9.1KM", threat: "HIGH" },
-      { r: 0.72, theta: 4.4, id: "TRK-06", dist: "13.6KM", threat: "MED" },
-      { r: 0.38, theta: 5.1, id: "TRK-07", dist: "5.3KM", threat: "LOCK" },
-      { r: 0.78, theta: 5.9, id: "TRK-08", dist: "14.9KM", threat: "HIGH" },
+      { r: 0.35, theta: 0.8, id: "TRK-01", type: "HYPER-CRUISE", dist: "4.2KM", spd: "MACH 4.8", threat: "CRITICAL" },
+      { r: 0.65, theta: 1.6, id: "TRK-02", type: "STEALTH-UAV", dist: "11.8KM", spd: "MACH 2.4", threat: "MED" },
+      { r: 0.48, theta: 2.3, id: "TRK-03", type: "BALLISTIC-RV", dist: "7.5KM", spd: "MACH 6.2", threat: "HIGH" },
+      { r: 0.82, theta: 2.9, id: "TRK-04", type: "ECM-JAMMER", dist: "16.4KM", spd: "MACH 1.8", threat: "LOW" },
+      { r: 0.55, theta: 3.7, id: "TRK-05", type: "ORBITAL-GLIDER", dist: "9.1KM", spd: "MACH 7.5", threat: "CRITICAL" },
+      { r: 0.72, theta: 4.4, id: "TRK-06", type: "SUB-WARHEAD", dist: "13.6KM", spd: "MACH 3.9", threat: "MED" },
+      { r: 0.38, theta: 5.1, id: "TRK-07", type: "DRONE-SWARM", dist: "5.3KM", spd: "MACH 1.2", threat: "HIGH" },
+      { r: 0.78, theta: 5.9, id: "TRK-08", type: "WARHEAD-MIRV", dist: "14.9KM", spd: "MACH 8.1", threat: "CRITICAL" },
     ]
     this.worldNodes = seeds.map((s) => ({
       id: s.id,
+      type: s.type,
       dist: s.dist,
+      spd: s.spd,
       threat: s.threat,
       r: s.r,
       theta: s.theta,
@@ -282,41 +286,47 @@ class MainframeEngine {
       isLocked: false,
       lockProgress: 0,
       hitCount: 0,
+      isDestroyed: false,
+      destroyedTime: 0,
+      debris: [],
     }))
     this.radarRipples = []
     this.reconDrones = [
       { angle: 0.2, speed: 0.35, dist: 0.9 },
       { angle: 3.4, speed: -0.25, dist: 0.62 },
     ]
+    this.totalKills = 0
   }
 
   initErrorSystem() {
     const templates = [
-      "ERROR::AUTH_GATEWAY_DENIED",
-      "FATAL::KERNEL_PANIC_0x0028",
-      "WARN::MEMORY_BUS_CORRUPTED",
-      "ALERT::INTRUSION_SHIELD_FAIL",
-      "FATAL::MISSILE_SILO_OVERHEAT",
-      "ERROR::TCP_ROUTE_COLLAPSE",
-      "SECURITY_LOCKDOWN_LEVEL_5",
-      "EMERGENCY::CORE_OVERFLOW",
+      "CRITICAL::CORE_SECTOR_0_BREACHED",
+      "FATAL::KERNEL_PANIC_0x0028_INTRUSION",
+      "ALERT::DIRECT_ENEMY_ATTACK_DETECTED",
+      "WARN::MEMORY_BUS_CORRUPTED_0x7F00",
+      "FATAL::MISSILE_SILO_OVERHEAT_104C",
+      "ERROR::TCP_ROUTE_COLLAPSE_INJECTION",
+      "SECURITY_LOCKDOWN_LEVEL_5_ROOTKIT",
+      "EMERGENCY::CORE_OVERFLOW_VOLTAGE_SURGE",
+      "ALERT::SHIELD_INTEGRITY_COMPROMISED",
+      "FATAL::ROOT_SHELL_FORCED_TAKEOVER",
     ]
 
-    this.errorStreams = Array.from({ length: 14 }, () => ({
+    this.errorStreams = Array.from({ length: 18 }, () => ({
       x: Math.random() * (this.width || 1200),
       y: Math.random() * (this.height || 800),
-      speed: 120 + Math.random() * 180,
+      speed: 130 + Math.random() * 210,
       text: templates[Math.floor(Math.random() * templates.length)],
-      alpha: 0.3 + Math.random() * 0.6,
+      alpha: 0.35 + Math.random() * 0.65,
     }))
 
     const popupTemplates = [
-      "AUTH_GATEWAY_DENIED",
+      "CORE_SECTOR_BREACH",
       "KERNEL_PANIC_SIGNAL",
-      "TRACE_ROUTE_COLLAPSE",
+      "DIRECT_CYBER_ATTACK",
       "PAYLOAD_CORRUPTED",
       "SECURITY_LOCKDOWN",
-      "REACTOR_SIGNAL_LOST",
+      "REACTOR_OVERHEAT_104C",
     ]
 
     this.errorPopups = popupTemplates.map((code) => ({
@@ -329,24 +339,24 @@ class MainframeEngine {
   initTerminalScript() {
     this.script = [
       { type: "instant", text: "SYS://CYBER-NEXUS-8086 KERNEL RELEASE 4.19" },
-      { type: "instant", text: "COPYRIGHT (C) 1984-1996 RETRO SYSTEMS CORP." },
+      { type: "instant", text: "COPYRIGHT (C) 1984-1996 RETRO SYSTEMS CORP. [DEF-NET]" },
       { type: "instant", text: "----------------------------------------------------" },
       { type: "type", text: "> BIOS POST: 640KB BASE RAM OK, EXT: 15360KB OK" },
       { type: "type", text: "> MOUNTING ROOT VFS ON /dev/sda1 [READ/WRITE]... [OK]" },
-      { type: "type", text: "> INITIALIZING PARALLEL BUS CHIPSETS 8259A/8254... [OK]" },
+      { type: "type", text: "> INITIALIZING DEFENSE MATRIX & BUS CHIPSETS... [OK]" },
       { type: "type", text: "> DETECTING DISPLAY ADAPTER: CRT MONOCHROME P4... [OK]" },
       { type: "type", text: "> PROBING ETHERNET TRANSCEIVER 10BASE-T... CONNECTED" },
-      { type: "type", text: "> ESTABLISHING TCP/IP HANDSHAKE WITH REMOTE GATEWAY" },
-      { type: "type", text: "> ALL SUBSYSTEMS NOMINAL. STARTING DAEMON PROCESSES" },
+      { type: "type", text: "> ESTABLISHING ENCRYPTED TCP/IP LINK [SHA-256]" },
+      { type: "type", text: "> ALL SUBSYSTEMS NOMINAL. DEFENSE RADAR ONLINE." },
       { type: "instant", text: "----------------------------------------------------" },
       { type: "cmd", text: "guest@cyber-nexus:~$ netstat -a --radar-telemetry" },
-      { type: "instant", text: "TARGET SEARCH ACTIVE: 8 PERIMETER BEACONS LOCATED" },
+      { type: "instant", text: "TARGET SEARCH ACTIVE: 8 PERIMETER HOSTILES DETECTED" },
       { type: "cmd", text: "guest@cyber-nexus:~$ run target-lock --auto-acquire" },
-      { type: "instant", text: "LOCK SEQUENCE ENGAGED: SYNCHRONIZING WITH SILO 0-3" },
-      { type: "instant", text: "[████████████████████████████████] 100% READY" },
-      { type: "cmd", text: "guest@cyber-nexus:~$ arm-ordnance --all-missiles" },
-      { type: "instant", text: "ORDNANCE ARMED: 8 HYPER-VELOCITY MISSILES READY" },
-      { type: "instant", text: "SYSTEM ENGAGING AUTOMATIC COMBAT DEFENSE ROUTINE" },
+      { type: "instant", text: "LOCK ENGAGED: TRK-01..TRK-08 RADAR SYNCHRONIZED" },
+      { type: "instant", text: "[████████████████████████████████] 100% LOCK READY" },
+      { type: "cmd", text: "guest@cyber-nexus:~$ arm-ordnance --all-missiles --fire" },
+      { type: "instant", text: "ORDNANCE ARMED: 8 HYPER-VELOCITY INTERCEPTORS READY" },
+      { type: "instant", text: "ENGAGING AUTOMATIC DEFENSE BARRAGE & KINETIC STRIKE" },
     ]
 
     this.terminalLines = [
@@ -447,19 +457,23 @@ class MainframeEngine {
 
     switch (action) {
       case "help":
-        this.terminalLines.push("AVAILABLE COMMANDS:")
-        this.terminalLines.push("  help          - Display available terminal commands")
-        this.terminalLines.push("  clear / cls   - Clear console screen buffer")
-        this.terminalLines.push("  reboot / boot - Trigger kernel bootloader sequence")
-        this.terminalLines.push("  radar / scan  - Accelerate tactical perimeter radar")
-        this.terminalLines.push("  lock / target - Lock all detected sector targets")
-        this.terminalLines.push("  fire / launch - Deploy defense missile barrage")
-        this.terminalLines.push("  panic / error - Trigger critical system intrusion alert")
-        this.terminalLines.push("  status        - Print CPU/RAM telemetry diagnostics")
-        this.terminalLines.push("  matrix        - Refresh active memory hex dump")
-        this.terminalLines.push("  whoami        - Display authorization credentials")
-        this.terminalLines.push("  ping <host>   - Test network ICMP round-trip latency")
-        this.terminalLines.push("  echo <text>   - Echo text message to console")
+        this.terminalLines.push("AVAILABLE DEFENSE TERMINAL COMMANDS:")
+        this.terminalLines.push("  help               - Display command reference")
+        this.terminalLines.push("  clear / cls        - Clear console screen buffer")
+        this.terminalLines.push("  reboot / boot      - Trigger kernel bootloader sequence")
+        this.terminalLines.push("  radar / scan       - Accelerate tactical perimeter radar")
+        this.terminalLines.push("  lock / target      - Lock all detected sector hostiles")
+        this.terminalLines.push("  fire / launch      - Deploy 8-missile barrage & destroy targets")
+        this.terminalLines.push("  killfeed / kills   - Display target elimination roster")
+        this.terminalLines.push("  threats / targets  - List active hostile node telemetry")
+        this.terminalLines.push("  attack / bug       - Trigger enemy cyber counter-strike & core glitch")
+        this.terminalLines.push("  status / telemetry - Print multi-core telemetry diagnostics")
+        this.terminalLines.push("  defense / shield   - Display power grid and shield telemetry")
+        this.terminalLines.push("  matrix / hex       - Dump active memory hex segments")
+        this.terminalLines.push("  registers / cpu    - Dump x86 CPU hardware registers")
+        this.terminalLines.push("  whoami             - Display operator credentials")
+        this.terminalLines.push("  ping <host>        - Test network ICMP round-trip latency")
+        this.terminalLines.push("  echo <text>        - Echo text message to console")
         break
 
       case "clear":
@@ -479,10 +493,14 @@ class MainframeEngine {
       case "panic":
       case "error":
       case "alert":
+      case "attack":
+      case "bug":
+      case "breach":
         this.phase = "error"
         this.phaseTimer = 0
         this.initErrorSystem()
-        this.terminalLines.push("FATAL::MANUAL_PANIC_OVERRIDE_ENGAGED")
+        this.terminalLines.push("FATAL::DIRECT_ENEMY_ATTACK_DETECTED_SECTOR_0")
+        this.terminalLines.push("ALERT::CORE_BREACH // MEMORY OVERFLOW // VOLTAGE +480V")
         break
 
       case "radar":
@@ -506,6 +524,8 @@ class MainframeEngine {
       case "fire":
       case "launch":
       case "missile":
+      case "strike":
+      case "nuke":
         this.phase = "missile"
         this.phaseTimer = 0
         this.worldNodes.forEach((n) => {
@@ -513,25 +533,61 @@ class MainframeEngine {
           n.lockProgress = 1
         })
         this._launchAllMissiles()
-        this.terminalLines.push("> MISSILE BARRAGE DEPLOYED: 8 ORDNANCE IN FLIGHT")
+        break
+
+      case "killfeed":
+      case "kills":
+        this.terminalLines.push("─── HOSTILE ELIMINATION LOG ───")
+        this.worldNodes.forEach((n) => {
+          const status = n.isDestroyed ? "[DESTROYED - 100% KIA]" : "[ACTIVE - TRACKING]"
+          this.terminalLines.push(`  ${n.id} (${n.type}) | ${n.dist} | ${n.spd} | ${status}`)
+        })
+        break
+
+      case "threats":
+      case "targets":
+        this.terminalLines.push("─── SECTOR-7 HOSTILE TARGET TELEMETRY ───")
+        this.worldNodes.forEach((n) => {
+          this.terminalLines.push(`  ID:${n.id} | TYPE:${n.type} | DIST:${n.dist} | SPD:${n.spd} | THREAT:${n.threat}`)
+        })
+        break
+
+      case "defense":
+      case "shield":
+        this.terminalLines.push("─── DEFENSE GRID & CAPACITOR MATRIX ───")
+        this.terminalLines.push("GRID INTEGRITY: 98.4% | CAPACITOR: 4.8MJ / 5.0MJ")
+        this.terminalLines.push("SILO 0-7: READY | INTERCEPT COEFFICIENT: 0.994")
+        this.terminalLines.push("SHIELD RESONANCE: 142.8MHz [STABLE] | ECM FILTER: ON")
+        break
+
+      case "registers":
+      case "cpu":
+        this.terminalLines.push("─── CPU HARDWARE REGISTERS (DEV-0) ───")
+        this.terminalLines.push("EAX: 0x00FF7F00 | EBX: 0x00000028 | ECX: 0x00FFA014")
+        this.terminalLines.push("EDX: 0x00008086 | ESI: 0x0012FA30 | EDI: 0x0012FA40")
+        this.terminalLines.push("ESP: 0xBFFFF7C0 | EBP: 0xBFFFF7F8 | EIP: 0x08048394")
+        this.terminalLines.push("FLAGS: [CF=0 ZF=1 SF=0 OF=0 IF=1 TF=0 DF=0]")
         break
 
       case "status":
+      case "telemetry":
         this.terminalLines.push("─── SYSTEM TELEMETRY REPORT ───")
         this.terminalLines.push(
-          `CPU_0: ${Math.round(this.cpuMeters[0].val)}% | CPU_1: ${Math.round(this.cpuMeters[1].val)}% | RAM: ${Math.round(this.cpuMeters[2].val)}%`
+          `CPU_0: ${Math.round(this.cpuMeters[0].val)}% | CPU_1: ${Math.round(this.cpuMeters[1].val)}% | RAM: ${Math.round(this.cpuMeters[2].val)}% | VRAM: ${Math.round(this.cpuMeters[3].val)}%`
         )
-        this.terminalLines.push("KERNEL: 4.19-CYBER-8086 | BUS: 9600 BAUD | STATUS: OK")
+        this.terminalLines.push("CORE TEMP: 41.8°C | FAN: 3420 RPM | VCORE: 1.28V | BUS: 9600 BAUD")
+        this.terminalLines.push("KERNEL: 4.19-CYBER-8086-DEF | SEC_STATUS: NOMINAL [SECTOR-07]")
         break
 
       case "matrix":
       case "dump":
+      case "hex":
         this.initHexMatrix()
-        this.terminalLines.push("> ACTIVE MEMORY MATRIX REFRESHED [6 SEGMENTS]")
+        this.terminalLines.push("> ACTIVE MEMORY MATRIX REFRESHED [6 SEGMENTS @ 0x7F00]")
         break
 
       case "whoami":
-        this.terminalLines.push("guest [AUTH_LEVEL: ROOT_OPERATOR (DEV-0)]")
+        this.terminalLines.push("guest [AUTH_LEVEL: ROOT_OPERATOR (DEV-0)] // PERM: ALL_SILOS")
         break
 
       case "ping": {
@@ -548,7 +604,7 @@ class MainframeEngine {
         break
 
       default:
-        this.terminalLines.push(`bash: ${cmd}: command not found. Type 'help' for commands.`)
+        this.terminalLines.push(`bash: ${cmd}: command not found. Type 'help' for defense commands.`)
         break
     }
 
@@ -560,13 +616,21 @@ class MainframeEngine {
   _launchAllMissiles() {
     this.missiles = []
     this.impactBursts = []
+    this.totalKills = 0
+    this.terminalLines.push("> [ORDNANCE DEPLOYED] SILO 0-7: 8 HYPER-VELOCITY INTERCEPTORS IN FLIGHT")
+    this.terminalLines.push("> GUIDANCE: TACTICAL RADAR ACTIVE // KINETIC INTERCEPT ENGAGED")
+    if (this.terminalLines.length > this.maxLines) this.terminalLines.shift()
+
     this.worldNodes.forEach((targetNode) => {
+      targetNode.isDestroyed = false
+      targetNode.debris = []
       this.missiles.push({
         x: 0.5,
         y: 0.5,
         target: targetNode,
         progress: 0,
-        speed: 0.55 + Math.random() * 0.45,
+        speed: 0.42 + Math.random() * 0.42,
+        trail: [],
       })
       targetNode.hitCount++
     })
@@ -610,10 +674,13 @@ class MainframeEngine {
       } else if (this.phase === "error") {
         this.phase = "boot"
         this.bootProgress = 0
+        this.totalKills = 0
         this.worldNodes.forEach((n) => {
           n.isLocked = false
           n.lockProgress = 0
           n.hitCount = 0
+          n.isDestroyed = false
+          n.debris = []
         })
         this.terminalLines = [
           "SYS://CYBER-NEXUS-8086 BOOTLOADER v4.19",
@@ -680,7 +747,13 @@ class MainframeEngine {
     if (this.telemetryTick > 0.35) {
       this.telemetryTick = 0
       this.cpuMeters.forEach((m) => {
-        m.target = 30 + Math.floor(Math.random() * 60)
+        if (m.name === "GRID") {
+          m.target = this.phase === "error" ? 8 : this.phase === "missile" ? 88 + Math.floor(Math.random() * 10) : 96 + Math.floor(Math.random() * 4)
+        } else if (m.name === "TEMP") {
+          m.target = this.phase === "error" ? 98 + Math.floor(Math.random() * 8) : 38 + Math.floor(Math.random() * 8)
+        } else {
+          m.target = 30 + Math.floor(Math.random() * 60)
+        }
       })
 
       if (!this.netHistory) this.netHistory = Array.from({ length: 22 }, () => 30)
@@ -753,21 +826,75 @@ class MainframeEngine {
     for (let i = this.missiles.length - 1; i >= 0; i--) {
       const m = this.missiles[i]
       m.progress += m.speed * dt
+
       if (m.progress >= 1) {
+        // Target destroyed
+        m.target.isDestroyed = true
+        m.target.destroyedTime = this.time
+        this.totalKills++
+
+        // Spawn explosive debris particles
+        const debrisCount = 14 + Math.floor(Math.random() * 8)
+        m.target.debris = []
+        for (let k = 0; k < debrisCount; k++) {
+          const angle = Math.random() * Math.PI * 2
+          const spd = 20 + Math.random() * 45
+          m.target.debris.push({
+            vx: Math.cos(angle) * spd,
+            vy: Math.sin(angle) * spd,
+            x: 0,
+            y: 0,
+            life: 1.0,
+            size: 1.2 + Math.random() * 2.2,
+          })
+        }
+
         this.impactBursts.push({
           target: m.target,
           radius: 4,
-          maxRadius: 28,
+          maxRadius: 36,
           life: 1.0,
         })
+
+        // Real-time kill confirmation in terminal console
+        this.terminalLines.push(`> [KILL CONFIRMED] TARGET ${m.target.id} (${m.target.type}) DESTROYED!`)
+        this.terminalLines.push(`  ↳ COORD: ${m.target.dist} [${m.target.spd}] | STATUS: ELIMINATED [100% KINETIC IMPACT]`)
+        while (this.terminalLines.length > this.maxLines) {
+          this.terminalLines.shift()
+        }
+
         this.missiles.splice(i, 1)
+
+        // All targets destroyed summary
+        if (this.totalKills >= this.worldNodes.length) {
+          this.terminalLines.push("> [SECTOR DEFENSE] 8/8 HOSTILE TARGETS DESTROYED // SECTOR CLEAR")
+          this.terminalLines.push("> ALERT: DETECTING MASSIVE INCOMING CYBER RETALIATION IN SECTOR-0...")
+          while (this.terminalLines.length > this.maxLines) {
+            this.terminalLines.shift()
+          }
+        }
       }
     }
 
+    // Update target debris particles
+    this.worldNodes.forEach((node) => {
+      if (node.debris && node.debris.length > 0) {
+        for (let k = node.debris.length - 1; k >= 0; k--) {
+          const d = node.debris[k]
+          d.x += d.vx * dt
+          d.y += d.vy * dt
+          d.life -= dt * 1.3
+          if (d.life <= 0) {
+            node.debris.splice(k, 1)
+          }
+        }
+      }
+    })
+
     for (let i = this.impactBursts.length - 1; i >= 0; i--) {
       const b = this.impactBursts[i]
-      b.life -= dt * 2.0
-      b.radius += dt * 45
+      b.life -= dt * 1.8
+      b.radius += dt * 50
       if (b.life <= 0) {
         this.impactBursts.splice(i, 1)
       }
@@ -784,9 +911,9 @@ class MainframeEngine {
     })
 
     this.errorPopups.forEach((p) => {
-      if (this.tick % 4 === 0) {
-        p.jitterX = (Math.random() - 0.5) * 5
-        p.jitterY = (Math.random() - 0.5) * 5
+      if (this.tick % 3 === 0) {
+        p.jitterX = (Math.random() - 0.5) * 8
+        p.jitterY = (Math.random() - 0.5) * 8
       }
     })
   }
@@ -925,9 +1052,9 @@ class MainframeEngine {
 
     // Left brand
     ctx.fillStyle = isError ? "rgba(255, 90, 90, 0.98)" : pal.full
-    ctx.fillText("SYS://RETRO-TERMINAL-8086", x + 14, y + 21)
+    ctx.fillText("SYS://RETRO-TERMINAL-8086 [DEF-NET]", x + 14, y + 21)
 
-    // Center Uptime
+    // Center Uptime & Packet throughput
     const hrs = Math.floor(this.uptimeSeconds / 3600)
       .toString()
       .padStart(2, "0")
@@ -939,12 +1066,13 @@ class MainframeEngine {
       .padStart(2, "0")
     ctx.fillStyle = isError ? "rgba(255, 140, 140, 0.85)" : pal.mid
     if (w > 640) {
-      ctx.fillText(`UPTIME: ${hrs}:${mins}:${secs}`, x + w * 0.45, y + 21)
+      const netStats = isError ? "TX:0.2KB/s | RX:0.0KB/s [DROP 94%]" : "TX:4.8MB/s | RX:18.2MB/s"
+      ctx.fillText(`UPTIME: ${hrs}:${mins}:${secs} | ${netStats}`, x + w * 0.36, y + 21)
     }
 
     // Right baud & status badge
-    let statusStr = "9600 BAUD [ONLINE]"
-    let statusW = this.textWidths.status || 135
+    let statusStr = "9600 BAUD [ONLINE // SEC-07]"
+    let statusW = this.textWidths.status || 175
     ctx.fillStyle = pal.high
 
     if (this.phase === "boot") {
@@ -952,12 +1080,12 @@ class MainframeEngine {
       statusW = this.textWidths.statusBoot || 135
       ctx.fillStyle = "rgba(100, 220, 255, 0.98)"
     } else if (this.phase === "missile") {
-      statusStr = "MISSILE BARRAGE [ACTIVE]"
-      statusW = this.textWidths.statusMissile || 165
+      statusStr = `MISSILE BARRAGE [KILLS: ${this.totalKills || 0}/8]`
+      statusW = 210
       ctx.fillStyle = "rgba(255, 180, 50, 0.98)"
     } else if (this.phase === "error") {
-      statusStr = "CRITICAL ERROR [PANIC]"
-      statusW = this.textWidths.statusError || 155
+      statusStr = "! DIRECT ATTACK INTRUSION [SEV-1] !"
+      statusW = 245
       ctx.fillStyle = "rgba(255, 80, 80, 0.98)"
     }
 
@@ -988,7 +1116,7 @@ class MainframeEngine {
 
     ctx.font = "12px 'Courier New', Monaco, monospace"
 
-    // If in BOOT LOADING PHASE: Render live animated bootloader
+    // If in BOOT LOADING PHASE: Render live animated bootloader with rich kernel output
     if (this.phase === "boot") {
       const spinners = ["|", "/", "-", "\\"]
       const spinner = spinners[Math.floor(this.time * 8) % spinners.length]
@@ -997,33 +1125,88 @@ class MainframeEngine {
       ctx.fillStyle = pal.full
       ctx.fillText("SYS://CYBER-NEXUS-8086 BOOTLOADER v4.19", x + paddingX, startY)
       ctx.fillStyle = pal.mid
-      ctx.fillText("INITIALIZING HARDWARE SUBSYSTEMS & MEMORY BUS...", x + paddingX, startY + 22)
+      ctx.fillText("INITIALIZING HARDWARE SUBSYSTEMS & MEMORY BUS...", x + paddingX, startY + 20)
 
-      ctx.fillStyle = this.bootProgress > 0.2 ? pal.high : pal.dim
-      ctx.fillText("[ POST ] 640KB BASE RAM + 15360KB EXTENDED... [OK]", x + paddingX, startY + 46)
+      // Hardware status checks with live OK badges
+      ctx.fillStyle = this.bootProgress > 0.12 ? pal.high : pal.dim
+      ctx.fillText("[ POST ] 640KB BASE RAM + 15360KB EXTENDED... [OK]", x + paddingX, startY + 40)
 
-      ctx.fillStyle = this.bootProgress > 0.4 ? pal.high : pal.dim
-      ctx.fillText("[ VFS  ] MOUNTING ROOT VFS ON /dev/sda1 (ext4)... [OK]", x + paddingX, startY + 68)
+      ctx.fillStyle = this.bootProgress > 0.25 ? pal.high : pal.dim
+      ctx.fillText("[ VFS  ] MOUNTING ROOT VFS ON /dev/sda1 (ext4)... [OK]", x + paddingX, startY + 60)
 
-      ctx.fillStyle = this.bootProgress > 0.6 ? pal.high : pal.dim
-      ctx.fillText("[ BUS  ] PCI / ISA 8259A/8254 CHIPSETS... [OK]", x + paddingX, startY + 90)
+      ctx.fillStyle = this.bootProgress > 0.40 ? pal.high : pal.dim
+      ctx.fillText("[ BUS  ] PCI / ISA 8259A/8254 CHIPSETS... [OK]", x + paddingX, startY + 80)
 
-      ctx.fillStyle = this.bootProgress > 0.8 ? pal.high : pal.dim
-      ctx.fillText("[ NET  ] 10BASE-T TRANSCEIVER LINK ESTABLISHED... [OK]", x + paddingX, startY + 112)
+      ctx.fillStyle = this.bootProgress > 0.55 ? pal.high : pal.dim
+      ctx.fillText("[ NET  ] 10BASE-T TRANSCEIVER LINK ESTABLISHED... [OK]", x + paddingX, startY + 100)
+
+      ctx.fillStyle = this.bootProgress > 0.70 ? pal.high : pal.dim
+      ctx.fillText("[ CRYP ] SHA-256 / AES-256 SECURE ENCLAVE... [LOADED]", x + paddingX, startY + 120)
 
       // Animated Loading Progress Bar
       const barY = startY + 144
       ctx.fillStyle = pal.high
       ctx.fillText(`LOADING KERNEL DAEMONS: ${spinner} [${pct}%]`, x + paddingX, barY)
 
-      const barW = Math.max(140, Math.min(380, w - paddingX * 2))
+      const barW = Math.max(140, Math.min(420, w - paddingX * 2))
       const barH = 14
       ctx.strokeStyle = pal.dim
-      ctx.strokeRect(x + paddingX, barY + 10, barW, barH)
+      ctx.strokeRect(x + paddingX, barY + 8, barW, barH)
 
       const fillW = Math.round((barW - 2) * this.bootProgress)
       ctx.fillStyle = pal.high
-      ctx.fillRect(x + paddingX + 1, barY + 11, fillW, barH - 2)
+      ctx.fillRect(x + paddingX + 1, barY + 9, fillW, barH - 2)
+
+      // Streaming Live Kernel Dmesg Logs below progress bar
+      const bootLogs = [
+        "[ 0.002400] Linux cyber-kernel 4.19.0-8086-DEF SMP x86_64",
+        "[ 0.048100] CPU0: Intel 8086 compatible core @ 33.33MHz [FPU OK]",
+        "[ 0.112000] Memory: 15360K/16000K available (640K kernel code, 384K reserved)",
+        "[ 0.185200] ACPI: Core hardware revision 20180810, APIC 0 enabled",
+        "[ 0.274000] devfs: Initialized /dev filesystem [READ/WRITE]",
+        "[ 0.358200] pci: Host bridge 8259A, IRQ routing table mapped",
+        "[ 0.442000] eth0: 10BASE-T transceiver, 10Mbps full duplex [UP]",
+        "[ 0.528400] crypto: SHA-256, AES-256, RSA-4096 hardware acceleration active",
+        "[ 0.612000] radar-d: Sector-07 defense array initialized on /dev/radar0",
+        "[ 0.698000] ordnance: Silos 0-7 loaded with hyper-velocity interceptors",
+        "[ 0.784000] systemd[1]: Reached target Network & Defense Sockets",
+        "[ 0.865000] netd: Establishing 9600 BAUD encrypted socket tunnel",
+        "[ 0.942000] auth: Operator guest granted root session [DEV-0]",
+        "[ 1.000000] KERNEL BOOT SEQUENCE COMPLETE: READY FOR COMMANDS",
+      ]
+
+      const logStartY = barY + 36
+      const maxBootLines = Math.floor((h - (logStartY - y) - 34) / 18)
+      const visibleBootCount = Math.min(
+        bootLogs.length,
+        Math.floor(this.bootProgress * (bootLogs.length + 2))
+      )
+
+      for (let i = 0; i < Math.min(visibleBootCount, maxBootLines); i++) {
+        const lineY = logStartY + i * 18
+        if (lineY > y + h - 30) break
+        const logLine = bootLogs[i]
+        ctx.fillStyle = i === visibleBootCount - 1 ? pal.high : pal.mid
+        ctx.fillText(logLine, x + paddingX, lineY)
+      }
+
+      // Bottom boot prompt
+      const bottomPromptY = y + h - 16
+      ctx.strokeStyle = pal.faint
+      ctx.beginPath()
+      ctx.moveTo(x + 12, bottomPromptY - 14)
+      ctx.lineTo(x + w - 12, bottomPromptY - 14)
+      ctx.stroke()
+
+      ctx.font = "bold 12px 'Courier New', Monaco, monospace"
+      ctx.fillStyle = pal.high
+      const bootPrompt = `[ BOOTLOADER ACTIVE: INITIALIZING DAEMONS ${pct}% ]`
+      ctx.fillText(bootPrompt, x + paddingX, bottomPromptY)
+      if (this.cursorBlink > 0.5) {
+        const bpW = ctx.measureText(bootPrompt).width
+        ctx.fillStyle = pal.full
+        ctx.fillRect(x + paddingX + bpW + 6, bottomPromptY - 10, 8, 12)
+      }
 
       ctx.restore()
       return
@@ -1038,16 +1221,18 @@ class MainframeEngine {
       if (!line) continue
 
       if (isError) {
-        ctx.fillStyle = line.startsWith("FATAL")
+        ctx.fillStyle = line.startsWith("FATAL") || line.startsWith("ALERT")
           ? "rgba(255, 60, 60, 0.98)"
-          : "rgba(255, 120, 120, 0.92)"
+          : "rgba(255, 130, 130, 0.92)"
+      } else if (line.includes("KILL CONFIRMED") || line.includes("DESTROYED")) {
+        ctx.fillStyle = "rgba(255, 90, 80, 0.98)"
       } else if (line.startsWith("SYS:") || line.startsWith("COPYRIGHT")) {
         ctx.fillStyle = pal.dim
       } else if (line.startsWith(">")) {
         ctx.fillStyle = pal.text
       } else if (line.startsWith("guest@")) {
         ctx.fillStyle = pal.full
-      } else if (line.includes("[OK]") || line.includes("COMPLETE") || line.includes("READY")) {
+      } else if (line.includes("[OK]") || line.includes("COMPLETE") || line.includes("READY") || line.includes("SECURED")) {
         ctx.fillStyle = pal.high
       } else if (line.includes("---") || line.includes("===")) {
         ctx.fillStyle = pal.dim
@@ -1101,8 +1286,6 @@ class MainframeEngine {
     ctx.restore()
   }
 
-  // ─── 3. TELEMETRY PANEL ─────────────────────────────────────────────
-
   // ─── 3. 8-BIT TACTICAL RADAR (TOP RIGHT) ───────────────────────────
 
   _drawRadarPanel(x, y, w, h) {
@@ -1110,14 +1293,21 @@ class MainframeEngine {
     const pal = this.palette
     const isMissile = this.phase === "missile"
     const isError = this.phase === "error"
+    const isBoot = this.phase === "boot"
+
+    const titleStr = isMissile
+      ? `TACTICAL RADAR // INTERCEPT [KILLS: ${this.totalKills || 0}/8]`
+      : isBoot
+      ? `TACTICAL RADAR // CALIBRATION [BOOT]`
+      : `TACTICAL RADAR // DEF-NET [SECTOR-07]`
 
     this._draw8BitBox(
       x,
       y,
       w,
       h,
-      isMissile ? "TACTICAL RADAR // DEFENSE INTERCEPT" : "TACTICAL RADAR // DEF-NET",
-      this.textWidths.titleRadar,
+      titleStr,
+      0,
       isError
     )
 
@@ -1153,8 +1343,8 @@ class MainframeEngine {
     ctx.fillStyle = isError ? "rgba(255, 120, 120, 0.85)" : pal.high
     ctx.fillText("N [000°]", cx - 20, cy - radius - 4)
     ctx.fillText("S [180°]", cx - 20, cy + radius + 11)
-    ctx.fillText("E", cx + radius + 5, cy + 3)
-    ctx.fillText("W", cx - radius - 12, cy + 3)
+    ctx.fillText("E [090°]", cx + radius + 5, cy + 3)
+    ctx.fillText("W [270°]", cx - radius - 38, cy + 3)
 
     // 3. Crosshairs
     ctx.strokeStyle = isError ? "rgba(255, 60, 60, 0.3)" : pal.faint
@@ -1220,13 +1410,42 @@ class MainframeEngine {
     ctx.lineTo(sx, sy)
     ctx.stroke()
 
-    // 7. Tactical Defense Nodes & Target Reticles
-    this.worldNodes.forEach((node) => {
+    // 7. Tactical Defense Nodes & Target Destruction Visuals
+    const maxVisibleNodes = isBoot ? Math.min(this.worldNodes.length, Math.floor(this.bootProgress * 9)) : this.worldNodes.length
+
+    this.worldNodes.slice(0, maxVisibleNodes).forEach((node) => {
       const nx = cx + Math.cos(node.theta) * (radius * node.r)
       const ny = cy + Math.sin(node.theta) * (radius * node.r)
       const isLocked = isMissile || node.isLocked
 
-      if (isLocked) {
+      if (node.isDestroyed) {
+        // TARGET ELIMINATED: Red Cross & Debris Fragments
+        ctx.strokeStyle = "rgba(255, 60, 60, 0.95)"
+        ctx.lineWidth = 2.0
+        ctx.beginPath()
+        ctx.moveTo(nx - 4, ny - 4)
+        ctx.lineTo(nx + 4, ny + 4)
+        ctx.moveTo(nx + 4, ny - 4)
+        ctx.lineTo(nx - 4, ny + 4)
+        ctx.stroke()
+
+        // Render explosion debris particles
+        if (node.debris && node.debris.length > 0) {
+          node.debris.forEach((d) => {
+            const px = nx + d.x
+            const py = ny + d.y
+            ctx.fillStyle = `rgba(255, ${Math.floor(80 + d.life * 120)}, 50, ${Math.max(0, d.life)})`
+            ctx.fillRect(px, py, d.size, d.size)
+          })
+        }
+
+        // Destroyed status tag
+        ctx.font = "bold 8px 'Courier New', Monaco, monospace"
+        ctx.fillStyle = "rgba(255, 70, 70, 0.95)"
+        ctx.fillText(`${node.id} [KIA]`, nx + 7, ny - 1)
+        ctx.fillStyle = "rgba(255, 160, 160, 0.85)"
+        ctx.fillText("DESTROYED", nx + 7, ny + 8)
+      } else if (isLocked) {
         // Blinking Red Lock Diamond & Brackets
         ctx.strokeStyle = "rgba(255, 70, 70, 0.95)"
         ctx.lineWidth = 1.4
@@ -1235,10 +1454,10 @@ class MainframeEngine {
         ctx.fillStyle = "rgba(255, 90, 90, 0.98)"
         ctx.fillRect(nx - 2, ny - 2, 4, 4)
 
-        // Lock tag
+        // Lock tag with speed and type
         ctx.font = "8px 'Courier New', Monaco, monospace"
         ctx.fillStyle = "rgba(255, 140, 140, 0.95)"
-        ctx.fillText(`${node.id}`, nx + 7, ny - 1)
+        ctx.fillText(`${node.id} [${node.spd || 'LOCK'}]`, nx + 7, ny - 1)
         ctx.fillStyle = "rgba(255, 80, 80, 0.85)"
         ctx.fillText(`${node.dist}`, nx + 7, ny + 8)
       } else {
@@ -1247,7 +1466,7 @@ class MainframeEngine {
         ctx.fillRect(nx - 2, ny - 2, 4, 4)
 
         // Lock Acquisition Pulse
-        if (node.lockProgress > 0) {
+        if (node.lockProgress > 0 || isBoot) {
           ctx.strokeStyle = pal.high
           ctx.strokeRect(nx - 4, ny - 4, 8, 8)
           ctx.font = "8px 'Courier New', Monaco, monospace"
@@ -1265,6 +1484,7 @@ class MainframeEngine {
         const mx = cx + (tx - cx) * m.progress
         const my = cy + (ty - cy) * m.progress
 
+        // Missile exhaust trail line
         ctx.strokeStyle = "rgba(255, 200, 60, 0.85)"
         ctx.lineWidth = 1.4
         ctx.beginPath()
@@ -1272,6 +1492,7 @@ class MainframeEngine {
         ctx.lineTo(mx, my)
         ctx.stroke()
 
+        // Missile head
         ctx.fillStyle = "#ffffff"
         ctx.fillRect(mx - 2, my - 2, 4, 4)
       })
@@ -1286,7 +1507,7 @@ class MainframeEngine {
         ctx.arc(bx, by, b.radius, 0, Math.PI * 2)
         ctx.stroke()
 
-        ctx.fillStyle = `rgba(255, 200, 100, ${Math.max(0, b.life * 0.8)})`
+        ctx.fillStyle = `rgba(255, 220, 100, ${Math.max(0, b.life * 0.9)})`
         ctx.fillRect(bx - 3, by - 3, 6, 6)
       })
     }
@@ -1297,7 +1518,10 @@ class MainframeEngine {
       .padStart(3, "0")
     ctx.font = "9px 'Courier New', Monaco, monospace"
     ctx.fillStyle = isError ? "rgba(255, 100, 100, 0.9)" : pal.dim
-    ctx.fillText(`AZ:${azim}° | TRK:8 | GRID:ONLINE`, x + 14, y + h - 9)
+    const bStatus = isBoot
+      ? `STATUS: CALIBRATING [${Math.floor(this.bootProgress * 100)}%] // GRID: BOOT`
+      : `AZ:${azim}° | TRK:8 | KILLS:${this.totalKills || 0}/8 | GRID:ONLINE`
+    ctx.fillText(bStatus, x + 14, y + h - 9)
 
     ctx.restore()
   }
@@ -1308,45 +1532,97 @@ class MainframeEngine {
     const ctx = this.ctx
     const pal = this.palette
     const isError = this.phase === "error"
-    this._draw8BitBox(x, y, w, h, "SYSTEM TELEMETRY // CORE-DIAG", this.textWidths.titleTelem, isError)
+    const isBoot = this.phase === "boot"
+    const title = isBoot ? "SYSTEM TELEMETRY // BIOS POST" : "SYSTEM TELEMETRY // CORE-DIAG"
+    this._draw8BitBox(x, y, w, h, title, this.textWidths.titleTelem, isError)
 
     ctx.save()
     const paddingX = 14
-    const startY = y + 26
-    const rowH = 20
+    const startY = y + 25
+    const rowH = 17
 
     ctx.font = "10px 'Courier New', Monaco, monospace"
 
-    // Multi-Core CPU & Memory Meters
-    const metersToShow = h > 160 ? this.cpuMeters : this.cpuMeters.slice(0, 3)
+    // Multi-Core CPU, Memory & Grid Telemetry Meters
+    const metersToShow =
+      h > 210 ? this.cpuMeters : h > 165 ? this.cpuMeters.slice(0, 5) : this.cpuMeters.slice(0, 4)
     metersToShow.forEach((m, idx) => {
       const rowY = startY + idx * rowH
-      if (rowY > y + h - 38) return
+      if (rowY > y + h - 45) return
 
       ctx.fillStyle = isError ? "rgba(255, 140, 140, 0.9)" : pal.text
       ctx.fillText(m.name.padEnd(5, " "), x + paddingX, rowY + 9)
 
-      const barX = x + paddingX + 46
-      const barW = Math.max(50, w - paddingX * 2 - 86)
-      const barH = 9
-      const pct = Math.max(0, Math.min(100, Math.round(m.val)))
+      const barX = x + paddingX + 44
+      const barW = Math.max(45, w - paddingX * 2 - 86)
+      const barH = 7
+      const rawVal = isBoot ? Math.round(this.bootProgress * m.val) : Math.round(m.val)
+      const pct = Math.max(0, Math.min(100, rawVal))
 
       ctx.strokeStyle = isError ? "rgba(255, 60, 60, 0.6)" : pal.dim
-      ctx.strokeRect(barX, rowY + 1, barW, barH)
+      ctx.strokeRect(barX, rowY + 2, barW, barH)
 
       const fillW = Math.round((barW - 2) * (pct / 100))
-      ctx.fillStyle = isError ? "rgba(255, 80, 80, 0.92)" : pal.text
-      ctx.fillRect(barX + 1, rowY + 2, fillW, barH - 2)
+      ctx.fillStyle = isError
+        ? "rgba(255, 80, 80, 0.92)"
+        : m.name === "GRID"
+        ? pal.full
+        : pal.text
+      ctx.fillRect(barX + 1, rowY + 3, fillW, barH - 2)
 
       ctx.fillStyle = isError ? "rgba(255, 180, 180, 0.98)" : pal.high
-      ctx.fillText(`${pct}%`.padStart(4, " "), barX + barW + 6, rowY + 9)
+      const unit = m.unit || "%"
+      ctx.fillText(`${pct}${unit}`.padStart(5, " "), barX + barW + 5, rowY + 9)
     })
 
+    // Subsystem Diagnostics Matrix (fills empty middle space cleanly)
+    const metersBottomY = startY + metersToShow.length * rowH
+    const sparkY = y + h - 25
+    const midSpace = sparkY - metersBottomY - 10
+
+    if (midSpace >= 28) {
+      const diagY = metersBottomY + 4
+      ctx.font = "9px 'Courier New', Monaco, monospace"
+      ctx.fillStyle = isError ? "rgba(255, 100, 100, 0.85)" : pal.dim
+      ctx.fillText("── SUB-SYSTEM DIAGNOSTICS ──", x + paddingX, diagY + 6)
+
+      const diagLines = isError
+        ? [
+            { l: "BUS: CORRUPTED", r: "DMA: ERR_TIMEOUT" },
+            { l: "L1$: PARITY ERR", r: "CRYPTO: HALTED" },
+            { l: "VFS: READ-ONLY ", r: "SOCK: 0/128 CONN" },
+          ]
+        : isBoot
+        ? [
+            { l: "BUS: 9600 BAUD", r: "DMA: CH 0..3 OK" },
+            { l: "L1$: 100% POST", r: "CRYPTO: AES-256" },
+            { l: "VFS: SYNCING..", r: "SOCK: BIND 0.0.0" },
+          ]
+        : [
+            { l: "CLK: 33.33MHz ", r: "DMA: CH 0..3 OK" },
+            { l: "L1$: 100% OK  ", r: "CRYPTO: AES-256" },
+            { l: "VFS: 88% BUF  ", r: "SOCK: 128 [TLS]" },
+          ]
+
+      const maxDiagLines = Math.min(diagLines.length, Math.floor((midSpace - 10) / 12))
+      const col2X = x + Math.floor(w * 0.50)
+      for (let d = 0; d < maxDiagLines; d++) {
+        const lineY = diagY + 18 + d * 12
+        ctx.fillStyle = isError ? "rgba(255, 130, 130, 0.9)" : pal.faint
+        ctx.fillText(diagLines[d].l, x + paddingX, lineY)
+        ctx.fillText(diagLines[d].r, col2X, lineY)
+      }
+    }
+
     // Network Sparkline Graph & Telemetry
-    const sparkY = y + h - 28
     ctx.font = "9px 'Courier New', Monaco, monospace"
     ctx.fillStyle = isError ? "rgba(255, 100, 100, 0.85)" : pal.dim
-    ctx.fillText("NET I/O [TX:48KB/s | RX:112KB/s]", x + paddingX, sparkY)
+    const netLabel = isError
+      ? "NET [DROP:94.8% | PKT:ERR]"
+      : isBoot
+      ? `NET [10BASE-T PROBING ${Math.floor(this.bootProgress * 100)}%]`
+      : "NET [TX:4.8K PKT/s | RX:12.4K]"
+    ctx.fillText(netLabel, x + paddingX, sparkY)
 
     if (this.netHistory && this.netHistory.length > 1) {
       const graphX = x + w - paddingX - 64
@@ -1354,12 +1630,29 @@ class MainframeEngine {
       const graphH = 14
       const graphY = sparkY - 11
 
+      // Area fill underneath waveform
+      ctx.beginPath()
+      this.netHistory.forEach((v, idx) => {
+        const val = isBoot ? v * this.bootProgress : v
+        const gx = graphX + (idx / (this.netHistory.length - 1)) * graphW
+        const gy = graphY + graphH - (val / 100) * graphH
+        if (idx === 0) ctx.moveTo(gx, gy)
+        else ctx.lineTo(gx, gy)
+      })
+      ctx.lineTo(graphX + graphW, graphY + graphH)
+      ctx.lineTo(graphX, graphY + graphH)
+      ctx.closePath()
+      ctx.fillStyle = isError ? "rgba(255, 50, 50, 0.18)" : pal.radarTail || "rgba(0, 255, 200, 0.12)"
+      ctx.fill()
+
+      // Waveform line stroke
       ctx.strokeStyle = isError ? "rgba(255, 70, 70, 0.8)" : pal.high
       ctx.lineWidth = 1
       ctx.beginPath()
       this.netHistory.forEach((v, idx) => {
+        const val = isBoot ? v * this.bootProgress : v
         const gx = graphX + (idx / (this.netHistory.length - 1)) * graphW
-        const gy = graphY + graphH - (v / 100) * graphH
+        const gy = graphY + graphH - (val / 100) * graphH
         if (idx === 0) ctx.moveTo(gx, gy)
         else ctx.lineTo(gx, gy)
       })
@@ -1368,7 +1661,12 @@ class MainframeEngine {
 
     // Hardware Status Line
     ctx.fillStyle = isError ? "rgba(255, 90, 90, 0.9)" : pal.faint
-    ctx.fillText("TEMP:41.8°C | FAN:2840 RPM | VCORE:1.25V", x + paddingX, y + h - 9)
+    const hwLine = isError
+      ? "TEMP:104.2°C [OVERHEAT] | FAN:MAX | VCORE:1.55V"
+      : isBoot
+      ? `RAM_POST: ${Math.floor(this.bootProgress * 15360)}KB / 15360KB [CHECKING]`
+      : "TEMP:41.8°C | FAN:3420 RPM | VCORE:1.28V"
+    ctx.fillText(hwLine, x + paddingX, y + h - 8)
 
     ctx.restore()
   }
@@ -1379,28 +1677,35 @@ class MainframeEngine {
     const ctx = this.ctx
     const pal = this.palette
     const isError = this.phase === "error"
-    this._draw8BitBox(x, y, w, h, "ACTIVE MEMORY DUMP // VFS-HEX", this.textWidths.titleHex, isError)
+    const isBoot = this.phase === "boot"
+    const title = isBoot ? "ACTIVE MEMORY DUMP // BIOS MAP" : "ACTIVE MEMORY DUMP // VFS-HEX"
+    this._draw8BitBox(x, y, w, h, title, this.textWidths.titleHex, isError)
 
     ctx.save()
     const paddingX = 14
-    const startY = y + 26
-    const rowH = 16
+    const startY = y + 25
+    const rowH = 14
 
     ctx.font = "10px 'Courier New', Monaco, monospace"
 
-    this.hexRows.forEach((row, idx) => {
+    const isTall = h >= 145
+    const footerH = isTall ? 28 : 16
+    const maxRows = Math.max(2, Math.floor((h - 26 - footerH) / rowH))
+    const rowsToDraw = this.hexRows.slice(0, maxRows)
+
+    rowsToDraw.forEach((row, idx) => {
       const rowY = startY + idx * rowH
-      if (rowY > y + h - 24) return
+      if (rowY > y + h - footerH - 4) return
 
       // Address Offset
-      ctx.fillStyle = isError ? "rgba(255, 100, 100, 0.95)" : pal.high
-      ctx.fillText(`0x${row.addr}:`, x + paddingX, rowY)
+      ctx.fillStyle = isError ? "rgba(255, 100, 100, 0.95)" : isBoot ? pal.dim : pal.high
+      ctx.fillText(`0x${row.addr}:`, x + paddingX, rowY + 9)
 
       // Hex Bytes
       ctx.fillStyle = isError ? "rgba(255, 150, 150, 0.85)" : pal.mid
-      const maxBytes = Math.max(4, Math.min(6, Math.floor((w - 120) / 20)))
+      const maxBytes = Math.max(4, Math.min(6, Math.floor((w - 110) / 20)))
       const hexStr = row.bytes.slice(0, maxBytes).join(" ")
-      ctx.fillText(hexStr, x + paddingX + 48, rowY)
+      ctx.fillText(hexStr, x + paddingX + 48, rowY + 9)
 
       // ASCII Representation Column
       const ascii = row.bytes
@@ -1412,50 +1717,66 @@ class MainframeEngine {
         .join("")
 
       ctx.fillStyle = isError ? "rgba(255, 80, 80, 0.75)" : pal.dim
-      ctx.fillText(`| ${ascii}`, x + paddingX + 48 + maxBytes * 20 + 4, rowY)
+      ctx.fillText(`| ${ascii}`, x + paddingX + 48 + maxBytes * 20 + 4, rowY + 9)
     })
 
-    // Bottom Checksum & Segment Status
+    // Bottom Register Preview & Hardware Checksum
     ctx.font = "9px 'Courier New', Monaco, monospace"
     ctx.fillStyle = isError ? "rgba(255, 90, 90, 0.9)" : pal.dim
-    ctx.fillText("CRC32: 0x8F4A2B9C [VERIFIED] // HEAP: 78%", x + paddingX, y + h - 8)
+
+    if (isTall) {
+      const regLine1 = isBoot
+        ? `MAP: 0x0000..0x7FFF [${Math.floor(this.bootProgress * 100)}% VERIFIED]`
+        : "EAX:0x7F00 EBX:0x0028 ECX:0x8086 EDX:0x00FF"
+      const regLine2 = isBoot
+        ? "BIOS CHECKSUM: OK | SHIFT_JIS/ASCII TABLE READY"
+        : "EIP:0x08048394 [MOV EAX,[EBX]] CRC:0x8F4A"
+      ctx.fillText(regLine1, x + paddingX, y + h - 18)
+      ctx.fillStyle = isError ? "rgba(255, 120, 120, 0.75)" : pal.faint
+      ctx.fillText(regLine2, x + paddingX, y + h - 6)
+    } else {
+      const bCheck = isBoot
+        ? `MEMORY_MAP: 0x0000..0x7FFF [${Math.floor(this.bootProgress * 100)}% VERIFIED]`
+        : "EAX:0x7F00 EBX:0x0028 | CRC32:0x8F4A2B9C"
+      ctx.fillText(bCheck, x + paddingX, y + h - 8)
+    }
 
     ctx.restore()
   }
 
-  // ─── 6. CRITICAL ERROR OVERLAY (BÁO LỖI) ─────────────────────────────
+  // ─── 6. CRITICAL ERROR & CENTRAL CYBER ATTACK GLITCH OVERLAY ─────────
 
   _drawErrorOverlay(W, H) {
     const ctx = this.ctx
     ctx.save()
 
     // Top Alert Banner
-    const bannerH = 54
-    const bannerY = Math.max(16, Math.floor(H * 0.08))
-    ctx.fillStyle = "rgba(180, 15, 20, 0.88)"
+    const bannerH = 50
+    const bannerY = Math.max(12, Math.floor(H * 0.05))
+    ctx.fillStyle = "rgba(180, 15, 20, 0.90)"
     ctx.fillRect(0, bannerY, W, bannerH)
     ctx.strokeStyle = "rgba(255, 120, 120, 0.95)"
     ctx.lineWidth = 2
     ctx.strokeRect(0, bannerY, W, bannerH)
 
-    const title = "! CRITICAL ERROR // SECURITY LOCKDOWN LEVEL-5 !"
-    ctx.font = "bold 16px 'Courier New', Monaco, monospace"
+    const title = "! CRITICAL ATTACK // DIRECT HIT IN SECTOR-0 CORE !"
+    ctx.font = "bold 15px 'Courier New', Monaco, monospace"
     ctx.fillStyle = "#ffffff"
     const tw = ctx.measureText(title).width
-    ctx.fillText(title, Math.floor((W - tw) / 2), bannerY + 24)
+    ctx.fillText(title, Math.floor((W - tw) / 2), bannerY + 22)
 
     const recoveryPct = Math.min(
       100,
       Math.floor((this.phaseTimer / this.phaseDurations.error) * 100)
     )
-    const sub = `AUTO-RECOVERY ROUTINE: REBOOTING KERNEL IN ${Math.max(
+    const sub = `HOSTILE INJECTION DETECTED @ 0x7F0018 // PURGE REBOOT IN ${Math.max(
       1,
       Math.ceil(this.phaseDurations.error - this.phaseTimer)
     )}s... [${recoveryPct}%]`
-    ctx.font = "12px 'Courier New', Monaco, monospace"
+    ctx.font = "11px 'Courier New', Monaco, monospace"
     ctx.fillStyle = "rgba(255, 220, 220, 0.95)"
     const sw = ctx.measureText(sub).width
-    ctx.fillText(sub, Math.floor((W - sw) / 2), bannerY + 44)
+    ctx.fillText(sub, Math.floor((W - sw) / 2), bannerY + 40)
 
     // Falling Error Matrix Stream Lines
     ctx.font = "11px 'Courier New', Monaco, monospace"
@@ -1464,17 +1785,19 @@ class MainframeEngine {
       ctx.fillText(s.text, s.x, s.y)
     })
 
-    // Responsive Centered Grid for 8-Bit Popup Error Dialog Boxes (No Overlap / Obscuration)
-    const count = this.errorPopups.length
+    // ─── DEDICATED CENTRAL CYBER ATTACK & CORE BUG/GLITCH EFFECT ───────
+    this._drawCentralAttackGlitch(W, H, recoveryPct)
+
+    // Responsive Grid for 8-Bit Popup Error Dialog Boxes
     const cols = W < 680 ? 1 : W < 1150 ? 2 : 3
-    const gapX = 20
-    const gapY = 18
-    const maxGridW = Math.min(W - 40, cols * 350 + (cols - 1) * gapX)
+    const gapX = 18
+    const gapY = 14
+    const maxGridW = Math.min(W - 40, cols * 320 + (cols - 1) * gapX)
     const cardW = Math.floor((maxGridW - (cols - 1) * gapX) / cols)
-    const cardH = 92
+    const cardH = 80
     const totalGridW = cols * cardW + (cols - 1) * gapX
     const startX = Math.floor((W - totalGridW) / 2)
-    const startY = bannerY + bannerH + 22
+    const startY = bannerY + bannerH + 16
 
     this.errorPopups.forEach((p, idx) => {
       const col = idx % cols
@@ -1484,38 +1807,132 @@ class MainframeEngine {
 
       this._draw8BitBox(px, py, cardW, cardH, `ALERT DIALOG #${idx + 1}`, 0, true)
 
-      ctx.font = "bold 11px 'Courier New', Monaco, monospace"
+      ctx.font = "bold 10px 'Courier New', Monaco, monospace"
       ctx.fillStyle = "rgba(255, 120, 120, 0.98)"
-      ctx.fillText(`SIGNAL: ${p.code}`, px + 14, py + 28)
+      ctx.fillText(`SIGNAL: ${p.code}`, px + 12, py + 24)
 
-      // Alert severity badge
       const sev = "[SEV-1 FATAL]"
-      ctx.font = "10px 'Courier New', Monaco, monospace"
       ctx.fillStyle = "rgba(255, 90, 90, 0.9)"
       const sevW = ctx.measureText(sev).width
-      ctx.fillText(sev, px + cardW - 14 - sevW, py + 28)
+      ctx.fillText(sev, px + cardW - 12 - sevW, py + 24)
 
-      // Meter Bar
-      const meterW = cardW - 28
+      // Progress Meter
+      const meterW = cardW - 24
       const meterFill = ((this.tick * 3 + idx * 30) % 100) / 100
       ctx.fillStyle = "rgba(60, 10, 12, 0.85)"
-      ctx.fillRect(px + 14, py + 38, meterW, 10)
+      ctx.fillRect(px + 12, py + 32, meterW, 8)
       ctx.fillStyle = "rgba(255, 70, 70, 0.95)"
-      ctx.fillRect(px + 14, py + 38, meterW * meterFill, 10)
+      ctx.fillRect(px + 12, py + 32, meterW * meterFill, 8)
 
       // Description text
-      ctx.font = "10px 'Courier New', Monaco, monospace"
+      ctx.font = "9px 'Courier New', Monaco, monospace"
       ctx.fillStyle = "rgba(255, 190, 190, 0.9)"
-      ctx.fillText("CORRUPTED MEMORY CHUNK OVERFLOW", px + 14, py + 64)
+      ctx.fillText("CORRUPTED MEMORY BUS OVERFLOW", px + 12, py + 54)
       ctx.fillStyle = "rgba(255, 130, 130, 0.75)"
-      ctx.fillText(
-        `ADDR: 0x${(0x8000 + idx * 0x1234).toString(16).toUpperCase()} // BUS FAULT`,
-        px + 14,
-        py + 78
-      )
+      ctx.fillText(`ADDR: 0x${(0x8000 + idx * 0x1234).toString(16).toUpperCase()} // BUS FAULT`, px + 12, py + 68)
     })
 
     ctx.restore()
+  }
+
+  // Central Cyber Attack Glitch, Shockwaves & Fractured Reticle
+  _drawCentralAttackGlitch(W, H, recoveryPct) {
+    const ctx = this.ctx
+    const cx = Math.floor(W * 0.5)
+    const cy = Math.floor(H * 0.54)
+
+    // 1. Expanding Attack Shockwaves Pulsating from Center
+    for (let i = 0; i < 3; i++) {
+      const waveRadius = ((this.tick * 5 + i * 70) % 240) + 15
+      const waveAlpha = Math.max(0, 1 - waveRadius / 250) * 0.75
+      ctx.strokeStyle = `rgba(255, ${Math.floor(40 + i * 30)}, 40, ${waveAlpha})`
+      ctx.lineWidth = 2.2
+      ctx.beginPath()
+      ctx.arc(cx, cy, waveRadius, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+
+    // 2. Fractured Defense Shield Reticle in Screen Center
+    const reticleR = Math.min(180, Math.floor(Math.min(W, H) * 0.22))
+    ctx.strokeStyle = "rgba(255, 60, 60, 0.85)"
+    ctx.lineWidth = 1.8
+    ctx.beginPath()
+    // Octagonal fractured ring
+    for (let s = 0; s < 8; s++) {
+      const ang = (s / 8) * Math.PI * 2 + this.time * 0.8
+      const px = cx + Math.cos(ang) * reticleR
+      const py = cy + Math.sin(ang) * reticleR
+      if (s === 0) ctx.moveTo(px, py)
+      else ctx.lineTo(px, py)
+    }
+    ctx.closePath()
+    ctx.stroke()
+
+    // Splintered crack lines across center
+    ctx.strokeStyle = "rgba(255, 120, 120, 0.7)"
+    ctx.lineWidth = 1.2
+    ctx.beginPath()
+    ctx.moveTo(cx - reticleR - 20, cy)
+    ctx.lineTo(cx + reticleR + 20, cy)
+    ctx.moveTo(cx, cy - reticleR - 20)
+    ctx.lineTo(cx, cy + reticleR + 20)
+    ctx.moveTo(cx - reticleR * 0.7, cy - reticleR * 0.7)
+    ctx.lineTo(cx + reticleR * 0.7, cy + reticleR * 0.7)
+    ctx.stroke()
+
+    // 3. Central Chromatic Digital Glitch Slices / Horizontal Screen Tears
+    const glitchW = Math.min(520, W - 40)
+    const glitchH = 150
+    const glitchX = cx - glitchW / 2
+    const glitchY = cy - glitchH / 2
+
+    const sliceCount = 9
+    for (let k = 0; k < sliceCount; k++) {
+      const sy = glitchY + (k / sliceCount) * glitchH
+      const sh = Math.floor(glitchH / sliceCount) - 2
+      const jitterX = (Math.random() - 0.5) * 32
+
+      // Red offset slice
+      ctx.fillStyle = "rgba(255, 30, 40, 0.28)"
+      ctx.fillRect(glitchX + jitterX - 4, sy, glitchW, sh)
+
+      // Cyan offset slice
+      ctx.fillStyle = "rgba(0, 240, 255, 0.18)"
+      ctx.fillRect(glitchX + jitterX + 4, sy, glitchW, sh)
+
+      // Dark core slice
+      ctx.fillStyle = "rgba(16, 2, 4, 0.75)"
+      ctx.fillRect(glitchX + jitterX, sy, glitchW, sh)
+    }
+
+    // 4. Central Warning Attack Box
+    const boxW = Math.min(460, W - 60)
+    const boxH = 120
+    const bx = cx - boxW / 2
+    const by = cy - boxH / 2
+
+    this._draw8BitBox(bx, by, boxW, boxH, "! DIRECT CYBER ATTACK // SECTOR-0 CORE BREACH !", 0, true)
+
+    ctx.font = "bold 12px 'Courier New', Monaco, monospace"
+    ctx.fillStyle = "rgba(255, 90, 90, 0.98)"
+    ctx.fillText("ATTACK VECTOR: REMOTE INJECTION (0x7F0018)", bx + 16, by + 28)
+
+    ctx.font = "10px 'Courier New', Monaco, monospace"
+    ctx.fillStyle = "rgba(255, 180, 180, 0.95)"
+    ctx.fillText("PAYLOAD SIGNATURE: CYBER-WARHEAD-v9.4 [LOGIC BOMB OVERFLOW]", bx + 16, by + 46)
+    ctx.fillText("CORE INTEGRITY: CRITICAL (12%) | PACKET LOSS: 94.8% | +480V", bx + 16, by + 62)
+    ctx.fillText(`HARDWARE DEFENSE COLLAPSED // AUTO PURGE IN ${Math.max(1, Math.ceil(this.phaseDurations.error - this.phaseTimer))}s`, bx + 16, by + 78)
+
+    // Glitchy Recovery Progress Bar
+    const rBarW = boxW - 32
+    ctx.strokeStyle = "rgba(255, 80, 80, 0.7)"
+    ctx.strokeRect(bx + 16, by + 90, rBarW, 12)
+    ctx.fillStyle = "rgba(255, 50, 50, 0.92)"
+    ctx.fillRect(bx + 17, by + 91, Math.round((rBarW - 2) * (recoveryPct / 100)), 10)
+
+    ctx.font = "bold 9px 'Courier New', Monaco, monospace"
+    ctx.fillStyle = "#ffffff"
+    ctx.fillText(`PURGING MEMORY BUS: ${recoveryPct}%`, bx + 22, by + 100)
   }
 
   destroy() {
@@ -1946,13 +2363,22 @@ class ClassicEngine {
         Math.min(99, Math.floor(this.loadingProgress * 100)),
       ).padStart(2, "0")
 
+      const bootSysMessages = [
+        `BOOTSTRAP ${randomOf(nodes)} [RAM:15MB OK] VFS:/dev/sda1 ${percent}%`,
+        `PROBING CHIPSETS 8259A/8254 BUS_CLK:33MHz [OK] ${percent}%`,
+        `MOUNTING ROOT ENCRYPTED BUFFER @ ${randomOf(addresses)} ${percent}%`,
+        `ETH0: LINK 10BASE-T (10.0.4.1) [UP] 9600 BAUD ${percent}%`,
+        `DAEMON ${randomOf(commands)} SPAWNED [PID:${100 + Math.floor(Math.random() * 800)}] ${percent}%`,
+        `RADAR MATRIX SYNC :: SEC-07 :: ${percent}%`,
+      ]
+
       if (profile === "system") {
-        return `BOOTSTRAP ${randomOf(nodes)} ${randomOf(bars)} ${percent}%`
+        return randomOf(bootSysMessages)
       }
       if (profile === "monitor") {
-        return `LOADING MODULE ${randomOf(commands)} :: ${randomOf(states)} :: ${percent}%`
+        return `MODULE ${randomOf(commands)} :: STATE:${randomOf(states)} :: ${randomOf(bars)} ${percent}%`
       }
-      return `PREP ${randomOf(addresses)} :: LINK ${randomOf(nodes)} :: ${percent}%`
+      return `PREP ${randomOf(addresses)} :: LINK ${randomOf(nodes)} :: SECURE [OK] ${percent}%`
     }
 
     if (profile === "system") {
