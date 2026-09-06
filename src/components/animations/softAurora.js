@@ -113,9 +113,6 @@ void main() {
   float t = uSpeed * 0.4 * uTime;
 
   vec2 shift = vec2(0.0);
-  if (uEnableMouse) {
-    shift = (uMouse - 0.5) * uMouseInfluence;
-  }
 
   vec3 col = vec3(0.0);
   
@@ -163,8 +160,8 @@ export class SoftAuroraEffect {
       octaveDecay: 0.1,
       layerOffset: 0.0,
       colorSpeed: 1.0,
-      enableMouseInteraction: true,
-      mouseInfluence: 0.25,
+      enableMouseInteraction: false,
+      mouseInfluence: 0.0,
       transparent: true,
       backgroundColor: '#000000',
       ...options
@@ -172,8 +169,6 @@ export class SoftAuroraEffect {
 
     this.active = false;
     this.startTime = 0;
-    this.currentMouse = [0.5, 0.5];
-    this.targetMouse = [0.5, 0.5];
 
     this.program = this._initShaders();
     if (!this.program) return;
@@ -182,9 +177,6 @@ export class SoftAuroraEffect {
     this._getUniformLocations();
 
     this._resizeHandler = () => this.handleResize();
-    this._mouseMoveHandler = (e) => this._handleMouseMove(e);
-    this._mouseLeaveHandler = () => this._handleMouseLeave();
-
     window.addEventListener("resize", this._resizeHandler);
     this.handleResize();
   }
@@ -324,18 +316,12 @@ export class SoftAuroraEffect {
     gl.uniform1f(u.uOctaveDecay, o.octaveDecay);
     gl.uniform1f(u.uLayerOffset, o.layerOffset);
     gl.uniform1f(u.uColorSpeed, o.colorSpeed);
-    gl.uniform1f(u.uMouseInfluence, o.mouseInfluence);
-    gl.uniform1i(u.uEnableMouse, o.enableMouseInteraction ? 1 : 0);
+    gl.uniform1f(u.uMouseInfluence, 0.0);
+    gl.uniform1i(u.uEnableMouse, 0);
     gl.uniform1i(u.uTransparent, o.transparent ? 1 : 0);
     gl.uniform3fv(u.uBackgroundColor, new Float32Array(this._hexToVec3(o.backgroundColor)));
 
-    if (o.enableMouseInteraction) {
-      this.currentMouse[0] += 0.05 * (this.targetMouse[0] - this.currentMouse[0]);
-      this.currentMouse[1] += 0.05 * (this.targetMouse[1] - this.currentMouse[1]);
-      gl.uniform2f(u.uMouse, this.currentMouse[0], this.currentMouse[1]);
-    } else {
-      gl.uniform2f(u.uMouse, 0.5, 0.5);
-    }
+    gl.uniform2f(u.uMouse, 0.5, 0.5);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
@@ -345,10 +331,6 @@ export class SoftAuroraEffect {
     this.active = true;
     this.canvas.style.display = "block";
     this.startTime = performance.now();
-    if (this.options.enableMouseInteraction) {
-      window.addEventListener("mousemove", this._mouseMoveHandler);
-      window.addEventListener("mouseleave", this._mouseLeaveHandler);
-    }
     this.animate(this.startTime);
   }
 
@@ -356,8 +338,6 @@ export class SoftAuroraEffect {
     this.active = false;
     if (this.animationId) cancelAnimationFrame(this.animationId);
     this.animationId = null;
-    window.removeEventListener("mousemove", this._mouseMoveHandler);
-    window.removeEventListener("mouseleave", this._mouseLeaveHandler);
     this.canvas.style.display = "none";
   }
 

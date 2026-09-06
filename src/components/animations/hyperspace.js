@@ -104,25 +104,60 @@ export class HyperspaceEffect {
     this.initStars()
   }
 
+  _initSingleStar(star = {}, randomZ = true) {
+    const angle = Math.random() * Math.PI * 2
+    const spread = Math.max(this.width, this.height) * 1.5
+    const radius = Math.pow(Math.random(), 0.6) * spread + 20
+    const z = randomZ ? Math.random() * this.maxZ : this.maxZ + Math.random() * 80
+
+    // Randomize star trail variations:
+    // ~12% super radiant hyper beams (vệt sáng dài nổi bật như vệt sao băng / hyperspace warp)
+    // ~20% medium-long streaks
+    // ~68% standard warp streaks
+    const roll = Math.random()
+    let tailMultiplier = 1.0
+    let isLongTrail = false
+    let isHyperBeam = false
+    let extraSize = 1.0
+
+    if (roll > 0.88) {
+      isHyperBeam = true
+      isLongTrail = true
+      tailMultiplier = 3.6 + Math.random() * 2.8 // 3.6x to 6.4x tail length!
+      extraSize = 1.45 + Math.random() * 0.4
+    } else if (roll > 0.68) {
+      isLongTrail = true
+      tailMultiplier = 1.8 + Math.random() * 1.2 // 1.8x to 3.0x tail length
+      extraSize = 1.15 + Math.random() * 0.25
+    } else {
+      tailMultiplier = 0.85 + Math.random() * 0.45 // 0.85x to 1.3x
+      extraSize = 1.0
+    }
+
+    star.x = Math.cos(angle) * radius
+    star.y = Math.sin(angle) * radius
+    star.z = z
+    star.prevZ = z
+    star.size = (Math.random() * 1.3 + 0.7) * extraSize
+    star.speedMultiplier = isHyperBeam
+      ? (Math.random() * 0.35 + 1.15)
+      : (Math.random() * 0.3 + 0.85)
+    star.angle = angle
+    star.radius = radius
+    star.brightness = isHyperBeam
+      ? (Math.random() * 0.2 + 0.85)
+      : (Math.random() * 0.35 + 0.65)
+    star.tailMultiplier = tailMultiplier
+    star.isHyperBeam = isHyperBeam
+    star.isLongTrail = isLongTrail
+
+    return star
+  }
+
   initStars() {
     this.stars = []
-    const spread = Math.max(this.width, this.height) * 1.5
-
     for (let i = 0; i < this.numStars; i++) {
-      const angle = Math.random() * Math.PI * 2
-      const radius = Math.pow(Math.random(), 0.6) * spread + 20
-
-      this.stars.push({
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
-        z: Math.random() * this.maxZ,
-        prevZ: 0,
-        size: Math.random() * 1.5 + 0.7,
-        speedMultiplier: Math.random() * 0.3 + 0.85,
-        angle: angle,
-        radius: radius,
-        brightness: Math.random() * 0.35 + 0.65,
-      })
+      this.stars.push(this._initSingleStar({}, true))
     }
   }
 
@@ -317,10 +352,11 @@ export class HyperspaceEffect {
     const ctx = this.ctx
     const fov = this.fov
     const maxZ = this.maxZ
-    // Slower, serene, chill cruising speed
     const speedFactor = this.speed * 1.4 * dt
-    const streakMult = Math.min(1.5, 0.22 + this.speed * 0.08)
     const isVortex = this.style === "vortexHole"
+
+    // Base streak response tuned to speed with smooth acceleration
+    const baseStreak = (2.2 + this.speed * 1.8) * dt
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
@@ -340,16 +376,9 @@ export class HyperspaceEffect {
       star.prevZ = star.z
       star.z -= speedFactor * star.speedMultiplier
 
-      // Reset star when passing behind camera with randomized spawn depth to eliminate banding
+      // Reset star when passing behind camera with randomized properties and spawn depth
       if (star.z <= 2) {
-        star.z = maxZ + Math.random() * 80
-        star.prevZ = star.z
-        const angle = Math.random() * Math.PI * 2
-        const radius = Math.pow(Math.random(), 0.6) * Math.max(this.width, this.height) * 1.5 + 20
-        star.x = Math.cos(angle) * radius
-        star.y = Math.sin(angle) * radius
-        star.angle = angle
-        star.radius = radius
+        this._initSingleStar(star, false)
       }
 
       // Relativistic 3D perspective projection
@@ -357,37 +386,64 @@ export class HyperspaceEffect {
       const px = cx + star.x * k
       const py = cy + star.y * k
 
-      // Discard stars outside visible viewport buffer
-      if (px < -100 || px > this.width + 100 || py < -100 || py > this.height + 100) {
-        continue
+      // Calculate streak tail in 3D space with random tail multiplier and depth boost
+      const depthBoost = 1 + ((maxZ - star.z) / 450) * 1.6
+      const tailDelta = baseStreak * star.speedMultiplier * (star.tailMultiplier || 1.0) * depthBoost
+      const tailZ = Math.min(maxZ, star.z + tailDelta)
+      const prevK = fov / tailZ
+
+      let prevPx, prevPy
+      if (isVortex) {
+        // Curve the tail slightly along the vortex swirl path
+        const tailAngle = star.angle - (0.003 * (1 + ((maxZ - star.z) / maxZ) * 1.5)) * (tailDelta / Math.max(1, speedFactor))
+        prevPx = cx + Math.cos(tailAngle) * star.radius * prevK
+        prevPy = cy + Math.sin(tailAngle) * star.radius * prevK
+      } else {
+        prevPx = cx + star.x * prevK
+        prevPy = cy + star.y * prevK
       }
 
-      // Calculate streak tail in 3D
-      const tailZ = Math.min(
-        maxZ,
-        star.z + speedFactor * star.speedMultiplier * streakMult * (1 + (maxZ - star.z) / 600)
-      )
-      const prevK = fov / tailZ
-      const prevPx = cx + star.x * prevK
-      const prevPy = cy + star.y * prevK
+      // Check visibility bounds for both head and tail to prevent abrupt clipping
+      const minX = Math.min(px, prevPx)
+      const maxX = Math.max(px, prevPx)
+      const minY = Math.min(py, prevPy)
+      const maxY = Math.max(py, prevPy)
+
+      if (maxX < -60 || minX > this.width + 60 || maxY < -60 || minY > this.height + 60) {
+        continue
+      }
 
       // Smooth depth fading (fade in from deep void, fade out close to viewer)
       const proximity = 1 - star.z / maxZ
       let depthFade = 1.0
       if (star.z > maxZ * 0.75) {
         depthFade = (maxZ - star.z) / (maxZ * 0.25)
-      } else if (star.z < 60) {
-        depthFade = star.z / 60
+      } else if (star.z < 50) {
+        depthFade = star.z / 50
       }
 
-      const alpha = Math.min(1, Math.max(0.05, proximity * 1.15 * star.brightness * depthFade))
-      const lineWidth = Math.max(0.8, Math.min(3.6, k * star.size * 1.2))
+      const alpha = Math.min(1, Math.max(0.04, proximity * 1.15 * star.brightness * depthFade))
+      const lineWidth = Math.max(0.8, Math.min(star.isHyperBeam ? 4.2 : 3.2, k * star.size * 1.15))
 
       // Draw Warp Streak Gradient
       const grad = ctx.createLinearGradient(prevPx, prevPy, px, py)
-      grad.addColorStop(0, `rgba(${this._rgbStr}, 0)`)
-      grad.addColorStop(0.65, `rgba(${this._rgbStr}, ${alpha * 0.7})`)
-      grad.addColorStop(1, `rgba(255, 255, 255, ${alpha})`)
+      if (star.isHyperBeam) {
+        // High-energy radiant beam with incandescent core
+        grad.addColorStop(0, `rgba(${this._rgbStr}, 0)`)
+        grad.addColorStop(0.3, `rgba(${this._rgbStr}, ${alpha * 0.4})`)
+        grad.addColorStop(0.75, `rgba(${this._rgbStr}, ${alpha * 0.85})`)
+        grad.addColorStop(1, `rgba(255, 255, 255, ${Math.min(1, alpha * 1.25)})`)
+      } else if (star.isLongTrail) {
+        // Medium-long streak
+        grad.addColorStop(0, `rgba(${this._rgbStr}, 0)`)
+        grad.addColorStop(0.5, `rgba(${this._rgbStr}, ${alpha * 0.6})`)
+        grad.addColorStop(1, `rgba(255, 255, 255, ${alpha})`)
+      } else {
+        // Standard streak
+        grad.addColorStop(0, `rgba(${this._rgbStr}, 0)`)
+        grad.addColorStop(0.65, `rgba(${this._rgbStr}, ${alpha * 0.7})`)
+        grad.addColorStop(1, `rgba(255, 255, 255, ${alpha})`)
+      }
 
       ctx.strokeStyle = grad
       ctx.lineWidth = lineWidth
@@ -396,12 +452,25 @@ export class HyperspaceEffect {
       ctx.lineTo(px, py)
       ctx.stroke()
 
-      // Subtle bright pinpoint star head
-      if (proximity > 0.35 && depthFade > 0.25) {
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`
+      // Star head pinpoint flare
+      if (proximity > 0.32 && depthFade > 0.2) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.95})`
         ctx.beginPath()
-        ctx.arc(px, py, lineWidth * 0.55, 0, Math.PI * 2)
+        ctx.arc(px, py, lineWidth * 0.6, 0, Math.PI * 2)
         ctx.fill()
+
+        // Radiant halo for hyper beam stars
+        if (star.isHyperBeam && proximity > 0.38) {
+          const glowR = lineWidth * 2.2
+          const flareGrad = ctx.createRadialGradient(px, py, 0, px, py, glowR)
+          flareGrad.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.7})`)
+          flareGrad.addColorStop(0.45, `rgba(${this._rgbStr}, ${alpha * 0.3})`)
+          flareGrad.addColorStop(1, `rgba(${this._rgbStr}, 0)`)
+          ctx.fillStyle = flareGrad
+          ctx.beginPath()
+          ctx.arc(px, py, glowR, 0, Math.PI * 2)
+          ctx.fill()
+        }
       }
     }
 
