@@ -24,31 +24,25 @@
                         Layout</label>
                     <input type="checkbox" id="flip-layout-checkbox">
                 </div>
-                <div class="setting-item-row">
-                    <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings
-                        Sidebar Width</label>
-                    <select id="settings-sidebar-width-input" class="settings-select">
-                        <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)
-                        </option>
-                        <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)
-                        </option>
-                        <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)
-                        </option>
-                        <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
-                        <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)
-                        </option>
-                    </select>
+                <div class="setting-item">
+                    <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings Sidebar Width</label>
+                    <div class="range-wrapper">
+                        <input type="range" id="settings-sidebar-width-input" min="400" max="900" step="10" value="500">
+                        <span class="range-val" id="settings-sidebar-width-value">500px</span>
+                    </div>
+                    <div class="lcp-width-presets" role="group" aria-label="Settings sidebar width presets">
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="450" data-sidebar-width="450">450px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn active" data-preset-target="settings-sidebar-width-input" data-preset-val="500" data-sidebar-width="500">500px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="600" data-sidebar-width="600">600px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="700" data-sidebar-width="700">700px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="800" data-sidebar-width="800">800px</button>
+                    </div>
                 </div>
 
                 <div class="setting-item-row">
                     <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
                         controls</label>
                     <input type="checkbox" id="ghost-controls-checkbox">
-                </div>
-                <div class="setting-item-row">
-                    <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth
-                        Scrolling</label>
-                    <input type="checkbox" id="smooth-scroll-checkbox" checked>
                 </div>
                 <div class="setting-item-row">
                     <label for="perf-hover-mode-checkbox" data-i18n="settings_perf_hover_mode">Reduce Hover
@@ -189,6 +183,13 @@
                         <input type="range" id="search-bar-blur-slider" min="0" max="80" step="1" value="20">
                         <span class="range-val" id="search-bar-blur-val">20px</span>
                     </div>
+                    <div class="lcp-width-presets" role="group" aria-label="Search bar blur presets">
+                        <button type="button" class="lcp-preset-btn blur-preset-btn" data-blur="0">0px</button>
+                        <button type="button" class="lcp-preset-btn blur-preset-btn" data-blur="10">10px</button>
+                        <button type="button" class="lcp-preset-btn blur-preset-btn active" data-blur="20">20px</button>
+                        <button type="button" class="lcp-preset-btn blur-preset-btn" data-blur="40">40px</button>
+                        <button type="button" class="lcp-preset-btn blur-preset-btn" data-blur="60">60px</button>
+                    </div>
                 </div>
                 <div class="setting-item">
                     <label for="search-bar-radius-slider" data-i18n="settings_search_bar_radius">Search Bar
@@ -196,6 +197,13 @@
                     <div class="range-wrapper">
                         <input type="range" id="search-bar-radius-slider" min="0" max="100" step="1" value="20">
                         <span class="range-val" id="search-bar-radius-val">20px</span>
+                    </div>
+                    <div class="lcp-width-presets" role="group" aria-label="Search bar radius presets">
+                        <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="0">0px</button>
+                        <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="10">10px</button>
+                        <button type="button" class="lcp-preset-btn radius-preset-btn active" data-radius="20">20px</button>
+                        <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="30">30px</button>
+                        <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="50">50px</button>
                     </div>
                 </div>
             </div>

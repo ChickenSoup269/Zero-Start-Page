@@ -3431,12 +3431,14 @@ body.sidebar-light .preset-code-line-value {
 .setting-item-row select,
 .setting-item-row .settings-select,
 .setting-item select,
+.setting-item .settings-select,
+.setting-group select,
+.settings-sidebar select,
 .settings-select {
-  height: 32px;
-  min-width: 100px;
-  max-width: 170px;
-  padding: 0 24px 0 10px !important;
-  font-size: 0.82rem !important;
+  height: 34px;
+  min-width: 120px;
+  padding: 0 32px 0 12px !important;
+  font-size: 0.84rem !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
   background-color: rgba(255, 255, 255, 0.07) !important;
@@ -3446,6 +3448,26 @@ body.sidebar-light .preset-code-line-value {
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
+}
+
+/* Block-level selects (stacked under label in .setting-item) */
+.setting-item select,
+.setting-item .settings-select,
+.setting-group > select,
+.settings-select.full-width,
+select.full-width {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block;
+}
+
+/* Row-level selects (alongside label in .setting-item-row) */
+.setting-item-row select,
+.setting-item-row .settings-select {
+  width: auto;
+  min-width: 130px;
+  max-width: min(280px, 58%) !important;
+  flex-shrink: 0;
 }
 
 .setting-item-row select option,
@@ -6993,9 +7015,10 @@ body.sidebar-light .bg-9grid-btn.active {
 
 .setting-item-row select {
   width: auto;
-  flex: 1;
-  max-width: 160px;
-  padding: var(--space-1) var(--space-4) var(--space-1) var(--space-2);
+  flex: 0 1 auto;
+  min-width: 130px;
+  max-width: min(280px, 58%);
+  padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
 }
 
@@ -7321,11 +7344,18 @@ body.sidebar-light .bg-9grid-btn.active {
   min-width: 0;
 }
 
-.settings-sidebar .setting-item-row select,
 .settings-sidebar .setting-item-row input[type="range"],
 .settings-sidebar .setting-item-row .btn-group {
   flex-shrink: 0;
   max-width: 150px !important;
+}
+
+.settings-sidebar .setting-item-row select,
+.settings-sidebar .setting-item-row .settings-select {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 130px;
+  max-width: min(280px, 58%) !important;
 }
 
 .settings-checkbox-grid {

@@ -233,7 +233,7 @@ export function scrollToSidebarElement(element, highlight = true) {
 
     currentSidebar.scrollTo({
       top: targetPixel,
-      behavior: "smooth",
+      behavior: "auto",
     })
 
     if (highlight) {
@@ -312,7 +312,7 @@ export function switchBgSubTab(subTabId, targetElementToScrollTo = null) {
   ) {
     scrollToSidebarElement(targetElementToScrollTo)
   } else {
-    sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
+    sidebarContent.scrollTo({ top: 0, behavior: "auto" })
   }
 }
 

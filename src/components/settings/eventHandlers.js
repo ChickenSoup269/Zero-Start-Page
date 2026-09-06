@@ -1626,7 +1626,7 @@ export function setupGeneralEventHandlers(
 
   if (sidebarScrollTopBtn) {
     sidebarScrollTopBtn.addEventListener("click", () => {
-      sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
+      sidebarContent.scrollTo({ top: 0, behavior: "auto" })
     })
   }
 
@@ -1643,18 +1643,6 @@ export function setupGeneralEventHandlers(
     quickActionsToggleBtn.addEventListener("click", () => {
       const collapsed = quickActionsContainer.classList.toggle("collapsed")
       localStorage.setItem(STORAGE_KEY, collapsed)
-    })
-  }
-
-  const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
-  if (smoothScrollCheckbox) {
-    smoothScrollCheckbox.addEventListener("change", (e) => {
-      handleSettingUpdate("smoothScrollEnabled", e.target.checked)
-      if (sidebarContent) {
-        sidebarContent.style.scrollBehavior = e.target.checked
-          ? "smooth"
-          : "auto"
-      }
     })
   }
 
@@ -4049,7 +4037,7 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.settingsSidebarWidthInput) {
-      DOM.settingsSidebarWidthInput.addEventListener("change", () => {
+      const handleSidebarWidth = () => {
         if (DOM.settingsSidebarWidthValue) {
           DOM.settingsSidebarWidthValue.textContent = `${DOM.settingsSidebarWidthInput.value}px`
         }
@@ -4057,11 +4045,21 @@ export function setupGeneralEventHandlers(
           "--sidebar-width",
           `${DOM.settingsSidebarWidthInput.value}px`,
         )
+        document
+          .querySelectorAll(
+            '.lcp-preset-btn[data-preset-target="settings-sidebar-width-input"], .sidebar-width-preset-btn, [data-sidebar-width]',
+          )
+          .forEach((btn) => {
+            const v = btn.dataset.presetVal || btn.dataset.sidebarWidth
+            btn.classList.toggle("active", v === String(DOM.settingsSidebarWidthInput.value))
+          })
         throttleSettingUpdate(
           "settingsSidebarWidth",
           DOM.settingsSidebarWidthInput.value,
         )
-      })
+      }
+      DOM.settingsSidebarWidthInput.addEventListener("input", handleSidebarWidth)
+      DOM.settingsSidebarWidthInput.addEventListener("change", handleSidebarWidth)
     }
 
     // Section Reset Handlers
@@ -8351,34 +8349,141 @@ export function setupGeneralEventHandlers(
       )
     })
   }
+  const syncPresetButtons = (targetId, val) => {
+    if (!targetId || val === undefined) return
+    const s = String(val)
+    document
+      .querySelectorAll(`.lcp-preset-btn[data-preset-target="${targetId}"]`)
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.presetVal === s)
+      })
+  }
+
   const syncWidthPresets = (val) => {
     const s = String(val)
     document
-      .querySelectorAll(".lcp-preset-btn, .width-preset-btn")
+      .querySelectorAll(".lcp-preset-btn[data-width], .width-preset-btn")
       .forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.width === s)
       })
   }
 
+  const syncBlurPresets = (val) => {
+    const s = String(val)
+    document
+      .querySelectorAll(".blur-preset-btn, [data-blur]")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.blur === s)
+      })
+  }
+
+  const syncRadiusPresets = (val) => {
+    const s = String(val)
+    document
+      .querySelectorAll(".radius-preset-btn, [data-radius]")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.radius === s)
+      })
+  }
+
   document.addEventListener("click", (e) => {
-    const presetBtn = e.target.closest(".lcp-preset-btn, .width-preset-btn")
-    if (!presetBtn || !presetBtn.dataset.width) return
-    const width = parseInt(presetBtn.dataset.width, 10)
-    if (!width) return
-
-    if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
-    if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
-    if (DOM.searchBarWidthVal) DOM.searchBarWidthVal.textContent = `${width}px`
-    if (DOM.lcpSearchBarWidthVal)
-      DOM.lcpSearchBarWidthVal.textContent = `${width}px`
-
-    syncWidthPresets(width)
-    handleSettingUpdate("searchBarWidth", width)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "searchBarWidth", value: width },
-      }),
+    const presetBtn = e.target.closest(
+      ".lcp-preset-btn, .width-preset-btn, .blur-preset-btn, .radius-preset-btn, .sidebar-width-preset-btn",
     )
+    if (!presetBtn) return
+
+    // Generic preset target handler (for bookmark sliders, sidebar width, etc.)
+    if (presetBtn.dataset.presetTarget && presetBtn.dataset.presetVal !== undefined) {
+      const targetId = presetBtn.dataset.presetTarget
+      const val = presetBtn.dataset.presetVal
+      const targetInput = document.getElementById(targetId)
+      if (targetInput) {
+        targetInput.value = val
+        targetInput.dispatchEvent(new Event("input", { bubbles: true }))
+        targetInput.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      syncPresetButtons(targetId, val)
+      return
+    }
+
+    if (presetBtn.dataset.sidebarWidth !== undefined) {
+      const width = parseInt(presetBtn.dataset.sidebarWidth, 10)
+      if (isNaN(width)) return
+      if (DOM.settingsSidebarWidthInput) {
+        DOM.settingsSidebarWidthInput.value = width
+        DOM.settingsSidebarWidthInput.dispatchEvent(new Event("input", { bubbles: true }))
+        DOM.settingsSidebarWidthInput.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      return
+    }
+
+    if (presetBtn.dataset.width) {
+      const width = parseInt(presetBtn.dataset.width, 10)
+      if (!width) return
+
+      if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
+      if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
+      if (DOM.searchBarWidthVal) DOM.searchBarWidthVal.textContent = `${width}px`
+      if (DOM.lcpSearchBarWidthVal)
+        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+
+      syncWidthPresets(width)
+      handleSettingUpdate("searchBarWidth", width)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarWidth", value: width },
+        }),
+      )
+    } else if (presetBtn.dataset.blur !== undefined) {
+      const blur = parseInt(presetBtn.dataset.blur, 10)
+      if (isNaN(blur)) return
+
+      if (DOM.searchBarBlurSlider) DOM.searchBarBlurSlider.value = blur
+      if (DOM.searchBarBlurVal) DOM.searchBarBlurVal.textContent = `${blur}px`
+      document.documentElement.style.setProperty(
+        "--search-bar-blur",
+        `${blur}px`,
+      )
+
+      syncBlurPresets(blur)
+      handleSettingUpdate("searchBarBlur", blur)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarBlur", value: blur },
+        }),
+      )
+    } else if (presetBtn.dataset.radius !== undefined) {
+      const radius = parseInt(presetBtn.dataset.radius, 10)
+      if (isNaN(radius)) return
+
+      if (DOM.searchBarRadiusSlider) DOM.searchBarRadiusSlider.value = radius
+      if (DOM.searchBarRadiusVal)
+        DOM.searchBarRadiusVal.textContent = `${radius}px`
+      document.documentElement.style.setProperty(
+        "--search-bar-radius",
+        `${radius}px`,
+      )
+
+      syncRadiusPresets(radius)
+      handleSettingUpdate("searchBarRadius", radius)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarRadius", value: radius },
+        }),
+      )
+    }
+  })
+
+  // Global listener to sync preset buttons whenever sliders are moved or stepped
+  document.addEventListener("input", (e) => {
+    if (e.target && e.target.id) {
+      syncPresetButtons(e.target.id, e.target.value)
+    }
+  })
+  document.addEventListener("change", (e) => {
+    if (e.target && e.target.id) {
+      syncPresetButtons(e.target.id, e.target.value)
+    }
   })
 
   if (DOM.searchBarWidthSlider) {
@@ -8406,9 +8511,11 @@ export function setupGeneralEventHandlers(
         "--search-bar-blur",
         `${blur}px`,
       )
+      syncBlurPresets(blur)
     })
     DOM.searchBarBlurSlider.addEventListener("change", (e) => {
       const blur = e.target.value
+      syncBlurPresets(blur)
       handleSettingUpdate("searchBarBlur", parseInt(blur, 10))
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
@@ -8426,9 +8533,11 @@ export function setupGeneralEventHandlers(
         "--search-bar-radius",
         `${radius}px`,
       )
+      syncRadiusPresets(radius)
     })
     DOM.searchBarRadiusSlider.addEventListener("change", (e) => {
       const radius = e.target.value
+      syncRadiusPresets(radius)
       handleSettingUpdate("searchBarRadius", parseInt(radius, 10))
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
