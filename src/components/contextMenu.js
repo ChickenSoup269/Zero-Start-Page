@@ -324,14 +324,7 @@ function showItemDetailToast(item) {
 
   syncToastTheme(toast)
   positionDetailToast(toast, item)
-
-  if (!wasVisible) {
-    requestAnimationFrame(() => {
-      toast.classList.add("toast-visible")
-    })
-  } else {
-    toast.classList.add("toast-visible")
-  }
+  toast.classList.add("toast-visible")
 }
 
 function handleContextMenuMouseOver(e) {
@@ -359,7 +352,7 @@ function handleContextMenuMouseOver(e) {
   }
 
   const isToastCurrentlyVisible = contextMenuDetailToastEl && contextMenuDetailToastEl.classList.contains("toast-visible")
-  const delay = isToastCurrentlyVisible ? 30 : 160
+  const delay = isToastCurrentlyVisible ? 0 : 35
 
   hoverDetailTimer = setTimeout(() => {
     showItemDetailToast(item)

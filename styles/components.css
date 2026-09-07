@@ -2326,12 +2326,12 @@ body.context-menu-mini .context-menu-separator {
   box-sizing: border-box;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(3px) scale(0.98);
+  transform: translateY(2px) scale(0.99);
   transition:
-    opacity 0.12s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.12s cubic-bezier(0.16, 1, 0.3, 1),
-    top 0.08s ease-out,
-    left 0.08s ease-out;
+    opacity 0.07s ease-out,
+    transform 0.07s ease-out,
+    top 0.04s ease-out,
+    left 0.04s ease-out;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);

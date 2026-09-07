@@ -17262,7 +17262,7 @@ body.bookmark-group-border-hidden
 .context-menu .menu-item i,
 .calendar-context-menu .context-menu-item i,
 .calendar-context-menu .menu-item i {
-  transition: background-color 0.06s ease, color 0.06s ease;
+  transition: none !important;
 }
 
 .g-apps-context-menu .g-apps-menu-btn,

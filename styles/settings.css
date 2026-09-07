@@ -814,7 +814,7 @@ body.sidebar-m3-accent .settings-sidebar {
   padding: 7px 10px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.08s ease, color 0.08s ease, transform 0.08s ease;
+  transition: none !important;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -827,14 +827,13 @@ body.sidebar-m3-accent .settings-sidebar {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  transform: translateZ(0);
-  will-change: transform, background-color;
+  transform: none !important;
 }
 
 .toc-item:hover {
-  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.14);
-  color: #fff;
-  transform: translateX(4px);
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.16) !important;
+  color: #fff !important;
+  transform: none !important;
 }
 
 .toc-item.sub-item {
@@ -848,12 +847,14 @@ body.sidebar-m3-accent .settings-sidebar {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
+  transition: none !important;
+  transform: none !important;
 }
 
 .toc-item.sub-item:hover {
-  border-left-color: var(--accent-color);
-  color: #fff;
-  transform: translateX(4px);
+  border-left-color: var(--accent-color) !important;
+  color: #fff !important;
+  transform: none !important;
 }
 
 .toc-item i {
@@ -863,12 +864,13 @@ body.sidebar-m3-accent .settings-sidebar {
   align-items: center;
   justify-content: center;
   font-size: 0.88rem;
-  transition: transform 0.08s ease;
+  transition: none !important;
+  transform: none !important;
   flex-shrink: 0;
 }
 
 .toc-item:hover i {
-  transform: scale(1.12);
+  transform: none !important;
 }
 
 .toc-item-title {
@@ -984,7 +986,7 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
 }
 
 .toc-item.toc-highlight-glow:hover {
-  transform: translateX(4px);
+  transform: none !important;
   box-shadow:
     0 0 20px rgba(var(--accent-color-rgb, 100, 150, 255), 0.45),
     0 0 35px rgba(236, 72, 153, 0.25),
