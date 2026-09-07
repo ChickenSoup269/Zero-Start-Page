@@ -2145,7 +2145,7 @@ body.context-menu-mini .context-menu-separator {
     rgba(14, 16, 24, 0.98) 100%
   );
   color: #f8fafc;
-  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 /* macOS Frosted Glass Theme */
@@ -2186,7 +2186,7 @@ body.context-menu-mini .context-menu-separator {
       rgba(14, 16, 24, 0.98) 100%
     )
   ) !important;
-  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
 /* Toast Header */
@@ -2211,15 +2211,15 @@ body.context-menu-mini .context-menu-separator {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.18);
-  color: var(--accent-color, #818cf8);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 11px;
 }
 
 .context-menu-detail-toast.theme-macos .cmd-toast-icon-wrap,
 .context-menu-detail-toast.theme-light .cmd-toast-icon-wrap {
-  background: color-mix(in srgb, var(--accent-color, #2563eb) 15%, transparent);
-  color: var(--accent-color, #2563eb);
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(20, 20, 24, 0.92);
 }
 
 .cmd-toast-category {
@@ -2286,12 +2286,12 @@ body.context-menu-mini .context-menu-separator {
 }
 
 .cmd-toast-state-pill.current .cmd-state-badge-val {
-  color: var(--accent-color, #a5b4fc);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .context-menu-detail-toast.theme-macos .cmd-toast-state-pill.current .cmd-state-badge-val,
 .context-menu-detail-toast.theme-light .cmd-toast-state-pill.current .cmd-state-badge-val {
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  color: rgba(20, 20, 24, 0.95);
 }
 
 .cmd-toast-cycle-arrow {
@@ -2313,29 +2313,49 @@ body.context-menu-mini .context-menu-separator {
 }
 
 .cmd-toast-status-badge.badge-on {
-  color: #4ade80 !important;
-  background: rgba(74, 222, 128, 0.18);
-  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.cmd-toast-status-badge.badge-on i {
+  color: inherit !important;
 }
 
 .context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-on,
 .context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-on {
-  color: #15803d !important;
-  background: rgba(34, 197, 94, 0.16) !important;
-  border: 1px solid rgba(34, 197, 94, 0.36) !important;
+  color: rgba(20, 20, 24, 0.92) !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-on i,
+.context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-on i {
+  color: inherit !important;
 }
 
 .cmd-toast-status-badge.badge-off {
-  color: rgba(255, 255, 255, 0.85) !important;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.55) !important;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cmd-toast-status-badge.badge-off i {
+  color: inherit !important;
+  opacity: 0.7 !important;
 }
 
 .context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-off,
 .context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-off {
-  color: #334155 !important;
-  background: rgba(0, 0, 0, 0.06) !important;
-  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: rgba(30, 35, 45, 0.55) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.context-menu-detail-toast.theme-macos .cmd-toast-status-badge.badge-off i,
+.context-menu-detail-toast.theme-light .cmd-toast-status-badge.badge-off i {
+  color: inherit !important;
+  opacity: 0.7 !important;
 }
 
 .cmd-toast-radio-badge {
@@ -2351,16 +2371,16 @@ body.context-menu-mini .context-menu-separator {
 }
 
 .cmd-toast-radio-badge.is-selected {
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.25);
-  color: var(--accent-color, #c7d2fe);
-  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.42);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .context-menu-detail-toast.theme-macos .cmd-toast-radio-badge.is-selected,
 .context-menu-detail-toast.theme-light .cmd-toast-radio-badge.is-selected {
-  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05));
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18));
+  background: rgba(0, 0, 0, 0.07);
+  color: rgba(20, 20, 24, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 /* Hint text */
@@ -2375,7 +2395,7 @@ body.context-menu-mini .context-menu-separator {
 }
 
 .cmd-toast-hint i {
-  color: var(--accent-color, #818cf8);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 10px;
   flex-shrink: 0;
 }
@@ -2387,7 +2407,7 @@ body.context-menu-mini .context-menu-separator {
 
 .context-menu-detail-toast.theme-macos .cmd-toast-hint i,
 .context-menu-detail-toast.theme-light .cmd-toast-hint i {
-  color: var(--accent-color, #2563eb);
+  color: rgba(30, 35, 45, 0.65);
 }
 
 /* Bookmark Details */
