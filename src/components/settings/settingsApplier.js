@@ -2892,11 +2892,18 @@ function createApplySettings(effectInstances) {
       "context-menu-dark",
       "context-menu-light",
       "context-menu-none",
+      "context-menu-light-transparent",
+      "context-menu-transparent",
       "context-menu-macos",
       "context-menu-m3",
     )
     const contextMenuStyle = settings.contextMenuStyle || "dark"
     document.body.classList.add(`context-menu-${contextMenuStyle}`)
+    if (contextMenuStyle === "light-transparent") {
+      document.body.classList.add("context-menu-none")
+    } else if (contextMenuStyle === "none") {
+      document.body.classList.add("context-menu-light-transparent")
+    }
     document.body.classList.toggle(
       "context-menu-mini",
       settings.contextMenuMini === true,

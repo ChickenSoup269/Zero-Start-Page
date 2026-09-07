@@ -72,8 +72,15 @@ function syncToastTheme(toast) {
     toast.classList.add("theme-macos")
   } else if (document.body.classList.contains("context-menu-light")) {
     toast.classList.add("theme-light")
-  } else if (document.body.classList.contains("context-menu-none")) {
-    toast.classList.add("theme-none")
+  } else if (
+    document.body.classList.contains("context-menu-light-transparent") ||
+    document.body.classList.contains("context-menu-none")
+  ) {
+    toast.classList.add("theme-light-transparent")
+  } else if (document.body.classList.contains("context-menu-transparent")) {
+    toast.classList.add("theme-transparent")
+  } else if (document.body.classList.contains("context-menu-m3")) {
+    toast.classList.add("theme-m3")
   } else {
     toast.classList.add("theme-dark")
   }
