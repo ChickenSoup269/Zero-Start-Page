@@ -356,15 +356,20 @@ function getBookmarkForEdit(index, target) {
   return null
 }
 
+let bookmarkEditPopoverCleanup = null
+
 function positionBookmarkEditPopover(popover, anchor) {
   const margin = 12
-  const width = popover.offsetWidth || 340
-  const height = popover.offsetHeight || 420
+  const width = popover.offsetWidth || 350
+  const height = popover.offsetHeight || 440
 
   // 1. Check if anchor is inside or related to a bookmark-stack-popup or hidden-bookmarks-popup
   const stackPopup =
     anchor?.closest?.(".bookmark-stack-popup, .hidden-bookmarks-popup") ||
-    document.querySelector(".bookmark-stack-popup, .hidden-bookmarks-popup")
+    (anchor?.classList?.contains("bookmark-stack-popup") ||
+    anchor?.classList?.contains("hidden-bookmarks-popup")
+      ? anchor
+      : null)
 
   if (stackPopup && stackPopup.isConnected) {
     const pr = stackPopup.getBoundingClientRect()
@@ -376,7 +381,7 @@ function positionBookmarkEditPopover(popover, anchor) {
           Math.max(top, margin),
           window.innerHeight - height - margin,
         )
-        popover.style.left = `${Math.round(pr.right + 10)}px`
+        popover.style.left = `${Math.round(pr.right + 12)}px`
         popover.style.top = `${Math.round(top)}px`
         return
       }
@@ -387,7 +392,7 @@ function positionBookmarkEditPopover(popover, anchor) {
           Math.max(top, margin),
           window.innerHeight - height - margin,
         )
-        popover.style.left = `${Math.round(pr.left - width - 10)}px`
+        popover.style.left = `${Math.round(pr.left - width - 12)}px`
         popover.style.top = `${Math.round(top)}px`
         return
       }
@@ -396,9 +401,9 @@ function positionBookmarkEditPopover(popover, anchor) {
         Math.max(pr.left + (pr.width - width) / 2, margin),
         window.innerWidth - width - margin,
       )
-      let top = pr.bottom + 10
+      let top = pr.bottom + 12
       if (top + height > window.innerHeight - margin) {
-        top = Math.max(margin, pr.top - height - 10)
+        top = Math.max(margin, pr.top - height - 12)
       }
       popover.style.left = `${Math.round(left)}px`
       popover.style.top = `${Math.round(top)}px`
@@ -424,25 +429,123 @@ function positionBookmarkEditPopover(popover, anchor) {
     }
   }
 
-  let left = anchorRect
-    ? anchorRect.left + anchorRect.width / 2 - width / 2
-    : window.innerWidth / 2 - width / 2
-  let top = anchorRect
-    ? anchorRect.bottom + 10
-    : window.innerHeight / 2 - height / 2
-
-  if (anchorRect && top + height > window.innerHeight - margin) {
-    top = anchorRect.top - height - 10
+  // If no anchor or off-screen, or very narrow viewport (< 520px): center on screen
+  if (!anchorRect || window.innerWidth < 520) {
+    popover.style.left = `${Math.round(Math.max(margin, (window.innerWidth - width) / 2))}px`
+    popover.style.top = `${Math.round(Math.max(margin, (window.innerHeight - height) / 2))}px`
+    return
   }
 
-  left = Math.min(Math.max(left, margin), window.innerWidth - width - margin)
-  top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+  // Detect layout modes from document.body
+  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+  const isFlipped = document.body.classList.contains("flip-layout")
+  const isTaskbarTop = document.body.classList.contains(
+    "bookmark-taskbar-top-mode",
+  )
+  const isTaskbarLeft = document.body.classList.contains(
+    "bookmark-taskbar-left-mode",
+  )
+  const isTaskbarRight = document.body.classList.contains(
+    "bookmark-taskbar-right-mode",
+  )
+  const isTaskbar =
+    document.body.classList.contains("bookmark-taskbar-mode") ||
+    isTaskbarLeft ||
+    isTaskbarRight
 
-  popover.style.left = `${left}px`
-  popover.style.top = `${top}px`
+  // ── SIDEBAR LAYOUT ──────────────────────────────────────────
+  if (isSidebar) {
+    let top = Math.round(anchorRect.top + (anchorRect.height - height) / 2)
+    top = Math.max(margin, Math.min(top, window.innerHeight - height - margin))
+    let left
+
+    if (isFlipped) {
+      // Sidebar is on the LEFT -> popover opens to the RIGHT of the anchor
+      left = Math.round(anchorRect.right + 14)
+      if (left + width + margin > window.innerWidth) {
+        left = Math.max(margin, anchorRect.left - width - 14)
+      }
+    } else {
+      // Sidebar is on the RIGHT -> popover opens to the LEFT of the anchor
+      left = Math.round(anchorRect.left - width - 14)
+      if (left < margin) {
+        left = Math.min(
+          window.innerWidth - width - margin,
+          anchorRect.right + 14,
+        )
+      }
+    }
+
+    popover.style.left = `${Math.round(left)}px`
+    popover.style.top = `${Math.round(top)}px`
+    return
+  }
+
+  // ── TASKBAR TOP LAYOUT ──────────────────────────────────────
+  if (isTaskbarTop) {
+    let top = Math.round(anchorRect.bottom + 14)
+    if (top + height > window.innerHeight - margin) {
+      top = Math.max(margin, window.innerHeight - height - margin)
+    }
+    let left = Math.round(anchorRect.left + (anchorRect.width - width) / 2)
+    left = Math.max(margin, Math.min(left, window.innerWidth - width - margin))
+
+    popover.style.left = `${Math.round(left)}px`
+    popover.style.top = `${Math.round(top)}px`
+    return
+  }
+
+  // ── TASKBAR BOTTOM LAYOUTS (Center, Left, Right) ─────────────
+  if (isTaskbar) {
+    let top = Math.round(anchorRect.top - height - 14)
+    if (top < margin) {
+      top = margin
+    }
+    let left
+    if (isTaskbarLeft) {
+      left = Math.round(anchorRect.left)
+    } else if (isTaskbarRight) {
+      left = Math.round(anchorRect.right - width)
+    } else {
+      left = Math.round(anchorRect.left + (anchorRect.width - width) / 2)
+    }
+    left = Math.max(margin, Math.min(left, window.innerWidth - width - margin))
+
+    popover.style.left = `${Math.round(left)}px`
+    popover.style.top = `${Math.round(top)}px`
+    return
+  }
+
+  // ── DEFAULT GRID LAYOUT ─────────────────────────────────────
+  const spaceBelow = window.innerHeight - anchorRect.bottom - margin
+  const spaceAbove = anchorRect.top - margin
+
+  let top
+  if (spaceBelow >= height + 14 || spaceBelow >= spaceAbove) {
+    top = Math.round(anchorRect.bottom + 14)
+    if (top + height > window.innerHeight - margin) {
+      top = Math.max(margin, anchorRect.top - height - 14)
+    }
+  } else {
+    top = Math.round(anchorRect.top - height - 14)
+    if (top < margin) {
+      top = Math.round(anchorRect.bottom + 14)
+    }
+  }
+  top = Math.max(margin, Math.min(top, window.innerHeight - height - margin))
+
+  let left = Math.round(anchorRect.left + (anchorRect.width - width) / 2)
+  left = Math.max(margin, Math.min(left, window.innerWidth - width - margin))
+
+  popover.style.left = `${Math.round(left)}px`
+  popover.style.top = `${Math.round(top)}px`
 }
 
 export function closeBookmarkEditPopover() {
+  if (bookmarkEditPopoverCleanup) {
+    bookmarkEditPopoverCleanup()
+    bookmarkEditPopoverCleanup = null
+  }
   if (!bookmarkEditPopover) return
   bookmarkEditPopover.remove()
   bookmarkEditPopover = null
@@ -655,14 +758,42 @@ export function openBookmarkEditPopover(
   rebuildIconOptions()
   updatePreview()
   positionBookmarkEditPopover(popover, anchor)
+  requestAnimationFrame(() => {
+    if (bookmarkEditPopover && anchor) {
+      positionBookmarkEditPopover(bookmarkEditPopover, anchor)
+    }
+  })
+
+  const handleReposition = () => {
+    if (bookmarkEditPopover && anchor && anchor.isConnected) {
+      positionBookmarkEditPopover(bookmarkEditPopover, anchor)
+    }
+  }
 
   const closeOnOutside = (event) => {
     if (!popover.contains(event.target) && !anchor?.contains?.(event.target)) {
       closeBookmarkEditPopover()
-      document.removeEventListener("pointerdown", closeOnOutside)
     }
   }
+
+  window.addEventListener("resize", handleReposition, { passive: true })
+  const scrollContainer = anchor?.closest?.(
+    ".bookmarks-grid, .bookmark-stack-popup-items, .bookmark-groups-container, .hidden-bookmarks-popup",
+  )
+  if (scrollContainer) {
+    scrollContainer.addEventListener("scroll", handleReposition, {
+      passive: true,
+    })
+  }
   setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
+
+  bookmarkEditPopoverCleanup = () => {
+    window.removeEventListener("resize", handleReposition)
+    if (scrollContainer) {
+      scrollContainer.removeEventListener("scroll", handleReposition)
+    }
+    document.removeEventListener("pointerdown", closeOnOutside)
+  }
 
   const focusTarget = options.focus === "icon" ? iconInput : titleInput
   focusTarget.focus()
@@ -969,14 +1100,42 @@ function createFolderIconEditor({
   syncButtons()
   updatePreview()
   positionBookmarkEditPopover(popover, anchor)
+  requestAnimationFrame(() => {
+    if (bookmarkEditPopover && anchor) {
+      positionBookmarkEditPopover(bookmarkEditPopover, anchor)
+    }
+  })
+
+  const handleReposition = () => {
+    if (bookmarkEditPopover && anchor && anchor.isConnected) {
+      positionBookmarkEditPopover(bookmarkEditPopover, anchor)
+    }
+  }
 
   const closeOnOutside = (event) => {
     if (!popover.contains(event.target) && !anchor?.contains?.(event.target)) {
       closeBookmarkEditPopover()
-      document.removeEventListener("pointerdown", closeOnOutside)
     }
   }
+
+  window.addEventListener("resize", handleReposition, { passive: true })
+  const scrollContainer = anchor?.closest?.(
+    ".bookmarks-grid, .bookmark-stack-popup-items, .bookmark-groups-container, .hidden-bookmarks-popup",
+  )
+  if (scrollContainer) {
+    scrollContainer.addEventListener("scroll", handleReposition, {
+      passive: true,
+    })
+  }
   setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
+
+  bookmarkEditPopoverCleanup = () => {
+    window.removeEventListener("resize", handleReposition)
+    if (scrollContainer) {
+      scrollContainer.removeEventListener("scroll", handleReposition)
+    }
+    document.removeEventListener("pointerdown", closeOnOutside)
+  }
 
   const focusTarget = focus === "icon" ? iconInput || nameInput : nameInput
   focusTarget.focus()

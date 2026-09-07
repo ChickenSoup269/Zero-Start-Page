@@ -2362,6 +2362,7 @@ export function renderBookmarks() {
           "bookmarkStack",
           bookmark.id,
           {
+            anchor: bookmarkEl,
             onEdit: async () => {
               openBookmarkStackEditPopover(index, bookmarkEl)
             },
@@ -2390,6 +2391,9 @@ export function renderBookmarks() {
       } else {
         showContextMenu(e.clientX, e.clientY, index, "bookmark", null, {
           anchor: bookmarkEl,
+          onEdit: () => openBookmarkEditPopover(index, null, bookmarkEl),
+          onEditIcon: () =>
+            openBookmarkEditPopover(index, null, bookmarkEl, { focus: "icon" }),
         })
       }
     })
@@ -2811,6 +2815,9 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
             null,
             {
               anchor: clone,
+              onEdit: () => openBookmarkEditPopover(numericIdx, null, clone),
+              onEditIcon: () =>
+                openBookmarkEditPopover(numericIdx, null, clone, { focus: "icon" }),
             },
           )
         }
@@ -3335,22 +3342,9 @@ function createGroupTabElement(
     }
   })
 
-  // Rename (Double Click) - Keeping as valid shortcut
-  tab.addEventListener("dblclick", async () => {
-    const newName = await showPrompt(
-      currentI18n.prompt_rename_group || "Enter new group name:",
-      group.name,
-    )
-    if (newName && newName.trim() !== "") {
-      const snapshot = captureBookmarkSnapshot()
-      group.name = newName.trim()
-      saveBookmarks()
-      renderBookmarks() // Re-render tabs
-      showBookmarkUndo(
-        currentI18n.bookmark_group_renamed || "Group renamed",
-        snapshot,
-      )
-    }
+  // Edit Group (Double Click)
+  tab.addEventListener("dblclick", () => {
+    openBookmarkGroupEditPopover(group.id, tab)
   })
 
   // Context Menu (Right Click)

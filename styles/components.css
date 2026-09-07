@@ -874,6 +874,40 @@ body.context-menu-macos .bookmark-edit-field {
   color: rgba(0, 0, 0, 0.68);
 }
 
+/* Transparent & Light Transparent Context Menu Theme Support for Bookmark Edit Popover */
+body.context-menu-transparent .bookmark-edit-popover {
+  background: rgba(18, 20, 28, 0.65);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.45);
+}
+
+body.context-menu-light-transparent .bookmark-edit-popover {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  color: #17171c;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
+}
+
+body.context-menu-light-transparent .bookmark-edit-icon-preview,
+body.context-menu-light-transparent .bookmark-edit-icon-grid button,
+body.context-menu-light-transparent .bookmark-edit-field input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #17171c;
+}
+
+body.context-menu-light-transparent .bookmark-edit-fields {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.context-menu-light-transparent .bookmark-edit-field {
+  color: rgba(0, 0, 0, 0.68);
+}
+
 .bookmark-stack-icon.has-custom-stack-icon {
   display: flex !important;
   align-items: center !important;
