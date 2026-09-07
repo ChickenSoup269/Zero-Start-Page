@@ -62,11 +62,18 @@
                         </label>
                     </div>
                 </div>
+                <div class="import-options-bar">
+                    <label class="import-as-groups-label" for="import-as-groups-cb" data-i18n-title="modal_import_as_groups_desc" title="Create bookmark groups matching selected folders">
+                        <input type="checkbox" id="import-as-groups-cb">
+                        <span data-i18n="modal_import_as_groups">Create groups from folders</span>
+                    </label>
+                    <span class="import-shift-hint" data-i18n="modal_shift_click_hint">
+                        <i class="fa-solid fa-keyboard" style="margin-right: 4px;"></i>Tip: Hold Shift + Click to select range
+                    </span>
+                </div>
                 <div id="browser-bookmarks-list" class="bookmark-tree-container"></div>
-                <div class="import-footer"
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.08);">
-                    <span id="import-count-label" class="import-count-label"
-                        style="font-size: 0.9rem; opacity: 0.8; font-weight: 500;">0 selected</span>
+                <div class="import-footer">
+                    <span id="import-count-label" class="import-count-label">0 selected</span>
                     <button id="confirm-import-btn" class="primary-btn"
                         style="height: 40px; padding: 0 20px; justify-content: center; gap: 10px; font-weight: 600; min-width: 160px;">
                         <i class="fa-solid fa-file-import"></i>

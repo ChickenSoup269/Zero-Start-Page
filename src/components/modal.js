@@ -1186,13 +1186,125 @@ function saveBookmark() {
   }
 }
 
+let lastClickedCheckbox = null
+
+function _countBookmarksInNode(node) {
+  if (!node.children) return 1
+  return node.children.reduce(
+    (acc, child) => acc + _countBookmarksInNode(child),
+    0,
+  )
+}
+
+function _isCheckboxVisible(cb) {
+  if (
+    cb.closest(".bookmark-tree-item.hidden") ||
+    cb.closest(".folder-wrapper.hidden")
+  ) {
+    return false
+  }
+  let parent = cb.parentElement
+  while (parent && parent !== browserBookmarksList) {
+    if (
+      parent.classList.contains("folder-content") &&
+      parent.parentElement?.classList.contains("collapsed")
+    ) {
+      return false
+    }
+    parent = parent.parentElement
+  }
+  return true
+}
+
+function _getVisibleCheckboxes() {
+  if (!browserBookmarksList) return []
+  const all = Array.from(
+    browserBookmarksList.querySelectorAll('input[type="checkbox"]'),
+  )
+  return all.filter(_isCheckboxVisible)
+}
+
+function _handleRangeSelect(startCheckbox, endCheckbox, targetChecked) {
+  const visible = _getVisibleCheckboxes()
+  const idx1 = visible.indexOf(startCheckbox)
+  const idx2 = visible.indexOf(endCheckbox)
+  if (idx1 === -1 || idx2 === -1) return
+
+  const low = Math.min(idx1, idx2)
+  const high = Math.max(idx1, idx2)
+
+  for (let i = low; i <= high; i++) {
+    const cb = visible[i]
+    cb.checked = targetChecked
+    cb.indeterminate = false
+    if (cb.classList.contains("folder-checkbox")) {
+      const folderWrapper = cb.closest(".folder-wrapper")
+      if (folderWrapper) {
+        const childBoxes = folderWrapper.querySelectorAll(
+          '.bookmark-tree-item input[type="checkbox"]',
+        )
+        childBoxes.forEach((childCb) => {
+          childCb.checked = targetChecked
+          childCb
+            .closest(".bookmark-tree-item")
+            ?.classList.toggle("selected", targetChecked)
+        })
+      }
+    } else {
+      cb.closest(".bookmark-tree-item")?.classList.toggle(
+        "selected",
+        targetChecked,
+      )
+    }
+  }
+
+  _updateAllFolderStates()
+  _updateSelectAllState()
+  _updateCountLabel()
+}
+
+function _updateAllFolderStates() {
+  if (!browserBookmarksList) return
+  const folders = Array.from(
+    browserBookmarksList.querySelectorAll(".folder-wrapper"),
+  ).reverse()
+  folders.forEach((folder) => {
+    const folderCheckbox = folder.querySelector(
+      ":scope > .bookmark-tree-folder > .folder-checkbox",
+    )
+    if (!folderCheckbox) return
+
+    const childBoxes = folder.querySelectorAll(
+      '.bookmark-tree-item input[type="checkbox"]',
+    )
+    if (childBoxes.length === 0) return
+
+    const checkedBoxes = folder.querySelectorAll(
+      '.bookmark-tree-item input[type="checkbox"]:checked',
+    )
+
+    if (checkedBoxes.length === 0) {
+      folderCheckbox.checked = false
+      folderCheckbox.indeterminate = false
+    } else if (checkedBoxes.length === childBoxes.length) {
+      folderCheckbox.checked = true
+      folderCheckbox.indeterminate = false
+    } else {
+      folderCheckbox.checked = false
+      folderCheckbox.indeterminate = true
+    }
+  })
+}
+
 function loadBrowserBookmarks() {
   if (!chrome || !chrome.bookmarks) return
+  lastClickedCheckbox = null
   chrome.bookmarks.getTree((tree) => {
     browserBookmarksList.innerHTML = ""
     const fragment = document.createDocumentFragment()
     renderBookmarkTree(tree[0], fragment)
     browserBookmarksList.appendChild(fragment)
+    _updateAllFolderStates()
     _updateSelectAllState()
     _updateCountLabel()
   })
@@ -1213,15 +1325,79 @@ function renderBookmarkTree(node, container) {
       const wrapper = document.createElement("div")
       // By default, make them collapsed
       wrapper.className = "folder-wrapper collapsed"
+      wrapper.dataset.folderTitle = node.title || ""
+      wrapper.dataset.folderId = node.id || ""
+
+      const count = _countBookmarksInNode(node)
 
       const folderDiv = document.createElement("div")
       folderDiv.className = "bookmark-tree-folder"
-      folderDiv.innerHTML = `<i class="fa-solid fa-chevron-right"></i><i class="fa-solid fa-folder"></i><span>${node.title}</span>`
+
+      const chevronIcon = document.createElement("i")
+      chevronIcon.className = "fa-solid fa-chevron-right"
+
+      const folderCheckbox = document.createElement("input")
+      folderCheckbox.type = "checkbox"
+      folderCheckbox.className = "folder-checkbox"
+      folderCheckbox.title = node.title || ""
+
+      const folderIcon = document.createElement("i")
+      folderIcon.className = "fa-solid fa-folder"
+
+      const folderTitleSpan = document.createElement("span")
+      folderTitleSpan.className = "folder-title"
+      folderTitleSpan.textContent = node.title || "Folder"
+
+      const folderCountSpan = document.createElement("span")
+      folderCountSpan.className = "folder-count"
+      folderCountSpan.textContent = `(${count})`
+
+      folderDiv.appendChild(chevronIcon)
+      folderDiv.appendChild(folderCheckbox)
+      folderDiv.appendChild(folderIcon)
+      folderDiv.appendChild(folderTitleSpan)
+      folderDiv.appendChild(folderCountSpan)
 
       const childrenContainer = document.createElement("div")
       childrenContainer.className = "folder-content"
 
-      folderDiv.addEventListener("click", () => {
+      folderCheckbox.addEventListener("click", (e) => {
+        e.stopPropagation()
+        if (
+          e.shiftKey &&
+          lastClickedCheckbox &&
+          lastClickedCheckbox !== folderCheckbox
+        ) {
+          _handleRangeSelect(
+            lastClickedCheckbox,
+            folderCheckbox,
+            folderCheckbox.checked,
+          )
+        }
+        lastClickedCheckbox = folderCheckbox
+      })
+
+      folderCheckbox.addEventListener("change", () => {
+        const isChecked = folderCheckbox.checked
+        folderCheckbox.indeterminate = false
+        const childBoxes = wrapper.querySelectorAll(
+          'input[type="checkbox"]',
+        )
+        childBoxes.forEach((cb) => {
+          cb.checked = isChecked
+          cb.indeterminate = false
+          cb.closest(".bookmark-tree-item")?.classList.toggle(
+            "selected",
+            isChecked,
+          )
+        })
+        _updateAllFolderStates()
+        _updateSelectAllState()
+        _updateCountLabel()
+      })
+
+      folderDiv.addEventListener("click", (e) => {
+        if (e.target === folderCheckbox) return
         wrapper.classList.toggle("collapsed")
       })
 
@@ -1243,18 +1419,44 @@ function renderBookmarkTree(node, container) {
 
     const checkbox = document.createElement("input")
     checkbox.type = "checkbox"
+    checkbox.className = "bookmark-checkbox"
     checkbox.value = JSON.stringify({ title: node.title, url: node.url })
+
+    checkbox.addEventListener("click", (e) => {
+      e.stopPropagation()
+      if (
+        e.shiftKey &&
+        lastClickedCheckbox &&
+        lastClickedCheckbox !== checkbox
+      ) {
+        _handleRangeSelect(lastClickedCheckbox, checkbox, checkbox.checked)
+      }
+      lastClickedCheckbox = checkbox
+    })
 
     checkbox.addEventListener("change", () => {
       itemDiv.classList.toggle("selected", checkbox.checked)
+      _updateAllFolderStates()
       _updateSelectAllState()
       _updateCountLabel()
     })
 
     itemDiv.addEventListener("click", (e) => {
       if (e.target !== checkbox) {
-        checkbox.checked = !checkbox.checked
-        checkbox.dispatchEvent(new Event("change"))
+        if (
+          e.shiftKey &&
+          lastClickedCheckbox &&
+          lastClickedCheckbox !== checkbox
+        ) {
+          const targetChecked = !checkbox.checked
+          checkbox.checked = targetChecked
+          _handleRangeSelect(lastClickedCheckbox, checkbox, targetChecked)
+          lastClickedCheckbox = checkbox
+        } else {
+          checkbox.checked = !checkbox.checked
+          checkbox.dispatchEvent(new Event("change"))
+          lastClickedCheckbox = checkbox
+        }
       }
     })
 
@@ -1286,7 +1488,7 @@ function _updateCountLabel() {
   const countEl = document.getElementById("import-count-label")
   if (!countEl) return
   const checked = browserBookmarksList.querySelectorAll(
-    "input[type='checkbox']:checked",
+    ".bookmark-tree-item input[type='checkbox']:checked",
   ).length
   const key =
     checked === 1 ? "modal_count_selected_one" : "modal_count_selected"
@@ -1329,6 +1531,7 @@ function _filterBookmarkTree(query) {
     else if (!q) folder.classList.remove("collapsed")
   })
 
+  _updateAllFolderStates()
   _updateSelectAllState()
   _updateCountLabel()
 
@@ -1354,50 +1557,174 @@ function _filterBookmarkTree(query) {
 async function confirmImport() {
   const i18n = geti18n()
   const bookmarks = getBookmarks()
-  const checkboxes = browserBookmarksList.querySelectorAll(
-    'input[type="checkbox"]:checked',
+  const groups = getBookmarkGroups() || []
+  const importAsGroups =
+    document.getElementById("import-as-groups-cb")?.checked
+
+  const checkedBoxes = Array.from(
+    browserBookmarksList.querySelectorAll(
+      '.bookmark-tree-item input[type="checkbox"]:checked',
+    ),
   )
 
-  let newItems = []
-  let duplicateItems = []
-
-  checkboxes.forEach((cb) => {
-    const data = JSON.parse(cb.value)
-    if (!bookmarks.some((b) => b.url === data.url)) {
-      newItems.push({ title: data.title, url: data.url, icon: "" })
-    } else {
-      duplicateItems.push({ title: data.title, url: data.url, icon: "" })
-    }
-  })
-
-  if (duplicateItems.length > 0) {
-    const msg = i18n.alert_import_duplicates
-      ? i18n.alert_import_duplicates.replace("{count}", duplicateItems.length)
-      : `Found ${duplicateItems.length} duplicate bookmark(s). Do you want to import them anyway?`
-
-    const takeDuplicates = await showConfirm(msg)
-    if (takeDuplicates) {
-      newItems.push(...duplicateItems)
-    }
+  if (checkedBoxes.length === 0) {
+    showAlert(i18n.alert_no_selection)
+    return
   }
 
-  if (newItems.length > 0) {
-    const snapshot = captureBookmarkSnapshot()
-    bookmarks.push(...newItems)
-    setBookmarks(bookmarks)
-    saveBookmarks()
-    renderBookmarks()
-    showAlert(i18n.alert_imported.replace("{count}", newItems.length))
-    closeModal()
-    showBookmarkUndo(
-      (i18n.bookmark_imported || "Imported {count} bookmarks").replace(
-        "{count}",
-        newItems.length,
-      ),
-      snapshot,
+  if (importAsGroups) {
+    let totalImportedCount = 0
+    const duplicateItems = []
+    const folderGroupsMap = new Map()
+    const rootItems = []
+
+    checkedBoxes.forEach((cb) => {
+      const data = JSON.parse(cb.value)
+      const folderWrapper = cb.closest(".folder-wrapper")
+      const folderTitle = folderWrapper?.dataset?.folderTitle?.trim()
+
+      if (folderTitle) {
+        if (!folderGroupsMap.has(folderTitle)) {
+          folderGroupsMap.set(folderTitle, [])
+        }
+        folderGroupsMap.get(folderTitle).push({
+          title: data.title,
+          url: data.url,
+          icon: "",
+        })
+      } else {
+        rootItems.push({ title: data.title, url: data.url, icon: "" })
+      }
+    })
+
+    const allExistingUrls = new Set()
+    bookmarks.forEach((b) => allExistingUrls.add(b.url))
+    groups.forEach((g) =>
+      (g.items || []).forEach((b) => allExistingUrls.add(b.url)),
     )
+
+    folderGroupsMap.forEach((items) => {
+      items.forEach((item) => {
+        if (allExistingUrls.has(item.url)) {
+          duplicateItems.push(item)
+        }
+      })
+    })
+    rootItems.forEach((item) => {
+      if (allExistingUrls.has(item.url)) {
+        duplicateItems.push(item)
+      }
+    })
+
+    let proceedWithDuplicates = true
+    if (duplicateItems.length > 0) {
+      const msg = i18n.alert_import_duplicates
+        ? i18n.alert_import_duplicates.replace(
+            "{count}",
+            duplicateItems.length,
+          )
+        : `Found ${duplicateItems.length} duplicate bookmark(s). Do you want to import them anyway?`
+      proceedWithDuplicates = await showConfirm(msg)
+    }
+
+    const snapshot = captureBookmarkSnapshot()
+
+    folderGroupsMap.forEach((items, folderTitle) => {
+      const itemsToAdd = proceedWithDuplicates
+        ? items
+        : items.filter((item) => !allExistingUrls.has(item.url))
+
+      if (itemsToAdd.length === 0) return
+
+      let existingGroup = groups.find(
+        (g) => g.name.toLowerCase() === folderTitle.toLowerCase(),
+      )
+      if (existingGroup) {
+        existingGroup.items = existingGroup.items || []
+        existingGroup.items.push(...itemsToAdd)
+      } else {
+        const newGroup = {
+          id: `group-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          name: folderTitle,
+          icon: "fa-folder",
+          items: itemsToAdd,
+        }
+        groups.push(newGroup)
+      }
+      totalImportedCount += itemsToAdd.length
+    })
+
+    const rootToAdd = proceedWithDuplicates
+      ? rootItems
+      : rootItems.filter((item) => !allExistingUrls.has(item.url))
+
+    if (rootToAdd.length > 0) {
+      bookmarks.push(...rootToAdd)
+      totalImportedCount += rootToAdd.length
+    }
+
+    if (totalImportedCount > 0) {
+      setBookmarkGroups(groups)
+      setBookmarks(bookmarks)
+      saveBookmarks()
+      renderBookmarks()
+      showAlert(i18n.alert_imported.replace("{count}", totalImportedCount))
+      closeModal()
+      showBookmarkUndo(
+        (i18n.bookmark_imported || "Imported {count} bookmarks").replace(
+          "{count}",
+          totalImportedCount,
+        ),
+        snapshot,
+      )
+    } else {
+      showAlert(i18n.alert_no_selection)
+    }
   } else {
-    showAlert(i18n.alert_no_selection)
+    let newItems = []
+    let duplicateItems = []
+
+    checkedBoxes.forEach((cb) => {
+      const data = JSON.parse(cb.value)
+      if (!bookmarks.some((b) => b.url === data.url)) {
+        newItems.push({ title: data.title, url: data.url, icon: "" })
+      } else {
+        duplicateItems.push({ title: data.title, url: data.url, icon: "" })
+      }
+    })
+
+    if (duplicateItems.length > 0) {
+      const msg = i18n.alert_import_duplicates
+        ? i18n.alert_import_duplicates.replace(
+            "{count}",
+            duplicateItems.length,
+          )
+        : `Found ${duplicateItems.length} duplicate bookmark(s). Do you want to import them anyway?`
+
+      const takeDuplicates = await showConfirm(msg)
+      if (takeDuplicates) {
+        newItems.push(...duplicateItems)
+      }
+    }
+
+    if (newItems.length > 0) {
+      const snapshot = captureBookmarkSnapshot()
+      bookmarks.push(...newItems)
+      setBookmarks(bookmarks)
+      saveBookmarks()
+      renderBookmarks()
+      showAlert(i18n.alert_imported.replace("{count}", newItems.length))
+      closeModal()
+      showBookmarkUndo(
+        (i18n.bookmark_imported || "Imported {count} bookmarks").replace(
+          "{count}",
+          newItems.length,
+        ),
+        snapshot,
+      )
+    } else {
+      showAlert(i18n.alert_no_selection)
+    }
   }
 }
 
@@ -1416,12 +1743,15 @@ export function initModal() {
   bookmarkIconInput?.addEventListener("keydown", handleEnterSave)
 
   // Expand/Collapse Folders Toggle in Import Browser
-  const toggleFoldersBtn = document.getElementById("import-toggle-folders-btn")
+  const toggleFoldersBtn = document.getElementById(
+    "import-toggle-folders-btn",
+  )
   if (toggleFoldersBtn) {
     let isAllExpanded = false
     toggleFoldersBtn.addEventListener("click", () => {
       isAllExpanded = !isAllExpanded
-      const folders = browserBookmarksList?.querySelectorAll(".folder-wrapper")
+      const folders =
+        browserBookmarksList?.querySelectorAll(".folder-wrapper")
       folders?.forEach((f) => {
         if (isAllExpanded) {
           f.classList.remove("collapsed")
@@ -1469,16 +1799,19 @@ export function initModal() {
   const selectAllCb = document.getElementById("import-select-all")
   if (selectAllCb) {
     selectAllCb.addEventListener("change", () => {
+      const isChecked = selectAllCb.checked
       const visible = browserBookmarksList?.querySelectorAll(
-        ".bookmark-tree-item:not(.hidden) input[type='checkbox']",
+        ".bookmark-tree-item:not(.hidden) input[type='checkbox'], .folder-wrapper:not(.hidden) > .bookmark-tree-folder > .folder-checkbox",
       )
       visible?.forEach((cb) => {
-        cb.checked = selectAllCb.checked
+        cb.checked = isChecked
+        cb.indeterminate = false
         cb.closest(".bookmark-tree-item")?.classList.toggle(
           "selected",
-          selectAllCb.checked,
+          isChecked,
         )
       })
+      _updateAllFolderStates()
       _updateCountLabel()
     })
   }
