@@ -1304,9 +1304,9 @@ body.context-menu-none #context-menu .context-menu-header {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
-  color: var(--accent-color, #a5b4fc) !important;
-  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.38);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 1px 6px;
   border-radius: 4px;
   font-weight: 500;
@@ -1348,7 +1348,7 @@ body.context-menu-none #context-menu .context-menu-header {
   white-space: nowrap;
 }
 
-/* Toggle Badges: [ Bật ] / [ Tắt ] */
+/* Toggle Badges: [ Bật ] / [ Tắt ] - matches context menu text color */
 .context-status-badge {
   display: inline-flex;
   align-items: center;
@@ -1362,42 +1362,42 @@ body.context-menu-none #context-menu .context-menu-header {
 }
 
 .context-status-badge.badge-on {
-  color: #4ade80 !important;
-  background: rgba(74, 222, 128, 0.18);
-  border: 1px solid rgba(74, 222, 128, 0.38);
+  color: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   font-weight: 500;
 }
 
 .context-status-badge.badge-on i {
   width: auto !important;
   font-size: 13.5px !important;
-  color: #4ade80 !important;
+  color: inherit !important;
   opacity: 1 !important;
 }
 
 .context-status-badge.badge-off {
   color: rgba(255, 255, 255, 0.52) !important;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .context-status-badge.badge-off i {
   width: auto !important;
   font-size: 13.5px !important;
-  color: rgba(255, 255, 255, 0.45) !important;
-  opacity: 0.8 !important;
+  color: inherit !important;
+  opacity: 0.7 !important;
 }
 
-/* Radio active check badge */
+/* Radio active check badge - matches context menu text color */
 .context-radio-active-badge {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   margin-left: auto;
   font-size: 10.5px;
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
-  color: var(--accent-color, #a5b4fc) !important;
-  border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 1px 5px;
   border-radius: 4px;
   flex-shrink: 0;
@@ -1460,10 +1460,10 @@ body.context-menu-none #context-menu .context-menu-header {
 /* ── macOS & Light Mode Context Menu Badges & Tags (High Contrast) ── */
 body.context-menu-macos .context-tag-current,
 body.context-menu-light .context-tag-current {
-  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05)) !important;
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a) !important;
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18)) !important;
-  font-weight: 600 !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  color: rgba(20, 20, 24, 0.92) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  font-weight: 500 !important;
 }
 
 body.context-menu-macos .context-tag-arrow,
@@ -1484,36 +1484,37 @@ body.context-menu-light .context-tag-next {
 
 body.context-menu-macos .context-status-badge.badge-on,
 body.context-menu-light .context-status-badge.badge-on {
-  color: #15803d !important;
-  background: rgba(34, 197, 94, 0.16) !important;
-  border: 1px solid rgba(34, 197, 94, 0.36) !important;
-  font-weight: 600 !important;
+  color: rgba(20, 20, 24, 0.92) !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  font-weight: 500 !important;
 }
 
 body.context-menu-macos .context-status-badge.badge-on i,
 body.context-menu-light .context-status-badge.badge-on i {
-  color: #16a34a !important;
+  color: inherit !important;
 }
 
 body.context-menu-macos .context-status-badge.badge-off,
 body.context-menu-light .context-status-badge.badge-off {
-  color: rgba(30, 35, 45, 0.65) !important;
-  background: rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  font-weight: 500 !important;
+  color: rgba(30, 35, 45, 0.55) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-weight: 400 !important;
 }
 
 body.context-menu-macos .context-status-badge.badge-off i,
 body.context-menu-light .context-status-badge.badge-off i {
-  color: rgba(30, 35, 45, 0.55) !important;
+  color: inherit !important;
+  opacity: 0.7 !important;
 }
 
 body.context-menu-macos .context-radio-active-badge,
 body.context-menu-light .context-radio-active-badge {
-  background: color-mix(in srgb, var(--accent-color, #2563eb) 14%, rgba(0, 0, 0, 0.05)) !important;
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a) !important;
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 35%, rgba(0, 0, 0, 0.18)) !important;
-  font-weight: 600 !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  color: rgba(20, 20, 24, 0.92) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  font-weight: 500 !important;
 }
 
 /* Hover effects for macOS and Light Mode: Crisp White on Blue (#007aff) */
@@ -1589,28 +1590,28 @@ body.context-menu-light .context-menu .context-menu-item:hover .context-radio-ac
 
 /* ── Dynamic Thumbnail Color Mode Context Menu ── */
 .context-menu.context-menu-thumbnail-color-mode .context-tag-current {
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.28) !important;
-  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.48) !important;
-  color: var(--accent-color, #c7d2fe) !important;
-  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: none !important;
 }
 
 .context-menu.context-menu-thumbnail-color-mode .context-status-badge.badge-on {
-  background: rgba(74, 222, 128, 0.22) !important;
-  border-color: rgba(74, 222, 128, 0.42) !important;
-  color: #4ade80 !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
 }
 
 .context-menu.context-menu-thumbnail-color-mode .context-status-badge.badge-off {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
 }
 
 .context-menu.context-menu-thumbnail-color-mode .context-radio-active-badge {
-  background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.28) !important;
-  border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.48) !important;
-  color: var(--accent-color, #c7d2fe) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
 }
 
 
