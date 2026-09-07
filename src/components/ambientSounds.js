@@ -19,6 +19,8 @@ export class AmbientSounds {
     this.isMuted = false
     this.masterVolume = 0.7
     this.syncWithTimer = false
+    this.currentCategory = "all"
+    this.activePreset = null
 
     this.tracks = [
       {
@@ -26,79 +28,115 @@ export class AmbientSounds {
         name: "Rain",
         i18nKey: "ambient_rain",
         icon: "fa-cloud-rain",
+        category: "nature",
       },
       {
         id: "thunder",
         name: "Thunder",
         i18nKey: "ambient_thunder",
         icon: "fa-cloud-bolt",
+        category: "nature",
       },
       {
         id: "waves",
         name: "Waves",
         i18nKey: "ambient_waves",
         icon: "fa-water",
+        category: "nature",
       },
-      { id: "wind", name: "Wind", i18nKey: "ambient_wind", icon: "fa-wind" },
+      {
+        id: "wind",
+        name: "Wind",
+        i18nKey: "ambient_wind",
+        icon: "fa-wind",
+        category: "nature",
+      },
       {
         id: "fire",
         name: "Campfire",
         i18nKey: "ambient_fire",
         icon: "fa-fire",
-      },
-      {
-        id: "birds",
-        name: "Forest Birds",
-        i18nKey: "ambient_birds",
-        icon: "fa-dove",
-      },
-      {
-        id: "crickets",
-        name: "Night Crickets",
-        i18nKey: "ambient_crickets",
-        icon: "fa-moon",
+        category: "nature",
       },
       {
         id: "stream",
         name: "Stream",
         i18nKey: "ambient_stream",
         icon: "fa-water-ladder",
+        category: "nature",
       },
       {
         id: "cafe",
         name: "Cozy Cafe",
         i18nKey: "ambient_cafe",
         icon: "fa-mug-hot",
+        category: "cozy",
       },
       {
         id: "space",
-        name: "Cosmic Drone",
+        name: "Cosmic Drone (432Hz)",
         i18nKey: "ambient_space",
         icon: "fa-meteor",
+        category: "focus",
       },
       {
         id: "traffic",
         name: "City Traffic",
         i18nKey: "ambient_traffic",
         icon: "fa-car-side",
+        category: "cozy",
       },
       {
         id: "brownnoise",
         name: "Brown Noise",
         i18nKey: "ambient_brown_noise",
         icon: "fa-brain",
+        category: "focus",
       },
       {
         id: "pinknoise",
         name: "Pink Noise",
         i18nKey: "ambient_pink_noise",
         icon: "fa-wave-square",
+        category: "focus",
       },
       {
         id: "whitenoise",
         name: "White Noise",
         i18nKey: "ambient_white_noise",
         icon: "fa-bars-staggered",
+        category: "focus",
+      },
+    ]
+
+    this.presets = [
+      {
+        id: "rainy_cafe",
+        name: "Rainy Cafe",
+        i18nKey: "ambient_preset_rainy_cafe",
+        icon: "fa-mug-saucer",
+        tracks: { rain: 0.65, cafe: 0.55, fire: 0.4 },
+      },
+      {
+        id: "ocean_breeze",
+        name: "Ocean Breeze",
+        i18nKey: "ambient_preset_ocean_breeze",
+        icon: "fa-water",
+        tracks: { waves: 0.7, wind: 0.45 },
+      },
+      {
+        id: "deep_focus",
+        name: "Deep Focus",
+        i18nKey: "ambient_preset_deep_focus",
+        icon: "fa-brain",
+        tracks: { brownnoise: 0.65, space: 0.45 },
+      },
+      {
+        id: "thunderstorm",
+        name: "Thunderstorm",
+        i18nKey: "ambient_preset_thunderstorm",
+        icon: "fa-bolt-lightning",
+        tracks: { rain: 0.75, thunder: 0.6, wind: 0.5 },
       },
     ]
 
@@ -113,6 +151,8 @@ export class AmbientSounds {
     this.createElements()
     this.setupEventListeners()
     this.setupTimerSync()
+    this.applySkin()
+    this.updateActiveBadge()
   }
 
   loadState() {
@@ -129,9 +169,13 @@ export class AmbientSounds {
         wind: 0.5,
         fire: 0.6,
         stream: 0.6,
-        brownnoise: 0.6,
+        brownnoise: 0.65,
         pinknoise: 0.5,
         whitenoise: 0.4,
+        cafe: 0.55,
+        space: 0.45,
+        traffic: 0.5,
+        thunder: 0.6,
       }
     } catch {
       this.masterVolume = 0.7
@@ -196,61 +240,133 @@ export class AmbientSounds {
     this.container.innerHTML = `
       <div class="ambient-header drag-handle">
         <div class="ambient-title-wrap">
-          <i class="fa-solid fa-headphones-simple ambient-header-icon"></i>
+          <div class="ambient-icon-badge">
+            <i class="fa-solid fa-headphones-simple"></i>
+          </div>
           <span class="ambient-header-title">${i18n.ambient_title || "Ambient Sounds"}</span>
+          <span class="ambient-active-badge" id="ambient-active-badge" style="display: none;">
+            <span class="ambient-pulse-dot"></span>
+            <span class="ambient-active-count">0</span>
+          </span>
         </div>
         <div class="ambient-header-actions no-drag">
-          <button class="ambient-tool-btn" id="ambient-mute-all" title="${i18n.ambient_mute_all || "Mute"}">
-            <i class="fa-solid fa-volume-high"></i>
+          <button type="button" class="ambient-tool-btn ${this.isMuted ? "muted" : ""}" id="ambient-mute-all" title="${i18n.ambient_mute_all || "Mute All"}">
+            <i class="fa-solid ${this.isMuted ? "fa-volume-xmark" : "fa-volume-high"}"></i>
           </button>
-          <button class="ambient-tool-btn" id="ambient-close-btn" title="${i18n.close || "Close"}">
+          <button type="button" class="ambient-tool-btn" id="ambient-close-btn" title="${i18n.close || "Close"}">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
       </div>
 
       <div class="ambient-body no-drag">
-        <!-- Master Control -->
+        <!-- Quick Presets Carousel -->
+        <div class="ambient-presets-row">
+          <div class="ambient-presets-label">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Mix</span>
+          </div>
+          <div class="ambient-presets-list">
+            ${this.presets
+              .map((preset) => {
+                const name = i18n[preset.i18nKey] || preset.name
+                return `
+                  <button type="button" class="ambient-preset-chip" data-preset-id="${preset.id}">
+                    <i class="fa-solid ${preset.icon}"></i>
+                    <span>${name}</span>
+                  </button>
+                `
+              })
+              .join("")}
+          </div>
+        </div>
+
+        <!-- Master Volume Control -->
         <div class="ambient-master-row">
-          <span class="ambient-label"><i class="fa-solid fa-sliders"></i> ${i18n.ambient_master_volume || "Volume"}</span>
-          <input type="range" class="ambient-range-slider" id="ambient-master-slider" min="0" max="1" step="0.02" value="${this.masterVolume}">
+          <span class="ambient-label">
+            <i class="fa-solid ${this.isMuted ? "fa-volume-xmark" : this.masterVolume === 0 ? "fa-volume-off" : this.masterVolume < 0.5 ? "fa-volume-low" : "fa-volume-high"}" id="ambient-master-icon"></i>
+            <span>${i18n.ambient_master_volume || "Master"}</span>
+          </span>
+          <div class="ambient-slider-wrap">
+            <input type="range" class="ambient-range-slider ambient-master-slider" id="ambient-master-slider" min="0" max="1" step="0.02" value="${this.masterVolume}">
+          </div>
           <span class="ambient-vol-text" id="ambient-master-val">${Math.round(this.masterVolume * 100)}%</span>
         </div>
 
-        <!-- Tracks List -->
-        <div class="ambient-tracks-list">
-          ${this.tracks
-            .map((track) => {
-              const vol =
-                this.trackVolumes[track.id] !== undefined
-                  ? this.trackVolumes[track.id]
-                  : 0.6
-              const name = i18n[track.i18nKey] || track.name
-              const isPlaying = this.playingTracks.has(track.id)
-              return `
-                <div class="ambient-track-item ${isPlaying ? "active" : ""}" data-track-id="${track.id}">
-                  <button class="ambient-track-btn" data-track-id="${track.id}">
-                    <i class="fa-solid ${track.icon}"></i>
-                    <span>${name}</span>
-                  </button>
-                  <input type="range" class="ambient-range-slider ambient-item-slider" data-track-id="${track.id}" min="0" max="1" step="0.02" value="${vol}">
-                </div>
-              `
-            })
-            .join("")}
+        <!-- Category Tabs -->
+        <div class="ambient-categories-nav">
+          <button type="button" class="ambient-cat-btn ${this.currentCategory === "all" ? "active" : ""}" data-category="all">
+            <i class="fa-solid fa-layer-group"></i> <span>${i18n.ambient_cat_all || "All"}</span>
+          </button>
+          <button type="button" class="ambient-cat-btn ${this.currentCategory === "nature" ? "active" : ""}" data-category="nature">
+            <i class="fa-solid fa-tree"></i> <span>${i18n.ambient_cat_nature || "Nature"}</span>
+          </button>
+          <button type="button" class="ambient-cat-btn ${this.currentCategory === "cozy" ? "active" : ""}" data-category="cozy">
+            <i class="fa-solid fa-mug-hot"></i> <span>${i18n.ambient_cat_cozy || "Cozy"}</span>
+          </button>
+          <button type="button" class="ambient-cat-btn ${this.currentCategory === "focus" ? "active" : ""}" data-category="focus">
+            <i class="fa-solid fa-bolt"></i> <span>${i18n.ambient_cat_focus || "Focus Noise"}</span>
+          </button>
         </div>
 
+        <!-- Tracks List -->
+        <div class="ambient-tracks-list" id="ambient-tracks-list">
+          ${this.renderTracksListHTML(i18n)}
+        </div>
+
+        <!-- Footer -->
         <div class="ambient-footer-row">
-          <label class="ambient-toggle-label">
-            <input type="checkbox" id="ambient-sync-timer-cb" ${this.syncWithTimer ? "checked" : ""}>
-            <span>${i18n.ambient_sync_pomodoro || "Sync with Timer"}</span>
+          <label class="ambient-toggle-label" for="ambient-sync-timer-cb">
+            <span class="ambient-switch-control">
+              <input type="checkbox" id="ambient-sync-timer-cb" ${this.syncWithTimer ? "checked" : ""}>
+              <span class="ambient-switch-slider"></span>
+            </span>
+            <span class="ambient-sync-text">${i18n.ambient_sync_pomodoro || "Sync with Timer"}</span>
           </label>
-          <button class="ambient-btn-danger" id="ambient-stop-all-btn">
-            <i class="fa-solid fa-stop"></i> ${i18n.ambient_stop_all || "Stop All"}
+          <button type="button" class="ambient-btn-stop-all" id="ambient-stop-all-btn">
+            <i class="fa-solid fa-stop"></i>
+            <span>${i18n.ambient_stop_all || "Stop All"}</span>
           </button>
         </div>
       </div>
     `
+
+    this.updateSliderGradients()
+  }
+
+  renderTracksListHTML(i18n) {
+    return this.tracks
+      .map((track) => {
+        const isVisible =
+          this.currentCategory === "all" ||
+          track.category === this.currentCategory
+        const vol =
+          this.trackVolumes[track.id] !== undefined
+            ? this.trackVolumes[track.id]
+            : 0.6
+        const name = i18n[track.i18nKey] || track.name
+        const isPlaying = this.playingTracks.has(track.id)
+        return `
+          <div class="ambient-track-item ${isPlaying ? "active" : ""}" data-track-id="${track.id}" data-category="${track.category}" style="${isVisible ? "" : "display: none;"}">
+            <button type="button" class="ambient-track-btn" data-track-id="${track.id}">
+              <div class="ambient-track-icon-wrap">
+                <i class="fa-solid ${track.icon}"></i>
+              </div>
+              <div class="ambient-track-info">
+                <span class="ambient-track-name">${name}</span>
+                <div class="ambient-eq-bars" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </button>
+            <div class="ambient-track-slider-wrap">
+              <input type="range" class="ambient-range-slider ambient-item-slider" data-track-id="${track.id}" min="0" max="1" step="0.02" value="${vol}" title="${Math.round(vol * 100)}%">
+              <span class="ambient-item-vol-text">${Math.round(vol * 100)}%</span>
+            </div>
+          </div>
+        `
+      })
+      .join("")
   }
 
   setupEventListeners() {
@@ -270,10 +386,7 @@ export class AmbientSounds {
           this.audioCtx.currentTime,
         )
       }
-      muteBtn.innerHTML = this.isMuted
-        ? `<i class="fa-solid fa-volume-xmark"></i>`
-        : `<i class="fa-solid fa-volume-high"></i>`
-      muteBtn.classList.toggle("muted", this.isMuted)
+      this.updateMuteUI()
     })
 
     const masterSlider = this.container.querySelector("#ambient-master-slider")
@@ -289,27 +402,53 @@ export class AmbientSounds {
           this.audioCtx.currentTime,
         )
       }
+      this.updateSliderGradient(masterSlider)
+      this.updateMasterIcon()
       this.saveState()
     })
 
-    this.container.querySelectorAll(".ambient-track-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.ensureAudioContext()
-        const trackId = btn.dataset.trackId
-        this.toggleTrack(trackId)
+    // Presets
+    this.container.querySelectorAll(".ambient-preset-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const presetId = chip.dataset.presetId
+        this.applyPreset(presetId)
       })
     })
 
-    this.container
-      .querySelectorAll(".ambient-item-slider")
-      .forEach((slider) => {
-        slider.addEventListener("input", (e) => {
-          this.ensureAudioContext()
-          const trackId = slider.dataset.trackId
-          const vol = parseFloat(e.target.value)
-          this.setTrackVolume(trackId, vol)
-        })
+    // Categories
+    this.container.querySelectorAll(".ambient-cat-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cat = btn.dataset.category
+        this.setCategory(cat)
       })
+    })
+
+    // Track toggles
+    this.container.addEventListener("click", (e) => {
+      const trackBtn = e.target.closest(".ambient-track-btn")
+      if (trackBtn) {
+        this.ensureAudioContext()
+        const trackId = trackBtn.dataset.trackId
+        this.toggleTrack(trackId)
+      }
+    })
+
+    // Track volume sliders
+    this.container.addEventListener("input", (e) => {
+      const slider = e.target.closest(".ambient-item-slider")
+      if (slider) {
+        this.ensureAudioContext()
+        const trackId = slider.dataset.trackId
+        const vol = parseFloat(slider.value)
+        this.setTrackVolume(trackId, vol)
+        const volText = slider.parentElement?.querySelector(
+          ".ambient-item-vol-text",
+        )
+        if (volText) volText.textContent = `${Math.round(vol * 100)}%`
+        slider.title = `${Math.round(vol * 100)}%`
+        this.updateSliderGradient(slider)
+      }
+    })
 
     this.container
       .querySelector("#ambient-sync-timer-cb")
@@ -334,6 +473,171 @@ export class AmbientSounds {
       this.updateLanguage(),
     )
     window.addEventListener("languageChanged", () => this.updateLanguage())
+
+    window.addEventListener("layoutUpdated", (e) => {
+      if (
+        e.detail &&
+        (e.detail.key === "ambientSoundsSkin" ||
+          e.detail.key === "ambientSoundsHideBorder" ||
+          e.detail.key === "widgetUseM3Accent")
+      ) {
+        this.applySkin()
+      }
+    })
+  }
+
+  updateSliderGradients() {
+    if (!this.container) return
+    this.container.querySelectorAll(".ambient-range-slider").forEach((slider) => {
+      this.updateSliderGradient(slider)
+    })
+  }
+
+  updateSliderGradient(slider) {
+    if (!slider) return
+    const min = parseFloat(slider.min) || 0
+    const max = parseFloat(slider.max) || 1
+    const val = parseFloat(slider.value) || 0
+    const percent = ((val - min) / (max - min)) * 100
+    slider.style.setProperty("--slider-percent", `${percent}%`)
+  }
+
+  updateMasterIcon() {
+    const icon = this.container?.querySelector("#ambient-master-icon")
+    if (!icon) return
+    if (this.isMuted) {
+      icon.className = "fa-solid fa-volume-xmark"
+    } else if (this.masterVolume === 0) {
+      icon.className = "fa-solid fa-volume-off"
+    } else if (this.masterVolume < 0.5) {
+      icon.className = "fa-solid fa-volume-low"
+    } else {
+      icon.className = "fa-solid fa-volume-high"
+    }
+  }
+
+  updateMuteUI() {
+    const muteBtn = this.container?.querySelector("#ambient-mute-all")
+    if (muteBtn) {
+      muteBtn.innerHTML = this.isMuted
+        ? `<i class="fa-solid fa-volume-xmark"></i>`
+        : `<i class="fa-solid fa-volume-high"></i>`
+      muteBtn.classList.toggle("muted", this.isMuted)
+    }
+    this.updateMasterIcon()
+  }
+
+  setCategory(category) {
+    this.currentCategory = category
+    this.container?.querySelectorAll(".ambient-cat-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.category === category)
+    })
+    this.container?.querySelectorAll(".ambient-track-item").forEach((item) => {
+      const isVisible =
+        category === "all" || item.dataset.category === category
+      item.style.display = isVisible ? "flex" : "none"
+    })
+  }
+
+  applyPreset(presetId) {
+    const preset = this.presets.find((p) => p.id === presetId)
+    if (!preset) return
+
+    // If preset is already fully active, clicking it stops its sounds
+    const isAlreadyActive =
+      this.activePreset === presetId &&
+      Object.keys(preset.tracks).every((id) => this.playingTracks.has(id))
+
+    if (isAlreadyActive) {
+      this.stopAllTracks()
+      return
+    }
+
+    this.ensureAudioContext()
+    this.stopAllTracks()
+
+    Object.entries(preset.tracks).forEach(([trackId, vol]) => {
+      this.setTrackVolume(trackId, vol)
+      const slider = this.container?.querySelector(
+        `.ambient-item-slider[data-track-id="${trackId}"]`,
+      )
+      if (slider) {
+        slider.value = vol
+        this.updateSliderGradient(slider)
+        const volText = slider.parentElement?.querySelector(
+          ".ambient-item-vol-text",
+        )
+        if (volText) volText.textContent = `${Math.round(vol * 100)}%`
+      }
+      this.startTrack(trackId)
+    })
+
+    this.activePreset = presetId
+    this.updatePresetActiveStates()
+  }
+
+  updatePresetActiveStates() {
+    if (!this.container) return
+    this.presets.forEach((preset) => {
+      const chip = this.container.querySelector(
+        `.ambient-preset-chip[data-preset-id="${preset.id}"]`,
+      )
+      if (!chip) return
+      const keys = Object.keys(preset.tracks)
+      const isMatch =
+        keys.length > 0 &&
+        keys.every((id) => this.playingTracks.has(id)) &&
+        this.playingTracks.size === keys.length
+      chip.classList.toggle("active", isMatch)
+      if (isMatch) this.activePreset = preset.id
+    })
+    if (this.playingTracks.size === 0) {
+      this.activePreset = null
+      this.container
+        .querySelectorAll(".ambient-preset-chip")
+        .forEach((c) => c.classList.remove("active"))
+    }
+  }
+
+  updateActiveBadge() {
+    const badge = this.container?.querySelector("#ambient-active-badge")
+    const countEl = this.container?.querySelector(".ambient-active-count")
+    const count = this.playingTracks.size
+    if (badge && countEl) {
+      countEl.textContent = String(count)
+      badge.style.display = count > 0 ? "inline-flex" : "none"
+    }
+
+    const quickBtn = document.querySelector(
+      '.quick-btn[data-toggle="ambientSounds"]',
+    )
+    if (quickBtn) {
+      quickBtn.classList.toggle("is-playing", count > 0)
+    }
+  }
+
+  applySkin() {
+    if (!this.container) return
+    const settings = getSettings()
+    const isWhiteMode = settings.showQuickAccessBg === true
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.ambientSoundsSkin || "default"
+
+    this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+    this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.ambientSoundsHideBorder === true,
+    )
   }
 
   updateLanguage() {
@@ -350,22 +654,46 @@ export class AmbientSounds {
     if (closeBtn) closeBtn.title = i18n.close || "Close"
 
     const masterLabel = this.container.querySelector(
-      ".ambient-master-row .ambient-label",
+      ".ambient-master-row .ambient-label span",
     )
     if (masterLabel)
-      masterLabel.innerHTML = `<i class="fa-solid fa-sliders"></i> ${i18n.ambient_master_volume || "Volume"}`
+      masterLabel.textContent = i18n.ambient_master_volume || "Master"
 
-    const syncLabel = this.container.querySelector(".ambient-toggle-label span")
+    const syncLabel = this.container.querySelector(".ambient-sync-text")
     if (syncLabel)
       syncLabel.textContent = i18n.ambient_sync_pomodoro || "Sync with Timer"
 
-    const stopAllBtn = this.container.querySelector("#ambient-stop-all-btn")
+    const stopAllBtn = this.container.querySelector(
+      "#ambient-stop-all-btn span",
+    )
     if (stopAllBtn)
-      stopAllBtn.innerHTML = `<i class="fa-solid fa-stop"></i> ${i18n.ambient_stop_all || "Stop All"}`
+      stopAllBtn.textContent = i18n.ambient_stop_all || "Stop All"
+
+    this.presets.forEach((preset) => {
+      const chipSpan = this.container.querySelector(
+        `.ambient-preset-chip[data-preset-id="${preset.id}"] span`,
+      )
+      if (chipSpan) {
+        chipSpan.textContent = i18n[preset.i18nKey] || preset.name
+      }
+    })
+
+    const catMap = {
+      all: i18n.ambient_cat_all || "All",
+      nature: i18n.ambient_cat_nature || "Nature",
+      cozy: i18n.ambient_cat_cozy || "Cozy",
+      focus: i18n.ambient_cat_focus || "Focus Noise",
+    }
+    Object.entries(catMap).forEach(([cat, label]) => {
+      const btnSpan = this.container.querySelector(
+        `.ambient-cat-btn[data-category="${cat}"] span`,
+      )
+      if (btnSpan) btnSpan.textContent = label
+    })
 
     this.tracks.forEach((track) => {
       const trackSpan = this.container.querySelector(
-        `.ambient-track-item[data-track-id="${track.id}"] .ambient-track-btn span`,
+        `.ambient-track-item[data-track-id="${track.id}"] .ambient-track-name`,
       )
       if (trackSpan) {
         trackSpan.textContent = i18n[track.i18nKey] || track.name
@@ -428,6 +756,8 @@ export class AmbientSounds {
       this.playingTracks.add(trackId)
 
       this.updateTrackUI(trackId, true)
+      this.updateActiveBadge()
+      this.updatePresetActiveStates()
     } catch (err) {
       console.warn("Ambient sound error:", err)
     }
@@ -455,11 +785,15 @@ export class AmbientSounds {
     }
     this.playingTracks.delete(trackId)
     this.updateTrackUI(trackId, false)
+    this.updateActiveBadge()
+    this.updatePresetActiveStates()
   }
 
   stopAllTracks() {
     const tracks = Array.from(this.playingTracks)
     tracks.forEach((id) => this.stopTrack(id))
+    this.updateActiveBadge()
+    this.updatePresetActiveStates()
   }
 
   setTrackVolume(trackId, volume) {
@@ -472,7 +806,7 @@ export class AmbientSounds {
   }
 
   updateTrackUI(trackId, isPlaying) {
-    const item = this.container.querySelector(
+    const item = this.container?.querySelector(
       `.ambient-track-item[data-track-id="${trackId}"]`,
     )
     if (item) {
@@ -516,7 +850,7 @@ export class AmbientSounds {
         hp.type = "highpass"
         hp.frequency.value = 160
 
-        // Gentle resonant droplet texture
+        // Resonant droplet texture
         const dropletFilter = ctx.createBiquadFilter()
         dropletFilter.type = "peaking"
         dropletFilter.frequency.value = 2400
@@ -688,83 +1022,6 @@ export class AmbientSounds {
         lfo1.start()
         lfo2.start()
         return [source, filter, rumbleGain, lfo1, lfo2, lfoGain1, lfoGain2]
-      }
-
-      case "birds": {
-        // Nature forest birds chirping
-        const osc1 = ctx.createOscillator()
-        osc1.type = "sine"
-        osc1.frequency.setValueAtTime(2600, ctx.currentTime)
-
-        const osc2 = ctx.createOscillator()
-        osc2.type = "sine"
-        osc2.frequency.setValueAtTime(3200, ctx.currentTime)
-
-        // Chirp frequency modulation
-        const lfo = ctx.createOscillator()
-        lfo.type = "sine"
-        lfo.frequency.value = 4.2
-        const lfoGain = ctx.createGain()
-        lfoGain.gain.value = 480
-
-        lfo.connect(lfoGain)
-        lfoGain.connect(osc1.frequency)
-        lfoGain.connect(osc2.frequency)
-
-        // Tremolo envelope for natural bird song cadence
-        const tremolo = ctx.createOscillator()
-        tremolo.frequency.value = 0.65
-        const tremoloGain = ctx.createGain()
-        tremoloGain.gain.value = 0.3
-
-        const mainGain = ctx.createGain()
-        mainGain.gain.value = 0.25
-
-        tremolo.connect(tremoloGain)
-        tremoloGain.connect(mainGain.gain)
-
-        osc1.connect(mainGain)
-        osc2.connect(mainGain)
-        mainGain.connect(destinationGain)
-
-        osc1.start()
-        osc2.start()
-        lfo.start()
-        tremolo.start()
-        return [osc1, osc2, lfo, lfoGain, tremolo, tremoloGain, mainGain]
-      }
-
-      case "crickets": {
-        // Night crickets
-        const osc1 = ctx.createOscillator()
-        osc1.type = "triangle"
-        osc1.frequency.value = 4500
-
-        const osc2 = ctx.createOscillator()
-        osc2.type = "sine"
-        osc2.frequency.value = 4800
-
-        const lfo = ctx.createOscillator()
-        lfo.type = "square"
-        lfo.frequency.value = 12
-
-        const lfoGain = ctx.createGain()
-        lfoGain.gain.value = 0.25
-
-        const cricketGain = ctx.createGain()
-        cricketGain.gain.value = 0.2
-
-        lfo.connect(lfoGain)
-        lfoGain.connect(cricketGain.gain)
-
-        osc1.connect(cricketGain)
-        osc2.connect(cricketGain)
-        cricketGain.connect(destinationGain)
-
-        osc1.start()
-        osc2.start()
-        lfo.start()
-        return [osc1, osc2, lfo, lfoGain, cricketGain]
       }
 
       case "cafe": {
