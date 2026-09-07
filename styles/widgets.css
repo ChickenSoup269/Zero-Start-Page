@@ -9926,19 +9926,146 @@ body.is-dragging-widget .dragging * {
   color: #0f172a !important;
 }
 
-/* Transparent skin & border hidden for ambient and AI */
+/* Transparent skin for all widgets */
+.todo-container.skin-transparent,
+.timer-container.skin-transparent,
+#timer-component.skin-transparent,
+.habit-tracker-container.skin-transparent,
+.notepad-container.skin-transparent,
+.calendar-card.skin-transparent,
+.full-calendar-container.skin-transparent,
 .ambient-sounds-container.skin-transparent,
 .ai-assistant-container.skin-transparent {
-  background: rgba(15, 18, 26, 0.25) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
 }
 
-.ambient-sounds-container.widget-border-hidden,
-.ai-assistant-container.widget-border-hidden {
-  border: none !important;
+/* Timer Transparent Skin Details */
+.timer-container.skin-transparent .timer-display,
+#timer-component.skin-transparent .timer-display {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.timer-container.skin-transparent .timer-status,
+.timer-container.skin-transparent .pomodoro-stats,
+.timer-container.skin-transparent .timer-controls .icon-btn,
+.timer-container.skin-transparent .timer-alarm-row,
+.timer-container.skin-transparent .pomodoro-btn,
+.timer-container.skin-transparent .timer-inc-btn,
+.timer-container.skin-transparent .timer-keypad-btn,
+.timer-container.skin-transparent .timer-input-actions .secondary-btn,
+.timer-container.skin-transparent #timer-smart-input,
+#timer-component.skin-transparent .timer-status,
+#timer-component.skin-transparent .pomodoro-stats,
+#timer-component.skin-transparent .timer-controls .icon-btn,
+#timer-component.skin-transparent .timer-alarm-row,
+#timer-component.skin-transparent .pomodoro-btn,
+#timer-component.skin-transparent .timer-inc-btn,
+#timer-component.skin-transparent .timer-keypad-btn,
+#timer-component.skin-transparent .timer-input-actions .secondary-btn,
+#timer-component.skin-transparent #timer-smart-input {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .timer-controls .icon-btn:hover,
+.timer-container.skin-transparent .pomodoro-btn:hover,
+.timer-container.skin-transparent .timer-inc-btn:hover,
+.timer-container.skin-transparent .timer-keypad-btn:hover,
+#timer-component.skin-transparent .timer-controls .icon-btn:hover,
+#timer-component.skin-transparent .pomodoro-btn:hover,
+#timer-component.skin-transparent .timer-inc-btn:hover,
+#timer-component.skin-transparent .timer-keypad-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+}
+
+.timer-container.skin-transparent .timer-input-view,
+#timer-component.skin-transparent .timer-input-view {
+  background: rgba(15, 18, 26, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: var(--radius-md);
+}
+
+/* Todo Transparent Skin Details */
+.todo-container.skin-transparent .todo-header h3,
+.todo-container.skin-transparent .todo-progress-text {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6) !important;
+}
+
+.todo-container.skin-transparent .todo-item {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.todo-container.skin-transparent .todo-item:hover {
+  background: rgba(25, 30, 42, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.todo-container.skin-transparent .todo-header-actions .icon-btn {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  color: #ffffff !important;
+}
+
+.todo-container.skin-transparent .todo-header-actions .icon-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+}
+
+.todo-container.skin-transparent .todo-input-container {
+  background: rgba(15, 18, 26, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: var(--radius-sm);
+}
+
+.todo-container.skin-transparent .todo-section-header {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+}
+
+/* Habit Tracker & Notepad & Calendar Transparent Details */
+.habit-tracker-container.skin-transparent .habit-item,
+.habit-tracker-container.skin-transparent .habit-header,
+.notepad-container.skin-transparent .note-item,
+.notepad-container.skin-transparent .notepad-search-wrap,
+.notepad-container.skin-transparent .notepad-header .icon-btn,
+.calendar-card.skin-transparent .calendar-header,
+.calendar-card.skin-transparent .calendar-source-switcher,
+.calendar-card.skin-transparent .day-item:not(.today) {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  color: #ffffff !important;
 }
 
 /* === M3 ACCENT SKIN FOR WIDGETS === */
@@ -10292,10 +10419,17 @@ body.widgets-m3-accent .timer-controls #timer-start-pause i {
 
 .todo-container.widget-border-hidden,
 .timer-container.widget-border-hidden,
+#timer-component.widget-border-hidden,
 .calendar-card.widget-border-hidden,
+.full-calendar-container.widget-border-hidden,
 .weather-container.widget-border-hidden,
 .notepad-container.widget-border-hidden,
-.quotes-container.widget-border-hidden {
+.quotes-container.widget-border-hidden,
+.rss-container.widget-border-hidden,
+.habit-tracker-container.widget-border-hidden,
+.ambient-sounds-container.widget-border-hidden,
+.ai-assistant-container.widget-border-hidden,
+.music-player-container.widget-border-hidden {
   border-color: transparent !important;
   border-width: 0 !important;
   box-shadow:
@@ -18869,7 +19003,8 @@ body.audio-wave-float-enabled .aw-content {
     /* Removed default glow/shadow to allow fully transparent fallback */
     animation: none; /* controlled by body classes */
     transform: translateZ(0) scale(var(--glass-float-scale, 1));
-    will-change: transform, backdrop-filter;
+    will-change: transform;
+    contain: layout style;
 }
 
 body.clock-style-bg-accent.date-clock-style-glass-float .glass-float-container,
@@ -18916,7 +19051,7 @@ body.gf-anim-none .gf-char { animation: none; }
     display: inline-block;
     animation-delay: calc(var(--anim-index) * 0.05s) !important;
     transform: translateZ(0);
-    will-change: transform, filter, text-shadow;
+    will-change: transform;
 }
 
 .gf-content {
@@ -18940,7 +19075,7 @@ body.gf-anim-none .gf-char { animation: none; }
     font-weight: 700;
     line-height: 1;
     color: #fff;
-    text-shadow: 0 4px 20px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 4px 20px rgba(var(--gf-glow-r, 255), var(--gf-glow-g, 255), var(--gf-glow-b, 255), var(--gf-glow-a, 0.4));
     letter-spacing: -2px;
     font-variant-numeric: tabular-nums;
 }
@@ -18952,14 +19087,12 @@ body.gf-anim-none .gf-char { animation: none; }
     letter-spacing: 1px;
 }
 @keyframes text-float-anim {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); text-shadow: 0 10px 20px rgba(var(--gf-glow-r, 255), var(--gf-glow-g, 255), var(--gf-glow-b, 255), calc(var(--gf-glow-a, 0.3) * 1.5)); }
-    100% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
 }
 @keyframes text-pulse-anim {
-    0% { transform: scale(1); text-shadow: 0 0 10px rgba(var(--gf-glow-r, 255), var(--gf-glow-g, 255), var(--gf-glow-b, 255), var(--gf-glow-a, 0.3)); }
-    50% { transform: scale(1.05); text-shadow: 0 0 30px rgba(var(--gf-glow-r, 255), var(--gf-glow-g, 255), var(--gf-glow-b, 255), calc(var(--gf-glow-a, 0.3) * 2)); }
-    100% { transform: scale(1); text-shadow: 0 0 10px rgba(var(--gf-glow-r, 255), var(--gf-glow-g, 255), var(--gf-glow-b, 255), var(--gf-glow-a, 0.3)); }
+    0%, 100% { transform: scale(1); opacity: 0.94; }
+    50% { transform: scale(1.05); opacity: 1; }
 }
 @keyframes text-shake-anim {
     0% { transform: rotate(0deg); }
@@ -19017,10 +19150,10 @@ body.gf-anim-glitch .gf-char::after {
 }
 @keyframes text-bug-anim {
     0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-    25% { transform: translate(2px, -1px) rotate(1deg); opacity: 0.8; }
-    50% { transform: translate(-2px, 1px) rotate(-1deg); opacity: 1; filter: sepia(0.5); }
+    25% { transform: translate(2px, -1px) rotate(1deg); opacity: 0.85; }
+    50% { transform: translate(-2px, 1px) rotate(-1deg); opacity: 1; }
     75% { transform: translate(1px, 1px) rotate(2deg); opacity: 0.9; }
-    100% { transform: translate(-1px, -1px) rotate(-2deg); opacity: 1; filter: none; }
+    100% { transform: translate(-1px, -1px) rotate(-2deg); opacity: 1; }
 }
 @keyframes text-wave-anim {
     0% { transform: translateY(0px) rotate(0deg); }
@@ -19044,7 +19177,7 @@ body.gf-anim-glitch .gf-char::after {
     75% { transform: rotate(-10deg); }
     100% { transform: rotate(0deg); }
 }
-body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); transform: translateZ(0); will-change: transform, backdrop-filter; }
+body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); transform: translateZ(0); will-change: transform; contain: layout style; }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container { background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important; box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important; border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important; }
 body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container { background: var(--clock-style-custom-bg-color, rgba(12, 14, 20, 0.5)); box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.05); }
 .habit-tracker-container.habitTracker-mini .habit-header {
