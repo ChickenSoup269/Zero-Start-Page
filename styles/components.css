@@ -1314,6 +1314,7 @@ body.context-menu-none #context-menu .context-menu-header {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: background-color 0.05s ease, color 0.05s ease, border-color 0.05s ease;
 }
 
 .context-tag-current i {
@@ -1402,6 +1403,7 @@ body.context-menu-none #context-menu .context-menu-header {
   border-radius: 4px;
   flex-shrink: 0;
   font-weight: 500;
+  transition: background-color 0.05s ease, color 0.05s ease, border-color 0.05s ease;
 }
 
 .context-radio-active-badge i {

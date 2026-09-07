@@ -109,7 +109,6 @@ function positionDetailToast(toast, item) {
   const menuRect = contextMenu.getBoundingClientRect()
 
   toast.style.display = "block"
-  toast.style.visibility = "hidden"
 
   const toastRect = toast.getBoundingClientRect()
   const margin = 10
@@ -136,7 +135,6 @@ function positionDetailToast(toast, item) {
 
   toast.style.left = `${Math.round(x)}px`
   toast.style.top = `${Math.round(y)}px`
-  toast.style.visibility = "visible"
 }
 
 function hasTruncatedText(element) {

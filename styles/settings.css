@@ -814,7 +814,7 @@ body.sidebar-m3-accent .settings-sidebar {
   padding: 7px 10px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.08s ease, color 0.08s ease, transform 0.08s ease;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -827,13 +827,14 @@ body.sidebar-m3-accent .settings-sidebar {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  transform: translateZ(0);
+  will-change: transform, background-color;
 }
 
 .toc-item:hover {
   background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.14);
   color: #fff;
-  padding-left: 14px;
-  transform: none;
+  transform: translateX(4px);
 }
 
 .toc-item.sub-item {
@@ -852,8 +853,7 @@ body.sidebar-m3-accent .settings-sidebar {
 .toc-item.sub-item:hover {
   border-left-color: var(--accent-color);
   color: #fff;
-  padding-left: 32px;
-  transform: none;
+  transform: translateX(4px);
 }
 
 .toc-item i {
@@ -863,12 +863,12 @@ body.sidebar-m3-accent .settings-sidebar {
   align-items: center;
   justify-content: center;
   font-size: 0.88rem;
-  transition: transform 0.2s;
+  transition: transform 0.08s ease;
   flex-shrink: 0;
 }
 
 .toc-item:hover i {
-  transform: scale(1.15);
+  transform: scale(1.12);
 }
 
 .toc-item-title {
@@ -911,7 +911,7 @@ body.sidebar-light .toc-live-badge {
   border: 1px solid rgba(var(--accent-color-rgb, 100, 150, 255), 0.28);
   flex-shrink: 0;
   text-transform: capitalize;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
   line-height: 1.2;
 }
 
@@ -976,7 +976,7 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
     0 0 28px rgba(var(--accent-color-rgb, 100, 150, 255), 0.08),
     inset 0 0 10px rgba(var(--accent-color-rgb, 100, 150, 255), 0.06);
   border: 1px solid transparent;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.12s ease, transform 0.08s ease;
   margin-top: 4px;
   box-sizing: border-box;
   width: 100%;
@@ -984,8 +984,7 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
 }
 
 .toc-item.toc-highlight-glow:hover {
-  transform: none;
-  padding-left: 14px;
+  transform: translateX(4px);
   box-shadow:
     0 0 20px rgba(var(--accent-color-rgb, 100, 150, 255), 0.45),
     0 0 35px rgba(236, 72, 153, 0.25),
