@@ -69,6 +69,9 @@ let _perfAvgFrameMs = 16.7
 let _perfLagging = false
 let _perfLastApply = 0
 let _lastMediaTrim = 0
+let _currentBgToken = 0
+let _activeVideoCleanup = null
+let _bgFadeTimer = null
 
 const cssUrl = (value) => {
   if (!value || value === "none") return "none"
@@ -254,6 +257,10 @@ function isVideoBackgroundValue(value) {
 }
 
 function clearBackgroundVideo(video) {
+  if (_activeVideoCleanup) {
+    _activeVideoCleanup()
+    _activeVideoCleanup = null
+  }
   if (!video) return
   video.pause()
   video.style.display = "none"
@@ -261,6 +268,27 @@ function clearBackgroundVideo(video) {
   if (video.getAttribute("src")) {
     video.removeAttribute("src")
     video.load()
+  }
+}
+
+function attachVideoReadyListener(videoElement, onReady) {
+  if (_activeVideoCleanup) {
+    _activeVideoCleanup()
+    _activeVideoCleanup = null
+  }
+  if (!videoElement) return
+  const handler = () => {
+    if (_activeVideoCleanup) {
+      _activeVideoCleanup()
+      _activeVideoCleanup = null
+    }
+    onReady()
+  }
+  videoElement.addEventListener("playing", handler, { once: true })
+  videoElement.addEventListener("canplay", handler, { once: true })
+  _activeVideoCleanup = () => {
+    videoElement.removeEventListener("playing", handler)
+    videoElement.removeEventListener("canplay", handler)
   }
 }
 
@@ -1269,6 +1297,8 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bg-layer-active")
     }
 
+    const currentBgToken = ++_currentBgToken
+
     const shouldCarryFadeLayer =
       (bgChanged || isWaitingForIdb) &&
       (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg) &&
@@ -1282,7 +1312,11 @@ function createApplySettings(effectInstances) {
           if (_bgFadeLayer) {
             _bgFadeLayer.style.opacity = "0"
             const fadeInSec = Number(getSettings().bgFadeIn ?? 0.5)
-            window.setTimeout(
+            if (_bgFadeTimer) {
+              clearTimeout(_bgFadeTimer)
+              _bgFadeTimer = null
+            }
+            _bgFadeTimer = window.setTimeout(
               () => {
                 if (_bgFadeLayer.style.opacity === "0") {
                   _bgFadeLayer.className = ""
@@ -1291,6 +1325,7 @@ function createApplySettings(effectInstances) {
                   _bgFadeLayer.style.backgroundSize = ""
                   _bgFadeLayer.style.backgroundRepeat = ""
                 }
+                _bgFadeTimer = null
               },
               Math.max(250, fadeInSec * 1000 + 120),
             )
@@ -1315,11 +1350,22 @@ function createApplySettings(effectInstances) {
     }
 
     if (shouldApplyBackgroundLogic) {
+      if (bgChanged) {
+        trimMediaMemory({
+          keepIds: [rawBg],
+          includeThumbnails: false,
+          maxUrls: 2,
+        })
+      }
       if (!isFirstLoad) {
         document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
         document.body.style.background = ""
         document.body.style.backgroundImage = ""
         if (shouldCarryFadeLayer && bgLayer && bgFadeLayer) {
+          if (_bgFadeTimer) {
+            clearTimeout(_bgFadeTimer)
+            _bgFadeTimer = null
+          }
           bgFadeLayer.style.transition = "none"
           bgFadeLayer.className = bgLayer.className
           bgFadeLayer.style.background = bgLayer.style.background
@@ -1350,6 +1396,10 @@ function createApplySettings(effectInstances) {
           bgFadeLayer.offsetHeight // force reflow
           bgFadeLayer.style.transition = "" // restore transition
         } else if (bgFadeLayer) {
+          if (_bgFadeTimer) {
+            clearTimeout(_bgFadeTimer)
+            _bgFadeTimer = null
+          }
           bgFadeLayer.className = ""
           bgFadeLayer.style.background = ""
           bgFadeLayer.style.backgroundImage = ""
@@ -1463,6 +1513,7 @@ function createApplySettings(effectInstances) {
         const img = new Image()
 
         const applyStyles = () => {
+          if (currentBgToken !== _currentBgToken) return
           // If we didn't pre-set it above, set it now that it has finished downloading
           if (!hasPreloadPreview) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
@@ -1484,11 +1535,13 @@ function createApplySettings(effectInstances) {
             .decode()
             .then(applyStyles)
             .catch(() => {
+              if (currentBgToken !== _currentBgToken) return
               applyStyles()
             })
         } else {
           img.onload = applyStyles
           img.onerror = () => {
+            if (currentBgToken !== _currentBgToken) return
             document.body.classList.remove("preload-bg-preview")
             triggerBgFadeOut()
           }
@@ -1529,17 +1582,7 @@ function createApplySettings(effectInstances) {
               } else {
                 bgVideoElement.style.opacity = "1"
               }
-              const onVideoReady = () => {
-                bgVideoElement.removeEventListener("playing", onVideoReady)
-                bgVideoElement.removeEventListener("canplay", onVideoReady)
-                triggerBgFadeOut()
-              }
-              bgVideoElement.addEventListener("playing", onVideoReady, {
-                once: true,
-              })
-              bgVideoElement.addEventListener("canplay", onVideoReady, {
-                once: true,
-              })
+              attachVideoReadyListener(bgVideoElement, triggerBgFadeOut)
             }
           } else if (bgLayer) {
             const preview = settings.lastUserBackgroundPreview
@@ -1585,17 +1628,7 @@ function createApplySettings(effectInstances) {
               } else {
                 bgVideoElement.style.opacity = "1"
               }
-              const onVideoReady = () => {
-                bgVideoElement.removeEventListener("playing", onVideoReady)
-                bgVideoElement.removeEventListener("canplay", onVideoReady)
-                triggerBgFadeOut()
-              }
-              bgVideoElement.addEventListener("playing", onVideoReady, {
-                once: true,
-              })
-              bgVideoElement.addEventListener("canplay", onVideoReady, {
-                once: true,
-              })
+              attachVideoReadyListener(bgVideoElement, triggerBgFadeOut)
             }
             document.documentElement.style.setProperty(
               "--text-color",
@@ -1921,17 +1954,7 @@ function createApplySettings(effectInstances) {
               bgVideoElement.style.display = "block"
               bgVideoElement.style.opacity = "1"
             }
-            const onVideoReady = () => {
-              bgVideoElement.removeEventListener("playing", onVideoReady)
-              bgVideoElement.removeEventListener("canplay", onVideoReady)
-              triggerBgFadeOut()
-            }
-            bgVideoElement.addEventListener("playing", onVideoReady, {
-              once: true,
-            })
-            bgVideoElement.addEventListener("canplay", onVideoReady, {
-              once: true,
-            })
+            attachVideoReadyListener(bgVideoElement, triggerBgFadeOut)
           }
         } else {
           if (bgLayer) {
@@ -1990,16 +2013,26 @@ function createApplySettings(effectInstances) {
                   )
                   const _imgFirst = new Image()
                   const _applyFirst = () => {
+                    if (currentBgToken !== _currentBgToken) return
                     bgLayer.style.backgroundSize = backgroundSize
                     bgLayer.style.backgroundRepeat = backgroundRepeat
                     triggerBgFadeOut()
                   }
                   if (typeof _imgFirst.decode === "function") {
                     _imgFirst.src = imageUrl
-                    _imgFirst.decode().then(_applyFirst).catch(_applyFirst)
+                    _imgFirst
+                      .decode()
+                      .then(_applyFirst)
+                      .catch(() => {
+                        if (currentBgToken !== _currentBgToken) return
+                        _applyFirst()
+                      })
                   } else {
                     _imgFirst.onload = _applyFirst
-                    _imgFirst.onerror = _applyFirst
+                    _imgFirst.onerror = () => {
+                      if (currentBgToken !== _currentBgToken) return
+                      _applyFirst()
+                    }
                     _imgFirst.src = imageUrl
                   }
                 }
@@ -2013,6 +2046,7 @@ function createApplySettings(effectInstances) {
 
                 const img = new Image()
                 const applyStyles = () => {
+                  if (currentBgToken !== _currentBgToken) return
                   bgLayer.style.backgroundSize = backgroundSize
                   bgLayer.style.backgroundRepeat = backgroundRepeat
                   triggerBgFadeOut()
@@ -2023,11 +2057,13 @@ function createApplySettings(effectInstances) {
                     .decode()
                     .then(applyStyles)
                     .catch(() => {
+                      if (currentBgToken !== _currentBgToken) return
                       applyStyles()
                     })
                 } else {
                   img.onload = applyStyles
                   img.onerror = () => {
+                    if (currentBgToken !== _currentBgToken) return
                     triggerBgFadeOut()
                   }
                   img.src = imageUrl
@@ -2054,17 +2090,7 @@ function createApplySettings(effectInstances) {
               bgVideoElement.src = activeVideoSource
             }
             bgVideoElement.style.display = "block"
-            const onVideoReady = () => {
-              bgVideoElement.removeEventListener("playing", onVideoReady)
-              bgVideoElement.removeEventListener("canplay", onVideoReady)
-              triggerBgFadeOut()
-            }
-            bgVideoElement.addEventListener("playing", onVideoReady, {
-              once: true,
-            })
-            bgVideoElement.addEventListener("canplay", onVideoReady, {
-              once: true,
-            })
+            attachVideoReadyListener(bgVideoElement, triggerBgFadeOut)
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else if (bg.match(/^https?:\/\//)) {
@@ -2077,6 +2103,7 @@ function createApplySettings(effectInstances) {
             } else {
               const img = new Image()
               const applyStyles = () => {
+                if (currentBgToken !== _currentBgToken) return
                 bgLayer.style.backgroundImage = cssUrl(bg)
                 bgLayer.style.backgroundSize = backgroundSize
                 bgLayer.style.backgroundRepeat = backgroundRepeat
@@ -2089,11 +2116,13 @@ function createApplySettings(effectInstances) {
                   .decode()
                   .then(applyStyles)
                   .catch(() => {
+                    if (currentBgToken !== _currentBgToken) return
                     applyStyles()
                   })
               } else {
                 img.onload = applyStyles
                 img.onerror = () => {
+                  if (currentBgToken !== _currentBgToken) return
                   document.body.classList.remove("preload-bg-preview")
                   triggerBgFadeOut()
                 }
