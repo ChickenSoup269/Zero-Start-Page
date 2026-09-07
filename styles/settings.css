@@ -534,7 +534,7 @@ body.sidebar-m3-accent .settings-sidebar {
   border: 1px solid var(--glass-border);
   border-top: 1px solid var(--glass-edge);
   box-shadow: var(--inner-glow);
-  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out;
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   contain: paint layout;
   width: 100%;
   box-sizing: border-box;
@@ -550,7 +550,6 @@ body.sidebar-m3-accent .settings-sidebar {
 .setting-item-row:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
 }
 
 .setting-item-row label,
@@ -657,7 +656,7 @@ body.sidebar-m3-accent .settings-sidebar {
   cursor: pointer;
   border-radius: 8px;
   padding: 0;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -668,8 +667,6 @@ body.sidebar-m3-accent .settings-sidebar {
   color: var(--accent-color);
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.35);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar-toc-btn.active {
@@ -1339,7 +1336,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   font-size: 0.74rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1349,7 +1346,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
 .settings-tab-btn i {
   font-size: 0.78rem;
   opacity: 0.75;
-  transition: opacity 0.14s ease;
+  transition: opacity 0.08s ease;
 }
 
 .settings-tab-btn span {
@@ -1359,7 +1356,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
 }
 
 .settings-tab-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.95);
   border-color: transparent;
 }
@@ -1880,7 +1877,7 @@ body.sidebar-light .ct-preview-hint {
   font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
   user-select: none;
   text-align: center;
   line-height: 1.2;
@@ -1889,7 +1886,7 @@ body.sidebar-light .ct-preview-hint {
 .bg-subtab-btn i {
   font-size: 0.8rem;
   opacity: 0.75;
-  transition: opacity 0.14s ease;
+  transition: opacity 0.08s ease;
 }
 
 .bg-subtab-btn span {
@@ -1900,7 +1897,7 @@ body.sidebar-light .ct-preview-hint {
 }
 
 .bg-subtab-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
 }
 
@@ -2319,12 +2316,13 @@ body.sidebar-light .settings-search-empty p {
   user-select: none;
   background: rgba(255, 255, 255, 0.02);
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+    background-color 0.08s ease,
+    color 0.08s ease;
 }
 
 .section-toggle:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 .section-toggle i {
@@ -2486,7 +2484,7 @@ body.sidebar-light .section-live-badge {
   cursor: pointer;
   user-select: none;
   padding: 4px 0;
-  transition: color 0.2s ease, border-color 0.2s ease, padding 0.2s ease;
+  transition: color 0.08s ease, border-color 0.08s ease;
 }
 
 .setting-group.collapsible-group > .group-header:hover {
@@ -2656,7 +2654,7 @@ body.sidebar-light .setting-group.collapsible-group.expanded > .group-header {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out, box-shadow 0.14s ease-out;
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   contain: paint layout;
   box-sizing: border-box;
   width: 100%;
@@ -2665,8 +2663,6 @@ body.sidebar-light .setting-group.collapsible-group.expanded > .group-header {
 .setting-item:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.25);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .setting-item:last-child {
@@ -2692,7 +2688,6 @@ body.sidebar-light .setting-item {
 body.sidebar-light .setting-item:hover {
   background: rgba(0, 0, 0, 0.055);
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 body.sidebar-light .setting-item label,
@@ -3069,15 +3064,13 @@ body.sidebar-light .setting-item .setting-label {
   padding: 9px 12px;
   text-align: left;
   position: relative;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   user-select: none;
 }
 
 .style-preset-btn:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .style-preset-btn.active {
@@ -3337,7 +3330,7 @@ body.sidebar-light .preset-code-line-value {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   box-sizing: border-box;
   width: 100%;
 }
@@ -3345,8 +3338,6 @@ body.sidebar-light .preset-code-line-value {
 .setting-item-row:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .setting-item-row label,
@@ -3387,8 +3378,8 @@ body.sidebar-light .preset-code-line-value {
   border-radius: 8px !important;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.08s ease,
+              border-color 0.08s ease;
   margin: 0;
   flex-shrink: 0;
   align-self: center;
@@ -3447,7 +3438,7 @@ body.sidebar-light .preset-code-line-value {
   color: var(--text-color, #ffffff) !important;
   cursor: pointer;
   outline: none;
-  transition: all 0.2s ease;
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   box-sizing: border-box;
 }
 
@@ -3549,9 +3540,8 @@ body.sidebar-light .settings-select option {
   font-weight: 600;
   cursor: pointer;
   transition:
-    background-color 0.18s ease,
-    color 0.18s ease,
-    box-shadow 0.18s ease;
+    background-color 0.08s ease,
+    color 0.08s ease;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
@@ -3563,7 +3553,7 @@ body.sidebar-light .settings-select option {
 }
 
 .btn-group-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
 }
 
@@ -5534,9 +5524,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   margin-bottom: var(--space-3);
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+  transition: border-color 0.08s ease;
 }
 
 .bg-control-card:hover {
@@ -6943,7 +6931,7 @@ body.sidebar-light .bg-9grid-btn.active {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.08s ease, border-color 0.08s ease, color 0.08s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6954,25 +6942,22 @@ body.sidebar-light .bg-9grid-btn.active {
 .footer-btn i {
   font-size: 0.9rem;
   opacity: 0.7;
-  transition: transform 0.3s ease;
+  transition: color 0.08s ease;
 }
 
 .footer-btn:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: var(--accent-color);
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .footer-btn:hover i {
   opacity: 1;
-  transform: scale(1.1);
   color: var(--accent-color);
 }
 
 .footer-btn:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .reset-btn {
@@ -6987,6 +6972,19 @@ body.sidebar-light .bg-9grid-btn.active {
 
 .reset-btn:hover i {
   color: #ff4b4b;
+}
+
+/* Snappy hover feedback for all buttons inside settings sidebar */
+.settings-sidebar .secondary-btn,
+.settings-sidebar .setting-btn,
+.settings-sidebar .sidebar-btn {
+  transition: background-color 0.08s ease, border-color 0.08s ease, color 0.08s ease !important;
+}
+
+.settings-sidebar .secondary-btn:hover,
+.settings-sidebar .setting-btn:hover,
+.settings-sidebar .sidebar-btn:hover {
+  transform: none !important;
 }
 
 .sidebar-footer-hint {
@@ -7403,15 +7401,13 @@ body.sidebar-light .bg-9grid-btn.active {
   user-select: none;
   overflow: hidden;
   text-align: center;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.08s ease, border-color 0.08s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .clock-style-card:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .clock-style-card.active {
@@ -7425,7 +7421,7 @@ body.sidebar-light .bg-9grid-btn.active {
 .clock-style-card i {
   font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.55);
-  transition: all 0.22s ease;
+  transition: color 0.08s ease;
 }
 
 .clock-style-card:hover i {
@@ -7541,7 +7537,7 @@ body.sidebar-light .lang-download-badge {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: background-color 0.08s ease, border-color 0.08s ease;
 }
 
 .github-lang-card:hover {
@@ -8126,7 +8122,6 @@ body.sidebar-light .setting-item-row {
 body.sidebar-light .setting-item-row:hover {
   background: rgba(0, 0, 0, 0.065);
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 body.sidebar-light .setting-item-row input[type="checkbox"] {
@@ -13351,7 +13346,7 @@ body.sidebar-light .setting-hint-example {
   background: transparent;
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
+  transition: background-color 0.08s ease, color 0.08s ease;
   white-space: normal;
   text-align: center;
   line-height: 1.2;
