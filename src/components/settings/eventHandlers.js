@@ -9179,6 +9179,7 @@ export function setupGeneralEventHandlers(
       "default",
       "light",
       "m3-accent",
+      "transparent",
       "light-transparent",
       "contrast",
     ]
@@ -9197,6 +9198,10 @@ export function setupGeneralEventHandlers(
         skin === "m3-accent",
       )
       document.body.classList.toggle(
+        "quick-access-transparent",
+        skin === "transparent",
+      )
+      document.body.classList.toggle(
         "quick-access-light-transparent",
         skin === "light-transparent",
       )
@@ -9205,7 +9210,6 @@ export function setupGeneralEventHandlers(
         "quick-access-contrast",
         skin === "contrast",
       )
-      document.body.classList.toggle("quick-access-transparent", false)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { key: "quickAccessSkin", value: skin },

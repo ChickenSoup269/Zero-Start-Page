@@ -1026,6 +1026,10 @@ function createApplySettings(effectInstances) {
     qaToggleDisplay("ambientSounds", settings.qaShowAmbient === true)
     qaToggleDisplay("aiAssistant", settings.qaShowAiAssistant === true)
     document.body.classList.toggle(
+      "quick-access-transparent",
+      settings.quickAccessSkin === "transparent",
+    )
+    document.body.classList.toggle(
       "quick-access-light-transparent",
       settings.quickAccessSkin === "light-transparent",
     )
@@ -1037,7 +1041,6 @@ function createApplySettings(effectInstances) {
       "quick-access-contrast",
       settings.quickAccessSkin === "contrast",
     )
-    document.body.classList.toggle("quick-access-transparent", false)
     document.body.classList.toggle(
       "bookmark-group-accent-enabled",
       settings.bookmarkGroupUseAccent === true,
@@ -4856,6 +4859,7 @@ function createUpdateSettingsInputs(effectInstances) {
           "default",
           "light",
           "m3-accent",
+          "transparent",
           "light-transparent",
           "contrast",
         ].includes(settings.quickAccessSkin)

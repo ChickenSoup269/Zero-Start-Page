@@ -13941,35 +13941,106 @@ body.quick-access-m3-accent .quick-access-popup .quick-access-section-current {
 }
 
 body.quick-access-transparent #settings-toggle,
-body.quick-access-transparent .quick-access-bar {
+body.quick-access-transparent .quick-access-bar,
+body.quick-access-transparent .side-controls #settings-toggle,
+body.quick-access-transparent .side-controls .quick-access-bar {
   background: transparent !important;
+  border: none !important;
   border-color: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-body.quick-access-transparent .layout-controls-popup.quick-access-popup,
-body.quick-access-transparent .quick-access-popup {
-  background: rgba(15, 18, 25, 0.46) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.34) !important;
-  backdrop-filter: blur(24px) saturate(145%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
+body.quick-access-transparent .quick-access-bar .quick-access-divider {
+  background: rgba(255, 255, 255, 0.16) !important;
 }
 
-body.quick-access-transparent .quick-btn {
+body.quick-access-transparent .quick-btn,
+body.quick-access-transparent #settings-toggle {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
 }
 
+body.quick-access-transparent .quick-btn i,
+body.quick-access-transparent #settings-toggle i,
+body.quick-access-transparent .collapse-btn i {
+  color: var(--text-color, #ffffff) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+body.quick-access-transparent .quick-btn:hover:not(.active),
+body.quick-access-transparent #settings-toggle:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.quick-access-transparent .quick-btn:hover:not(.active) i,
+body.quick-access-transparent #settings-toggle:hover:not(.active) i {
+  color: #ffffff !important;
+}
+
+body.quick-access-transparent .quick-btn.active,
+body.quick-access-transparent #settings-toggle.active,
+body.sidebar-open.quick-access-transparent #settings-toggle,
+body.sidebar-open body.quick-access-transparent #settings-toggle {
+  background: var(--accent-color, rgba(255, 255, 255, 0.25)) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.quick-access-transparent .quick-btn.active i,
+body.quick-access-transparent #settings-toggle.active i,
+body.sidebar-open.quick-access-transparent #settings-toggle i,
+body.sidebar-open body.quick-access-transparent #settings-toggle i {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.quick-access-transparent .layout-controls-popup.quick-access-popup,
+body.quick-access-transparent .quick-access-popup {
+  background: rgba(15, 18, 25, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.38) !important;
+  backdrop-filter: blur(24px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
+}
+
 body.quick-access-transparent .quick-access-popup .quick-access-section-row,
 body.quick-access-transparent .quick-access-popup .quick-access-border-row,
-body.quick-access-transparent .quick-access-popup .quick-access-radius-chip {
-  background: rgba(15, 18, 25, 0.32) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+body.quick-access-transparent .quick-access-popup .quick-access-radius-chip,
+body.quick-access-transparent .quick-access-popup .quick-access-border-button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
   box-shadow: none !important;
+}
+
+body.quick-access-transparent .quick-access-popup .quick-access-section-row:hover,
+body.quick-access-transparent .quick-access-popup .quick-access-border-row:hover,
+body.quick-access-transparent .quick-access-popup .quick-access-radius-chip:hover,
+body.quick-access-transparent .quick-access-popup .quick-access-border-button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.quick-access-transparent .quick-access-popup .quick-access-section-current {
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid var(--accent-color) !important;
+  font-weight: 600 !important;
+}
+
+body.quick-access-transparent .quick-access-popup .quick-access-radius-chip.is-active,
+body.quick-access-transparent .quick-access-popup .quick-access-border-button.is-active {
+  background: var(--accent-color) !important;
+  border: 1px solid var(--accent-color) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
+}
+
+body.quick-access-transparent .quick-access-popup .quick-access-radius-chip.is-active i {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.quick-access-light #settings-toggle,
@@ -14024,11 +14095,17 @@ body.quick-access-white .quick-access-popup .quick-access-section-label {
   color: #0f172a !important;
 }
 
-body.quick-access-light .quick-access-popup .quick-access-section-current,
-body.quick-access-white .quick-access-popup .quick-access-section-current {
+body.quick-access-light .quick-access-popup .quick-access-section-current {
   background: var(--accent-color) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   border: 1px solid var(--accent-color) !important;
+  font-weight: 600 !important;
+}
+
+body.quick-access-white .quick-access-popup .quick-access-section-current {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #0f172a !important;
   font-weight: 600 !important;
 }
 
@@ -14042,27 +14119,33 @@ body.quick-access-light #settings-toggle:hover:not(.active),
 body.quick-access-light .quick-btn:hover:not(.active),
 body.quick-access-light .quick-access-popup .quick-access-section-row:hover,
 body.quick-access-light .quick-access-popup .quick-access-border-row:hover,
-body.quick-access-light .quick-access-popup .quick-access-radius-chip:hover,
-body.quick-access-white .quick-access-popup .quick-access-section-row:hover,
-body.quick-access-white .quick-access-popup .quick-access-border-row:hover,
-body.quick-access-white .quick-access-popup .quick-access-radius-chip:hover,
-body.quick-access-white .quick-access-popup .quick-access-border-button:hover {
+body.quick-access-light .quick-access-popup .quick-access-radius-chip:hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
   color: var(--accent-color, #a8c0ff) !important;
 }
 
+body.quick-access-white .quick-access-popup .quick-access-section-row:hover,
+body.quick-access-white .quick-access-popup .quick-access-border-row:hover,
+body.quick-access-white .quick-access-popup .quick-access-radius-chip:hover,
+body.quick-access-white .quick-access-popup .quick-access-border-button:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: #0f172a !important;
+}
+
 body.quick-access-light #settings-toggle:hover:not(.active) i,
-body.quick-access-light .quick-btn:hover:not(.active) i,
-body.quick-access-white .quick-access-popup .quick-btn:hover:not(.active) i {
+body.quick-access-light .quick-btn:hover:not(.active) i {
   color: var(--accent-color, #a8c0ff) !important;
+}
+
+body.quick-access-white .quick-access-popup .quick-btn:hover:not(.active) i {
+  color: #0f172a !important;
 }
 
 body.quick-access-light #settings-toggle.active,
 body.quick-access-light .quick-btn.active,
-body.quick-access-light .quick-access-radius-chip.is-active,
-body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active,
-body.quick-access-white .quick-access-popup .quick-access-border-button.is-active {
+body.quick-access-light .quick-access-radius-chip.is-active {
   background: var(--accent-color) !important;
   border: 1px solid var(--accent-color) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
@@ -14070,11 +14153,23 @@ body.quick-access-white .quick-access-popup .quick-access-border-button.is-activ
   box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
 }
 
+body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active,
+body.quick-access-white .quick-access-popup .quick-access-border-button.is-active {
+  background: #0f172a !important;
+  border: 1px solid #0f172a !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+}
+
 body.quick-access-light #settings-toggle.active i,
 body.quick-access-light .quick-btn.active i,
-body.quick-access-light .quick-access-radius-chip.is-active i,
-body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active i {
+body.quick-access-light .quick-access-radius-chip.is-active i {
   color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.quick-access-white .quick-access-popup .quick-access-radius-chip.is-active i {
+  color: #ffffff !important;
 }
 
 /* Quick Access - Light Transparent Glass Skin */

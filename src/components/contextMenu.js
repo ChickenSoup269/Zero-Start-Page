@@ -2861,6 +2861,11 @@ export function showContextMenu(
           icon: "fa-solid fa-palette",
         },
         {
+          value: "transparent",
+          label: i18n.skin_transparent || "Transparent",
+          icon: "fa-solid fa-border-none",
+        },
+        {
           value: "light-transparent",
           label: i18n.skin_light_transparent || "Light Transparent",
           icon: "fa-solid fa-droplet",
@@ -2891,6 +2896,10 @@ export function showContextMenu(
             skin.value === "m3-accent",
           )
           document.body.classList.toggle(
+            "quick-access-transparent",
+            skin.value === "transparent",
+          )
+          document.body.classList.toggle(
             "quick-access-light-transparent",
             skin.value === "light-transparent",
           )
@@ -2902,7 +2911,6 @@ export function showContextMenu(
             "quick-access-contrast",
             skin.value === "contrast",
           )
-          document.body.classList.toggle("quick-access-transparent", false)
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
               detail: { key: "quickAccessSkin", value: skin.value },
