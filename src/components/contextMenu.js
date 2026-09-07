@@ -336,39 +336,6 @@ function showItemDetailToast(item) {
   }
 }
 
-function positionDetailToast(toast, item) {
-  const itemRect = item.getBoundingClientRect()
-  const menuRect = contextMenu.getBoundingClientRect()
-
-  toast.style.display = "block"
-
-  const toastRect = toast.getBoundingClientRect()
-  const margin = 10
-
-  // Default: place to the right of context menu
-  let x = menuRect.right + 10
-  // If overflows right window edge, flip to left of context menu
-  if (x + toastRect.width > window.innerWidth - margin) {
-    x = menuRect.left - toastRect.width - 10
-  }
-  // If also overflows left window edge, clamp inside viewport
-  if (x < margin) {
-    x = Math.max(margin, Math.min(window.innerWidth - toastRect.width - margin, menuRect.left))
-  }
-
-  // Vertical alignment with top of item
-  let y = itemRect.top - 2
-  if (y + toastRect.height > window.innerHeight - margin) {
-    y = window.innerHeight - toastRect.height - margin
-  }
-  if (y < margin) {
-    y = margin
-  }
-
-  toast.style.left = `${Math.round(x)}px`
-  toast.style.top = `${Math.round(y)}px`
-}
-
 function handleContextMenuMouseOver(e) {
   const item = e.target.closest(".context-menu-item, .menu-item, .context-menu-header")
   if (!item || item === currentHoveredMenuItem) return
