@@ -273,7 +273,7 @@ function showItemDetailToast(item) {
       ` : ""}
     `
   } else if (isHeader) {
-    categoryText = i18n.context_header || "Mục được chọn"
+    categoryText = i18n.context_header || "Selected Item"
     bodyHtml = `
       <div class="cmd-toast-detail-desc">
         <span>${escapeHtml(label)}</span>
@@ -462,13 +462,15 @@ function createRadioMenuItem({
   iconClass,
   handler,
   extraClass = "",
-  activeText = "Đang dùng",
+  activeText = null,
 }) {
+  const i18n = geti18n()
   const item = document.createElement("div")
   item.className =
     `context-menu-item custom-music-item context-menu-radio-item ${isSelected ? "is-selected" : ""} ${extraClass}`.trim()
   const displayIcon = isSelected ? "fa-solid fa-check" : iconClass
-  const selectedTag = activeText || "Đang dùng"
+  const selectedTag =
+    activeText || i18n.status_in_use || i18n.context_toast_selected || "In use"
   item.dataset.itemType = "radio"
   item.dataset.label = label
   item.dataset.isSelected = isSelected ? "true" : "false"
@@ -778,11 +780,11 @@ function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
 function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
   const isHidden = settings.hideTimerAlarmDropdown === true
   const toggleBtn = createToggleMenuItem({
-    label: i18n.settings_timer_alarm_sound || "Bộ chọn âm báo",
+    label: i18n.settings_timer_alarm_sound || "Alarm Sound Selector",
     isActive: !isHidden,
     iconClass: isHidden ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high",
-    activeText: i18n.status_on || "Hiện",
-    inactiveText: i18n.status_off || "Ẩn",
+    activeText: i18n.status_show || "Show",
+    inactiveText: i18n.status_hide || "Hide",
     handler: () => {
       const nextValue = !isHidden
       const checkbox = document.getElementById(
@@ -799,11 +801,11 @@ function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
 function addPomodoroStatsToggle(i18n, settings, beforeNode = menuLock) {
   const isHidden = settings.hidePomodoroStats === true
   const toggleBtn = createToggleMenuItem({
-    label: i18n.context_timer_pomodoro || "Thống kê Pomodoro",
+    label: i18n.context_timer_pomodoro || "Pomodoro Statistics",
     isActive: !isHidden,
     iconClass: "fa-solid fa-chart-pie",
-    activeText: i18n.status_on || "Hiện",
-    inactiveText: i18n.status_off || "Ẩn",
+    activeText: i18n.status_show || "Show",
+    inactiveText: i18n.status_hide || "Hide",
     handler: () => {
       const nextValue = !isHidden
       applyContextSetting("hidePomodoroStats", nextValue)
@@ -1315,8 +1317,8 @@ function addEffectContextMenuItems(effectId, i18n) {
     label: effectName,
     isActive: isActiveEffect,
     iconClass: isActiveEffect ? "fa-solid fa-wand-magic-sparkles" : "fa-regular fa-circle",
-    activeText: i18n.status_on || "Đang dùng",
-    inactiveText: i18n.status_off || "Chưa dùng",
+    activeText: i18n.status_in_use || i18n.status_on || "In use",
+    inactiveText: i18n.status_not_used || i18n.status_off || "Not used",
     handler: () => {
       applyContextSetting("effect", isActiveEffect ? "none" : effectId)
       document
@@ -1851,11 +1853,11 @@ export function showContextMenu(
         const settingKey = `${id}Mini`
         const isMini = settings[settingKey] === true
         const miniBtn = createToggleMenuItem({
-          label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+          label: i18n.widget_mini_size || "Mini Mode (Compact)",
           isActive: isMini,
           iconClass: "fa-solid fa-compress",
-          activeText: i18n.status_on || "Bật",
-          inactiveText: i18n.status_off || "Tắt",
+          activeText: i18n.status_on || "On",
+          inactiveText: i18n.status_off || "Off",
           handler: () => {
             const widgetIdMap = {
               todo: "todo-container",
@@ -1888,12 +1890,12 @@ export function showContextMenu(
 
         const colorMode = settings.habitColorMode || "custom"
         const modes = [
-          { id: "custom", label: i18n.habit_color_custom || "Màu riêng" },
+          { id: "custom", label: i18n.habit_color_custom || "Custom Color" },
           {
             id: "gradient",
-            label: i18n.habit_color_gradient || "Đỏ sang Xanh",
+            label: i18n.habit_color_gradient || "Red to Green",
           },
-          { id: "m3", label: i18n.habit_color_m3 || "Màu Accent" },
+          { id: "m3", label: i18n.habit_color_m3 || "Accent Color" },
         ]
 
         modes.forEach((mode) => {
@@ -1916,11 +1918,11 @@ export function showContextMenu(
         const isExpanded = settings[`${id}Expanded`] === true && !isMini
 
         const miniBtn = createToggleMenuItem({
-          label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+          label: i18n.widget_mini_size || "Mini Mode (Compact)",
           isActive: isMini,
           iconClass: "fa-solid fa-compress",
-          activeText: i18n.status_on || "Bật",
-          inactiveText: i18n.status_off || "Tắt",
+          activeText: i18n.status_on || "On",
+          inactiveText: i18n.status_off || "Off",
           handler: () => {
             const newVal = !isMini
             updateSetting(`${id}Mini`, newVal)
@@ -1955,11 +1957,11 @@ export function showContextMenu(
         contextMenu.insertBefore(miniBtn, menuLock)
 
         const expandBtn = createToggleMenuItem({
-          label: i18n.weather_expand || "Kích thước phóng to",
+          label: i18n.weather_expand || "Enlarge Size",
           isActive: isExpanded,
           iconClass: "fa-solid fa-up-right-and-down-left-from-center",
-          activeText: i18n.status_on || "Bật",
-          inactiveText: i18n.status_off || "Tắt",
+          activeText: i18n.status_on || "On",
+          inactiveText: i18n.status_off || "Off",
           handler: () => {
             const newVal = !isExpanded
             if (newVal) updateSetting(`${id}Mini`, false)
@@ -1996,7 +1998,7 @@ export function showContextMenu(
         if (id === "weather") {
           const isFahrenheit = settings.weatherUnit === "fahrenheit"
           const unitBtn = createCycleMenuItem({
-            label: i18n.weather_unit || "Đơn vị nhiệt độ",
+            label: i18n.weather_unit || "Temperature Unit",
             currentLabel: isFahrenheit ? "°F" : "°C",
             nextLabel: isFahrenheit ? "°C" : "°F",
             iconClass: "fa-solid fa-temperature-half",
@@ -2025,11 +2027,11 @@ export function showContextMenu(
           : "normal"
 
         const sourceBtn = createToggleMenuItem({
-          label: i18n.calendar_source_tabs || "Nguồn sự kiện lịch",
+          label: i18n.calendar_source_tabs || "Calendar Event Source",
           isActive: showSourceSwitcher,
           iconClass: "fa-solid fa-calendar-days",
-          activeText: i18n.status_on || "Hiện",
-          inactiveText: i18n.status_off || "Ẩn",
+          activeText: i18n.status_show || "Show",
+          inactiveText: i18n.status_hide || "Hide",
           handler: () => {
             const newVal = !showSourceSwitcher
             updateSetting("calendarShowSourceSwitcher", newVal)
@@ -2048,12 +2050,12 @@ export function showContextMenu(
         const nextSize =
           sizeOrder[(sizeOrder.indexOf(calendarSize) + 1) % sizeOrder.length]
         const sizeLabels = {
-          normal: i18n.calendar_normal_size || "Chuẩn",
-          mini: i18n.calendar_mini_size || "Thu nhỏ",
-          expanded: i18n.calendar_expand_size || "Mở rộng",
+          normal: i18n.calendar_normal_size || "Normal",
+          mini: i18n.calendar_mini_size || "Mini",
+          expanded: i18n.calendar_expand_size || "Expanded",
         }
         const sizeBtn = createCycleMenuItem({
-          label: i18n.calendar_size || "Kích thước lịch",
+          label: i18n.calendar_size || "Calendar Size",
           currentLabel: sizeLabels[calendarSize] || calendarSize,
           nextLabel: sizeLabels[nextSize] || nextSize,
           iconClass: "fa-solid fa-up-right-and-down-left-from-center",
@@ -2072,11 +2074,11 @@ export function showContextMenu(
       }
 
       const borderBtn = createToggleMenuItem({
-        label: i18n.menu_border || "Viền widget",
+        label: i18n.menu_border || "Widget Border",
         isActive: !isBorderHidden,
         iconClass: "fa-solid fa-border-all",
-        activeText: i18n.status_on || "Hiện",
-        inactiveText: i18n.status_off || "Ẩn",
+        activeText: i18n.status_show || "Show",
+        inactiveText: i18n.status_hide || "Hide",
         handler: () => {
           const newVal = !isBorderHidden
           updateSetting(borderKey, newVal)
@@ -2385,11 +2387,11 @@ export function showContextMenu(
       // Shaking Animation Toggler ("Hiệu ứng bồng bềnh")
       const isNoShaking = settings.musicPlayerNoShaking === true
       const shakeBtn = createToggleMenuItem({
-        label: i18n.music_player_shaking || "Hiệu ứng bồng bềnh",
+        label: i18n.music_player_shaking || "Floating Effect",
         isActive: !isNoShaking,
         iconClass: isNoShaking ? "fa-solid fa-anchor" : "fa-solid fa-wand-magic-sparkles",
-        activeText: i18n.status_on || "Bật",
-        inactiveText: i18n.status_off || "Tắt",
+        activeText: i18n.status_on || "On",
+        inactiveText: i18n.status_off || "Off",
         handler: () => {
           const newVal = !isNoShaking
           updateSetting("musicPlayerNoShaking", newVal)
@@ -2422,17 +2424,17 @@ export function showContextMenu(
         ]
 
       const getColorModeTitle = (mode) => {
-        if (mode === true) return i18n.music_player_color_brand || "Mặc định"
-        if (mode === false) return i18n.music_player_color_global || "Màu chủ đề"
+        if (mode === true) return i18n.music_player_color_brand || "Default"
+        if (mode === false) return i18n.music_player_color_global || "Theme Color"
         if (mode === "thumbnail") return i18n.music_player_color_thumb || "Thumbnail"
         if (mode === "thumbnail-dynamic")
-          return i18n.music_player_color_thumb_dynamic || "Động Thumbnail"
+          return i18n.music_player_color_thumb_dynamic || "Dynamic Thumbnail"
         if (mode === "rgb-flow") return i18n.music_player_color_rgb_flow || "RGB Rainbow"
         return String(mode)
       }
 
       const defaultColorBtn = createCycleMenuItem({
-        label: i18n.music_player_wave_color || "Màu sóng nhạc",
+        label: i18n.music_player_wave_color || "Wave Color",
         currentLabel: getColorModeTitle(currentColorMode),
         nextLabel: getColorModeTitle(nextColorMode),
         iconClass: "fa-solid fa-fill-drip",
@@ -2463,11 +2465,11 @@ export function showContextMenu(
       // Wave Background Color Toggler ("Màu nền theo nhạc")
       const isWaveBg = settings.musicPlayerWaveBgColor === true
       const waveBgBtn = createToggleMenuItem({
-        label: i18n.music_player_wave_bg || "Màu nền theo nhạc",
+        label: i18n.music_player_wave_bg || "Music Dynamic Background",
         isActive: isWaveBg,
         iconClass: "fa-solid fa-droplet",
-        activeText: i18n.status_on || "Bật",
-        inactiveText: i18n.status_off || "Tắt",
+        activeText: i18n.status_on || "On",
+        inactiveText: i18n.status_off || "Off",
         handler: () => {
           const newVal = !isWaveBg
           updateSetting("musicPlayerWaveBgColor", newVal)
@@ -2491,12 +2493,12 @@ export function showContextMenu(
             sourceIconModes.length
         ]
       const sourceIconModeLabels = {
-        brand: i18n.music_source_icon_brand || "Thương hiệu",
-        accent: i18n.music_source_icon_accent || "Màu accent",
-        none: i18n.music_source_icon_none || "Không màu",
+        brand: i18n.music_source_icon_brand || "Brand",
+        accent: i18n.music_source_icon_accent || "Accent Color",
+        none: i18n.music_source_icon_none || "None",
       }
       const sourceIconBtn = createCycleMenuItem({
-        label: i18n.music_source_icon_context || "Icon nguồn",
+        label: i18n.music_source_icon_context || "Source Icon",
         currentLabel: sourceIconModeLabels[currentIconMode] || currentIconMode,
         nextLabel: sourceIconModeLabels[nextIconMode] || nextIconMode,
         iconClass: "fa-solid fa-icons",
@@ -2527,11 +2529,11 @@ export function showContextMenu(
       // Real-time Audio Reactive Toggler ("Sóng nhạc Real-time")
       const isReactive = settings.musicRealAudioReactive === true
       const audioReactiveBtn = createToggleMenuItem({
-        label: i18n.music_real_audio_reactive || "Sóng Real-time",
+        label: i18n.music_real_audio_reactive || "Real-time Wave",
         isActive: isReactive,
         iconClass: isReactive ? "fa-solid fa-bolt-lightning" : "fa-solid fa-wave-square",
-        activeText: i18n.status_on || "Bật",
-        inactiveText: i18n.status_off || "Tắt",
+        activeText: i18n.status_on || "On",
+        inactiveText: i18n.status_off || "Off",
         handler: () => {
           const newVal = !isReactive
           window.dispatchEvent(
@@ -2547,11 +2549,11 @@ export function showContextMenu(
       // CPU Saving Mode Toggler ("Tiết kiệm CPU")
       const isCpuSave = settings.musicVisualizerCpuSave !== false
       const cpuSaveBtn = createToggleMenuItem({
-        label: i18n.music_visualizer_mode_cpusave || "Tiết kiệm CPU",
+        label: i18n.music_visualizer_mode_cpusave || "CPU Save Mode",
         isActive: isCpuSave,
         iconClass: isCpuSave ? "fa-solid fa-leaf" : "fa-solid fa-bolt",
-        activeText: i18n.status_on || "Bật",
-        inactiveText: i18n.status_off || "Tắt",
+        activeText: i18n.status_on || "On",
+        inactiveText: i18n.status_off || "Off",
         handler: () => {
           const newVal = !isCpuSave
           updateSetting("musicVisualizerCpuSave", newVal)
@@ -2576,11 +2578,11 @@ export function showContextMenu(
       // Mini Mode Toggler
       const isMini = settings.musicMini === true
       const miniBtn = createToggleMenuItem({
-        label: i18n.widget_mini_size || "Chế độ Mini (Thu nhỏ)",
+        label: i18n.widget_mini_size || "Mini Mode (Compact)",
         isActive: isMini,
         iconClass: "fa-solid fa-compress",
-        activeText: i18n.status_on || "Bật",
-        inactiveText: i18n.status_off || "Tắt",
+        activeText: i18n.status_on || "On",
+        inactiveText: i18n.status_off || "Off",
         handler: () => {
           const el = document.getElementById("music-player-container")
           const newVal = !isMini
@@ -2602,11 +2604,11 @@ export function showContextMenu(
       // Border Toggler
       const isMusicBorderHidden = settings.musicPlayerHideBorder === true
       const musicBorderBtn = createToggleMenuItem({
-        label: i18n.menu_border || "Viền widget",
+        label: i18n.menu_border || "Widget Border",
         isActive: !isMusicBorderHidden,
         iconClass: "fa-solid fa-border-all",
-        activeText: i18n.status_on || "Hiện",
-        inactiveText: i18n.status_off || "Ẩn",
+        activeText: i18n.status_show || "Show",
+        inactiveText: i18n.status_hide || "Hide",
         handler: () => {
           const newVal = !isMusicBorderHidden
           updateSetting("musicPlayerHideBorder", newVal)
