@@ -28,6 +28,7 @@ export class AiAssistant {
   init() {
     this.createElements()
     this.setupEventListeners()
+    this.applySkin()
     this.loadConfig().then(() => {
       this.updateConfigUI()
       this.renderMessages()
@@ -255,6 +256,41 @@ export class AiAssistant {
       this.updateLanguage(),
     )
     window.addEventListener("languageChanged", () => this.updateLanguage())
+
+    window.addEventListener("layoutUpdated", (e) => {
+      if (
+        e.detail &&
+        (e.detail.key === "aiAssistantSkin" ||
+          e.detail.key === "aiAssistantHideBorder" ||
+          e.detail.key === "widgetUseM3Accent")
+      ) {
+        this.applySkin()
+      }
+    })
+  }
+
+  applySkin() {
+    if (!this.container) return
+    const settings = getSettings()
+    const isWhiteMode = settings.showQuickAccessBg === true
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.aiAssistantSkin || "default"
+
+    this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+    this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.aiAssistantHideBorder === true,
+    )
   }
 
   updateLanguage() {

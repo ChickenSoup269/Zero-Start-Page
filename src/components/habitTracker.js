@@ -68,16 +68,20 @@ export class HabitTracker {
 
     this.loadData()
     this.render()
+    this.applySkin()
 
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail && e.detail.key === "showHabits") {
         fadeToggle(this.container, e.detail.value, "flex")
       }
-      if (e.detail && e.detail.key === "habitTrackerMini") {
-        this.container.classList.toggle(
-          "habitTracker-mini",
-          e.detail.value === true,
-        )
+      if (
+        e.detail &&
+        (e.detail.key === "habitTrackerSkin" ||
+          e.detail.key === "habitTrackerHideBorder" ||
+          e.detail.key === "habitTrackerMini" ||
+          e.detail.key === "widgetUseM3Accent")
+      ) {
+        this.applySkin()
       }
       if (e.detail && e.detail.key === "habitColorMode") {
         this.render()
@@ -90,10 +94,6 @@ export class HabitTracker {
     })
 
     fadeToggle(this.container, getSettings().showHabits === true, "flex")
-    this.container.classList.toggle(
-      "habitTracker-mini",
-      getSettings().habitTrackerMini === true,
-    )
 
     // Initial sync of add color input
     const initialColorMode = getSettings().habitColorMode || "custom"
@@ -102,6 +102,34 @@ export class HabitTracker {
       addColorInput.style.display =
         initialColorMode === "custom" ? "inline-block" : "none"
     }
+  }
+
+  applySkin() {
+    if (!this.container) return
+    const settings = getSettings()
+    const isWhiteMode = settings.showQuickAccessBg === true
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.habitTrackerSkin || "default"
+
+    this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+    this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
+    this.container.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.habitTrackerHideBorder === true,
+    )
+    this.container.classList.toggle(
+      "habitTracker-mini",
+      settings.habitTrackerMini === true,
+    )
   }
 
   loadData() {

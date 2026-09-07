@@ -554,6 +554,10 @@ export class DailyQuotes {
       "skin-light-transparent",
       skin === "light-transparent",
     )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.quotesHideBorder === true,
+    )
   }
 
   async updateQuote(isManual = false) {
@@ -907,9 +911,13 @@ export class DailyQuotes {
         refreshLanguage()
       }
       if (e.detail.key === "showQuotes") {
-        this.applySettings()
+        fadeToggle(this.container, e.detail.value, "flex")
       }
-      if (e.detail.key === "quotesSkin") {
+      if (
+        e.detail.key === "quotesSkin" ||
+        e.detail.key === "quotesHideBorder" ||
+        e.detail.key === "widgetUseM3Accent"
+      ) {
         this.applySkin()
       }
       if (e.detail.key === "quotesSource") {

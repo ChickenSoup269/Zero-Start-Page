@@ -51,6 +51,7 @@ export class TodoList {
   }
 
   applySkin() {
+    if (!this.container) return
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
     const skin =
@@ -62,9 +63,14 @@ export class TodoList {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
     this.container.classList.toggle(
       "skin-light-transparent",
       skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.todoHideBorder === true,
     )
     this.container.classList.toggle("todo-mini", settings.todoMini === true)
   }
@@ -270,7 +276,12 @@ export class TodoList {
       if (e.detail.key === "todoShowCheckboxes") {
         this.updateVisibility()
       }
-      if (e.detail.key === "todoSkin") {
+      if (
+        e.detail.key === "todoSkin" ||
+        e.detail.key === "todoHideBorder" ||
+        e.detail.key === "todoMini" ||
+        e.detail.key === "widgetUseM3Accent"
+      ) {
         this.applySkin()
       }
     })

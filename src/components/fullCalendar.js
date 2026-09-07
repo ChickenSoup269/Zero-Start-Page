@@ -1089,6 +1089,13 @@ export class FullCalendar {
         this.syncCalendarMode()
         this.render()
       }
+      if (
+        e.detail.key === "calendarSkin" ||
+        e.detail.key === "calendarHideBorder" ||
+        e.detail.key === "widgetUseM3Accent"
+      ) {
+        this.applySkin()
+      }
       if (e.detail.key === "language") {
         this.render()
       }
@@ -2174,6 +2181,7 @@ export class FullCalendar {
   }
 
   applySkin() {
+    if (!this.container) return
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
     const skin =
@@ -2185,9 +2193,14 @@ export class FullCalendar {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
     this.container.classList.toggle(
       "skin-light-transparent",
       skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.calendarHideBorder === true,
     )
   }
 

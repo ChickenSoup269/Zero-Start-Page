@@ -425,7 +425,12 @@ export class Timer {
         this.syncTimerVisibilityControls(this.isVisible)
         this.updateVisibility()
       }
-      if (e.detail.key === "timerSkin") {
+      if (
+        e.detail.key === "timerSkin" ||
+        e.detail.key === "timerHideBorder" ||
+        e.detail.key === "timerMini" ||
+        e.detail.key === "widgetUseM3Accent"
+      ) {
         this.applySkin()
       }
       if (e.detail.key === "clockTimerMode") {
@@ -1235,6 +1240,7 @@ export class Timer {
   }
 
   applySkin() {
+    if (!this.container) return
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
     const skin =
@@ -1246,9 +1252,14 @@ export class Timer {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
     this.container.classList.toggle(
       "skin-light-transparent",
       skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.timerHideBorder === true,
     )
     this.container.classList.toggle("timer-mini", settings.timerMini === true)
   }

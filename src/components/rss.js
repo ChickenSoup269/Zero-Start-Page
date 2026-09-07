@@ -59,6 +59,16 @@ export class RssReader {
       if (e.detail && e.detail.key === "showRss") {
         fadeToggle(this.container, e.detail.value, "flex")
       }
+      if (
+        e.detail &&
+        (e.detail.key === "rssSkin" ||
+          e.detail.key === "rssHideBorder" ||
+          e.detail.key === "rssMini" ||
+          e.detail.key === "rssExpanded" ||
+          e.detail.key === "widgetUseM3Accent")
+      ) {
+        this.applyAppearance()
+      }
     })
 
     this.applyAppearance()

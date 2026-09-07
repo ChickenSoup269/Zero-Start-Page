@@ -1799,16 +1799,7 @@ export function showContextMenu(
       })
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (
-        id === "daily-quotes" ||
-        id === "weather" ||
-        id === "rss" ||
-        id === "todo" ||
-        id === "timer" ||
-        id === "habitTracker" ||
-        id === "ambientSounds" ||
-        id === "aiAssistant"
-      ) {
+      if (skinnableWidgets.includes(id)) {
         const transBtn = createRadioMenuItem({
           label: i18n.skin_transparent || "Trong suốt",
           isSelected: isTransparent,
@@ -1825,12 +1816,14 @@ export function showContextMenu(
             )
 
             const widgetIdMap = {
+              todo: "todo-container",
+              timer: "timer-component",
+              calendar: "full-calendar-container",
               weather: "weather-container",
+              notepad: "notepad-container",
               "daily-quotes": "daily-quotes",
               rss: "rss-container",
               habitTracker: "habit-tracker-container",
-              todo: "todo-container",
-              timer: "timer-component",
               ambientSounds: "ambient-sounds-container",
               aiAssistant: "ai-assistant-container",
             }

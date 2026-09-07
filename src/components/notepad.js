@@ -122,13 +122,18 @@ export class Notepad {
         this.isVisible = e.detail.value
         this.updateVisibility()
       }
-      if (e.detail.key === "notepadSkin") {
+      if (
+        e.detail.key === "notepadSkin" ||
+        e.detail.key === "notepadHideBorder" ||
+        e.detail.key === "widgetUseM3Accent"
+      ) {
         this.applySkin()
       }
     })
   }
 
   applySkin() {
+    if (!this.container) return
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
     const skin =
@@ -140,9 +145,14 @@ export class Notepad {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
     this.container.classList.toggle(
       "skin-light-transparent",
       skin === "light-transparent",
+    )
+    this.container.classList.toggle(
+      "widget-border-hidden",
+      settings.notepadHideBorder === true,
     )
   }
 
