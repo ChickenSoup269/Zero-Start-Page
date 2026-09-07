@@ -9587,68 +9587,91 @@ body.is-dragging-widget .dragging * {
   color: #0f172a !important;
 }
 
+.timer-container.skin-white-blur .timer-hero-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .timer-container.skin-white-blur .timer-display {
-  background: rgba(255, 255, 255, 0.6) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(203, 213, 225, 0.9) !important;
   color: #0f172a !important;
   text-shadow: none !important;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+  border-radius: 16px !important;
+  padding: 8px 0 !important;
 }
 
 .timer-container.skin-white-blur .timer-status {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(203, 213, 225, 0.9) !important;
   color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
 }
 
 .timer-container.skin-white-blur .timer-status i {
-  color: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-color, #2563eb) !important;
 }
 
 .timer-container.skin-white-blur .timer-status.is-running {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
-  color: var(--accent-color, #a8c0ff) !important;
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.12) !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.35) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.timer-container.skin-white-blur .timer-controls {
+  background: rgba(241, 245, 249, 0.75) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
 }
 
 .timer-container.skin-white-blur .timer-controls .icon-btn {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
   color: #334155 !important;
 }
 
 .timer-container.skin-white-blur .timer-controls .icon-btn:hover {
   background: #ffffff !important;
-  color: var(--accent-color, #a8c0ff) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
+  color: var(--accent-color, #2563eb) !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.4) !important;
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 37, 99, 235), 0.16) !important;
 }
 
 .timer-container.skin-white-blur .timer-controls #timer-start-pause {
-  background: linear-gradient(
-    135deg,
-    var(--accent-color, #a8c0ff),
-    color-mix(in srgb, var(--accent-color, #a8c0ff) 80%, black)
-  ) !important;
+  background: var(--accent-color, #2563eb) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   border: none !important;
-  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 37, 99, 235), 0.35) !important;
 }
 
 .timer-container.skin-white-blur .timer-controls #timer-start-pause:hover {
-  filter: brightness(1.1) !important;
-  transform: translateY(-1px);
+  filter: brightness(1.08) !important;
+  transform: scale(1.1) !important;
 }
 
-.timer-container.skin-white-blur .timer-alarm-row {
-  background: rgba(255, 255, 255, 0.6) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+.timer-container.skin-white-blur .timer-top-header .timer-header-action-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #475569 !important;
+}
+
+.timer-container.skin-white-blur .timer-top-header .timer-header-action-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
   color: #0f172a !important;
 }
 
+.timer-container.skin-white-blur .timer-alarm-row {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+
 .timer-container.skin-white-blur .timer-alarm-row i {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14) !important;
-  color: var(--accent-color, #a8c0ff) !important;
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.12) !important;
+  color: var(--accent-color, #2563eb) !important;
 }
 
 .timer-container.skin-white-blur .timer-alarm-row select {
@@ -9660,28 +9683,105 @@ body.is-dragging-widget .dragging * {
   color: #0f172a !important;
 }
 
+/* White blur Set Timer elements */
+.timer-container.skin-white-blur .timer-input-view {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.timer-container.skin-white-blur .timer-input-header {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.timer-container.skin-white-blur .timer-back-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+  border-radius: 50% !important;
+}
+
+.timer-container.skin-white-blur .timer-back-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+}
+
 .timer-container.skin-white-blur .pomodoro-btn {
-  background: rgba(255, 255, 255, 0.7) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
   color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 
 .timer-container.skin-white-blur .pomodoro-btn:hover {
   background: #ffffff !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
-  color: var(--accent-color, #a8c0ff) !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.4) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.timer-container.skin-white-blur .pomodoro-btn.active {
+  background: var(--accent-color, #2563eb) !important;
+  border-color: var(--accent-color, #2563eb) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+.timer-container.skin-white-blur .timer-inc-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.timer-container.skin-white-blur .timer-inc-btn:hover {
+  background: #ffffff !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.4) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-presets-label {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-preset {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-preset:hover {
+  background: #ffffff !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.45) !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-preset-btn {
+  color: #0f172a !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-preset-remove {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-left: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #64748b !important;
+}
+
+.timer-container.skin-white-blur .timer-saved-preset-remove:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
 }
 
 .timer-container.skin-white-blur #timer-smart-input {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1.5px solid rgba(203, 213, 225, 0.9) !important;
+  background: #ffffff !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.95) !important;
   color: #0f172a !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.04) !important;
 }
 
 .timer-container.skin-white-blur #timer-smart-input:focus {
   background: #ffffff !important;
-  border-color: var(--accent-color, #a8c0ff) !important;
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
+  border-color: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 37, 99, 235), 0.25) !important;
 }
 
 .timer-container.skin-white-blur .timer-input-hint {
@@ -9689,32 +9789,42 @@ body.is-dragging-widget .dragging * {
 }
 
 .timer-container.skin-white-blur .timer-keypad-btn {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
   color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 
 .timer-container.skin-white-blur .timer-keypad-btn:hover {
   background: #ffffff !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) !important;
-  color: var(--accent-color, #a8c0ff) !important;
+  border-color: rgba(var(--accent-color-rgb, 37, 99, 235), 0.45) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+
+.timer-container.skin-white-blur .timer-keypad-btn.is-utility {
+  background: rgba(241, 245, 249, 0.9) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
 }
 
 .timer-container.skin-white-blur .timer-input-actions .secondary-btn {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
   color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.timer-container.skin-white-blur .timer-input-actions .secondary-btn:hover {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 .timer-container.skin-white-blur .timer-input-actions .primary-btn {
-  background: linear-gradient(
-    135deg,
-    var(--accent-color, #a8c0ff),
-    color-mix(in srgb, var(--accent-color, #a8c0ff) 80%, black)
-  ) !important;
+  background: var(--accent-color, #2563eb) !important;
   color: var(--accent-contrast-color, #ffffff) !important;
   border: none !important;
-  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 37, 99, 235), 0.3) !important;
 }
 
 .skin-white-blur .icon-btn,
@@ -9947,60 +10057,319 @@ body.is-dragging-widget .dragging * {
 /* Timer Transparent Skin Details */
 .timer-container.skin-transparent .timer-display,
 #timer-component.skin-transparent .timer-display {
-  background: rgba(15, 18, 26, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  background: rgba(15, 18, 26, 0.42) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
   color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 16px !important;
+  padding: 8px 0 !important;
 }
 
 .timer-container.skin-transparent .timer-status,
 .timer-container.skin-transparent .pomodoro-stats,
-.timer-container.skin-transparent .timer-controls .icon-btn,
-.timer-container.skin-transparent .timer-alarm-row,
-.timer-container.skin-transparent .pomodoro-btn,
-.timer-container.skin-transparent .timer-inc-btn,
-.timer-container.skin-transparent .timer-keypad-btn,
-.timer-container.skin-transparent .timer-input-actions .secondary-btn,
-.timer-container.skin-transparent #timer-smart-input,
 #timer-component.skin-transparent .timer-status,
-#timer-component.skin-transparent .pomodoro-stats,
-#timer-component.skin-transparent .timer-controls .icon-btn,
-#timer-component.skin-transparent .timer-alarm-row,
-#timer-component.skin-transparent .pomodoro-btn,
-#timer-component.skin-transparent .timer-inc-btn,
-#timer-component.skin-transparent .timer-keypad-btn,
-#timer-component.skin-transparent .timer-input-actions .secondary-btn,
-#timer-component.skin-transparent #timer-smart-input {
+#timer-component.skin-transparent .pomodoro-stats {
   background: rgba(15, 18, 26, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.timer-container.skin-transparent .timer-controls,
+#timer-component.skin-transparent .timer-controls {
+  background: rgba(15, 18, 26, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+.timer-container.skin-transparent .timer-controls .icon-btn,
+#timer-component.skin-transparent .timer-controls .icon-btn {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .timer-container.skin-transparent .timer-controls .icon-btn:hover,
-.timer-container.skin-transparent .pomodoro-btn:hover,
-.timer-container.skin-transparent .timer-inc-btn:hover,
-.timer-container.skin-transparent .timer-keypad-btn:hover,
-#timer-component.skin-transparent .timer-controls .icon-btn:hover,
-#timer-component.skin-transparent .pomodoro-btn:hover,
-#timer-component.skin-transparent .timer-inc-btn:hover,
-#timer-component.skin-transparent .timer-keypad-btn:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
-  border-color: var(--accent-color, #a8c0ff) !important;
-  color: var(--accent-color, #a8c0ff) !important;
+#timer-component.skin-transparent .timer-controls .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
+.timer-container.skin-transparent .timer-alarm-row,
+#timer-component.skin-transparent .timer-alarm-row {
+  background: rgba(15, 18, 26, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+.timer-container.skin-transparent .timer-alarm-row select,
+#timer-component.skin-transparent .timer-alarm-row select {
+  color: #ffffff !important;
+}
+
+/* SET TIMER VIEW IN TRANSPARENT SKIN */
 .timer-container.skin-transparent .timer-input-view,
 #timer-component.skin-transparent .timer-input-view {
-  background: rgba(15, 18, 26, 0.65) !important;
+  background: transparent !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+.timer-container.skin-transparent .timer-input-header,
+#timer-component.skin-transparent .timer-input-header {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.timer-container.skin-transparent .timer-back-btn,
+#timer-component.skin-transparent .timer-back-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 50% !important;
+}
+
+.timer-container.skin-transparent .timer-back-btn:hover,
+#timer-component.skin-transparent .timer-back-btn:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .pomodoro-btn,
+#timer-component.skin-transparent .pomodoro-btn {
+  background: rgba(15, 18, 26, 0.42) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
-  border-radius: var(--radius-md);
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+.timer-container.skin-transparent .pomodoro-btn:hover,
+#timer-component.skin-transparent .pomodoro-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .pomodoro-btn.active,
+#timer-component.skin-transparent .pomodoro-btn.active {
+  background: var(--accent-color, #6875f5) !important;
+  border-color: var(--accent-color, #6875f5) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 4px 16px rgba(var(--accent-color-rgb, 104, 117, 245), 0.5) !important;
+}
+
+.timer-container.skin-transparent .timer-inc-btn,
+#timer-component.skin-transparent .timer-inc-btn {
+  background: rgba(15, 18, 26, 0.42) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.timer-container.skin-transparent .timer-inc-btn:hover,
+#timer-component.skin-transparent .timer-inc-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .timer-saved-presets-label,
+#timer-component.skin-transparent .timer-saved-presets-label {
+  color: rgba(255, 255, 255, 0.8) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.timer-container.skin-transparent .timer-saved-preset,
+#timer-component.skin-transparent .timer-saved-preset {
+  background: rgba(15, 18, 26, 0.42) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+.timer-container.skin-transparent .timer-saved-preset:hover,
+#timer-component.skin-transparent .timer-saved-preset:hover {
+  background: rgba(25, 30, 42, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+.timer-container.skin-transparent .timer-saved-preset-btn,
+#timer-component.skin-transparent .timer-saved-preset-btn {
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .timer-saved-preset-remove,
+#timer-component.skin-transparent .timer-saved-preset-remove {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.timer-container.skin-transparent #timer-smart-input,
+#timer-component.skin-transparent #timer-smart-input {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-radius: 14px !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.timer-container.skin-transparent #timer-smart-input:focus,
+#timer-component.skin-transparent #timer-smart-input:focus {
+  background: rgba(15, 18, 26, 0.65) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3), 0 6px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.timer-container.skin-transparent .timer-input-hint,
+#timer-component.skin-transparent .timer-input-hint {
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+}
+
+.timer-container.skin-transparent .timer-keypad-btn,
+#timer-component.skin-transparent .timer-keypad-btn {
+  background: rgba(15, 18, 26, 0.42) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  font-weight: 700 !important;
+}
+
+.timer-container.skin-transparent .timer-keypad-btn:hover,
+#timer-component.skin-transparent .timer-keypad-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.timer-container.skin-transparent .timer-keypad-btn.is-utility,
+#timer-component.skin-transparent .timer-keypad-btn.is-utility {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.timer-container.skin-transparent .timer-input-actions .secondary-btn,
+#timer-component.skin-transparent .timer-input-actions .secondary-btn {
+  background: rgba(15, 18, 26, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  font-weight: 700 !important;
+}
+
+.timer-container.skin-transparent .timer-input-actions .secondary-btn:hover,
+#timer-component.skin-transparent .timer-input-actions .secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.timer-container.skin-transparent .timer-input-actions .primary-btn,
+#timer-component.skin-transparent .timer-input-actions .primary-btn {
+  background: var(--accent-color, #6875f5) !important;
+  border: 1px solid var(--accent-color, #6875f5) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(var(--accent-color-rgb, 104, 117, 245), 0.5) !important;
+  font-weight: 700 !important;
+}
+
+/* Timer Light Transparent Skin Details */
+.timer-container.skin-light-transparent .timer-display,
+#timer-component.skin-light-transparent .timer-display {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 16px !important;
+  padding: 8px 0 !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.timer-container.skin-light-transparent .timer-status,
+.timer-container.skin-light-transparent .pomodoro-stats,
+#timer-component.skin-light-transparent .timer-status,
+#timer-component.skin-light-transparent .pomodoro-stats {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.timer-container.skin-light-transparent .timer-controls,
+#timer-component.skin-light-transparent .timer-controls {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.timer-container.skin-light-transparent .timer-alarm-row,
+#timer-component.skin-light-transparent .timer-alarm-row {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.timer-container.skin-light-transparent .timer-input-view,
+#timer-component.skin-light-transparent .timer-input-view {
+  background: transparent !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+.timer-container.skin-light-transparent .pomodoro-btn,
+.timer-container.skin-light-transparent .timer-inc-btn,
+.timer-container.skin-light-transparent .timer-keypad-btn,
+.timer-container.skin-light-transparent .timer-saved-preset,
+.timer-container.skin-light-transparent .timer-input-actions .secondary-btn,
+#timer-component.skin-light-transparent .pomodoro-btn,
+#timer-component.skin-light-transparent .timer-inc-btn,
+#timer-component.skin-light-transparent .timer-keypad-btn,
+#timer-component.skin-light-transparent .timer-saved-preset,
+#timer-component.skin-light-transparent .timer-input-actions .secondary-btn {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: var(--text-color, #ffffff) !important;
+}
+
+.timer-container.skin-light-transparent #timer-smart-input,
+#timer-component.skin-light-transparent #timer-smart-input {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px !important;
+  color: var(--text-color, #ffffff) !important;
 }
 
 /* Todo Transparent Skin Details */
