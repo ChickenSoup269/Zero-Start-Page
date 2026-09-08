@@ -5004,6 +5004,20 @@ function createUpdateSettingsInputs(effectInstances) {
           DOM.bookmarkLayoutBgStyleRow.style.display =
             val === "default" ? "none" : "flex"
         }
+
+        // Draggable Grid: show/hide lock row and set checkbox
+        const lockRow = document.getElementById("lcp-draggable-grid-lock-row")
+        if (lockRow) {
+          lockRow.style.display = val === "draggable-grid" ? "flex" : "none"
+        }
+        const lockCheckbox = document.getElementById("lcp-draggable-grid-lock")
+        if (lockCheckbox) {
+          lockCheckbox.checked = settings.bookmarkDraggableGridLocked === true
+        }
+        const freeMoveLcp = document.getElementById("lcp-free-move-bookmarks")
+        if (freeMoveLcp) {
+          freeMoveLcp.checked = settings.freeMoveBookmarks === true
+        }
       }
       if (DOM.bookmarkLayoutBgStyle) {
         DOM.bookmarkLayoutBgStyle.value =
@@ -6785,6 +6799,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.freeMoveSearchBarCheckbox.checked =
         settings.freeMoveSearchBar === true
     }
+    if (DOM.freeMoveBookmarksCheckbox) {
+      DOM.freeMoveBookmarksCheckbox.checked =
+        settings.freeMoveBookmarks === true
+    }
     if (DOM.lcpSearchBar) {
       DOM.lcpSearchBar.checked = settings.showSearchBar !== false
     }
@@ -7004,6 +7022,10 @@ function createUpdateSettingsInputs(effectInstances) {
       "free-move-search-bar",
       settings.freeMoveSearchBar === true,
     )
+    document.body.classList.toggle(
+      "bookmark-free-move-active",
+      settings.freeMoveBookmarks === true,
+    )
     if (settings.freeMoveClock !== true) {
       const clockWrap = document.getElementById("clock-date-wrap")
       if (clockWrap) {
@@ -7038,6 +7060,19 @@ function createUpdateSettingsInputs(effectInstances) {
         searchWrap.style.right = ""
         searchWrap.style.transform = ""
         searchWrap.style.margin = ""
+      }
+    }
+    if (settings.freeMoveBookmarks !== true || settings.bookmarkLayout !== "draggable-grid") {
+      const bw = document.getElementById("bookmark-widget")
+      if (bw) {
+        bw.style.position = ""
+        bw.style.top = ""
+        bw.style.left = ""
+        bw.style.bottom = ""
+        bw.style.right = ""
+        bw.style.transform = ""
+        bw.style.margin = ""
+        bw.classList.remove("has-position")
       }
     }
     if (DOM.showCustomTitleCheckbox) {

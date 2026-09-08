@@ -1750,6 +1750,9 @@ export let searchContainer = document.getElementById("search-container")
 export let showBookmarksCheckbox = document.getElementById(
   "show-bookmarks-checkbox",
 )
+export let freeMoveBookmarksCheckbox = document.getElementById(
+  "free-move-bookmarks-checkbox",
+)
 export let showQuickAccessBgCheckbox = document.getElementById(
   "show-quick-access-bg-checkbox",
 )
@@ -3797,6 +3800,9 @@ export function refreshDOMReferences() {
   searchAiBtn = document.getElementById("search-ai-btn")
   searchContainer = document.getElementById("search-container")
   showBookmarksCheckbox = document.getElementById("show-bookmarks-checkbox")
+  freeMoveBookmarksCheckbox = document.getElementById(
+    "free-move-bookmarks-checkbox",
+  )
   showQuickAccessBgCheckbox = document.getElementById(
     "show-quick-access-bg-checkbox",
   )

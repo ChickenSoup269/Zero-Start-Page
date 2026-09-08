@@ -228,6 +228,12 @@ async function bootstrap() {
   // ── 11. Draggable UI elements ─────────────────────────────────────────────
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
   makeDraggable(document.getElementById("search-container"), "searchBar")
+  makeDraggable(
+    document.getElementById("bookmark-widget"),
+    "bookmarkWidget",
+    null,
+    ".bookmark-widget-drag-handle, .bookmark-toolbar-handle, #bookmark-widget-drag-handle",
+  )
 
   // ── 12. Context menus ─────────────────────────────────────────────────────
   const backgroundContextExclusions = [
@@ -286,6 +292,7 @@ async function bootstrap() {
     ["#habit-tracker-container", "habitTracker"],
     ["#ambient-sounds-container", "ambientSounds"],
     ["#ai-assistant-container", "aiAssistant"],
+    ["#bookmark-widget-drag-handle", "bookmarkWidget"],
   ]
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return

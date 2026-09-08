@@ -1623,6 +1623,10 @@ export function showContextMenu(
       isFreeMoveEnabled = settings.freeMoveClock === true
     } else if (id === "custom-title" || id === "customTitle") {
       isFreeMoveEnabled = settings.freeMoveCustomTitle === true
+    } else if (id === "bookmarkWidget" || id === "bookmarks") {
+      isFreeMoveEnabled =
+        settings.freeMoveBookmarks === true ||
+        settings.bookmarkLayout === "draggable-grid"
     }
 
     if (!isFreeMoveEnabled) {
@@ -1636,6 +1640,10 @@ export function showContextMenu(
       isLocked = settings.lockedWidgets && settings.lockedWidgets["customTitle"]
     } else if (id === "search") {
       isLocked = settings.lockedWidgets && settings.lockedWidgets["searchBar"]
+    } else if (id === "bookmarkWidget" || id === "bookmarks") {
+      isLocked =
+        (settings.lockedWidgets && settings.lockedWidgets["bookmarkWidget"]) ||
+        settings.bookmarkDraggableGridLocked === true
     }
 
     const lockText = menuLock.querySelector("span")
@@ -3725,6 +3733,46 @@ function handleLock() {
       return
     }
 
+    if (
+      contextMenuTargetId === "bookmarkWidget" ||
+      contextMenuTargetId === "bookmarks"
+    ) {
+      const lockedWidgets = { ...(settings.lockedWidgets || {}) }
+      const isLocked =
+        lockedWidgets["bookmarkWidget"] ||
+        settings.bookmarkDraggableGridLocked === true
+      const nextLocked = !isLocked
+      lockedWidgets["bookmarkWidget"] = nextLocked
+      updateSetting("bookmarkDraggableGridLocked", nextLocked)
+
+      if (window.appHandleSettingUpdate) {
+        window.appHandleSettingUpdate("lockedWidgets", lockedWidgets)
+      } else {
+        updateSetting("lockedWidgets", lockedWidgets)
+        saveSettings()
+      }
+
+      document.body.classList.toggle("bookmark-grid-locked", nextLocked)
+      const widget = document.getElementById("bookmark-widget")
+      if (widget) {
+        widget.classList.toggle("is-locked", nextLocked)
+      }
+      const lcpLockCheckbox = document.getElementById("lcp-draggable-grid-lock")
+      if (lcpLockCheckbox) {
+        lcpLockCheckbox.checked = nextLocked
+      }
+      const lockBtn = document.getElementById("bookmark-grid-lock-btn")
+      if (lockBtn) {
+        lockBtn.className = nextLocked ? "locked" : ""
+        const icon = lockBtn.querySelector("i")
+        if (icon) icon.className = nextLocked ? "fa-solid fa-lock" : "fa-solid fa-lock-open"
+        const span = lockBtn.querySelector("span")
+        if (span) span.textContent = nextLocked ? (i18n.draggable_grid_locked_label || "Locked") : (i18n.draggable_grid_lock_label || "Lock")
+      }
+      hideContextMenu()
+      return
+    }
+
     const lockedWidgets = { ...(settings.lockedWidgets || {}) }
     const isLocked = lockedWidgets[contextMenuTargetId]
 
@@ -3753,6 +3801,8 @@ function handleLock() {
       aiAssistant: "ai-assistant-container",
       searchBar: "search-container",
       customTitle: "custom-title-display",
+      bookmarkWidget: "bookmark-widget",
+      bookmarks: "bookmark-widget",
     }
 
     const widgetId = widgetIdMap[contextMenuTargetId] || contextMenuTargetId

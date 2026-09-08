@@ -4349,6 +4349,74 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgStyleRow.style.display =
             DOM.lcpBookmarkLayout.value === "default" ? "none" : "flex"
         }
+
+        // Show/hide draggable grid lock row
+        const lockRow = document.getElementById("lcp-draggable-grid-lock-row")
+        if (lockRow) {
+          lockRow.style.display =
+            DOM.lcpBookmarkLayout.value === "draggable-grid" ? "flex" : "none"
+        }
+      })
+    }
+
+    // Wire up Draggable Grid lock toggle
+    const lcpDraggableGridLock = document.getElementById("lcp-draggable-grid-lock")
+    if (lcpDraggableGridLock) {
+      // Set initial checked state from settings
+      lcpDraggableGridLock.checked = getSettings().bookmarkDraggableGridLocked === true
+
+      lcpDraggableGridLock.addEventListener("change", () => {
+        const isLocked = lcpDraggableGridLock.checked
+        throttleSettingUpdate("bookmarkDraggableGridLocked", isLocked)
+      })
+    }
+
+    // Wire up LCP Free Move Bookmarks toggle
+    const lcpFreeMoveBookmarks = document.getElementById("lcp-free-move-bookmarks")
+    if (lcpFreeMoveBookmarks) {
+      lcpFreeMoveBookmarks.checked = getSettings().freeMoveBookmarks === true
+
+      lcpFreeMoveBookmarks.addEventListener("change", () => {
+        const enabled = lcpFreeMoveBookmarks.checked
+        if (DOM.freeMoveBookmarksCheckbox) {
+          DOM.freeMoveBookmarksCheckbox.checked = enabled
+        }
+        handleSettingUpdate("freeMoveBookmarks", enabled)
+        document.body.classList.toggle("bookmark-free-move-active", enabled)
+        if (!enabled) {
+          const bw = document.getElementById("bookmark-widget")
+          if (bw) {
+            bw.style.removeProperty("top")
+            bw.style.removeProperty("left")
+            bw.style.removeProperty("right")
+            bw.style.removeProperty("bottom")
+            bw.style.removeProperty("position")
+            bw.classList.remove("has-position")
+          }
+          const settings = getSettings()
+          let changed = false
+          if (
+            settings.componentPositions &&
+            settings.componentPositions.bookmarkWidget
+          ) {
+            delete settings.componentPositions.bookmarkWidget
+            changed = true
+          }
+          if (settings.lockedWidgets && settings.lockedWidgets.bookmarkWidget) {
+            delete settings.lockedWidgets.bookmarkWidget
+            changed = true
+          }
+          if (changed) {
+            updateSetting("componentPositions", settings.componentPositions)
+            updateSetting("lockedWidgets", settings.lockedWidgets)
+            saveSettings()
+          }
+        }
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "freeMoveBookmarks", value: enabled },
+          }),
+        )
       })
     }
     if (DOM.bookmarkLayoutShowGroups) {
@@ -8282,6 +8350,46 @@ export function setupGeneralEventHandlers(
           saveSettings()
         }
       }
+    })
+  }
+  setupLayoutCheckbox(DOM.freeMoveBookmarksCheckbox, "freeMoveBookmarks", {})
+  if (DOM.freeMoveBookmarksCheckbox) {
+    DOM.freeMoveBookmarksCheckbox.addEventListener("change", (e) => {
+      document.body.classList.toggle("bookmark-free-move-active", e.target.checked)
+      if (!e.target.checked) {
+        const bw = document.getElementById("bookmark-widget")
+        if (bw) {
+          bw.style.removeProperty("top")
+          bw.style.removeProperty("left")
+          bw.style.removeProperty("right")
+          bw.style.removeProperty("bottom")
+          bw.style.removeProperty("position")
+          bw.classList.remove("has-position")
+        }
+        const settings = getSettings()
+        let changed = false
+        if (
+          settings.componentPositions &&
+          settings.componentPositions.bookmarkWidget
+        ) {
+          delete settings.componentPositions.bookmarkWidget
+          changed = true
+        }
+        if (settings.lockedWidgets && settings.lockedWidgets.bookmarkWidget) {
+          delete settings.lockedWidgets.bookmarkWidget
+          changed = true
+        }
+        if (changed) {
+          updateSetting("componentPositions", settings.componentPositions)
+          updateSetting("lockedWidgets", settings.lockedWidgets)
+          saveSettings()
+        }
+      }
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "freeMoveBookmarks", value: e.target.checked },
+        }),
+      )
     })
   }
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})

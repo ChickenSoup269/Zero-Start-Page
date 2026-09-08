@@ -231,6 +231,7 @@ export const defaultSettings = {
   bookmarkHideScrollbar: false,
   bookmarkMacosHover: false,
   bookmarkLayout: "default",
+  bookmarkDraggableGridLocked: false,
   bookmarkLayoutBgStyle: "default",
   quickAccessBorderRadius: "5px",
   quickAccessToggleRadius: "20px",
@@ -487,6 +488,7 @@ export const defaultSettings = {
   showBookmarkGroups: true,
   showSearchBar: true,
   freeMoveSearchBar: false,
+  freeMoveBookmarks: false,
   searchBarWidth: 750,
   searchBarBlur: 20,
   searchBarRadius: 20,
@@ -671,11 +673,6 @@ if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   settingsState.rssHiddenMigrated = true
 }
 
-// Migration: clean up any accidental bookmarkWidget position
-if (settingsState.componentPositions?.bookmarkWidget) {
-  delete settingsState.componentPositions.bookmarkWidget
-  localStorage.setItem("pageSettings", JSON.stringify(settingsState))
-}
 
 const MODULE_RESET_KEYS = {
   background: [

@@ -1755,7 +1755,144 @@ function updateBookmarkDropIntent(el, event) {
   }
 }
 
+// =====================================================================
+// DRAGGABLE GRID MODE — toolbar & drag integration
+// =====================================================================
+
+/**
+ * Render the Floating Hover Toolbar for Bookmark Layout.
+ * Contains:
+ * 1. Drag Handle (Move whole layout)
+ * 2. Free Move Toggle button
+ * 3. Lock / Unlock button
+ */
+function renderBookmarkToolbar() {
+  document.getElementById("bookmark-layout-toolbar")?.remove()
+  document.getElementById("bookmark-grid-lock-btn")?.remove()
+
+  const settings = getSettings()
+  const isDraggableGrid = settings.bookmarkLayout === "draggable-grid"
+  const isFreeMove = settings.freeMoveBookmarks === true
+  const isLocked =
+    settings.bookmarkDraggableGridLocked === true ||
+    settings.lockedWidgets?.bookmarkWidget === true
+  const i18n = geti18n()
+
+  const bw = document.getElementById("bookmark-widget")
+  // ONLY show toolbar when Draggable Grid layout is active
+  if (!isDraggableGrid) return
+
+  const toolbar = document.createElement("div")
+  toolbar.id = "bookmark-layout-toolbar"
+  toolbar.className = "bookmark-layout-toolbar"
+
+  // 1. Drag Handle (Visible when Free Move is active & not locked)
+  const dragHandle = document.createElement("div")
+  dragHandle.id = "bookmark-widget-drag-handle"
+  dragHandle.className = `bookmark-toolbar-handle bookmark-widget-drag-handle ${isFreeMove && !isLocked ? "active" : ""}`
+  dragHandle.title =
+    i18n.bookmark_drag_handle_title || "Hold and drag to move layout"
+  dragHandle.innerHTML = `
+    <i class="fa-solid fa-grip-lines"></i>
+    <span>${i18n.bookmark_move_label || "Move"}</span>
+  `
+  toolbar.appendChild(dragHandle)
+
+  const actionsWrap = document.createElement("div")
+  actionsWrap.className = "bookmark-toolbar-actions"
+
+  // 2. Free Move Toggle Button
+  const freeMoveBtn = document.createElement("button")
+  freeMoveBtn.type = "button"
+  freeMoveBtn.id = "bookmark-freemove-toggle-btn"
+  freeMoveBtn.className = `bookmark-toolbar-btn freemove-btn ${isFreeMove ? "active" : ""}`
+  freeMoveBtn.title = isFreeMove
+    ? i18n.bookmark_freemove_disable || "Disable free move (center layout)"
+    : i18n.bookmark_freemove_enable || "Enable free move (drag layout anywhere)"
+  freeMoveBtn.innerHTML = `
+    <i class="fa-solid fa-up-down-left-right"></i>
+    <span>${i18n.settings_free_move_bookmarks || "Free Move"}</span>
+  `
+  freeMoveBtn.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const nextFreeMove = !isFreeMove
+    updateSetting("freeMoveBookmarks", nextFreeMove)
+
+    const freeMoveCb = document.getElementById("free-move-bookmarks-checkbox")
+    if (freeMoveCb) {
+      freeMoveCb.checked = nextFreeMove
+    }
+
+    if (!nextFreeMove) {
+      // Reset position to center
+      bw.style.removeProperty("top")
+      bw.style.removeProperty("left")
+      bw.style.removeProperty("right")
+      bw.style.removeProperty("bottom")
+      bw.style.removeProperty("position")
+      bw.classList.remove("has-position")
+
+      const s = getSettings()
+      if (s.componentPositions?.bookmarkWidget) {
+        delete s.componentPositions.bookmarkWidget
+        updateSetting("componentPositions", s.componentPositions)
+      }
+    }
+
+    saveSettings(true)
+    document.body.classList.toggle("bookmark-free-move-active", nextFreeMove)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "freeMoveBookmarks", value: nextFreeMove },
+      }),
+    )
+    renderBookmarks()
+  })
+  actionsWrap.appendChild(freeMoveBtn)
+
+  // 3. Lock / Unlock Button
+  const lockBtn = document.createElement("button")
+  lockBtn.type = "button"
+  lockBtn.id = "bookmark-grid-lock-btn"
+  lockBtn.className = `bookmark-toolbar-btn lock-btn ${isLocked ? "locked" : ""}`
+  lockBtn.title = isLocked
+    ? i18n.draggable_grid_unlock || "Click to unlock layout positions"
+    : i18n.draggable_grid_lock || "Click to lock layout positions"
+  lockBtn.innerHTML = `
+    <i class="${isLocked ? "fa-solid fa-lock" : "fa-solid fa-lock-open"}"></i>
+    <span>${isLocked ? i18n.draggable_grid_locked_label || "Locked" : i18n.draggable_grid_lock_label || "Lock"}</span>
+  `
+  lockBtn.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const nextLocked = !isLocked
+    updateSetting("bookmarkDraggableGridLocked", nextLocked)
+
+    const lockedWidgets = { ...(getSettings().lockedWidgets || {}) }
+    lockedWidgets.bookmarkWidget = nextLocked
+    updateSetting("lockedWidgets", lockedWidgets)
+
+    saveSettings(true)
+    document.body.classList.toggle("bookmark-grid-locked", nextLocked)
+    bw.classList.toggle("is-locked", nextLocked)
+
+    renderBookmarks()
+  })
+  actionsWrap.appendChild(lockBtn)
+
+  toolbar.appendChild(actionsWrap)
+  bw.prepend(toolbar)
+}
+
 function handleDragStart(e) {
+  const settings = getSettings()
+  if (
+    settings.bookmarkLayout === "draggable-grid" &&
+    (settings.bookmarkDraggableGridLocked ||
+      settings.lockedWidgets?.bookmarkWidget)
+  ) {
+    e.preventDefault()
+    return
+  }
   const index = Number(this.dataset.index)
   if (isSelectionMode && selectedIndices.has(index)) {
     draggedBookmarkIndices = Array.from(selectedIndices).sort((a, b) => a - b)
@@ -1782,6 +1919,15 @@ function handleDragStart(e) {
 }
 
 function handleGroupDragStart(e) {
+  const settings = getSettings()
+  if (
+    settings.bookmarkLayout === "draggable-grid" &&
+    (settings.bookmarkDraggableGridLocked ||
+      settings.lockedWidgets?.bookmarkWidget)
+  ) {
+    e.preventDefault()
+    return
+  }
   draggedGroupIndex = Number(this.dataset.index)
   draggedStackItems = []
   window._activeDraggedStackItems = null
@@ -2202,15 +2348,29 @@ export function updateBookmarkGroupsToggleIcon() {
 export function renderBookmarks() {
   const settings = getSettings()
   const bw = document.getElementById("bookmark-widget")
-  if (
-    bw &&
-    (!settings.bookmarkLayout || settings.bookmarkLayout === "default")
-  ) {
+  const isDraggableGrid = settings.bookmarkLayout === "draggable-grid"
+  if (bw && !isDraggableGrid) {
     bw.style.removeProperty("top")
     bw.style.removeProperty("left")
     bw.style.removeProperty("right")
     bw.style.removeProperty("bottom")
     bw.style.removeProperty("position")
+    bw.style.removeProperty("margin")
+    bw.style.removeProperty("transform")
+    bw.classList.remove("has-position")
+    bw.classList.remove("is-locked")
+    document.body.classList.remove("bookmark-draggable-grid-mode")
+    document.body.classList.remove("bookmark-grid-locked")
+    document.body.classList.remove("bookmark-free-move-active")
+    document.getElementById("bookmark-layout-toolbar")?.remove()
+  } else if (bw && isDraggableGrid && !settings.freeMoveBookmarks) {
+    bw.style.removeProperty("top")
+    bw.style.removeProperty("left")
+    bw.style.removeProperty("right")
+    bw.style.removeProperty("bottom")
+    bw.style.removeProperty("position")
+    bw.style.removeProperty("margin")
+    bw.style.removeProperty("transform")
     bw.classList.remove("has-position")
   }
   document.body.classList.toggle(
@@ -2233,6 +2393,23 @@ export function renderBookmarks() {
   updateBookmarkGroupsToggleIcon()
   const i18n = geti18n()
   document.getElementById("bookmark-stack-popup")?.remove()
+
+  // Draggable Grid / Free Move mode — sync body classes and lock button
+  const isFreeMove = settings.freeMoveBookmarks === true
+  const isLocked =
+    settings.bookmarkDraggableGridLocked === true ||
+    settings.lockedWidgets?.bookmarkWidget === true
+
+  document.body.classList.toggle(
+    "bookmark-draggable-grid-mode",
+    isDraggableGrid,
+  )
+  document.body.classList.toggle("bookmark-grid-locked", isLocked)
+  if (bw) {
+    bw.classList.toggle("is-locked", isLocked)
+  }
+
+  renderBookmarkToolbar()
 
   // 1. Render Group Tabs
   renderGroupTabs()
@@ -2301,7 +2478,12 @@ export function renderBookmarks() {
       bookmarkEl.classList.add("selected")
     }
 
-    if (enableDrag) {
+    const isGridLocked =
+      isDraggableGrid &&
+      (settings.bookmarkDraggableGridLocked === true ||
+        settings.lockedWidgets?.bookmarkWidget === true)
+
+    if (enableDrag && !isGridLocked) {
       bookmarkEl.draggable = true
       bookmarkEl.addEventListener("dragstart", handleDragStart)
       bookmarkEl.addEventListener("dragover", handleDragOver)
@@ -2309,6 +2491,8 @@ export function renderBookmarks() {
       bookmarkEl.addEventListener("dragenter", handleDragEnter)
       bookmarkEl.addEventListener("dragleave", handleDragLeave)
       bookmarkEl.addEventListener("dragend", handleDragEnd)
+    } else {
+      bookmarkEl.draggable = false
     }
 
     const titleEl = document.createElement("span")
@@ -2817,7 +3001,9 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
               anchor: clone,
               onEdit: () => openBookmarkEditPopover(numericIdx, null, clone),
               onEditIcon: () =>
-                openBookmarkEditPopover(numericIdx, null, clone, { focus: "icon" }),
+                openBookmarkEditPopover(numericIdx, null, clone, {
+                  focus: "icon",
+                }),
             },
           )
         }
@@ -3693,6 +3879,7 @@ export function initBookmarks() {
     if (
       !e.detail ||
       e.detail.key === "bookmarkLayout" ||
+      e.detail.key === "bookmarkDraggableGridLocked" ||
       e.detail.key === "bookmarkSidebarMode" ||
       e.detail.key === "bookmarkTheme" ||
       e.detail.key === "showBookmarkGroups" ||
@@ -3701,6 +3888,14 @@ export function initBookmarks() {
       updateBookmarkGroupsToggleIcon()
       renderGroupTabs()
       requestAnimationFrame(updateOverflowBookmarks)
+    }
+
+    // Re-render bookmarks when draggable grid lock or free move state changes
+    if (
+      e.detail?.key === "bookmarkDraggableGridLocked" ||
+      e.detail?.key === "freeMoveBookmarks"
+    ) {
+      renderBookmarks()
     }
   })
 
@@ -3979,7 +4174,7 @@ document.addEventListener(
   { passive: true },
 )
 
-function groupSelected() {
+async function groupSelected() {
   if (selectedIndices.size === 0) return
   const snapshot = captureBookmarkSnapshot()
   const bookmarks = getBookmarks()
@@ -3988,8 +4183,20 @@ function groupSelected() {
   const itemsToGroup = sortedIndices.map((idx) => bookmarks[idx])
   itemsToGroup.reverse()
 
+  const i18n = geti18n()
+  const defaultName = inferBookmarkStackName(itemsToGroup)
+  const groupName = await showPrompt(
+    i18n.bookmark_group_name_prompt || "Enter a name for this group:",
+    defaultName,
+    i18n.bookmark_group_selected_title || "Group selected bookmarks",
+  )
+  if (groupName === null) return
+
   const minIndex = Math.min(...Array.from(selectedIndices))
-  const newStack = createBookmarkStack(null, itemsToGroup)
+  const newStack = createBookmarkStack(
+    groupName.trim() || defaultName,
+    itemsToGroup,
+  )
 
   for (const idx of sortedIndices) {
     bookmarks.splice(idx, 1)
@@ -4001,29 +4208,62 @@ function groupSelected() {
   saveBookmarks()
   cancelSelection()
   renderBookmarks()
-  showBookmarkUndo(geti18n().bookmark_grouped || "Bookmarks grouped", snapshot)
+  showBookmarkUndo(i18n.bookmark_grouped || "Bookmarks grouped", snapshot)
 }
 
-function moveSelected() {
+function escapeDialogText(value) {
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
+  )
+}
+
+async function moveSelected() {
   if (selectedIndices.size === 0) return
 
   const groups = getBookmarkGroups()
   const activeGroupId = getActiveGroupId()
+  const i18n = geti18n()
+  const targetGroups = groups.filter((group) => group.id !== activeGroupId)
 
-  const groupNames = groups
-    .map((g, i) => `${i + 1}. ${g.name || "Group " + (i + 1)}`)
-    .join("\n")
-  const result = prompt(
-    `${geti18n().bookmark_move_prompt || "Move to group (enter number):"}\n${groupNames}`,
-  )
-
-  if (!result) return
-  const targetIndex = parseInt(result) - 1
-  if (isNaN(targetIndex) || targetIndex < 0 || targetIndex >= groups.length)
+  if (targetGroups.length === 0) {
+    await showAlert(
+      i18n.bookmark_move_no_target ||
+        "Create another bookmark group before moving selected bookmarks.",
+      i18n.bookmark_move_selected_title || "Move selected bookmarks",
+    )
     return
+  }
 
-  const targetGroup = groups[targetIndex]
-  if (targetGroup.id === activeGroupId) return
+  const targetGroupId = await showChoiceConfirm(
+    targetGroups.map((group) => ({
+      key: group.id,
+      icon: "fa-solid fa-folder",
+      label: escapeDialogText(
+        group.name || i18n.bookmark_stack_default_name || "Bookmark Group",
+      ),
+      description: escapeDialogText(
+        (i18n.bookmark_move_group_count || "{count} bookmarks").replace(
+          "{count}",
+          String((group.items || []).length),
+        ),
+      ),
+    })),
+    i18n.bookmark_move_selected_title || "Move selected bookmarks",
+    i18n.bookmark_move_prompt || "Choose a group:",
+    "bookmark-move-dialog",
+  )
+  if (!targetGroupId) return
+
+  const targetGroup = targetGroups.find((group) => group.id === targetGroupId)
+  if (!targetGroup) return
 
   const snapshot = captureBookmarkSnapshot()
   const bookmarks = getBookmarks()
@@ -4043,7 +4283,7 @@ function moveSelected() {
   saveBookmarks()
   cancelSelection()
   renderBookmarks()
-  showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+  showBookmarkUndo(i18n.bookmark_moved || "Bookmarks moved", snapshot)
 }
 
 // Fix for hidden scrollbars preventing scrolling (especially horizontal in taskbar mode)

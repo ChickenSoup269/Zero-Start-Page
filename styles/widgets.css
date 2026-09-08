@@ -1184,6 +1184,205 @@ body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskb
   background: rgba(255, 255, 255, 0.4);
 }
 
+/* =====================================================
+   DRAGGABLE GRID LAYOUT MODE
+   ===================================================== */
+
+/* Container in draggable-grid mode */
+body.bookmark-draggable-grid-mode #bookmarks-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, calc(var(--bookmark-icon-size, 42px) + 20px));
+  grid-auto-rows: max-content;
+  justify-content: center;
+  align-items: start;
+  gap: var(--bookmark-gap, var(--space-3));
+}
+
+/* Locked state — disable drag cursors */
+body.bookmark-grid-locked #bookmarks-container .bookmark {
+  cursor: pointer;
+}
+
+/* Ensure bookmark widget has relative positioning for floating hover toolbar */
+.bookmark-widget:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode) {
+  position: relative;
+}
+
+/* =====================================================
+   BOOKMARK LAYOUT FLOATING HOVER TOOLBAR (DRAGGABLE GRID ONLY)
+   ===================================================== */
+
+/* Toolbar is hidden by default and only exists in Draggable Grid mode */
+.bookmark-layout-toolbar {
+  display: none;
+}
+
+body.bookmark-draggable-grid-mode .bookmark-layout-toolbar {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  left: auto;
+  transform: translateY(-2px) scale(0.96);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(18, 22, 34, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    border-color 0.2s ease;
+  z-index: 50;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Hitbox bridge: allows smooth mouse movement to toolbar */
+body.bookmark-draggable-grid-mode .bookmark-layout-toolbar::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  bottom: -12px;
+  left: -12px;
+  right: -12px;
+  z-index: -1;
+}
+
+/* Reveal toolbar ONLY on hover of the bookmark widget hitbox when in Draggable Grid mode */
+body.bookmark-draggable-grid-mode #bookmark-widget:hover .bookmark-layout-toolbar,
+body.bookmark-draggable-grid-mode #bookmark-widget.dragging .bookmark-layout-toolbar,
+body.bookmark-draggable-grid-mode #bookmark-widget:focus-within .bookmark-layout-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Toolbar Drag Grip Handle */
+body.bookmark-draggable-grid-mode .bookmark-toolbar-handle {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: grab;
+  transition: all 0.18s ease;
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-handle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-handle:active,
+body.bookmark-draggable-grid-mode #bookmark-widget.dragging .bookmark-toolbar-handle {
+  cursor: grabbing;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  color: var(--accent-color, #a8c0ff);
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-handle.active {
+  display: flex;
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Toolbar Buttons */
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Free Move Active State */
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn.freemove-btn.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  color: var(--accent-color, #a8c0ff);
+}
+
+/* Lock Button Locked State */
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn.lock-btn.locked {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  color: var(--accent-color, #a8c0ff);
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn.lock-btn.locked:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn.lock-btn i {
+  font-size: 0.72rem;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.bookmark-draggable-grid-mode .bookmark-toolbar-btn.lock-btn.locked i {
+  transform: rotate(-10deg);
+}
+
+/* =====================================================
+   BOOKMARK WIDGET FREE-MOVE OUTLINE & POSITIONING (DRAGGABLE GRID ONLY)
+   ===================================================== */
+
+/* Visual outline ONLY when in Draggable Grid + Free Move active + User Hovering/Dragging */
+body.bookmark-draggable-grid-mode.bookmark-free-move-active:not(.bookmark-grid-locked) #bookmark-widget:hover {
+  outline: 2px dashed rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  outline-offset: 6px;
+  border-radius: 16px;
+}
+
+/* Dragging state */
+body.bookmark-draggable-grid-mode.bookmark-free-move-active #bookmark-widget.dragging {
+  outline: 2px solid var(--accent-color, #a8c0ff) !important;
+  outline-offset: 8px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* WHEN LOCKED: completely hide outline */
+body.bookmark-draggable-grid-mode.bookmark-grid-locked #bookmark-widget,
+#bookmark-widget.is-locked {
+  outline: none !important;
+}
+
+/* Position must be absolute/fixed for free-move to work */
+body.bookmark-draggable-grid-mode.bookmark-free-move-active:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) #bookmark-widget.has-position {
+  position: absolute;
+}
+
 .bookmark,
 .add-bookmark-card {
   display: flex;

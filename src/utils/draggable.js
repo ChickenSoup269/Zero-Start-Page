@@ -141,7 +141,7 @@ export function makeDraggable(
   onDragEndCallback = null,
   handleSelector = ".drag-handle",
 ) {
-  if (!element || componentId === "bookmarkWidget") return
+  if (!element) return
 
   let offsetX = 0,
     offsetY = 0,
@@ -163,11 +163,19 @@ export function makeDraggable(
     const isClockOrTitleOrSearch =
       componentId === "clock" ||
       componentId === "customTitle" ||
-      componentId === "searchBar"
+      componentId === "searchBar" ||
+      componentId === "bookmarkWidget"
+    const isBookmarkWidget = componentId === "bookmarkWidget"
+    const isBookmarkDraggable =
+      isBookmarkWidget &&
+      settings.bookmarkLayout === "draggable-grid" &&
+      settings.freeMoveBookmarks === true
+
     const isFreeMoveEnabled =
       (componentId === "clock" && settings.freeMoveClock) ||
       (componentId === "customTitle" && settings.freeMoveCustomTitle) ||
-      (componentId === "searchBar" && settings.freeMoveSearchBar)
+      (componentId === "searchBar" && settings.freeMoveSearchBar) ||
+      isBookmarkDraggable
 
     if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
       element.style.position =
@@ -206,12 +214,20 @@ export function makeDraggable(
         const isClockOrTitleOrSearch =
           componentId === "clock" ||
           componentId === "customTitle" ||
-          componentId === "searchBar"
+          componentId === "searchBar" ||
+          componentId === "bookmarkWidget"
+        const isCurrentBw = componentId === "bookmarkWidget"
+        const isCurrentBwDraggable =
+          isCurrentBw &&
+          currentSettings.bookmarkLayout === "draggable-grid" &&
+          currentSettings.freeMoveBookmarks === true
+
         const isFreeMoveEnabled =
           (componentId === "clock" && currentSettings.freeMoveClock) ||
           (componentId === "customTitle" &&
             currentSettings.freeMoveCustomTitle) ||
-          (componentId === "searchBar" && currentSettings.freeMoveSearchBar)
+          (componentId === "searchBar" && currentSettings.freeMoveSearchBar) ||
+          isCurrentBwDraggable
 
         if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
           const saved = currentSettings.componentPositions?.[componentId]
@@ -267,12 +283,20 @@ export function makeDraggable(
   }
 
   element.classList.remove("is-locked")
-  if (settings.lockedWidgets?.[componentId]) {
+  if (
+    settings.lockedWidgets?.[componentId] &&
+    (componentId !== "bookmarkWidget" || settings.bookmarkLayout === "draggable-grid")
+  ) {
     element.classList.add("is-locked")
   }
 
-  const handle = element.querySelector(handleSelector) || element
-  handle.onmousedown = dragMouseDown
+  const bindDragHandle = (e) => {
+    if (handleSelector && handleSelector !== ".drag-handle") {
+      if (!e.target.closest(handleSelector)) return
+    }
+    dragMouseDown(e)
+  }
+  element.onmousedown = bindDragHandle
 
   const isInteractiveTarget = (target) =>
     target.closest(
@@ -280,13 +304,21 @@ export function makeDraggable(
     )
 
   const onContextMenu = (e) => {
+    if (handleSelector && handleSelector !== ".drag-handle") {
+      if (!e.target.closest(handleSelector)) return
+    }
     const currentSettings = getSettings()
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle)
       return
     if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar)
       return
-    if (componentId === "bookmarkWidget") return
+    if (
+      componentId === "bookmarkWidget" &&
+      (!currentSettings.freeMoveBookmarks ||
+        currentSettings.bookmarkLayout !== "draggable-grid")
+    )
+      return
     e.preventDefault()
     e.stopPropagation()
     // searchBar uses the "search" context menu type so lock/unlock logic works correctly
@@ -296,9 +328,9 @@ export function makeDraggable(
       showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
     }
   }
-  handle.removeEventListener("contextmenu", handle._draggableContextMenu)
-  handle._draggableContextMenu = onContextMenu
-  handle.addEventListener("contextmenu", onContextMenu)
+  element.removeEventListener("contextmenu", element._draggableContextMenu)
+  element._draggableContextMenu = onContextMenu
+  element.addEventListener("contextmenu", onContextMenu)
 
   function dragMouseDown(e) {
     const currentSettings = getSettings()
@@ -319,6 +351,15 @@ export function makeDraggable(
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle)
       return
     if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar)
+      return
+    if (
+      componentId === "bookmarkWidget" &&
+      (currentSettings.bookmarkLayout !== "draggable-grid" ||
+        !currentSettings.freeMoveBookmarks ||
+        currentSettings.bookmarkDraggableGridLocked === true ||
+        currentSettings.lockedWidgets?.bookmarkWidget === true ||
+        element.classList.contains("is-locked"))
+    )
       return
 
     if (isInteractiveTarget(e.target)) return
