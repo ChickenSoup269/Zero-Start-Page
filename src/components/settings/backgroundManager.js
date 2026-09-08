@@ -790,11 +790,16 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       typeIcon.className = "video-thumb-badge"
 
       if (authorName) {
-        const isPicsum =
+        const isFreePhoto =
           typeof bgData === "object" &&
-          bgData.photoUrl &&
-          bgData.photoUrl.includes("picsum.photos")
-        typeIcon.innerHTML = isPicsum
+          ((bgData.photoUrl &&
+            (bgData.photoUrl.includes("picsum.photos") ||
+              bgData.photoUrl.includes("loremflickr.com") ||
+              bgData.photoUrl.includes("flickr.com"))) ||
+            (bgData.id &&
+              (bgData.id.includes("picsum") ||
+                bgData.id.includes("loremflickr"))))
+        typeIcon.innerHTML = isFreePhoto
           ? '<i class="fa-solid fa-camera"></i>'
           : '<i class="fa-brands fa-unsplash"></i>'
         item.appendChild(typeIcon)
@@ -1296,7 +1301,20 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
   } else if (isIdbMedia(bg)) {
     if (nameLabel) {
       if (bgData?.authorName) {
-        nameLabel.textContent = `Unsplash (${bgData.authorName})`
+        const isPicsum =
+          bgData.photoUrl?.includes("picsum.photos") ||
+          bgData.id?.includes("picsum")
+        const isFlickr =
+          bgData.photoUrl?.includes("loremflickr.com") ||
+          bgData.photoUrl?.includes("flickr.com") ||
+          bgData.id?.includes("loremflickr")
+        if (isPicsum) {
+          nameLabel.textContent = `Picsum (${bgData.authorName})`
+        } else if (isFlickr) {
+          nameLabel.textContent = `LoremFlickr (${bgData.authorName})`
+        } else {
+          nameLabel.textContent = `Unsplash (${bgData.authorName})`
+        }
       } else if (bgData?.name) {
         nameLabel.textContent = bgData.name
       } else {
@@ -1334,12 +1352,34 @@ async function updateActiveWallpaperBanner(handleSettingUpdate) {
     // URL or Unsplash
     if (nameLabel) {
       if (bgData?.authorName) {
-        nameLabel.textContent = `Unsplash (${bgData.authorName})`
+        const isPicsum = bgData.photoUrl?.includes("picsum.photos")
+        const isFlickr =
+          bgData.photoUrl?.includes("loremflickr.com") ||
+          bgData.photoUrl?.includes("flickr.com")
+        if (isPicsum) {
+          nameLabel.textContent = `Picsum (${bgData.authorName})`
+        } else if (isFlickr) {
+          nameLabel.textContent = `LoremFlickr (${bgData.authorName})`
+        } else {
+          nameLabel.textContent = `Unsplash (${bgData.authorName})`
+        }
       } else {
         const isUnsplash = bg.includes("unsplash.com")
-        nameLabel.textContent = isUnsplash
-          ? "Unsplash Wallpaper"
-          : "Custom Web URL"
+        const isPicsum =
+          bg.includes("picsum.photos") || bg.includes("fastly.picsum.photos")
+        const isFlickr =
+          bg.includes("loremflickr.com") ||
+          bg.includes("staticflickr.com") ||
+          bg.includes("flickr.com")
+        if (isPicsum) {
+          nameLabel.textContent = "Picsum Wallpaper"
+        } else if (isFlickr) {
+          nameLabel.textContent = "LoremFlickr Wallpaper"
+        } else if (isUnsplash) {
+          nameLabel.textContent = "Unsplash Wallpaper"
+        } else {
+          nameLabel.textContent = "Custom Web URL"
+        }
       }
     }
     if (thumb) {

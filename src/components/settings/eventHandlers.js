@@ -188,12 +188,17 @@ export function updateMediaSaveButtonsState() {
 
   const picsumSaveBtn = document.getElementById("picsum-save-btn")
   if (picsumSaveBtn) {
-    if (
-      isSaved &&
+    const isFreePhoto =
       currentBg &&
       (currentBg.includes("picsum.photos") ||
-        currentBg.startsWith("idb-img-picsum"))
-    ) {
+        currentBg.includes("fastly.picsum.photos") ||
+        currentBg.startsWith("idb-img-picsum") ||
+        currentBg.includes("loremflickr.com") ||
+        currentBg.includes("staticflickr.com") ||
+        currentBg.includes("flickr.com") ||
+        currentBg.startsWith("idb-img-loremflickr") ||
+        currentBg.startsWith("idb-img-freephotos"))
+    if (isSaved && isFreePhoto) {
       picsumSaveBtn.disabled = true
       picsumSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved!"}</span>`
     } else {
@@ -2499,26 +2504,72 @@ export function setupGeneralEventHandlers(
     picsumSaveBtn.addEventListener("click", async () => {
       const settings = getSettings()
       const currentBg = settings.background
-      if (!currentBg || !currentBg.includes("picsum.photos")) {
-        showAlert("No Picsum photo to save!")
+      const isPicsum =
+        currentBg &&
+        (currentBg.includes("picsum.photos") ||
+          currentBg.includes("fastly.picsum.photos"))
+      const isFlickr =
+        currentBg &&
+        (currentBg.includes("loremflickr.com") ||
+          currentBg.includes("staticflickr.com") ||
+          currentBg.includes("flickr.com"))
+      const isLastFreePhoto =
+        _lastPicsumResult && _lastPicsumResult.imageUrl === currentBg
+
+      if (!currentBg || (!isPicsum && !isFlickr && !isLastFreePhoto)) {
+        showAlert("No free photo (LoremFlickr / Picsum) to save!")
         return
       }
       const originalHtml = picsumSaveBtn.innerHTML
       picsumSaveBtn.disabled = true
       picsumSaveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving...</span>`
       try {
-        const res = await fetch(currentBg)
-        if (!res.ok) throw new Error(`Image download failed: ${res.status}`)
-        const blob = await res.blob()
-        const savedId = await saveImage(blob, `idb-img-picsum-${Date.now()}`)
+        let blob = null
+        try {
+          const res = await fetch(currentBg)
+          if (res.ok) {
+            blob = await res.blob()
+          }
+        } catch (_) {}
+
+        if (!blob) {
+          blob = await new Promise((resolve, reject) => {
+            const img = new Image()
+            img.crossOrigin = "anonymous"
+            img.onload = () => {
+              try {
+                const canvas = document.createElement("canvas")
+                canvas.width = img.naturalWidth || img.width
+                canvas.height = img.naturalHeight || img.height
+                const ctx = canvas.getContext("2d")
+                ctx.drawImage(img, 0, 0)
+                canvas.toBlob((b) => {
+                  if (b) resolve(b)
+                  else reject(new Error("Canvas blob failed"))
+                }, "image/jpeg", 0.92)
+              } catch (e) {
+                reject(e)
+              }
+            }
+            img.onerror = () => reject(new Error("Failed to load image for saving"))
+            img.src = currentBg
+          })
+        }
+
+        const providerPrefix = isFlickr ? "loremflickr" : "picsum"
+        const savedId = await saveImage(blob, `idb-img-${providerPrefix}-${Date.now()}`)
         const info = _lastPicsumResult?.info
+        const fallbackAuthor = isFlickr ? "LoremFlickr" : "Picsum"
+        const fallbackUrl = isFlickr
+          ? "https://loremflickr.com"
+          : "https://picsum.photos"
         const newBg = {
           uid: "bg-" + Date.now(),
           id: savedId,
-          authorName: info?.author || "Picsum",
+          authorName: info?.author || fallbackAuthor,
           type: "image",
           date: new Date().toISOString(),
-          photoUrl: info?.url || "https://picsum.photos",
+          photoUrl: info?.url || fallbackUrl,
           authorUrl: info?.url || "",
           settings: {},
         }
@@ -2544,7 +2595,7 @@ export function setupGeneralEventHandlers(
           picsumSaveBtn.disabled = false
         }, 2000)
       } catch (err) {
-        console.error("Picsum save failed:", err)
+        console.error("Free photo save failed:", err)
         showAlert("Failed to save photo.")
         picsumSaveBtn.disabled = false
         picsumSaveBtn.innerHTML = originalHtml
