@@ -178,7 +178,7 @@ export function showPrompt(message, defaultValue = "", title = null) {
         <div class="dialog-body">
           <i class="fa-solid fa-pen-to-square dialog-icon"></i>
           <div class="dialog-message">${message}</div>
-          <input type="text" class="dialog-input" id="prompt-input" value="${defaultValue}" />
+          <input type="text" class="dialog-input" id="prompt-input" value="" />
         </div>
         <div class="dialog-footer">
           <button class="dialog-btn dialog-btn-secondary" id="prompt-cancel">
@@ -196,6 +196,7 @@ export function showPrompt(message, defaultValue = "", title = null) {
     const input = container.querySelector("#prompt-input")
     const okBtn = container.querySelector("#prompt-ok")
     const cancelBtn = container.querySelector("#prompt-cancel")
+    input.value = defaultValue
 
     // Focus input
     setTimeout(() => {
@@ -369,7 +370,12 @@ export function showChecklistConfirm(options, title = null, message = null) {
 }
 
 // Choice Dialog
-export function showChoiceConfirm(options, title = null, message = null) {
+export function showChoiceConfirm(
+  options,
+  title = null,
+  message = null,
+  dialogClass = "",
+) {
   return new Promise((resolve) => {
     const container = createDialogContainer()
     const i18n = geti18n()
@@ -389,7 +395,7 @@ export function showChoiceConfirm(options, title = null, message = null) {
       .join("")
 
     container.innerHTML = `
-      <div class="custom-dialog custom-choice">
+      <div class="custom-dialog custom-choice ${dialogClass}">
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-language dialog-icon"></i>
