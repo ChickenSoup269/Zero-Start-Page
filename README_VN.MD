@@ -56,10 +56,11 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
 - **Âm thanh Tương tác Thời gian thực (Real-time Audio Reactive - Beta)**: Bắt luồng âm thanh tab (`tabCapture`) để sóng nhạc visualizer đập chuẩn xác theo điệu bass và nhịp beat bài hát.
 - **Đồng hồ 3D Floating Glass Cubes**: Phong cách đồng hồ số 3D khối kính trong suốt với bệ Voxel, Volumetric Extrusion và hiệu ứng nghiêng tương tác theo góc nhìn.
 - **Bộ hiệu ứng Shaders WebGL Đỉnh cao**: Mô phỏng Chất lỏng tương tác (Interactive Fluid), Quả cầu sương mờ (Frosted Glass Orbs), Hố đen vũ trụ (Black Hole) và Lưới Neon 3D (Neon Grid 3D).
-- **Thanh công cụ Dấu trang Hàng loạt (Multi-Select)**: Chọn nhiều bookmark cùng lúc để xóa hàng loạt, gom nhóm vào thư mục mới hoặc di chuyển nhanh.
+- **Thanh công cụ Dấu trang Hàng loạt (Multi-Select)**: Chọn nhiều bookmark cùng lúc để xóa hàng loạt, gom nhóm vào thư mục mới hoặc di chuyển nhanh. Nhập bookmark từ trình duyệt hỗ trợ tạo nhóm theo thư mục và chọn dải bằng Shift/Ctrl.
 - **Giao diện Trong suốt & Ẩn viền (Transparent Skin & Borderless)**: Hỗ trợ chuyển đổi skin trong suốt và ẩn viền trên toàn bộ các widget thông qua menu chuột phải.
-- **Kho ảnh miễn phí LoremFlickr & Thư viện Cục bộ**: Thưởng thức kho hình nền sắc nét tuyển chọn từ LoremFlickr & Lorem Picsum kèm lưu trữ tức thì về máy tính.
+- **Kho ảnh miễn phí LoremFlickr & Thư viện Cục bộ**: Thưởng thức kho hình nền sắc nét tuyển chọn từ LoremFlickr & Lorem Picsum kèm lưu trữ tức thì về máy tính (IndexedDB).
 - **Bắt dính lưới khi kéo thả (Snap to Grid)**: Căn chỉnh widget thẳng hàng hoàn hảo với bước lưới tùy chọn từ 20px đến 100px.
+- **Cờ quốc gia Vector SVG**: Bộ chọn ngôn ngữ và tùy chọn ngôn ngữ ngày tháng tích hợp cờ vector SVG sắc nét cho Tiếng Việt, Tiếng Anh, Tiếng Đức và Tiếng Thụy Điển.
 
 ---
 
@@ -77,7 +78,8 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
 
 - Đồng hồ thời gian thực cập nhật theo giây
 - **Đồng hồ 3D Floating Glass Cubes** với bệ Voxel và hiệu ứng xoay nghiêng tương tác
-- **Đồng hồ Pixel HUD & State Lite** với khả năng tùy biến màu sắc giao diện mượt mà
+- **14+ Kiểu dáng Đồng hồ**: Đồng hồ lật Fliqlo, Đồng hồ kim Analog, Glass Float, Pixel HUD, Satellite, Tối giản, Dòng lệnh Terminal...
+- **Đồng hồ Pixel HUD & Satellite** với khả năng tùy biến bảng màu giao diện mượt mà
 - **Đồng hồ Glass Float** được tối ưu hóa hiển thị phần cứng GPU 60 FPS không gây nặng CPU
 - Nhiều định dạng ngày: Đầy đủ, Ngắn (DD/MM/YYYY), Mỹ (MM/DD/YYYY), ISO (YYYY-MM-DD)
 - **Chế độ Đếm ngược (Countdown Mode)** — hiển thị thời gian của Timer trực tiếp trên mọi kiểu đồng hồ (Fliqlo, Analog, v.v.)
@@ -117,9 +119,10 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
 - **Nhóm dấu trang** — tạo nhiều tab, đổi tên, sắp xếp và xóa nhóm
 - **Kiểu dáng độc lập** — tùy biến màu nền, màu chữ và cỡ chữ cho từng nhóm riêng biệt
 - **Xem trước trực tiếp trong Cài đặt** — xem nhanh giao diện thẻ bookmark và tab nhóm
+- **Nhập Dấu trang Thông minh** — chọn từng thư mục trình duyệt để tự động tạo nhóm riêng, hỗ trợ chọn dải phím Shift/Ctrl
 - Tự động lấy favicon trang web với giải pháp dự phòng an toàn
-- Nhập trực tiếp dấu trang từ trình duyệt Chrome
-- Menu chuột phải thao tác nhanh
+- 4 bố cục linh hoạt: Lưới truyền thống (Grid), Thanh ngăn kéo cạnh bên (Sidebar), Thanh tác vụ Taskbar (Dưới giữa, Trên giữa, Dưới trái) và Thanh Bookmark Bar
+- Tự động định vị cửa sổ chỉnh sửa dấu trang trong khung nhìn màn hình
 
 </td>
 
@@ -256,7 +259,7 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
 - Các chủ đề / dải màu gradient có sẵn
 - Tùy chọn màu đơn sắc & hình nền từ liên kết URL
 - **Tải ảnh lên** lưu trữ trực tiếp trên trình duyệt máy tính (không cần đám mây)
-- **Tích hợp LoremFlickr & Lorem Picsum** với bộ lọc chủ đề và tính năng lưu tức thì vào bộ sưu tập
+- **Tích hợp LoremFlickr & Lorem Picsum** với bộ lọc chủ đề và tính năng lưu tức thì vào bộ sưu tập (IndexedDB)
 - **Tích hợp Unsplash** — khám phá 10+ danh mục ảnh chất lượng cao bằng API key của riêng bạn
 - Hỗ trợ **video nền lặp** (MP4, WebM, MOV)
 - **Độ mờ & Làm mờ nền** — làm tối hoặc làm mờ nền định hướng giúp các tiện ích dễ đọc hơn
@@ -299,6 +302,7 @@ Lựa chọn từ hơn 57+ hiệu ứng canvas động và shaders WebGL, cùng 
 ### Tùy biến nâng cao (Advanced Personalization)
 
 - **Giao diện Trong suốt & Ẩn viền (Transparent Skin & Borderless)** — chuyển đổi nền trong suốt và ẩn đường viền trên tất cả widget qua menu chuột phải.
+- **Menu chuột phải đa dạng** — 6 phong cách: Kính tối, Kính sáng, Trong suốt hoàn toàn, macOS, Material 3, kèm tùy chọn mở nhanh Tab mới Google mặc định.
 - **Tiêu đề chữ nổi tùy chỉnh (Custom Floating Title)** — thêm chữ tùy ý, di chuyển tự do (Free Move), tùy chỉnh phông, kích thước, khoảng cách chữ, đổ bóng 3D và viền với **Xem trước trực tiếp**.
 - **Nâng cấp Cài đặt & Nút Vi Bước** — nút vi bước `(- / +)` chuẩn xác và cuộn con lăn chuột trên mọi thanh trượt.
 - **Nút Khôi phục Mặc định Riêng biệt** — khôi phục nhanh mặc định theo từng nhóm: Kích thước, Giao diện, Thẻ tab, Bố cục, Kiểu chữ, Hiệu ứng.
@@ -306,7 +310,6 @@ Lựa chọn từ hơn 57+ hiệu ứng canvas động và shaders WebGL, cùng 
 - **Hệ thống đa màu sắc** — đổi màu chủ đạo giao diện linh hoạt (Gradient, Đổi màu theo chu kỳ hoặc Đồng bộ theo màu nền).
 - **Menu điều khiển bố cục nhanh (LCP)** — mở nhanh bảng nhỏ để ẩn/hiện widget và chỉnh bố cục ngay lập tức.
 - **Khóa vị trí Widget** — ghim cố định mọi tiện ích trên màn hình để tránh vô tình kéo lệch.
-- **Menu chuột phải phong phú** — 5 kiểu giao diện: Kính tối, Kính sáng, Trong suốt, macOS và Material 3.
 - **Giao diện Kính mờ (Glassmorphism)** — phong cách thiết kế kính mờ cao cấp đồng bộ trên mọi thành phần giao diện.
 
 ### Cài đặt & Hệ thống

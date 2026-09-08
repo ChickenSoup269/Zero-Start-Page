@@ -56,10 +56,11 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 - **Real-time Audio Reactive (Beta)**: Capture tab audio stream (`tabCapture`) so visualizer waves react dynamically to live music beats and bass.
 - **3D Floating Glass Cubes Clock**: Futuristic 3D clock style with voxel pedestals, volumetric extrusion, and interactive tilt response.
 - **Next-Gen WebGL Shaders**: Interactive Fluid simulation, Frosted Glass Orbs, Black Hole singularity, and Neon Grid 3D live background shaders.
-- **Bookmark Multi-Select Toolbar**: Batch select bookmarks to delete, move between folders, or create new groups in one click.
+- **Bookmark Multi-Select & Smart Import**: Batch select bookmarks to delete, move between folders, or create new groups in one click. Browser bookmark import now supports folder-to-group auto generation and Shift/Ctrl range selection.
 - **Transparent Skin & Borderless Mode**: Toggle transparent background styling and hide borders across all widgets via right-click context menus.
-- **LoremFlickr & Free Photos Gallery**: High-resolution curated wallpapers with category filtering and instant save to local gallery.
+- **LoremFlickr & Free Photos Gallery**: High-resolution curated wallpapers with category filtering and instant save to local gallery (IndexedDB).
 - **Snap to Grid (Drag & Drop)**: Configurable grid snapping (20px to 100px) when positioning widgets.
+- **Vector SVG Country Flags**: Native language selector and date language options feature crisp vector SVG flags for English, Vietnamese, German, and Swedish.
 
 ---
 
@@ -77,8 +78,9 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 
 - Real-time clock with second-level updates
 - **3D Floating Glass Cubes** with voxel pedestals & interactive tilt
-- **Pixel HUD & State Lite Styles** with customizable color palette
-- **Glass Float Clock** optimized with 60 FPS GPU composite rendering
+- **14+ Clock Styles**: Retro Flip, Analog, Glass Float, Pixel HUD, Satellite, Minimal, Terminal, and more
+- **Pixel HUD & Satellite Styles** with customizable responsive color palette picker
+- **Glass Float Clock** optimized with 60 FPS GPU composite rendering (zero CPU text-shadow overhead)
 - Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
 - **Countdown Mode** — display your Timer's countdown directly on any clock style (Fliqlo, Analog, etc.)
 - Option to hide seconds display
@@ -95,7 +97,7 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 - **Google Lens** support for visual search via image upload or URL
 - Google Images and Google Lens search support
 - Image search via file upload, clipboard paste, or image URL
-- Switchable search engine selector with persistent preference (Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, etc.)
+- Switchable search engine selector with persistent preference (Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, YouTube, GitHub...)
 - 250 ms debounced suggestion fetching
 
 </td>
@@ -118,9 +120,10 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 - **Bookmark Groups** — create multiple tabs, rename, reorder, and delete groups
 - **Independent Styling** — customize background color, text color, and font size for each group
 - **Live Preview in Settings** — instantly preview card designs and tab styling
+- **Browser Import with Folder Generation** — import bookmarks from Chrome with folder-to-group auto generation and Shift/Ctrl range selection
 - Auto favicon fetching via Google Favicon API with fallback
-- Import bookmarks directly from Chrome's browser bookmarks
-- Right-click context menu for quick actions
+- 4 flexible layouts: Grid mode, Sidebar drawer, Taskbar (Bottom Center, Top Center, Bottom Left), and Bookmark Bar
+- Popover positioning and display logic auto-adjusted to viewport bounds
 
 </td>
 
@@ -257,7 +260,7 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 - Local preset themes / gradients
 - Custom solid color picker & custom image via URL
 - **Image upload** stored locally (no cloud)
-- **LoremFlickr & Lorem Picsum integration** with category filtering and instant save to local gallery
+- **LoremFlickr & Lorem Picsum integration** with category filtering and instant save to local gallery (IndexedDB)
 - **Unsplash integration** — browse 10+ category feeds with your own API key
 - **Background video** support (MP4, WebM, MOV)
 - **Background Visibility & Blur** — dim or directional blur the background for widget focus
@@ -300,6 +303,7 @@ Select from 57+ canvas-based animated effects and WebGL shaders, plus the SVG Wa
 ### Advanced Personalization
 
 - **Transparent Skin & Borderless Mode** — toggle transparent frosted backgrounds and borders across all widgets via right-click context menu.
+- **Context Menus** — 6 styles: Dark Glass, Light Glass, Pure Transparent, macOS, Material 3, and Default, plus quick "Open Default Chrome New Tab (Google User)" option.
 - **Custom Floating Title** — add your own text, move it anywhere (Free Move), and customize font, size, letter spacing, shadow (X/Y/Blur/Color), and border with **Live Preview**.
 - **Settings Modernization & Steppers** — precision `(- / +)` micro-steppers and mouse wheel adjustment on all range inputs.
 - **Dedicated Reset-to-Default Buttons** — individually reset Sizes, Appearance, Tabs, Layout, Typography, and Effects.
@@ -307,7 +311,6 @@ Select from 57+ canvas-based animated effects and WebGL shaders, plus the SVG Wa
 - **Multi-color System** — dynamically change UI accent colors with multiple modes (Gradient, Cycle, or Sync with background).
 - **Layout Controls Popup (LCP)** — a quick-access mini menu to toggle component visibility and adjust layout settings directly.
 - **Lock Widgets** — pin all draggable components in place to prevent accidental movement.
-- **Context Menus** — Dark Glass, Light Glass, Transparent, macOS, and Material 3 styles.
 - **Glassmorphism UI** — consistent, high-quality frosted glass aesthetics across all widgets and modals.
 
 ### Settings & System
