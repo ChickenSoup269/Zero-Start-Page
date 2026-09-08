@@ -1,8 +1,8 @@
 <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/zero_extension/zero%20colab.png?raw=true" width="1200px" alt="Startpage Preview" />
 
-# <img src="./icon/logo.png" width="50px" /> Startpage - Trang chủ trình duyệt cá nhân hóa của bạn
+# Startpage - Trang chủ trình duyệt cá nhân hóa của bạn
 
-> **Startpage** là tiện ích mở rộng trình duyệt (Manifest V3) cho phép tùy biến sâu, thay thế trang tab mới bằng một giao diện gọn gàng, đa dạng tính năng và thẩm mỹ cao. Toàn bộ dữ liệu được lưu cục bộ — không cần tài khoản, không thu thập dữ liệu người dùng.
+Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho phép tùy biến sâu, thay thế trang tab mới bằng một giao diện gọn gàng, đa dạng tính năng và đẹp mắt. Toàn bộ dữ liệu được lưu cục bộ — không tài khoản, không theo dõi.
 
 <p align="center">
   <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.0.0" target="_blank">
@@ -36,114 +36,338 @@
       <a href="./README.md">English</a> | <strong>Tiếng Việt</strong>
     </td>
     <td align="right">
-      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">Xem nhật ký cập nhật (Tất cả phiên bản)</a>
+      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">Xem nhật ký thay đổi (Changelog v2.0.0)</a>
     </td>
   </tr>
 </table>
 
 ---
 
-## 🌟 Tính năng nổi bật
+## Bản cập nhật 2.0.0 có gì mới?
 
-### 🎨 Hiệu ứng thị giác & Hình nền (Visuals & Backgrounds)
-- **57+ Hiệu ứng hoạt họa Canvas & Shaders WebGL**: Mô phỏng chất lỏng tương tác (Interactive Fluid), Quả cầu kính mờ (Frosted Glass Orbs), Hố đen vũ trụ (Black Hole), Lưới Neon 3D, Dải lụa phát sáng (Liquid Ether), Mưa Matrix, Cánh hoa anh đào, Tuyết rơi HD, Cực quang Aurora, Đom đóm đêm và các chủ đề lễ hội.
-- **Hình nền động đa dạng**: Hỗ trợ màu đơn sắc, dải màu gradient tùy chỉnh góc độ, tải ảnh từ máy tính, link ảnh web và video nền lặp (MP4, WebM, MOV).
-- **Kho ảnh chất lượng cao miễn phí**: Lấy hình nền tuyển chọn tức thì từ **LoremFlickr** (Flickr CC) và **Lorem Picsum** với bộ lọc chủ đề phong phú (Thiên nhiên, Đô thị, Kiến trúc, Vũ trụ, Tối giản, Công nghệ, Động vật, v.v.) — hoàn toàn miễn phí, không cần API key, hỗ trợ lưu ngay vào thư viện ảnh cục bộ chỉ với 1 click.
-- **Tích hợp Unsplash**: Khám phá và đặt hình nền trực tiếp từ kho ảnh Unsplash với API key cá nhân.
-- **Bộ tạo sóng nền SVG Wave Generator**: Tự tạo và tinh chỉnh hình nền sóng uốn lượn đa lớp độc đáo với đầy đủ thông số độ cong, tốc độ, biên độ và màu sắc gradient.
-- **Bộ lọc tinh chỉnh hình nền**: Làm tối nền, làm mờ định hướng (directional blur) và điều chỉnh độ sáng giúp làm nổi bật các widget trên màn hình.
-
-### ⚡ Bộ công cụ năng suất (Productivity Suite)
-- **Thanh tìm kiếm thông minh**: Hỗ trợ chuyển đổi nhanh đa công cụ tìm kiếm (Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, YouTube, GitHub...) với độ trễ gợi ý 250ms, hiển thị favicon trang web, tìm kiếm bằng dán ảnh từ clipboard và **Google Lens** tìm kiếm hình ảnh thông minh.
-- **Menu truy cập nhanh Google Apps**: Trình khởi chạy nhanh các ứng dụng Google (Drive, Gmail, Docs, Sheets, Calendar, YouTube, Maps) tải icon dạng lazy-load để trang mở tức thì.
-- **Trình quản lý dấu trang (Bookmark Manager)**: Gom nhóm bookmark vào các tab thư mục riêng, đổi màu sắc, phông chữ, tự động lấy favicon và nhập trực tiếp dấu trang từ Chrome.
-  - **Thanh công cụ thao tác hàng loạt (Multi-Select)**: Chọn nhiều bookmark cùng lúc để xóa, gom vào thư mục hoặc tạo nhóm mới chỉ trong 1 thao tác.
-  - **4 Bố cục dấu trang linh hoạt**: Lưới truyền thống (Grid), Thanh ngăn kéo cạnh bên (Sidebar), Thanh tác vụ Taskbar (Dưới giữa, Trên giữa, Dưới trái) và Thanh Bookmark Bar.
-- **Quản lý công việc (Todo List)**: Danh sách việc cần làm tối giản, hỗ trợ chỉnh sửa nhanh nội dung, ẩn hiện ô tích chọn và tự động lưu.
-- **Theo dõi thói quen (Habit Tracker)**: Theo dõi tiến độ thói quen hàng ngày, đếm chuỗi ngày liên tiếp (streaks) với 3 chế độ màu trực quan (Từng mục, Gradient Đỏ-Xanh, Material 3).
-- **Sổ tay ghi chú nổi (Floating Notepad)**: Soạn thảo văn bản phong phú (in đậm, in nghiêng, gạch chân, danh sách, chèn link, dán ảnh) kèm các cửa sổ nổi có thể kéo thả, phóng to/thu nhỏ, đổi màu nền và gắn cố định.
-- **Lịch sự kiện toàn diện (Full Calendar)**: Xem lịch theo tháng, tạo và quản lý sự kiện chi tiết, hỗ trợ ngày **Âm lịch Việt Nam** và phát hiện các ngày nghỉ lễ lớn của Việt Nam.
-- **Đồng hồ bấm giờ & Pomodoro Timer**: Hỗ trợ cú pháp nhập thông minh (`30` → 30 giây, `130` → 1 phút 30 giây, `13000` → 1 giờ 30 phút), tải lên âm thanh chuông báo tùy chọn, chế độ Pomodoro chuẩn (25p / 5p / 15p) và hiển thị đếm ngược trực tiếp đè lên mọi kiểu đồng hồ.
-- **Widget Thời tiết thông minh**: Dự báo thời tiết thời gian thực qua Open-Meteo, chọn đơn vị nhiệt độ (°C / °F), hỗ trợ API Endpoint & Geocoding tùy chỉnh kèm nút kiểm tra kết nối.
-- **Danh ngôn mỗi ngày (Daily Quotes)**: Tuyển tập các câu danh ngôn triết lý và truyền động lực với tùy chọn tần suất đổi (mỗi tab mới, theo giờ, hoặc theo ngày).
-- **Trình đọc tin tức RSS**: Tích hợp đọc tin RSS nhẹ nhàng, hỗ trợ nhiều nguồn báo chí, lưu bộ nhớ đệm đọc offline và xem trước bài viết gọn gàng.
-
-### 🎵 Âm nhạc & Âm thanh thư giãn (Music & Ambient Audio)
-- **Trình điều khiển nhạc toàn cục (Global Music Controller)**: Tự động nhận diện và điều khiển bài hát đang phát ở **bất kỳ tab trình duyệt nào** (YouTube, Spotify, SoundCloud, Apple Music...) thông qua Media Session API.
-- **Bộ Visualizer sóng nhạc**: Đĩa than cổ điển (Vinyl), EQ hạt Pixel có hiệu ứng giữ đỉnh (peak-hold), và thanh sóng nhạc (Bars).
-- **Âm thanh tương tác thời gian thực (Audio Reactive - Beta)**: Bắt luồng âm thanh tab (`tabCapture`) để sóng nhạc visualizer đập chuẩn xác theo nhịp beat và âm bass của bài hát.
-- **Bộ phát tiếng ồn trắng & Âm thanh thiên nhiên (Ambient Sounds)**: 12 âm thanh môi trường độ nét cao (Tiếng mưa rơi, Lửa trại, Sấm chớp, Sóng biển, Quán cà phê, Rừng cây, Tiếng ồn trắng, Quạt gió, Thư viện, Nhạc Lo-Fi...) kèm bàn trộn âm lượng đa kênh và các preset âm thanh mẫu.
-
-### 🛠️ Tùy biến sâu giao diện (Deep Customization)
-- **Điều khiển Widget & Tự do di chuyển (Free Move)**: Kéo thả, căn theo lưới (Snap to Grid từ 20px đến 100px), khóa vị trí hoặc ẩn bất kỳ thành phần nào (Đồng hồ, Tìm kiếm, Bookmark, Todo, Notepad, Thời tiết, RSS, Thói quen, v.v.).
-- **Đa dạng phong cách đồng hồ**: Đồng hồ 3D Floating Glass Cubes, Đồng hồ lật Fliqlo, Đồng hồ kim Analog, Đồng hồ nổi Glass Float, Pixel HUD, Vệ tinh Satellite, Tối giản và Phong cách dòng lệnh Terminal.
-- **Màu động Material Design 3 (M3)**: Tự động trích xuất bảng màu chủ đạo tương thích từ hình nền đang chọn hoặc ảnh bìa album nhạc đang phát.
-- **Giao diện kính mờ cao cấp (Glassmorphism)**: Phong cách kính mờ xuyên thấu tinh tế, sang trọng đồng bộ trên mọi widget, bảng cài đặt và menu.
-- **Menu chuột phải (Context Menus)**: Hỗ trợ 5 phong cách menu (Kính tối, Kính sáng, Trong suốt, macOS, Material 3) và tùy chọn ẩn viền widget.
-- **Custom Floating Title Studio**: Thêm dòng tiêu đề hoặc lời chào cá nhân hóa với đầy đủ tùy chọn phông chữ, khoảng cách chữ, màu gradient, đổ bóng 3D và viền kèm khung xem trước trực tiếp.
-- **Quản lý phông chữ & Font hệ điều hành**: Chọn font từ bộ sưu tập có sẵn, Google Fonts, hoặc tải trực tiếp các phông chữ đã cài sẵn trong máy tính qua Local Font Access API.
-- **Cá nhân hóa Tab & Favicon**: Đổi tên tiêu đề hiển thị trên tab trình duyệt và đổi biểu tượng Favicon bằng bất kỳ emoji hoặc icon nào bạn thích.
-- **Hỗ trợ đa ngôn ngữ (i18n)**: Tiếng Việt (🇻🇳), Tiếng Anh (🇺🇸 / 🇬🇧), Tiếng Đức (🇩🇪), Tiếng Thụy Điển (🇸🇪), kèm công cụ tải/cài đặt thêm các gói ngôn ngữ cộng đồng với cờ vector SVG sắc nét.
-- **Bảng Cài đặt hiện đại**: Tích hợp thanh tìm kiếm mục lục cài đặt (Table of Contents), nút vi bước `(- / +)` cuộn bằng con lăn chuột và nút khôi phục mặc định riêng cho từng nhóm chức năng.
-
-### 🔒 Quyền riêng tư & Hiệu năng tối đa (Privacy & Performance)
-- **100% Lưu trữ cục bộ (Client-Side Storage)**: Tất cả ghi chú, dấu trang, công việc, thói quen và cài đặt được lưu an toàn tuyệt đối trên máy tính của bạn (IndexedDB & LocalStorage). Không cần tạo tài khoản, không theo dõi, không gửi dữ liệu đi bất cứ đâu.
-- **Không có mã từ xa (Zero Remote Code)**: Tuân thủ nghiêm ngặt chuẩn Manifest V3 của Google, không chứa script bên ngoài hay mã theo dõi ẩn.
-- **Tối ưu tốc độ vượt trội**: Viết bằng JavaScript thuần (Vanilla JS ES Modules) — không dùng framework cồng kềnh, không giật lag, mở tab mới gần như tức thì (dưới 100ms).
-- **Sao lưu đám mây an toàn (Cloud Sync)**: Tùy chọn đồng bộ và sao lưu cấu hình tiện ích thông qua tài khoản Chrome Profile Sync hoặc Google Drive cá nhân của bạn.
-- **Nhập & Xuất cấu hình (Import/Export)**: Dễ dàng tải về hoặc khôi phục toàn bộ dữ liệu Startpage dưới dạng file JSON bất cứ lúc nào.
+- **Nâng cấp Settings & Nút Vi Bước (Micro-Steppers)**: Bổ sung các nút bấm vi bước `(- / +)` và hỗ trợ cuộn con lăn chuột (Mouse Wheel) cho tất cả thanh trượt cài đặt, giúp tùy chỉnh chính xác từng pixel.
+- **Khung xem trước trực tiếp (Live Previews)**: Xem trước tức thì giao diện Dấu trang (Bookmark Item), Thẻ thư mục (Group Tab) và Custom Title Studio ngay trong bảng cài đặt.
+- **Nút Khôi phục Mặc định (Reset to Defaults)**: Bổ sung các nút Reset riêng biệt cho từng phân mục (Kích thước, Giao diện, Thẻ tab, Bố cục, Kiểu chữ, Hiệu ứng).
+- **Bộ phát âm thanh thư giãn (Ambient Sounds)**: 12 âm thanh môi trường độ nét cao (Mưa, Sóng biển, Cà phê, Tiếng ồn trắng, Lửa trại, Rừng cây...) kèm bàn trộn âm lượng đa kênh, các preset mẫu, visualizer equalizer và hẹn giờ tắt.
+- **Widget Theo dõi Thói quen (Habit Tracker)**: Theo dõi tiến độ thói quen hàng ngày, đếm chuỗi ngày liên tiếp (streaks) với 3 chế độ màu (Màu riêng từng thói quen, Gradient Đỏ-Xanh, M3 Accent).
+- **Widget Đọc tin tức RSS (RSS Reader)**: Tích hợp trình đọc RSS feed tùy chỉnh, cập nhật tin tức trực tiếp từ các nguồn bạn yêu thích kèm popup đọc gọn gàng.
+- **Widget Thời tiết Thông minh**: Dự báo thời tiết thời gian thực qua Open-Meteo, hỗ trợ tùy chỉnh Endpoint & Geocoding và nút kiểm tra kết nối API trực tiếp.
+- **Widget Danh ngôn Mỗi ngày (Daily Quotes)**: Tuyển tập các câu danh ngôn ý nghĩa với tùy chọn tần suất đổi (mỗi tab mới, theo giờ, hoặc theo ngày).
+- **Âm thanh Tương tác Thời gian thực (Real-time Audio Reactive - Beta)**: Bắt luồng âm thanh tab (`tabCapture`) để sóng nhạc visualizer đập chuẩn xác theo điệu bass và nhịp beat bài hát.
+- **Đồng hồ 3D Floating Glass Cubes**: Phong cách đồng hồ số 3D khối kính trong suốt với bệ Voxel, Volumetric Extrusion và hiệu ứng nghiêng tương tác theo góc nhìn.
+- **Bộ hiệu ứng Shaders WebGL Đỉnh cao**: Mô phỏng Chất lỏng tương tác (Interactive Fluid), Quả cầu sương mờ (Frosted Glass Orbs), Hố đen vũ trụ (Black Hole) và Lưới Neon 3D (Neon Grid 3D).
+- **Thanh công cụ Dấu trang Hàng loạt (Multi-Select)**: Chọn nhiều bookmark cùng lúc để xóa hàng loạt, gom nhóm vào thư mục mới hoặc di chuyển nhanh.
+- **Giao diện Trong suốt & Ẩn viền (Transparent Skin & Borderless)**: Hỗ trợ chuyển đổi skin trong suốt và ẩn viền trên toàn bộ các widget thông qua menu chuột phải.
+- **Kho ảnh miễn phí LoremFlickr & Thư viện Cục bộ**: Thưởng thức kho hình nền sắc nét tuyển chọn từ LoremFlickr & Lorem Picsum kèm lưu trữ tức thì về máy tính.
+- **Bắt dính lưới khi kéo thả (Snap to Grid)**: Căn chỉnh widget thẳng hàng hoàn hảo với bước lưới tùy chọn từ 20px đến 100px.
 
 ---
 
-## 🔗 Liên kết & Tài nguyên
+## Tính năng
+
+<table align="center">
+<tr>
+<th>Đồng hồ & Ngày tháng</th>
+<th>Tìm kiếm thông minh</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Đồng hồ thời gian thực cập nhật theo giây
+- **Đồng hồ 3D Floating Glass Cubes** với bệ Voxel và hiệu ứng xoay nghiêng tương tác
+- **Đồng hồ Pixel HUD & State Lite** với khả năng tùy biến màu sắc giao diện mượt mà
+- **Đồng hồ Glass Float** được tối ưu hóa hiển thị phần cứng GPU 60 FPS không gây nặng CPU
+- Nhiều định dạng ngày: Đầy đủ, Ngắn (DD/MM/YYYY), Mỹ (MM/DD/YYYY), ISO (YYYY-MM-DD)
+- **Chế độ Đếm ngược (Countdown Mode)** — hiển thị thời gian của Timer trực tiếp trên mọi kiểu đồng hồ (Fliqlo, Analog, v.v.)
+- Tùy chọn ẩn/hiển thị giây
+- Tùy chỉnh kích thước và màu sắc đồng hồ linh hoạt
+- Bật/tắt riêng biệt cho đồng hồ, ngày tháng và lịch Dương
+- Hiển thị **lịch Âm** (tùy chọn)
+
+</td>
+
+<td>
+
+- Tìm kiếm Google với gợi ý theo thời gian thực (tối đa 6 gợi ý kèm favicon)
+- **Tích hợp Google Apps** — menu truy cập nhanh các dịch vụ của Google (tối ưu tải icon lazy-load để mở siêu tốc)
+- **Hỗ trợ Google Lens** — tìm kiếm bằng hình ảnh qua tải file hoặc URL
+- Tìm kiếm bằng hình ảnh: tải file lên, dán từ clipboard hoặc nhập URL ảnh
+- Đa dạng công cụ tìm kiếm: Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, YouTube, GitHub...
+- Gợi ý tìm kiếm nhanh với độ trễ 250 ms
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Quản lý Dấu trang (Bookmarks)</th>
+<th>Lịch đầy đủ (Calendar)</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Thêm, sửa, xóa và sắp xếp thứ tự dấu trang
+- **Thanh công cụ chọn hàng loạt** — xóa nhiều bookmark, di chuyển thư mục hoặc gom nhóm chỉ bằng một lần bấm
+- **Nhóm dấu trang** — tạo nhiều tab, đổi tên, sắp xếp và xóa nhóm
+- **Kiểu dáng độc lập** — tùy biến màu nền, màu chữ và cỡ chữ cho từng nhóm riêng biệt
+- **Xem trước trực tiếp trong Cài đặt** — xem nhanh giao diện thẻ bookmark và tab nhóm
+- Tự động lấy favicon trang web với giải pháp dự phòng an toàn
+- Nhập trực tiếp dấu trang từ trình duyệt Chrome
+- Menu chuột phải thao tác nhanh
+
+</td>
+
+<td>
+
+- Xem lịch cả tháng với nút chuyển tháng nhanh chóng
+- **Thêm, sửa và xóa sự kiện** với tiêu đề, thời gian và mô tả
+- Hỗ trợ hiển thị nhiều sự kiện trong một ngày (chỉ báo "+X sự kiện")
+- Ngày **Âm lịch Việt Nam** và tự động nhận diện **ngày nghỉ lễ lớn của Việt Nam**
+- Ba chế độ xem: Dương lịch, Âm lịch hoặc Lịch kép song song
+- Menu chuột phải trên từng ngày và sự kiện
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Thói quen & Công việc</th>
+<th>Sổ tay ghi chú (Notepad)</th>
+</tr>
+
+<tr>
+
+<td>
+
+- **Theo dõi Thói quen (Habit Tracker)** với ghi nhận hàng ngày, chuỗi ngày liên tiếp (streaks) và 3 bảng màu tùy chọn (Mỗi mục, Gradient, M3 Accent)
+- **Danh sách công việc (Todo List)** thêm, hoàn thành và xóa tác vụ
+- **Ẩn/Hiện ô tích (Checkbox Toggle)** — chuyển đổi chế độ xem danh sách việc cần làm tối giản
+- Chỉnh sửa nội dung nhanh qua menu chuột phải
+- Tự động lưu trữ an toàn vào localStorage
+
+</td>
+
+<td>
+
+- Tạo nhiều ghi chú với các màu sắc khác nhau (8 màu mẫu)
+- **Trình soạn thảo văn bản phong phú**: in đậm, in nghiêng, gạch chân, gạch ngang, danh sách bullet & số, liên kết và chèn ảnh
+- **Cửa sổ nổi độc lập** — tách ghi chú thành cửa sổ kéo thả tự do, thay đổi kích thước và gắn lại bất cứ lúc nào
+- Cải tiến vùng kéo thả tiêu đề ghi chú, đổi tên nhanh trực tiếp và tinh chỉnh các nút thao tác
+- Thu gọn ghi chú nổi, bật/tắt thanh công cụ soạn thảo
+- Tự động căn chỉnh hình ảnh vừa vặn trong ghi chú
+- Giữ phím Ctrl/Cmd và click chuột để mở đường link trong ghi chú
+- Đổi nền sáng/tối cho ghi chú với màu chữ tương phản rõ nét
+- Tự động lưu toàn bộ nội dung, màu sắc và vị trí cửa sổ
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Thời tiết & Danh ngôn</th>
+<th>Đọc tin tức RSS</th>
+</tr>
+
+<tr>
+
+<td>
+
+- **Dự báo thời tiết thời gian thực** hỗ trợ bởi Open-Meteo
+- Tùy chỉnh API endpoint dự báo và tìm kiếm vị trí (geocoding) kèm nút kiểm tra kết nối trực tiếp
+- Chuyển đổi đơn vị nhiệt độ (Độ C °C / Độ F °F)
+- **Danh ngôn truyền cảm hứng mỗi ngày** từ các tác giả nổi tiếng
+- Tùy chọn tần suất làm mới danh ngôn (Mỗi khi mở tab mới, Mỗi giờ, Mỗi ngày)
+
+</td>
+
+<td>
+
+- Trình đọc RSS tích hợp siêu nhẹ
+- Thêm, quản lý và theo dõi nhiều kênh RSS cùng lúc
+- Giao diện đọc bài viết gọn gàng, hỗ trợ mở nhanh liên kết gốc
+- Tự động lưu bộ nhớ đệm (cache) giúp tải nhanh khi xem offline
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Hẹn giờ đồng hồ & Thông báo</th>
+<th>Trình phát nhạc & Visualizer</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Đồng hồ đếm ngược với các nút Bắt đầu / Tạm dừng / Đặt lại
+- **Bộ phân tích nhập thông minh**: gõ `30` → 30 giây · `130` → 1 phút 30 giây · `13000` → 1 giờ 30 phút
+- **Thông báo cập nhật liên tục** — luôn nắm bắt các tính năng mới với popup thông báo và huy hiệu thanh bên
+- Chuông báo âm thanh khi hết giờ kèm tính năng tải lên chuông riêng
+- Tự động duy trì trạng thái đếm ngược khi tải lại trang
+
+</td>
+
+<td>
+
+- Nhận diện bài hát đang phát ở **bất kỳ tab trình duyệt nào** thông qua Media Session API
+- Hiển thị tên bài hát, nghệ sĩ, ảnh bìa album và nền tảng (YouTube / Spotify / SoundCloud / Apple Music / v.v.)
+- **Âm thanh tương tác thời gian thực (Real-time Audio Reactive - Beta)** — bắt luồng âm thanh tab để sóng nhạc đập chuẩn từng nhịp beat
+- Các nút điều khiển Play / Pause / Bài trước / Bài tiếp theo
+- Nhiều kiểu visualizer: **Đĩa than Vinyl**, **Hạt Pixel (EQ bars)**, **Thanh sóng nhạc (Bars)**
+- Chế độ pixel canvas với hiệu ứng giữ đỉnh (peak-hold)
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Âm thanh thư giãn (Ambient Sounds)</th>
+<th>Hình nền động</th>
+</tr>
+
+<tr>
+
+<td>
+
+- 12 âm thanh môi trường và thiên nhiên độ nét cao (Mưa rơi, Lửa trại, Sấm sét, Sóng biển, Quán cà phê, Rừng cây, Tiếng ồn trắng, Quạt gió, Thư viện, Lo-Fi...)
+- Bàn trộn âm lượng đa luồng với thanh trượt chỉnh âm lượng riêng cho từng âm thanh
+- Các preset âm thanh tuyển chọn: Học tập, Thư giãn, Tập trung sâu, Giấc ngủ
+- Bộ equalizer hoạt họa trực quan và tính năng hẹn giờ ngủ tự động tắt
+
+</td>
+
+<td>
+
+- Các chủ đề / dải màu gradient có sẵn
+- Tùy chọn màu đơn sắc & hình nền từ liên kết URL
+- **Tải ảnh lên** lưu trữ trực tiếp trên trình duyệt máy tính (không cần đám mây)
+- **Tích hợp LoremFlickr & Lorem Picsum** với bộ lọc chủ đề và tính năng lưu tức thì vào bộ sưu tập
+- **Tích hợp Unsplash** — khám phá 10+ danh mục ảnh chất lượng cao bằng API key của riêng bạn
+- Hỗ trợ **video nền lặp** (MP4, WebM, MOV)
+- **Độ mờ & Làm mờ nền** — làm tối hoặc làm mờ nền định hướng giúp các tiện ích dễ đọc hơn
+- Bộ tạo dải màu gradient với tùy chỉnh màu bắt đầu, màu kết thúc và góc nghiêng
+
+</td>
+
+</tr>
+</table>
+
+---
+
+### Hiệu ứng thị giác (57+ Hoạt ảnh & Shaders WebGL + Bộ tạo sóng SVG)
+
+Lựa chọn từ hơn 57+ hiệu ứng canvas động và shaders WebGL, cùng Bộ tạo sóng nền SVG Wave Generator:
+
+| Thiên nhiên & Vũ trụ | Kỹ thuật số & Công nghệ | Thời tiết & Mùa | Trừu tượng, Hoa văn & WebGL |
+| :--- | :--- | :--- | :--- |
+| • Đom đóm / Đom đóm HD | • Mạng lưới (Network) | • Mưa / Mưa HD / Bão | • Hào quang (Aura) |
+| • Mưa sao băng | • Mưa Ma Trận (Matrix Rain) | • Thời tiết Pixel | • Bong bóng |
+| • Tia nắng mặt trời | • Hacker Terminal | • Tuyết rơi Pixel HQ | • Sóng uốn lượn |
+| • Đèn trời | • Khối lập phương Pixel | • Tuyết rơi / Tuyết HD | • Hoa văn chéo |
+| • Sóng biển | • Chạy Pixel | • Gió thổi | • Đường nổi |
+| • Đàn cá đại dương | • Nổ hạt Pixel | • Cánh hoa anh đào | • Ánh sáng lấp lánh |
+| • Mây trôi | • Retro Terminal | • Lá mùa thu | • Nền cầu vồng |
+| • Mầm cây phát triển | • Game cổ điển | • Lá xanh rơi | • Vệt chuột / Vết loang |
+| • Sứa biển | • Quét dòng CRT | • Lá rơi đọng | • Quả cầu kính mờ *(Mới)* |
+| • Cực quang Aurora | • Quét lưới (Grid Scan) | • Thiên hà mưa | • Chất lỏng tương tác *(Mới)* |
+| • Cực quang êm dịu | • Đèn pin | • Halloween | • Cinematic Bokeh *(Mới)* |
+| • Bắc cực quang | • Xuyên không gian | • Pháo hoa Tết | • Hố đen vũ trụ *(Mới)* |
+| • Cột ánh sáng | • Logo nảy DVD | • Kỷ niệm Giải phóng | • Lưới Neon 3D *(Mới)* |
+| • Nintendo Pixel | • Sóng nhạc Bars | | • Dải lụa phát sáng |
+
+### Bộ tạo sóng nền SVG (SVG Wave Generator)
+
+- Tùy chỉnh đầy đủ hình nền sóng: số lượng đường lượn, biên độ X/Y, độ lệch, góc nghiêng, độ mượt, đổ màu sóng
+- Dải chuyển màu HSL (bắt đầu → kết thúc)
+- Lưu các mẫu sóng yêu thích vào bộ sưu tập cá nhân
+
+### Tùy biến nâng cao (Advanced Personalization)
+
+- **Giao diện Trong suốt & Ẩn viền (Transparent Skin & Borderless)** — chuyển đổi nền trong suốt và ẩn đường viền trên tất cả widget qua menu chuột phải.
+- **Tiêu đề chữ nổi tùy chỉnh (Custom Floating Title)** — thêm chữ tùy ý, di chuyển tự do (Free Move), tùy chỉnh phông, kích thước, khoảng cách chữ, đổ bóng 3D và viền với **Xem trước trực tiếp**.
+- **Nâng cấp Cài đặt & Nút Vi Bước** — nút vi bước `(- / +)` chuẩn xác và cuộn con lăn chuột trên mọi thanh trượt.
+- **Nút Khôi phục Mặc định Riêng biệt** — khôi phục nhanh mặc định theo từng nhóm: Kích thước, Giao diện, Thẻ tab, Bố cục, Kiểu chữ, Hiệu ứng.
+- **Bắt dính lưới khi kéo thả (Snap to Grid)** — căn chỉnh các widget ngay ngắn theo bước lưới tùy chỉnh (20px đến 100px).
+- **Hệ thống đa màu sắc** — đổi màu chủ đạo giao diện linh hoạt (Gradient, Đổi màu theo chu kỳ hoặc Đồng bộ theo màu nền).
+- **Menu điều khiển bố cục nhanh (LCP)** — mở nhanh bảng nhỏ để ẩn/hiện widget và chỉnh bố cục ngay lập tức.
+- **Khóa vị trí Widget** — ghim cố định mọi tiện ích trên màn hình để tránh vô tình kéo lệch.
+- **Menu chuột phải phong phú** — 5 kiểu giao diện: Kính tối, Kính sáng, Trong suốt, macOS và Material 3.
+- **Giao diện Kính mờ (Glassmorphism)** — phong cách thiết kế kính mờ cao cấp đồng bộ trên mọi thành phần giao diện.
+
+### Cài đặt & Hệ thống
+
+- **Bộ chọn phông chữ** hỗ trợ phông có sẵn, Google Fonts hoặc **phông chữ cài sẵn trong máy tính** (Local Font Access API)
+- **Đa ngôn ngữ**: Tiếng Việt, Tiếng Anh, Tiếng Đức, Tiếng Thụy Điển (i18n) với biểu tượng cờ vector SVG sắc nét
+- **Đồng bộ đám mây (Cloud Sync)** — sao lưu và phục hồi cấu hình tiện ích (không bao gồm file media) thông qua tài khoản Chrome Sync
+- **Bố cục Dấu trang linh hoạt** — Lưới mặc định, Thanh ngăn kéo bên hông (Sidebar), hoặc Thanh tác vụ Taskbar (**Dưới giữa, Trên giữa, Dưới trái**)
+- **Xuất / Nhập cấu hình** tiện ích dưới dạng file JSON tiện lợi
+- **Mục lục cài đặt (ToC)** — dễ dàng tìm và chuyển đến các mục cài đặt với công cụ tìm kiếm và thanh điều hướng nhanh
+- Nút khôi phục toàn bộ cài đặt về trạng thái ban đầu
+
+---
+
+## Liên kết & Tài nguyên
 
 - **Mã nguồn GitHub**: [https://github.com/ChickenSoup269/Zero-Start-Page](https://github.com/ChickenSoup269/Zero-Start-Page)
-- **Xem tất cả phiên bản & Nhật ký cập nhật (Changelogs)**: [https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement](https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement)
+- **Xem tất cả phiên bản & Nhật ký thay đổi (Changelogs)**: [https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement](https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement)
 - **Chrome Web Store**: [Zero Startpage trên Chrome Web Store](https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=vi)
 - **Firefox Add-ons**: [Zero Startpage trên Firefox AMO](https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/)
 
 ---
 
-## 🛡️ Chính sách bảo mật & Quyền riêng tư (Privacy Policy)
+## Chính sách Quyền riêng tư & Bảo mật
 
-Sự riêng tư của bạn là ưu tiên hàng đầu của dự án:
-- **Không thu thập hay truyền tải bất kỳ dữ liệu cá nhân nào.** Tiện ích không vận hành bất kỳ máy chủ theo dõi, dịch vụ phân tích hay cơ sở dữ liệu từ xa nào.
-- **Tất cả dữ liệu được xử lý cục bộ ngay trong trình duyệt của bạn.** Mọi ghi chú, dấu trang, danh sách việc cần làm, thói quen và cấu hình đều nằm an toàn trong bộ nhớ máy tính (`IndexedDB` & `localStorage`).
-- **Không có mã nguồn thực thi từ xa hay quảng cáo của bên thứ ba.** Tiện ích đáp ứng đầy đủ các tiêu chuẩn bảo mật khắt khe nhất của Manifest V3.
-- **Minh bạch & Mã nguồn mở 100%.** Bạn có thể tự mình kiểm tra, đánh giá toàn bộ mã nguồn trên [GitHub](https://github.com/ChickenSoup269/Zero-Start-Page).
+Sự riêng tư của bạn là ưu tiên cao nhất:
+- **Không thu thập hay chia sẻ bất kỳ dữ liệu cá nhân nào.** Không có máy chủ theo dõi, dịch vụ phân tích hay lưu trữ từ xa.
+- **Tất cả dữ liệu được lưu trữ cục bộ ngay trong trình duyệt của bạn.** Mọi dấu trang, ghi chú, danh sách công việc, thói quen và cài đặt đều nằm an toàn trên máy tính của bạn qua `IndexedDB` và `localStorage`.
+- **Không chứa mã nguồn thực thi từ xa.** Tiện ích tuân thủ đầy đủ các tiêu chuẩn bảo mật khắt khe của Manifest V3.
+- **Minh bạch & Mã nguồn mở 100%.** Bạn hoàn toàn có thể tự kiểm tra toàn bộ mã nguồn trên [GitHub](https://github.com/ChickenSoup269/Zero-Start-Page).
 
 ---
 
-## 📥 Hướng dẫn cài đặt
+## Cài đặt
 
-### Cài đặt trực tiếp từ Web Store (Khuyên dùng)
-- Cài đặt từ [Chrome Web Store](https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=vi)
-- Cài đặt từ [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/)
-
-### Cài đặt thủ công dành cho Nhà phát triển (Developer Mode)
-1. Tải về hoặc nhân bản mã nguồn từ kho lưu trữ:
+1. Tải về hoặc nhân bản kho mã nguồn này:
    ```bash
    git clone https://github.com/ChickenSoup269/Zero-Start-Page.git
    ```
-2. Mở trình duyệt và truy cập `chrome://extensions/` (trên Chrome / Brave / Edge) hoặc `about:debugging#/runtime/this-firefox` (trên Firefox).
-3. Bật chế độ **Chế độ dành cho nhà phát triển (Developer mode)** ở góc trên bên phải.
-4. Nhấn vào nút **Tải tiện ích đã giải nén (Load unpacked)** và chọn thư mục gốc của dự án vừa tải về.
+2. Mở trình duyệt và vào `chrome://extensions/` (Chrome/Brave/Edge) hoặc `about:debugging#/runtime/this-firefox` (Firefox).
+3. Bật **Chế độ dành cho nhà phát triển (Developer mode)** ở góc trên bên phải.
+4. Nhấn nút **Tải tiện ích đã giải nén (Load unpacked)** và chọn thư mục của dự án.
 5. Mở một tab mới để bắt đầu trải nghiệm Startpage tuyệt đẹp của bạn!
 
 ---
 
-## 💻 Ngăn xếp công nghệ (Tech Stack)
+## Ngăn xếp công nghệ (Tech Stack)
 
-- **Cốt lõi**: Vanilla JavaScript (ES Modules), HTML5, CSS3 Glassmorphism
-- **Nền tảng**: WebExtensions Manifest V3 (tương thích Chrome, Edge, Brave, Opera, Firefox)
-- **Đồ họa & Âm thanh**: Canvas API, WebGL Shaders, Web Audio API, Chrome Tab Capture API
-- **Phương tiện giải trí**: Chrome Media Session API
-- **Lưu trữ dữ liệu**: IndexedDB, LocalStorage, Chrome Storage Sync
-- **Giao tiếp API**: Open-Meteo (Thời tiết), LoremFlickr, Lorem Picsum, Unsplash API, Local Font Access API
+- **Vanilla JavaScript (ES Modules)** — siêu tốc, không cần build step phức tạp, không phụ thuộc framework cồng kềnh
+- **WebExtensions Manifest V3** (tương thích Chrome, Edge, Brave, Opera, Firefox)
+- **Canvas API & Shaders WebGL** xử lý đồ họa mượt mà và trực quan hóa sóng nhạc
+- **Chrome Media Session API & Tab Capture** để nhận diện nhạc và tương tác âm thanh thời gian thực
+- **Web Audio API** phục vụ bộ phát âm thanh môi trường thư giãn đa kênh
+- **LocalStorage & IndexedDB** lưu trữ dữ liệu nhanh chóng và an toàn trên thiết bị
+- **Chrome Storage Sync** đồng bộ cài đặt đa thiết bị
+- **Local Font Access API** tích hợp phông chữ có sẵn trong máy tính
+- **Open-Meteo API** cung cấp dự báo thời tiết chuẩn xác và tôn trọng quyền riêng tư
 
 ---
 
-## 📄 Giấy phép & Đóng góp
+## Giấy phép & Tác quyền
 
-Dự án được phát hành theo giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
-Được xây dựng với tất cả sự tận tâm ❤️ bởi [ChickenSoup269](https://github.com/ChickenSoup269).
+Được phát hành theo giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
+Được xây dựng bởi [ChickenSoup269](https://github.com/ChickenSoup269).

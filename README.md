@@ -1,8 +1,8 @@
 <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/zero_extension/zero%20colab.png?raw=true" width="1200px" alt="Startpage Preview" />
 
-# <img src="./icon/logo.png" width="50px" /> Startpage - Your Personalized Browser Startpage
+# Startpage - Your Personalized Browser Startpage
 
-> **Startpage** is a highly customizable browser extension (Manifest V3) that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
+Startpage is a highly customizable browser extension (Manifest V3) that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
 <p align="center">
   <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.0.0" target="_blank">
@@ -36,66 +36,293 @@
       <strong>English</strong> | <a href="./README_VN.MD">Tiếng Việt</a>
     </td>
     <td align="right">
-      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">View Changelogs (All Versions)</a>
+      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">View Changelog (v2.0.0)</a>
     </td>
   </tr>
 </table>
 
 ---
 
-## 🌟 Key Features
+## What's New in Version 2.0.0
 
-### 🎨 Visuals & Backgrounds
-- **57+ Live Animations & WebGL Shaders**: Interactive Fluid simulation, Frosted Glass Orbs, Black Hole singularity, Neon Grid 3D, Liquid Ether, Matrix Rain, Sakura Petals, Snowfall HD, Aurora Waves, Fireflies, and festive themes.
-- **Dynamic Backgrounds**: Support for solid colors, multi-stop gradients, local image uploads, custom web URLs, and background video loops (MP4, WebM, MOV).
-- **Free High-Resolution Photos**: Instant curated wallpapers from **LoremFlickr** (Flickr CC) and **Lorem Picsum** with category filtering (Nature, City, Architecture, Space, Minimal, Technology, Animals, etc.) — completely free, no API key required, with instant save to gallery.
-- **Unsplash Integration**: Browse and set photos directly from Unsplash with custom API keys and category exploration.
-- **SVG Wave Generator**: Generate and customize organic multi-layer wave backgrounds with curvature, speed, amplitude, and gradient controls.
-- **Wallpaper Tuning**: Built-in background dimming, directional blur, and brightness adjustments for optimal widget legibility.
-
-### ⚡ Productivity Suite
-- **Smart Search Bar**: Multi-engine search (Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, YouTube, GitHub) with 250ms debounced real-time suggestions, favicons, clipboard image search, and **Google Lens** visual search.
-- **Google Apps Quick Access**: Dropdown launcher for Google Workspace apps (Drive, Gmail, Docs, Sheets, Calendar, YouTube, Maps) with lazy-loaded icons for instant startup.
-- **Advanced Bookmark Manager**: Organize bookmarks into customizable tab groups with independent colors, fonts, auto-fetching favicons, and Chrome bookmarks import.
-  - **Multi-Select Toolbar**: Batch select bookmarks to delete, move to folders, or create new tab groups in a single click.
-  - **4 Flexible Layouts**: Grid mode, Sidebar drawer, Taskbar (Bottom Center, Top Center, Bottom Left), and Bookmark Bar.
-- **Task Management (Todo List)**: Minimalist task manager with inline editing, checkbox toggle, and local persistence.
-- **Habit Tracker**: Track daily routines and streaks with custom color palettes (per-habit, Red-to-Green gradient, Material 3 accent).
-- **Floating Notepad**: Rich text WYSIWYG editor (bold, italic, lists, links, image pasting) with collapsible, draggable, and resizable floating windows with quick rename and toolbar toggles.
-- **Full Interactive Calendar**: Month-view calendar with custom event creation, multi-event indicators, **Vietnamese Lunar Calendar (Âm lịch)**, and public holiday detection.
-- **Pomodoro & Countdown Timer**: Smart input parser (`30` → 30s, `130` → 1:30, `13000` → 1:30:00), custom alarm upload, Pomodoro presets (25m / 5m / 15m), and countdown display directly overlaid on your clock.
-- **Smart Weather Widget**: Real-time forecast via Open-Meteo, temperature units (°C / °F), custom API endpoints, geocoding search, and live connection tester.
-- **Daily Quotes**: Curated inspirational and philosophical quotes with customizable refresh frequency (Every New Tab, Hourly, Daily).
-- **RSS News Reader**: Lightweight RSS reader with multi-feed support, article caching, and clean preview modal.
-
-### 🎵 Music & Ambient Audio
-- **Global Music Controller**: Seamlessly detect and control audio playing in **any browser tab** (YouTube, Spotify, SoundCloud, Apple Music) via Chrome Media Session API.
-- **Audio Visualizers**: Vinyl disc, Pixel EQ with peak-hold animation, and dynamic Bar visualizers.
-- **Real-Time Audio Reactive (Beta)**: Capture tab audio stream (`tabCapture`) so visualizer bars react dynamically to live beats and basslines.
-- **Ambient White Noise Generator**: 12 high-definition background sounds (Rain, Campfire, Thunder, Ocean Waves, Coffee Shop, Forest, White Noise, Fan, Library, Lo-Fi, etc.) with multi-track volume mixing and ambient presets.
-
-### 🛠️ Deep Customization
-- **Widget Control & Free Move**: Drag, position, snap to grid (20px to 100px), lock in place, or hide any component (Clock, Search, Bookmarks, Todo, Notepad, Weather, RSS, Habits, etc.).
-- **Clock Styles**: 3D Floating Glass Cubes, Fliqlo Flip Clock, Analog, Glass Float, Pixel HUD, Satellite, Minimal, and Terminal styles.
-- **Material 3 (M3) Dynamic Theming**: Auto-extract dominant accent colors from your wallpaper or currently playing music album art.
-- **Glassmorphism UI**: High-end frosted glass aesthetic with backdrop blur across widgets, dialogs, and navigation drawers.
-- **Context Menus**: Right-click context menus with custom skins (Dark Glass, Light Glass, Transparent, macOS, Material 3) and border toggles.
-- **Custom Floating Title Studio**: Add custom text banners with full font, letter spacing, gradient, shadow, and border styling with live settings preview.
-- **Typography & System Fonts**: Select from curated web fonts, Google Fonts, or load your locally installed system fonts via the Local Font Access API.
-- **Tab & Favicon Personalization**: Customize browser tab title and set custom emojis or icons as your favicon.
-- **Multi-Language Support (i18n)**: English (🇺🇸 / 🇬🇧), Vietnamese (🇻🇳), German (🇩🇪), Swedish (🇸🇪), plus built-in tool for downloading and installing community language packs with vector SVG flags.
-- **Settings Modernization**: Built-in Table of Contents search, micro-steppers `(- / +)` with mouse wheel support, and individual section reset buttons.
-
-### 🔒 Privacy & Performance
-- **100% Client-Side Local Storage**: All your notes, bookmarks, todos, habits, and preferences are stored exclusively on your device (IndexedDB & LocalStorage). No accounts required, no tracking, zero telemetries.
-- **Zero Remote Code**: Strict Manifest V3 compliance with no external scripts, tracking pixels, or third-party analytics.
-- **Blazing Fast**: Built with pure Vanilla JavaScript (ES Modules) — zero heavy frameworks, zero runtime bloat, and near-instant new tab load times.
-- **Cloud Backup & Sync**: Optional backup, restore, and device synchronization using your native Chrome profile sync or Google Drive.
-- **Import & Export**: Effortlessly backup and restore your complete configuration as a JSON file anytime.
+- **Settings Modernization & Micro-Steppers**: Tactile `(- / +)` step buttons and smooth mouse wheel scrolling across all range sliders for pixel-perfect adjustments.
+- **Live Interactive Previews**: Instant visual feedback for Bookmark Cards, Folder Group Tabs, and Custom Title Studio directly inside the settings panel.
+- **Dedicated Reset-to-Default Buttons**: Individual reset buttons for each settings group (Sizes, Appearance, Tabs, Layout, Typography, Effects) for easy recovery.
+- **Ambient Sounds Generator**: 12 high-definition background sounds (Rain, Waves, Cafe, White Noise, Campfire, Forest, etc.) with multi-track volume mixer, ambient presets, equalizer visualizer, and sleep timer.
+- **Habit Tracker Widget**: Daily habit tracker with streak counts and multiple color themes (Custom per habit, Red-to-Green Gradient, Material 3 Accent).
+- **RSS Reader Widget**: Built-in news feed reader supporting custom RSS feeds with quick refresh and clean modal preview.
+- **Smart Weather Widget**: Real-time forecast via Open-Meteo with customizable endpoints, geocoding search, and live connection test.
+- **Daily Quotes Widget**: Curated motivational & philosophical quotes with customizable update frequency (New tab, Hourly, Daily).
+- **Real-time Audio Reactive (Beta)**: Capture tab audio stream (`tabCapture`) so visualizer waves react dynamically to live music beats and bass.
+- **3D Floating Glass Cubes Clock**: Futuristic 3D clock style with voxel pedestals, volumetric extrusion, and interactive tilt response.
+- **Next-Gen WebGL Shaders**: Interactive Fluid simulation, Frosted Glass Orbs, Black Hole singularity, and Neon Grid 3D live background shaders.
+- **Bookmark Multi-Select Toolbar**: Batch select bookmarks to delete, move between folders, or create new groups in one click.
+- **Transparent Skin & Borderless Mode**: Toggle transparent background styling and hide borders across all widgets via right-click context menus.
+- **LoremFlickr & Free Photos Gallery**: High-resolution curated wallpapers with category filtering and instant save to local gallery.
+- **Snap to Grid (Drag & Drop)**: Configurable grid snapping (20px to 100px) when positioning widgets.
 
 ---
 
-## 🔗 Links & Resources
+## Features
+
+<table align="center">
+<tr>
+<th>Clock & Date</th>
+<th>Smart Search</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Real-time clock with second-level updates
+- **3D Floating Glass Cubes** with voxel pedestals & interactive tilt
+- **Pixel HUD & State Lite Styles** with customizable color palette
+- **Glass Float Clock** optimized with 60 FPS GPU composite rendering
+- Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
+- **Countdown Mode** — display your Timer's countdown directly on any clock style (Fliqlo, Analog, etc.)
+- Option to hide seconds display
+- Adjustable clock size and custom color picker
+- Separate visibility toggles for clock, date, and Gregorian calendar
+- Vietnamese lunar calendar display (optional)
+
+</td>
+
+<td>
+
+- Google text search with real-time suggestions (up to 6, with favicons)
+- **Google Apps Integration** — quick access dropdown for Google services with lazy-loaded icons for instant startup performance
+- **Google Lens** support for visual search via image upload or URL
+- Google Images and Google Lens search support
+- Image search via file upload, clipboard paste, or image URL
+- Switchable search engine selector with persistent preference (Google, DuckDuckGo, Bing, Brave, Perplexity, Gemini, etc.)
+- 250 ms debounced suggestion fetching
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Bookmark Manager</th>
+<th>Full Calendar</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Add, edit, delete, and reorder bookmarks
+- **Multi-Select Toolbar** — batch select bookmarks to delete, move to folder, or group
+- **Bookmark Groups** — create multiple tabs, rename, reorder, and delete groups
+- **Independent Styling** — customize background color, text color, and font size for each group
+- **Live Preview in Settings** — instantly preview card designs and tab styling
+- Auto favicon fetching via Google Favicon API with fallback
+- Import bookmarks directly from Chrome's browser bookmarks
+- Right-click context menu for quick actions
+
+</td>
+
+<td>
+
+- Full month-view calendar with navigation
+- **Add, edit, and delete events** with title, time, and description
+- Supports multiple events per day ("+X more" indicator)
+- Vietnamese lunar calendar dates and **Vietnamese public holiday** detection
+- Solar, Lunar, or Dual-calendar display modes
+- Right-click context menu on days and events
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Todo & Habit Tracker</th>
+<th>Notepad</th>
+</tr>
+
+<tr>
+
+<td>
+
+- **Habit Tracker** with daily completion tracking, streaks, and color presets (Custom, Gradient, Material 3)
+- **Todo List** with task addition, completion, and deletion
+- **Checkbox Toggle** — hide checkboxes for a minimalist list view
+- Inline editing via right-click context menu
+- Auto-saved to localStorage
+
+</td>
+
+<td>
+
+- Create multiple notes with custom colors (8 presets)
+- **Rich text editor**: bold, italic, underline, strikethrough, bullet & numbered lists, link handling, and image insertion
+- **Floating/detachable windows** — pop notes out into draggable, resizable windows and reattach them
+- Improved floating note draggable title hitboxes, instant inline rename, and refined action controls
+- Collapsible floating notes, toggleable edit toolbar, and active formatting states
+- Fixed-width note images that stay inside both floating notes and the notepad preview
+- Ctrl/Cmd-click links to open them from note content
+- Light/dark content background toggle with contrast-aware text controls
+- Full persistence of content, color, and window state
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Weather & Daily Quotes</th>
+<th>RSS News Reader</th>
+</tr>
+
+<tr>
+
+<td>
+
+- **Live Weather Forecast** powered by Open-Meteo
+- Support for custom forecast and geocoding API endpoints with live connection tester
+- Temperature unit toggle (Celsius °C / Fahrenheit °F)
+- **Daily Inspirational Quotes** from curated authors
+- Customizable quote refresh frequency (Every New Tab, Every Hour, Every Day)
+
+</td>
+
+<td>
+
+- Built-in lightweight RSS reader
+- Add, manage, and browse multiple RSS feeds
+- Clean reading modal with quick external link opening
+- Auto-cached articles for offline fast loading
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Clock Timer & Notifications</th>
+<th>Music Player & Visualizer</th>
+</tr>
+
+<tr>
+
+<td>
+
+- Countdown timer with Start / Pause / Reset controls
+- **Smart input parser**: type `30` → 30 s · `130` → 1:30 · `13000` → 1:30:00
+- **Persistent Update Notifications** — get notified about new features with a persistent popup and sidebar badge
+- Audio alarm on completion with custom audio upload support
+- Persists running state across page reloads (auto-resumes)
+
+</td>
+
+<td>
+
+- Detects media playing in **any browser tab** via the Media Session API
+- Displays track title, artist, album art, and platform (YouTube / Spotify / SoundCloud / Apple Music / etc.)
+- **Real-Time Audio Reactive (Beta)** — capture tab audio for true beat and bass visualization
+- Play / Pause / Previous / Next controls
+- Multiple visualizer styles: **Vinyl**, **Pixel (EQ bars)**, **Bars**
+- Canvas-based pixel mode with peak-hold animation
+
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th>Ambient Sounds (White Noise)</th>
+<th>Dynamic Backgrounds</th>
+</tr>
+
+<tr>
+
+<td>
+
+- 12 high-definition nature & ambient sounds (Rain, Campfire, Thunder, Ocean Waves, Coffee Shop, Forest, White Noise, Fan, Library, Lo-Fi, etc.)
+- Multi-track volume mixing with instant individual volume sliders
+- Curated presets: Study, Relax, Deep Focus, Sleep
+- Animated equalizer visualizer and background sleep timer
+
+</td>
+
+<td>
+
+- Local preset themes / gradients
+- Custom solid color picker & custom image via URL
+- **Image upload** stored locally (no cloud)
+- **LoremFlickr & Lorem Picsum integration** with category filtering and instant save to local gallery
+- **Unsplash integration** — browse 10+ category feeds with your own API key
+- **Background video** support (MP4, WebM, MOV)
+- **Background Visibility & Blur** — dim or directional blur the background for widget focus
+- Gradient builder with start color, end color, and angle controls
+
+</td>
+
+</tr>
+</table>
+
+---
+
+### Visual Effects (57+ Animations & WebGL Shaders + SVG Wave Generator)
+
+Select from 57+ canvas-based animated effects and WebGL shaders, plus the SVG Wave Generator, with individual color pickers where supported:
+
+| Nature & Space | Digital & Tech | Weather & Seasons | Abstract, Patterns & WebGL |
+| :--- | :--- | :--- | :--- |
+| • Fireflies / HD | • Network | • Rain / HD / Storm | • Aura |
+| • Meteor Shower | • Matrix Rain | • Pixel Weather | • Bubbles |
+| • Sunbeam | • Hacker Terminal | • Pixel Snow HQ | • Wavy Lines / Pattern |
+| • Sky Lanterns | • Pixel Cubes | • Snow / Snowfall HD | • Angled Pattern |
+| • Ocean Wave | • Pixel Run | • Wind | • Floating Lines |
+| • Ocean Fishes | • Pixel Blast | • Sakura Petals | • Shiny / Line Shiny |
+| • Cloud Drift | • Retro Terminal | • Autumn Leaves | • Rainbow Background |
+| • Plant Growth | • Retro Game | • Green Leaves | • Cursor Trail / Splash |
+| • Jellyfish | • CRT Scanlines | • Settling Leaves | • Frosted Glass Orbs *(New)* |
+| • Aurora Wave | • Grid Scan | • Rain Galaxy | • Interactive Fluid *(New)* |
+| • Soft Aurora | • Flashlight | • Halloween | • Cinematic Bokeh *(New)* |
+| • Northern Lights | • Hyperspace | • Tết Fireworks | • Black Hole *(New)* |
+| • Light Pillars | • DVD Bounce | • Reunification Day | • Neon Grid 3D *(New)* |
+| • Nintendo Pixel | • Music Bars | | • Liquid Ether / Silk |
+
+### SVG Wave Generator
+
+- Fully configurable wave backgrounds: line count, amplitude X/Y, offset, angle, smoothness, fill toggle
+- HSL color gradient (start → end)
+- Save custom waves to a personal gallery
+
+### Advanced Personalization
+
+- **Transparent Skin & Borderless Mode** — toggle transparent frosted backgrounds and borders across all widgets via right-click context menu.
+- **Custom Floating Title** — add your own text, move it anywhere (Free Move), and customize font, size, letter spacing, shadow (X/Y/Blur/Color), and border with **Live Preview**.
+- **Settings Modernization & Steppers** — precision `(- / +)` micro-steppers and mouse wheel adjustment on all range inputs.
+- **Dedicated Reset-to-Default Buttons** — individually reset Sizes, Appearance, Tabs, Layout, Typography, and Effects.
+- **Snap to Grid (Drag & Drop)** — align widgets cleanly with adjustable grid sizes (20px to 100px).
+- **Multi-color System** — dynamically change UI accent colors with multiple modes (Gradient, Cycle, or Sync with background).
+- **Layout Controls Popup (LCP)** — a quick-access mini menu to toggle component visibility and adjust layout settings directly.
+- **Lock Widgets** — pin all draggable components in place to prevent accidental movement.
+- **Context Menus** — Dark Glass, Light Glass, Transparent, macOS, and Material 3 styles.
+- **Glassmorphism UI** — consistent, high-quality frosted glass aesthetics across all widgets and modals.
+
+### Settings & System
+
+- **Font selector** with support for loading custom fonts, Google Fonts, or **locally installed system fonts** (Local Font Access API)
+- **Language support**: English, Vietnamese, German, Swedish (i18n), featuring vector SVG country flags in language selector
+- **Cloud Sync** — backup and restore settings (excluding media) using your Chrome account sync storage
+- **Bookmark Layouts** — choose between Default Grid, Sidebar, and Taskbar modes (**Bottom Center, Top Center, Bottom Left**)
+- **Export / Import** settings as a JSON file
+- **Table of Contents (ToC)** — navigate long settings panels easily with a built-in search and ToC
+- Reset all settings to defaults
+
+---
+
+## Links & Resources
 
 - **Source Code**: [https://github.com/ChickenSoup269/Zero-Start-Page](https://github.com/ChickenSoup269/Zero-Start-Page)
 - **View All Releases & Changelogs**: [https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement](https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement)
@@ -104,7 +331,7 @@
 
 ---
 
-## 🛡️ Privacy & Security Policy
+## Privacy & Security Policy
 
 Your privacy and security are our highest priorities:
 - **No personal data is collected or transmitted.** We do not run any remote tracking servers, analytics services, or user databases.
@@ -114,36 +341,34 @@ Your privacy and security are our highest priorities:
 
 ---
 
-## 📥 Installation
+## Installation
 
-### From Web Stores (Recommended)
-- Install from [Chrome Web Store](https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=en)
-- Install from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/)
-
-### Manual Developer Installation
-1. Clone or download this repository:
+1. Download or clone this repository:
    ```bash
    git clone https://github.com/ChickenSoup269/Zero-Start-Page.git
    ```
-2. Open `chrome://extensions/` (Chrome / Brave / Edge) or `about:debugging#/runtime/this-firefox` (Firefox).
-3. Enable **Developer mode** (top-right toggle).
-4. Click **Load unpacked** and select the repository root folder.
-5. Open a new tab and enjoy your new personalized startpage!
+2. Open `chrome://extensions/` (Chrome/Brave/Edge) or `about:debugging#/runtime/this-firefox` (Firefox).
+3. Enable **Developer mode** (top-right toggle in Chrome).
+4. Click **Load unpacked** and select the project folder.
+5. Open a new tab — enjoy your Startpage!
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
-- **Core**: Vanilla JavaScript (ES Modules), HTML5, CSS3 Glassmorphism
-- **Platform**: WebExtensions Manifest V3 (Chrome, Edge, Brave, Opera, Firefox)
-- **Graphics & Audio**: Canvas API, WebGL Shaders, Web Audio API, Chrome Tab Capture API
-- **Media**: Chrome Media Session API
-- **Storage**: IndexedDB, LocalStorage, Chrome Storage Sync
-- **APIs**: Open-Meteo (Weather), LoremFlickr, Lorem Picsum, Unsplash API, Local Font Access API
+- **Vanilla JavaScript (ES Modules)** — fast, zero build step, no framework overhead
+- **Chrome Extension Manifest V3** (with Firefox compatibility)
+- **Canvas API & WebGL Shaders** for fluid animations and real-time visualizers
+- **Chrome Media Session API & Tab Capture** for music detection and audio-reactive waveforms
+- **Web Audio API** for multi-track ambient sound generation
+- **LocalStorage & IndexedDB** for fast client-side storage
+- **Chrome Storage Sync** for cross-device synchronization
+- **Local Font Access API** for system font integration
+- **Open-Meteo API** for privacy-friendly weather forecasts
 
 ---
 
-## 📄 License & Credits
+## License & Credits
 
 Distributed under the MIT License. See `LICENSE` for details.
-Crafted with ❤️ by [ChickenSoup269](https://github.com/ChickenSoup269).
+Crafted by [ChickenSoup269](https://github.com/ChickenSoup269).
