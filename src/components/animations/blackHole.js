@@ -539,7 +539,6 @@ export class BlackHoleBackground {
           color *= mix(0.75, 1.0, vig);
 
           gl_FragColor = vec4(color, 1.0);
-        }
         // =========================================================================
         // MODE 2: Spiral Galaxy 3D (Hollywood AAA Cosmic Density Wave & HDR Bulge)
         // DIRECTLY SHARING BLACK HOLE RELATIVISTIC PLASMA, DOPPLER BEAMING & CAUSTICS
