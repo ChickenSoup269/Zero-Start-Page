@@ -1532,18 +1532,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
-    updateSetting(
-      "blackHoleAccretionColor",
-      DOM.blackHoleAccretionColorPicker.value,
-    )
-    if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor(
-        "accretion",
-        DOM.blackHoleAccretionColorPicker.value,
-      )
-    }
-  })
   DOM.blackHoleAccretionColorPicker?.addEventListener("change", () => {
     updateSetting(
       "blackHoleAccretionColor",
@@ -1558,15 +1546,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.blackHoleCoreColorPicker?.addEventListener("input", () => {
-    updateSetting("blackHoleCoreColor", DOM.blackHoleCoreColorPicker.value)
-    if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor(
-        "core",
-        DOM.blackHoleCoreColorPicker.value,
-      )
-    }
-  })
   DOM.blackHoleCoreColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleCoreColor", DOM.blackHoleCoreColorPicker.value)
     saveSettings()
@@ -1578,15 +1557,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.blackHoleWhiteColorPicker?.addEventListener("input", () => {
-    updateSetting("blackHoleWhiteColor", DOM.blackHoleWhiteColorPicker.value)
-    if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor(
-        "white",
-        DOM.blackHoleWhiteColorPicker.value,
-      )
-    }
-  })
   DOM.blackHoleWhiteColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleWhiteColor", DOM.blackHoleWhiteColorPicker.value)
     saveSettings()
@@ -1598,15 +1568,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.blackHoleGlowColorPicker?.addEventListener("input", () => {
-    updateSetting("blackHoleGlowColor", DOM.blackHoleGlowColorPicker.value)
-    if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor(
-        "glow",
-        DOM.blackHoleGlowColorPicker.value,
-      )
-    }
-  })
   DOM.blackHoleGlowColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleGlowColor", DOM.blackHoleGlowColorPicker.value)
     saveSettings()
@@ -1618,15 +1579,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.blackHoleStarColorPicker?.addEventListener("input", () => {
-    updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
-    if (effectInstances.blackHoleEffect) {
-      effectInstances.blackHoleEffect.updateColor(
-        "star",
-        DOM.blackHoleStarColorPicker.value,
-      )
-    }
-  })
   DOM.blackHoleStarColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
     saveSettings()

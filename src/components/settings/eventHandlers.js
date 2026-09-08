@@ -6315,7 +6315,8 @@ export function setupGeneralEventHandlers(
   const bindColorPicker = (id, settingKey, cssVar) => {
     const el = document.getElementById(id)
     if (!el) return
-    const update = (color) => {
+    el.addEventListener("change", (e) => {
+      const color = e.target.value
       handleSettingUpdate(settingKey, color)
       if (cssVar) document.documentElement.style.setProperty(cssVar, color)
       window.dispatchEvent(
@@ -6323,9 +6324,7 @@ export function setupGeneralEventHandlers(
           detail: { key: settingKey, value: color },
         }),
       )
-    }
-    el.addEventListener("input", (e) => update(e.target.value))
-    el.addEventListener("change", (e) => update(e.target.value))
+    })
   }
 
   bindColorPicker("satellite-anim-color", "satelliteAnimColor", "--sat-color")
