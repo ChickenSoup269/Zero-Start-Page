@@ -12055,8 +12055,9 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   padding: 8px 12px;
+  min-height: 48px;
   cursor: grab;
   user-select: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -12076,7 +12077,7 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .floating-note-header-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -12085,10 +12086,10 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  border-radius: 7px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.18);
   cursor: grab;
@@ -12109,56 +12110,94 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 }
 
 .floating-drag-grip {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   opacity: 0.85;
   color: var(--note-header-text, currentColor);
   cursor: grab;
   pointer-events: none;
 }
 
-.floating-note-title-input {
+.floating-note-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1 1 auto;
   min-width: 60px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
-  padding: 4px 8px;
-  color: var(--note-header-text, #ffffff);
-  font-size: 0.88rem;
-  font-weight: 600;
-  font-family: inherit;
-  outline: none;
+  height: 32px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  cursor: text;
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
-.floating-note-title-input:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.28);
+.floating-note-title-wrap:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-.floating-note-title-input:focus {
+.floating-note-title-wrap:focus-within {
   background: rgba(255, 255, 255, 0.25);
   border-color: currentColor;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22);
 }
 
+.floating-note-title-pen {
+  font-size: 0.78rem;
+  opacity: 0.65;
+  color: var(--note-header-text, currentColor);
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.floating-note-title-wrap:hover .floating-note-title-pen,
+.floating-note-title-wrap:focus-within .floating-note-title-pen {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.floating-note-title-input {
+  flex: 1 1 auto;
+  min-width: 40px;
+  height: 100%;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: var(--note-header-text, #ffffff) !important;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: text;
+}
+
+.floating-note-title-input::placeholder {
+  color: var(--note-header-text, #ffffff);
+  opacity: 0.6;
+}
+
 .floating-note-actions {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .floating-note-header .icon-btn,
 .floating-note-header .note-action-btn {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   padding: 0 !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: none;
@@ -12171,7 +12210,7 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .floating-note-header .note-action-btn:hover {
   background: rgba(255, 255, 255, 0.28) !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
-  transform: translateY(-1px) scale(1.08);
+  transform: translateY(-1px) scale(1.06);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -12188,9 +12227,10 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 
 .floating-note-header .icon-btn i,
 .floating-note-header .note-action-btn i {
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   color: var(--note-header-text, currentColor) !important;
   line-height: 1;
+  pointer-events: none;
 }
 
 .floating-note-close:hover {

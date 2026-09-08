@@ -369,9 +369,12 @@ export class Notepad {
           <div class="floating-drag-grip-wrap" title="${i18n.notepad_drag_grip || "Drag to move"}">
             <i class="fa-solid fa-grip-vertical floating-drag-grip"></i>
           </div>
-          <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
+          <div class="floating-note-title-wrap" data-no-drag="true" title="${i18n.notepad_edit_title || "Click to rename"}">
+            <i class="fa-solid fa-pen floating-note-title-pen" aria-hidden="true"></i>
+            <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="${i18n.notepad_title_placeholder || "Note Title"}" spellcheck="false" data-no-drag="true">
+          </div>
         </div>
-        <div class="floating-note-actions">
+        <div class="floating-note-actions" data-no-drag="true">
           <div class="note-color-dropdown">
             <button class="icon-btn note-action-btn note-color-trigger" title="${i18n.notepad_change_color || "Change color"}">
               <i class="fa-solid fa-palette"></i>
@@ -614,12 +617,31 @@ export class Notepad {
       this.updateNote(noteId, { content: contentDiv.innerHTML })
     })
 
+    const titleWrap = floatingContainer.querySelector(
+      ".floating-note-title-wrap",
+    )
     const titleInput = floatingContainer.querySelector(
       ".floating-note-title-input",
     )
     if (titleInput) {
+      if (titleWrap) {
+        titleWrap.addEventListener("click", (e) => {
+          if (e.target !== titleInput) {
+            titleInput.focus()
+          }
+        })
+      }
+      titleInput.addEventListener("input", () => {
+        this.updateNote(noteId, { title: titleInput.value })
+      })
       titleInput.addEventListener("change", () => {
         this.updateNote(noteId, { title: titleInput.value })
+      })
+      titleInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          titleInput.blur()
+        }
       })
     }
 
@@ -1371,6 +1393,24 @@ export class Notepad {
         contrastColor === "#000000"
           ? "rgba(0, 0, 0, 0.22)"
           : "rgba(255, 255, 255, 0.28)",
+        "important",
+      )
+    }
+
+    const titleWrap = header.querySelector(".floating-note-title-wrap")
+    if (titleWrap) {
+      titleWrap.style.setProperty(
+        "border-color",
+        contrastColor === "#000000"
+          ? "rgba(0, 0, 0, 0.18)"
+          : "rgba(255, 255, 255, 0.25)",
+        "important",
+      )
+      titleWrap.style.setProperty(
+        "background-color",
+        contrastColor === "#000000"
+          ? "rgba(0, 0, 0, 0.08)"
+          : "rgba(255, 255, 255, 0.14)",
         "important",
       )
     }
