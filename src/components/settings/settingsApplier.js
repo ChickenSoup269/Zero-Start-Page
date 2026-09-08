@@ -4272,26 +4272,34 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
-      hudColor1Input.value = settings.hudColor1 || "#ffaa00"
+      hudColor1Input.value = settings.hudColor1 || "#ffb703"
       document.documentElement.style.setProperty(
         "--hud-color-1",
-        settings.hudColor1 || "#ffaa00",
+        settings.hudColor1 || "#ffb703",
       )
     }
     const hudColor2Input = document.getElementById("hud-color-2")
     if (hudColor2Input) {
-      hudColor2Input.value = settings.hudColor2 || "#3cf0f0"
+      hudColor2Input.value = settings.hudColor2 || "#00f0ff"
       document.documentElement.style.setProperty(
         "--hud-color-2",
-        settings.hudColor2 || "#3cf0f0",
+        settings.hudColor2 || "#00f0ff",
       )
     }
     const hudColor3Input = document.getElementById("hud-color-3")
     if (hudColor3Input) {
-      hudColor3Input.value = settings.hudColor3 || "#a4de6c"
+      hudColor3Input.value = settings.hudColor3 || "#4ade80"
       document.documentElement.style.setProperty(
         "--hud-color-3",
-        settings.hudColor3 || "#a4de6c",
+        settings.hudColor3 || "#4ade80",
+      )
+    }
+    const hudColor4Input = document.getElementById("hud-color-4")
+    if (hudColor4Input) {
+      hudColor4Input.value = settings.hudColor4 || "#818cf8"
+      document.documentElement.style.setProperty(
+        "--hud-color-4",
+        settings.hudColor4 || "#818cf8",
       )
     }
 
@@ -4397,26 +4405,42 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     const satAnimColorInput = document.getElementById("satellite-anim-color")
     if (satAnimColorInput) {
-      satAnimColorInput.value = settings.satelliteAnimColor || "#3caac8"
+      satAnimColorInput.value = settings.satelliteAnimColor || "#00e5ff"
       document.documentElement.style.setProperty(
         "--sat-color",
-        settings.satelliteAnimColor || "#3caac8",
+        settings.satelliteAnimColor || "#00e5ff",
       )
     }
     const satSecColorInput = document.getElementById("satellite-sec-color")
     if (satSecColorInput) {
-      satSecColorInput.value = settings.satelliteSecColor || "#7ced7a"
+      satSecColorInput.value = settings.satelliteSecColor || "#00ff88"
       document.documentElement.style.setProperty(
         "--sat-sec-color",
-        settings.satelliteSecColor || "#7ced7a",
+        settings.satelliteSecColor || "#00ff88",
       )
     }
     const satTerColorInput = document.getElementById("satellite-ter-color")
     if (satTerColorInput) {
-      satTerColorInput.value = settings.satelliteTerColor || "#b57aed"
+      satTerColorInput.value = settings.satelliteTerColor || "#c084fc"
       document.documentElement.style.setProperty(
         "--sat-ter-color",
-        settings.satelliteTerColor || "#b57aed",
+        settings.satelliteTerColor || "#c084fc",
+      )
+    }
+    const satDateColorInput = document.getElementById("satellite-date-color")
+    if (satDateColorInput) {
+      satDateColorInput.value = settings.satelliteDateColor || "#94a3b8"
+      document.documentElement.style.setProperty(
+        "--sat-date-color",
+        settings.satelliteDateColor || "#94a3b8",
+      )
+    }
+    const satBorderColorInput = document.getElementById("satellite-border-color")
+    if (satBorderColorInput) {
+      satBorderColorInput.value = settings.satelliteBorderColor || "#00e5ff"
+      document.documentElement.style.setProperty(
+        "--sat-border-color",
+        settings.satelliteBorderColor || "#00e5ff",
       )
     }
     const satAnimStyleInput = document.getElementById("satellite-anim-style")

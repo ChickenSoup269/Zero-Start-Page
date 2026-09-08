@@ -6312,77 +6312,32 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockStyleCustomBgColor", color)
   })
 
-  document
-    .getElementById("satellite-anim-color")
-    ?.addEventListener("change", (e) => {
-      const color = e.target.value
-      handleSettingUpdate("satelliteAnimColor", color)
-      document.documentElement.style.setProperty("--sat-color", color)
+  const bindColorPicker = (id, settingKey, cssVar) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const update = (color) => {
+      handleSettingUpdate(settingKey, color)
+      if (cssVar) document.documentElement.style.setProperty(cssVar, color)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
-          detail: { key: "satelliteAnimColor", value: color },
+          detail: { key: settingKey, value: color },
         }),
       )
-    })
+    }
+    el.addEventListener("input", (e) => update(e.target.value))
+    el.addEventListener("change", (e) => update(e.target.value))
+  }
 
-  document
-    .getElementById("satellite-sec-color")
-    ?.addEventListener("change", (e) => {
-      const color = e.target.value
-      handleSettingUpdate("satelliteSecColor", color)
-      document.documentElement.style.setProperty("--sat-sec-color", color)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "satelliteSecColor", value: color },
-        }),
-      )
-    })
+  bindColorPicker("satellite-anim-color", "satelliteAnimColor", "--sat-color")
+  bindColorPicker("satellite-sec-color", "satelliteSecColor", "--sat-sec-color")
+  bindColorPicker("satellite-ter-color", "satelliteTerColor", "--sat-ter-color")
+  bindColorPicker("satellite-date-color", "satelliteDateColor", "--sat-date-color")
+  bindColorPicker("satellite-border-color", "satelliteBorderColor", "--sat-border-color")
 
-  document
-    .getElementById("satellite-ter-color")
-    ?.addEventListener("change", (e) => {
-      const color = e.target.value
-      handleSettingUpdate("satelliteTerColor", color)
-      document.documentElement.style.setProperty("--sat-ter-color", color)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "satelliteTerColor", value: color },
-        }),
-      )
-    })
-
-  document.getElementById("hud-color-1")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("hudColor1", color)
-    document.documentElement.style.setProperty("--hud-color-1", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "hudColor1", value: color },
-      }),
-    )
-  })
-
-  document.getElementById("hud-color-2")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("hudColor2", color)
-    document.documentElement.style.setProperty("--hud-color-2", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "hudColor2", value: color },
-      }),
-    )
-  })
-
-  document.getElementById("hud-color-3")?.addEventListener("change", (e) => {
-    const color = e.target.value
-    handleSettingUpdate("hudColor3", color)
-    document.documentElement.style.setProperty("--hud-color-3", color)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "hudColor3", value: color },
-      }),
-    )
-  })
+  bindColorPicker("hud-color-1", "hudColor1", "--hud-color-1")
+  bindColorPicker("hud-color-2", "hudColor2", "--hud-color-2")
+  bindColorPicker("hud-color-3", "hudColor3", "--hud-color-3")
+  bindColorPicker("hud-color-4", "hudColor4", "--hud-color-4")
 
   document
     .getElementById("satellite-anim-style")

@@ -10069,9 +10069,10 @@ body.date-clock-style-satellite #date-fade-wrap {
   border-radius: 14px;
   box-sizing: border-box;
   background: rgba(10, 14, 20, 0.82);
-  border: 1.5px solid var(--sat-color, #3caac8);
+  border: 1.5px solid var(--sat-border-color, var(--sat-color, #00e5ff));
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(0, 229, 255, 0.15),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -10100,17 +10101,19 @@ body.date-clock-style-satellite #date-fade-wrap {
 .sat-tag {
   font-size: 0.7rem;
   font-weight: 800;
-  color: var(--sat-color, #3caac8);
+  color: var(--sat-color, #00e5ff);
   letter-spacing: 1px;
-  opacity: 0.9;
+  opacity: 0.95;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
 }
 
 .sat-seconds {
   font-family: var(--font-clock, inherit);
   font-size: 0.78rem;
   font-weight: 800;
-  color: var(--sat-sec-color, #7ced7a);
+  color: var(--sat-sec-color, #00ff88);
   letter-spacing: 0.5px;
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.35);
 }
 
 .sat-battery {
@@ -10119,7 +10122,7 @@ body.date-clock-style-satellite #date-fade-wrap {
   position: relative;
   width: 70px;
   height: 14px;
-  border: 1px solid var(--sat-sec-color, #7ced7a);
+  border: 1px solid var(--sat-sec-color, #00ff88);
   border-radius: 3px;
   padding: 1px;
   margin-left: auto;
@@ -10130,9 +10133,10 @@ body.date-clock-style-satellite #date-fade-wrap {
 
 .sat-battery-fill {
   height: 100%;
-  background: var(--sat-sec-color, #7ced7a);
+  background: var(--sat-sec-color, #00ff88);
   border-radius: 2px;
   transition: width 0.4s ease;
+  box-shadow: 0 0 6px var(--sat-sec-color, #00ff88);
 }
 
 .sat-battery-text {
@@ -10158,15 +10162,15 @@ body.date-clock-style-satellite #date-fade-wrap {
   font-weight: 800;
   line-height: 1;
   letter-spacing: 2px;
-  color: var(--sat-color, #3caac8);
-  text-shadow: 0 0 16px rgba(60, 170, 200, 0.4), 0 0 4px #ffffff;
+  color: var(--sat-color, #00e5ff);
+  text-shadow: 0 0 16px rgba(0, 229, 255, 0.45), 0 0 4px #ffffff;
 }
 
 .sat-ampm {
   font-family: var(--font-clock, inherit);
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--sat-sec-color, #7ced7a);
+  color: var(--sat-sec-color, #00ff88);
 }
 
 .sat-date {
@@ -10174,7 +10178,7 @@ body.date-clock-style-satellite #date-fade-wrap {
   font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--sat-date-color, #94a3b8);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -10199,11 +10203,11 @@ body.date-clock-style-satellite #date-fade-wrap {
 }
 
 .sat-weather-item.tem {
-  color: var(--sat-sec-color, #7ced7a);
+  color: var(--sat-sec-color, #00ff88);
 }
 
 .sat-weather-item.hum {
-  color: var(--sat-ter-color, #b57aed);
+  color: var(--sat-ter-color, #c084fc);
 }
 
 .sat-w-label {
@@ -10228,9 +10232,10 @@ body.date-clock-style-satellite #date-fade-wrap {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(60, 170, 200, 0.3);
+  border: 1px solid var(--sat-color, #00e5ff);
   border-radius: 50%;
   overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
 }
 
 /* Radar Animation Mode */
@@ -10255,20 +10260,23 @@ body.date-clock-style-satellite #date-fade-wrap {
   position: absolute;
   width: 100%;
   height: 1px;
-  background: rgba(60, 170, 200, 0.25);
+  background: var(--sat-color, #00e5ff);
+  opacity: 0.35;
 }
 
 .sat-radar-cross-v {
   position: absolute;
   height: 100%;
   width: 1px;
-  background: rgba(60, 170, 200, 0.25);
+  background: var(--sat-color, #00e5ff);
+  opacity: 0.35;
 }
 
 .sat-radar-circle {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(60, 170, 200, 0.2);
+  border: 1px solid var(--sat-color, #00e5ff);
+  opacity: 0.3;
 }
 
 .sat-radar-circle.r1 { width: 30%; height: 30%; }
@@ -10281,10 +10289,10 @@ body.date-clock-style-satellite #date-fade-wrap {
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
-    rgba(60, 170, 200, 0.45) 0deg,
-    rgba(60, 170, 200, 0.1) 40deg,
+    var(--sat-color, #00e5ff) 0deg,
     transparent 60deg
   );
+  opacity: 0.45;
   animation: satRadarSpin 4s linear infinite;
   transform-origin: center;
   will-change: transform;
@@ -10303,7 +10311,7 @@ body.date-clock-style-satellite #date-fade-wrap {
   height: 5px;
   background: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--sat-sec-color, #7ced7a);
+  box-shadow: 0 0 6px var(--sat-sec-color, #00ff88);
   animation: satBlipPulse 4s infinite;
   animation-delay: 1.2s;
 }
@@ -10318,9 +10326,9 @@ body.date-clock-style-satellite #date-fade-wrap {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: var(--sat-color, #3caac8);
+  background: var(--sat-color, #00e5ff);
   border-radius: 50%;
-  box-shadow: 0 0 4px var(--sat-color, #3caac8);
+  box-shadow: 0 0 6px var(--sat-color, #00e5ff);
 }
 
 /* Galaxy Animation Mode */
@@ -10339,16 +10347,17 @@ body.date-clock-style-satellite #date-fade-wrap {
 .sat-galaxy-planet {
   width: 16px;
   height: 16px;
-  background: var(--sat-color, #3caac8);
+  background: var(--sat-color, #00e5ff);
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--sat-color, #3caac8);
+  box-shadow: 0 0 8px var(--sat-color, #00e5ff);
   z-index: 2;
 }
 
 .sat-galaxy-orbit {
   position: absolute;
   border-radius: 50%;
-  border: 1px dashed rgba(60, 170, 200, 0.35);
+  border: 1px dashed var(--sat-color, #00e5ff);
+  opacity: 0.4;
 }
 
 .sat-galaxy-orbit.o1 { width: 44px; height: 44px; }
@@ -10369,9 +10378,9 @@ body.date-clock-style-satellite #date-fade-wrap {
   transform: translateX(-50%);
   width: 7px;
   height: 7px;
-  background: var(--sat-sec-color, #7ced7a);
+  background: var(--sat-sec-color, #00ff88);
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--sat-sec-color, #7ced7a);
+  box-shadow: 0 0 6px var(--sat-sec-color, #00ff88);
 }
 
 @keyframes satOrbitRotate {
@@ -10434,9 +10443,10 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
 
 /* --- Pixel HUD Tactical Clock (Refined & Compact) --- */
 .pixel-hud-container {
-  --hud-c1: var(--hud-color-1, #ffaa00);
-  --hud-c2: var(--hud-color-2, #3cf0f0);
-  --hud-c3: var(--hud-color-3, #a4de6c);
+  --hud-c1: var(--hud-color-1, #ffb703);
+  --hud-c2: var(--hud-color-2, #00f0ff);
+  --hud-c3: var(--hud-color-3, #4ade80);
+  --hud-c4: var(--hud-color-4, #818cf8);
   font-family: var(--font-clock, "VT323", "Courier New", monospace);
   display: flex;
   flex-direction: column;
@@ -10448,9 +10458,10 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   border-radius: 14px;
   box-sizing: border-box;
   background: rgba(10, 14, 20, 0.82);
-  border: 1.5px solid rgba(60, 240, 240, 0.28);
+  border: 1.5px solid var(--hud-c4, rgba(129, 140, 248, 0.45));
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(129, 140, 248, 0.15),
     inset 0 0 20px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -10481,7 +10492,7 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .hud-pwr-pct {
@@ -10489,6 +10500,7 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   font-weight: 900;
   color: var(--hud-c1);
   letter-spacing: 1px;
+  text-shadow: 0 0 6px var(--hud-c1);
 }
 
 .hud-battery-track {
@@ -10539,11 +10551,13 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
 .hud-location {
   color: var(--hud-c2);
   font-weight: 700;
+  text-shadow: 0 0 6px var(--hud-c2);
 }
 
 .hud-sec-tag {
   color: var(--hud-c1);
   font-weight: 700;
+  text-shadow: 0 0 6px var(--hud-c1);
 }
 
 .hud-time {
@@ -10553,7 +10567,7 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   font-weight: 900;
   letter-spacing: 3px;
   text-align: center;
-  text-shadow: 0 0 16px rgba(60, 240, 240, 0.4), 0 0 4px #ffffff;
+  text-shadow: 0 0 16px var(--hud-c2), 0 0 4px #ffffff;
   margin: 4px 0 2px;
 }
 
@@ -10603,8 +10617,8 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
 
 .hud-date-weekday {
   font-size: 0.76rem;
-  color: #ffffff;
-  opacity: 0.85;
+  color: var(--hud-c4, #818cf8);
+  opacity: 0.95;
   letter-spacing: 0.5px;
 }
 
@@ -10615,7 +10629,7 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   justify-content: center;
   gap: 4px;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--hud-c2);
+  border: 1px solid var(--hud-c4, var(--hud-c2));
   border-radius: 8px;
   padding: 6px 10px;
   box-sizing: border-box;
@@ -10659,8 +10673,8 @@ body.date-clock-style-pixel-hud #date-fade-wrap {
   align-items: center;
   gap: 5px;
   font-size: 0.74rem;
-  color: #ffffff;
-  opacity: 0.9;
+  color: var(--hud-c4, #818cf8);
+  opacity: 0.95;
   letter-spacing: 0.5px;
   white-space: nowrap;
   overflow: hidden;
