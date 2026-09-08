@@ -343,7 +343,7 @@ export const defaultSettings = {
   blackHoleAccretionColor: "#ff5500",
   blackHoleCoreColor: "#ffcc00",
   blackHoleWhiteColor: "#ffffff",
-  blackHoleGlowColor: "#00d2ff",
+  blackHoleGlowColor: "#ffa200",
   blackHoleStarColor: "#ffffff",
   blackHoleIntensity: 1.0,
   blackHoleAngle: 0,

@@ -126,7 +126,7 @@ export function createEffectFactories(settings) {
         accretionColor: settings.blackHoleAccretionColor || "#ff5500",
         coreColor: settings.blackHoleCoreColor || "#ffcc00",
         whiteColor: settings.blackHoleWhiteColor || "#ffffff",
-        glowColor: settings.blackHoleGlowColor || "#00d2ff",
+        glowColor: settings.blackHoleGlowColor || "#ffa200",
         starColor: settings.blackHoleStarColor || "#ffffff",
         intensity: settings.blackHoleIntensity ?? 1.0,
         angle: settings.blackHoleAngle ?? 0,

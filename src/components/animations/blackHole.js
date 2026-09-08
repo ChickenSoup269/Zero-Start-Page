@@ -73,7 +73,7 @@ export class BlackHoleBackground {
     this.accretionColor = opts.accretionColor || "#ff5500"
     this.coreColor = opts.coreColor || "#ffcc00"
     this.whiteColor = opts.whiteColor || "#ffffff"
-    this.glowColor = opts.glowColor || "#00d2ff"
+    this.glowColor = opts.glowColor || "#ffa200"
     this.starColor = opts.starColor || "#ffffff"
     this.intensity = Number(opts.intensity) || 1.0
     this.angle = Number(opts.angle) || 0
@@ -322,16 +322,16 @@ export class BlackHoleBackground {
           float coreMix = smoothstep(rISCO * 2.4, rISCO, diskR);
           vec3 diskBaseCol = mix(u_accretionColor, u_coreColor, coreMix);
 
-          // Brilliant plasma core with continuous, non-split Doppler blueshift
+          // Brilliant plasma core with continuous, non-split Doppler thermal brightening
           vec3 plasmaCore = mix(diskBaseCol, hotWhite, clamp(totalPlasma * 0.65 + pr_sharp * 0.45, 0.0, 0.92));
-          float blueFactor = smoothstep(0.25, -0.45, dopplerShift);
-          plasmaCore = mix(plasmaCore, glowCol, blueFactor * 0.45);
+          float dopplerBoost = smoothstep(0.25, -0.45, dopplerShift);
+          plasmaCore = mix(plasmaCore, mix(glowCol, hotWhite, 0.70), dopplerBoost * 0.50);
 
           // Composite entire accretion glow without quadrant cuts
           vec3 accretionGlow = (diskBaseCol * (totalPlasma * 1.2 + anamorphicFlare)
-                             + glowCol * (coronaGlow * 0.65 + polarJets * 1.1)
-                             + mix(hotWhite, glowCol, 0.4) * (totalPhotonRings * 0.42)
-                             + plasmaCore * totalPlasma * 0.4) * u_intensity;
+                             + glowCol * (coronaGlow * 0.75 + polarJets * 1.1)
+                             + mix(hotWhite, glowCol, 0.35) * (totalPhotonRings * 0.46)
+                             + plasmaCore * totalPlasma * 0.45) * u_intensity;
 
           vec3 color = starCol + accretionGlow;
 
@@ -345,7 +345,7 @@ export class BlackHoleBackground {
 
           // Horizon Rim Ergosphere Glow
           float horizonRim = exp(-abs(r - rH) * 85.0) * 0.40 * shadow;
-          color += mix(glowCol, hotWhite, 0.55) * horizonRim * u_intensity;
+          color += mix(glowCol, hotWhite, 0.65) * horizonRim * u_intensity;
 
           // Deep cosmic void
           vec3 cosmicBg = vec3(0.008, 0.010, 0.018);
@@ -361,197 +361,185 @@ export class BlackHoleBackground {
         }
 
         // =========================================================================
-        // MODE 1: 3D Earth & Moon (Hollywood AAA Blue Marble & Selene Masterpiece)
-        // UNIFIED WITH BLACK HOLE HIGH-PRECISION CAUSTICS, ANAMORPHIC FLARES & REDSHIFT
+        // MODE 1: Illustrated 2D Earth & Moon (Charming Hand-Drawn Celestial World)
+        // NON-3D STYLIZED STORYBOOK ARTWORK - CLEAN CEL-SHADED ILLUSTRATION
         // =========================================================================
         else if (u_celestialType < 1.5) {
-          // 1. Spacetime Starfield & Cosmic Nebula (identical to Mode 0)
+          // 1. Illustrated Cosmic Background with Twinkling Diamond Sparkles
           vec2 cosmicP = rot(-u_angle) * (uv - vec2(tiltX * 0.14, tiltY * 0.14));
-          float stars = getStars(cosmicP);
-          vec3 starCol = u_starColor * stars;
-          float nebula = (sin(cosmicP.x * 3.5 + cosmicP.y * 3.0 + u_time * 0.12) * 0.5 + 0.5) * 0.035;
-          starCol += mix(u_glowColor, u_accretionColor, 0.5) * nebula;
+          float baseStars = getStars(cosmicP);
+
+          // Cute hand-drawn 4-point sparkle stars
+          vec2 starGrid = fract(cosmicP * 14.0) - 0.5;
+          vec2 starCell = floor(cosmicP * 14.0);
+          float starRand = hash(starCell);
+          float isSparkle = step(0.88, starRand);
+          float starTwinkle = sin(u_time * 2.5 + starRand * 6.28) * 0.5 + 0.5;
+          float sparkleShape = (exp(-abs(starGrid.x) * 22.0) * exp(-abs(starGrid.y) * 4.0) +
+                                exp(-abs(starGrid.y) * 22.0) * exp(-abs(starGrid.x) * 4.0)) * 0.6;
+          float drawnSparkles = isSparkle * sparkleShape * starTwinkle;
+
+          vec3 starCol = u_starColor * (baseStars * 0.8 + drawnSparkles);
+          // Soft illustrated dreamy nebula tint
+          float dreamyNebula = (sin(cosmicP.x * 2.5 + cosmicP.y * 2.0 + u_time * 0.1) * 0.5 + 0.5) * 0.04;
+          starCol += mix(vec3(0.08, 0.12, 0.28), u_glowColor, 0.35) * dreamyNebula;
 
           vec3 color = starCol;
 
-          // Planetary Constants
-          float earthR = 0.285;
+          // 2. Delicate Dotted Moon Orbit Path
+          float orbitA = 0.58;
+          float orbitB = 0.24;
+          vec2 orbitCoord = vec2(p.x / orbitA, p.y / orbitB);
+          float orbitDist = abs(length(orbitCoord) - 1.0);
+          float orbitDot = sin(atan(orbitCoord.y, orbitCoord.x) * 36.0);
+          float orbitLine = exp(-orbitDist * 85.0) * smoothstep(-0.2, 0.4, orbitDot) * 0.15;
+          color += mix(u_glowColor, vec3(0.7, 0.85, 1.0), 0.5) * orbitLine;
+
+          // 3. Illustrated Earth (2D Hand-drawn Planet Disc)
+          float earthR = 0.28;
           float earthDist = r;
 
-          // Directional Sunlight vector
-          vec3 sunDir = normalize(vec3(-0.72, 0.52, 0.62));
-          vec3 viewDir = vec3(0.0, 0.0, 1.0);
+          // Sun light direction for 2D cel-shading
+          vec2 sunDir2D = normalize(vec2(-0.72, 0.55));
 
-          // Ray-Sphere Analytical Intersection
           if (earthDist < earthR) {
-            float z = sqrt(max(0.0, earthR * earthR - earthDist * earthDist));
-            vec3 normal = vec3(p / earthR, z / earthR);
+            // Planar illustrated coordinates with smooth drift
+            vec2 flatCoord = vec2(p.x * 2.1 + u_time * 0.035, p.y * 2.2);
 
-            // Planetary spherical coordinates with axial rotation
-            float lon = atan(normal.x, normal.z) + u_time * 0.055;
-            float lat = asin(clamp(normal.y, -1.0, 1.0));
-            vec2 sphereCoord = vec2(lon * 2.4, lat * 3.0);
+            // Illustrated Continent Landmasses (Stylized vector shapes)
+            vec2 warp = vec2(fbm(flatCoord + vec2(1.7, 3.2)), fbm(flatCoord + vec2(4.3, 6.1))) * 0.42;
+            vec2 continentUV = flatCoord + warp;
+            float landNoise = fbm4(continentUV);
 
-            // Domain-warping for natural, realistic continental landmasses
-            vec2 warp = vec2(fbm(sphereCoord + vec2(1.2, 3.4)), fbm(sphereCoord + vec2(5.6, 7.8))) * 0.45;
-            vec2 p_warp = sphereCoord + warp;
+            // Clean stepped thresholds for illustrated hand-drawn feel
+            float isOceanShallow = smoothstep(0.44, 0.48, landNoise);
+            float isLand = smoothstep(0.48, 0.52, landNoise);
+            float isHighland = smoothstep(0.60, 0.68, landNoise);
 
-            // Multi-octave Land vs Ocean mask
-            float landElev = fbm4(p_warp);
-            float isLand = smoothstep(0.48, 0.53, landElev);
-            float isShelf = smoothstep(0.43, 0.48, landElev);
+            // Stylized Polar Ice Caps (Cute hand-drawn rounded wavy caps)
+            float poleWavy = sin(flatCoord.x * 8.0 + u_time * 0.04) * 0.025;
+            float isPolarCap = smoothstep(earthR * 0.72, earthR * 0.84, abs(p.y) + poleWavy);
 
-            // Topographic Relief (3D Mountain Bump)
-            vec2 dE = vec2(0.018, 0.0);
-            float elevR = fbm4(p_warp + dE.xy);
-            float elevU = fbm4(p_warp + dE.yx);
-            vec3 bumpNorm = normalize(normal + vec3((landElev - elevR) * 2.5, (landElev - elevU) * 2.5, 0.0) * isLand);
+            // Hand-drawn Ocean Palette (Deep vibrant marine with shallow turquoise contour rim)
+            vec3 deepOcean = vec3(0.09, 0.22, 0.44);
+            vec3 shallowWater = vec3(0.18, 0.58, 0.68);
+            vec3 wavePattern = vec3(0.04, 0.08, 0.12) * sin(continentUV.x * 24.0 + continentUV.y * 18.0);
+            vec3 oceanCol = mix(deepOcean, shallowWater, isOceanShallow) + wavePattern * (1.0 - isLand);
 
-            // Polar Ice Caps
-            float polarCap = smoothstep(0.65, 0.82, abs(normal.y) + fbm(p_warp * 3.0) * 0.08);
+            // Hand-drawn Land Palette (Emerald green, warm sand coastlines, sage highland)
+            vec3 beachSand = vec3(0.92, 0.82, 0.55);
+            vec3 lushLand = vec3(0.18, 0.65, 0.32);
+            vec3 highland = vec3(0.38, 0.72, 0.28);
+            vec3 landCol = mix(beachSand, lushLand, smoothstep(0.48, 0.54, landNoise));
+            landCol = mix(landCol, highland, isHighland);
 
-            // Elevated Dynamic Cloud Deck with cyclone eye
-            vec2 cloudCoord = vec2(lon * 2.6 + u_time * 0.028, lat * 3.2);
-            vec2 cloudWarp = vec2(fbm(cloudCoord * 1.5), fbm(cloudCoord * 1.5 + 3.1)) * 0.35;
-            float clouds = smoothstep(0.48, 0.75, fbm4(cloudCoord + cloudWarp));
-            float cyclone = exp(-length(cloudCoord - vec2(u_time * 0.08, 0.4)) * 3.8);
-            clouds = clamp(clouds + cyclone * 0.45, 0.0, 1.0);
+            // Stylized 2D Ice Caps
+            vec3 iceCapCol = vec3(0.94, 0.97, 1.0);
 
-            // Solar Diffuse Lighting with Topographic Relief
-            float sunDiffuse = dot(bumpNorm, sunDir);
-            float dayFactor = smoothstep(-0.12, 0.18, sunDiffuse);
+            // Surface composite before clouds
+            vec3 surfaceCol = mix(oceanCol, landCol, isLand);
+            surfaceCol = mix(surfaceCol, iceCapCol, isPolarCap);
 
-            // Ocean colors (deep navy abyss to luminous turquoise coastal shelf)
-            vec3 deepOcean = vec3(0.010, 0.11, 0.30);
-            vec3 shelfOcean = vec3(0.028, 0.48, 0.72);
-            vec3 oceanCol = mix(deepOcean, shelfOcean, isShelf);
+            // Stylized 2D Drifting Clouds (Soft puffy hand-drawn cloud bands)
+            vec2 cloudUV = vec2(p.x * 2.2 + u_time * 0.052, p.y * 2.4);
+            vec2 cloudWarp = vec2(fbm(cloudUV * 1.3), fbm(cloudUV * 1.3 + 2.5)) * 0.3;
+            float cloudShape = smoothstep(0.46, 0.66, fbm4(cloudUV + cloudWarp));
 
-            // Terrestrial biome colors
-            vec3 rainforest = mix(vec3(0.08, 0.36, 0.12), u_accretionColor * 0.55, 0.22);
-            vec3 savanna = vec3(0.56, 0.48, 0.24);
-            vec3 mountainSnow = vec3(0.92, 0.94, 0.98);
-            float elevNoise = fbm(p_warp * 4.5);
-            vec3 landCol = mix(rainforest, savanna, elevNoise);
-            landCol = mix(landCol, mountainSnow, smoothstep(0.62, 0.80, elevNoise));
+            // Cute 2D paper-cut drop shadow cast by clouds onto surface
+            vec2 shadowOffset = -sunDir2D * 0.016;
+            vec2 shadowUV = cloudUV + shadowOffset;
+            float cloudShadow = smoothstep(0.46, 0.66, fbm4(shadowUV + cloudWarp));
+            surfaceCol = mix(surfaceCol, surfaceCol * 0.62, cloudShadow * 0.65 * (1.0 - cloudShape));
 
-            vec3 daySurface = mix(oceanCol, landCol, isLand);
-            daySurface = mix(daySurface, vec3(0.96, 0.98, 1.0), polarCap);
+            // Layer clouds on top
+            vec3 cloudCol = vec3(0.98, 0.99, 1.0);
+            surfaceCol = mix(surfaceCol, cloudCol, cloudShape * 0.95);
 
-            // Blinn-Phong Specular Sun Glint + Fresnel
-            vec3 halfVec = normalize(sunDir + viewDir);
-            float nDotH = max(0.0, dot(normal, halfVec));
-            float fresnel = 0.04 + 0.96 * pow(1.0 - max(0.0, dot(normal, viewDir)), 5.0);
-            float specTight = pow(nDotH, 96.0) * 4.8;
-            float specBroad = pow(nDotH, 18.0) * 0.85;
-            float oceanSpec = (specTight + specBroad) * fresnel * (1.0 - isLand) * (1.0 - clouds) * (1.0 - polarCap);
-            daySurface += u_whiteColor * oceanSpec * u_intensity;
+            // 2D Cel-Shaded Day / Night Lighting (Anime / Ghibli / Storybook style)
+            float sunDot = dot(p, sunDir2D);
+            float celDay = smoothstep(-0.06, 0.08, sunDot);
 
-            // Anamorphic Solar Lens Flare across ocean reflection (Mode 0 style)
-            vec2 specProj = vec2(dot(p, vec2(-sunDir.y, sunDir.x)), dot(p, sunDir.xy));
-            float sunAnamorphic = exp(-abs(specProj.x) * 18.0) * exp(-abs(specProj.y - earthR * 0.35) * 6.0) * oceanSpec * 0.45;
-            daySurface += u_whiteColor * sunAnamorphic * u_intensity;
+            // Night side palette (deep cozy indigo with warm village light sparkles)
+            vec3 nightBase = surfaceCol * vec3(0.08, 0.12, 0.24);
+            float townNoise = noise(continentUV * 28.0);
+            float townLights = smoothstep(0.68, 0.85, townNoise) * isLand * (1.0 - cloudShape) * (1.0 - isPolarCap);
+            vec3 cozyLights = vec3(1.0, 0.82, 0.35) * townLights * 1.8;
+            vec3 nightCol = nightBase + cozyLights;
 
-            // Cloud Drop Shadows cast onto Earth surface
-            vec2 shadowOffset = -sunDir.xy * 0.042;
-            float cloudShadow = smoothstep(0.48, 0.72, fbm4(cloudCoord + shadowOffset + cloudWarp));
-            daySurface *= mix(1.0, 0.35, cloudShadow * dayFactor);
+            // Warm twilight pencil stroke at terminator boundary
+            float termLine = exp(-sunDot * sunDot * 160.0);
+            vec3 twilightStroke = vec3(1.0, 0.58, 0.25) * termLine * 0.85;
 
-            // Composite Cloud Deck
-            float cloudDiffuse = clamp(dot(normal, sunDir) * 1.1 + 0.1, 0.0, 1.0);
-            vec3 cloudColor = mix(vec3(0.94, 0.97, 1.0), vec3(1.0, 0.98, 0.92), dayFactor) * cloudDiffuse;
-            daySurface = mix(daySurface, cloudColor, clouds * 0.92);
+            vec3 drawnPlanet = mix(nightCol, surfaceCol, celDay) + twilightStroke;
 
-            // Night Hemisphere: HD Metropolitan Clusters & Highway Web
-            float cityDensity = pow(fbm(p_warp * 9.0), 3.4) * isLand * 3.8;
-            float cityGrid = smoothstep(0.45, 0.85, noise(p_warp * 32.0)) * cityDensity;
-            vec3 cityColor = mix(vec3(1.0, 0.74, 0.28), u_starColor, 0.35);
-            vec3 nightLights = cityColor * (cityDensity + cityGrid * 1.6) * (1.0 - clouds * 0.65) * (1.0 - polarCap);
-            vec3 airGlow = vec3(0.02, 0.08, 0.04) * pow(1.0 - normal.z, 2.5);
-            vec3 nightSurface = mix(vec3(0.002, 0.004, 0.012) + airGlow, nightLights, step(0.05, cityDensity));
+            // Inner illustrated contour shadow
+            float innerRim = smoothstep(earthR * 0.6, earthR, earthDist);
+            drawnPlanet *= mix(1.0, 0.72, innerRim * (1.0 - celDay * 0.5));
 
-            // Composite Day and Night Surfaces with smooth terminator shading
-            vec3 earthSurface = mix(nightSurface, daySurface * max(0.03, sunDiffuse), dayFactor);
-
-            // Atmospheric Rayleigh Scattering Rim (Dual-layer Cyan-Blue Haze)
-            float rim = pow(1.0 - normal.z, 3.0);
-            vec3 rayleighColor = mix(vec3(0.16, 0.62, 1.0), u_glowColor, 0.42);
-            earthSurface += rayleighColor * rim * (dayFactor * 0.88 + 0.12) * 1.35;
-
-            // Terminator Sunset / Sunrise Twilight Ribbon (Mode 0 thermal redshift gradient)
-            vec3 redshiftRim = vec3(u_accretionColor.r * 0.95, u_accretionColor.g * 0.32, u_accretionColor.b * 0.05);
-            float termBand = exp(-sunDiffuse * sunDiffuse * 42.0) * rim;
-            vec3 twilightCol = mix(redshiftRim, vec3(1.0, 0.75, 0.20), clamp(sunDiffuse + 0.5, 0.0, 1.0));
-            earthSurface += twilightCol * termBand * 1.25;
-
-            // Subpixel smooth anti-aliased edge
-            float bodyAlpha = smoothstep(earthR, earthR - 0.0032, earthDist);
-            color = mix(color, earthSurface, bodyAlpha);
+            // Anti-aliased outer edge of the Earth disc
+            float edgeAlpha = smoothstep(earthR, earthR - 0.003, earthDist);
+            color = mix(color, drawnPlanet, edgeAlpha);
           }
 
-          // High-Order Atmospheric Caustic Shells (Mode 0 Photon Sphere Equations)
-          float atmo_sharp = exp(-abs(earthDist - earthR) * 96.0) * 0.95;  // Crisp troposphere limb
-          float atmo_bloom = exp(-abs(earthDist - earthR) * 24.0) * 0.65;  // Rayleigh scattering halo
-          float atmo_outer = exp(-abs(earthDist - earthR) * 12.0) * 0.28;  // Exosphere purple-cyan bloom
-          float totalAtmoCaustics = atmo_sharp + atmo_bloom + atmo_outer;
+          // 4. Illustrated Atmospheric Outer Halo & Hand-Drawn Outer Contour
+          float atmoRim = exp(-abs(earthDist - earthR) * 45.0) * 0.85;
+          float outerGlow = exp(-max(0.0, earthDist - earthR) * 16.0) * 0.45;
+          float sunSide = max(0.0, dot(normalize(p), sunDir2D));
+          vec3 atmoOutline = mix(vec3(0.25, 0.70, 0.98), u_glowColor, 0.35);
+          color += atmoOutline * (atmoRim + outerGlow) * (sunSide * 0.6 + 0.4) * smoothstep(earthR * 0.92, earthR * 1.35, earthDist);
 
-          // Solar forward scattering (brighter towards sun direction)
-          vec2 sunLimbDir = normalize(sunDir.xy);
-          float sunAlignment = max(0.0, dot(normalize(p), sunLimbDir));
-          float forwardScatter = pow(sunAlignment, 3.0) * 0.85 + 0.35;
-
-          vec3 atmoCol = mix(vec3(0.18, 0.60, 1.0), u_glowColor, 0.45);
-          color += atmoCol * totalAtmoCaustics * forwardScatter * smoothstep(earthR * 0.95, earthR * 1.25, earthDist);
-
-          // 3D Orbiting Moon with High-Definition Crater Relief & Earthshine
-          float moonOrbR = 0.56;
-          float moonSpeed = 0.28;
-          float mAngle = u_time * moonSpeed + 1.1;
-          vec2 moonPos = vec2(cos(mAngle) * moonOrbR, sin(mAngle) * moonOrbR * 0.38);
+          // 5. Illustrated Orbiting Moon ("Mặt trăng vẽ thủ công")
+          float mAngle = u_time * 0.24 + 1.2;
+          vec2 moonPos = vec2(cos(mAngle) * 0.58, sin(mAngle) * 0.24);
           float moonDist = length(p - moonPos);
-          float moonSz = 0.046;
+          float moonR = 0.046;
 
-          if (moonDist < moonSz) {
-            float mz = sqrt(max(0.0, moonSz * moonSz - moonDist * moonDist));
-            vec3 mNorm = vec3((p - moonPos) / moonSz, mz / moonSz);
+          if (moonDist < moonR) {
+            vec2 mLocal = (p - moonPos) / moonR;
 
-            // Crater Heightfield & Normal Perturbation for 3D Topography
-            vec2 mUV = mNorm.xy * 16.0;
-            float cBase = voronoi(mUV);
-            float cDetail = voronoi(mUV * 3.2) * 0.5;
-            float craters = (cBase + cDetail) * 0.28 + 0.72;
+            // Illustrated Craters (Charming hand-drawn circular craters)
+            float cr1 = length(mLocal - vec2(0.22, 0.18)) - 0.28;
+            float crRing1 = smoothstep(0.04, 0.0, abs(cr1)) * 0.45;
+            float crFill1 = smoothstep(0.0, -0.04, cr1) * 0.22;
 
-            // Direct Sunlight on Moon
-            float mSunDiffuse = dot(mNorm, sunDir);
-            float mDay = smoothstep(-0.05, 0.08, mSunDiffuse);
+            float cr2 = length(mLocal - vec2(-0.25, -0.22)) - 0.34;
+            float crRing2 = smoothstep(0.04, 0.0, abs(cr2)) * 0.40;
+            float crFill2 = smoothstep(0.0, -0.04, cr2) * 0.20;
 
-            // Earthshine on Moon's dark hemisphere (blue light reflected from Earth)
-            vec3 toEarth = normalize(vec3(-moonPos, 0.4));
-            float earthshine = max(0.0, dot(mNorm, toEarth)) * 0.18;
-            vec3 earthshineCol = vec3(0.12, 0.35, 0.68) * earthshine;
+            float cr3 = length(mLocal - vec2(-0.15, 0.32)) - 0.18;
+            float crRing3 = smoothstep(0.03, 0.0, abs(cr3)) * 0.42;
+            float crFill3 = smoothstep(0.0, -0.03, cr3) * 0.20;
 
-            // Dark Basaltic Lunar Maria vs Bright Anorthosite Highlands
-            float maria = smoothstep(0.45, 0.56, fbm(mNorm.xy * 6.5));
-            vec3 highlandCol = vec3(0.88, 0.87, 0.85);
-            vec3 mareCol = vec3(0.42, 0.41, 0.40);
-            vec3 moonAlbedo = mix(highlandCol, mareCol, maria) * craters;
+            vec3 moonBase = vec3(0.92, 0.91, 0.88);
+            vec3 craterDark = vec3(0.68, 0.66, 0.64);
+            vec3 moonSurface = mix(moonBase, craterDark, max(crFill1, max(crFill2, crFill3)));
+            moonSurface = mix(moonSurface, craterDark * 0.8, max(crRing1, max(crRing2, crRing3)));
 
-            vec3 moonCol = moonAlbedo * (max(0.02, mSunDiffuse) * mDay) + earthshineCol;
-            float mMask = smoothstep(moonSz, moonSz - 0.0028, moonDist);
-            color = mix(color, moonCol, mMask);
+            // 2D Cel-shade on Moon
+            float mSunDot = dot(p - moonPos, sunDir2D);
+            float mCelDay = smoothstep(-0.01, 0.015, mSunDot);
+            vec3 moonNight = moonSurface * vec3(0.22, 0.24, 0.32);
+            vec3 drawnMoon = mix(moonNight, moonSurface, mCelDay);
+
+            float mEdge = smoothstep(moonR, moonR - 0.0028, moonDist);
+            color = mix(color, drawnMoon, mEdge);
           }
 
-          // Deep cosmic void (identical to Mode 0)
-          vec3 cosmicBg = vec3(0.008, 0.010, 0.018);
+          // Gentle outer halo around moon
+          float moonHalo = exp(-abs(moonDist - moonR) * 42.0) * 0.45 * smoothstep(moonR * 0.9, moonR * 1.5, moonDist);
+          color += vec3(0.85, 0.88, 0.95) * moonHalo;
+
+          // Deep cosmic void & subtle vignette
+          vec3 cosmicBg = vec3(0.010, 0.012, 0.022);
           color = max(color, cosmicBg);
 
-          // Cinematic vignette (identical to Mode 0)
           vec2 vigUv = gl_FragCoord.xy / u_resolution.xy;
           vigUv *= (1.0 - vigUv.yx);
           float vig = clamp(vigUv.x * vigUv.y * 16.0, 0.0, 1.0);
-          color *= mix(0.72, 1.0, vig);
+          color *= mix(0.75, 1.0, vig);
 
           gl_FragColor = vec4(color, 1.0);
-
+        }
         // =========================================================================
         // MODE 2: Spiral Galaxy 3D (Hollywood AAA Cosmic Density Wave & HDR Bulge)
         // DIRECTLY SHARING BLACK HOLE RELATIVISTIC PLASMA, DOPPLER BEAMING & CAUSTICS

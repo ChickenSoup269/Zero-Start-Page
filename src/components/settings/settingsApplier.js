@@ -5728,7 +5728,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.blackHoleGlowColorPicker) {
       DOM.blackHoleGlowColorPicker.value =
-        settings.blackHoleGlowColor || "#00d2ff"
+        settings.blackHoleGlowColor || "#ffa200"
     }
     if (DOM.blackHoleStarColorPicker) {
       DOM.blackHoleStarColorPicker.value =
