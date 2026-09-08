@@ -276,22 +276,22 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
 
 Lựa chọn từ hơn 57+ hiệu ứng canvas động và shaders WebGL, cùng Bộ tạo sóng nền SVG Wave Generator:
 
-| Thiên nhiên & Vũ trụ | Kỹ thuật số & Công nghệ | Thời tiết & Mùa | Trừu tượng, Hoa văn & WebGL |
-| :--- | :--- | :--- | :--- |
-| • Đom đóm / Đom đóm HD | • Mạng lưới (Network) | • Mưa / Mưa HD / Bão | • Hào quang (Aura) |
-| • Mưa sao băng | • Mưa Ma Trận (Matrix Rain) | • Thời tiết Pixel | • Bong bóng |
-| • Tia nắng mặt trời | • Hacker Terminal | • Tuyết rơi Pixel HQ | • Sóng uốn lượn |
-| • Đèn trời | • Khối lập phương Pixel | • Tuyết rơi / Tuyết HD | • Hoa văn chéo |
-| • Sóng biển | • Chạy Pixel | • Gió thổi | • Đường nổi |
-| • Đàn cá đại dương | • Nổ hạt Pixel | • Cánh hoa anh đào | • Ánh sáng lấp lánh |
-| • Mây trôi | • Retro Terminal | • Lá mùa thu | • Nền cầu vồng |
-| • Mầm cây phát triển | • Game cổ điển | • Lá xanh rơi | • Vệt chuột / Vết loang |
-| • Sứa biển | • Quét dòng CRT | • Lá rơi đọng | • Quả cầu kính mờ *(Mới)* |
-| • Cực quang Aurora | • Quét lưới (Grid Scan) | • Thiên hà mưa | • Chất lỏng tương tác *(Mới)* |
-| • Cực quang êm dịu | • Đèn pin | • Halloween | • Cinematic Bokeh *(Mới)* |
-| • Bắc cực quang | • Xuyên không gian | • Pháo hoa Tết | • Hố đen vũ trụ *(Mới)* |
-| • Cột ánh sáng | • Logo nảy DVD | • Kỷ niệm Giải phóng | • Lưới Neon 3D *(Mới)* |
-| • Nintendo Pixel | • Sóng nhạc Bars | | • Dải lụa phát sáng |
+| Thiên nhiên & Vũ trụ   | Kỹ thuật số & Công nghệ     | Thời tiết & Mùa        | Trừu tượng, Hoa văn & WebGL   |
+| :--------------------- | :-------------------------- | :--------------------- | :---------------------------- |
+| • Đom đóm / Đom đóm HD | • Mạng lưới (Network)       | • Mưa / Mưa HD / Bão   | • Hào quang (Aura)            |
+| • Mưa sao băng         | • Mưa Ma Trận (Matrix Rain) | • Thời tiết Pixel      | • Bong bóng                   |
+| • Tia nắng mặt trời    | • Hacker Terminal           | • Tuyết rơi Pixel HQ   | • Sóng uốn lượn               |
+| • Đèn trời             | • Khối lập phương Pixel     | • Tuyết rơi / Tuyết HD | • Hoa văn chéo                |
+| • Sóng biển            | • Chạy Pixel                | • Gió thổi             | • Đường nổi                   |
+| • Đàn cá đại dương     | • Nổ hạt Pixel              | • Cánh hoa anh đào     | • Ánh sáng lấp lánh           |
+| • Mây trôi             | • Retro Terminal            | • Lá mùa thu           | • Nền cầu vồng                |
+| • Mầm cây phát triển   | • Game cổ điển              | • Lá xanh rơi          | • Vệt chuột / Vết loang       |
+| • Sứa biển             | • Quét dòng CRT             | • Lá rơi đọng          | • Quả cầu kính mờ _(Mới)_     |
+| • Cực quang Aurora     | • Quét lưới (Grid Scan)     | • Thiên hà mưa         | • Chất lỏng tương tác _(Mới)_ |
+| • Cực quang êm dịu     | • Đèn pin                   | • Halloween            | • Cinematic Bokeh _(Mới)_     |
+| • Bắc cực quang        | • Xuyên không gian          | • Pháo hoa Tết         | • Hố đen vũ trụ _(Mới)_       |
+| • Cột ánh sáng         | • Logo nảy DVD              | • Kỷ niệm Giải phóng   | • Lưới Neon 3D _(Mới)_        |
+| • Nintendo Pixel       | • Sóng nhạc Bars            |                        | • Dải lụa phát sáng           |
 
 ### Bộ tạo sóng nền SVG (SVG Wave Generator)
 
@@ -336,6 +336,7 @@ Lựa chọn từ hơn 57+ hiệu ứng canvas động và shaders WebGL, cùng 
 ## Chính sách Quyền riêng tư & Bảo mật
 
 Sự riêng tư của bạn là ưu tiên cao nhất:
+
 - **Không thu thập hay chia sẻ bất kỳ dữ liệu cá nhân nào.** Không có máy chủ theo dõi, dịch vụ phân tích hay lưu trữ từ xa.
 - **Tất cả dữ liệu được lưu trữ cục bộ ngay trong trình duyệt của bạn.** Mọi dấu trang, ghi chú, danh sách công việc, thói quen và cài đặt đều nằm an toàn trên máy tính của bạn qua `IndexedDB` và `localStorage`.
 - **Không chứa mã nguồn thực thi từ xa.** Tiện ích tuân thủ đầy đủ các tiêu chuẩn bảo mật khắt khe của Manifest V3.

@@ -277,22 +277,22 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
 
 Select from 57+ canvas-based animated effects and WebGL shaders, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Nature & Space | Digital & Tech | Weather & Seasons | Abstract, Patterns & WebGL |
-| :--- | :--- | :--- | :--- |
-| • Fireflies / HD | • Network | • Rain / HD / Storm | • Aura |
-| • Meteor Shower | • Matrix Rain | • Pixel Weather | • Bubbles |
-| • Sunbeam | • Hacker Terminal | • Pixel Snow HQ | • Wavy Lines / Pattern |
-| • Sky Lanterns | • Pixel Cubes | • Snow / Snowfall HD | • Angled Pattern |
-| • Ocean Wave | • Pixel Run | • Wind | • Floating Lines |
-| • Ocean Fishes | • Pixel Blast | • Sakura Petals | • Shiny / Line Shiny |
-| • Cloud Drift | • Retro Terminal | • Autumn Leaves | • Rainbow Background |
-| • Plant Growth | • Retro Game | • Green Leaves | • Cursor Trail / Splash |
-| • Jellyfish | • CRT Scanlines | • Settling Leaves | • Frosted Glass Orbs *(New)* |
-| • Aurora Wave | • Grid Scan | • Rain Galaxy | • Interactive Fluid *(New)* |
-| • Soft Aurora | • Flashlight | • Halloween | • Cinematic Bokeh *(New)* |
-| • Northern Lights | • Hyperspace | • Tết Fireworks | • Black Hole *(New)* |
-| • Light Pillars | • DVD Bounce | • Reunification Day | • Neon Grid 3D *(New)* |
-| • Nintendo Pixel | • Music Bars | | • Liquid Ether / Silk |
+| Nature & Space    | Digital & Tech    | Weather & Seasons    | Abstract, Patterns & WebGL   |
+| :---------------- | :---------------- | :------------------- | :--------------------------- |
+| • Fireflies / HD  | • Network         | • Rain / HD / Storm  | • Aura                       |
+| • Meteor Shower   | • Matrix Rain     | • Pixel Weather      | • Bubbles                    |
+| • Sunbeam         | • Hacker Terminal | • Pixel Snow HQ      | • Wavy Lines / Pattern       |
+| • Sky Lanterns    | • Pixel Cubes     | • Snow / Snowfall HD | • Angled Pattern             |
+| • Ocean Wave      | • Pixel Run       | • Wind               | • Floating Lines             |
+| • Ocean Fishes    | • Pixel Blast     | • Sakura Petals      | • Shiny / Line Shiny         |
+| • Cloud Drift     | • Retro Terminal  | • Autumn Leaves      | • Rainbow Background         |
+| • Plant Growth    | • Retro Game      | • Green Leaves       | • Cursor Trail / Splash      |
+| • Jellyfish       | • CRT Scanlines   | • Settling Leaves    | • Frosted Glass Orbs _(New)_ |
+| • Aurora Wave     | • Grid Scan       | • Rain Galaxy        | • Interactive Fluid _(New)_  |
+| • Soft Aurora     | • Flashlight      | • Halloween          | • Cinematic Bokeh _(New)_    |
+| • Northern Lights | • Hyperspace      | • Tết Fireworks      | • Black Hole _(New)_         |
+| • Light Pillars   | • DVD Bounce      | • Reunification Day  | • Neon Grid 3D _(New)_       |
+| • Nintendo Pixel  | • Music Bars      |                      | • Liquid Ether / Silk        |
 
 ### SVG Wave Generator
 
@@ -337,6 +337,7 @@ Select from 57+ canvas-based animated effects and WebGL shaders, plus the SVG Wa
 ## Privacy & Security Policy
 
 Your privacy and security are our highest priorities:
+
 - **No personal data is collected or transmitted.** We do not run any remote tracking servers, analytics services, or user databases.
 - **All data is processed locally within your browser.** All bookmarks, notes, todos, habits, and settings live securely on your computer in `IndexedDB` and `localStorage`.
 - **No remote code or third-party tracking scripts.** The extension complies strictly with Manifest V3 security rules.
