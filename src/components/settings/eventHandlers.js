@@ -29,6 +29,7 @@ import {
   getLanguageGuideOption,
   languageGuideOptions,
 } from "../../data/languageGuides/languageGuideOptions.js"
+import { getLanguageSvgFlag } from "../../data/languageGuides/flagIcons.js"
 import { getLanguageGuideModalText } from "../../data/languageGuides/languageGuideModalText.js"
 import {
   showAlert,
@@ -644,10 +645,10 @@ export function setupGeneralEventHandlers(
   }
 
   const SYSTEM_LANGUAGES = [
-    { code: "en", name: "English" },
-    { code: "vi", name: "Tiếng Việt" },
-    { code: "de", name: "Deutsch" },
-    { code: "sv", name: "Svenska" },
+    { code: "en", name: "English", flag: "🇬🇧" },
+    { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
+    { code: "de", name: "Deutsch", flag: "🇩🇪" },
+    { code: "sv", name: "Svenska", flag: "🇸🇪" },
   ]
 
   const renderCustomLanguageOptions = () => {
@@ -661,6 +662,7 @@ export function setupGeneralEventHandlers(
       const option = document.createElement("option")
       option.value = item.code
       option.textContent = item.name
+      option.dataset.flag = item.flag || getLanguageGuideOption(item.code)?.flag || "🌐"
       if (!BUNDLED_LANGUAGES.includes(item.code)) {
         if (isLanguageDownloaded(item.code)) {
           option.dataset.badge = "DEMO"
@@ -678,6 +680,8 @@ export function setupGeneralEventHandlers(
         option.value = code
         option.dataset.customLanguage = "true"
         option.dataset.badge = "DEMO"
+        const guide = getLanguageGuideOption(code)
+        option.dataset.flag = item?.flag || guide?.flag || "🌐"
         option.textContent = item?.name ? `${item.name} (${code})` : code
         DOM.languageSelect.appendChild(option)
       }
@@ -697,9 +701,24 @@ export function setupGeneralEventHandlers(
       Array.from(DOM.languageSelect.options).forEach((opt) => {
         const code = opt.value
         const btn = document.createElement("div")
-        btn.className = "clock-style-card compact-style-card"
+        btn.className = "clock-style-card compact-style-card lang-style-card"
         btn.dataset.value = code
         if (code === currentLang) btn.classList.add("active")
+
+        const guide = getLanguageGuideOption(code)
+        const svgFlag = getLanguageSvgFlag(code)
+        const flag = opt.dataset.flag || guide?.flag || "🌐"
+
+        const flagSpan = document.createElement("span")
+        flagSpan.className = "lang-card-flag"
+        if (svgFlag) {
+          flagSpan.innerHTML = svgFlag
+          flagSpan.classList.add("has-svg")
+        } else {
+          flagSpan.textContent = flag
+        }
+        flagSpan.setAttribute("aria-hidden", "true")
+        btn.appendChild(flagSpan)
 
         const textSpan = document.createElement("span")
         textSpan.className = "clock-style-name"
@@ -811,7 +830,7 @@ export function setupGeneralEventHandlers(
     languageGuideOptions.forEach((option) => {
       const el = document.createElement("option")
       el.value = option.code
-      el.textContent = `${option.name} - ${option.englishName}`
+      el.textContent = `${option.flag ? option.flag + " " : ""}${option.name} - ${option.englishName}`
       DOM.languageGuideTargetSelect.appendChild(el)
     })
   }
@@ -926,7 +945,13 @@ export function setupGeneralEventHandlers(
 
       const flagSpan = document.createElement("span")
       flagSpan.className = "github-lang-flag"
-      flagSpan.textContent = lang.flag || "🌐"
+      const svgFlag = getLanguageSvgFlag(lang.code)
+      if (svgFlag) {
+        flagSpan.innerHTML = svgFlag
+        flagSpan.classList.add("has-svg")
+      } else {
+        flagSpan.textContent = lang.flag || "🌐"
+      }
       infoDiv.appendChild(flagSpan)
 
       const namesDiv = document.createElement("div")
