@@ -1683,8 +1683,6 @@
   "bookmark_selected": "Ausgewählt",
   "bookmark_delete_selected_confirm": "{count} ausgewählte Lesezeichen löschen?",
   "bookmark_grouped": "Lesezeichen gruppiert",
-  "bookmark_group_renamed": "Gruppe umbenannt",
-  "bookmark_group_deleted": "Gruppe gelöscht",
   "close": "Schließen",
   "select_all": "Alle auswählen",
   "deselect_all": "Alle abwählen",

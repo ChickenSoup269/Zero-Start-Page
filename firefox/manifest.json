@@ -22,8 +22,14 @@
     "newtab": "index.html"
   },
   "background": {
-    "service_worker": "background.js",
+    "scripts": ["background.js"],
     "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "startpage@extension",
+      "strict_min_version": "109.0"
+    }
   },
   "content_scripts": [
     {
@@ -31,72 +37,46 @@
         "*://*.youtube.com/*",
         "*://*.spotify.com/*",
         "*://*.zingmp3.vn/*",
-        "*://mp3.zing.vn/*",
-        "*://soundcloud.com/*",
         "*://*.soundcloud.com/*",
         "*://music.apple.com/*",
-        "*://nhaccuatui.com/*",
         "*://*.nhaccuatui.com/*",
-        "*://nct.vn/*",
-        "*://*.nct.vn/*",
-        "*://music.youtube.com/*"
+        "*://*.nct.vn/*"
       ],
       "js": ["content-media.js"],
       "run_at": "document_end",
       "all_frames": false
     }
   ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "startpage@extension",
-      "strict_min_version": "109.0"
-    }
-  },
   "host_permissions": [
-    "https://calendar.google.com/*",
-    "https://suggestqueries.google.com/*",
+    "*://*.google.com/*",
     "*://*.youtube.com/*",
     "*://*.spotify.com/*",
     "*://*.zingmp3.vn/*",
-    "*://mp3.zing.vn/*",
-    "*://soundcloud.com/*",
     "*://*.soundcloud.com/*",
     "*://music.apple.com/*",
-    "*://nhaccuatui.com/*",
     "*://*.nhaccuatui.com/*",
-    "*://nct.vn/*",
     "*://*.nct.vn/*",
-    "*://music.youtube.com/*",
-    "*://images.google.com/*",
-    "https://api.unsplash.com/*",
-    "https://images.unsplash.com/*",
-    "https://api.open-meteo.com/*",
-    "https://geocoding-api.open-meteo.com/*",
-    "https://i.ytimg.com/*",
-    "https://i.scdn.co/*",
-    "https://api.rss2json.com/*",
-    "https://api.allorigins.win/*",
-    "https://api.codetabs.com/*",
-    "https://generativelanguage.googleapis.com/*",
-    "https://www.googleapis.com/*",
-    "https://picsum.photos/*",
-    "https://fastly.picsum.photos/*",
-    "https://loremflickr.com/*",
+    "https://*.unsplash.com/*",
+    "https://*.open-meteo.com/*",
+    "https://*.ytimg.com/*",
+    "https://*.scdn.co/*",
+    "https://*.rss2json.com/*",
+    "https://*.allorigins.win/*",
+    "https://*.codetabs.com/*",
+    "https://*.googleapis.com/*",
+    "https://*.gstatic.com/*",
+    "https://*.jsdelivr.net/*",
+    "https://*.cloudflare.com/*",
+    "https://*.picsum.photos/*",
+    "https://*.loremflickr.com/*",
     "https://*.staticflickr.com/*",
-    "https://live.staticflickr.com/*",
-    "https://api.quotable.io/*",
-    "https://api.adviceslip.com/*",
-    "https://type.fit/*",
-    "https://api.github.com/*"
+    "https://*.quotable.io/*",
+    "https://*.adviceslip.com/*",
+    "https://*.type.fit/*",
+    "https://api.github.com/*",
+    "https://*.githubusercontent.com/*"
   ],
-  "oauth2": {
-    "client_id": "222670807769-j6nqlmnp8hf9rcjiq2t5hihq2ulhclg7.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive.file",
-      "https://www.googleapis.com/auth/userinfo.profile"
-    ]
-  },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://i.ytimg.com https://i.scdn.co https://calendar.google.com https://api.unsplash.com https://images.unsplash.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://suggestqueries.google.com https://api.rss2json.com https://api.allorigins.win https://api.codetabs.com https://generativelanguage.googleapis.com https://www.googleapis.com https://picsum.photos https://fastly.picsum.photos https://loremflickr.com https://*.staticflickr.com https://live.staticflickr.com https://corsproxy.io https://translate.googleapis.com https://api.quotable.io https://api.adviceslip.com https://type.fit https://api.github.com https://raw.githubusercontent.com https://cdn.jsdelivr.net;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://*.cloudflare.com https://*.googleapis.com; font-src 'self' data: https://*.cloudflare.com https://*.gstatic.com https://*.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://*.githubusercontent.com; connect-src 'self' https://*.ytimg.com https://*.scdn.co https://*.google.com https://*.unsplash.com https://*.open-meteo.com https://*.rss2json.com https://*.allorigins.win https://*.codetabs.com https://*.googleapis.com https://*.gstatic.com https://*.picsum.photos https://*.loremflickr.com https://*.staticflickr.com https://*.corsproxy.io https://*.quotable.io https://*.adviceslip.com https://*.type.fit https://api.github.com https://*.githubusercontent.com https://*.jsdelivr.net;"
   }
 }

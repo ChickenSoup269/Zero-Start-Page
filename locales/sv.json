@@ -1759,8 +1759,6 @@
   "bookmark_selected": "Vald",
   "bookmark_delete_selected_confirm": "Radera {count} valda bokmärken?",
   "bookmark_grouped": "Bokmärken grupperade",
-  "bookmark_group_renamed": "Grupp omdöpt",
-  "bookmark_group_deleted": "Grupp raderad",
   "close": "Stäng",
   "select_all": "Välj alla",
   "deselect_all": "Avmarkera alla",
