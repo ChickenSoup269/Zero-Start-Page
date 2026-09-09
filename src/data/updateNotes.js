@@ -21,20 +21,34 @@ export const updateNotes = {
         badgeLabel: "1 report",
         note: "Bookmark layout tràn các bookmark ra viền",
       },
+      {
+        name: "Mhale",
+        project: "Zero Startpage",
+        role: "Bug Hunter",
+        badge: "1+",
+        badgeLabel: "1 report",
+        note: "New Tab bị reload khi đặt tên tag",
+      },
     ],
   },
   en: {
-    changesTitle: "**MAJOR RELEASE - BIG UPDATE 2.0.0**",
+    changesTitle: "MAJOR RELEASE - BIG UPDATE 2.0.0 | SEPTEMBER 9, 2026",
     contributorsTitle: "Contributors",
     changes: [
-      "Gemini AI & Ambient Sound Engine: Integrated a minimalist Gemini AI assistant via the search bar and a procedural ambient sound generator (thunder, birds, cafe, Doppler traffic, and 432Hz drone).",
-      "3D Clocks & Terminal Aesthetics: Introduced 3D floating glass cube clocks with volumetric pedestals, interactive tilt effects, Oh My Posh terminal style, and Split-Pill clock layouts.",
-      "Visualizers & Retro Gaming: Upgraded fluid harmonic Aurora music visualizer with real-time audio FFT capture, bioluminescent jellyfish engine, and Cyber Tetris with AI autoplay.",
-      "Modern Settings, Live Preview & LoremFlickr: Overhauled settings with TOC navigation, instant live preview sync for wallpapers/bookmarks/titles, section reset buttons, live hover QR preview, and LoremFlickr background provider.",
-      "Minimalist Update Popup & UX Polish: Redesigned the update dialog with clean dark minimalism and subtle badges, streamlined first-run onboarding, and added a Reduce Hover Animations accessibility mode.",
-      "Bookmark Stacks & Expanded i18n: Enhanced bookmark stack popups with fluid drag-and-drop, smart group collapse, Mobile PWA drawer layout, and 100% translations for German (DE) and Swedish (SV).",
-      "Performance & Smooth Interactions: Eliminated drag lag via requestAnimationFrame, snappy cubic-bezier spring widget animations, removed JS wheel hijacking, and modularized boot scripts to prevent FOUC.",
-      "UI, Calendar & Alarm Audio Fixes: Fixed calendar event form positioning against context menus, resolved music player artwork/metadata desync, aligned bookmark grids, and added Web Audio API oscillator fallback for timer alarms.",
+      "[FEAT] Integrated Gemini AI Assistant: Built-in Google Gemini assistant directly accessible via the search bar with instant shortcuts, one-click Gemini Web launcher, and a clean demo disclaimer.",
+      "[FEAT] Procedural Ambient Sound Engine: Real-time procedural ambient sound synthesizer with multi-stage audio filters for thunder, forest birds, cozy cafe, Doppler city traffic, and a 432Hz cosmic drone, plus timer sync and custom skins.",
+      "[FEAT] 3D Clocks, Terminal & Retro Aesthetics: Added 3D Floating Glass Cubes with volumetric voxel pedestals and interactive tilt, an Oh My Posh terminal clock, Split-Pill style, and a retro 8-bit Aquarium Clock with swimming fish.",
+      "[FEAT] Live FX & Ultra HD WebGL Shaders: Upgraded the astrophysics-grade 3D Gargantua Black Hole with vortex suction, Ultra HD Northern Lights, Fluid Aurora musical symphony, Ocean Wave physics, retro CRT Scanlines, and interactive Lunar New Year fireworks.",
+      "[FEAT] Advanced Audio Visualizers: Added a soothing Harp & Zither acoustic visualizer with pentatonic harmonics, continuous ECG Heartbeat visualizer, fluid Aurora waves, and real-time audio-reactive FFT frequency capture.",
+      "[FEAT] Retro Cyber Tetris Mini Game: Embedded classic Cyber Tetris running at ultra-smooth 60-144 FPS with autonomous AI autoplay mode.",
+      "[FEAT] Settings Modernization & Real-time Live Preview: Rebuilt the settings panel with smart Table of Contents, live preview sync with steppers for wallpapers, bookmarks, and titles, section reset buttons, and an integrated FontAwesome icon picker.",
+      "[FEAT] Advanced Bookmarks & Batch Import: Added Shift/Ctrl range selection for browser import, seamless drag-and-drop between Bookmark Stack Popups and the main grid, and auto-collapsing bookmark groups.",
+      "[FEAT] LoremFlickr Wallpaper Source & Dynamic M3 Palette: Added a LoremFlickr photo provider with gallery saving support and automatic Material 3 accent color extraction from music player artwork.",
+      "[FEAT] Context Menu Sync, Live QR & Squircle Design: Standardized 5-10px squircle border radii across widgets, restored live QR code hover previews, added a pure transparent skin, and added context menu size toggles with Mini Mode.",
+      "[FEAT] 100% 4-Language Localization & Mobile PWA: Full translations for VI, EN, DE, and SV with vector SVG country flags, a complete Web App Manifest, and a glass-grid Quick Access mobile drawer layout.",
+      "[PERF] Zero-Lag Performance & Modular Boot: Completely eliminated hover delays in the TOC and context menus, optimized widget dragging via requestAnimationFrame, removed JS wheel hijacking, and modularized boot scripts to prevent FOUC.",
+      "[FIX] Music, Calendar & Alarm Robustness: Correctly anchored calendar event forms next to context menus, fixed desynchronized metadata and artwork on track change, and added a Web Audio API oscillator fallback for timer alarms.",
+      "[FIX] UI Layout & Modal Centering: Perfectly centered the dark minimalist v2.0.0 update dialog, resolved live preview flickering, and fixed DOM/span tag rendering issues in the media-orb and prism-stack clocks.",
     ],
     contributors: [
       {
@@ -44,6 +58,14 @@ export const updateNotes = {
         badge: "1+",
         badgeLabel: "1 report",
         note: "Bookmark layout overflow issue where bookmarks overflow past container bounds",
+      },
+      {
+        name: "Mhale",
+        project: "Zero Startpage",
+        role: "Bug Hunter",
+        badge: "1+",
+        badgeLabel: "1 report",
+        note: "New Tab reloads when naming a tag",
       },
     ],
   },
@@ -69,6 +91,14 @@ export const updateNotes = {
         badgeLabel: "1 Bericht",
         note: "Lesezeichen-Layout-Überlauffehler, bei dem Lesezeichen über Behältergrenzen hinauslaufen",
       },
+      {
+        name: "Mhale",
+        project: "Zero Startpage",
+        role: "Fehlermelder",
+        badge: "1+",
+        badgeLabel: "1 Bericht",
+        note: "New Tab wird beim Benennen eines Tags neu geladen",
+      },
     ],
   },
   sv: {
@@ -93,10 +123,18 @@ export const updateNotes = {
         badgeLabel: "1 rapportering",
         note: "Bokmärkeslayoutöverflödefel där bokmärken överflödar över behållarens gränser",
       },
+      {
+        name: "Mhale",
+        project: "Zero Startpage",
+        role: "Felrapportör",
+        badge: "1+",
+        badgeLabel: "1 rapport",
+        note: "New Tab laddas om när ett taggnamn anges",
+      },
     ],
   },
 }
 
 export function getUpdateNotes(language) {
-  return language === "vi" ? updateNotes.vi : updateNotes.en
+  return updateNotes[language] || updateNotes.en
 }
