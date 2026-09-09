@@ -6,6 +6,7 @@ import {
 } from "./state.js"
 import { showToast } from "../utils/toast.js"
 import { showFileSelector, showChoice } from "../utils/dialog.js"
+import { geti18n } from "./i18n.js"
 
 // Default name of the file to save to Google Drive
 const DEFAULT_SYNC_FILE_NAME = "startpage_backup.json"
@@ -64,6 +65,7 @@ export const DriveSync = {
   },
 
   async toggleSync(enabled, buildPayloadFn = null) {
+    const i18n = geti18n()
     if (enabled) {
       try {
         const token = await this.getAuthToken(true)
@@ -122,12 +124,12 @@ export const DriveSync = {
               if (!payload) throw new Error("Cancelled sync payload")
               settings.googleDriveSync = true
               saveSettings(true)
-              showToast("Google Drive Sync Enabled!", "success")
+              showToast(i18n.toast_gdrive_enabled || "Google Drive Sync Enabled!", "success")
               await this.syncToDrive(payload)
             } else if (choice === "download") {
               settings.googleDriveSync = true
               saveSettings(true)
-              showToast("Google Drive Sync Enabled!", "success")
+              showToast(i18n.toast_gdrive_enabled || "Google Drive Sync Enabled!", "success")
               await this.syncFromDrive(true)
             }
           } else {
@@ -138,7 +140,7 @@ export const DriveSync = {
             }
             settings.googleDriveSync = true
             saveSettings(true)
-            showToast("Google Drive Sync Enabled!", "success")
+            showToast(i18n.toast_gdrive_enabled || "Google Drive Sync Enabled!", "success")
             await this.syncToDrive(payload)
           }
         } else {
@@ -146,7 +148,7 @@ export const DriveSync = {
         }
       } catch (error) {
         console.error("Failed to enable Drive Sync:", error)
-        showToast("Failed to connect to Google Drive", "error")
+        showToast(i18n.toast_gdrive_failed || "Failed to connect to Google Drive", "error")
         this.isEnabled = false
         await saveSettings({ googleDriveSync: false })
         throw error
@@ -157,7 +159,7 @@ export const DriveSync = {
       const settings = getSettings()
       settings.googleDriveSync = false
       saveSettings(true)
-      showToast("Google Drive Sync Disabled")
+      showToast(i18n.toast_gdrive_disabled || "Google Drive Sync Disabled")
     }
   },
 

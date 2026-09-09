@@ -698,7 +698,8 @@ export function initThemeManager(
 
       const themeName =
         themeItem.querySelector(".theme-name")?.textContent || themeKey
-      showToast(`Đã áp dụng theme: ${themeName}`, {
+      const i18n = geti18n()
+      showToast((i18n.toast_applied_theme || 'Theme applied: {name}').replace('{name}', themeName), {
         undoFn: () => {
           updateActiveUI(prevThemeKey || null)
           updateSetting("theme", prevThemeKey || null)
@@ -1150,7 +1151,7 @@ function saveUserTheme(
   const i18n = geti18n()
   const toastMsg = i18n.toast_saved_theme
     ? i18n.toast_saved_theme.replace("{name}", name)
-    : `Đã lưu chủ đề: ${name}`
+    : `Theme saved: ${name}`
   showToast(toastMsg, { type: "success" })
 
   return true
@@ -1190,7 +1191,7 @@ async function deleteUserTheme(
   // Show Toast with Undo
   const toastMsg = i18n.toast_deleted_theme
     ? i18n.toast_deleted_theme.replace("{name}", deletedTheme.name)
-    : `Đã xóa chủ đề: ${deletedTheme.name}`
+    : `Theme deleted: ${deletedTheme.name}`
 
   showToast(toastMsg, {
     undoFn: () => {
@@ -1362,7 +1363,7 @@ function saveUserStyle(
     const i18n = geti18n()
     const toastMsg = i18n.toast_saved_style
       ? i18n.toast_saved_style.replace("{name}", name)
-      : `Đã lưu style: ${name}`
+      : `Style saved: ${name}`
     showToast(toastMsg, { type: "success" })
 
     return true
@@ -1405,7 +1406,7 @@ async function deleteUserStyle(
   // Show Toast with Undo
   const toastMsg = i18n.toast_deleted_style
     ? i18n.toast_deleted_style.replace("{name}", deletedStyle.name)
-    : `Đã xóa style: ${deletedStyle.name}`
+    : `Style deleted: ${deletedStyle.name}`
 
   showToast(toastMsg, {
     undoFn: () => {

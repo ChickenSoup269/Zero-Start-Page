@@ -1374,7 +1374,8 @@ export function setupGeneralEventHandlers(
         btn.querySelector(".style-preset-name")?.textContent ||
         presetNames[presetId] ||
         presetId
-      showToast(`Style preset: ${presetName}`, {
+      const i18n = geti18n()
+      showToast(`${i18n.toast_style_preset || 'Style preset'}: ${presetName}`, {
         type: "success",
         undoFn: () => applyInterfaceStylePreset(prevPreset),
       })
@@ -2983,11 +2984,13 @@ export function setupGeneralEventHandlers(
           silent: false,
         })
         if (color) {
-          showToast(`M3 accent updated from music: ${color.toUpperCase()}`, {
+          const i18n = geti18n()
+          showToast(`${i18n.toast_m3_updated || 'M3 accent updated from music'}: ${color.toUpperCase()}`, {
             type: "success",
           })
         } else {
-          showToast("No music thumbnail currently available", {
+          const i18n = geti18n()
+          showToast(i18n.toast_m3_no_thumbnail || "No music thumbnail currently available", {
             type: "info",
           })
         }
@@ -3043,7 +3046,8 @@ export function setupGeneralEventHandlers(
           silent: true,
         })
         if (color) {
-          showToast(`M3 accent updated from music: ${color.toUpperCase()}`, {
+          const i18n = geti18n()
+          showToast(`${i18n.toast_m3_updated || 'M3 accent updated from music'}: ${color.toUpperCase()}`, {
             type: "success",
           })
         }

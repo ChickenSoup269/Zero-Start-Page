@@ -2978,7 +2978,7 @@ body.widgets-m3-accent
   height: 236px;
   min-width: unset;
   padding: 0;
-  border-radius: 50%;
+  border-radius: 50% !important;
   position: relative;
   overflow: visible !important;
   display: block;
@@ -3040,7 +3040,7 @@ body.widgets-m3-accent
   height: 92px;
   transform: translateX(-50%);
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: #080b12;
   box-shadow:

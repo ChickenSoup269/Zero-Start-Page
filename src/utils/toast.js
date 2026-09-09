@@ -1,7 +1,8 @@
 /**
  * Toast Notification + Undo System
- * Hiển thị thông báo dưới màn hình với nút "Hoàn tác" tuỳ chọn
  */
+
+import { geti18n } from "../services/i18n.js"
 
 let toastContainer = null
 let currentToast = null
@@ -17,20 +18,21 @@ function getContainer() {
 }
 
 /**
- * Hiển thị toast notification
- * @param {string} message - Nội dung thông báo
+ * Show a toast notification
+ * @param {string} message - Message text
  * @param {object} options
- * @param {function} [options.undoFn] - Hàm hoàn tác (nếu có sẽ hiện nút Hoàn tác)
- * @param {number} [options.duration=4000] - Thời gian hiển thị (ms)
- * @param {'info'|'success'|'warning'} [options.type='info'] - Loại toast
+ * @param {function} [options.undoFn] - Undo callback (shows undo button if provided)
+ * @param {number} [options.duration=4000] - Display duration in ms
+ * @param {'info'|'success'|'warning'} [options.type='info'] - Toast type
  */
 export function showToast(
   message,
   { undoFn = null, duration = 4000, type = "info" } = {},
 ) {
   const container = getContainer()
+  const i18n = geti18n()
 
-  // Xoá toast cũ nếu đang hiển thị
+  // Dismiss current toast if visible
   if (currentToast) {
     clearTimeout(currentTimer)
     currentToast.classList.remove("toast-show")
@@ -48,10 +50,12 @@ export function showToast(
   }
   const icon = iconMap[type] || iconMap.info
 
+  const undoLabel = i18n.bookmark_undo || "Undo"
+
   toast.innerHTML = `
     <i class="fa-solid ${icon} toast-icon"></i>
     <span class="toast-message">${message}</span>
-    ${undoFn ? `<button class="toast-undo-btn"><i class="fa-solid fa-rotate-left"></i> Hoàn tác</button>` : ""}
+    ${undoFn ? `<button class="toast-undo-btn"><i class="fa-solid fa-rotate-left"></i> ${undoLabel}</button>` : ""}
     <button class="toast-close-btn"><i class="fa-solid fa-xmark"></i></button>
   `
 
