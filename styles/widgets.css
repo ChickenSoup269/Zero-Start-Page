@@ -2344,7 +2344,8 @@ body.bookmark-long-text .bookmark-group-tab span {
   word-break: break-word;
 }
 
-body.bookmark-full-text .bookmark span,
+body.bookmark-full-text .bookmark:not(.bookmark-stack-popup-item) span:not(.bookmark-icon-fallback):not(.bookmark-stack-count):not(.bookmark-folder-count),
+body.bookmark-full-text .bookmark .bookmark-title,
 body.bookmark-full-text .bookmark-stack-popup .bookmark-stack-popup-label {
   white-space: normal !important;
   display: block !important;
@@ -17638,7 +17639,9 @@ body.hide-bookmark-text .bookmark-stack-popup .bookmark-stack-popup-label {
   border-radius: var(--border-radius-2, 12px) !important;
 }
 
-.bookmark-stack-popup .bookmark-stack-popup-check {
+.bookmark-stack-popup .bookmark-stack-popup-check,
+.bookmark-stack-popup:not(.is-selecting) .bookmark-stack-popup-check,
+.bookmark-stack-popup .bookmark-stack-popup-item:not(.selected) .bookmark-stack-popup-check {
   display: none !important;
   right: 6px !important;
   top: 6px !important;
