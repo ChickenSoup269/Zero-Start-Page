@@ -1038,48 +1038,49 @@ body.search-style-custom .ai-btn {
 .g-apps-menu-select-wrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 6px 12px 8px;
+  gap: 5px;
+  padding: 5px 10px 6px;
 }
 
 .g-apps-menu-select-label {
-  font-size: 11.5px;
-  font-weight: 650;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .g-apps-menu-select-label i {
-  color: #60a5fa;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
 }
 
 .g-apps-menu-provider-select {
   width: 100%;
-  padding: 7px 10px;
-  border-radius: 7px;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  font-size: 12.5px;
-  font-weight: 550;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
   outline: none;
   box-sizing: border-box;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.g-apps-menu-provider-select:hover {
-  background: rgba(0, 0, 0, 0.6);
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-.g-apps-menu-provider-select:hover {
-  background: rgba(255, 255, 255, 0.12);
+.g-apps-menu-provider-select:hover,
+.g-apps-menu-provider-select:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .g-apps-menu-provider-select option {
-  background: #252830;
+  background: #1e222d;
   color: #ffffff;
 }
 
@@ -1450,51 +1451,49 @@ body.sidebar-light .m365-field-hint {
 .g-apps-context-menu {
   position: fixed;
   z-index: 10060;
-  min-width: 236px;
-  padding: 7px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(18, 22, 32, 0.97);
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
-  box-shadow:
-    0 24px 54px rgba(0, 0, 0, 0.75),
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  min-width: 220px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 24, 33, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   animation: fadeInMenu 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: top left;
 }
 
 .g-apps-menu-title {
-  padding: 8px 12px 6px;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.74rem;
-  font-weight: 750;
+  padding: 6px 10px 4px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  font-weight: 600;
   line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
 }
 
 .g-apps-menu-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.14);
-  margin: 5px 3px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 6px;
 }
 
 .g-apps-menu-btn,
 .g-apps-menu-toggle {
   width: 100%;
-  min-height: 38px;
+  min-height: 34px;
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 6px 10px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 7px;
   background: transparent;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.85);
   font: inherit;
-  font-size: 0.85rem;
-  font-weight: 550;
+  font-size: 0.82rem;
+  font-weight: 500;
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
@@ -1504,39 +1503,38 @@ body.sidebar-light .m365-field-hint {
 
 .g-apps-menu-btn:hover,
 .g-apps-menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
 }
 
 .g-apps-menu-btn i {
-  width: 18px;
-  font-size: 0.92rem;
-  color: #60a5fa;
+  width: 16px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
   flex-shrink: 0;
-  transition: transform 0.12s ease, color 0.12s ease;
+  transition: color 0.15s ease;
 }
 
 .g-apps-menu-btn:hover i {
-  color: #93c5fd;
-  transform: scale(1.08);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .g-apps-menu-btn.danger {
-  color: #ff8585;
+  color: rgba(248, 113, 113, 0.85);
 }
 
 .g-apps-menu-btn.danger i {
-  color: #ff6b6b;
+  color: rgba(248, 113, 113, 0.75);
 }
 
 .g-apps-menu-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.24);
-  color: #ffa3a3;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
 }
 
 .g-apps-menu-btn.danger:hover i {
-  color: #ffa3a3;
+  color: #f87171;
 }
 
 .g-apps-menu-list {
@@ -1552,25 +1550,29 @@ body.sidebar-light .m365-field-hint {
 }
 
 .g-apps-menu-check {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  border-radius: 5px;
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.05);
   color: transparent;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   transition: all 0.15s ease;
 }
 
+.g-apps-menu-toggle:hover .g-apps-menu-check {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
 .g-apps-menu-toggle input:checked + .g-apps-menu-check {
-  border-color: #3b82f6;
-  background: #3b82f6;
-  color: #ffffff;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  border-color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.85);
+  color: #12151e;
+  box-shadow: none;
 }
 
 .g-apps-icon-popover {
