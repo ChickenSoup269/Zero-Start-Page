@@ -894,11 +894,79 @@ function createFolderIconEditor({
     })
   }
 
+  // ── 1. Identity Card (Icon Preview + Name & Color on top) ─────────────
+  const identityCard = document.createElement("div")
+  identityCard.className = "bookmark-folder-identity"
+
+  iconPreview = document.createElement("div")
+  iconPreview.className =
+    "bookmark-edit-icon-preview bookmark-folder-icon-preview"
+  identityCard.appendChild(iconPreview)
+
+  const identityFields = document.createElement("div")
+  identityFields.className = "bookmark-folder-identity-fields"
+
+  const nameGroup = document.createElement("label")
+  nameGroup.className = "bookmark-edit-field bookmark-folder-name-field"
+  nameGroup.innerHTML = `<span>${i18n.bookmark_folder_name || i18n.modal_title_placeholder || "Folder name"}</span>`
+  const nameInput = document.createElement("input")
+  nameInput.type = "text"
+  nameInput.value = name || ""
+  nameInput.placeholder =
+    i18n.bookmark_folder_name ||
+    i18n.modal_title_placeholder ||
+    "Folder name"
+  nameGroup.appendChild(nameInput)
+  identityFields.appendChild(nameGroup)
+
+  if (showIconColor) {
+    const iconColorGroup = document.createElement("label")
+    iconColorGroup.className =
+      "bookmark-edit-field bookmark-edit-color-field bookmark-folder-color-field"
+    iconColorGroup.innerHTML = `<span>${i18n.bookmark_group_icon_color || "Icon color"}</span>`
+    const iconColorControl = document.createElement("div")
+    iconColorControl.className = "bookmark-edit-color-control"
+    iconColorInput = document.createElement("input")
+    iconColorInput.type = "color"
+    iconColorInput.value = iconColor || "#ffffff"
+    iconColorInput.addEventListener("input", () => {
+      iconColorDirty = true
+      iconColorReset = false
+    })
+    const resetIconColorBtn = document.createElement("button")
+    resetIconColorBtn.type = "button"
+    resetIconColorBtn.className = "secondary-btn bookmark-edit-color-reset"
+    resetIconColorBtn.title = i18n.settings_reset_default || "Reset Default"
+    resetIconColorBtn.setAttribute(
+      "aria-label",
+      i18n.settings_reset_default || "Reset Default",
+    )
+    resetIconColorBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
+    resetIconColorBtn.addEventListener("click", (event) => {
+      event.preventDefault()
+      iconColorDirty = true
+      iconColorReset = true
+      iconColorInput.value = "#ffffff"
+      updatePreview()
+    })
+    iconColorControl.appendChild(iconColorInput)
+    iconColorControl.appendChild(resetIconColorBtn)
+    iconColorGroup.appendChild(iconColorControl)
+    identityFields.appendChild(iconColorGroup)
+  }
+
+  identityCard.appendChild(identityFields)
+  popover.appendChild(identityCard)
+
+  // ── 2. Icon Picker Section ──────────────────────────────────────────────
   if (allowIconEdit) {
-    iconPreview = document.createElement("div")
-    iconPreview.className =
-      "bookmark-edit-icon-preview bookmark-folder-icon-preview"
-    popover.appendChild(iconPreview)
+    const iconSection = document.createElement("div")
+    iconSection.className = "bookmark-folder-icon-section"
+
+    const iconSectionHeader = document.createElement("div")
+    iconSectionHeader.className = "bookmark-folder-section-header"
+    iconSectionHeader.innerHTML = `<i class="fa-solid fa-icons"></i><span>${i18n.bookmark_folder_choose_icon || "Choose icon"}</span>`
+    iconSection.appendChild(iconSectionHeader)
 
     let activeCategory = "all"
     let searchQuery = ""
@@ -909,7 +977,7 @@ function createFolderIconEditor({
     searchInput.placeholder =
       i18n.bookmark_folder_search_icons ||
       "Search icon (code, game, star, work)..."
-    popover.appendChild(searchInput)
+    iconSection.appendChild(searchInput)
 
     const categoryChips = document.createElement("div")
     categoryChips.className = "bookmark-folder-category-chips"
@@ -935,11 +1003,11 @@ function createFolderIconEditor({
       })
       categoryChips.appendChild(chip)
     })
-    popover.appendChild(categoryChips)
+    iconSection.appendChild(categoryChips)
 
     iconGrid = document.createElement("div")
     iconGrid.className = "bookmark-edit-icon-grid bookmark-folder-icon-grid"
-    popover.appendChild(iconGrid)
+    iconSection.appendChild(iconGrid)
 
     const renderIconGrid = () => {
       iconGrid.innerHTML = ""
@@ -979,69 +1047,24 @@ function createFolderIconEditor({
     })
 
     renderIconGrid()
-  }
 
-  const fields = document.createElement("div")
-  fields.className = "bookmark-edit-fields"
-
-  const nameGroup = document.createElement("label")
-  nameGroup.className = "bookmark-edit-field"
-  nameGroup.innerHTML = `<span>${i18n.modal_title_placeholder || "Title"}</span>`
-  const nameInput = document.createElement("input")
-  nameInput.type = "text"
-  nameInput.value = name || ""
-  nameGroup.appendChild(nameInput)
-  fields.appendChild(nameGroup)
-
-  if (allowIconEdit) {
-    const iconGroup = document.createElement("label")
-    iconGroup.className = "bookmark-edit-field"
-    iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Custom Icon (FontAwesome class or URL)"}</span>`
+    const customIconGroup = document.createElement("label")
+    customIconGroup.className =
+      "bookmark-edit-field bookmark-folder-custom-icon-field"
+    customIconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Custom Icon (FontAwesome class or URL)"}</span>`
     iconInput = document.createElement("input")
     iconInput.type = "text"
     iconInput.value = icon || ""
     iconInput.placeholder = "e.g. fa:fa-solid fa-guitar or URL"
-    iconGroup.appendChild(iconInput)
-    fields.appendChild(iconGroup)
+    customIconGroup.appendChild(iconInput)
+    iconSection.appendChild(customIconGroup)
+
+    popover.appendChild(iconSection)
   }
 
-  if (showIconColor) {
-    const iconColorGroup = document.createElement("label")
-    iconColorGroup.className = "bookmark-edit-field bookmark-edit-color-field"
-    iconColorGroup.innerHTML = `<span>${i18n.bookmark_group_icon_color || "Icon color"}</span>`
-    const iconColorControl = document.createElement("div")
-    iconColorControl.className = "bookmark-edit-color-control"
-    iconColorInput = document.createElement("input")
-    iconColorInput.type = "color"
-    iconColorInput.value = iconColor || "#ffffff"
-    iconColorInput.addEventListener("input", () => {
-      iconColorDirty = true
-      iconColorReset = false
-    })
-    const resetIconColorBtn = document.createElement("button")
-    resetIconColorBtn.type = "button"
-    resetIconColorBtn.className = "secondary-btn bookmark-edit-color-reset"
-    resetIconColorBtn.title = i18n.settings_reset_default || "Reset Default"
-    resetIconColorBtn.setAttribute(
-      "aria-label",
-      i18n.settings_reset_default || "Reset Default",
-    )
-    resetIconColorBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
-    resetIconColorBtn.addEventListener("click", (event) => {
-      event.preventDefault()
-      iconColorDirty = true
-      iconColorReset = true
-      iconColorInput.value = "#ffffff"
-      updatePreview()
-    })
-    iconColorControl.appendChild(iconColorInput)
-    iconColorControl.appendChild(resetIconColorBtn)
-    iconColorGroup.appendChild(iconColorControl)
-    fields.appendChild(iconColorGroup)
-  }
-
+  // ── 3. Actions ──────────────────────────────────────────────────────────
   const actions = document.createElement("div")
-  actions.className = "bookmark-edit-actions"
+  actions.className = "bookmark-edit-actions bookmark-folder-edit-actions"
   const cancelBtn = document.createElement("button")
   cancelBtn.type = "button"
   cancelBtn.className = "secondary-btn"
@@ -1053,8 +1076,7 @@ function createFolderIconEditor({
   saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>${i18n.modal_save || "Save"}</span>`
   actions.appendChild(cancelBtn)
   actions.appendChild(saveBtn)
-  fields.appendChild(actions)
-  popover.appendChild(fields)
+  popover.appendChild(actions)
 
   const saveFolder = () => {
     const nextName = nameInput.value.trim()

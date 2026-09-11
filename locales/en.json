@@ -1090,6 +1090,8 @@
   "bookmark_folder_icon": "Custom Icon (FontAwesome class or URL)",
   "bookmark_stack_edit": "Edit bookmark folder",
   "bookmark_group_edit": "Edit bookmark folder",
+  "bookmark_folder_name": "Folder Name",
+  "bookmark_folder_choose_icon": "Choose Icon",
   "bookmark_drag_handle_title": "Hold and drag to move layout",
   "bookmark_move_label": "Move",
   "bookmark_freemove_enable": "Enable free move (drag layout anywhere)",

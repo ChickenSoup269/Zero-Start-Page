@@ -1721,6 +1721,8 @@
   "bookmark_folder_icon": "Benutzerdefiniertes Symbol (FontAwesome-Klasse oder URL)",
   "bookmark_stack_edit": "Lesezeichenordner bearbeiten",
   "bookmark_group_edit": "Lesezeichenordner bearbeiten",
+  "bookmark_folder_name": "Ordnername",
+  "bookmark_folder_choose_icon": "Symbol auswählen",
   "bookmark_drag_handle_title": "Halten und ziehen, um Layout zu verschieben",
   "bookmark_move_label": "Verschieben",
   "bookmark_freemove_enable": "Freie Bewegung aktivieren (Layout überall hinziehen)",

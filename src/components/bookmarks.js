@@ -721,11 +721,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   renameFolderBtn.title = i18n.bookmark_stack_rename || "Folder settings"
   renameFolderBtn.innerHTML = `<i class="fa-solid fa-sliders"></i>`
   renameFolderBtn.addEventListener("click", () => {
-    const validAnchor =
-      anchor && anchor.isConnected && anchor.getBoundingClientRect().width > 0
-        ? anchor
-        : renameFolderBtn
-    openBookmarkStackEditPopover({ stack, stackIndex }, validAnchor)
+    openBookmarkStackEditPopover({ stack, stackIndex }, renameFolderBtn)
   })
 
   const closeBtn = document.createElement("button")

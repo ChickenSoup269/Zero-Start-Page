@@ -1090,6 +1090,8 @@
   "bookmark_folder_icon": "Icon tùy chỉnh (FontAwesome class hoặc URL)",
   "bookmark_stack_edit": "Chỉnh sửa thư mục bookmark",
   "bookmark_group_edit": "Chỉnh sửa thư mục bookmark",
+  "bookmark_folder_name": "Tên thư mục",
+  "bookmark_folder_choose_icon": "Chọn biểu tượng",
   "bookmark_drag_handle_title": "Giữ và kéo để di chuyển layout",
   "bookmark_move_label": "Di chuyển",
   "bookmark_freemove_enable": "Bật di chuyển tự do (kéo layout bất kỳ đâu)",

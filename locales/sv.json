@@ -1797,6 +1797,8 @@
   "bookmark_folder_icon": "Anpassad ikon (FontAwesome-klass eller URL)",
   "bookmark_stack_edit": "Redigera bokmärkesmapp",
   "bookmark_group_edit": "Redigera bokmärkesmapp",
+  "bookmark_folder_name": "Mappnamn",
+  "bookmark_folder_choose_icon": "Välj ikon",
   "bookmark_drag_handle_title": "Håll och dra för att flytta layout",
   "bookmark_move_label": "Flytta",
   "bookmark_freemove_enable": "Aktivera fri rörelse (dra layout varsomhelst)",

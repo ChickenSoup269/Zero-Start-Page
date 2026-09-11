@@ -579,6 +579,65 @@
   animation: contextMenuFadeIn 0.12s ease-out;
 }
 
+.bookmark-folder-edit-popover {
+  width: min(390px, calc(100vw - 24px));
+}
+
+.bookmark-folder-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.bookmark-folder-identity .bookmark-folder-icon-preview {
+  margin: 0;
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  font-size: 1.55rem;
+}
+
+.bookmark-folder-identity-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bookmark-folder-icon-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bookmark-folder-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.bookmark-folder-section-header i {
+  color: var(--accent-color, #a8c0ff);
+  font-size: 0.82rem;
+}
+
+.bookmark-folder-custom-icon-field {
+  margin-top: 2px;
+}
+
 .bookmark-edit-popover-title {
   display: flex;
   align-items: center;
@@ -946,6 +1005,58 @@ body.context-menu-light .bookmark-edit-icon-preview i,
 body.context-menu-light-transparent .bookmark-edit-icon-preview i,
 body.context-menu-macos .bookmark-edit-icon-preview i {
   color: var(--folder-edit-icon-color, color-mix(in srgb, var(--accent-color, #2563eb) 80%, #0f172a));
+}
+
+/* Folder Identity Card & Section Header */
+body.context-menu-light .bookmark-folder-identity,
+body.context-menu-light-transparent .bookmark-folder-identity,
+body.context-menu-macos .bookmark-folder-identity {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.context-menu-light .bookmark-folder-icon-section,
+body.context-menu-light-transparent .bookmark-folder-icon-section,
+body.context-menu-macos .bookmark-folder-icon-section {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+body.context-menu-light .bookmark-folder-section-header,
+body.context-menu-light-transparent .bookmark-folder-section-header,
+body.context-menu-macos .bookmark-folder-section-header {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+/* Folder Category Chips */
+body.context-menu-light .bookmark-folder-chip,
+body.context-menu-light-transparent .bookmark-folder-chip,
+body.context-menu-macos .bookmark-folder-chip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #334155;
+}
+
+body.context-menu-light .bookmark-folder-chip:hover,
+body.context-menu-light-transparent .bookmark-folder-chip:hover,
+body.context-menu-macos .bookmark-folder-chip:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #0f172a;
+}
+
+body.context-menu-light .bookmark-folder-chip.active,
+body.context-menu-light-transparent .bookmark-folder-chip.active,
+body.context-menu-macos .bookmark-folder-chip.active {
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.14);
+  border-color: var(--accent-color, #2563eb);
+  color: var(--accent-color, #2563eb);
+}
+
+body.context-menu-light .bookmark-folder-icon-search,
+body.context-menu-light-transparent .bookmark-folder-icon-search,
+body.context-menu-macos .bookmark-folder-icon-search {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.13);
+  color: #0f172a;
 }
 
 /* Icon Grid & Buttons */
