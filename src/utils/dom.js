@@ -1733,6 +1733,11 @@ export let showSearchAiIconCheckbox = document.getElementById(
   "show-search-ai-icon-checkbox",
 )
 export let searchEngineSelect = document.getElementById("search-engine-select")
+export let searchBarStyleSelect = document.getElementById("search-bar-style-select")
+export let searchBgColorPicker = document.getElementById("search-bg-color-picker")
+export let searchTextColorPicker = document.getElementById("search-text-color-picker")
+export let searchBorderColorPicker = document.getElementById("search-border-color-picker")
+export let searchBarCustomPlaceholder = document.getElementById("search-bar-custom-placeholder")
 export let searchBarWidthSlider = document.getElementById(
   "search-bar-width-slider",
 )
@@ -1813,6 +1818,7 @@ export let lcpHideChromeBookmarksRow = document.getElementById(
   "lcp-hide-chrome-bookmarks-row",
 )
 export let lcpGhostControls = document.getElementById("lcp-ghost-controls")
+export let lcpBrowserZoom = document.getElementById("lcp-browser-zoom")
 export let lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",
 )
@@ -3791,6 +3797,11 @@ export function refreshDOMReferences() {
     "show-search-ai-icon-checkbox",
   )
   searchEngineSelect = document.getElementById("search-engine-select")
+  searchBarStyleSelect = document.getElementById("search-bar-style-select")
+  searchBgColorPicker = document.getElementById("search-bg-color-picker")
+  searchTextColorPicker = document.getElementById("search-text-color-picker")
+  searchBorderColorPicker = document.getElementById("search-border-color-picker")
+  searchBarCustomPlaceholder = document.getElementById("search-bar-custom-placeholder")
   searchBarWidthSlider = document.getElementById("search-bar-width-slider")
   searchBarWidthVal = document.getElementById("search-bar-width-val")
   searchBarBlurSlider = document.getElementById("search-bar-blur-slider")
@@ -3849,6 +3860,7 @@ export function refreshDOMReferences() {
     "lcp-hide-chrome-bookmarks-row",
   )
   lcpGhostControls = document.getElementById("lcp-ghost-controls")
+  lcpBrowserZoom = document.getElementById("lcp-browser-zoom")
   lcpMusicStyleSelect = document.getElementById("lcp-music-style-select")
   lcpQuickAccessButtonRadius = document.getElementById(
     "lcp-quick-access-button-radius",

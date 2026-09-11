@@ -31,6 +31,7 @@ import {
 import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
+  applyBrowserZoom,
 } from "./services/firstRun.js"
 import { initPerfHud } from "./utils/perfHud.js"
 import { DriveSync } from "./services/googleDriveSync.js"
@@ -149,6 +150,13 @@ async function bootstrap() {
   const currentSettings = getSettings()
   applyBootVisualPreview(currentSettings)
 
+  if (
+    currentSettings.browserZoomFactor &&
+    Math.abs(Number(currentSettings.browserZoomFactor) - 1.0) > 0.001
+  ) {
+    applyBrowserZoom(Number.parseFloat(currentSettings.browserZoomFactor))
+  }
+
   const minimumStartupLoaderMs = isFirstRunOnboardingPending() ? 1600 : 400
 
   // ── 1. Language (blocks everything else) ──────────────────────────────────
@@ -232,7 +240,7 @@ async function bootstrap() {
     document.getElementById("bookmark-widget"),
     "bookmarkWidget",
     null,
-    ".bookmark-widget-drag-handle, .bookmark-toolbar-handle, #bookmark-widget-drag-handle",
+    ".bookmark-widget-drag-handle, .bookmark-toolbar-handle, #bookmark-widget-drag-handle, .bookmark-layout-toolbar",
   )
 
   // ── 12. Context menus ─────────────────────────────────────────────────────

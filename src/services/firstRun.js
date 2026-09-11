@@ -14,6 +14,7 @@ import {
   showChoiceConfirm,
   showPrompt,
 } from "../utils/dialog.js"
+import { showToast } from "../utils/toast.js"
 import {
   switchSettingsTab,
   switchBgSubTab,
@@ -25,6 +26,7 @@ const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
 const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
 const FIRST_RUN_LAYOUT_KEY = "startpageFirstRunBookmarkLayoutV1"
+const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const FIRST_RUN_SETTINGS_GUIDE_KEY = "startpageFirstRunSettingsGuideV1"
@@ -93,6 +95,7 @@ export function prepareFirstRunDefaults() {
     FIRST_RUN_LANGUAGE_KEY,
     FIRST_RUN_NAME_KEY,
     FIRST_RUN_LAYOUT_KEY,
+    FIRST_RUN_ZOOM_KEY,
     FIRST_RUN_OPEN_SOURCE_KEY,
     FIRST_RUN_IMPORT_KEY,
     FIRST_RUN_SETTINGS_GUIDE_KEY,
@@ -583,6 +586,14 @@ async function promptFirstRunBookmarkLayout(renderBookmarks) {
       icon: "fa-solid fa-table-cells",
     },
     {
+      key: "draggable-grid",
+      label: i18n.layout_draggable_grid || "Draggable Grid",
+      description:
+        i18n.layout_draggable_grid_desc ||
+        "Freely drag and arrange bookmarks anywhere on the screen.",
+      icon: "fa-solid fa-up-down-left-right",
+    },
+    {
       key: "taskbar",
       label: i18n.first_run_style_dock || "Taskbar (Bottom Center)",
       description:
@@ -638,6 +649,7 @@ async function promptFirstRunBookmarkLayout(renderBookmarks) {
     "bookmark-taskbar-top-mode",
     "bookmark-taskbar-left-mode",
     "bookmark-taskbar-right-mode",
+    "bookmark-draggable-grid-mode",
   ]
   document.body.classList.remove(...layoutClasses)
   if (layout !== "default") {
@@ -656,6 +668,94 @@ async function promptFirstRunBookmarkLayout(renderBookmarks) {
     }),
   )
   localStorage.setItem(FIRST_RUN_LAYOUT_KEY, layout)
+}
+
+export async function applyBrowserZoom(zoomFactor) {
+  const factor = Number.parseFloat(zoomFactor) || 1.0
+  let applied = false
+  if (
+    typeof chrome !== "undefined" &&
+    chrome.tabs &&
+    typeof chrome.tabs.setZoom === "function"
+  ) {
+    try {
+      const tab = await new Promise((resolve) => {
+        if (typeof chrome.tabs.getCurrent === "function") {
+          chrome.tabs.getCurrent((t) => resolve(t))
+        } else {
+          resolve(null)
+        }
+      })
+      if (tab && typeof tab.id === "number") {
+        await chrome.tabs.setZoom(tab.id, factor)
+      } else {
+        await chrome.tabs.setZoom(factor)
+      }
+      applied = true
+      document.documentElement.style.zoom = ""
+    } catch (e) {
+      console.warn("chrome.tabs.setZoom failed, falling back to CSS zoom", e)
+    }
+  }
+  if (!applied) {
+    if (Math.abs(factor - 1.0) > 0.001) {
+      document.documentElement.style.zoom = `${factor * 100}%`
+    } else {
+      document.documentElement.style.zoom = ""
+    }
+  }
+}
+
+async function promptFirstRunBrowserZoom() {
+  if (localStorage.getItem(FIRST_RUN_ZOOM_KEY)) return
+
+  const i18n = geti18n()
+  const title = `
+    <span style="display:inline-flex;align-items:center;gap:8px;">
+      <i class="fa-solid fa-magnifying-glass-plus" style="color:var(--accent-color);"></i>
+      <span>${escapeHtml(i18n.first_run_zoom_title || "Browser Zoom Recommendation")}</span>
+    </span>
+  `
+
+  const message = `
+    <div class="first-run-zoom-tip">
+      <p class="first-run-zoom-lead">${escapeHtml(
+        i18n.first_run_zoom_prompt ||
+          "Zero Start Page looks best and most balanced at 75% – 90% browser zoom, with 80% being the recommended sweet spot.",
+      )}</p>
+      <div class="first-run-zoom-options">
+        <div class="first-run-zoom-card">
+          <span class="zoom-percent">75%</span>
+          <span>${escapeHtml(i18n.first_run_zoom_compact || "Compact")}</span>
+        </div>
+        <div class="first-run-zoom-card recommended">
+          <span class="zoom-percent">80%</span>
+          <span>${escapeHtml(i18n.first_run_zoom_balanced || "Recommended")}</span>
+        </div>
+        <div class="first-run-zoom-card">
+          <span class="zoom-percent">90%</span>
+          <span>${escapeHtml(i18n.first_run_zoom_large || "Larger")}</span>
+        </div>
+      </div>
+      <div class="first-run-zoom-shortcuts">
+        <span class="zoom-key"><kbd>Ctrl</kbd> + <kbd>-</kbd></span>
+        <span class="zoom-key"><kbd>Ctrl</kbd> + <kbd>+</kbd></span>
+        <span class="zoom-key zoom-wheel"><kbd>Ctrl</kbd> + <i class="fa-solid fa-computer-mouse zoom-key-icon"></i> ${escapeHtml(i18n.first_run_zoom_wheel || "Mouse wheel")}</span>
+      </div>
+      <div class="first-run-zoom-note">${escapeHtml(
+        i18n.first_run_zoom_note ||
+          "You can adjust the zoom level anytime using browser shortcuts or from Layout Controls.",
+      )}</div>
+    </div>
+  `
+
+  await showAlert(message, title, {
+    icon: null,
+    okText: i18n.first_run_zoom_btn || i18n.got_it || "Got it",
+    dialogClass: "zoom-tip-dialog",
+  })
+
+  localStorage.setItem(FIRST_RUN_ZOOM_KEY, "shown")
 }
 
 
@@ -710,10 +810,27 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Manage and access your favorite websites easily with 6 flexible layout modes.",
       features: [
         i18n.first_run_tour_bookmarks_f1 || "Drag & drop to organize your favorite shortcuts freely",
-        i18n.first_run_tour_bookmarks_f2 || "6 layout options: Grid, Taskbar Dock, Sidebar folder tree...",
+        i18n.first_run_tour_bookmarks_f2 || "7 layout options: Grid, Draggable Grid, Taskbar Dock, Sidebar folder tree...",
         i18n.first_run_tour_bookmarks_f3 || "Right-click bookmarks for instant edit, icon styling, and options",
       ],
       placement: "bottom",
+      skipSidebarScroll: true,
+    },
+    {
+      chapterId: "overview",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      selector: "#quick-access-bar",
+      icon: "fa-solid fa-cubes",
+      title: i18n.first_run_tour_quick_access_title || "Quick Access & Layout Controls",
+      text:
+        i18n.first_run_tour_quick_access_desc ||
+        "Instant sidebar bar for built-in productivity widgets and on-the-fly layout customizer.",
+      features: [
+        i18n.first_run_tour_quick_access_f1 || "Built-in widgets: Todo, Notepad, Calendar, Weather, Music, Habits, RSS, Timer",
+        i18n.first_run_tour_quick_access_f2 || "Layout Controls button lets you switch layouts and toggle features in 1 click",
+        i18n.first_run_tour_quick_access_f3 || "Drag and drop icons to reorder, or collapse the bar for a minimal look",
+      ],
+      placement: "top",
       skipSidebarScroll: true,
     },
     {
@@ -1428,10 +1545,9 @@ async function finishFirstRunGuide() {
     !localStorage.getItem(FIRST_RUN_GUIDE_CONGRATS_KEY)
   ) {
     const i18n = geti18n()
-    await showAlert(
-      i18n.first_run_guide_congrats_message ||
-        "You're ready to use Zero Start Page. You can replay this guide anytime from Settings > Layout & Features.",
-      i18n.first_run_guide_congrats_title || "You're all set!",
+    showToast(
+      i18n.first_run_guide_congrats_title || "You're all set! Enjoy Zero Start Page 🎉",
+      { type: "success", duration: 5000 },
     )
     localStorage.setItem(FIRST_RUN_GUIDE_CONGRATS_KEY, "shown")
   }
@@ -1450,16 +1566,13 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   await promptFirstRunLanguage()
   await promptFirstRunUserName()
   await promptFirstRunBookmarkLayout(renderBookmarks)
+  await promptFirstRunBrowserZoom()
+
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
-    await showAlert(
-      (
-        i18n.first_run_open_source_message ||
-        'Zero Start Page is open source. You can view the project at <a href="{url}" target="_blank" rel="noopener noreferrer">GitHub</a>. If you find a bug or have a suggestion, you can open an issue here: <a href="{issuesUrl}" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.'
-      )
-        .replace("{url}", REPO_URL)
-        .replace("{issuesUrl}", REPO_ISSUES_URL),
-      i18n.first_run_open_source_title || "Open source",
+    showToast(
+      `Zero Start Page is open source on <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-color, #4facfe);text-decoration:underline;font-weight:600;">GitHub</a>.`,
+      { type: "info", duration: 6000 },
     )
     localStorage.setItem(FIRST_RUN_OPEN_SOURCE_KEY, "shown")
   }
@@ -1481,10 +1594,6 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
 
     if (!importOptions.length) {
       localStorage.setItem(FIRST_RUN_IMPORT_KEY, "empty")
-      await showAlert(
-        i18n.first_run_import_bookmarks_none ||
-          "No new Chrome bookmarks were found.",
-      )
       await finishFirstRunGuide()
       return
     }
@@ -1544,10 +1653,6 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
       0,
     )
     if (!importedCount) {
-      await showAlert(
-        i18n.first_run_import_bookmarks_none ||
-          "No new Chrome bookmarks were found.",
-      )
       await finishFirstRunGuide()
       return
     }
@@ -1561,18 +1666,20 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
     saveBookmarks()
     renderBookmarks?.()
 
-    await showAlert(
+    showToast(
       (
         i18n.first_run_import_bookmarks_success ||
         "Imported {count} bookmarks from Chrome."
       ).replace("{count}", importedCount),
+      { type: "success", duration: 4000 },
     )
     await finishFirstRunGuide()
   } catch (error) {
     console.error("First-run bookmark import failed:", error)
-    await showAlert(
+    showToast(
       i18n.first_run_import_bookmarks_error ||
         "Could not import Chrome bookmarks right now.",
+      { type: "warning", duration: 4000 },
     )
     await finishFirstRunGuide()
   }

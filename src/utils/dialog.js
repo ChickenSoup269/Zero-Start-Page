@@ -40,21 +40,25 @@ function closeDialog() {
 }
 
 // Custom Alert
-export function showAlert(message, title = null) {
+export function showAlert(message, title = null, options = {}) {
   return new Promise((resolve) => {
     const container = createDialogContainer()
     const i18n = geti18n()
+    const icon =
+      options.icon !== undefined ? options.icon : "fa-solid fa-circle-info"
+    const okText = options.okText || i18n.ok || "OK"
+    const dialogClass = options.dialogClass ? ` ${options.dialogClass}` : ""
 
     container.innerHTML = `
-      <div class="custom-dialog custom-alert">
+      <div class="custom-dialog custom-alert${dialogClass}">
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
-          <i class="fa-solid fa-circle-info dialog-icon"></i>
+          ${icon ? `<i class="${icon} dialog-icon"></i>` : ""}
           <div class="dialog-message">${message}</div>
         </div>
         <div class="dialog-footer">
           <button class="dialog-btn dialog-btn-primary" id="alert-ok">
-            ${i18n.ok || "OK"}
+            ${okText}
           </button>
         </div>
       </div>

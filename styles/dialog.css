@@ -527,6 +527,23 @@
   line-height: 1.45;
 }
 
+.custom-dialog.zoom-tip-dialog {
+  max-width: min(480px, 94vw);
+}
+
+.custom-dialog.zoom-tip-dialog .dialog-body {
+  padding: 18px 22px 10px;
+  text-align: left;
+}
+
+.custom-dialog.zoom-tip-dialog .dialog-message {
+  margin-bottom: 0;
+}
+
+.custom-dialog.zoom-tip-dialog .dialog-footer {
+  padding: 12px 22px 18px;
+}
+
 .first-run-tour-overlay {
   position: fixed;
   inset: 0;

@@ -2538,6 +2538,32 @@ function createApplySettings(effectInstances) {
       `${settings.searchBarRadius ?? 20}px`,
     )
 
+    const searchStyle = settings.searchBarStyle || "glass"
+    document.body.classList.remove(
+      "search-style-glass",
+      "search-style-glow",
+      "search-style-aurora",
+      "search-style-sunset",
+      "search-style-minimal",
+      "search-style-oled",
+      "search-style-custom",
+    )
+    document.body.classList.add(`search-style-${searchStyle}`)
+    if (searchStyle === "custom") {
+      document.documentElement.style.setProperty(
+        "--search-custom-bg",
+        settings.searchBarBgColor || "#1a1d24",
+      )
+      document.documentElement.style.setProperty(
+        "--search-custom-text",
+        settings.searchBarTextColor || "#ffffff",
+      )
+      document.documentElement.style.setProperty(
+        "--search-custom-border",
+        settings.searchBarBorderColor || "#6366f1",
+      )
+    }
+
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
       "--bookmark-font-size",
@@ -5019,6 +5045,9 @@ function createUpdateSettingsInputs(effectInstances) {
           freeMoveLcp.checked = settings.freeMoveBookmarks === true
         }
       }
+      if (DOM.lcpBrowserZoom && settings.browserZoomFactor !== undefined) {
+        DOM.lcpBrowserZoom.value = String(settings.browserZoomFactor)
+      }
       if (DOM.bookmarkLayoutBgStyle) {
         DOM.bookmarkLayoutBgStyle.value =
           settings.bookmarkLayoutBgStyle || "default"
@@ -6815,7 +6844,31 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     if (DOM.searchEngineSelect) {
-      DOM.searchEngineSelect.value = settings.searchEngine || "google"
+      DOM.searchEngineSelect.value = settings.searchEngine || "default"
+    }
+    if (DOM.searchBarStyleSelect) {
+      DOM.searchBarStyleSelect.value = settings.searchBarStyle || "glass"
+    }
+    const searchCustomWrap = document.getElementById(
+      "search-bar-custom-colors-wrap",
+    )
+    if (searchCustomWrap) {
+      searchCustomWrap.style.display =
+        settings.searchBarStyle === "custom" ? "block" : "none"
+    }
+    if (DOM.searchBgColorPicker) {
+      DOM.searchBgColorPicker.value = settings.searchBarBgColor || "#1a1d24"
+    }
+    if (DOM.searchTextColorPicker) {
+      DOM.searchTextColorPicker.value = settings.searchBarTextColor || "#ffffff"
+    }
+    if (DOM.searchBorderColorPicker) {
+      DOM.searchBorderColorPicker.value =
+        settings.searchBarBorderColor || "#6366f1"
+    }
+    if (DOM.searchBarCustomPlaceholder) {
+      DOM.searchBarCustomPlaceholder.value =
+        settings.searchBarCustomPlaceholder || ""
     }
     if (DOM.searchBarWidthSlider) {
       DOM.searchBarWidthSlider.value = settings.searchBarWidth || 750

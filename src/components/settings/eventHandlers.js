@@ -57,6 +57,7 @@ import {
   scrollToSidebarElement,
 } from "./sidebarNavigation.js"
 import { initLcpCustomDropdowns } from "../../utils/lcpDropdowns.js"
+import { applyBrowserZoom } from "../../services/firstRun.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -4363,6 +4364,15 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.lcpBrowserZoom) {
+      DOM.lcpBrowserZoom.value = String(getSettings().browserZoomFactor ?? "1")
+      DOM.lcpBrowserZoom.addEventListener("change", () => {
+        const factor = Number.parseFloat(DOM.lcpBrowserZoom.value) || 1.0
+        throttleSettingUpdate("browserZoomFactor", factor)
+        applyBrowserZoom(factor)
+      })
+    }
+
     // Wire up Draggable Grid lock toggle
     const lcpDraggableGridLock = document.getElementById("lcp-draggable-grid-lock")
     if (lcpDraggableGridLock) {
@@ -8487,6 +8497,52 @@ export function setupGeneralEventHandlers(
       window.dispatchEvent(
         new CustomEvent("settingsUpdated", {
           detail: { key: "searchEngine", value: e.target.value },
+        }),
+      )
+    })
+  }
+
+  if (DOM.searchBarStyleSelect) {
+    DOM.searchBarStyleSelect.addEventListener("change", (e) => {
+      const val = e.target.value
+      updateSetting("searchBarStyle", val)
+      const wrap = document.getElementById("search-bar-custom-colors-wrap")
+      if (wrap) wrap.style.display = val === "custom" ? "block" : "none"
+      handleSettingUpdate("searchBarStyle", val)
+    })
+  }
+
+  if (DOM.searchBgColorPicker) {
+    DOM.searchBgColorPicker.addEventListener("input", (e) => {
+      const val = e.target.value
+      document.documentElement.style.setProperty("--search-custom-bg", val)
+      handleSettingUpdate("searchBarBgColor", val)
+    })
+  }
+
+  if (DOM.searchTextColorPicker) {
+    DOM.searchTextColorPicker.addEventListener("input", (e) => {
+      const val = e.target.value
+      document.documentElement.style.setProperty("--search-custom-text", val)
+      handleSettingUpdate("searchBarTextColor", val)
+    })
+  }
+
+  if (DOM.searchBorderColorPicker) {
+    DOM.searchBorderColorPicker.addEventListener("input", (e) => {
+      const val = e.target.value
+      document.documentElement.style.setProperty("--search-custom-border", val)
+      handleSettingUpdate("searchBarBorderColor", val)
+    })
+  }
+
+  if (DOM.searchBarCustomPlaceholder) {
+    DOM.searchBarCustomPlaceholder.addEventListener("input", (e) => {
+      const val = e.target.value
+      handleSettingUpdate("searchBarCustomPlaceholder", val)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarCustomPlaceholder", value: val },
         }),
       )
     })
