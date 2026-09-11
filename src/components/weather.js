@@ -30,28 +30,48 @@ const WEATHER_API_PARAM_KEYS = {
   geocoding: ["name", "count", "language", "format"],
 }
 
+function makeWeatherCode(icon, nightIcon, theme, en, vi, de, sv) {
+  const entry = [icon, en, vi]
+  return Object.assign(entry, {
+    icon,
+    nightIcon: nightIcon || icon,
+    theme,
+    en,
+    vi,
+    de: de || en,
+    sv: sv || en,
+  })
+}
+
 const WEATHER_CODES = {
-  0: ["sun", "Clear sky", "Trời quang"],
-  1: ["cloud-sun", "Mainly clear", "Ít mây"],
-  2: ["cloud-sun", "Partly cloudy", "Có mây"],
-  3: ["cloud", "Overcast", "Nhiều mây"],
-  45: ["smog", "Fog", "Sương mù"],
-  48: ["smog", "Depositing rime fog", "Sương mù đóng băng"],
-  51: ["cloud-rain", "Light drizzle", "Mưa phùn nhẹ"],
-  53: ["cloud-rain", "Drizzle", "Mưa phùn"],
-  55: ["cloud-rain", "Dense drizzle", "Mưa phùn dày"],
-  61: ["cloud-showers-heavy", "Light rain", "Mưa nhẹ"],
-  63: ["cloud-showers-heavy", "Rain", "Mưa"],
-  65: ["cloud-showers-heavy", "Heavy rain", "Mưa lớn"],
-  71: ["snowflake", "Light snow", "Tuyết nhẹ"],
-  73: ["snowflake", "Snow", "Tuyết"],
-  75: ["snowflake", "Heavy snow", "Tuyết lớn"],
-  80: ["cloud-sun-rain", "Light showers", "Mưa rào nhẹ"],
-  81: ["cloud-sun-rain", "Showers", "Mưa rào"],
-  82: ["cloud-showers-heavy", "Heavy showers", "Mưa rào lớn"],
-  95: ["cloud-bolt", "Thunderstorm", "Dông"],
-  96: ["cloud-bolt", "Thunderstorm with hail", "Dông kèm mưa đá"],
-  99: ["cloud-bolt", "Heavy thunderstorm with hail", "Dông mạnh kèm mưa đá"],
+  0: makeWeatherCode("sun", "moon", "sunny", "Clear sky", "Trời quang", "Klarer Himmel", "Klar himmel"),
+  1: makeWeatherCode("cloud-sun", "cloud-moon", "partly-cloudy", "Mainly clear", "Ít mây", "Überwiegend klar", "Mestadels klart"),
+  2: makeWeatherCode("cloud-sun", "cloud-moon", "partly-cloudy", "Partly cloudy", "Có mây", "Teilweise bewölkt", "Halvklart"),
+  3: makeWeatherCode("cloud", "cloud", "cloudy", "Overcast", "Nhiều mây", "Bedeckt", "Mulet"),
+  45: makeWeatherCode("smog", "smog", "fog", "Fog", "Sương mù", "Nebel", "Dimma"),
+  48: makeWeatherCode("smog", "smog", "fog", "Depositing rime fog", "Sương mù đóng băng", "Raureifnebel", "Rimfrostdimma"),
+  51: makeWeatherCode("cloud-rain", "cloud-rain", "drizzle", "Light drizzle", "Mưa phùn nhẹ", "Leichter Nieselregen", "Lätt duggregn"),
+  53: makeWeatherCode("cloud-rain", "cloud-rain", "drizzle", "Drizzle", "Mưa phùn", "Nieselregen", "Duggregn"),
+  55: makeWeatherCode("cloud-rain", "cloud-rain", "drizzle", "Dense drizzle", "Mưa phùn dày", "Dichter Nieselregen", "Tätt duggregn"),
+  56: makeWeatherCode("snowflake", "snowflake", "snow", "Freezing drizzle", "Mưa phùn băng giá", "Gefrierender Nieselregen", "Underkylt duggregn"),
+  57: makeWeatherCode("snowflake", "snowflake", "snow", "Dense freezing drizzle", "Mưa phùn băng giá dày", "Dichter gefrierender Nieselregen", "Tätt underkylt duggregn"),
+  61: makeWeatherCode("cloud-rain", "cloud-rain", "rain", "Light rain", "Mưa nhẹ", "Leichter Regen", "Lätt regn"),
+  63: makeWeatherCode("cloud-showers-heavy", "cloud-showers-heavy", "rain", "Rain", "Mưa", "Regen", "Regn"),
+  65: makeWeatherCode("cloud-showers-heavy", "cloud-showers-heavy", "heavy-rain", "Heavy rain", "Mưa lớn", "Starker Regen", "Kraftigt regn"),
+  66: makeWeatherCode("snowflake", "snowflake", "snow", "Freezing rain", "Mưa đóng băng", "Gefrierender Regen", "Underkylt regn"),
+  67: makeWeatherCode("snowflake", "snowflake", "snow", "Heavy freezing rain", "Mưa đóng băng dữ dội", "Starker gefrierender Regen", "Kraftigt underkylt regn"),
+  71: makeWeatherCode("snowflake", "snowflake", "snow", "Light snow", "Tuyết nhẹ", "Leichter Schneefall", "Lätt snöfall"),
+  73: makeWeatherCode("snowflake", "snowflake", "snow", "Snow", "Tuyết", "Schnee", "Snöfall"),
+  75: makeWeatherCode("snowflake", "snowflake", "snow", "Heavy snow", "Tuyết lớn", "Starker Schneefall", "Kraftigt snöfall"),
+  77: makeWeatherCode("snowflake", "snowflake", "snow", "Snow grains", "Mưa tuyết", "Schneegriesel", "Kornsnö"),
+  80: makeWeatherCode("cloud-sun-rain", "cloud-moon-rain", "rain", "Light showers", "Mưa rào nhẹ", "Leichte Schauer", "Lätta skurar"),
+  81: makeWeatherCode("cloud-sun-rain", "cloud-moon-rain", "rain", "Showers", "Mưa rào", "Regenschauer", "Regnskurar"),
+  82: makeWeatherCode("cloud-showers-heavy", "cloud-showers-heavy", "heavy-rain", "Heavy showers", "Mưa rào lớn", "Starke Schauer", "Kraftiga regnskurar"),
+  85: makeWeatherCode("snowflake", "snowflake", "snow", "Snow showers", "Mưa rào tuyết", "Schneeschauer", "Snöbyar"),
+  86: makeWeatherCode("snowflake", "snowflake", "snow", "Heavy snow showers", "Mưa rào tuyết lớn", "Starke Schneeschauer", "Kraftiga snöbyar"),
+  95: makeWeatherCode("cloud-bolt", "cloud-bolt", "storm", "Thunderstorm", "Dông", "Gewitter", "Åskväder"),
+  96: makeWeatherCode("cloud-bolt", "cloud-bolt", "storm", "Thunderstorm with hail", "Dông kèm mưa đá", "Gewitter mit Hagel", "Åska med hagel"),
+  99: makeWeatherCode("cloud-bolt", "cloud-bolt", "storm", "Heavy thunderstorm with hail", "Dông mạnh kèm mưa đá", "Schweres Gewitter mit Hagel", "Kraftig åska med hagel"),
 }
 
 export class Weather {
@@ -86,9 +106,12 @@ export class Weather {
     const currentLocationLabel = this.locationLabel()
     this.container.innerHTML = `
       <div class="weather-header">
-        <div>
+        <div class="weather-title-group">
           <h3>${this.escapeHtml(i18n.weather_title || "Weather")}</h3>
-          <div class="weather-location" id="weather-location-label" title="${this.escapeAttribute(currentLocationLabel)}">${this.escapeHtml(currentLocationLabel)}</div>
+          <div class="weather-location" id="weather-location-label" title="${this.escapeAttribute(currentLocationLabel)}">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>${this.escapeHtml(currentLocationLabel)}</span>
+          </div>
         </div>
         <div class="weather-actions">
           <button class="icon-btn" id="weather-locate-btn" title="${this.escapeAttribute(i18n.weather_use_current || "Use current location")}"><i class="fa-solid fa-location-crosshairs"></i></button>
@@ -205,6 +228,9 @@ export class Weather {
       if (event.detail?.key === "weatherMini") {
         this.applySkin()
       }
+      if (event.detail?.key === "weatherColorStyle") {
+        this.applySkin()
+      }
       if (
         event.detail?.key === "weatherApiMode" ||
         event.detail?.key === "weatherForecastEndpoint" ||
@@ -231,6 +257,7 @@ export class Weather {
       settings.widgetUseM3Accent === true
         ? "m3-accent"
         : settings.weatherSkin || "default"
+    const colorStyle = settings.weatherColorStyle || "accent"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
@@ -250,6 +277,18 @@ export class Weather {
     this.container.classList.toggle(
       "weather-expanded",
       settings.weatherExpanded === true && settings.weatherMini !== true,
+    )
+    this.container.classList.toggle(
+      "weather-color-accent",
+      colorStyle === "accent",
+    )
+    this.container.classList.toggle(
+      "weather-color-natural",
+      colorStyle === "natural",
+    )
+    this.container.classList.toggle(
+      "weather-color-monochrome",
+      colorStyle === "monochrome",
     )
   }
 
@@ -415,10 +454,14 @@ export class Weather {
 
     const location = this.locationFromSettings()
     this.setLocationLabel(location)
+    const refreshBtnIcon = this.container.querySelector("#weather-refresh-btn i")
+    refreshBtnIcon?.classList.add("fa-spin")
+
     let apiConfig
     try {
       apiConfig = this.getWeatherApiConfig("forecast")
     } catch (error) {
+      refreshBtnIcon?.classList.remove("fa-spin")
       body.innerHTML = `
         <div class="weather-error">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -430,11 +473,12 @@ export class Weather {
 
     const cached = this.getCachedWeather(location, apiConfig.sourceKey)
     if (!force && cached) {
+      refreshBtnIcon?.classList.remove("fa-spin")
       this.renderWeather(cached)
       return
     }
 
-    body.innerHTML = `<div class="weather-loading">${this.escapeHtml(geti18n().weather_loading || "Loading weather...")}</div>`
+    body.innerHTML = `<div class="weather-loading"><i class="fa-solid fa-circle-notch fa-spin"></i> <span>${this.escapeHtml(geti18n().weather_loading || "Loading weather...")}</span></div>`
     this.abortController?.abort()
     this.abortController = new AbortController()
 
@@ -443,9 +487,9 @@ export class Weather {
         latitude: String(location.latitude),
         longitude: String(location.longitude),
         current:
-          "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+          "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m",
         daily:
-          "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+          "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max",
         timezone: "auto",
         forecast_days: "8",
       })
@@ -475,6 +519,8 @@ export class Weather {
           <span>${this.escapeHtml(message)}</span>
         </div>
       `
+    } finally {
+      refreshBtnIcon?.classList.remove("fa-spin")
     }
   }
 
@@ -482,7 +528,7 @@ export class Weather {
     if (!query) return
     const body = this.container.querySelector("#weather-body")
     if (body) {
-      body.innerHTML = `<div class="weather-loading">${this.escapeHtml(geti18n().weather_searching || "Searching...")}</div>`
+      body.innerHTML = `<div class="weather-loading"><i class="fa-solid fa-magnifying-glass fa-spin"></i> <span>${this.escapeHtml(geti18n().weather_searching || "Searching...")}</span></div>`
     }
 
     try {
@@ -731,7 +777,7 @@ export class Weather {
     const label = this.container.querySelector("#weather-location-label")
     if (label) {
       const text = [location.name, location.country].filter(Boolean).join(", ")
-      label.textContent = text
+      label.innerHTML = `<i class="fa-solid fa-location-dot"></i> <span>${this.escapeHtml(text)}</span>`
       label.title = text
     }
   }
@@ -744,21 +790,38 @@ export class Weather {
     const current = data.current || {}
     const units = data.current_units || {}
     const daily = data.daily || {}
-    const code = this.describeWeather(current.weather_code)
+    const isDay = current.is_day !== undefined ? current.is_day !== 0 : true
+    const code = this.describeWeather(current.weather_code, isDay)
     this.setLocationLabel(location)
+
+    const todayMax = Math.round(daily.temperature_2m_max?.[0] ?? current.temperature_2m ?? 0)
+    const todayMin = Math.round(daily.temperature_2m_min?.[0] ?? current.temperature_2m ?? 0)
+    const todayRainProb = daily.precipitation_probability_max?.[0]
+    const todayUv = daily.uv_index_max?.[0]
+
+    const i18n = geti18n()
 
     const forecast = (daily.time || [])
       .slice(1, 8)
       .map((date, index) => {
-        const dayCode = this.describeWeather(daily.weather_code?.[index + 1])
+        const dayIdx = index + 1
+        const dayCode = this.describeWeather(daily.weather_code?.[dayIdx], true)
         const label = this.formatDay(date)
-        const max = Math.round(daily.temperature_2m_max?.[index + 1] ?? 0)
-        const min = Math.round(daily.temperature_2m_min?.[index + 1] ?? 0)
+        const max = Math.round(daily.temperature_2m_max?.[dayIdx] ?? 0)
+        const min = Math.round(daily.temperature_2m_min?.[dayIdx] ?? 0)
+        const rainProb = daily.precipitation_probability_max?.[dayIdx]
+        const rainBadge =
+          rainProb !== undefined && rainProb !== null && rainProb > 0
+            ? `<span class="day-pop" title="${this.escapeAttribute(`${i18n.weather_rain_chance || "Rain"}: ${rainProb}%`)}"><i class="fa-solid fa-droplet"></i>${rainProb}%</span>`
+            : ""
         const summary = `${label}: ${max}° / ${min}° - ${dayCode.label}`
         return `
-          <div class="weather-day" title="${this.escapeAttribute(summary)}">
+          <div class="weather-day ${dayCode.theme}" title="${this.escapeAttribute(summary)}">
             <span class="day-name" title="${this.escapeAttribute(label)}">${this.escapeHtml(label)}</span>
-            <i class="fa-solid fa-${dayCode.icon}"></i>
+            <div class="day-icon-wrap theme-${dayCode.theme}">
+              <i class="fa-solid fa-${dayCode.icon}"></i>
+            </div>
+            ${rainBadge}
             <strong class="day-temps" title="${this.escapeAttribute(summary)}">
               <span class="day-temp-high">${max}°</span>
               <span class="day-temp-low">${min}°</span>
@@ -768,24 +831,94 @@ export class Weather {
       })
       .join("")
 
-    const temperature = `${Math.round(current.temperature_2m ?? 0)}${units.temperature_2m || "°C"}`
-    const feelsLike = `${Math.round(current.apparent_temperature ?? current.temperature_2m ?? 0)}${units.apparent_temperature || "°C"}`
+    const tempUnit = units.temperature_2m || "°C"
+    const currentTemp = Math.round(current.temperature_2m ?? 0)
+    const feelsLike = `${Math.round(current.apparent_temperature ?? current.temperature_2m ?? 0)}${units.apparent_temperature || tempUnit}`
     const humidity = `${Math.round(current.relative_humidity_2m ?? 0)}${units.relative_humidity_2m || "%"}`
     const wind = `${Math.round(current.wind_speed_10m ?? 0)} ${units.wind_speed_10m || "km/h"}`
 
+    let fourthStat = ""
+    if (todayRainProb !== undefined && todayRainProb !== null) {
+      const rainLabel = i18n.weather_rain_chance || "Rain chance"
+      const rainVal = `${todayRainProb}%`
+      fourthStat = `
+        <div class="stat-card stat-rain" title="${this.escapeAttribute(`${rainLabel}: ${rainVal}`)}">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-cloud-showers-heavy"></i></div>
+          <div class="stat-meta">
+            <span class="stat-label">${this.escapeHtml(rainLabel)}</span>
+            <strong class="stat-val">${this.escapeHtml(rainVal)}</strong>
+          </div>
+        </div>
+      `
+    } else if (todayUv !== undefined && todayUv !== null) {
+      const uvLabel = i18n.weather_uv_index || "UV Index"
+      const uvVal = String(Math.round(todayUv * 10) / 10)
+      fourthStat = `
+        <div class="stat-card stat-uv" title="${this.escapeAttribute(`${uvLabel}: ${uvVal}`)}">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-sun"></i></div>
+          <div class="stat-meta">
+            <span class="stat-label">${this.escapeHtml(uvLabel)}</span>
+            <strong class="stat-val">${this.escapeHtml(uvVal)}</strong>
+          </div>
+        </div>
+      `
+    }
+
     body.innerHTML = `
-      <div class="weather-current">
-        <div class="weather-icon"><i class="fa-solid fa-${code.icon}"></i></div>
-        <div class="weather-temp" title="${this.escapeAttribute(temperature)}">${Math.round(current.temperature_2m ?? 0)}<span>${this.escapeHtml(units.temperature_2m || "°C")}</span></div>
-        <div class="weather-condition" title="${this.escapeAttribute(code.label)}">${this.escapeHtml(code.label)}</div>
+      <div class="weather-current ${code.theme}">
+        <div class="weather-icon-hero theme-${code.theme}">
+          <i class="fa-solid fa-${code.icon}"></i>
+        </div>
+        <div class="weather-hero-info">
+          <div class="weather-temp-row">
+            <div class="weather-temp" title="${this.escapeAttribute(`${currentTemp}${tempUnit}`)}">
+              <span class="temp-val">${currentTemp}</span><span class="temp-unit">${this.escapeHtml(tempUnit)}</span>
+            </div>
+            <div class="weather-hi-lo" title="${this.escapeAttribute(`${i18n.weather_high || "High"}: ${todayMax}°, ${i18n.weather_low || "Low"}: ${todayMin}°`)}">
+              <span class="hi"><i class="fa-solid fa-arrow-up"></i> ${todayMax}°</span>
+              <span class="lo"><i class="fa-solid fa-arrow-down"></i> ${todayMin}°</span>
+            </div>
+          </div>
+          <div class="weather-condition-badge theme-${code.theme}" title="${this.escapeAttribute(code.label)}">
+            <span class="condition-dot"></span>
+            <span class="condition-text">${this.escapeHtml(code.label)}</span>
+          </div>
+        </div>
       </div>
-      <div class="weather-stats">
-        <div title="${this.escapeAttribute(`${geti18n().weather_feels_like || "Feels"}: ${feelsLike}`)}"><span>${this.escapeHtml(geti18n().weather_feels_like || "Feels")}</span><strong title="${this.escapeAttribute(feelsLike)}">${this.escapeHtml(feelsLike)}</strong></div>
-        <div title="${this.escapeAttribute(`${geti18n().weather_humidity || "Humidity"}: ${humidity}`)}"><span>${this.escapeHtml(geti18n().weather_humidity || "Humidity")}</span><strong title="${this.escapeAttribute(humidity)}">${this.escapeHtml(humidity)}</strong></div>
-        <div title="${this.escapeAttribute(`${geti18n().weather_wind || "Wind"}: ${wind}`)}"><span>${this.escapeHtml(geti18n().weather_wind || "Wind")}</span><strong title="${this.escapeAttribute(wind)}">${this.escapeHtml(wind)}</strong></div>
+
+      <div class="weather-stats-grid ${fourthStat ? "has-fourth" : ""}">
+        <div class="stat-card stat-feels" title="${this.escapeAttribute(`${i18n.weather_feels_like || "Feels"}: ${feelsLike}`)}">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-temperature-half"></i></div>
+          <div class="stat-meta">
+            <span class="stat-label">${this.escapeHtml(i18n.weather_feels_like || "Feels")}</span>
+            <strong class="stat-val">${this.escapeHtml(feelsLike)}</strong>
+          </div>
+        </div>
+        <div class="stat-card stat-humidity" title="${this.escapeAttribute(`${i18n.weather_humidity || "Humidity"}: ${humidity}`)}">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-droplet"></i></div>
+          <div class="stat-meta">
+            <span class="stat-label">${this.escapeHtml(i18n.weather_humidity || "Humidity")}</span>
+            <strong class="stat-val">${this.escapeHtml(humidity)}</strong>
+          </div>
+        </div>
+        <div class="stat-card stat-wind" title="${this.escapeAttribute(`${i18n.weather_wind || "Wind"}: ${wind}`)}">
+          <div class="stat-icon-wrap"><i class="fa-solid fa-wind"></i></div>
+          <div class="stat-meta">
+            <span class="stat-label">${this.escapeHtml(i18n.weather_wind || "Wind")}</span>
+            <strong class="stat-val">${this.escapeHtml(wind)}</strong>
+          </div>
+        </div>
+        ${fourthStat}
+      </div>
+
+      <div class="weather-forecast-header">
+        <span class="forecast-title">${this.escapeHtml(i18n.weather_forecast_title || "7-Day Forecast")}</span>
       </div>
       <div class="weather-forecast">${forecast}</div>
-      <div class="weather-source">${this.escapeHtml(payload.sourceLabel || "Open-Meteo")}</div>
+
+      <div class="weather-source">
+        <span><i class="fa-solid fa-satellite-dish"></i> ${this.escapeHtml(payload.sourceLabel || "Open-Meteo")}</span>
+      </div>
     `
   }
 
@@ -796,20 +929,78 @@ export class Weather {
     }
   }
 
-  describeWeather(code) {
+  describeWeather(code, isDay = true) {
     const item = WEATHER_CODES[Number(code)] || WEATHER_CODES[0]
+    const lang = getSettings().language || "en"
+    let label = item.en
+    if (lang === "vi") label = item.vi
+    else if (lang === "de") label = item.de
+    else if (lang === "sv") label = item.sv
+
+    const isNight = isDay === 0 || isDay === false
+    const icon = isNight && item.nightIcon ? item.nightIcon : item.icon
+    let theme = item.theme || "sunny"
+    if (isNight) {
+      if (theme === "sunny") theme = "clear-night"
+      else if (theme === "partly-cloudy") theme = "cloudy-night"
+    }
+
     return {
-      icon: item[0],
-      label: getSettings().language === "vi" ? item[2] : item[1],
+      icon,
+      theme,
+      label,
     }
   }
 
   formatDay(dateValue) {
     try {
-      return new Date(`${dateValue}T12:00:00`).toLocaleDateString(
-        getSettings().language === "vi" ? "vi-VN" : undefined,
-        { weekday: "short" },
-      )
+      const i18n = geti18n()
+      const lang = getSettings().language || "en"
+      const date = new Date(`${dateValue}T12:00:00`)
+      const today = new Date()
+
+      if (date.toDateString() === today.toDateString()) {
+        return (
+          i18n.calendar_today ||
+          i18n.today ||
+          (lang === "vi"
+            ? "Hôm nay"
+            : lang === "de"
+              ? "Heute"
+              : lang === "sv"
+                ? "Idag"
+                : "Today")
+        )
+      }
+
+      const dayIndex = date.getDay() // 0 = Sun, 1 = Mon, ..., 6 = Sat
+      const weekdayKeys = [
+        "calendar_weekday_sun",
+        "calendar_weekday_mon",
+        "calendar_weekday_tue",
+        "calendar_weekday_wed",
+        "calendar_weekday_thu",
+        "calendar_weekday_fri",
+        "calendar_weekday_sat",
+      ]
+      const key = weekdayKeys[dayIndex]
+      if (i18n[key]) {
+        return i18n[key]
+      }
+
+      const fallbackDays = {
+        vi: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+        sv: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+        en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      }
+      if (fallbackDays[lang]) {
+        return fallbackDays[lang][dayIndex]
+      }
+
+      const locale =
+        lang === "vi" ? "vi-VN" : lang === "de" ? "de-DE" : lang === "sv" ? "sv-SE" : "en-US"
+      return date.toLocaleDateString(locale, { weekday: "short" })
     } catch {
       return dateValue
     }

@@ -1394,7 +1394,7 @@ body.quick-access-white .hotkey-key {
 /* ------------------------------------------------------------------------------
    14. UTILITY WIDGETS (Weather Search Bar, Timer Display)
    ------------------------------------------------------------------------------ */
-body.quick-access-white .weather-container .weather-search-row {
+body.quick-access-white .weather-container:not(.skin-white-blur) .weather-search-row {
   background: #ffffff !important;
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
   border-radius: 999px !important;
