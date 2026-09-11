@@ -531,6 +531,14 @@ async function promptFirstRunLanguage() {
     }),
   )
   localStorage.setItem(FIRST_RUN_LANGUAGE_KEY, language)
+
+  // Smoothly reveal main container now that translations are applied
+  const mainContainer = document.querySelector(".main-container")
+  if (mainContainer && !mainContainer.classList.contains("ready")) {
+    requestAnimationFrame(() => {
+      mainContainer.classList.add("ready")
+    })
+  }
 }
 
 async function promptFirstRunUserName() {

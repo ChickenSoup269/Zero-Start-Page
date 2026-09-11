@@ -79,7 +79,7 @@ function needsSettingsAtBoot() {
     const isFirstRunOnboardingPending =
       localStorage.getItem("startpageFirstRunSvgBgV1") === "applied" &&
       localStorage.getItem("startpageFirstRunOnboardingDoneV1") !== "1"
-    if (isFirstRun || isFirstRunOnboardingPending) return true
+    if (isFirstRun || isFirstRunOnboardingPending) return false
 
     const settingsStr = localStorage.getItem("pageSettings")
     if (!settingsStr) return false

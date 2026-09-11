@@ -83,9 +83,22 @@ export function revealApp({
           overlay.classList.add("overlay-hidden")
           overlay.style.display = "none"
         }
-        requestAnimationFrame(() => {
-          if (mainContainer) mainContainer.classList.add("ready")
-        })
+        const isFirstRunLanguagePending =
+          !localStorage.getItem("startpageFirstRunLanguageV1") &&
+          localStorage.getItem("startpageFirstRunSvgBgV1") === "applied"
+
+        if (!isFirstRunLanguagePending) {
+          requestAnimationFrame(() => {
+            if (mainContainer) mainContainer.classList.add("ready")
+          })
+        } else {
+          // Safety timeout: ensure main-container is revealed even if language dialog is dismissed
+          setTimeout(() => {
+            if (mainContainer && !mainContainer.classList.contains("ready")) {
+              mainContainer.classList.add("ready")
+            }
+          }, 6000)
+        }
         window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
       }, 300)
     }
@@ -192,25 +205,35 @@ export function revealApp({
     }
     setTimeout(checkVideoStatus, 30)
   } else if (needsSettingsAtBoot(currentSettings)) {
-    const markBgReady = () => {
+    const isFirstRun =
+      localStorage.getItem("startpageFirstRunSvgBgV1") === "applied" &&
+      localStorage.getItem("startpageFirstRunOnboardingDoneV1") !== "1"
+    if (isFirstRun) {
+      // First-run preview gradient is already drawn on #bg-layer by applyBootVisualPreview.
+      // Do not block app reveal waiting for heavy settings modules!
       bgReady = true
       checkAllReady()
-    }
-    const waitForVisualPaint = () => {
-      if (currentSettings.svgWaveActive) {
-        requestAnimationFrame(() => requestAnimationFrame(markBgReady))
-      } else {
-        markBgReady()
-      }
-    }
-    if (window.settingsInitialized) {
-      waitForVisualPaint()
     } else {
-      const onSettingsReady = () => {
-        waitForVisualPaint()
-        window.removeEventListener("startpage:settingsReady", onSettingsReady)
+      const markBgReady = () => {
+        bgReady = true
+        checkAllReady()
       }
-      window.addEventListener("startpage:settingsReady", onSettingsReady)
+      const waitForVisualPaint = () => {
+        if (currentSettings.svgWaveActive) {
+          requestAnimationFrame(() => requestAnimationFrame(markBgReady))
+        } else {
+          markBgReady()
+        }
+      }
+      if (window.settingsInitialized) {
+        waitForVisualPaint()
+      } else {
+        const onSettingsReady = () => {
+          waitForVisualPaint()
+          window.removeEventListener("startpage:settingsReady", onSettingsReady)
+        }
+        window.addEventListener("startpage:settingsReady", onSettingsReady)
+      }
     }
   } else {
     bgReady = true

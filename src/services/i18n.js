@@ -76,9 +76,23 @@ export async function fetchRemoteLanguage(language) {
   )
 }
 
+export function getInitialLanguageFallback() {
+  try {
+    const navLang = (
+      navigator.language ||
+      navigator.userLanguage ||
+      ""
+    ).toLowerCase()
+    if (navLang.startsWith("vi")) return "vi"
+    if (navLang.startsWith("de")) return "de"
+    if (navLang.startsWith("sv")) return "sv"
+  } catch {}
+  return "en"
+}
+
 export async function loadLanguage(lang) {
   const settings = getSettings()
-  const language = lang || settings.language || "en"
+  const language = lang || settings.language || getInitialLanguageFallback()
   const customLanguage = settings.customLanguages?.[language]
 
   try {

@@ -157,7 +157,7 @@ async function bootstrap() {
     applyBrowserZoom(Number.parseFloat(currentSettings.browserZoomFactor))
   }
 
-  const minimumStartupLoaderMs = isFirstRunOnboardingPending() ? 1600 : 400
+  const minimumStartupLoaderMs = 350
 
   // ── 1. Language (blocks everything else) ──────────────────────────────────
   await initI18n()
@@ -204,7 +204,7 @@ async function bootstrap() {
   loadFontOnBoot(currentSettings.clockFont)
 
   // ── 8. Pre-init settings if heavy visuals are active ─────────────────────
-  if (needsSettingsAtBoot(currentSettings)) {
+  if (needsSettingsAtBoot(currentSettings) && !isFirstRunOnboardingPending()) {
     ensureSettingsInitialized("active-visuals")
   }
 
