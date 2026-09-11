@@ -4475,6 +4475,8 @@ body.date-clock-style-cool .cool-time {
 /* Code Style */
 body.date-clock-style-code .clock-date-wrap {
   text-align: left;
+  width: max-content !important;
+  min-width: max-content !important;
 }
 body.date-clock-style-code .code-style-wrapper {
   background: rgba(30, 30, 30, 0.6);
@@ -4494,11 +4496,14 @@ body.date-clock-style-code .code-style-wrapper {
   line-height: 1.4;
   text-align: left;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  width: max-content;
+  min-width: max-content;
+  box-sizing: border-box;
 }
 body.date-clock-style-code pre {
   margin: 0;
   padding: 0;
-  white-space: pre-wrap;
+  white-space: pre !important;
 }
 body.date-clock-style-code .code-clock-block {
   color: #d4d4d4;
@@ -5470,12 +5475,18 @@ body.date-clock-style-neon-grid .neon-grid-date {
 }
 
 /* Terminal Style */
+body.date-clock-style-terminal .clock-date-wrap {
+  width: max-content !important;
+  min-width: max-content !important;
+}
+
 body.date-clock-style-terminal .terminal-clock {
   position: relative;
   display: inline-flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: fit-content;
+  width: max-content;
+  min-width: max-content;
   max-width: min(92vw, calc(var(--clock-size, 6rem) * 4.9));
   border: 1px solid rgba(var(--accent-color-rgb, 74, 222, 128), 0.34);
   border-radius: 8px;
@@ -5706,7 +5717,9 @@ body.date-clock-style-terminal .terminal-clock-body {
 
 body.date-clock-style-terminal .terminal-clock-meta {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.7em;
   color: var(--date-color, rgba(217, 255, 232, 0.74));
@@ -5725,6 +5738,8 @@ body.date-clock-style-terminal .terminal-clock-time {
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
+  white-space: nowrap;
+  flex-shrink: 0;
   font-family: var(--font-clock, ui-monospace, Consolas, monospace);
   font-size: clamp(3.1rem, calc(var(--clock-size, 6rem) * 0.92), 7.8rem);
   font-weight: 820;
@@ -5768,7 +5783,8 @@ body.date-clock-style-terminal .terminal-clock-date {
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 @keyframes terminalCursorBlink {
@@ -7123,17 +7139,23 @@ body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-ampm {
 }
 
 /* Metro Panel Style */
+body.date-clock-style-metro-panel .clock-date-wrap {
+  width: max-content !important;
+  min-width: max-content !important;
+}
+
 body.date-clock-style-metro-panel .metro-panel-clock {
   position: relative;
   display: inline-grid;
-  grid-template-columns: minmax(4.6rem, auto) minmax(0, max-content);
+  grid-template-columns: minmax(4.6rem, max-content) minmax(max-content, max-content);
   grid-template-areas:
     "label time"
     "date date";
   align-items: center;
   gap: 0;
   box-sizing: border-box;
-  width: fit-content;
+  width: max-content;
+  min-width: max-content;
   max-width: min(92vw, calc(var(--clock-size, 6rem) * 4.85));
   padding: clamp(0.32rem, calc(var(--clock-size, 6rem) * 0.055), 0.56rem);
   border: 3px solid #d7dce3;
@@ -7230,6 +7252,7 @@ body.date-clock-style-metro-panel .metro-panel-label {
   text-wrap: balance;
   text-shadow: none;
   box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.16);
+  flex-shrink: 0;
 }
 
 body.date-clock-style-metro-panel .metro-panel-label .weekday-part {
@@ -7243,8 +7266,10 @@ body.date-clock-style-metro-panel .metro-panel-time {
   display: flex;
   align-items: baseline;
   justify-content: flex-end;
-  min-width: 0;
+  min-width: max-content;
   max-width: 100%;
+  white-space: nowrap;
+  flex-shrink: 0;
   padding: calc(var(--clock-size, 6rem) * 0.08)
     calc(var(--clock-size, 6rem) * 0.18);
   font-family: var(--font-clock, "Inter", "Arial Narrow", sans-serif);
@@ -7294,7 +7319,7 @@ body.date-clock-style-metro-panel .metro-panel-date {
   justify-self: stretch;
   align-self: stretch;
   width: auto;
-  min-width: 0;
+  min-width: max-content;
   max-width: 100%;
   margin-left: 0;
   padding: 0.5em 0.9em calc(0.62em + 7px);
@@ -7308,6 +7333,8 @@ body.date-clock-style-metro-panel .metro-panel-date {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #dbe3ee;
+  white-space: nowrap;
+  flex-shrink: 0;
   overflow-wrap: normal;
   word-break: normal;
   hyphens: none;
@@ -9186,7 +9213,8 @@ body.free-move-clock .clock-date-wrap {
 
 body.free-move-clock:not(.date-clock-style-round):not(.date-clock-style-square)
   .clock-date-wrap {
-  width: fit-content !important;
+  width: max-content !important;
+  min-width: max-content !important;
   white-space: nowrap;
 }
 
