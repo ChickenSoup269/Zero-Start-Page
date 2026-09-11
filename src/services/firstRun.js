@@ -21,6 +21,7 @@ import {
   getElementTab,
   getElementBgSubTab,
 } from "../components/settings/sidebarNavigation.js"
+import { ensureSettingsInitialized } from "../boot/lazyInit.js"
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
@@ -771,11 +772,12 @@ async function promptFirstRunBrowserZoom() {
 function getFirstRunSettingsGuideSteps(i18n) {
   return [
     // -------------------------------------------------------------
+    // -------------------------------------------------------------
     // CHƯƠNG 1: BẮT ĐẦU & MÀN HÌNH CHÍNH (OVERVIEW & SCREEN ESSENTIALS)
     // -------------------------------------------------------------
     {
       chapterId: "overview",
-      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/7: Getting Started",
       virtualTarget: "center-screen",
       icon: "fa-solid fa-hand-wave",
       title: i18n.first_run_tour_welcome_title || "Welcome to Startpage! 🎉",
@@ -792,7 +794,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "overview",
-      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/7: Getting Started",
       selector: "#search-container",
       icon: "fa-solid fa-magnifying-glass",
       title: i18n.first_run_tour_search_title || "Smart Search",
@@ -809,7 +811,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "overview",
-      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/7: Getting Started",
       selector: "#bookmarks-container",
       icon: "fa-solid fa-bookmark",
       title: i18n.first_run_tour_bookmarks_title || "Bookmark Management",
@@ -826,7 +828,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "overview",
-      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/7: Getting Started",
       selector: "#quick-access-bar",
       icon: "fa-solid fa-cubes",
       title: i18n.first_run_tour_quick_access_title || "Quick Access & Layout Controls",
@@ -843,7 +845,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "overview",
-      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/6: Getting Started",
+      chapterTitle: i18n.first_run_chapter_overview || "Chapter 1/7: Getting Started",
       selector: "#settings-toggle",
       icon: "fa-solid fa-gear",
       title: i18n.first_run_tour_settings_title || "Unlimited Customization",
@@ -864,7 +866,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     // -------------------------------------------------------------
     {
       chapterId: "appearance",
-      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/7: Appearance & Themes",
       selector: '[data-section-id="themes"], [data-settings-partial="themes"]',
       icon: "fa-solid fa-palette",
       title: i18n.settings_themes || "Themes",
@@ -879,7 +881,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "appearance",
-      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/7: Appearance & Themes",
       selector: "#accent-color-group",
       icon: "fa-solid fa-droplet",
       title: i18n.settings_accent || "Accent Color",
@@ -894,7 +896,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "appearance",
-      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/7: Appearance & Themes",
       selector: '[data-section-id="font"], [data-settings-partial="font"]',
       icon: "fa-solid fa-font",
       title: i18n.settings_font || "Typography & Google Fonts",
@@ -909,7 +911,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "appearance",
-      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/6: Appearance & Themes",
+      chapterTitle: i18n.first_run_chapter_appearance || "Chapter 2/7: Appearance & Themes",
       selector: '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
       icon: "fa-solid fa-heading",
       title: i18n.settings_custom_title || "Custom Title",
@@ -928,7 +930,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     // -------------------------------------------------------------
     {
       chapterId: "background",
-      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/7: Wallpapers & Shaders",
       selector: '[data-section-id="background"], [data-settings-partial="background"]',
       icon: "fa-solid fa-image",
       title: i18n.settings_bg || "Wallpaper Gallery",
@@ -943,7 +945,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "background",
-      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/7: Wallpapers & Shaders",
       selector: '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
       icon: "fa-solid fa-fill-drip",
       title: i18n.settings_gradient_multi_title || "Gradient V2 & SVG Waves",
@@ -958,7 +960,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "background",
-      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/7: Wallpapers & Shaders",
       selector: '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
       icon: "fa-solid fa-wand-magic-sparkles",
       title: i18n.settings_animated_backgrounds || "Animated Shaders",
@@ -973,7 +975,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "background",
-      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/6: Wallpapers & Shaders",
+      chapterTitle: i18n.first_run_chapter_background || "Chapter 3/7: Wallpapers & Shaders",
       selector: '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
       icon: "fa-solid fa-star",
       title: i18n.settings_effect || "Overlay Effects",
@@ -992,7 +994,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     // -------------------------------------------------------------
     {
       chapterId: "clock",
-      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/6: Date & Clock",
+      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/7: Date & Clock",
       selector: '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
       icon: "fa-solid fa-clock",
       title: i18n.settings_date_format || "Clock Styles & Customization",
@@ -1007,7 +1009,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "clock",
-      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/6: Date & Clock",
+      chapterTitle: i18n.first_run_chapter_clock || "Chapter 4/7: Date & Clock",
       selector: '[data-target-selector="#lunar-date"], #show-lunar-calendar-checkbox-clock',
       icon: "fa-solid fa-moon",
       title: i18n.settings_clock_show_lunar_calendar || "Lunar Calendar",
@@ -1026,7 +1028,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     // -------------------------------------------------------------
     {
       chapterId: "bookmarks",
-      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/6: Bookmarks & Groups",
+      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/7: Bookmarks & Groups",
       selector: '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
       icon: "fa-solid fa-bookmark",
       title: i18n.settings_custom_bookmark || "Bookmark Layouts & Icons",
@@ -1041,7 +1043,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "bookmarks",
-      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/6: Bookmarks & Groups",
+      chapterTitle: i18n.first_run_chapter_bookmarks || "Chapter 5/7: Bookmarks & Groups",
       selector: "#bookmark-group-bg-color-picker, .bookmark-groups-container",
       icon: "fa-regular fa-folder",
       title: i18n.settings_bookmark_group_header || "Group Tabs Interface",
@@ -1056,26 +1058,75 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
 
     // -------------------------------------------------------------
-    // CHƯƠNG 6: BỐ CỤC, WIDGETS & ĐỒNG BỘ (LAYOUT & CLOUD SYNC)
+    // CHƯƠNG 6: TIỆN ÍCH & BỐ CỤC (WIDGETS & LAYOUT DEEP DIVE)
     // -------------------------------------------------------------
     {
-      chapterId: "system",
-      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
-      selector: '[data-section-id="layout"], [data-settings-partial="layout"]',
-      icon: "fa-solid fa-layer-group",
-      title: i18n.settings_layout || "Layout & Widget Controls",
+      chapterId: "widgets",
+      chapterTitle: i18n.first_run_chapter_widgets || "Chapter 6/7: Widgets & Layout",
+      selector: "#layout-group-interface",
+      icon: "fa-solid fa-display",
+      title: i18n.first_run_tour_interface_title || "Interface & Controls",
       text:
-        i18n.first_run_guide_layout_desc ||
-        "Toggle individual page widgets on or off and manage screen orientation and quick layout controls.",
+        i18n.first_run_tour_interface_desc ||
+        "Customize screen orientation, settings sidebar width, auto-hide controls, and drag & drop snap-to-grid.",
       features: [
-        i18n.first_run_tour_layout_f1 || "Toggle widgets: Todo, Notepad, Calendar, Weather, Music player",
-        i18n.first_run_tour_layout_f2 || "Flip layout direction for personalized screen orientation",
-        i18n.first_run_tour_layout_f3 || "Reset layout to default or replay this guide anytime",
+        i18n.first_run_tour_interface_f1 || "Flip layout direction horizontally to match left/right hand habits",
+        i18n.first_run_tour_interface_f2 || "Settings sidebar width slider with 450px - 800px quick presets",
+        i18n.first_run_tour_interface_f3 || "Snap to Grid drag & drop align and custom context menu styles",
       ],
     },
     {
+      chapterId: "widgets",
+      chapterTitle: i18n.first_run_chapter_widgets || "Chapter 6/7: Widgets & Layout",
+      selector: "#layout-group-search",
+      icon: "fa-solid fa-magnifying-glass",
+      title: i18n.first_run_tour_searchbar_title || "Search Bar Customization",
+      text:
+        i18n.first_run_tour_searchbar_desc ||
+        "Switch between 10+ search engines, choose neon/glass aesthetics, adjust dimensions and drag position freely.",
+      features: [
+        i18n.first_run_tour_searchbar_f1 || "10+ search engines: Google, Gemini, Perplexity, YouTube, GitHub...",
+        i18n.first_run_tour_searchbar_f2 || "7 display styles: Frosted Glass, Neon Cyber Glow, Aurora, OLED Black...",
+        i18n.first_run_tour_searchbar_f3 || "Free Move search bar anywhere, customize width, blur and corner radius",
+      ],
+    },
+    {
+      chapterId: "widgets",
+      chapterTitle: i18n.first_run_chapter_widgets || "Chapter 6/7: Widgets & Layout",
+      selector: "#layout-group-widgets",
+      icon: "fa-solid fa-cubes",
+      title: i18n.first_run_tour_prod_widgets_title || "Productivity Widgets",
+      text:
+        i18n.first_run_tour_prod_widgets_desc ||
+        "Toggle and customize daily productivity tools: Todo list, quick Notepad, Habit tracker, Timer and Weather forecast.",
+      features: [
+        i18n.first_run_tour_prod_widgets_f1 || "Built-in Todo list with checkboxes and instant Notepad notes",
+        i18n.first_run_tour_prod_widgets_f2 || "Habit tracker and Timer with custom alarm sound upload",
+        i18n.first_run_tour_prod_widgets_f3 || "Accurate Open-Meteo weather forecast with custom API support",
+      ],
+    },
+    {
+      chapterId: "widgets",
+      chapterTitle: i18n.first_run_chapter_widgets || "Chapter 6/7: Widgets & Layout",
+      selector: "#layout-group-music",
+      icon: "fa-solid fa-music",
+      title: i18n.first_run_tour_music_title || "Music Player & Audio Reactive",
+      text:
+        i18n.first_run_tour_music_desc ||
+        "Integrated music player featuring 16+ aesthetic visualizer styles and real-time audio wave reactivity.",
+      features: [
+        i18n.first_run_tour_music_f1 || "16+ unique styles: Vinyl record, Pixel art, Spotify, Apple Music, Cassette...",
+        i18n.first_run_tour_music_f2 || "Real-time Audio Reactive visualizer pulses with actual music bass and beats",
+        i18n.first_run_tour_music_f3 || "Quick toggle on/off and position anywhere on your Start Page",
+      ],
+    },
+
+    // -------------------------------------------------------------
+    // CHƯƠNG 7: ĐỒNG BỘ & THÔNG TIN (CLOUD SYNC & ABOUT PROJECT)
+    // -------------------------------------------------------------
+    {
       chapterId: "system",
-      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
+      chapterTitle: i18n.first_run_chapter_system || "Chapter 7/7: Cloud Sync & About",
       selector: '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
       icon: "fa-solid fa-cloud",
       title: i18n.settings_data_sync || "Google Drive Sync & Backup",
@@ -1090,7 +1141,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
     },
     {
       chapterId: "system",
-      chapterTitle: i18n.first_run_chapter_system || "Chapter 6/6: Layout & Sync",
+      chapterTitle: i18n.first_run_chapter_system || "Chapter 7/7: Cloud Sync & About",
       selector: '[data-section-id="about-project"], [data-settings-partial="about-project"]',
       icon: "fa-solid fa-circle-info",
       title: i18n.first_run_guide_donate_title || "About Project & Support",
@@ -1248,7 +1299,10 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
 async function promptFirstRunSettingsGuide({ force = false } = {}) {
   if (!force && localStorage.getItem(FIRST_RUN_SETTINGS_GUIDE_KEY)) return
 
-  if (window.startpageSettingsPartialsReady) {
+  // Ensure settings partials and all event listeners are fully initialized
+  if (typeof ensureSettingsInitialized === "function") {
+    await ensureSettingsInitialized("first-run-tour")
+  } else if (window.startpageSettingsPartialsReady) {
     await window.startpageSettingsPartialsReady
   }
 
@@ -1312,6 +1366,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
     document.body.classList.add("first-run-tour-active")
     sidebarFooter?.classList.add("collapsed")
     sidebar.classList.add("open")
+    document.body.classList.add("sidebar-open")
     overlay.addEventListener("click", (event) => event.stopPropagation())
 
     const spotlight = overlay.querySelector(".first-run-tour-spotlight")
@@ -1345,8 +1400,13 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       overlay.remove()
       document.removeEventListener("keydown", onKeyDown)
       window.removeEventListener("resize", renderStep)
-      if (status === "skipped") {
+      if (status === "skipped" || status === "completed") {
         autoExpandAllSettingsSectionsAndGroups()
+      }
+      if (sidebar.classList.contains("open")) {
+        document.body.classList.add("sidebar-open")
+      } else {
+        document.body.classList.remove("sidebar-open")
       }
       resolve()
     }
@@ -1399,8 +1459,10 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       const step = steps[index]
       if (step.skipSidebarScroll) {
         sidebar.classList.remove("open")
+        document.body.classList.remove("sidebar-open")
       } else {
         sidebar.classList.add("open")
+        document.body.classList.add("sidebar-open")
         await waitForSettingsSidebarOpen(sidebar)
       }
       if (resolved || token !== renderToken) return
@@ -1416,8 +1478,21 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
         if (targetTab === "background" && targetBgSubTab && typeof switchBgSubTab === "function") {
           switchBgSubTab(targetBgSubTab)
         }
-        if (section.classList?.contains("settings-section")) {
-          setSettingsSectionExpanded(section, true)
+        const parentSection =
+          section.closest?.(".settings-section") ||
+          (section.classList?.contains("settings-section") ? section : null)
+        if (parentSection) {
+          setSettingsSectionExpanded(parentSection, true)
+        }
+        const collGroup =
+          section.closest?.(".collapsible-group") ||
+          (section.classList?.contains("collapsible-group") ? section : null)
+        if (collGroup) {
+          collGroup.classList.add("expanded")
+          const groupId = collGroup.id || collGroup.dataset.groupId
+          if (groupId) {
+            localStorage.setItem(`settingsGroupExpanded:${groupId}`, "1")
+          }
         }
       }
 
