@@ -12,13 +12,15 @@ import { showContextMenu } from "./contextMenu.js"
 const GEMINI_API_KEY_STORAGE = "gemini_api_key"
 const GEMINI_MODEL_STORAGE = "gemini_ai_model"
 const GEMINI_CHAT_HISTORY_STORAGE = "gemini_chat_history"
-const DEFAULT_MODEL = "gemini-2.0-flash"
+const GEMINI_LAST_INTERACTION_ID = "gemini_last_interaction_id"
+const DEFAULT_MODEL = "gemini-3.6-flash"
 
 export class AiAssistant {
   constructor() {
     this.container = null
     this.apiKey = ""
     this.model = DEFAULT_MODEL
+    this.lastInteractionId = null
     this.messages = []
     this.isLoading = false
 
@@ -37,7 +39,15 @@ export class AiAssistant {
 
   updateConfigUI() {
     const modelSelect = this.container?.querySelector("#ai-model-select")
-    if (modelSelect) modelSelect.value = this.model
+    if (modelSelect) {
+      if (![...modelSelect.options].some((o) => o.value === this.model)) {
+        const opt = document.createElement("option")
+        opt.value = this.model
+        opt.textContent = this.model
+        modelSelect.appendChild(opt)
+      }
+      modelSelect.value = this.model
+    }
     const notice = this.container?.querySelector("#ai-key-notice")
     if (notice) notice.style.display = this.apiKey ? "none" : "flex"
     const keyInput = this.container?.querySelector("#ai-api-key-input")
@@ -52,10 +62,18 @@ export class AiAssistant {
           "ai_api_key",
           GEMINI_MODEL_STORAGE,
           GEMINI_CHAT_HISTORY_STORAGE,
+          GEMINI_LAST_INTERACTION_ID,
         ],
         (data) => {
           this.apiKey = data?.[GEMINI_API_KEY_STORAGE] || data?.ai_api_key || ""
-          this.model = data?.[GEMINI_MODEL_STORAGE] || DEFAULT_MODEL
+          let model = data?.[GEMINI_MODEL_STORAGE] || DEFAULT_MODEL
+          // Automatically migrate from deprecated gemini-2.0-flash to gemini-3.6-flash
+          if (model === "gemini-2.0-flash" || !model) {
+            model = DEFAULT_MODEL
+            chrome.storage.local.set({ [GEMINI_MODEL_STORAGE]: model })
+          }
+          this.model = model
+          this.lastInteractionId = data?.[GEMINI_LAST_INTERACTION_ID] || null
           this.messages = Array.isArray(data?.[GEMINI_CHAT_HISTORY_STORAGE])
             ? data[GEMINI_CHAT_HISTORY_STORAGE]
             : []
@@ -91,7 +109,9 @@ export class AiAssistant {
         </div>
         <div class="ai-header-actions no-drag">
           <select id="ai-model-select" class="ai-select" title="${i18n.ai_select_model || "Select Model"}">
-            <option value="gemini-2.0-flash" ${this.model === "gemini-2.0-flash" ? "selected" : ""}>2.0 Flash</option>
+            <option value="gemini-3.6-flash" ${this.model === "gemini-3.6-flash" ? "selected" : ""}>3.6 Flash</option>
+            <option value="gemini-2.5-flash" ${this.model === "gemini-2.5-flash" ? "selected" : ""}>2.5 Flash</option>
+            <option value="gemini-2.5-pro" ${this.model === "gemini-2.5-pro" ? "selected" : ""}>2.5 Pro</option>
             <option value="gemini-1.5-flash" ${this.model === "gemini-1.5-flash" ? "selected" : ""}>1.5 Flash</option>
             <option value="gemini-1.5-pro" ${this.model === "gemini-1.5-pro" ? "selected" : ""}>1.5 Pro</option>
           </select>
@@ -169,6 +189,8 @@ export class AiAssistant {
       .querySelector("#ai-clear-btn")
       ?.addEventListener("click", () => {
         this.messages = []
+        this.lastInteractionId = null
+        chrome.storage.local.remove([GEMINI_LAST_INTERACTION_ID])
         this.saveChatHistory()
         this.renderMessages()
       })
@@ -176,7 +198,9 @@ export class AiAssistant {
     const modelSelect = this.container.querySelector("#ai-model-select")
     modelSelect?.addEventListener("change", (e) => {
       this.model = e.target.value
+      this.lastInteractionId = null
       chrome.storage.local.set({ [GEMINI_MODEL_STORAGE]: this.model })
+      chrome.storage.local.remove([GEMINI_LAST_INTERACTION_ID])
     })
 
     const keyModal = this.container.querySelector("#ai-key-modal")
@@ -376,6 +400,127 @@ export class AiAssistant {
     el.style.height = Math.min(el.scrollHeight, 100) + "px"
   }
 
+  extractInteractionText(data) {
+    if (data.output_text) return data.output_text
+    if (Array.isArray(data.steps)) {
+      const modelSteps = data.steps.filter(
+        (s) => s.type === "model_output" || s.role === "model",
+      )
+      const texts = []
+      for (const step of modelSteps) {
+        if (Array.isArray(step.content)) {
+          for (const part of step.content) {
+            if (typeof part === "string") texts.push(part)
+            else if (part?.text) texts.push(part.text)
+          }
+        } else if (typeof step.content === "string") {
+          texts.push(step.content)
+        } else if (step.text) {
+          texts.push(step.text)
+        }
+      }
+      if (texts.length > 0) return texts.join("\n\n")
+    }
+    if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+      return data.candidates[0].content.parts
+        .map((p) => p.text || "")
+        .join("")
+    }
+    return null
+  }
+
+  async callGeminiApi(userText) {
+    let lastError = null
+
+    // 1. Try Interactions API (Google's recommended modern API)
+    try {
+      const interactionPayload = {
+        model: this.model,
+        input: userText,
+      }
+      if (this.lastInteractionId) {
+        interactionPayload.previous_interaction_id = this.lastInteractionId
+      }
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta2/interactions?key=${this.apiKey}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": this.apiKey,
+          },
+          body: JSON.stringify(interactionPayload),
+        },
+      )
+
+      const data = await response.json().catch(() => null)
+
+      if (response.ok && data) {
+        if (data.id) {
+          this.lastInteractionId = data.id
+          chrome.storage.local.set({ [GEMINI_LAST_INTERACTION_ID]: data.id })
+        }
+        const text = this.extractInteractionText(data)
+        if (text) {
+          return { success: true, text }
+        }
+      } else if (data?.error) {
+        lastError = data.error.message || "Interactions API request failed"
+        // If previous_interaction_id was stale or invalid, reset and retry once
+        if (
+          this.lastInteractionId &&
+          /previous_interaction_id|not found|expired|invalid/i.test(lastError)
+        ) {
+          this.lastInteractionId = null
+          chrome.storage.local.remove([GEMINI_LAST_INTERACTION_ID])
+          return this.callGeminiApi(userText)
+        }
+      }
+    } catch (err) {
+      lastError = err.message
+    }
+
+    // 2. Fallback to generateContent API
+    try {
+      const contents = this.messages.slice(-8).map((m) => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.content }],
+      }))
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents }),
+        },
+      )
+
+      const data = await response.json().catch(() => null)
+      if (data?.error) {
+        return {
+          success: false,
+          error: data.error.message || lastError || "API request failed",
+        }
+      }
+
+      if (data?.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+        const reply = data.candidates[0].content.parts
+          .map((p) => p.text || "")
+          .join("")
+        return { success: true, text: reply }
+      }
+    } catch (err) {
+      return { success: false, error: err.message || lastError }
+    }
+
+    return {
+      success: false,
+      error: lastError || "No response received from Gemini.",
+    }
+  }
+
   async sendMessage(customText = null) {
     const input = this.container.querySelector("#ai-user-input")
     const text = (customText || input?.value)?.trim()
@@ -398,45 +543,20 @@ export class AiAssistant {
     this.renderLoadingBubble()
 
     try {
-      const contents = this.messages.slice(-8).map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      }))
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents }),
-        },
-      )
-
-      const data = await response.json()
+      const result = await this.callGeminiApi(text)
       this.removeLoadingBubble()
 
-      if (data.error) {
+      if (!result.success) {
         this.messages.push({
           role: "assistant",
-          content: `Error: ${data.error.message || "API request failed"}`,
+          content: `Error: ${result.error}`,
           isError: true,
-          time: Date.now(),
-        })
-      } else if (
-        data.candidates &&
-        data.candidates[0]?.content?.parts?.[0]?.text
-      ) {
-        const reply = data.candidates[0].content.parts[0].text
-        this.messages.push({
-          role: "assistant",
-          content: reply,
           time: Date.now(),
         })
       } else {
         this.messages.push({
           role: "assistant",
-          content: "No response received from Gemini.",
-          isError: true,
+          content: result.text,
           time: Date.now(),
         })
       }

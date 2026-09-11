@@ -546,7 +546,11 @@ export function initTerminal() {
         const apiKey = localStorage.getItem("terminalGeminiKey")
         let aiModel =
           localStorage.getItem("terminalGeminiModel") ||
-          "gemini-1.5-flash-latest"
+          "gemini-3.6-flash"
+        if (aiModel === "gemini-2.0-flash" || aiModel === "gemini-1.5-flash-latest") {
+          aiModel = "gemini-3.6-flash"
+          localStorage.setItem("terminalGeminiModel", aiModel)
+        }
         const prompt = val.substring(3).trim()
 
         if (prompt === "setkey") {
@@ -577,28 +581,79 @@ export function initTerminal() {
           printOut(`\n<span id="${resId}" style="color: #e0e0e0;"></span>`)
 
           try {
-            const response = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${apiKey}`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  contents: [{ parts: [{ text: prompt }] }],
-                }),
-              },
-            )
-            const data = await response.json()
-            const answerSpan = document.getElementById(resId)
+            let text = null
 
-            if (data.error) {
-              answerSpan.innerHTML = `<span style="color: #e06c75;">Error: ${data.error.message}</span>`
-            } else if (data.candidates && data.candidates.length > 0) {
-              let text = data.candidates[0].content.parts[0].text
-              text = text
+            // 1. Try Interactions API (Google's modern recommended API)
+            try {
+              const intRes = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta2/interactions?key=${apiKey}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": apiKey,
+                  },
+                  body: JSON.stringify({ model: aiModel, input: prompt }),
+                },
+              )
+              const intData = await intRes.json().catch(() => null)
+              if (intRes.ok && intData) {
+                if (intData.output_text) {
+                  text = intData.output_text
+                } else if (Array.isArray(intData.steps)) {
+                  const mSteps = intData.steps.filter(
+                    (s) => s.type === "model_output" || s.role === "model",
+                  )
+                  const parts = []
+                  for (const s of mSteps) {
+                    if (Array.isArray(s.content)) {
+                      for (const c of s.content) {
+                        if (typeof c === "string") parts.push(c)
+                        else if (c?.text) parts.push(c.text)
+                      }
+                    } else if (typeof s.content === "string") {
+                      parts.push(s.content)
+                    } else if (s.text) {
+                      parts.push(s.text)
+                    }
+                  }
+                  if (parts.length) text = parts.join("\n\n")
+                }
+              }
+            } catch (ignore) {}
+
+            // 2. Fallback to generateContent
+            if (!text) {
+              const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${apiKey}`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                  }),
+                },
+              )
+              const data = await response.json()
+              const answerSpan = document.getElementById(resId)
+
+              if (data.error) {
+                answerSpan.innerHTML = `<span style="color: #e06c75;">Error: ${data.error.message}</span>`
+                return
+              } else if (data.candidates && data.candidates.length > 0) {
+                text = data.candidates[0].content.parts
+                  .map((p) => p.text || "")
+                  .join("")
+              }
+            }
+
+            const answerSpan = document.getElementById(resId)
+            if (text) {
+              const formatted = text
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
                 .replace(/\n/g, "<br>")
-              answerSpan.innerHTML = `<span style="color: #d19a66;">${text}</span>`
+              answerSpan.innerHTML = `<span style="color: #d19a66;">${formatted}</span>`
             } else {
               answerSpan.innerHTML = `<span style="color: #e06c75;">No response from Gemini.</span>`
             }
