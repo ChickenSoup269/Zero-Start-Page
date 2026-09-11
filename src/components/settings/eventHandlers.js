@@ -4516,51 +4516,6 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  const promptBookmarkOpenBehavior = async () => {
-    const settings = getSettings()
-    if (settings.bookmarkOpenBehaviorPromptSeen === true) return
-
-    updateSetting("bookmarkOpenBehaviorPromptSeen", true)
-    saveSettings(true)
-
-    const choice = await showChoiceConfirm(
-      [
-        {
-          key: "current",
-          icon: "fa-solid fa-arrow-up-right-from-square",
-          label:
-            i18n.bookmark_open_behavior_current_choice || "Open in this tab",
-          description:
-            i18n.bookmark_open_behavior_current_desc ||
-            "Clicking a bookmark replaces the Start Page in the current tab.",
-        },
-        {
-          key: "new",
-          icon: "fa-solid fa-up-right-from-square",
-          label: i18n.bookmark_open_behavior_new_choice || "Open a new tab",
-          description:
-            i18n.bookmark_open_behavior_new_desc ||
-            "Keep the Start Page open and launch bookmarks beside it.",
-        },
-      ],
-      i18n.bookmark_open_behavior_title || "Bookmark opening behavior",
-      i18n.bookmark_open_behavior_message ||
-        "By default, bookmarks now open in the current tab. You can switch this anytime in Settings > Custom Bookmark > Layout & Behavior.",
-    )
-
-    if (choice === "new") {
-      updateSetting("bookmarkOpenInNewTab", true)
-      updateSetting("bookmarkOpenBehaviorClickPromptSeen", true)
-      saveSettings(true)
-      if (DOM.bookmarkOpenInNewTab) DOM.bookmarkOpenInNewTab.checked = true
-      renderBookmarks()
-    } else if (choice === "current") {
-      updateSetting("bookmarkOpenBehaviorClickPromptSeen", true)
-      saveSettings(true)
-    }
-  }
-  setTimeout(promptBookmarkOpenBehavior, 800)
-
   // Gradient listeners
   const MODERN_GRADIENT_PRESETS = [
     {
