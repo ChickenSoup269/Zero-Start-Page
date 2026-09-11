@@ -3518,22 +3518,22 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper {
   background: linear-gradient(
     135deg,
-    rgba(22, 16, 12, 0.94) 0%,
-    rgba(38, 26, 18, 0.9) 48%,
-    rgba(18, 12, 10, 0.96) 100%
+    rgba(28, 19, 14, 0.96) 0%,
+    rgba(46, 30, 20, 0.92) 50%,
+    rgba(22, 14, 10, 0.97) 100%
   );
-  border: 1px solid rgba(223, 168, 92, 0.35);
+  border: 1px solid rgba(223, 168, 92, 0.45);
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.6),
-    0 0 25px rgba(223, 168, 92, 0.12),
-    inset 0 1px 1px rgba(255, 235, 190, 0.25);
+    0 18px 45px rgba(0, 0, 0, 0.65),
+    0 0 25px rgba(223, 168, 92, 0.16),
+    inset 0 1px 1px rgba(255, 235, 190, 0.35);
   color: #f7e7ce;
   position: relative;
   overflow: hidden !important;
   border-radius: 20px;
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-  animation: harpFloating 9s ease-in-out infinite;
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  animation: harpFloating 8s ease-in-out infinite;
 }
 
 /* Subtle wooden harp soundboard grain & silk aura */
@@ -3543,7 +3543,7 @@ body.widgets-m3-accent
   inset: 0;
   background: radial-gradient(
     circle at 75% 30%,
-    rgba(223, 168, 92, 0.14) 0%,
+    rgba(223, 168, 92, 0.16) 0%,
     transparent 65%
   );
   pointer-events: none;
@@ -3560,7 +3560,7 @@ body.widgets-m3-accent
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 225, 150, 0.7) 50%,
+    rgba(255, 225, 150, 0.75) 50%,
     transparent 100%
   );
   pointer-events: none;
@@ -3587,19 +3587,20 @@ body.widgets-m3-accent
 }
 
 .music-style-harp .player-info h3 {
-  color: #fffbf0;
+  color: #fffdf5;
   text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.8),
-    0 0 10px rgba(223, 168, 92, 0.3);
-  font-weight: 700;
+    0 2px 8px rgba(0, 0, 0, 0.8),
+    0 0 12px rgba(223, 168, 92, 0.35);
+  font-weight: 750;
   letter-spacing: 0.25px;
   font-size: 1.02rem;
 }
 
 .music-style-harp .player-info p {
-  color: #cfb89d;
-  font-size: 0.82rem;
-  font-weight: 500;
+  color: #e5d2be;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .music-style-harp .disc-container {
@@ -3607,14 +3608,14 @@ body.widgets-m3-accent
   height: 68px;
   min-width: 68px;
   border-radius: 50%;
-  border: 1.5px solid rgba(223, 168, 92, 0.5);
+  border: 1.5px solid rgba(223, 168, 92, 0.6);
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.55),
-    0 0 14px rgba(223, 168, 92, 0.2),
-    inset 0 0 10px rgba(0, 0, 0, 0.4);
+    0 0 16px rgba(223, 168, 92, 0.25),
+    inset 0 0 8px rgba(0, 0, 0, 0.4);
   background: radial-gradient(
     circle at center,
-    rgba(40, 28, 18, 0.95) 0%,
+    rgba(45, 30, 18, 0.95) 0%,
     rgba(20, 14, 10, 0.98) 100%
   );
   padding: 3px;
@@ -3625,23 +3626,23 @@ body.widgets-m3-accent
 
 .music-style-harp .music-player-wrapper.playing .disc-container {
   box-shadow:
-    0 8px 26px rgba(0, 0, 0, 0.65),
-    0 0 20px rgba(223, 168, 92, 0.35),
-    0 0 0 2px rgba(255, 220, 140, 0.25);
-  transform: scale(1.02);
+    0 8px 28px rgba(0, 0, 0, 0.7),
+    0 0 22px rgba(223, 168, 92, 0.4),
+    0 0 0 2px rgba(255, 220, 140, 0.3);
+  transform: scale(1.03);
 }
 
 .music-style-harp .vinyl-disc {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1.5px solid rgba(223, 168, 92, 0.45);
+  border: 1.5px solid rgba(223, 168, 92, 0.5);
   animation-duration: 16s !important;
   background:
-    radial-gradient(circle at center, #322014 0%, #1c120c 55%, #0f0a06 100%),
-    repeating-radial-gradient(circle, transparent 0, transparent 3px, rgba(223, 168, 92, 0.12) 4px, transparent 5px);
+    radial-gradient(circle at center, #3d2818 0%, #20140c 55%, #100a06 100%),
+    repeating-radial-gradient(circle, transparent 0, transparent 3px, rgba(223, 168, 92, 0.15) 4px, transparent 5px);
   box-shadow:
-    inset 0 0 0 2px rgba(223, 168, 92, 0.35),
+    inset 0 0 0 2px rgba(223, 168, 92, 0.4),
     inset 0 0 12px rgba(0, 0, 0, 0.7);
   position: relative;
   overflow: hidden;
@@ -3688,23 +3689,26 @@ body.widgets-m3-accent
   transition: opacity 0.3s ease;
 }
 
-/* When thumbnail is present: enhance vibrant contrast & border */
+/* When thumbnail is present: delicate center pin so album artwork shines */
 .music-style-harp .vinyl-disc.has-thumb {
-  border-color: rgba(255, 220, 140, 0.65);
+  border-color: rgba(255, 220, 140, 0.75);
   box-shadow:
-    inset 0 0 0 2px rgba(223, 168, 92, 0.5),
-    0 4px 14px rgba(0, 0, 0, 0.55);
+    inset 0 0 0 1.5px rgba(223, 168, 92, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.6);
 }
 
 .music-style-harp .vinyl-disc.has-thumb::before {
-  opacity: 0.85;
+  width: 8px;
+  height: 8px;
+  opacity: 0.65;
+  box-shadow: 0 0 4px rgba(223, 168, 92, 0.8);
 }
 
 .music-style-harp .controls-row button,
 .music-style-harp .player-btn {
-  color: #f7e7ce;
-  background: rgba(255, 235, 190, 0.1);
-  border: 1px solid rgba(223, 168, 92, 0.3);
+  color: #fffaee;
+  background: rgba(255, 235, 190, 0.12);
+  border: 1px solid rgba(223, 168, 92, 0.35);
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -3712,9 +3716,9 @@ body.widgets-m3-accent
 .music-style-harp .controls-row button:hover,
 .music-style-harp .player-btn:hover {
   color: #ffffff;
-  background: rgba(223, 168, 92, 0.35);
-  border-color: rgba(255, 220, 140, 0.75);
-  box-shadow: 0 0 14px rgba(223, 168, 92, 0.5);
+  background: rgba(223, 168, 92, 0.4);
+  border-color: rgba(255, 225, 150, 0.85);
+  box-shadow: 0 0 16px rgba(223, 168, 92, 0.55);
   transform: scale(1.1);
 }
 
@@ -3724,48 +3728,49 @@ body.widgets-m3-accent
 }
 
 .music-style-harp .play-pause-btn {
-  background: linear-gradient(135deg, #f3cf85 0%, #dfa85c 50%, #b87c2b 100%) !important;
-  color: #1a1208 !important;
-  border: 1px solid rgba(255, 240, 200, 0.75) !important;
+  background: linear-gradient(135deg, #ffe39a 0%, #e2a650 50%, #b87522 100%) !important;
+  color: #1a0f04 !important;
+  border: 1px solid rgba(255, 245, 210, 0.85) !important;
   box-shadow:
-    0 4px 16px rgba(223, 168, 92, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    0 4px 18px rgba(223, 168, 92, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
 .music-style-harp .play-pause-btn:hover {
-  background: linear-gradient(135deg, #ffe29e 0%, #eed088 50%, #d49845 100%) !important;
+  background: linear-gradient(135deg, #fff0bf 0%, #f0bb68 50%, #d48b2e 100%) !important;
   box-shadow:
-    0 6px 22px rgba(223, 168, 92, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    0 6px 24px rgba(223, 168, 92, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
   color: #000000 !important;
   transform: scale(1.12);
 }
 
 .music-style-harp .progress-time {
-  color: #d9c2a7;
-  font-size: 0.76rem;
-  font-weight: 500;
+  color: #e5d3bf;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .music-style-harp .progress-bar-track {
-  background: rgba(14, 10, 8, 0.5);
-  border: 1px solid rgba(223, 168, 92, 0.35);
+  background: rgba(10, 7, 5, 0.55);
+  border: 1px solid rgba(223, 168, 92, 0.38);
   height: 5px;
   border-radius: 4px;
 }
 
 .music-style-harp .progress-bar-fill {
-  background: linear-gradient(90deg, #c99342 0%, #ffe49e 100%);
-  box-shadow: 0 0 12px rgba(223, 168, 92, 0.75);
+  background: linear-gradient(90deg, #c99342 0%, #ffebaa 100%);
+  box-shadow: 0 0 12px rgba(223, 168, 92, 0.8);
   border-radius: 4px;
 }
 
 .music-style-harp .progress-bar-thumb {
-  background: #fff9e6;
+  background: #fffdf5;
   border: 2px solid #b88235;
   box-shadow:
-    0 0 10px rgba(223, 168, 92, 0.85),
-    0 2px 6px rgba(0, 0, 0, 0.4);
+    0 0 12px rgba(223, 168, 92, 0.9),
+    0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .music-style-harp .music-visualizer {
@@ -3782,38 +3787,159 @@ body.widgets-m3-accent
 
 /* White Blur Skin Compatibility */
 .music-style-harp .music-player-wrapper.skin-white-blur {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 250, 242, 0.88) 0%,
-    rgba(247, 238, 222, 0.84) 50%,
-    rgba(240, 228, 208, 0.92) 100%
-  ) !important;
-  border: 1px solid rgba(184, 130, 53, 0.4) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(184, 130, 53, 0.35) !important;
   box-shadow:
-    0 14px 35px rgba(120, 80, 20, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-  color: #3d2b14 !important;
+    0 18px 45px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  color: #1e140a !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur::before {
+  background: radial-gradient(
+    circle at 75% 30%,
+    rgba(184, 130, 53, 0.08) 0%,
+    transparent 65%
+  ) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(184, 130, 53, 0.35) 50%,
+    transparent 100%
+  ) !important;
 }
 
 .music-style-harp .music-player-wrapper.skin-white-blur .player-info h3 {
-  color: #3d2b14 !important;
+  color: #1e140a !important;
   text-shadow: none !important;
 }
 
 .music-style-harp .music-player-wrapper.skin-white-blur .player-info p,
 .music-style-harp .music-player-wrapper.skin-white-blur .progress-time {
-  color: #5c4220 !important;
+  color: #5c4020 !important;
+  text-shadow: none !important;
 }
 
 .music-style-harp .music-player-wrapper.skin-white-blur .player-btn {
-  color: #3d2b14 !important;
+  color: #3d2810 !important;
+  border-color: rgba(184, 130, 53, 0.3) !important;
+  background: rgba(184, 130, 53, 0.1) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur .player-btn:hover {
+  background: rgba(184, 130, 53, 0.22) !important;
+  color: #1e140a !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur .disc-container {
+  background: rgba(255, 248, 235, 0.9) !important;
+  border-color: rgba(184, 130, 53, 0.4) !important;
+  box-shadow: 0 6px 18px rgba(120, 80, 20, 0.12) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur .vinyl-disc {
+  background:
+    radial-gradient(circle at center, #f8f1e2 0%, #ecdfc8 55%, #dfcdae 100%) !important;
   border-color: rgba(184, 130, 53, 0.35) !important;
-  background: rgba(184, 130, 53, 0.12) !important;
+  box-shadow: inset 0 0 0 2px rgba(184, 130, 53, 0.25) !important;
 }
 
 .music-style-harp .music-player-wrapper.skin-white-blur .progress-bar-track {
-  background: rgba(184, 130, 53, 0.18) !important;
-  border-color: rgba(184, 130, 53, 0.3) !important;
+  background: rgba(184, 130, 53, 0.16) !important;
+  border-color: rgba(184, 130, 53, 0.28) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-white-blur .progress-bar-fill {
+  background: linear-gradient(90deg, #c98832 0%, #f5c873 100%) !important;
+}
+
+/* Transparent Skin */
+.music-style-harp .music-player-wrapper.skin-transparent {
+  background: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent::before,
+.music-style-harp .music-player-wrapper.skin-transparent::after {
+  display: none !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent .player-info h3 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent .player-info p,
+.music-style-harp .music-player-wrapper.skin-transparent .progress-time {
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent .player-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 220, 140, 0.3) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent .disc-container {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 220, 140, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-transparent .progress-bar-track {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Light Transparent (Glass) Skin */
+.music-style-harp .music-player-wrapper.skin-light-transparent {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.15)) !important;
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25)) !important;
+  box-shadow: var(--glass-shadow, 0 16px 40px rgba(0, 0, 0, 0.25)) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent::before {
+  opacity: 0.25 !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent .player-info h3 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent .player-info p,
+.music-style-harp .music-player-wrapper.skin-light-transparent .progress-time {
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent .disc-container {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 235, 190, 0.45) !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent .player-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.music-style-harp .music-player-wrapper.skin-light-transparent .progress-bar-track {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Thumbnail Background Skin */
@@ -3827,17 +3953,22 @@ body.widgets-m3-accent
 .music-style-harp .music-player-wrapper.skin-thumbnail-bg::before {
   background: radial-gradient(
     circle at center,
-    rgba(20, 12, 8, 0.55) 0%,
-    rgba(10, 6, 4, 0.8) 100%
+    rgba(20, 12, 8, 0.35) 0%,
+    rgba(10, 6, 4, 0.65) 100%
   ) !important;
 }
 
-/* Transparent Skin */
-.music-style-harp .music-player-wrapper.skin-transparent {
-  background: rgba(20, 14, 10, 0.45) !important;
-  border: 1px solid rgba(223, 168, 92, 0.35) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+.music-style-harp .music-player-wrapper.skin-thumbnail-bg .disc-container {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-color: rgba(255, 220, 140, 0.5) !important;
+}
+
+/* M3 Accent Skin */
+.music-style-harp .music-player-wrapper.skin-m3-accent::before,
+.music-style-harp .music-player-wrapper.skin-m3-accent::after,
+body.widgets-m3-accent .music-style-harp .music-player-wrapper::before,
+body.widgets-m3-accent .music-style-harp .music-player-wrapper::after {
+  display: none !important;
 }
 
 /* =========================================
@@ -4777,11 +4908,13 @@ body.widgets-m3-accent .music-style-moon8 .disc-container,
 body.widgets-m3-accent .music-style-vinyl .disc-container,
 body.widgets-m3-accent .music-style-forest .disc-container,
 body.widgets-m3-accent .music-style-beach .disc-container,
+body.widgets-m3-accent .music-style-harp .disc-container,
 .music-style-neon .music-player-wrapper.skin-m3-accent .disc-container,
 .music-style-moon8 .music-player-wrapper.skin-m3-accent .disc-container,
 .music-style-vinyl .music-player-wrapper.skin-m3-accent .disc-container,
 .music-style-forest .music-player-wrapper.skin-m3-accent .disc-container,
-.music-style-beach .music-player-wrapper.skin-m3-accent .disc-container {
+.music-style-beach .music-player-wrapper.skin-m3-accent .disc-container,
+.music-style-harp .music-player-wrapper.skin-m3-accent .disc-container {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
@@ -4792,11 +4925,13 @@ body.widgets-m3-accent .music-style-moon8 .vinyl-disc.has-thumb,
 body.widgets-m3-accent .music-style-vinyl .vinyl-disc.has-thumb,
 body.widgets-m3-accent .music-style-forest .vinyl-disc.has-thumb,
 body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb,
+body.widgets-m3-accent .music-style-harp .vinyl-disc.has-thumb,
 .music-style-neon .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
 .music-style-moon8 .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
 .music-style-vinyl .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
 .music-style-forest .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
-.music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb {
+.music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
+.music-style-harp .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb {
   background-color: transparent !important;
   border-color: color-mix(
     in srgb,
@@ -4811,6 +4946,7 @@ body.widgets-m3-accent .music-style-moon8 .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-vinyl .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-forest .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
+body.widgets-m3-accent .music-style-harp .vinyl-disc.has-thumb::before,
 .music-style-neon
   .music-player-wrapper.skin-m3-accent
   .vinyl-disc.has-thumb::before,
@@ -4824,6 +4960,9 @@ body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
   .music-player-wrapper.skin-m3-accent
   .vinyl-disc.has-thumb::before,
 .music-style-beach
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before,
+.music-style-harp
   .music-player-wrapper.skin-m3-accent
   .vinyl-disc.has-thumb::before {
   display: none !important;
@@ -6552,4 +6691,31 @@ body.widgets-m3-accent
     0 0 0 1px rgba(var(--accent-color-rgb, 255, 249, 196), 0.1) inset !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Fix Harp thumbnail-color-mode */
+.music-player-container.music-style-harp.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::before,
+.music-style-harp .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card)::before {
+  opacity: 0.16 !important;
+}
+
+.music-player-container.music-style-harp.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card),
+.music-style-harp .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) {
+  background: var(--music-player-bg, rgba(26, 18, 14, 0.94)) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 223, 168, 92), 0.45) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.65),
+    0 0 25px rgba(var(--accent-color-rgb, 223, 168, 92), 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.music-player-container.music-style-harp.thumbnail-color-mode
+  .music-player-wrapper:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) .disc-container,
+.music-style-harp .music-player-wrapper.thumbnail-color-mode:not(.skin-white-blur):not(.skin-transparent):not(.skin-light-transparent):not(.skin-m3-accent):not(.skin-gameboy):not(.skin-thumbnail-bg):not(.skin-vertical-card):not(.skin-horizontal-card) .disc-container {
+  border-color: rgba(var(--accent-color-rgb, 223, 168, 92), 0.55) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 16px rgba(var(--accent-color-rgb, 223, 168, 92), 0.3) !important;
 }
