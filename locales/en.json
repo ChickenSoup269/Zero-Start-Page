@@ -2116,7 +2116,7 @@
   "first_run_zoom_balanced": "Recommended",
   "first_run_zoom_compact": "Compact",
   "first_run_zoom_wheel": "Mouse wheel",
-  "first_run_zoom_note": "You can adjust the zoom level anytime using browser shortcuts or from Layout Controls.",
+  "first_run_zoom_note": "You can adjust the zoom level anytime using browser shortcuts (Ctrl + mouse wheel or Ctrl + / -).",
   "recommended": "Recommended",
   "first_run_style_title": "Choose a start style",
   "first_run_style_prompt": "Pick a layout to start with. You can change it later in Settings.",
