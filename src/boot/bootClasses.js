@@ -147,6 +147,23 @@ export function applyBootBodyClasses(settings) {
     `${settings.searchBarRadius ?? 20}px`,
   )
 
+  const searchStyle = settings.searchBarStyle || "glass"
+  body.classList.add(`search-style-${searchStyle}`)
+  if (searchStyle === "custom") {
+    root.style.setProperty(
+      "--search-custom-bg",
+      settings.searchBarBgColor || "#1a1d24",
+    )
+    root.style.setProperty(
+      "--search-custom-text",
+      settings.searchBarTextColor || "#ffffff",
+    )
+    root.style.setProperty(
+      "--search-custom-border",
+      settings.searchBarBorderColor || "#6366f1",
+    )
+  }
+
   // ── Bookmarks Container visibility ───────────────────────
   const bookmarksContainer = document.getElementById("bookmarks-container")
   if (bookmarksContainer) {

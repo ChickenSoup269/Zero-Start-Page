@@ -665,6 +665,7 @@
       css += `body.preload-bg-preview #bg-layer { filter: blur(8px) brightness(0.9) !important; transform: scale(1.02) !important; }\n`
       css += `#effect-canvas { animation: preloadBgFade calc(var(--bg-fade-in, 0.5s) + 0.3s) ease-out forwards; }\n`
       css += `body.hide-search-bar #search-container { display: none !important; }\n`
+      document.body.classList.add(`search-style-${settings.searchBarStyle || "glass"}`)
       if (settings.showBookmarks === false) {
         css += `#bookmarks-container { display: none !important; }\n`
       }

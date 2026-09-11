@@ -291,10 +291,8 @@
 
         <div id="search-container" class="search-container">
             <div class="search-engine-selector" id="search-engine-selector">
-                <button type="button" class="selected-engine" id="selected-engine" title="Google" aria-label="Google"
-                    aria-haspopup="listbox" aria-expanded="false" aria-controls="engine-dropdown"><img
-                        class="search-engine-icon" src="https://www.google.com/s2/favicons?domain=google.com&amp;sz=64"
-                        alt=""></button>
+                <button type="button" class="selected-engine" id="selected-engine" title="Search" aria-label="Search"
+                    aria-haspopup="listbox" aria-expanded="false" aria-controls="engine-dropdown"><i class="fa-solid fa-chevron-down search-engine-icon" style="display: flex; align-items: center; justify-content: center; font-size: 0.76rem;"></i></button>
                 <div class="engine-dropdown" id="engine-dropdown" role="listbox" aria-label="Search engines">
                 </div>
             </div>
@@ -306,8 +304,8 @@
                 </div>
             </div>
 
-            <form action="https://www.google.com/search" method="GET" target="_self">
-                <input type="text" id="search-input" aria-label="Search" name="q" placeholder="Search Google..."
+            <form id="search-form" action="#" method="GET" target="_self">
+                <input type="text" id="search-input" aria-label="Search" name="q" placeholder="Search" data-i18n-placeholder="search_placeholder"
                     autocomplete="off">
             </form>
             <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>

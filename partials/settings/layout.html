@@ -133,6 +133,7 @@
                     <label for="search-engine-select" data-i18n="settings_search_engine">Search
                         Engine</label>
                     <select id="search-engine-select">
+                        <option value="default" data-i18n="search_engine_default">Browser Default</option>
                         <option value="google">Google</option>
                         <option value="google-image">Google Images</option>
                         <option value="google-lens">Google Lens</option>
@@ -161,6 +162,36 @@
                         <option value="npm">npm</option>
                         <option value="scholar">Google Scholar</option>
                     </select>
+                </div>
+                <div class="setting-item">
+                    <label for="search-bar-style-select" data-i18n="settings_search_bar_style">Search Bar Style</label>
+                    <select id="search-bar-style-select">
+                        <option value="glass" data-i18n="search_bar_style_glass">Frosted Glass (Default)</option>
+                        <option value="glow" data-i18n="search_bar_style_glow">Neon Cyber Glow</option>
+                        <option value="aurora" data-i18n="search_bar_style_aurora">Aurora Gradient</option>
+                        <option value="sunset" data-i18n="search_bar_style_sunset">Sunset Horizon</option>
+                        <option value="minimal" data-i18n="search_bar_style_minimal">Minimalist Line</option>
+                        <option value="oled" data-i18n="search_bar_style_oled">OLED Deep Black</option>
+                        <option value="custom" data-i18n="search_bar_style_custom">Custom Colors...</option>
+                    </select>
+                </div>
+                <div id="search-bar-custom-colors-wrap" style="display: none; padding: 8px 10px; background: rgba(0, 0, 0, 0.15); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); margin: 6px 0 10px 0;">
+                    <div class="setting-item-row" style="margin-bottom: 6px;">
+                        <label for="search-bg-color-picker" data-i18n="settings_search_bg_color">Background Color</label>
+                        <input type="color" id="search-bg-color-picker" value="#1a1d24">
+                    </div>
+                    <div class="setting-item-row" style="margin-bottom: 6px;">
+                        <label for="search-text-color-picker" data-i18n="settings_search_text_color">Text & Icon Color</label>
+                        <input type="color" id="search-text-color-picker" value="#ffffff">
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="search-border-color-picker" data-i18n="settings_search_border_color">Border / Glow Color</label>
+                        <input type="color" id="search-border-color-picker" value="#6366f1">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="search-bar-custom-placeholder" data-i18n="settings_search_custom_placeholder">Custom Placeholder</label>
+                    <input type="text" id="search-bar-custom-placeholder" class="setting-text-input" placeholder="e.g. Search" autocomplete="off">
                 </div>
                 <div class="setting-item">
                     <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar

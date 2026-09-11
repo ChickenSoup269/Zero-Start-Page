@@ -7,6 +7,15 @@ const GEMINI_APP_URL = "https://gemini.google.com/app"
 const MAX_GEMINI_DIRECT_URL_LENGTH = 1900
 
 const SEARCH_ENGINES = {
+  default: {
+    name: "Browser Default",
+    shortName: "Default",
+    domain: "google.com",
+    iconClass: "fa-solid fa-chevron-down",
+    url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder",
+    isDefaultBrowser: true,
+  },
   google: {
     name: "Google",
     domain: "google.com",
@@ -231,7 +240,7 @@ const previewThumb = document.getElementById("image-preview-thumb")
 const removePreviewBtn = document.getElementById("remove-preview-btn")
 
 let suggestionTimeout
-let currentEngine = "google" // Will be overridden from settings in initSearch()
+let currentEngine = "default" // Will be overridden from settings in initSearch()
 let pendingImageFile = null // Store the image file waiting to be uploaded
 let activeSuggestionIndex = -1
 let originalQuery = ""
@@ -244,7 +253,12 @@ function getEngineIconUrl(engine) {
 
 function createEngineIcon(engine) {
   if (engine.iconClass) {
-    return `<i class="${engine.iconClass} search-engine-icon" style="display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"></i>`
+    const isChevron =
+      engine.iconClass.includes("chevron") ||
+      engine.iconClass.includes("angle") ||
+      engine.iconClass.includes("caret")
+    const fontSize = isChevron ? "0.76rem" : "1.15rem"
+    return `<i class="${engine.iconClass} search-engine-icon" style="display: flex; align-items: center; justify-content: center; font-size: ${fontSize};"></i>`
   }
   return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="eager" decoding="async">`
 }
@@ -294,14 +308,14 @@ function renderSettingsSearchEngineOptions() {
   const settingsSelect = document.getElementById("search-engine-select")
   if (!settingsSelect) return
   const currentValue =
-    settingsSelect.value || getSettings().searchEngine || "google"
+    settingsSelect.value || getSettings().searchEngine || "default"
   settingsSelect.innerHTML = Object.entries(SEARCH_ENGINES)
     .map(
       ([value, engine]) =>
         `<option value="${value}">${escapeHtml(getEngineName(value, engine))}</option>`,
     )
     .join("")
-  settingsSelect.value = SEARCH_ENGINES[currentValue] ? currentValue : "google"
+  settingsSelect.value = SEARCH_ENGINES[currentValue] ? currentValue : "default"
 }
 
 function openEngineDropdown({ focusValue = currentEngine } = {}) {
@@ -382,7 +396,7 @@ function setSearchEngine(value, { persist = false, focus = false } = {}) {
     option.setAttribute("aria-selected", String(isActive))
   })
 
-  const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
+  const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.default
   const tooltip = getEngineTooltip(value, engine)
   selectedEngine.innerHTML = createEngineIcon(engine)
   selectedEngine.title = tooltip
@@ -658,7 +672,23 @@ function submitSearch() {
     return
   }
 
-  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
+  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.default
+
+  // Default browser search provider: respects user's browser settings via Chrome Search API
+  if (currentEngine === "default" || engine.isDefaultBrowser) {
+    if (typeof chrome !== "undefined" && chrome.search?.query) {
+      chrome.search.query({
+        text: query,
+        disposition: "CURRENT_TAB",
+      })
+      searchInput.value = ""
+      return
+    }
+    window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`
+    searchInput.value = ""
+    return
+  }
+
   if (currentEngine === "gemini" || currentEngine === "gemini-image") {
     openGeminiWithPrompt(engine, query)
     return
@@ -758,7 +788,9 @@ export function updateSearchUI() {
     return
   }
 
-  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
+  const i18n = geti18n()
+  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.default
+
   if (cameraBtn) {
     cameraBtn.style.display = currentEngine === "google-image" ? "flex" : "none"
   }
@@ -767,25 +799,36 @@ export function updateSearchUI() {
   }
   if (aiBtn) {
     aiBtn.style.display =
-      currentEngine === "google" || currentEngine === "google-image"
+      currentEngine === "default" ||
+      currentEngine === "google" ||
+      currentEngine === "google-image"
         ? "flex"
         : "none"
   }
-  const i18n = geti18n()
-  const ph =
-    (engine.placeholderKey && i18n[engine.placeholderKey]) ||
-    `Search ${engine.name}...`
+
   if (searchInput) {
-    searchInput.placeholder = ph
-    if (engine.placeholderKey) {
-      searchInput.setAttribute("data-i18n-placeholder", engine.placeholderKey)
-    } else {
+    const customPlaceholder = getSettings().searchBarCustomPlaceholder
+    if (customPlaceholder && customPlaceholder.trim()) {
+      searchInput.placeholder = customPlaceholder.trim()
       searchInput.removeAttribute("data-i18n-placeholder")
+    } else {
+      const ph =
+        (engine.placeholderKey && i18n[engine.placeholderKey]) ||
+        i18n.search_placeholder ||
+        `Search ${engine.name}...`
+      searchInput.placeholder = ph
+      if (engine.placeholderKey) {
+        searchInput.setAttribute("data-i18n-placeholder", engine.placeholderKey)
+      } else {
+        searchInput.removeAttribute("data-i18n-placeholder")
+      }
     }
   }
 }
 
 function initSearch() {
+  if (searchEngineSelector) searchEngineSelector.style.display = "flex"
+
   renderSearchEngineOptions()
   renderSettingsSearchEngineOptions()
   engineDropdown.setAttribute(
@@ -822,6 +865,15 @@ function initSearch() {
   window.addEventListener("settingsUpdated", (e) => {
     if (e.detail?.key === "searchEngine") {
       setSearchEngine(e.detail.value)
+    }
+    if (e.detail?.key === "searchBarCustomPlaceholder") {
+      updateSearchUI()
+    }
+  })
+
+  window.addEventListener("layoutUpdated", (e) => {
+    if (e.detail?.key === "searchBarCustomPlaceholder") {
+      updateSearchUI()
     }
   })
 

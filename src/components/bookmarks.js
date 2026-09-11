@@ -1830,6 +1830,8 @@ function renderBookmarkToolbar() {
       bw.style.removeProperty("right")
       bw.style.removeProperty("bottom")
       bw.style.removeProperty("position")
+      bw.style.removeProperty("margin")
+      bw.style.removeProperty("transform")
       bw.classList.remove("has-position")
 
       const s = getSettings()

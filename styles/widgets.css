@@ -56,6 +56,85 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   z-index: 1050;
 }
 
+/* ── Search Bar Themes & Custom Styles ─────────────────────────── */
+body.search-style-glow .search-container {
+  border: 1px solid var(--accent-color, #6366f1) !important;
+  box-shadow: 0 0 16px rgba(var(--accent-color-rgb, 99, 102, 241), 0.35), inset 0 0 12px rgba(var(--accent-color-rgb, 99, 102, 241), 0.12) !important;
+}
+body.search-style-glow .search-container:hover,
+body.search-style-glow .search-container:focus-within {
+  box-shadow: 0 0 28px rgba(var(--accent-color-rgb, 99, 102, 241), 0.6), 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 0 16px rgba(var(--accent-color-rgb, 99, 102, 241), 0.22) !important;
+}
+
+body.search-style-aurora .search-container {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.55), rgba(88, 28, 135, 0.45), rgba(14, 116, 144, 0.5)) !important;
+  border: 1px solid rgba(125, 211, 252, 0.4) !important;
+  box-shadow: 0 12px 36px rgba(14, 116, 144, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+body.search-style-aurora .search-container:hover,
+body.search-style-aurora .search-container:focus-within {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.65), rgba(126, 34, 206, 0.58), rgba(6, 182, 212, 0.62)) !important;
+  border-color: rgba(186, 230, 253, 0.7) !important;
+  box-shadow: 0 18px 48px rgba(126, 34, 206, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+body.search-style-sunset .search-container {
+  background: linear-gradient(135deg, rgba(190, 18, 60, 0.5), rgba(194, 65, 12, 0.45), rgba(217, 119, 6, 0.4)) !important;
+  border: 1px solid rgba(253, 164, 175, 0.38) !important;
+  box-shadow: 0 12px 36px rgba(194, 65, 12, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+body.search-style-sunset .search-container:hover,
+body.search-style-sunset .search-container:focus-within {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.62), rgba(234, 88, 12, 0.58), rgba(245, 158, 11, 0.52)) !important;
+  border-color: rgba(254, 205, 211, 0.65) !important;
+  box-shadow: 0 18px 48px rgba(225, 29, 72, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+body.search-style-minimal .search-container {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+}
+body.search-style-minimal .search-container:hover,
+body.search-style-minimal .search-container:focus-within {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  box-shadow: none !important;
+}
+
+body.search-style-oled .search-container {
+  background: #090a0f !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85) !important;
+}
+body.search-style-oled .search-container:hover,
+body.search-style-oled .search-container:focus-within {
+  background: #0e1017 !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.95) !important;
+}
+
+body.search-style-custom .search-container {
+  background: var(--search-custom-bg, #1a1d24) !important;
+  border: 1px solid var(--search-custom-border, #6366f1) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 16px var(--search-custom-border, #6366f1) !important;
+}
+body.search-style-custom #search-input {
+  color: var(--search-custom-text, #ffffff) !important;
+}
+body.search-style-custom #search-input::placeholder {
+  color: var(--search-custom-text, #ffffff) !important;
+  opacity: 0.55;
+}
+body.search-style-custom .selected-engine,
+body.search-style-custom .search-submit-btn,
+body.search-style-custom .clear-btn,
+body.search-style-custom .camera-btn,
+body.search-style-custom .lens-btn,
+body.search-style-custom .ai-btn {
+  color: var(--search-custom-text, #ffffff) !important;
+}
+
 #search-input {
   flex: 1;
   background: transparent;
@@ -70,7 +149,13 @@ body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
 
 #search-input::placeholder {
   color: var(--text-color);
-  opacity: 0.6;
+  opacity: 0.55;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+#search-input:focus::placeholder {
+  opacity: 0.4;
 }
 
 .search-icon {
@@ -1188,14 +1273,33 @@ body:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskb
    DRAGGABLE GRID LAYOUT MODE
    ===================================================== */
 
-/* Container in draggable-grid mode */
+/* Container and widget in draggable-grid mode */
+body.bookmark-draggable-grid-mode:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) #bookmark-widget {
+  width: fit-content;
+  max-width: min(880px, calc(100vw - 20px));
+  min-width: min(220px, 90vw);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
 body.bookmark-draggable-grid-mode #bookmarks-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, calc(var(--bookmark-icon-size, 42px) + 20px));
+  grid-template-columns: repeat(auto-fit, calc(var(--bookmark-icon-size, 42px) + 20px));
   grid-auto-rows: max-content;
   justify-content: center;
   align-items: start;
   gap: var(--bookmark-gap, var(--space-3));
+  width: fit-content;
+  max-width: min(880px, calc(100vw - 20px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.bookmark-draggable-grid-mode .bookmark-groups-container {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.8rem;
 }
 
 /* Locked state — disable drag cursors */
@@ -1220,7 +1324,7 @@ body.bookmark-grid-locked #bookmarks-container .bookmark {
 body.bookmark-draggable-grid-mode .bookmark-layout-toolbar {
   position: absolute;
   top: -8px;
-  right: 10px;
+  right: 6px;
   left: auto;
   transform: translateY(-2px) scale(0.96);
   display: flex;
@@ -1381,6 +1485,7 @@ body.bookmark-draggable-grid-mode.bookmark-grid-locked #bookmark-widget,
 /* Position must be absolute/fixed for free-move to work */
 body.bookmark-draggable-grid-mode.bookmark-free-move-active:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) #bookmark-widget.has-position {
   position: absolute;
+  margin: 0 !important;
 }
 
 .bookmark,
@@ -11046,8 +11151,17 @@ body.widgets-m3-accent .timer-controls #timer-start-pause i {
   margin: auto;
 }
 
-.selected-engine:hover {
-  background: rgba(255, 255, 255, 0.1);
+.selected-engine i.search-engine-icon {
+  width: auto;
+  height: auto;
+  font-size: 0.76rem !important;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.selected-engine:hover i.search-engine-icon {
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 .selected-engine:focus-visible,

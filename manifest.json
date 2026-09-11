@@ -11,7 +11,8 @@
     "storage",
     "identity",
     "offscreen",
-    "tabCapture"
+    "tabCapture",
+    "search"
   ],
   "icons": {
     "16": "icon/icon_16.png",
