@@ -1,51 +1,158 @@
 import { fadeToggle } from "../utils/dom.js"
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
-import { applyTranslations } from "../services/i18n.js"
+import { applyTranslations, geti18n } from "../services/i18n.js"
+
+export const RSS_PRESET_PACKS = {
+  global: {
+    id: "global",
+    nameKey: "rss_preset_intl",
+    defaultName: "International",
+    icon: "fa-solid fa-globe",
+    feeds: [
+      { name: "BBC World", url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+      { name: "CNN", url: "http://rss.cnn.com/rss/edition.rss" },
+      { name: "NY Times", url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
+      { name: "The Guardian", url: "https://www.theguardian.com/world/rss" },
+      { name: "Reuters", url: "https://www.reutersagency.com/feed/?best-topics=world&post_type=best" },
+    ],
+  },
+  tech: {
+    id: "tech",
+    nameKey: "rss_preset_tech",
+    defaultName: "Technology",
+    icon: "fa-solid fa-microchip",
+    feeds: [
+      { name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+      { name: "TechCrunch", url: "https://techcrunch.com/feed/" },
+      { name: "Wired", url: "https://www.wired.com/feed/rss" },
+      { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index" },
+      { name: "Hacker News", url: "https://news.ycombinator.com/rss" },
+    ],
+  },
+  vi: {
+    id: "vi",
+    nameKey: "rss_preset_vn",
+    defaultName: "Việt Nam",
+    icon: "fa-solid fa-star",
+    feeds: [
+      { name: "VNE Mới nhất", url: "https://vnexpress.net/rss/tin-moi-nhat.rss" },
+      { name: "VNE Thời sự", url: "https://vnexpress.net/rss/thoi-su.rss" },
+      { name: "VNE Số hóa", url: "https://vnexpress.net/rss/so-hoa.rss" },
+      { name: "VNE Kinh doanh", url: "https://vnexpress.net/rss/kinh-doanh.rss" },
+      { name: "Tuổi Trẻ", url: "https://tuoitre.vn/rss/tin-moi-nhat.rss" },
+      { name: "Thanh Niên", url: "https://thanhnien.vn/rss/home.rss" },
+      { name: "Dân Trí", url: "https://dantri.com.vn/rss/home.rss" },
+    ],
+  },
+  de: {
+    id: "de",
+    nameKey: "rss_preset_de",
+    defaultName: "Deutschland",
+    icon: "fa-solid fa-landmark",
+    feeds: [
+      { name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/" },
+      { name: "Der Spiegel", url: "https://www.spiegel.de/schlagzeilen/tops/index.rss" },
+      { name: "Die Zeit", url: "https://newsfeed.zeit.de/index" },
+      { name: "Heise Online", url: "https://www.heise.de/rss/heise-atom.xml" },
+    ],
+  },
+  sv: {
+    id: "sv",
+    nameKey: "rss_preset_sv",
+    defaultName: "Sverige",
+    icon: "fa-solid fa-crown",
+    feeds: [
+      { name: "SVT Nyheter", url: "https://www.svt.se/nyheter/rss.xml" },
+      { name: "Dagens Nyheter", url: "https://www.dn.se/rss/" },
+      { name: "Aftonbladet", url: "https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/" },
+      { name: "SweClockers", url: "https://www.sweclockers.com/feeds/nyheter" },
+    ],
+  },
+}
+
+export function getDefaultFeeds(lang = "en") {
+  const code = (lang || "").toLowerCase()
+  if (code.startsWith("vi")) {
+    return RSS_PRESET_PACKS.vi.feeds.slice(0, 4)
+  }
+  if (code.startsWith("de")) {
+    return [
+      ...RSS_PRESET_PACKS.de.feeds.slice(0, 3),
+      RSS_PRESET_PACKS.tech.feeds[0],
+    ]
+  }
+  if (code.startsWith("sv")) {
+    return [
+      ...RSS_PRESET_PACKS.sv.feeds.slice(0, 3),
+      RSS_PRESET_PACKS.global.feeds[0],
+    ]
+  }
+  return [
+    ...RSS_PRESET_PACKS.global.feeds.slice(0, 3),
+    ...RSS_PRESET_PACKS.tech.feeds.slice(0, 2),
+  ]
+}
+
+function escapeHtml(str) {
+  if (!str) return ""
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+
+function formatRelativeTime(dateStr) {
+  if (!dateStr) return ""
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return ""
+  const now = Date.now()
+  const diffSec = Math.floor((now - d.getTime()) / 1000)
+  const i18n = geti18n()
+
+  if (diffSec < 60) {
+    return i18n.rss_time_just_now || "Just now"
+  }
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) {
+    const tmpl = i18n.rss_time_mins_ago || "{m}m ago"
+    return tmpl.replace("{m}", diffMin)
+  }
+  const diffHour = Math.floor(diffMin / 60)
+  if (diffHour < 24) {
+    const tmpl = i18n.rss_time_hours_ago || "{h}h ago"
+    return tmpl.replace("{h}", diffHour)
+  }
+  const diffDay = Math.floor(diffHour / 24)
+  if (diffDay < 7) {
+    const tmpl = i18n.rss_time_days_ago || "{d}d ago"
+    return tmpl.replace("{d}", diffDay)
+  }
+  return d.toLocaleDateString([], { month: "short", day: "numeric" })
+}
 
 export class RssReader {
   constructor(container) {
     this.container = container
     this.activeTabIndex = 0
     this.isReadLaterMode = false
+
+    const currentLang = (getSettings().language || "en").toLowerCase()
+    this.activePresetId = currentLang.startsWith("vi")
+      ? "vi"
+      : currentLang.startsWith("de")
+      ? "de"
+      : currentLang.startsWith("sv")
+      ? "sv"
+      : "global"
+
     this.config = {
-      feeds: [
-        {
-          name: "Tin mới nhất",
-          url: "https://vnexpress.net/rss/tin-moi-nhat.rss",
-        },
-        {
-          name: "Tin nổi bật",
-          url: "https://vnexpress.net/rss/tin-noi-bat.rss",
-        },
-        {
-          name: "Tin xem nhiều",
-          url: "https://vnexpress.net/rss/tin-xem-nhieu.rss",
-        },
-        { name: "Thời sự", url: "https://vnexpress.net/rss/thoi-su.rss" },
-        { name: "Thế giới", url: "https://vnexpress.net/rss/the-gioi.rss" },
-        { name: "Kinh doanh", url: "https://vnexpress.net/rss/kinh-doanh.rss" },
-        {
-          name: "Bất động sản",
-          url: "https://vnexpress.net/rss/bat-dong-san.rss",
-        },
-        { name: "Thể thao", url: "https://vnexpress.net/rss/the-thao.rss" },
-        { name: "Giải trí", url: "https://vnexpress.net/rss/giai-tri.rss" },
-        { name: "Pháp luật", url: "https://vnexpress.net/rss/phap-luat.rss" },
-        { name: "Giáo dục", url: "https://vnexpress.net/rss/giao-duc.rss" },
-        { name: "Sức khỏe", url: "https://vnexpress.net/rss/suc-khoe.rss" },
-        { name: "Đời sống", url: "https://vnexpress.net/rss/gia-dinh.rss" },
-        { name: "Du lịch", url: "https://vnexpress.net/rss/du-lich.rss" },
-        { name: "Khoa học", url: "https://vnexpress.net/rss/khoa-hoc.rss" },
-        { name: "Công nghệ", url: "https://vnexpress.net/rss/so-hoa.rss" },
-        { name: "Xe", url: "https://vnexpress.net/rss/oto-xe-may.rss" },
-        { name: "Góc nhìn", url: "https://vnexpress.net/rss/goc-nhin.rss" },
-        { name: "Ý kiến", url: "https://vnexpress.net/rss/y-kien.rss" },
-        { name: "Tâm sự", url: "https://vnexpress.net/rss/tam-su.rss" },
-        { name: "Thư giãn", url: "https://vnexpress.net/rss/cuoi.rss" },
-      ],
+      feeds: getDefaultFeeds(currentLang),
       blockedWords: "scandal, drama",
-      highlightedWords: "Manchester United, Giá vàng",
+      highlightedWords: "AI, Tech, Startpage",
       showImages: true,
+      userCustomized: false,
     }
     this.itemsLimit = 10
     this.currentItems = []
@@ -69,6 +176,23 @@ export class RssReader {
       ) {
         this.applyAppearance()
       }
+    })
+
+    window.addEventListener("languageChanged", () => {
+      const lang = (getSettings().language || "en").toLowerCase()
+      if (!this.config.userCustomized) {
+        this.config.feeds = getDefaultFeeds(lang)
+        this.saveConfig()
+        this.activeTabIndex = 0
+        this.renderTabs()
+        this.fetchRSS(true)
+      } else {
+        this.renderTabs()
+        this.renderItems()
+      }
+      this.updatePresetTabsUI()
+      this.updatePresetChipsUI()
+      applyTranslations(this.container)
     })
 
     this.applyAppearance()
@@ -97,9 +221,29 @@ export class RssReader {
     const isExpanded = settings.rssExpanded === true && !isMini
     this.container.classList.toggle("rss-mini", isMini)
     this.container.classList.toggle("rss-expanded", isExpanded)
+
+    const expandBtnIcon = this.container.querySelector(".rss-expand-btn i")
+    if (expandBtnIcon) {
+      expandBtnIcon.className = isExpanded
+        ? "fa-solid fa-down-left-and-up-right-to-center"
+        : "fa-solid fa-up-right-and-down-left-from-center"
+    }
+
+    if (isMini || isExpanded) {
+      this.container.style.width = ""
+      this.container.style.height = ""
+    } else {
+      const savedW = localStorage.getItem("rssWidgetCustomWidth")
+      const savedH = localStorage.getItem("rssWidgetCustomHeight")
+      if (savedW && savedH) {
+        this.container.style.width = `${savedW}px`
+        this.container.style.height = `${savedH}px`
+      }
+    }
   }
 
   loadConfig() {
+    const currentLang = (getSettings().language || "en").toLowerCase()
     const saved = localStorage.getItem("rssWidgetConfig")
     if (saved) {
       try {
@@ -109,8 +253,23 @@ export class RssReader {
           delete parsed.url
         }
         if (parsed.showImages === undefined) parsed.showImages = true
+
+        // Detect legacy default that hardcoded 21 VnExpress feeds for non-Vietnamese users
+        const isLegacyVnDefault =
+          Array.isArray(parsed.feeds) &&
+          parsed.feeds.length > 5 &&
+          parsed.feeds.every((f) => f.url && f.url.includes("vnexpress.net")) &&
+          !parsed.userCustomized
+
+        if (isLegacyVnDefault && !currentLang.startsWith("vi")) {
+          parsed.feeds = getDefaultFeeds(currentLang)
+        }
+
         this.config = { ...this.config, ...parsed }
       } catch (e) {}
+    } else {
+      this.config.feeds = getDefaultFeeds(currentLang)
+      this.saveConfig()
     }
   }
 
@@ -120,78 +279,69 @@ export class RssReader {
 
   render() {
     this.container.innerHTML = `
-            <div class="rss-header">
-                <span><i class="fa-solid fa-rss"></i> RSS News</span>
-                <div class="rss-actions">
-                    <button class="rss-refresh-btn" data-i18n-title="rss_refresh_btn" title="Làm mới"><i class="fa-solid fa-rotate-right"></i></button>
-                    <button class="rss-settings-btn" data-i18n-title="rss_settings_btn" title="Cài đặt"><i class="fa-solid fa-gear"></i></button>
-                    <button class="rss-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            </div>
-               <div class="rss-tabs" style="display: none;"></div>
+      <div class="rss-header">
+        <div class="rss-header-left">
+          <i class="fa-solid fa-rss" style="color: var(--accent-color, #4a80f0);"></i>
+          <span>RSS News</span>
+        </div>
+        <div class="rss-actions">
+          <button class="rss-expand-btn" data-i18n-title="widget_expand_size" title="Phóng to"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+          <button class="rss-refresh-btn" data-i18n-title="rss_refresh_btn" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+          <button class="rss-settings-btn" data-i18n-title="rss_settings_btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+          <button class="rss-close-btn widget-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="rss-tabs" style="display: none;"></div>
 
-            <div class="rss-settings">
-                <div class="rss-settings-group">
-                    <label data-i18n="rss_settings_title">Danh sách Nguồn RSS (Tên Tab | Link - Mỗi dòng 1 nguồn)</label>
-                    <div style="margin-bottom: 5px;">
-                        <button type="button" class="rss-preset-toggle" style="width:100%; text-align:left; padding:8px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); color:var(--text-color); border-radius:6px; cursor:pointer; font-size:0.9em; transition: background 0.2s;">
-                            <i class="fa-solid fa-list-ul"></i> <span data-i18n="rss_presets_toggle">Gợi ý nguồn RSS (Bấm để chọn)</span> <i class="fa-solid fa-chevron-down" style="float:right; margin-top:2px;"></i>
-                        </button>
-                        <div class="rss-preset-list-container" style="display:none; flex-direction:column; gap:10px; padding:10px; background:rgba(0,0,0,0.1); border:1px solid rgba(255,255,255,0.05); border-radius:6px; margin-top:5px; max-height: 200px; overflow-y: auto;">
-                            
-                            <div style="font-weight:600; font-size:0.85em; opacity:0.8; margin-bottom:2px;"><i class="fa-regular fa-newspaper" style="margin-right:4px;"></i> <span data-i18n="rss_preset_vn">Việt Nam</span></div>
-                            <div style="display:flex; flex-wrap:wrap; gap:6px;">
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Mới nhất | https://vnexpress.net/rss/tin-moi-nhat.rss">VNE Mới nhất</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Nổi bật | https://vnexpress.net/rss/tin-noi-bat.rss">VNE Nổi bật</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Thời sự | https://vnexpress.net/rss/thoi-su.rss">VNE Thời sự</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Thế giới | https://vnexpress.net/rss/the-gioi.rss">VNE Thế giới</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Thể thao | https://vnexpress.net/rss/the-thao.rss">VNE Thể thao</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Kinh doanh | https://vnexpress.net/rss/kinh-doanh.rss">VNE Kinh doanh</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Giáo dục | https://vnexpress.net/rss/giao-duc.rss">VNE Giáo dục</button>
-                                <button type="button" class="rss-preset-btn" data-value="VNExpress - Công nghệ | https://vnexpress.net/rss/so-hoa.rss">VNE Công nghệ</button>
-                                <button type="button" class="rss-preset-btn" data-value="Tuổi Trẻ - Mới nhất | https://tuoitre.vn/rss/tin-moi-nhat.rss">Tuổi Trẻ</button>
-                                <button type="button" class="rss-preset-btn" data-value="Thanh Niên - Tin tức | https://thanhnien.vn/rss/home.rss">Thanh Niên</button>
-                                <button type="button" class="rss-preset-btn" data-value="Dân Trí - Trang chủ | https://dantri.com.vn/rss/home.rss">Dân Trí</button>
-                            </div>
+      <div class="rss-settings">
+        <div class="rss-settings-group">
+          <label data-i18n="rss_presets_toggle" style="font-weight: 600; opacity: 0.9;">Gợi ý nguồn RSS (Presets)</label>
+          <div class="rss-preset-tabs"></div>
+          <div class="rss-preset-actions">
+            <button type="button" class="rss-preset-action-btn apply-btn">
+              <i class="fa-solid fa-check"></i> <span data-i18n="rss_apply_preset">Áp dụng bộ này</span>
+            </button>
+            <button type="button" class="rss-preset-action-btn reset-btn">
+              <i class="fa-solid fa-rotate-left"></i> <span data-i18n="rss_reset_default">Khôi phục mặc định</span>
+            </button>
+          </div>
+          <div class="rss-preset-chips"></div>
+        </div>
 
-                            <div style="font-weight:600; font-size:0.85em; opacity:0.8; margin-bottom:2px; margin-top:5px;"><i class="fa-solid fa-globe" style="margin-right:4px;"></i> <span data-i18n="rss_preset_intl">Quốc Tế</span></div>
-                            <div style="display:flex; flex-wrap:wrap; gap:6px;">
-                                <button type="button" class="rss-preset-btn" data-value="CNN Top Stories | http://rss.cnn.com/rss/edition.rss">CNN</button>
-                                <button type="button" class="rss-preset-btn" data-value="BBC World | http://feeds.bbci.co.uk/news/world/rss.xml">BBC</button>
-                                <button type="button" class="rss-preset-btn" data-value="NYT World | https://rss.nytimes.com/services/xml/rss/nyt/World.xml">NYT</button>
-                                <button type="button" class="rss-preset-btn" data-value="TechCrunch | https://techcrunch.com/feed/">TechCrunch</button>
-                                <button type="button" class="rss-preset-btn" data-value="The Verge | https://www.theverge.com/rss/index.xml">The Verge</button>
-                                <button type="button" class="rss-preset-btn" data-value="Wired | https://www.wired.com/feed/rss">Wired</button>
-                            </div>
-                        </div>
-                    </div>
-                    <textarea class="rss-input" id="rss-feeds" rows="4" style="resize: vertical; white-space: pre;" placeholder="Ví dụ:&#10;Tin Công Nghệ | https://vnexpress.net/rss/so-hoa.rss&#10;Kinh doanh | https://dantri.com.vn/rss/kinh-doanh.rss"></textarea>
-                    <div style="margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap;">
-                        <a href="https://vnexpress.net/rss" target="_blank" class="rss-source-link"><i class="fa-solid fa-link" style="margin-right:2px;"></i> <span data-i18n="rss_copy_vne">Lấy RSS VNExpress</span></a>
-                        <a href="https://tuoitre.vn/rss.htm" target="_blank" class="rss-source-link"><i class="fa-solid fa-link" style="margin-right:2px;"></i> <span data-i18n="rss_copy_tt">Lấy RSS Tuổi Trẻ</span></a>
-                    </div>
-                </div>
-                <div class="rss-settings-group">
-                    <label data-i18n="rss_blocked_words">Từ khóa bị chặn (ngăn cách bởi dấu phẩy)</label>
-                    <input type="text" class="rss-input" id="rss-block" value="${this.config.blockedWords}" placeholder="scandal, drama">
-                </div>
-                <div class="rss-settings-group">
-                    <label data-i18n="rss_highlighted_words">Từ khóa nổi bật (ngăn cách bởi dấu phẩy)</label>
-                    <input type="text" class="rss-input" id="rss-highlight" value="${this.config.highlightedWords}" placeholder="Manchester United">
-                </div>
-                <div class="rss-settings-group" style="flex-direction: row; align-items: center; gap: 8px;">
-                    <input type="checkbox" id="rss-show-images" ${this.config.showImages ? "checked" : ""} style="cursor: pointer;">
-                    <label for="rss-show-images" data-i18n="rss_show_images" style="cursor: pointer; opacity: 1; margin: 0;">Hiển thị ảnh đại diện báo</label>
-                </div>
-                <button class="rss-save-btn" data-i18n="rss_save_btn">Lưu & Tải lại</button>
-            </div>
-            <div class="rss-content">
-                <div style="text-align:center; padding:20px; opacity:0.7;">Loading feeds...</div>
-            </div>
-            <button class="rss-scroll-top-btn" title="Lên đầu trang"><i class="fa-solid fa-arrow-up"></i></button>
-        `
+        <div class="rss-settings-group">
+          <label data-i18n="rss_settings_title">Danh sách Nguồn RSS (Tên Tab | Link - Mỗi dòng 1 nguồn)</label>
+          <textarea class="rss-input" id="rss-feeds" rows="4" style="resize: vertical; white-space: pre;" placeholder="BBC World | https://feeds.bbci.co.uk/news/world/rss.xml&#10;The Verge | https://www.theverge.com/rss/index.xml"></textarea>
+          <div style="margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap;">
+            <a href="https://vnexpress.net/rss" target="_blank" class="rss-source-link"><i class="fa-solid fa-link" style="margin-right:2px;"></i> <span data-i18n="rss_copy_vne">Lấy RSS VNExpress</span></a>
+            <a href="https://tuoitre.vn/rss.htm" target="_blank" class="rss-source-link"><i class="fa-solid fa-link" style="margin-right:2px;"></i> <span data-i18n="rss_copy_tt">Lấy RSS Tuổi Trẻ</span></a>
+          </div>
+        </div>
 
-    applyTranslations()
+        <div class="rss-settings-group">
+          <label data-i18n="rss_blocked_words">Từ khóa bị chặn (ngăn cách bởi dấu phẩy)</label>
+          <input type="text" class="rss-input" id="rss-block" value="${escapeHtml(this.config.blockedWords)}" placeholder="scandal, drama">
+        </div>
+
+        <div class="rss-settings-group">
+          <label data-i18n="rss_highlighted_words">Từ khóa nổi bật (ngăn cách bởi dấu phẩy)</label>
+          <input type="text" class="rss-input" id="rss-highlight" value="${escapeHtml(this.config.highlightedWords)}" placeholder="AI, Technology">
+        </div>
+
+        <div class="rss-settings-group" style="flex-direction: row; align-items: center; gap: 8px;">
+          <input type="checkbox" id="rss-show-images" ${this.config.showImages ? "checked" : ""} style="cursor: pointer;">
+          <label for="rss-show-images" data-i18n="rss_show_images" style="cursor: pointer; opacity: 1; margin: 0;">Hiển thị ảnh đại diện báo</label>
+        </div>
+
+        <button class="rss-save-btn" data-i18n="rss_save_btn">Lưu & Tải lại</button>
+      </div>
+
+      <div class="rss-content">
+        <div style="text-align:center; padding:20px; opacity:0.7;">Loading feeds...</div>
+      </div>
+      <button class="rss-scroll-top-btn" title="Lên đầu trang"><i class="fa-solid fa-arrow-up"></i></button>
+    `
+
+    applyTranslations(this.container)
 
     this.contentEl = this.container.querySelector(".rss-content")
     this.settingsEl = this.container.querySelector(".rss-settings")
@@ -213,6 +363,7 @@ export class RssReader {
     this.container
       .querySelector(".rss-refresh-btn")
       ?.addEventListener("click", () => this.fetchRSS(true))
+
     this.container
       .querySelector(".rss-close-btn")
       ?.addEventListener("click", () => {
@@ -225,6 +376,7 @@ export class RssReader {
           }),
         )
       })
+
     this.container
       .querySelector(".rss-settings-btn")
       ?.addEventListener("click", () => {
@@ -236,123 +388,192 @@ export class RssReader {
         if (tabsEl) {
           if (isActive) {
             tabsEl.style.display = "none"
+            this.syncSettingsFields()
           } else {
             this.renderTabs()
           }
         }
       })
 
-    const feedsTextarea = this.container.querySelector("#rss-feeds")
+    this.container
+      .querySelector(".rss-expand-btn")
+      ?.addEventListener("click", () => {
+        const settings = getSettings()
+        const isExp = !(settings.rssExpanded === true && !settings.rssMini)
+        updateSetting("rssExpanded", isExp)
+        if (isExp) updateSetting("rssMini", false)
+        saveSettings(true)
+        this.applyAppearance()
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "rssExpanded", value: isExp },
+          }),
+        )
+      })
 
+    if (window.ResizeObserver && !this.resizeObserver) {
+      this.resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (
+            this.container.classList.contains("rss-mini") ||
+            this.container.classList.contains("rss-expanded")
+          ) {
+            return
+          }
+          const { width, height } = entry.contentRect
+          if (width > 300 && height > 300) {
+            clearTimeout(this._saveSizeTimer)
+            this._saveSizeTimer = setTimeout(() => {
+              localStorage.setItem(
+                "rssWidgetCustomWidth",
+                Math.round(this.container.offsetWidth),
+              )
+              localStorage.setItem(
+                "rssWidgetCustomHeight",
+                Math.round(this.container.offsetHeight),
+              )
+            }, 400)
+          }
+        }
+      })
+      this.resizeObserver.observe(this.container)
+    }
+
+    this.setupSettingsEvents()
+    this.renderTabs()
+  }
+
+  syncSettingsFields() {
+    const feedsTextarea = this.container.querySelector("#rss-feeds")
     if (feedsTextarea) {
       feedsTextarea.value = this.config.feeds
         .map((f) => `${f.name} | ${f.url}`)
         .join("\n")
     }
+    this.updatePresetTabsUI()
+    this.updatePresetChipsUI()
+  }
 
-    const toggleBtn = this.container.querySelector(".rss-preset-toggle")
-    const listContainer = this.container.querySelector(
-      ".rss-preset-list-container",
-    )
-    if (toggleBtn && listContainer) {
-      toggleBtn.addEventListener("click", () => {
-        const isHidden = listContainer.style.display === "none"
-        listContainer.style.display = isHidden ? "flex" : "none"
-        toggleBtn.querySelector(
-          "i.fa-chevron-down, i.fa-chevron-up",
-        ).className = isHidden
-          ? "fa-solid fa-chevron-up"
-          : "fa-solid fa-chevron-down"
+  updatePresetTabsUI() {
+    const presetTabsContainer = this.container.querySelector(".rss-preset-tabs")
+    if (!presetTabsContainer) return
+    const i18n = geti18n()
+
+    presetTabsContainer.innerHTML = Object.values(RSS_PRESET_PACKS)
+      .map(
+        (pack) => `
+        <button type="button" class="rss-preset-tab-btn ${this.activePresetId === pack.id ? "active" : ""}" data-pack-id="${pack.id}">
+          <i class="${pack.icon}"></i> ${i18n[pack.nameKey] || pack.defaultName}
+        </button>
+      `,
+      )
+      .join("")
+
+    presetTabsContainer.querySelectorAll(".rss-preset-tab-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const packId = e.currentTarget.dataset.packId
+        this.activePresetId = packId
+        this.updatePresetTabsUI()
+        this.updatePresetChipsUI()
       })
-      toggleBtn.addEventListener(
-        "mouseover",
-        () => (toggleBtn.style.background = "rgba(255,255,255,0.1)"),
-      )
-      toggleBtn.addEventListener(
-        "mouseout",
-        () => (toggleBtn.style.background = "rgba(0,0,0,0.2)"),
-      )
-    }
+    })
+  }
 
-    const presetBtns = this.container.querySelectorAll(".rss-preset-btn")
+  updatePresetChipsUI() {
+    const chipsContainer = this.container.querySelector(".rss-preset-chips")
+    const feedsTextarea = this.container.querySelector("#rss-feeds")
+    if (!chipsContainer || !feedsTextarea) return
+
+    const pack = RSS_PRESET_PACKS[this.activePresetId] || RSS_PRESET_PACKS.global
+    const currentLines = feedsTextarea.value
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l)
+
+    chipsContainer.innerHTML = pack.feeds
+      .map((feed) => {
+        const isActive = currentLines.some((l) => l.includes(feed.url))
+        return `
+          <button type="button" class="rss-preset-chip ${isActive ? "active" : ""}" data-name="${escapeHtml(feed.name)}" data-url="${escapeHtml(feed.url)}">
+            <i class="fa-solid ${isActive ? "fa-check" : "fa-plus"}"></i> ${escapeHtml(feed.name)}
+          </button>
+        `
+      })
+      .join("")
+
+    chipsContainer.querySelectorAll(".rss-preset-chip").forEach((chip) => {
+      chip.addEventListener("click", (e) => {
+        const btn = e.currentTarget
+        const name = btn.dataset.name
+        const url = btn.dataset.url
+        let lines = feedsTextarea.value
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l)
+
+        const existingIdx = lines.findIndex((l) => l.includes(url))
+        if (existingIdx !== -1) {
+          lines.splice(existingIdx, 1)
+        } else {
+          if (lines.length >= 10) {
+            alert("Bạn chỉ được chọn tối đa 10 nguồn để đảm bảo trải nghiệm tốt nhất!")
+            return
+          }
+          lines.push(`${name} | ${url}`)
+        }
+        feedsTextarea.value = lines.join("\n")
+        this.updatePresetChipsUI()
+      })
+    })
+  }
+
+  setupSettingsEvents() {
+    const feedsTextarea = this.container.querySelector("#rss-feeds")
     if (feedsTextarea) {
-      presetBtns.forEach((btn) => {
-        btn.style.padding = "4px 10px"
-        btn.style.background = "rgba(255,255,255,0.1)"
-        btn.style.border = "none"
-        btn.style.borderRadius = "12px"
-        btn.style.fontSize = "0.8em"
-        btn.style.color = "var(--text-color)"
-        btn.style.cursor = "pointer"
-        btn.style.transition = "background 0.2s"
-        btn.addEventListener(
-          "mouseover",
-          () => (btn.style.background = "rgba(255,255,255,0.2)"),
-        )
-        btn.addEventListener(
-          "mouseout",
-          () => (btn.style.background = "rgba(255,255,255,0.1)"),
-        )
-
-        btn.addEventListener("click", (e) => {
-          const val = e.target.getAttribute("data-value")
-          const url = val.split("|")[1].trim()
-          let lines = feedsTextarea.value
-            .split("\n")
-            .map((l) => l.trim())
-            .filter((l) => l)
-
-          const existingIndex = lines.findIndex((l) => l.includes(url))
-          if (existingIndex !== -1) {
-            lines.splice(existingIndex, 1)
-            e.target.style.background = "rgba(255,255,255,0.1)"
-            e.target.style.color = "inherit"
-          } else {
-            if (lines.length >= 10) {
-              alert(
-                "Bạn chỉ được chọn tối đa 10 nguồn (10 tab) để đảm bảo trải nghiệm!",
-              )
-              return
-            }
-            lines.push(val)
-            e.target.style.background = "var(--accent-color, #4facfe)"
-            e.target.style.color = "#fff"
-          }
-          feedsTextarea.value = lines.join("\n")
-        })
+      feedsTextarea.addEventListener("input", () => {
+        this.updatePresetChipsUI()
       })
     }
 
-    // Sync button states when settings open
-    this.container
-      .querySelector(".rss-settings-btn")
-      .addEventListener("click", () => {
-        const lines = feedsTextarea
-          ? feedsTextarea.value
-              .split("\n")
-              .map((l) => l.trim())
-              .filter((l) => l)
-          : []
-        this.container.querySelectorAll(".rss-preset-btn").forEach((btn) => {
-          const val = btn.getAttribute("data-value")
-          const url = val.split("|")[1].trim()
-          if (lines.some((l) => l.includes(url))) {
-            btn.style.background = "var(--accent-color, #4facfe)"
-            btn.style.color = "#fff"
-          } else {
-            btn.style.background = "rgba(255, 255, 255, 0.1)"
-            btn.style.color = "inherit"
-          }
-        })
-      })
+    // Apply Preset button
+    const applyBtn = this.container.querySelector(".rss-preset-action-btn.apply-btn")
+    applyBtn?.addEventListener("click", () => {
+      const pack = RSS_PRESET_PACKS[this.activePresetId] || RSS_PRESET_PACKS.global
+      if (feedsTextarea && pack) {
+        feedsTextarea.value = pack.feeds.map((f) => `${f.name} | ${f.url}`).join("\n")
+        this.updatePresetChipsUI()
+      }
+    })
 
+    // Reset Defaults button
+    const resetBtn = this.container.querySelector(".rss-preset-action-btn.reset-btn")
+    resetBtn?.addEventListener("click", () => {
+      const currentLang = (getSettings().language || "en").toLowerCase()
+      const defaultFeeds = getDefaultFeeds(currentLang)
+      if (feedsTextarea) {
+        feedsTextarea.value = defaultFeeds.map((f) => `${f.name} | ${f.url}`).join("\n")
+        this.activePresetId = currentLang.startsWith("vi")
+          ? "vi"
+          : currentLang.startsWith("de")
+          ? "de"
+          : currentLang.startsWith("sv")
+          ? "sv"
+          : "global"
+        this.updatePresetTabsUI()
+        this.updatePresetChipsUI()
+      }
+    })
+
+    // Save button
     this.container
       .querySelector(".rss-save-btn")
-      .addEventListener("click", () => {
-        const lines = this.container
-          .querySelector("#rss-feeds")
-          .value.split("\n")
-        this.config.feeds = lines
+      ?.addEventListener("click", () => {
+        const lines = (feedsTextarea ? feedsTextarea.value : "")
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l)
+
+        const parsedFeeds = lines
           .map((line) => {
             const parts = line.split("|")
             return {
@@ -362,56 +583,13 @@ export class RssReader {
           })
           .filter((f) => f.url)
 
-        if (this.config.feeds.length === 0) {
-          this.config.feeds = [
-            {
-              name: "Tin mới nhất",
-              url: "https://vnexpress.net/rss/tin-moi-nhat.rss",
-            },
-            {
-              name: "Tin nổi bật",
-              url: "https://vnexpress.net/rss/tin-noi-bat.rss",
-            },
-            {
-              name: "Tin xem nhiều",
-              url: "https://vnexpress.net/rss/tin-xem-nhieu.rss",
-            },
-            { name: "Thời sự", url: "https://vnexpress.net/rss/thoi-su.rss" },
-            { name: "Thế giới", url: "https://vnexpress.net/rss/the-gioi.rss" },
-            {
-              name: "Kinh doanh",
-              url: "https://vnexpress.net/rss/kinh-doanh.rss",
-            },
-            {
-              name: "Bất động sản",
-              url: "https://vnexpress.net/rss/bat-dong-san.rss",
-            },
-            { name: "Thể thao", url: "https://vnexpress.net/rss/the-thao.rss" },
-            { name: "Giải trí", url: "https://vnexpress.net/rss/giai-tri.rss" },
-            {
-              name: "Pháp luật",
-              url: "https://vnexpress.net/rss/phap-luat.rss",
-            },
-            { name: "Giáo dục", url: "https://vnexpress.net/rss/giao-duc.rss" },
-            { name: "Sức khỏe", url: "https://vnexpress.net/rss/suc-khoe.rss" },
-            { name: "Đời sống", url: "https://vnexpress.net/rss/gia-dinh.rss" },
-            { name: "Du lịch", url: "https://vnexpress.net/rss/du-lich.rss" },
-            { name: "Khoa học", url: "https://vnexpress.net/rss/khoa-hoc.rss" },
-            { name: "Công nghệ", url: "https://vnexpress.net/rss/so-hoa.rss" },
-            { name: "Xe", url: "https://vnexpress.net/rss/oto-xe-may.rss" },
-            { name: "Góc nhìn", url: "https://vnexpress.net/rss/goc-nhin.rss" },
-            { name: "Ý kiến", url: "https://vnexpress.net/rss/y-kien.rss" },
-            { name: "Tâm sự", url: "https://vnexpress.net/rss/tam-su.rss" },
-            { name: "Thư giãn", url: "https://vnexpress.net/rss/cuoi.rss" },
-          ]
-        }
+        const currentLang = (getSettings().language || "en").toLowerCase()
+        this.config.feeds = parsedFeeds.length > 0 ? parsedFeeds : getDefaultFeeds(currentLang)
+        this.config.userCustomized = true
+        this.config.blockedWords = this.container.querySelector("#rss-block")?.value || ""
+        this.config.highlightedWords = this.container.querySelector("#rss-highlight")?.value || ""
+        this.config.showImages = this.container.querySelector("#rss-show-images")?.checked ?? true
 
-        this.config.blockedWords =
-          this.container.querySelector("#rss-block").value
-        this.config.highlightedWords =
-          this.container.querySelector("#rss-highlight").value
-        this.config.showImages =
-          this.container.querySelector("#rss-show-images").checked
         this.saveConfig()
 
         this.settingsEl.classList.remove("active")
@@ -420,8 +598,6 @@ export class RssReader {
         this.renderTabs()
         this.fetchRSS(true)
       })
-
-    this.renderTabs()
   }
 
   renderTabs() {
@@ -433,15 +609,21 @@ export class RssReader {
       .map(
         (feed, idx) => `
             <div class="rss-tab ${!this.isReadLaterMode && idx === this.activeTabIndex ? "active" : ""}" data-index="${idx}">
-                ${feed.name}
+                ${escapeHtml(feed.name)}
             </div>
         `,
       )
       .join("")
 
+    let savedCount = 0
+    try {
+      const savedArticles = JSON.parse(localStorage.getItem("rssReadLater") || "[]")
+      savedCount = savedArticles.length
+    } catch (e) {}
+
     tabsHtml += `
             <div class="rss-tab ${this.isReadLaterMode ? "active" : ""}" data-read-later="true" style="margin-left: auto;">
-                <i class="fa-solid fa-bookmark"></i> <span data-i18n="rss_read_later">Đọc sau</span>
+                <i class="fa-solid fa-bookmark"></i> <span data-i18n="rss_read_later">Đọc sau</span>${savedCount > 0 ? ` <span class="rss-badge">${savedCount}</span>` : ""}
             </div>
         `
     tabsEl.innerHTML = tabsHtml
@@ -456,10 +638,24 @@ export class RssReader {
           this.isReadLaterMode = false
           this.activeTabIndex = parseInt(target.dataset.index)
         }
-        this.renderTabs() // update active state
+        this.renderTabs()
         this.fetchRSS(false)
       })
     })
+
+    if (!tabsEl.dataset.wheelBound) {
+      tabsEl.dataset.wheelBound = "true"
+      tabsEl.addEventListener(
+        "wheel",
+        (e) => {
+          if (e.deltaY !== 0) {
+            e.preventDefault()
+            tabsEl.scrollLeft += e.deltaY * 0.9
+          }
+        },
+        { passive: false },
+      )
+    }
   }
 
   async fetchRSSData(url) {
@@ -483,39 +679,66 @@ export class RssReader {
         const parser = new DOMParser()
         const xmlDoc = parser.parseFromString(text, "text/xml")
         const sourceTitle =
-          xmlDoc.querySelector("channel > title")?.textContent || "RSS Feed"
-        const items = Array.from(xmlDoc.querySelectorAll("item")).map(
-          (item) => {
-            let thumbnail = ""
-            const mediaContent = item.getElementsByTagName("media:content")[0]
-            const enclosure = item.querySelector("enclosure")
-            if (mediaContent && mediaContent.getAttribute("url")) {
-              thumbnail = mediaContent.getAttribute("url")
-            } else if (
-              enclosure &&
-              enclosure.getAttribute("type")?.startsWith("image/")
-            ) {
-              thumbnail = enclosure.getAttribute("url")
-            } else {
-              const content =
-                item.getElementsByTagName("content:encoded")[0]?.textContent ||
-                item.querySelector("description")?.textContent ||
-                ""
-              const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i)
-              if (imgMatch) thumbnail = imgMatch[1]
-            }
-            let desc = item.querySelector("description")?.textContent || ""
-            desc = desc.replace(/<[^>]*>?/gm, "").trim()
-            if (desc.length > 120) desc = desc.substring(0, 120) + "..."
-            return {
-              title: item.querySelector("title")?.textContent || "",
-              link: item.querySelector("link")?.textContent || "",
-              pubDate: item.querySelector("pubDate")?.textContent || "",
-              thumbnail: thumbnail,
-              description: desc,
-            }
-          },
-        )
+          xmlDoc.querySelector("channel > title, feed > title")?.textContent || "RSS Feed"
+
+        const rawNodes =
+          xmlDoc.querySelectorAll("item").length > 0
+            ? xmlDoc.querySelectorAll("item")
+            : xmlDoc.querySelectorAll("entry")
+
+        const items = Array.from(rawNodes).map((item) => {
+          let thumbnail = ""
+          const mediaContent =
+            item.getElementsByTagName("media:content")[0] ||
+            item.getElementsByTagName("media:thumbnail")[0]
+          const enclosure = item.querySelector("enclosure")
+
+          if (mediaContent && mediaContent.getAttribute("url")) {
+            thumbnail = mediaContent.getAttribute("url")
+          } else if (
+            enclosure &&
+            enclosure.getAttribute("type")?.startsWith("image/")
+          ) {
+            thumbnail = enclosure.getAttribute("url")
+          } else {
+            const content =
+              item.getElementsByTagName("content:encoded")[0]?.textContent ||
+              item.querySelector("content")?.textContent ||
+              item.querySelector("description")?.textContent ||
+              item.querySelector("summary")?.textContent ||
+              ""
+            const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i)
+            if (imgMatch) thumbnail = imgMatch[1]
+          }
+
+          let link =
+            item.querySelector("link[rel='alternate']")?.getAttribute("href") ||
+            item.querySelector("link")?.getAttribute("href") ||
+            item.querySelector("link")?.textContent ||
+            ""
+
+          let desc =
+            item.querySelector("description")?.textContent ||
+            item.querySelector("summary")?.textContent ||
+            item.querySelector("content")?.textContent ||
+            ""
+          desc = desc.replace(/<[^>]*>?/gm, "").trim()
+          if (desc.length > 130) desc = desc.substring(0, 130) + "..."
+
+          const pubDate =
+            item.querySelector("pubDate")?.textContent ||
+            item.querySelector("published")?.textContent ||
+            item.querySelector("updated")?.textContent ||
+            ""
+
+          return {
+            title: item.querySelector("title")?.textContent || "",
+            link: link.trim(),
+            pubDate: pubDate.trim(),
+            thumbnail: thumbnail,
+            description: desc,
+          }
+        })
         return { feed: { title: sourceTitle }, items: items }
       }
       throw new Error()
@@ -534,15 +757,20 @@ export class RssReader {
   }
 
   async fetchRSS(forceRefresh = false) {
-    this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`
+    const refreshBtn = this.container.querySelector(".rss-refresh-btn")
+    refreshBtn?.classList.add("spinning")
+
+    this.contentEl.innerHTML = `<div style="text-align:center; padding:24px; opacity:0.75;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`
 
     if (this.isReadLaterMode) {
       const saved = localStorage.getItem("rssReadLater")
       this.currentItems = saved ? JSON.parse(saved) : []
-      this.currentSourceTitle = "Đọc sau"
+      this.currentSourceTitle = geti18n().rss_read_later || "Đọc sau"
       this.itemsLimit = 50
+      refreshBtn?.classList.remove("spinning")
       if (this.currentItems.length === 0) {
-        this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;">Chưa có bài viết nào được lưu.</div>`
+        this.contentEl.innerHTML = `<div style="text-align:center; padding:24px; opacity:0.75;" data-i18n="rss_empty">Chưa có bài viết nào được lưu.</div>`
+        applyTranslations(this.contentEl)
       } else {
         this.renderItems()
       }
@@ -551,7 +779,8 @@ export class RssReader {
 
     const currentFeed = this.config.feeds[this.activeTabIndex]
     if (!currentFeed || !currentFeed.url) {
-      this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;">No RSS Feed configured.</div>`
+      refreshBtn?.classList.remove("spinning")
+      this.contentEl.innerHTML = `<div style="text-align:center; padding:24px; opacity:0.75;">No RSS Feed configured.</div>`
       return
     }
 
@@ -575,6 +804,7 @@ export class RssReader {
         this.itemsLimit = 10
         this.renderItems()
         this.fetchRSSBackground(cacheKey, url)
+        refreshBtn?.classList.remove("spinning")
         return
       } catch (e) {}
     }
@@ -596,10 +826,22 @@ export class RssReader {
           this.currentSourceTitle = data.feed.title
           this.itemsLimit = 10
           this.renderItems()
+          refreshBtn?.classList.remove("spinning")
           return
         } catch (e) {}
       }
-      this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Failed to load RSS feed.</div>`
+      this.contentEl.innerHTML = `
+        <div style="text-align:center; padding:24px; color:#ff6b6b; font-size:0.88rem;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:1.4rem; margin-bottom:8px; display:block;"></i>
+          Failed to load RSS feed.
+          <div style="margin-top:10px;">
+            <button class="rss-retry-btn" style="padding:4px 12px; border-radius:6px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:inherit; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Retry</button>
+          </div>
+        </div>
+      `
+      this.contentEl.querySelector(".rss-retry-btn")?.addEventListener("click", () => this.fetchRSS(true))
+    } finally {
+      refreshBtn?.classList.remove("spinning")
     }
   }
 
@@ -616,17 +858,23 @@ export class RssReader {
   renderItems() {
     const items = this.currentItems
     const sourceTitle = this.currentSourceTitle
-    const blockWords = this.config.blockedWords
+    const blockWords = (this.config.blockedWords || "")
       .split(",")
       .map((w) => w.trim().toLowerCase())
       .filter((w) => w)
-    const highlightWords = this.config.highlightedWords
+    const highlightWords = (this.config.highlightedWords || "")
       .split(",")
       .map((w) => w.trim().toLowerCase())
       .filter((w) => w)
 
     let html = ""
     let count = 0
+
+    const savedArticlesStr = localStorage.getItem("rssReadLater")
+    let savedArticles = []
+    try {
+      if (savedArticlesStr) savedArticles = JSON.parse(savedArticlesStr)
+    } catch (e) {}
 
     for (const item of items) {
       if (count >= this.itemsLimit) break
@@ -655,62 +903,58 @@ export class RssReader {
         if (match) imageUrl = match[1]
       }
 
-      // Format Date
-      let dateStr = ""
-      if (item.pubDate) {
-        const d = new Date(item.pubDate)
-        if (!isNaN(d.getTime()))
-          dateStr =
-            d.toLocaleDateString() +
-            " " +
-            d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      }
+      // Format relative time
+      const relativeTime = formatRelativeTime(item.pubDate)
 
-      // Ensure description is plain text (handle fallback data)
+      // Ensure description is plain text
       let safeDesc = item.description || ""
       if (safeDesc.includes("<")) {
         safeDesc = safeDesc.replace(/<[^>]*>?/gm, "").trim()
       }
-      if (safeDesc.length > 120) safeDesc = safeDesc.substring(0, 120) + "..."
+      if (safeDesc.length > 130) safeDesc = safeDesc.substring(0, 130) + "..."
 
-      const savedArticlesStr = localStorage.getItem("rssReadLater")
-      let savedArticles = []
-      try {
-        if (savedArticlesStr) savedArticles = JSON.parse(savedArticlesStr)
-      } catch (e) {}
       const isSaved = savedArticles.some((a) => a.link === linkStr)
       const bookmarkIcon = isSaved
         ? "fa-solid fa-bookmark"
         : "fa-regular fa-bookmark"
 
       html += `
-                <div class="rss-item-container" style="position: relative; display: flex; align-items: center;">
-                <a href="${linkStr}" target="_blank" class="rss-item ${isHighlight ? "highlight" : ""}" style="flex: 1; padding-right: 35px;">
-                    ${this.config.showImages && imageUrl ? `<img src="${imageUrl}" style="width: 68px; height: 68px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" />` : ""}
-                    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                        <div class="rss-item-title">${title}</div>
-                        ${safeDesc ? `<div class="rss-item-desc">${safeDesc}</div>` : ""}
-                        <div class="rss-item-source">
-                            <i class="fa-solid fa-newspaper" style="font-size: 0.8em;"></i> ${sourceTitle} ${dateStr ? '• <i class="fa-regular fa-clock" style="font-size: 0.8em; margin-left: 2px;"></i> ' + dateStr : ""}
-                        </div>
-                    </div>
-                </a>
-                <button class="rss-save-btn" data-item='${encodeURIComponent(JSON.stringify(item))}' style="position: absolute; right: 10px; background: transparent; border: none; color: ${isSaved ? "var(--accent-color, #4CAF50)" : "var(--text-color)"}; opacity: ${isSaved ? "1" : "0.5"}; cursor: pointer; padding: 5px; border-radius: 4px; transition: opacity 0.2s, background 0.2s;">
-                    <i class="${bookmarkIcon}"></i>
-                </button>
+        <div class="rss-item-container">
+          <a href="${linkStr}" target="_blank" rel="noopener noreferrer" class="rss-item ${isHighlight ? "highlight" : ""}">
+            ${
+              this.config.showImages
+                ? imageUrl
+                  ? `<img class="rss-item-thumb" src="${imageUrl}" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" /><div class="rss-item-thumb-placeholder" style="display:none;"><i class="fa-solid fa-newspaper"></i></div>`
+                  : `<div class="rss-item-thumb-placeholder"><i class="fa-solid fa-newspaper"></i></div>`
+                : ""
+            }
+            <div class="rss-item-body">
+              <div class="rss-item-title" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
+              ${safeDesc ? `<div class="rss-item-desc">${escapeHtml(safeDesc)}</div>` : ""}
+              <div class="rss-item-meta">
+                <div class="rss-item-meta-left">
+                  <span class="rss-source-pill"><i class="fa-solid fa-newspaper"></i> ${escapeHtml(sourceTitle)}</span>
+                  ${relativeTime ? `<span class="rss-time-pill"><i class="fa-regular fa-clock"></i> ${relativeTime}</span>` : ""}
                 </div>
-            `
+                <button class="rss-bookmark-btn ${isSaved ? "saved" : ""}" data-item="${encodeURIComponent(JSON.stringify(item))}" title="${isSaved ? "Bỏ lưu" : "Lưu đọc sau"}" type="button">
+                  <i class="${bookmarkIcon}"></i>
+                </button>
+              </div>
+            </div>
+          </a>
+        </div>
+      `
       count++
     }
 
     if (count === 0) {
-      html = `<div style="text-align:center; padding:20px; opacity:0.7;" data-i18n="rss_empty">Không có tin nào hoặc bị lọc hết.</div>`
+      html = `<div style="text-align:center; padding:24px; opacity:0.75;" data-i18n="rss_empty">Không có tin nào hoặc bị lọc hết.</div>`
     } else if (count >= this.itemsLimit && items.length > this.itemsLimit) {
-      html += `<button class="rss-load-more" style="margin-top: 10px; padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: var(--text-color); cursor: pointer; transition: background 0.2s; font-family: inherit;">Xem thêm tin cũ hơn...</button>`
+      html += `<button class="rss-load-more" style="margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.22); color: var(--text-color); cursor: pointer; transition: background 0.2s; font-family: inherit; font-size: 0.8rem;">Xem thêm tin cũ hơn...</button>`
     }
 
     this.contentEl.innerHTML = html
-    applyTranslations()
+    applyTranslations(this.contentEl)
 
     const loadMoreBtn = this.contentEl.querySelector(".rss-load-more")
     if (loadMoreBtn) {
@@ -724,7 +968,7 @@ export class RssReader {
   }
 
   bindSaveButtons() {
-    const btns = this.contentEl.querySelectorAll(".rss-save-btn")
+    const btns = this.contentEl.querySelectorAll(".rss-bookmark-btn")
     btns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault()
@@ -740,24 +984,24 @@ export class RssReader {
         const index = savedArticles.findIndex((a) => a.link === itemData.link)
         if (index > -1) {
           savedArticles.splice(index, 1)
+          btn.classList.remove("saved")
           btn.querySelector("i").className = "fa-regular fa-bookmark"
-          btn.style.color = "var(--text-color)"
-          btn.style.opacity = "0.5"
           if (this.isReadLaterMode) {
             const container = btn.closest(".rss-item-container")
             if (container) container.remove()
             this.currentItems = savedArticles
             if (savedArticles.length === 0) {
-              this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;">Chưa có bài viết nào được lưu.</div>`
+              this.contentEl.innerHTML = `<div style="text-align:center; padding:24px; opacity:0.75;" data-i18n="rss_empty">Không có tin nào hoặc bị lọc hết.</div>`
+              applyTranslations(this.contentEl)
             }
           }
         } else {
           savedArticles.push(itemData)
+          btn.classList.add("saved")
           btn.querySelector("i").className = "fa-solid fa-bookmark"
-          btn.style.color = "var(--accent-color, #4CAF50)"
-          btn.style.opacity = "1"
         }
         localStorage.setItem("rssReadLater", JSON.stringify(savedArticles))
+        this.renderTabs()
       })
     })
   }
