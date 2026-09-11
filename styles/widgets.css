@@ -2209,19 +2209,24 @@ span.bookmark-stack-popup-header-icon {
 
 .bookmark-stack-popup-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   padding: 4px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 body.bookmark-macos-hover .bookmark-stack-popup-grid {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   padding: 2rem 0.5rem;
 }
 
 .bookmark-stack-popup .bookmark {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .bookmark-stack-popup-item {
@@ -17515,9 +17520,12 @@ body.bookmark-group-auto-text-contrast .bookmark-group-tab .group-tab-count {
 }
 
 .bookmark-stack-popup-grid {
-  grid-template-columns: repeat(4, 1fr) !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   gap: 8px !important;
   padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .bookmark-stack-popup .bookmark,
@@ -17525,14 +17533,23 @@ body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
   background: rgba(255, 255, 255, 0.055) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
   border-radius: 8px !important;
   min-height: 94px !important;
+  height: auto !important;
   padding: 9px 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-align: center !important;
   transition:
     background 0.18s ease,
     border-color 0.18s ease,
@@ -17544,8 +17561,6 @@ body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover {
   background: rgba(255, 255, 255, 0.105) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.34) !important;
@@ -17571,17 +17586,7 @@ body.bookmark-taskbar-top-mode
   .bookmark-icon-fallback,
 body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark img,
 body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark img,
 body.bookmark-taskbar-left-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode
-  .bookmark-stack-popup
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode
   .bookmark-stack-popup
   .bookmark
   .bookmark-icon-fallback,
@@ -17591,13 +17596,39 @@ body.bookmark-taskbar-right-mode
   .bookmark-icon-fallback {
   height: 38px !important;
   width: 38px !important;
+  flex-shrink: 0 !important;
 }
 
-.bookmark-stack-popup .bookmark-stack-popup-label {
+.bookmark-stack-popup .bookmark-stack-popup-label,
+body:not(.bookmark-macos-hover) .bookmark-stack-popup .bookmark .bookmark-stack-popup-label {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  text-align: center !important;
+  line-height: 1.25 !important;
   font-size: 0.74rem !important;
-  font-weight: 650 !important;
-  max-width: 100%;
+  font-weight: 600 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
   opacity: 0.92 !important;
+  margin-top: 6px !important;
+}
+
+body.bookmark-full-text .bookmark-stack-popup .bookmark-stack-popup-label {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+body.hide-bookmark-text .bookmark-stack-popup .bookmark-stack-popup-label {
+  display: none !important;
 }
 
 .bookmark-stack-popup.is-selecting .bookmark-stack-popup-item.selected {
