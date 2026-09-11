@@ -845,36 +845,7 @@
   gap: 8px;
 }
 
-body.context-menu-light .bookmark-edit-popover,
-body.context-menu-macos .bookmark-edit-popover {
-  background: rgba(255, 255, 255, 0.82);
-  color: #17171c;
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
-}
-
-body.context-menu-light .bookmark-edit-icon-preview,
-body.context-menu-light .bookmark-edit-icon-grid button,
-body.context-menu-light .bookmark-edit-field input,
-body.context-menu-macos .bookmark-edit-icon-preview,
-body.context-menu-macos .bookmark-edit-icon-grid button,
-body.context-menu-macos .bookmark-edit-field input {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #17171c;
-}
-
-body.context-menu-light .bookmark-edit-fields,
-body.context-menu-macos .bookmark-edit-fields {
-  border-top-color: rgba(0, 0, 0, 0.1);
-}
-
-body.context-menu-light .bookmark-edit-field,
-body.context-menu-macos .bookmark-edit-field {
-  color: rgba(0, 0, 0, 0.68);
-}
-
-/* Transparent & Light Transparent Context Menu Theme Support for Bookmark Edit Popover */
+/* Transparent & Light Context Menu Theme Support for Bookmark Edit Popover */
 body.context-menu-transparent .bookmark-edit-popover {
   background: rgba(18, 20, 28, 0.65);
   backdrop-filter: blur(28px) saturate(180%);
@@ -883,29 +854,359 @@ body.context-menu-transparent .bookmark-edit-popover {
   box-shadow: 0 18px 46px rgba(0, 0, 0, 0.45);
 }
 
+/* ── Light Glass, Light Transparent & macOS Theme Support for Bookmark Edit Popover ── */
+body.context-menu-light .bookmark-edit-popover,
+body.context-menu-light-transparent .bookmark-edit-popover,
+body.context-menu-macos .bookmark-edit-popover {
+  color: #0f172a;
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+}
+
+body.context-menu-light .bookmark-edit-popover {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+}
+
 body.context-menu-light-transparent .bookmark-edit-popover {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  color: #17171c;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
+body.context-menu-macos .bookmark-edit-popover {
+  background: rgba(246, 246, 248, 0.88);
+  border: 0.5px solid rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.65) inset,
+    0 16px 42px rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+}
+
+/* Popover Header & Title */
+body.context-menu-light .bookmark-edit-popover-title,
+body.context-menu-light-transparent .bookmark-edit-popover-title,
+body.context-menu-macos .bookmark-edit-popover-title {
+  color: #0f172a;
+  font-weight: 650;
+  gap: 10px;
+}
+
+/* Accent Icon in Title with High Contrast Badge */
+body.context-menu-light .bookmark-edit-popover-title > i,
+body.context-menu-light-transparent .bookmark-edit-popover-title > i,
+body.context-menu-macos .bookmark-edit-popover-title > i {
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 75%, #0f172a);
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.13);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  font-size: 0.88rem;
+  flex-shrink: 0;
+}
+
+/* Popover Close Button */
+body.context-menu-light .bookmark-edit-popover-close,
+body.context-menu-light-transparent .bookmark-edit-popover-close,
+body.context-menu-macos .bookmark-edit-popover-close {
+  color: rgba(15, 23, 42, 0.55);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+body.context-menu-light .bookmark-edit-popover-close:hover,
+body.context-menu-light-transparent .bookmark-edit-popover-close:hover,
+body.context-menu-macos .bookmark-edit-popover-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #0f172a;
+}
+
+/* Icon Preview Box */
+body.context-menu-light .bookmark-edit-icon-preview,
 body.context-menu-light-transparent .bookmark-edit-icon-preview,
+body.context-menu-macos .bookmark-edit-icon-preview {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+body.context-menu-light .bookmark-edit-icon-preview i,
+body.context-menu-light-transparent .bookmark-edit-icon-preview i,
+body.context-menu-macos .bookmark-edit-icon-preview i {
+  color: var(--folder-edit-icon-color, color-mix(in srgb, var(--accent-color, #2563eb) 80%, #0f172a));
+}
+
+/* Icon Grid & Buttons */
+body.context-menu-light .bookmark-edit-icon-grid button,
 body.context-menu-light-transparent .bookmark-edit-icon-grid button,
-body.context-menu-light-transparent .bookmark-edit-field input {
+body.context-menu-macos .bookmark-edit-icon-grid button {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.18s ease;
+}
+
+body.context-menu-light .bookmark-edit-icon-grid button i,
+body.context-menu-light-transparent .bookmark-edit-icon-grid button i,
+body.context-menu-macos .bookmark-edit-icon-grid button i {
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 80%, #0f172a);
+}
+
+body.context-menu-light .bookmark-edit-icon-grid button:hover,
+body.context-menu-light-transparent .bookmark-edit-icon-grid button:hover,
+body.context-menu-macos .bookmark-edit-icon-grid button:hover {
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.09);
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 65%, #0f172a);
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+body.context-menu-light .bookmark-edit-icon-grid button.active,
+body.context-menu-light-transparent .bookmark-edit-icon-grid button.active,
+body.context-menu-macos .bookmark-edit-icon-grid button.active {
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.16);
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+}
+
+body.context-menu-light .bookmark-edit-icon-grid button.active i,
+body.context-menu-light-transparent .bookmark-edit-icon-grid button.active i,
+body.context-menu-macos .bookmark-edit-icon-grid button.active i {
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 90%, #0f172a);
+}
+
+/* Custom Icon Button */
+body.context-menu-light .bookmark-edit-custom-icon-btn,
+body.context-menu-light-transparent .bookmark-edit-custom-icon-btn,
+body.context-menu-macos .bookmark-edit-custom-icon-btn {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+}
+
+body.context-menu-light .bookmark-edit-custom-icon-btn:hover,
+body.context-menu-light-transparent .bookmark-edit-custom-icon-btn:hover,
+body.context-menu-macos .bookmark-edit-custom-icon-btn:hover {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 75%, #0f172a);
+}
+
+/* Form Fields & Inputs */
+body.context-menu-light .bookmark-edit-fields,
+body.context-menu-light-transparent .bookmark-edit-fields,
+body.context-menu-macos .bookmark-edit-fields {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 12px;
+  gap: 11px;
+}
+
+body.context-menu-light .bookmark-edit-field,
+body.context-menu-light-transparent .bookmark-edit-field,
+body.context-menu-macos .bookmark-edit-field {
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+body.context-menu-light .bookmark-edit-field input,
+body.context-menu-light-transparent .bookmark-edit-field input,
+body.context-menu-macos .bookmark-edit-field input {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  color: #0f172a;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+body.context-menu-light .bookmark-edit-field input::placeholder,
+body.context-menu-light-transparent .bookmark-edit-field input::placeholder,
+body.context-menu-macos .bookmark-edit-field input::placeholder {
+  color: rgba(15, 23, 42, 0.42);
+}
+
+body.context-menu-light .bookmark-edit-field input:focus,
+body.context-menu-light-transparent .bookmark-edit-field input:focus,
+body.context-menu-macos .bookmark-edit-field input:focus {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 37, 99, 235), 0.18);
+  color: #0f172a;
+}
+
+/* Action Buttons (Save & Cancel) */
+body.context-menu-light .bookmark-edit-actions,
+body.context-menu-light-transparent .bookmark-edit-actions,
+body.context-menu-macos .bookmark-edit-actions {
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Cancel / Secondary Button - Fix Contrast */
+body.context-menu-light .bookmark-edit-actions .secondary-btn,
+body.context-menu-light-transparent .bookmark-edit-actions .secondary-btn,
+body.context-menu-macos .bookmark-edit-actions .secondary-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #1e293b !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+body.context-menu-light .bookmark-edit-actions .secondary-btn:hover,
+body.context-menu-light-transparent .bookmark-edit-actions .secondary-btn:hover,
+body.context-menu-macos .bookmark-edit-actions .secondary-btn:hover {
+  background: rgba(0, 0, 0, 0.09) !important;
+  border-color: rgba(0, 0, 0, 0.22) !important;
+  color: #0f172a !important;
+  transform: translateY(-1px);
+}
+
+body.context-menu-light .bookmark-edit-actions .secondary-btn:active,
+body.context-menu-light-transparent .bookmark-edit-actions .secondary-btn:active,
+body.context-menu-macos .bookmark-edit-actions .secondary-btn:active {
+  background: rgba(0, 0, 0, 0.14) !important;
+  transform: translateY(0);
+}
+
+/* Save / Primary Button - Fix Contrast */
+body.context-menu-light .bookmark-edit-actions .primary-btn,
+body.context-menu-light-transparent .bookmark-edit-actions .primary-btn,
+body.context-menu-macos .bookmark-edit-actions .primary-btn {
+  background: var(--accent-color, #2563eb) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow:
+    0 3px 10px rgba(var(--accent-color-rgb, 37, 99, 235), 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.2s ease !important;
+}
+
+body.context-menu-light .bookmark-edit-actions .primary-btn:hover,
+body.context-menu-light-transparent .bookmark-edit-actions .primary-btn:hover,
+body.context-menu-macos .bookmark-edit-actions .primary-btn:hover {
+  background: color-mix(in srgb, var(--accent-color, #2563eb) 88%, #000000) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow:
+    0 5px 14px rgba(var(--accent-color-rgb, 37, 99, 235), 0.35) !important;
+  transform: translateY(-1px);
+}
+
+body.context-menu-light .bookmark-edit-actions .primary-btn:active,
+body.context-menu-light-transparent .bookmark-edit-actions .primary-btn:active,
+body.context-menu-macos .bookmark-edit-actions .primary-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(var(--accent-color-rgb, 37, 99, 235), 0.2) !important;
+}
+
+/* Folder Edit specific elements (chips, search, color picker) */
+body.context-menu-light .bookmark-folder-icon-search,
+body.context-menu-light-transparent .bookmark-folder-icon-search,
+body.context-menu-macos .bookmark-folder-icon-search {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #0f172a;
+  border-radius: 8px;
+}
+
+body.context-menu-light .bookmark-folder-icon-search::placeholder,
+body.context-menu-light-transparent .bookmark-folder-icon-search::placeholder,
+body.context-menu-macos .bookmark-folder-icon-search::placeholder {
+  color: rgba(15, 23, 42, 0.42);
+}
+
+body.context-menu-light .bookmark-folder-icon-search:focus,
+body.context-menu-light-transparent .bookmark-folder-icon-search:focus,
+body.context-menu-macos .bookmark-folder-icon-search:focus {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 37, 99, 235), 0.18);
+}
+
+body.context-menu-light .bookmark-folder-chip,
+body.context-menu-light-transparent .bookmark-folder-chip,
+body.context-menu-macos .bookmark-folder-chip {
   background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #17171c;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #334155;
 }
 
-body.context-menu-light-transparent .bookmark-edit-fields {
-  border-top-color: rgba(0, 0, 0, 0.1);
+body.context-menu-light .bookmark-folder-chip:hover,
+body.context-menu-light-transparent .bookmark-folder-chip:hover,
+body.context-menu-macos .bookmark-folder-chip:hover {
+  background: rgba(0, 0, 0, 0.09);
+  color: #0f172a;
 }
 
-body.context-menu-light-transparent .bookmark-edit-field {
-  color: rgba(0, 0, 0, 0.68);
+body.context-menu-light .bookmark-folder-chip.active,
+body.context-menu-light-transparent .bookmark-folder-chip.active,
+body.context-menu-macos .bookmark-folder-chip.active {
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.14);
+  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  font-weight: 700;
+}
+
+body.context-menu-light .bookmark-edit-color-field input[type="color"],
+body.context-menu-light-transparent .bookmark-edit-color-field input[type="color"],
+body.context-menu-macos .bookmark-edit-color-field input[type="color"] {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 8px;
+}
+
+body.context-menu-light .bookmark-edit-color-reset,
+body.context-menu-light-transparent .bookmark-edit-color-reset,
+body.context-menu-macos .bookmark-edit-color-reset {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #334155 !important;
+  border-radius: 8px !important;
+}
+
+body.context-menu-light .bookmark-edit-color-reset:hover,
+body.context-menu-light-transparent .bookmark-edit-color-reset:hover,
+body.context-menu-macos .bookmark-edit-color-reset:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+/* Specific macOS refinements */
+body.context-menu-macos .bookmark-edit-field input,
+body.context-menu-macos .bookmark-edit-icon-grid button,
+body.context-menu-macos .bookmark-edit-actions .primary-btn,
+body.context-menu-macos .bookmark-edit-actions .secondary-btn,
+body.context-menu-macos .bookmark-edit-icon-preview {
+  border-radius: 6px !important;
+}
+
+body.context-menu-macos .bookmark-edit-actions .secondary-btn {
+  border: 0.5px solid rgba(0, 0, 0, 0.18) !important;
+}
+
+body.context-menu-macos .bookmark-edit-actions .primary-btn {
+  border: 0.5px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
 }
 
 .bookmark-stack-icon.has-custom-stack-icon {
@@ -1495,7 +1796,8 @@ body.context-menu-none #context-menu .context-menu-header {
 
 /* ── macOS & Light Mode Context Menu Badges & Tags (High Contrast) ── */
 body.context-menu-macos .context-tag-current,
-body.context-menu-light .context-tag-current {
+body.context-menu-light .context-tag-current,
+body.context-menu-light-transparent .context-tag-current {
   background: rgba(0, 0, 0, 0.07) !important;
   color: rgba(20, 20, 24, 0.92) !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
@@ -1503,23 +1805,27 @@ body.context-menu-light .context-tag-current {
 }
 
 body.context-menu-macos .context-tag-arrow,
-body.context-menu-light .context-tag-arrow {
+body.context-menu-light .context-tag-arrow,
+body.context-menu-light-transparent .context-tag-arrow {
   color: rgba(20, 20, 24, 0.5) !important;
 }
 
 body.context-menu-macos .context-tag-arrow i,
-body.context-menu-light .context-tag-arrow i {
+body.context-menu-light .context-tag-arrow i,
+body.context-menu-light-transparent .context-tag-arrow i {
   color: inherit !important;
 }
 
 body.context-menu-macos .context-tag-next,
-body.context-menu-light .context-tag-next {
+body.context-menu-light .context-tag-next,
+body.context-menu-light-transparent .context-tag-next {
   color: rgba(20, 20, 24, 0.65) !important;
   font-weight: 500 !important;
 }
 
 body.context-menu-macos .context-status-badge.badge-on,
-body.context-menu-light .context-status-badge.badge-on {
+body.context-menu-light .context-status-badge.badge-on,
+body.context-menu-light-transparent .context-status-badge.badge-on {
   color: rgba(20, 20, 24, 0.92) !important;
   background: rgba(0, 0, 0, 0.07) !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
@@ -1527,12 +1833,14 @@ body.context-menu-light .context-status-badge.badge-on {
 }
 
 body.context-menu-macos .context-status-badge.badge-on i,
-body.context-menu-light .context-status-badge.badge-on i {
+body.context-menu-light .context-status-badge.badge-on i,
+body.context-menu-light-transparent .context-status-badge.badge-on i {
   color: inherit !important;
 }
 
 body.context-menu-macos .context-status-badge.badge-off,
-body.context-menu-light .context-status-badge.badge-off {
+body.context-menu-light .context-status-badge.badge-off,
+body.context-menu-light-transparent .context-status-badge.badge-off {
   color: rgba(30, 35, 45, 0.55) !important;
   background: rgba(0, 0, 0, 0.04) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -1540,13 +1848,15 @@ body.context-menu-light .context-status-badge.badge-off {
 }
 
 body.context-menu-macos .context-status-badge.badge-off i,
-body.context-menu-light .context-status-badge.badge-off i {
+body.context-menu-light .context-status-badge.badge-off i,
+body.context-menu-light-transparent .context-status-badge.badge-off i {
   color: inherit !important;
   opacity: 0.7 !important;
 }
 
 body.context-menu-macos .context-radio-active-badge,
-body.context-menu-light .context-radio-active-badge {
+body.context-menu-light .context-radio-active-badge,
+body.context-menu-light-transparent .context-radio-active-badge {
   background: rgba(0, 0, 0, 0.07) !important;
   color: rgba(20, 20, 24, 0.92) !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
@@ -1561,7 +1871,11 @@ body.context-menu-macos .context-menu .context-menu-item:hover .context-tag-curr
 body.context-menu-light #context-menu .menu-item:hover .context-tag-current,
 body.context-menu-light #context-menu .context-menu-item:hover .context-tag-current,
 body.context-menu-light .context-menu .menu-item:hover .context-tag-current,
-body.context-menu-light .context-menu .context-menu-item:hover .context-tag-current {
+body.context-menu-light .context-menu .context-menu-item:hover .context-tag-current,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-tag-current,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-tag-current,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-tag-current,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-tag-current {
   background: rgba(255, 255, 255, 0.28) !important;
   border-color: rgba(255, 255, 255, 0.55) !important;
   color: #ffffff !important;
@@ -1582,7 +1896,15 @@ body.context-menu-light #context-menu .context-menu-item:hover .context-tag-next
 body.context-menu-light .context-menu .menu-item:hover .context-tag-arrow,
 body.context-menu-light .context-menu .menu-item:hover .context-tag-next,
 body.context-menu-light .context-menu .context-menu-item:hover .context-tag-arrow,
-body.context-menu-light .context-menu .context-menu-item:hover .context-tag-next {
+body.context-menu-light .context-menu .context-menu-item:hover .context-tag-next,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-tag-next,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-tag-next,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-tag-arrow,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-tag-next,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-tag-arrow,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-tag-next {
   color: #ffffff !important;
   opacity: 1 !important;
 }
@@ -1594,7 +1916,11 @@ body.context-menu-macos .context-menu .context-menu-item:hover .context-status-b
 body.context-menu-light #context-menu .menu-item:hover .context-status-badge,
 body.context-menu-light #context-menu .context-menu-item:hover .context-status-badge,
 body.context-menu-light .context-menu .menu-item:hover .context-status-badge,
-body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge {
+body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-status-badge,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-status-badge,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-status-badge,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-status-badge {
   background: rgba(255, 255, 255, 0.25) !important;
   border-color: rgba(255, 255, 255, 0.45) !important;
   color: #ffffff !important;
@@ -1607,7 +1933,11 @@ body.context-menu-macos .context-menu .context-menu-item:hover .context-status-b
 body.context-menu-light #context-menu .menu-item:hover .context-status-badge i,
 body.context-menu-light #context-menu .context-menu-item:hover .context-status-badge i,
 body.context-menu-light .context-menu .menu-item:hover .context-status-badge i,
-body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge i {
+body.context-menu-light .context-menu .context-menu-item:hover .context-status-badge i,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-status-badge i,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-status-badge i,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-status-badge i {
   color: #ffffff !important;
 }
 
@@ -1618,7 +1948,11 @@ body.context-menu-macos .context-menu .context-menu-item:hover .context-radio-ac
 body.context-menu-light #context-menu .menu-item:hover .context-radio-active-badge,
 body.context-menu-light #context-menu .context-menu-item:hover .context-radio-active-badge,
 body.context-menu-light .context-menu .menu-item:hover .context-radio-active-badge,
-body.context-menu-light .context-menu .context-menu-item:hover .context-radio-active-badge {
+body.context-menu-light .context-menu .context-menu-item:hover .context-radio-active-badge,
+body.context-menu-light-transparent #context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-light-transparent #context-menu .context-menu-item:hover .context-radio-active-badge,
+body.context-menu-light-transparent .context-menu .menu-item:hover .context-radio-active-badge,
+body.context-menu-light-transparent .context-menu .context-menu-item:hover .context-radio-active-badge {
   background: rgba(255, 255, 255, 0.28) !important;
   border-color: rgba(255, 255, 255, 0.55) !important;
   color: #ffffff !important;
