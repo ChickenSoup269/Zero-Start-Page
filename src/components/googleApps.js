@@ -1,5 +1,88 @@
 import { geti18n } from "../services/i18n.js"
 import { showToast } from "../utils/toast.js"
+import { showPrompt } from "../utils/dialog.js"
+
+export const DEFAULT_M365_HEADER_URL = "https://m365.cloud.microsoft/chat"
+export const DEFAULT_M365_ALL_APPS_URL = "https://m365.cloud.microsoft/apps"
+
+export const defaultM365Apps = [
+  {
+    id: "outlook",
+    i18nKey: "m365_app_outlook",
+    label: "Outlook",
+    url: "https://outlook.live.com/",
+    icon: "icon/m365/outlook.svg",
+    fallbackDomain: "outlook.live.com",
+  },
+  {
+    id: "onedrive",
+    i18nKey: "m365_app_onedrive",
+    label: "OneDrive",
+    url: "https://onedrive.live.com/",
+    icon: "icon/m365/onedrive.svg",
+    fallbackDomain: "onedrive.live.com",
+  },
+  {
+    id: "word",
+    i18nKey: "m365_app_word",
+    label: "Word",
+    url: "https://m365.cloud.microsoft/launch/word",
+    icon: "icon/m365/word.svg",
+    fallbackDomain: "office.com",
+  },
+  {
+    id: "excel",
+    i18nKey: "m365_app_excel",
+    label: "Excel",
+    url: "https://m365.cloud.microsoft/launch/excel",
+    icon: "icon/m365/excel.svg",
+    fallbackDomain: "office.com",
+  },
+  {
+    id: "powerpoint",
+    i18nKey: "m365_app_powerpoint",
+    label: "PowerPoint",
+    url: "https://m365.cloud.microsoft/launch/powerpoint",
+    icon: "icon/m365/powerpoint.svg",
+    fallbackDomain: "office.com",
+  },
+  {
+    id: "onenote",
+    i18nKey: "m365_app_onenote",
+    label: "OneNote",
+    url: "https://www.onenote.com/notebooks",
+    icon: "icon/m365/onenote.svg",
+    fallbackDomain: "onenote.com",
+  },
+  {
+    id: "todo",
+    i18nKey: "m365_app_todo",
+    label: "To Do",
+    url: "https://to-do.live.com/tasks/",
+    icon: "icon/m365/todo.svg",
+    fallbackDomain: "to-do.live.com",
+  },
+  {
+    id: "calendar",
+    i18nKey: "m365_app_calendar",
+    label: "Calendar",
+    url: "https://outlook.live.com/calendar/",
+    icon: "icon/m365/calendar.svg",
+    fallbackDomain: "outlook.live.com",
+  },
+]
+
+function resolveAssetUrl(path) {
+  if (!path) return ""
+  if (typeof chrome !== "undefined" && chrome?.runtime?.getURL) {
+    try {
+      return chrome.runtime.getURL(path)
+    } catch {
+      return path
+    }
+  }
+  return path
+}
 
 const STORAGE_KEY = "startpageGoogleAppsV2"
 const ICON_BASE =
@@ -438,21 +521,248 @@ function app(id, i18nKey, label, url, iconSlug = null, fallbackDomain = null) {
   return { id, i18nKey, label, url, iconSlug, fallbackDomain }
 }
 
-function loadState() {
+export function loadState() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {}
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) || {}
+    let modified = false
+
+    // Sanitize any previous tracking IDs or tokens
+    if (parsed.m365Config) {
+      if (
+        parsed.m365Config.headerUrl &&
+        (parsed.m365Config.headerUrl.includes("client-request-id") ||
+          parsed.m365Config.headerUrl.includes("345b16d7"))
+      ) {
+        parsed.m365Config.headerUrl = DEFAULT_M365_HEADER_URL
+        modified = true
+      }
+      if (
+        parsed.m365Config.allAppsUrl &&
+        (parsed.m365Config.allAppsUrl.includes("client-request-id") ||
+          parsed.m365Config.allAppsUrl.includes("345b16d7"))
+      ) {
+        parsed.m365Config.allAppsUrl = DEFAULT_M365_ALL_APPS_URL
+        modified = true
+      }
+    }
+    if (parsed.m365Urls && typeof parsed.m365Urls === "object") {
+      for (const [key, val] of Object.entries(parsed.m365Urls)) {
+        if (
+          typeof val === "string" &&
+          (val.includes("client-request-id") || val.includes("345b16d7"))
+        ) {
+          delete parsed.m365Urls[key]
+          modified = true
+        }
+      }
+    }
+
+    if (modified) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed))
+      } catch {}
+    }
+    return parsed
   } catch (error) {
     console.warn("Could not load Google Apps settings", error)
     return {}
   }
 }
 
-function saveState(state) {
+export function saveState(state) {
   try {
+    if (state?.m365Config) {
+      if (
+        state.m365Config.headerUrl &&
+        state.m365Config.headerUrl.includes("client-request-id")
+      ) {
+        state.m365Config.headerUrl = DEFAULT_M365_HEADER_URL
+      }
+      if (
+        state.m365Config.allAppsUrl &&
+        state.m365Config.allAppsUrl.includes("client-request-id")
+      ) {
+        state.m365Config.allAppsUrl = DEFAULT_M365_ALL_APPS_URL
+      }
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch (error) {
     console.warn("Could not save Google Apps settings", error)
   }
+}
+
+export function setLauncherProvider(provider) {
+  const state = loadState()
+  state.provider = provider === "edge" ? "edge" : "google"
+  saveState(state)
+  window.dispatchEvent(
+    new CustomEvent("startpage:launcherModeChanged", {
+      detail: { provider: state.provider },
+    }),
+  )
+}
+
+export function getLauncherProvider() {
+  const state = loadState()
+  return state.provider || "google"
+}
+
+export function updateM365Links(headerUrl, allAppsUrl) {
+  const state = loadState()
+  const cleanHeader = sanitizeCleanUrl(headerUrl, DEFAULT_M365_HEADER_URL)
+  const cleanAllApps = sanitizeCleanUrl(allAppsUrl, DEFAULT_M365_ALL_APPS_URL)
+
+  state.m365Config = {
+    headerUrl: cleanHeader,
+    allAppsUrl: cleanAllApps,
+  }
+  saveState(state)
+  window.dispatchEvent(
+    new CustomEvent("startpage:launcherModeChanged", {
+      detail: { provider: state.provider || "google" },
+    }),
+  )
+}
+
+export function sanitizeCleanUrl(value, defaultFallback = "") {
+  let url = String(value || "").trim()
+  if (!url) return defaultFallback
+  if (url.includes("client-request-id") || url.includes("345b16d7")) {
+    try {
+      const parsed = new URL(url)
+      parsed.searchParams.delete("client-request-id")
+      parsed.searchParams.delete("auth")
+      parsed.searchParams.delete("origindomain")
+      parsed.searchParams.delete("from")
+      url = parsed.origin + parsed.pathname
+    } catch {
+      return defaultFallback
+    }
+  }
+  return normalizeUrl(url) || defaultFallback
+}
+
+export function openM365LinksModal() {
+  const i18n = geti18n()
+  const state = loadState()
+  const currentHeaderUrl =
+    state.m365Config?.headerUrl || DEFAULT_M365_HEADER_URL
+  const currentAllAppsUrl =
+    state.m365Config?.allAppsUrl || DEFAULT_M365_ALL_APPS_URL
+
+  const existing = document.querySelector(".m365-links-overlay")
+  if (existing) existing.remove()
+
+  const overlay = document.createElement("div")
+  overlay.className = "custom-dialog-overlay active m365-links-overlay"
+  overlay.innerHTML = `
+    <div class="custom-dialog m365-links-dialog">
+      <div class="dialog-header m365-dialog-header">
+        <i class="fa-brands fa-microsoft"></i>
+        <span>${i18n.m365_customize_links || "Customize Microsoft 365 Links"}</span>
+      </div>
+      <div class="dialog-body m365-dialog-body">
+        <div class="m365-dialog-field">
+          <label class="m365-dialog-label" for="m365-header-url-input">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>${i18n.m365_header_link || "Microsoft 365 Link (Header)"}</span>
+          </label>
+          <div class="m365-dialog-input-wrap">
+            <span class="m365-dialog-input-icon"><i class="fa-solid fa-link"></i></span>
+            <input type="url" id="m365-header-url-input" class="dialog-input m365-dialog-input" value="${currentHeaderUrl}" placeholder="https://m365.cloud.microsoft/chat" spellcheck="false" autocomplete="off" />
+            <button type="button" class="m365-dialog-input-reset" id="m365-header-reset-field" title="Reset">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+          <span class="m365-dialog-hint">${i18n.m365_header_link_hint || "URL opened when clicking Microsoft 365 header at the top"}</span>
+        </div>
+
+        <div class="m365-dialog-field">
+          <label class="m365-dialog-label" for="m365-all-apps-url-input">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>${i18n.m365_all_apps_link || "All Apps Link (Footer)"}</span>
+          </label>
+          <div class="m365-dialog-input-wrap">
+            <span class="m365-dialog-input-icon"><i class="fa-solid fa-table-cells"></i></span>
+            <input type="url" id="m365-all-apps-url-input" class="dialog-input m365-dialog-input" value="${currentAllAppsUrl}" placeholder="https://m365.cloud.microsoft/apps" spellcheck="false" autocomplete="off" />
+            <button type="button" class="m365-dialog-input-reset" id="m365-all-apps-reset-field" title="Reset">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+          <span class="m365-dialog-hint">${i18n.m365_all_apps_link_hint || "URL opened when clicking 'All apps' at the bottom"}</span>
+        </div>
+      </div>
+      <div class="dialog-footer m365-dialog-footer">
+        <button type="button" class="dialog-btn dialog-btn-secondary" id="m365-links-reset-btn" style="flex: 0 0 auto; width: auto; padding: 0 14px; color: #ff7875;">
+          <i class="fa-solid fa-rotate-left" style="margin-right: 6px;"></i><span>${i18n.m365_reset_links || "Reset to default"}</span>
+        </button>
+        <div style="display: flex; gap: 8px; flex: 1 1 auto; justify-content: flex-end;">
+          <button type="button" class="dialog-btn dialog-btn-secondary" id="m365-links-cancel-btn" style="flex: 0 0 auto; width: auto; padding: 0 16px;">
+            ${i18n.cancel || "Cancel"}
+          </button>
+          <button type="button" class="dialog-btn dialog-btn-primary" id="m365-links-save-btn" style="flex: 0 0 auto; width: auto; padding: 0 18px;">
+            <i class="fa-solid fa-check" style="margin-right: 6px;"></i><span>${i18n.modal_save || "Save"}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `
+
+  document.body.appendChild(overlay)
+
+  const headerInput = overlay.querySelector("#m365-header-url-input")
+  const allAppsInput = overlay.querySelector("#m365-all-apps-url-input")
+  const headerResetBtn = overlay.querySelector("#m365-header-reset-field")
+  const allAppsResetBtn = overlay.querySelector("#m365-all-apps-reset-field")
+  const resetBtn = overlay.querySelector("#m365-links-reset-btn")
+  const cancelBtn = overlay.querySelector("#m365-links-cancel-btn")
+  const saveBtn = overlay.querySelector("#m365-links-save-btn")
+
+  const closeModal = () => {
+    overlay.classList.remove("active")
+    setTimeout(() => overlay.remove(), 200)
+  }
+
+  headerResetBtn?.addEventListener("click", () => {
+    headerInput.value = DEFAULT_M365_HEADER_URL
+    headerInput.focus()
+  })
+
+  allAppsResetBtn?.addEventListener("click", () => {
+    allAppsInput.value = DEFAULT_M365_ALL_APPS_URL
+    allAppsInput.focus()
+  })
+
+  resetBtn?.addEventListener("click", () => {
+    headerInput.value = DEFAULT_M365_HEADER_URL
+    allAppsInput.value = DEFAULT_M365_ALL_APPS_URL
+  })
+
+  cancelBtn?.addEventListener("click", closeModal)
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal()
+  })
+
+  const onKeydown = (e) => {
+    if (e.key === "Escape") {
+      closeModal()
+      document.removeEventListener("keydown", onKeydown)
+    } else if (e.key === "Enter") {
+      saveBtn?.click()
+    }
+  }
+  document.addEventListener("keydown", onKeydown)
+
+  saveBtn?.addEventListener("click", () => {
+    document.removeEventListener("keydown", onKeydown)
+    updateM365Links(headerInput.value, allAppsInput.value)
+    closeModal()
+    showToast(i18n.m365_links_updated || "Microsoft 365 links updated", {
+      type: "success",
+    })
+  })
 }
 
 function normalizeUrl(value) {
@@ -637,6 +947,7 @@ function createItem(item, state, onContextMenu) {
   })
   link.addEventListener("contextmenu", (event) => {
     event.preventDefault()
+    event.stopPropagation()
     onContextMenu(event, item)
   })
 
@@ -657,14 +968,141 @@ export function initGoogleApps() {
 
   const persist = () => saveState(state)
 
-  window.addEventListener("googleProfileUpdated", () => {
-    if (typeof render === "function") render()
-  })
+  const renderEdgeLauncher = (fragment) => {
+    const i18n = geti18n()
+    const headerUrl =
+      state.m365Config?.headerUrl || DEFAULT_M365_HEADER_URL
+    const allAppsUrl =
+      state.m365Config?.allAppsUrl || DEFAULT_M365_ALL_APPS_URL
+
+    // Header
+    const header = document.createElement("div")
+    header.className = "m365-header"
+
+    const title = document.createElement("span")
+    title.className = "m365-header-title"
+    title.textContent = i18n.m365_title || "Microsoft 365"
+
+    const actions = document.createElement("div")
+    actions.className = "m365-header-actions"
+
+    const m365Link = document.createElement("a")
+    m365Link.className = "m365-header-link"
+    m365Link.href = headerUrl
+    m365Link.target = "_blank"
+    m365Link.rel = "noopener noreferrer"
+    m365Link.innerHTML = `<span>${i18n.m365_title || "Microsoft 365"}</span> <i class="fa-solid fa-arrow-right"></i>`
+
+    const gearBtn = document.createElement("button")
+    gearBtn.type = "button"
+    gearBtn.className = "m365-gear-btn"
+    gearBtn.title = i18n.settings_title || "Options"
+    gearBtn.setAttribute("aria-label", "Microsoft 365 Options")
+    gearBtn.innerHTML = '<i class="fa-solid fa-gear"></i>'
+    gearBtn.addEventListener("click", (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      showGoogleAppsMenu(event, null)
+    })
+
+    actions.append(m365Link, gearBtn)
+    header.append(title, actions)
+    fragment.appendChild(header)
+
+    // Grid: 8 apps
+    const grid = document.createElement("div")
+    grid.className = "m365-grid"
+
+    defaultM365Apps.forEach((app) => {
+      const itemUrl = state.m365Urls?.[app.id] || app.url
+      const rawIcon =
+        state.m365IconUrls?.[app.id] || resolveAssetUrl(app.icon)
+      const appLabel = i18n[app.i18nKey] || app.label
+
+      const item = document.createElement("a")
+      item.className = "m365-item"
+      item.href = itemUrl
+      item.target = "_blank"
+      item.rel = "noopener noreferrer"
+      item.dataset.appId = app.id
+      item.title = appLabel
+
+      const iconWrap = document.createElement("div")
+      iconWrap.className = "m365-item-icon"
+
+      const img = document.createElement("img")
+      img.src = rawIcon
+      img.alt = appLabel
+      img.loading = "lazy"
+      img.decoding = "async"
+      img.draggable = false
+      img.addEventListener(
+        "error",
+        () => {
+          img.src = `https://www.google.com/s2/favicons?domain=${app.fallbackDomain}&sz=64`
+        },
+        { once: true },
+      )
+
+      iconWrap.appendChild(img)
+
+      const name = document.createElement("span")
+      name.className = "m365-item-name"
+      name.textContent = appLabel
+
+      item.append(iconWrap, name)
+
+      item.addEventListener("contextmenu", (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        showGoogleAppsMenu(event, {
+          id: app.id,
+          label: appLabel,
+          url: itemUrl,
+          defaultUrl: app.url,
+          isM365: true,
+          icon: app.icon,
+          fallbackDomain: app.fallbackDomain,
+        })
+      })
+
+      grid.appendChild(item)
+    })
+
+    fragment.appendChild(grid)
+
+    // Footer
+    const footer = document.createElement("div")
+    footer.className = "m365-footer"
+
+    const allAppsLink = document.createElement("a")
+    allAppsLink.className = "m365-all-apps-link"
+    allAppsLink.href = allAppsUrl
+    allAppsLink.target = "_blank"
+    allAppsLink.rel = "noopener noreferrer"
+    allAppsLink.innerHTML = `<span>${i18n.m365_all_apps || "Tất cả Ứng dụng"}</span> <i class="fa-solid fa-arrow-right"></i>`
+
+    footer.appendChild(allAppsLink)
+    fragment.appendChild(footer)
+  }
 
   const render = () => {
     const fragment = document.createDocumentFragment()
     const previousLargeFavorites = state.options?.largeFavorites === true
     state = {
+      provider: state.provider || "google",
+      m365Config:
+        state.m365Config && typeof state.m365Config === "object"
+          ? state.m365Config
+          : {},
+      m365Urls:
+        state.m365Urls && typeof state.m365Urls === "object"
+          ? state.m365Urls
+          : {},
+      m365IconUrls:
+        state.m365IconUrls && typeof state.m365IconUrls === "object"
+          ? state.m365IconUrls
+          : {},
       sectionApps: getSectionApps(state),
       favorites: cleanFavorites(state.favorites),
       iconUrls:
@@ -677,6 +1115,36 @@ export function initGoogleApps() {
         largePopup: state.options?.largePopup ?? previousLargeFavorites,
       },
     }
+
+    const isEdge = state.provider === "edge"
+    dropdown?.classList.toggle("is-edge-mode", isEdge)
+    if (button) {
+      if (isEdge) {
+        button.title = geti18n().m365_tooltip || "Microsoft 365"
+        button.setAttribute(
+          "aria-label",
+          geti18n().m365_tooltip || "Microsoft 365",
+        )
+        button.href =
+          state.m365Config?.headerUrl || DEFAULT_M365_HEADER_URL
+      } else {
+        button.title = geti18n().google_apps_tooltip || "Google Apps"
+        button.setAttribute(
+          "aria-label",
+          geti18n().google_apps_tooltip || "Google Apps",
+        )
+        button.href = "https://about.google/products/"
+      }
+    }
+
+    if (isEdge) {
+      renderEdgeLauncher(fragment)
+      root.replaceChildren(fragment)
+      persist()
+      return
+    }
+
+    root.className = ""
     root.classList.toggle("g-apps-drag-enabled", state.options.dragEnabled)
     root.classList.toggle("g-apps-hide-titles", !state.options.showTitles)
     root.classList.toggle("g-apps-hide-app-text", !state.options.showAppText)
@@ -1021,16 +1489,22 @@ export function initGoogleApps() {
 
   function showIconChangedToast(previousIconUrls) {
     const i18n = geti18n()
-    showToast(i18n.g_apps_icon_changed || "Google app icon updated", {
+    const isM365 = state.provider === "edge"
+    showToast(i18n.g_apps_icon_changed || "App icon updated", {
       type: "success",
       undoFn: () => {
-        state.iconUrls = previousIconUrls
+        if (isM365) {
+          state.m365IconUrls = previousIconUrls
+        } else {
+          state.iconUrls = previousIconUrls
+        }
         render()
       },
     })
   }
 
   function uploadIcon(item) {
+    const isM365 = state.provider === "edge" || item.isM365
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/*"
@@ -1038,10 +1512,17 @@ export function initGoogleApps() {
       const file = input.files?.[0]
       if (!file) return
       const reader = new FileReader()
-      const previousIconUrls = { ...(state.iconUrls || {}) }
+      const previousIconUrls = isM365
+        ? { ...(state.m365IconUrls || {}) }
+        : { ...(state.iconUrls || {}) }
       reader.addEventListener("load", () => {
-        state.iconUrls = { ...(state.iconUrls || {}) }
-        state.iconUrls[item.id] = String(reader.result || "")
+        if (isM365) {
+          state.m365IconUrls = { ...(state.m365IconUrls || {}) }
+          state.m365IconUrls[item.id] = String(reader.result || "")
+        } else {
+          state.iconUrls = { ...(state.iconUrls || {}) }
+          state.iconUrls[item.id] = String(reader.result || "")
+        }
         render()
         showIconChangedToast(previousIconUrls)
       })
@@ -1052,6 +1533,19 @@ export function initGoogleApps() {
 
   function applyIconValue(item, value, previousIconUrls) {
     const normalized = normalizeIconUrl(value)
+    const isM365 = state.provider === "edge" || item.isM365
+    if (isM365) {
+      const defaultIcon = resolveAssetUrl(item.icon || `icon/m365/${item.id}.svg`)
+      state.m365IconUrls = { ...(state.m365IconUrls || {}) }
+      if (normalized && normalized !== defaultIcon) {
+        state.m365IconUrls[item.id] = normalized
+      } else {
+        delete state.m365IconUrls[item.id]
+      }
+      render()
+      showIconChangedToast(previousIconUrls)
+      return
+    }
     const defaultIcon = getDeclaredIconUrl(item)
     state.iconUrls = { ...(state.iconUrls || {}) }
     if (normalized && normalized !== defaultIcon) {
@@ -1093,10 +1587,19 @@ export function initGoogleApps() {
   function openIconPicker(item, anchorEvent = null) {
     hideGoogleAppsIconPopover()
     const i18n = geti18n()
-    const previousIconUrls = { ...(state.iconUrls || {}) }
-    const defaultIcon = getDeclaredIconUrl(item)
-    const webIcon = getWebIconUrl(item)
-    let selectedValue = state.iconUrls?.[item.id] || defaultIcon
+    const isM365 = state.provider === "edge" || item.isM365
+    const previousIconUrls = isM365
+      ? { ...(state.m365IconUrls || {}) }
+      : { ...(state.iconUrls || {}) }
+    const defaultIcon = isM365
+      ? resolveAssetUrl(item.icon || `icon/m365/${item.id}.svg`)
+      : getDeclaredIconUrl(item)
+    const webIcon = isM365
+      ? (item.fallbackDomain ? `https://www.google.com/s2/favicons?domain=${item.fallbackDomain}&sz=128` : defaultIcon)
+      : getWebIconUrl(item)
+    let selectedValue = isM365
+      ? (state.m365IconUrls?.[item.id] || defaultIcon)
+      : (state.iconUrls?.[item.id] || defaultIcon)
 
     const popover = document.createElement("div")
     popover.className = "g-apps-icon-popover"
@@ -1117,7 +1620,7 @@ export function initGoogleApps() {
     const preview = document.createElement("div")
     preview.className = "g-apps-icon-preview"
     const previewImg = document.createElement("img")
-    previewImg.alt = getLabel(item)
+    previewImg.alt = item.label || getLabel(item)
     previewImg.referrerPolicy = "no-referrer"
     preview.appendChild(previewImg)
     popover.appendChild(preview)
@@ -1246,6 +1749,19 @@ export function initGoogleApps() {
   }
 
   function resetIcon(item) {
+    const isM365 = state.provider === "edge" || item.isM365
+    if (isM365) {
+      const previousIconUrls = { ...(state.m365IconUrls || {}) }
+      state.m365IconUrls = { ...(state.m365IconUrls || {}) }
+      delete state.m365IconUrls[item.id]
+      if (state.m365Urls?.[item.id]) {
+        state.m365Urls = { ...(state.m365Urls || {}) }
+        delete state.m365Urls[item.id]
+      }
+      render()
+      showIconChangedToast(previousIconUrls)
+      return
+    }
     if (!state.iconUrls?.[item.id]) return
     const previousIconUrls = { ...(state.iconUrls || {}) }
     state.iconUrls = { ...(state.iconUrls || {}) }
@@ -1255,10 +1771,47 @@ export function initGoogleApps() {
   }
 
   function resetGoogleApps() {
+    if (state.provider === "edge") {
+      delete state.m365Config
+      delete state.m365Urls
+      delete state.m365IconUrls
+      persist()
+      render()
+      hideGoogleAppsMenu()
+      showToast(geti18n().m365_links_updated || "Reset", { type: "success" })
+      return
+    }
     localStorage.removeItem(STORAGE_KEY)
     state = {}
     render()
     hideGoogleAppsMenu()
+  }
+
+  async function editAppUrl(item) {
+    const i18n = geti18n()
+    const isM365 = state.provider === "edge" || item.isM365
+    const currentUrl = isM365
+      ? (state.m365Urls?.[item.id] || item.url)
+      : item.url
+    const newUrl = await showPrompt(
+      i18n.g_apps_edit_url_prompt || "Enter a custom URL for this app:",
+      currentUrl,
+      item.label || getLabel(item),
+    )
+    if (newUrl !== null) {
+      const normalized = normalizeUrl(newUrl)
+      if (isM365) {
+        state.m365Urls = { ...(state.m365Urls || {}) }
+        if (normalized && normalized !== (item.defaultUrl || item.url)) {
+          state.m365Urls[item.id] = normalized
+        } else {
+          delete state.m365Urls[item.id]
+        }
+      }
+      persist()
+      render()
+      showToast(i18n.saved_success || "Saved", { type: "success" })
+    }
   }
 
   function updateOption(key, value) {
@@ -1272,8 +1825,10 @@ export function initGoogleApps() {
 
   function getMenuLabels(item) {
     const i18n = geti18n()
+    const isM365Item = item?.isM365 || state.provider === "edge"
     return {
       open: i18n.g_apps_menu_open || "Open",
+      editUrl: i18n.m365_edit_app_link || "Edit App URL",
       editIcon: i18n.g_apps_menu_edit_icon || "Edit icon URL",
       uploadIcon: i18n.g_apps_menu_upload_icon || "Upload icon",
       resetIcon: i18n.g_apps_menu_reset_icon || "Reset this icon",
@@ -1282,9 +1837,15 @@ export function initGoogleApps() {
       showAppText: i18n.g_apps_menu_app_text || "Show app names",
       largePopup: i18n.g_apps_menu_large_popup || "Large popup",
       showMiniSearch: i18n.g_apps_menu_mini_search || "Mini search",
-      reset: i18n.g_apps_reset || "Reset Google Apps",
-      currentApp: getLabel(item),
+      reset: isM365Item
+        ? (i18n.m365_reset_links || "Reset Microsoft 365")
+        : (i18n.g_apps_reset || "Reset Google Apps"),
+      currentApp: item ? (item.label || getLabel(item)) : "",
       scrollTop: i18n.g_apps_scroll_top || "Scroll to top",
+      launcherStyle: i18n.g_apps_launcher_style || "App Launcher Style",
+      providerGoogle: i18n.g_apps_provider_google || "Google Apps",
+      providerEdge: i18n.g_apps_provider_edge || "Microsoft 365 (Edge)",
+      customizeM365: i18n.m365_customize_links || "Customize Microsoft 365 Links",
     }
   }
 
@@ -1322,8 +1883,12 @@ export function initGoogleApps() {
 
   function showGoogleAppsMenu(event, item) {
     hideGoogleAppsMenu()
+    const isEdge = state.provider === "edge"
     const fallbackItem =
-      item || appMap.get(state.favorites[0] || "search") || apps[0]
+      item ||
+      (isEdge
+        ? defaultM365Apps[0]
+        : appMap.get(state.favorites[0] || "search") || apps[0])
     const labels = getMenuLabels(fallbackItem)
     const menu = document.createElement("div")
     menu.className = "g-apps-context-menu"
@@ -1335,6 +1900,31 @@ export function initGoogleApps() {
       menuEvent.preventDefault()
       menuEvent.stopPropagation()
     })
+
+    const createMenuProviderSelect = () => {
+      const wrap = document.createElement("div")
+      wrap.className = "g-apps-menu-select-wrap"
+      wrap.innerHTML = `
+        <span class="g-apps-menu-select-label"><i class="fa-solid fa-layer-group"></i> ${labels.launcherStyle}</span>
+        <select class="g-apps-menu-provider-select">
+          <option value="google" ${!isEdge ? "selected" : ""}>${labels.providerGoogle}</option>
+          <option value="edge" ${isEdge ? "selected" : ""}>${labels.providerEdge}</option>
+        </select>
+      `
+      const sel = wrap.querySelector("select")
+      sel.addEventListener("change", () => {
+        state.provider = sel.value
+        persist()
+        render()
+        hideGoogleAppsMenu()
+        window.dispatchEvent(
+          new CustomEvent("startpage:launcherModeChanged", {
+            detail: { provider: state.provider },
+          }),
+        )
+      })
+      return wrap
+    }
 
     if (item) {
       menu.innerHTML = `<div class="g-apps-menu-title">${labels.currentApp}</div>`
@@ -1348,6 +1938,14 @@ export function initGoogleApps() {
           },
         ),
       )
+      if (isEdge || item.isM365) {
+        menu.appendChild(
+          createMenuButton("fa-solid fa-link", labels.editUrl, () => {
+            hideGoogleAppsMenu()
+            editAppUrl(item)
+          }),
+        )
+      }
       menu.appendChild(
         createMenuButton("fa-solid fa-image", labels.editIcon, () => {
           hideGoogleAppsMenu()
@@ -1373,16 +1971,27 @@ export function initGoogleApps() {
       menu.innerHTML = `<div class="g-apps-menu-title">${geti18n().settings_title || "Options"}</div>`
     }
 
-    const list = document.createElement("div")
-    list.className = "g-apps-menu-list"
-    list.append(
-      createMenuToggle("dragEnabled", labels.dragEnabled),
-      createMenuToggle("showTitles", labels.showTitles),
-      createMenuToggle("showAppText", labels.showAppText),
-      createMenuToggle("showMiniSearch", labels.showMiniSearch),
-      createMenuToggle("largePopup", labels.largePopup),
-    )
-    menu.appendChild(list)
+    menu.appendChild(createMenuProviderSelect())
+
+    if (isEdge) {
+      menu.appendChild(
+        createMenuButton("fa-solid fa-sliders", labels.customizeM365, () => {
+          hideGoogleAppsMenu()
+          openM365LinksModal()
+        }),
+      )
+    } else {
+      const list = document.createElement("div")
+      list.className = "g-apps-menu-list"
+      list.append(
+        createMenuToggle("dragEnabled", labels.dragEnabled),
+        createMenuToggle("showTitles", labels.showTitles),
+        createMenuToggle("showAppText", labels.showAppText),
+        createMenuToggle("showMiniSearch", labels.showMiniSearch),
+        createMenuToggle("largePopup", labels.largePopup),
+      )
+      menu.appendChild(list)
+    }
 
     const divider2 = document.createElement("div")
     divider2.className = "g-apps-menu-divider"
@@ -1461,6 +2070,45 @@ export function initGoogleApps() {
     },
     true,
   )
+
+  button?.addEventListener("contextmenu", (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    showGoogleAppsMenu(event, null)
+  })
+
+  dropdown?.addEventListener("contextmenu", (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const itemEl = event.target.closest(".g-app-item, .m365-item")
+    if (itemEl) {
+      const appId = itemEl.dataset.appId
+      if (state.provider === "edge") {
+        const mApp = defaultM365Apps.find((a) => a.id === appId)
+        if (mApp) {
+          const itemUrl = state.m365Urls?.[mApp.id] || mApp.url
+          const appLabel = geti18n()[mApp.i18nKey] || mApp.label
+          showGoogleAppsMenu(event, {
+            id: mApp.id,
+            label: appLabel,
+            url: itemUrl,
+            defaultUrl: mApp.url,
+            isM365: true,
+            icon: mApp.icon,
+            fallbackDomain: mApp.fallbackDomain,
+          })
+          return
+        }
+      } else {
+        const gApp = appMap.get(appId) || apps.find((a) => a.id === appId)
+        if (gApp) {
+          showGoogleAppsMenu(event, gApp)
+          return
+        }
+      }
+    }
+    showGoogleAppsMenu(event, null)
+  })
   document.addEventListener("click", (event) => {
     if (!dropdown || !button) return
     if (event.target.closest(".g-apps-context-menu")) return
@@ -1486,6 +2134,10 @@ export function initGoogleApps() {
   dropdown?.addEventListener("scroll", hideGoogleAppsMenu, true)
   scrollArea?.addEventListener("scroll", ensureScrollTopButton)
   window.addEventListener("startpage:languageChanged", render)
+  window.addEventListener("startpage:launcherModeChanged", () => {
+    state = loadState()
+    render()
+  })
 
   render()
   ensureScrollTopButton()

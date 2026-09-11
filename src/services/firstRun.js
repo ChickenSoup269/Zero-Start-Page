@@ -542,32 +542,175 @@ async function promptFirstRunLanguage() {
   }
 }
 
+function promptFirstRunUserNameDialog({ title, message, i18n }) {
+  return new Promise((resolve) => {
+    let overlay = document.getElementById("custom-dialog-overlay")
+    if (!overlay) {
+      overlay = document.createElement("div")
+      overlay.id = "custom-dialog-overlay"
+      overlay.className = "custom-dialog-overlay"
+      document.body.appendChild(overlay)
+    }
+
+    overlay.classList.add("active")
+    overlay.style.pointerEvents = "auto"
+
+    const placeholder = i18n.settings_custom_title_placeholder || "e.g. Alex"
+    const showGreetingText =
+      i18n.first_run_name_show_greeting || "Show greeting on home screen"
+    const showGreetingHint =
+      i18n.first_run_name_show_greeting_hint ||
+      "Enable the Custom Title greeting widget with your name"
+    const enabledLabel = i18n.first_run_name_status_enabled || "Show on screen"
+    const hiddenLabel = i18n.first_run_name_status_hidden || "Keep hidden"
+
+    overlay.innerHTML = `
+      <div class="custom-dialog custom-prompt first-run-name-dialog">
+        <div class="dialog-header">
+          <i class="fa-solid fa-signature dialog-icon" style="margin-right: 8px;"></i>
+          <span>${title}</span>
+        </div>
+        <div class="dialog-body" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; text-align: left;">
+          <div class="dialog-message" style="font-size: 0.95rem; font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, 0.92);">
+            ${message}
+          </div>
+          <input type="text" class="dialog-input" id="first-run-name-input" placeholder="${placeholder}" maxlength="40" autocomplete="off" spellcheck="false" />
+
+          <div class="first-run-toggle-card" id="first-run-greeting-toggle-row">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 0.88rem; font-weight: 600; color: #ffffff;">${showGreetingText}</span>
+              <span style="font-size: 0.76rem; color: rgba(255, 255, 255, 0.6);">${showGreetingHint}</span>
+            </div>
+            <button type="button" class="first-run-toggle-pill" id="first-run-greeting-toggle-btn">
+              <i class="fa-solid fa-eye"></i>
+              <span class="first-run-toggle-label">${enabledLabel}</span>
+            </button>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button type="button" class="dialog-btn dialog-btn-secondary" id="first-run-name-skip">
+            ${i18n.skip || "Skip"}
+          </button>
+          <button type="button" class="dialog-btn dialog-btn-primary" id="first-run-name-ok">
+            ${i18n.ok || "OK"}
+          </button>
+        </div>
+      </div>
+    `
+
+    const input = overlay.querySelector("#first-run-name-input")
+    const toggleRow = overlay.querySelector("#first-run-greeting-toggle-row")
+    const toggleBtn = overlay.querySelector("#first-run-greeting-toggle-btn")
+    const toggleLabel = overlay.querySelector(".first-run-toggle-label")
+    const toggleIcon = toggleBtn.querySelector("i")
+    const skipBtn = overlay.querySelector("#first-run-name-skip")
+    const okBtn = overlay.querySelector("#first-run-name-ok")
+
+    let showGreeting = true
+
+    const updateToggleUI = () => {
+      if (showGreeting) {
+        toggleBtn.style.background = "var(--accent-color, #3b82f6)"
+        toggleBtn.style.borderColor = "rgba(255, 255, 255, 0.25)"
+        toggleBtn.style.color = "#ffffff"
+        toggleLabel.textContent = enabledLabel
+        toggleIcon.className = "fa-solid fa-eye"
+      } else {
+        toggleBtn.style.background = "rgba(255, 255, 255, 0.08)"
+        toggleBtn.style.borderColor = "rgba(255, 255, 255, 0.15)"
+        toggleBtn.style.color = "rgba(255, 255, 255, 0.6)"
+        toggleLabel.textContent = hiddenLabel
+        toggleIcon.className = "fa-solid fa-eye-slash"
+      }
+    }
+
+    const toggle = (e) => {
+      if (e) e.stopPropagation()
+      showGreeting = !showGreeting
+      updateToggleUI()
+    }
+
+    toggleBtn.addEventListener("click", toggle)
+    toggleRow.addEventListener("click", () => toggle())
+
+    const close = () => {
+      overlay.classList.remove("active")
+      overlay.style.pointerEvents = "none"
+      setTimeout(() => {
+        if (!overlay.classList.contains("active")) {
+          overlay.innerHTML = ""
+        }
+      }, 250)
+    }
+
+    const cleanup = () => {
+      document.removeEventListener("keydown", onKeydown)
+    }
+
+    const onKeydown = (e) => {
+      if (e.key === "Escape") {
+        cleanup()
+        close()
+        resolve(null)
+      } else if (e.key === "Enter") {
+        cleanup()
+        close()
+        resolve({
+          name: input?.value?.trim() || "",
+          showGreeting,
+        })
+      }
+    }
+    document.addEventListener("keydown", onKeydown)
+
+    skipBtn.addEventListener("click", () => {
+      cleanup()
+      close()
+      resolve(null)
+    })
+
+    okBtn.addEventListener("click", () => {
+      cleanup()
+      close()
+      resolve({
+        name: input?.value?.trim() || "",
+        showGreeting,
+      })
+    })
+
+    setTimeout(() => {
+      input?.focus()
+    }, 100)
+  })
+}
+
 async function promptFirstRunUserName() {
   if (localStorage.getItem(FIRST_RUN_NAME_KEY)) return
 
   const i18n = geti18n()
-  const rawName = await showPrompt(
-    i18n.first_run_name_prompt || "What should your Start Page call you?",
-    "",
-    i18n.first_run_name_title || "Your name",
-  )
-  const name =
-    typeof rawName === "string"
-      ? rawName.trim().replace(/\s+/g, " ").slice(0, 40)
-      : ""
+  const result = await promptFirstRunUserNameDialog({
+    title: i18n.first_run_name_title || "Your name",
+    message:
+      i18n.first_run_name_prompt || "What should your Start Page call you?",
+    i18n,
+  })
 
-  if (!name) {
+  if (!result || !result.name) {
     localStorage.setItem(FIRST_RUN_NAME_KEY, "skipped")
     return
   }
 
+  const name = result.name.replace(/\s+/g, " ").slice(0, 40)
   const greeting = (
     i18n.first_run_custom_title_greeting || "Hello, {name}"
   ).replace("{name}", name)
 
+  const showGreeting = Boolean(result.showGreeting)
+
   updateSetting("customTitleText", greeting)
-  updateSetting("showCustomTitle", true)
+  updateSetting("showCustomTitle", showGreeting)
   saveSettings(true)
+
   window.dispatchEvent(
     new CustomEvent("layoutUpdated", {
       detail: { key: "customTitleText", value: greeting },
@@ -575,9 +718,17 @@ async function promptFirstRunUserName() {
   )
   window.dispatchEvent(
     new CustomEvent("layoutUpdated", {
-      detail: { key: "showCustomTitle", value: true },
+      detail: { key: "showCustomTitle", value: showGreeting },
     }),
   )
+
+  const showCustomTitleCheckbox = document.getElementById(
+    "show-custom-title-checkbox",
+  )
+  if (showCustomTitleCheckbox) {
+    showCustomTitleCheckbox.checked = showGreeting
+  }
+
   localStorage.setItem(FIRST_RUN_NAME_KEY, name)
 }
 

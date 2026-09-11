@@ -9044,33 +9044,54 @@ export function setupGeneralEventHandlers(
   })
 
   // Layout controls popup
+  const LCP_ACTIVE_TAB_KEY = "startpage_lcp_active_tab"
+
+  const getSavedLcpTab = () => {
+    try {
+      const saved = localStorage.getItem(LCP_ACTIVE_TAB_KEY)
+      if (saved === "quick-access" || saved === "layout") return saved
+    } catch {}
+    return "layout"
+  }
+
   const closeLcp = () => {
     DOM.fadeToggle(DOM.layoutControlsPopup, false, "block")
     DOM.layoutControlsBtn.classList.remove("active")
   }
 
-  const setLcpTab = (tabName = "layout") => {
+  const setLcpTab = (tabName = "layout", persist = true) => {
+    const targetTab =
+      tabName === "quick-access" ? "quick-access" : "layout"
     DOM.lcpTabs?.forEach((tab) => {
-      const active = tab.dataset.lcpTab === tabName
+      const active = tab.dataset.lcpTab === targetTab
       tab.classList.toggle("active", active)
       tab.setAttribute("aria-selected", active ? "true" : "false")
     })
     DOM.lcpTabPanels?.forEach((panel) => {
-      panel.classList.toggle("active", panel.dataset.lcpPanel === tabName)
+      panel.classList.toggle("active", panel.dataset.lcpPanel === targetTab)
     })
+    if (persist) {
+      try {
+        localStorage.setItem(LCP_ACTIVE_TAB_KEY, targetTab)
+      } catch {}
+    }
   }
 
-  const showLcp = (tabName = "layout") => {
-    setLcpTab(tabName)
+  const showLcp = (tabName = null) => {
+    const targetTab = tabName || getSavedLcpTab()
+    setLcpTab(targetTab, Boolean(tabName))
     initLcpCustomDropdowns()
     DOM.fadeToggle(DOM.layoutControlsPopup, true, "block")
     DOM.layoutControlsBtn.classList.add("active")
   }
 
+  // Restore last selected tab on init
+  setLcpTab(getSavedLcpTab(), false)
+
   DOM.lcpTabs?.forEach((tab) => {
     tab.addEventListener("click", (e) => {
       e.stopPropagation()
-      setLcpTab(tab.dataset.lcpTab || "layout")
+      setLcpTab(tab.dataset.lcpTab || "layout", true)
     })
   })
 
@@ -9082,12 +9103,12 @@ export function setupGeneralEventHandlers(
     if (isVisible) {
       closeLcp()
     } else {
-      showLcp("layout")
+      showLcp(getSavedLcpTab())
     }
   })
 
   window.addEventListener("openLayoutControls", (e) => {
-    showLcp(e.detail?.tab || "layout")
+    showLcp(e.detail?.tab || getSavedLcpTab())
   })
 
   document.addEventListener("click", (e) => {
@@ -9205,6 +9226,88 @@ export function setupGeneralEventHandlers(
       DOM.lcpTopRightControls.checked = isVisible
     }
   })
+
+  const appLauncherProviderSelect = document.getElementById(
+    "app-launcher-provider-select",
+  )
+  const m365SettingsSubcard = document.getElementById("m365-settings-subcard")
+  const m365HeaderInput = document.getElementById("setting-m365-header-url")
+  const m365AllAppsInput = document.getElementById("setting-m365-all-apps-url")
+  const m365ResetHeaderBtn = document.getElementById("m365-reset-header-btn")
+  const m365ResetAllAppsBtn = document.getElementById("m365-reset-all-apps-btn")
+  const m365ResetAllBtn = document.getElementById("m365-reset-all-btn")
+
+  const syncLauncherProviderUI = async () => {
+    try {
+      const { loadState, DEFAULT_M365_HEADER_URL, DEFAULT_M365_ALL_APPS_URL } =
+        await import("../googleApps.js")
+      const gState = loadState()
+      const currentProvider = gState.provider || "google"
+      if (appLauncherProviderSelect) {
+        appLauncherProviderSelect.value = currentProvider
+      }
+      if (m365SettingsSubcard) {
+        m365SettingsSubcard.style.display =
+          currentProvider === "edge" ? "flex" : "none"
+      }
+      if (m365HeaderInput) {
+        m365HeaderInput.value =
+          gState.m365Config?.headerUrl || DEFAULT_M365_HEADER_URL
+      }
+      if (m365AllAppsInput) {
+        m365AllAppsInput.value =
+          gState.m365Config?.allAppsUrl || DEFAULT_M365_ALL_APPS_URL
+      }
+    } catch {}
+  }
+
+  syncLauncherProviderUI()
+
+  appLauncherProviderSelect?.addEventListener("change", async () => {
+    const provider = appLauncherProviderSelect.value
+    if (m365SettingsSubcard) {
+      m365SettingsSubcard.style.display =
+        provider === "edge" ? "flex" : "none"
+    }
+    const { setLauncherProvider } = await import("../googleApps.js")
+    setLauncherProvider(provider)
+  })
+
+  const saveM365Inputs = async () => {
+    const { updateM365Links } = await import("../googleApps.js")
+    const headerUrl = m365HeaderInput?.value || ""
+    const allAppsUrl = m365AllAppsInput?.value || ""
+    updateM365Links(headerUrl, allAppsUrl)
+  }
+
+  m365HeaderInput?.addEventListener("change", saveM365Inputs)
+  m365AllAppsInput?.addEventListener("change", saveM365Inputs)
+
+  m365ResetHeaderBtn?.addEventListener("click", async () => {
+    const { DEFAULT_M365_HEADER_URL } = await import("../googleApps.js")
+    if (m365HeaderInput) {
+      m365HeaderInput.value = DEFAULT_M365_HEADER_URL
+      saveM365Inputs()
+    }
+  })
+
+  m365ResetAllAppsBtn?.addEventListener("click", async () => {
+    const { DEFAULT_M365_ALL_APPS_URL } = await import("../googleApps.js")
+    if (m365AllAppsInput) {
+      m365AllAppsInput.value = DEFAULT_M365_ALL_APPS_URL
+      saveM365Inputs()
+    }
+  })
+
+  m365ResetAllBtn?.addEventListener("click", async () => {
+    const { DEFAULT_M365_HEADER_URL, DEFAULT_M365_ALL_APPS_URL } =
+      await import("../googleApps.js")
+    if (m365HeaderInput) m365HeaderInput.value = DEFAULT_M365_HEADER_URL
+    if (m365AllAppsInput) m365AllAppsInput.value = DEFAULT_M365_ALL_APPS_URL
+    saveM365Inputs()
+  })
+
+  window.addEventListener("startpage:launcherModeChanged", syncLauncherProviderUI)
 
   if (DOM.lcpTopRightControls) {
     DOM.lcpTopRightControls.addEventListener("change", () => {

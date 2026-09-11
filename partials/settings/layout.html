@@ -75,6 +75,55 @@
                         Google Apps & Avatar</label>
                     <input type="checkbox" id="show-top-right-controls-checkbox" checked>
                 </div>
+                <div class="setting-item-row" id="app-launcher-provider-row">
+                    <label for="app-launcher-provider-select" data-i18n="g_apps_launcher_style">App Launcher Style</label>
+                    <select id="app-launcher-provider-select" class="settings-select">
+                        <option value="google" data-i18n="g_apps_provider_google">Google Apps</option>
+                        <option value="edge" data-i18n="g_apps_provider_edge">Microsoft 365 (Edge)</option>
+                    </select>
+                </div>
+                <div class="m365-settings-subcard" id="m365-settings-subcard" style="display: none;">
+                    <div class="m365-subcard-header">
+                        <div class="m365-subcard-title">
+                            <i class="fa-brands fa-microsoft"></i>
+                            <span data-i18n="m365_customize_links">Customize Microsoft 365 Links</span>
+                        </div>
+                        <button type="button" class="m365-subcard-reset-all" id="m365-reset-all-btn" title="Reset to default">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span data-i18n="m365_reset_links">Reset</span>
+                        </button>
+                    </div>
+
+                    <div class="m365-field-group">
+                        <label for="setting-m365-header-url" class="m365-field-label">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <span data-i18n="m365_header_link">Microsoft 365 Link (Header)</span>
+                        </label>
+                        <div class="m365-input-wrap">
+                            <span class="m365-input-icon"><i class="fa-solid fa-link"></i></span>
+                            <input type="url" id="setting-m365-header-url" class="setting-text-input m365-setting-input" placeholder="https://m365.cloud.microsoft/chat" autocomplete="off" spellcheck="false">
+                            <button type="button" class="m365-field-reset-btn" id="m365-reset-header-btn" title="Reset default">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                        <span class="m365-field-hint" data-i18n="m365_header_link_hint">URL opened when clicking Microsoft 365 header at the top</span>
+                    </div>
+
+                    <div class="m365-field-group">
+                        <label for="setting-m365-all-apps-url" class="m365-field-label">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <span data-i18n="m365_all_apps_link">All Apps Link (Footer)</span>
+                        </label>
+                        <div class="m365-input-wrap">
+                            <span class="m365-input-icon"><i class="fa-solid fa-table-cells"></i></span>
+                            <input type="url" id="setting-m365-all-apps-url" class="setting-text-input m365-setting-input" placeholder="https://m365.cloud.microsoft/apps" autocomplete="off" spellcheck="false">
+                            <button type="button" class="m365-field-reset-btn" id="m365-reset-all-apps-btn" title="Reset default">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                        <span class="m365-field-hint" data-i18n="m365_all_apps_link_hint">URL opened when clicking 'All apps' at the bottom</span>
+                    </div>
+                </div>
                 <div class="setting-item-row">
                     <label for="allow-text-selection-checkbox" data-i18n="settings_allow_text_selection">Allow
                         Text Selection</label>

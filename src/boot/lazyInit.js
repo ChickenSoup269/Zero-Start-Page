@@ -109,6 +109,25 @@ export function setupLazyInitTriggers() {
   const googleAppsDropdown = document.getElementById("g-apps-dropdown")
   const sidebarHotkeysBtn = document.getElementById("sidebar-hotkeys-btn")
 
+  try {
+    const gState = JSON.parse(
+      localStorage.getItem("startpageGoogleAppsV2") || "{}",
+    )
+    if (gState.provider === "edge" && googleAppsBtn) {
+      googleAppsBtn.title = "Microsoft 365"
+      googleAppsBtn.setAttribute("data-i18n-title", "m365_tooltip")
+      let headerUrl =
+        gState.m365Config?.headerUrl || "https://m365.cloud.microsoft/chat"
+      if (
+        headerUrl.includes("client-request-id") ||
+        headerUrl.includes("345b16d7")
+      ) {
+        headerUrl = "https://m365.cloud.microsoft/chat"
+      }
+      googleAppsBtn.href = headerUrl
+    }
+  } catch {}
+
   settingsToggle?.addEventListener(
     "click",
     async (event) => {
@@ -149,6 +168,18 @@ export function setupLazyInitTriggers() {
       event.stopImmediatePropagation()
       await ensureGoogleAppsInitialized("open-google-apps")
       googleAppsDropdown?.classList.add("show")
+    },
+    { capture: true },
+  )
+
+  googleAppsBtn?.addEventListener(
+    "contextmenu",
+    async (event) => {
+      if (googleAppsInitialized) return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      await ensureGoogleAppsInitialized("open-google-apps-contextmenu")
+      googleAppsBtn.dispatchEvent(new MouseEvent("contextmenu", event))
     },
     { capture: true },
   )

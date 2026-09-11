@@ -415,6 +415,7 @@ export const defaultSettings = {
   weatherLongitude: 106.6297,
   weatherMini: false,
   weatherExpanded: false,
+  weatherColorStyle: "accent",
   weatherApiMode: "extension",
   weatherForecastEndpoint: "",
   weatherGeocodingEndpoint: "",

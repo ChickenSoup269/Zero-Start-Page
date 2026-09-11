@@ -1964,7 +1964,7 @@ export function showContextMenu(
         contextMenu.insertBefore(miniBtn, menuLock)
 
         const expandBtn = createToggleMenuItem({
-          label: i18n.weather_expand || "Enlarge Size",
+          label: i18n.widget_expand_size || "Enlarge Size",
           isActive: isExpanded,
           iconClass: "fa-solid fa-up-right-and-down-left-from-center",
           activeText: i18n.status_on || "On",
@@ -2022,6 +2022,45 @@ export function showContextMenu(
             },
           })
           contextMenu.insertBefore(unitBtn, menuLock)
+
+          const weatherColorOptions = ["accent", "natural", "monochrome"]
+          const colorStyle = weatherColorOptions.includes(settings.weatherColorStyle)
+            ? settings.weatherColorStyle
+            : "accent"
+          const curColorIdx = weatherColorOptions.indexOf(colorStyle)
+          const nextColorIdx = (curColorIdx + 1) % weatherColorOptions.length
+          const nextColor = weatherColorOptions[nextColorIdx]
+
+          const colorLabelMap = {
+            accent: i18n.weather_color_accent || "Accent Color",
+            natural: i18n.weather_color_natural || "Natural Colors",
+            monochrome: i18n.weather_color_monochrome || "Monochrome",
+          }
+
+          const colorBtn = createCycleMenuItem({
+            label: i18n.weather_color_style || "Weather Color",
+            currentLabel: colorLabelMap[colorStyle] || colorStyle,
+            nextLabel: colorLabelMap[nextColor] || nextColor,
+            iconClass: "fa-solid fa-palette",
+            handler: () => {
+              const newVal = nextColor
+              updateSetting("weatherColorStyle", newVal)
+              saveSettings(true)
+              window.dispatchEvent(
+                new CustomEvent("layoutUpdated", {
+                  detail: { key: "weatherColorStyle", value: newVal },
+                }),
+              )
+              const weatherEl = document.getElementById("weather-container")
+              if (weatherEl) {
+                weatherEl.classList.toggle("weather-color-accent", newVal === "accent")
+                weatherEl.classList.toggle("weather-color-natural", newVal === "natural")
+                weatherEl.classList.toggle("weather-color-monochrome", newVal === "monochrome")
+              }
+              hideContextMenu()
+            },
+          })
+          contextMenu.insertBefore(colorBtn, menuLock)
         }
       }
 
