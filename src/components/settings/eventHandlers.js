@@ -10388,15 +10388,17 @@ export function setupGeneralEventHandlers(
       const val = parseInt(e.target.value)
       if (s.valDom) s.valDom.textContent = val
       updateSetting(s.key, val)
+      updateCustomTitleLivePreview()
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { key: s.key, value: val },
         }),
       )
     })
-    s.dom?.addEventListener("change", (e) =>
-      handleSettingUpdate(s.key, parseInt(e.target.value)),
-    )
+    s.dom?.addEventListener("change", (e) => {
+      updateCustomTitleLivePreview()
+      handleSettingUpdate(s.key, parseInt(e.target.value))
+    })
   })
 
   const customTitleFields = [
@@ -10601,10 +10603,10 @@ export function setupGeneralEventHandlers(
     const s = getSettings()
 
     const inputs = [
-      document.getElementById("custom-title-text")?.value,
-      document.getElementById("custom-title-text-2")?.value,
-      document.getElementById("custom-title-text-3")?.value,
-      document.getElementById("custom-title-text-4")?.value,
+      document.getElementById("custom-title-text")?.value ?? s.customTitleText ?? "",
+      document.getElementById("custom-title-text-2")?.value ?? s.customTitleText2 ?? "",
+      document.getElementById("custom-title-text-3")?.value ?? s.customTitleText3 ?? "",
+      document.getElementById("custom-title-text-4")?.value ?? s.customTitleText4 ?? "",
     ]
     lineTabs.forEach((tab, i) => {
       tab.classList.toggle("has-content", !!(inputs[i] && inputs[i].trim()))
@@ -10717,12 +10719,166 @@ export function setupGeneralEventHandlers(
 
     if (!t1 && !t2 && !t3 && !t4) {
       previewEl.innerHTML = `<span style="opacity: 0.4; font-size: 0.85rem; font-style: italic;">Chưa có nội dung tiêu đề...</span>`
+      previewEl.className = ""
+      previewEl.style.writingMode = "horizontal-tb"
+      previewEl.style.textOrientation = "mixed"
+      previewEl.style.display = "block"
       return
     }
 
-    const lines = [t1, t2, t3, t4].filter(Boolean)
-    previewEl.innerHTML = lines.map((line) => `<div>${line}</div>`).join("")
-    if (s.customTitleColor) previewEl.style.color = s.customTitleColor
+    // Direction & Layout Configuration
+    const dirEl = document.getElementById("custom-title-direction")
+    const direction = dirEl ? dirEl.value : (s.customTitleDirection || "horizontal")
+
+    const orderEl = document.getElementById("custom-title-order")
+    const order = orderEl ? orderEl.value : (s.customTitleOrder || "normal")
+
+    const wwEl = document.getElementById("custom-title-word-wrap")
+    const wordWrap = wwEl ? wwEl.checked : (s.customTitleWordWrap === true)
+
+    const fonts = [
+      document.getElementById("custom-title-font")?.value || s.customTitleFont || "inherit",
+      document.getElementById("custom-title-font-2")?.value || s.customTitleFont2 || "inherit",
+      document.getElementById("custom-title-font-3")?.value || s.customTitleFont3 || "inherit",
+      document.getElementById("custom-title-font-4")?.value || s.customTitleFont4 || "inherit",
+    ]
+
+    const orientations = [
+      document.getElementById("custom-title-orientation")?.value || s.customTitleOrientation || "upright",
+      document.getElementById("custom-title-orientation-2")?.value || s.customTitleOrientation2 || "mixed",
+      document.getElementById("custom-title-orientation-3")?.value || s.customTitleOrientation3 || "mixed",
+      document.getElementById("custom-title-orientation-4")?.value || s.customTitleOrientation4 || "mixed",
+    ]
+
+    const fontSizes = [
+      parseInt(document.getElementById("custom-title-font-size")?.value || s.customTitleFontSize || 24),
+      parseInt(document.getElementById("custom-title-font-size-2")?.value || s.customTitleFontSize2 || 24),
+      parseInt(document.getElementById("custom-title-font-size-3")?.value || s.customTitleFontSize3 || 24),
+      parseInt(document.getElementById("custom-title-font-size-4")?.value || s.customTitleFontSize4 || 24),
+    ]
+
+    const letterSpacings = [
+      parseInt(document.getElementById("custom-title-letter-spacing")?.value || s.customTitleLetterSpacing || 0),
+      parseInt(document.getElementById("custom-title-letter-spacing-2")?.value || s.customTitleLetterSpacing2 || 0),
+      parseInt(document.getElementById("custom-title-letter-spacing-3")?.value || s.customTitleLetterSpacing3 || 0),
+      parseInt(document.getElementById("custom-title-letter-spacing-4")?.value || s.customTitleLetterSpacing4 || 0),
+    ]
+
+    const lineSpcInput = document.getElementById("custom-title-line-spacing")
+    const rawLineSpacing = lineSpcInput ? parseInt(lineSpcInput.value) : (s.customTitleLineSpacing ?? 15)
+    const previewLineSpacing = Math.max(3, Math.min(Math.round(rawLineSpacing * 0.5), 18))
+
+    const isMulti = document.getElementById("custom-title-multicolor")?.checked ?? s.customTitleMulticolor ?? false
+    const baseColor = document.getElementById("custom-title-color")?.value || s.customTitleColor || "#ffffff"
+
+    const shadowBlur = parseInt(document.getElementById("custom-title-shadow-blur")?.value || s.customTitleShadowBlur || 0)
+    const shadowY = parseInt(document.getElementById("custom-title-shadow-y")?.value || s.customTitleShadowY || 0)
+    const shadowColor = document.getElementById("custom-title-shadow-color")?.value || s.customTitleShadowColor || "#000000"
+
+    const borderSize = parseInt(document.getElementById("custom-title-border-size")?.value || s.customTitleBorderSize || 0)
+    const borderColor = document.getElementById("custom-title-border-color")?.value || s.customTitleBorderColor || "#000000"
+
+    previewEl.innerHTML = ""
+
+    // Set container direction & layout
+    if (direction === "vertical") {
+      previewEl.className = "is-vertical"
+      previewEl.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+      previewEl.style.textOrientation = "mixed"
+      previewEl.style.display = "flex"
+      previewEl.style.flexDirection = order === "reverse" ? "row-reverse" : "row"
+      previewEl.style.justifyContent = "center"
+      previewEl.style.alignItems = "center"
+      previewEl.style.width = "auto"
+      previewEl.style.maxWidth = "100%"
+      previewEl.style.margin = "0 auto"
+    } else {
+      previewEl.className = "is-horizontal"
+      previewEl.style.writingMode = "horizontal-tb"
+      previewEl.style.textOrientation = "mixed"
+      previewEl.style.display = "flex"
+      previewEl.style.flexDirection = order === "reverse" ? "column-reverse" : "column"
+      previewEl.style.justifyContent = "center"
+      previewEl.style.alignItems = "center"
+      previewEl.style.width = "100%"
+      previewEl.style.margin = "0"
+    }
+
+    const allLines = [
+      { text: t1, index: 1 },
+      { text: t2, index: 2 },
+      { text: t3, index: 3 },
+      { text: t4, index: 4 },
+    ].filter((item) => !!item.text)
+
+    allLines.forEach((item) => {
+      const idx = item.index - 1
+      const div = document.createElement("div")
+      div.className = "custom-title-preview-line"
+      div.dataset.line = item.index
+
+      if (fonts[idx] && fonts[idx] !== "inherit") {
+        div.style.fontFamily = fonts[idx]
+      }
+
+      // Proportional font size for live preview
+      const scaledFontSize = Math.max(11, Math.min(22, Math.round(fontSizes[idx] * 0.72)))
+      div.style.fontSize = `${scaledFontSize}px`
+
+      if (letterSpacings[idx]) {
+        div.style.letterSpacing = `${Math.round(letterSpacings[idx] * 0.7)}px`
+      }
+
+      if (isMulti) {
+        div.classList.add("multi-color-char")
+      } else {
+        div.style.color = baseColor
+      }
+
+      if (shadowBlur > 0 || shadowY !== 0) {
+        div.style.textShadow = `0 ${shadowY * 0.7}px ${shadowBlur * 0.7}px ${shadowColor}`
+      }
+
+      if (borderSize > 0) {
+        div.style.webkitTextStroke = `${Math.max(1, Math.round(borderSize * 0.5))}px ${borderColor}`
+      }
+
+      if (direction === "vertical") {
+        div.style.margin = `0 ${previewLineSpacing}px`
+        if (wordWrap) {
+          // Xếp dọc từng từ/ký tự
+          div.style.writingMode = "horizontal-tb"
+          div.style.display = "flex"
+          div.style.flexDirection = "column"
+          div.style.alignItems = "center"
+          div.style.justifyContent = "center"
+          div.style.gap = "2px"
+          div.style.minWidth = "max-content"
+          const words = item.text.split(" ")
+          words.forEach((w) => {
+            if (w.trim() !== "") {
+              const wordSpan = document.createElement("span")
+              wordSpan.style.whiteSpace = "nowrap"
+              wordSpan.textContent = w
+              div.appendChild(wordSpan)
+            }
+          })
+        } else {
+          div.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+          div.style.textOrientation = orientations[idx] || "upright"
+          div.style.display = "inline-block"
+          div.textContent = item.text
+        }
+      } else {
+        div.style.writingMode = "horizontal-tb"
+        div.style.textOrientation = "mixed"
+        div.style.display = "block"
+        div.style.margin = `${previewLineSpacing}px 0`
+        div.textContent = item.text
+      }
+
+      previewEl.appendChild(div)
+    })
   }
 
   // Initial preview render & tab state
@@ -10765,9 +10921,19 @@ export function setupGeneralEventHandlers(
     updateCustomTitleLivePreview()
   })
 
+  window.addEventListener("layoutUpdated", (e) => {
+    if (
+      e.detail &&
+      typeof e.detail.key === "string" &&
+      e.detail.key.startsWith("customTitle")
+    ) {
+      updateCustomTitleLivePreview()
+    }
+  })
+
   customTitleFields.forEach((field) => {
     if (field.dom) {
-      field.dom.addEventListener("input", (e) => {
+      const onFieldChange = (e) => {
         const val = field.isCheckbox
           ? e.target.checked
           : field.dom.type === "range"
@@ -10784,8 +10950,11 @@ export function setupGeneralEventHandlers(
             detail: { key: field.key, value: val },
           }),
         )
-      })
+      }
+
+      field.dom.addEventListener("input", onFieldChange)
       field.dom.addEventListener("change", (e) => {
+        onFieldChange(e)
         const val = field.isCheckbox
           ? e.target.checked
           : field.dom.type === "range"

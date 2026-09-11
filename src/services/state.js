@@ -115,6 +115,7 @@ export const defaultSettings = {
   customTitleShadowColor: "#000000",
   customTitleBorderSize: 0,
   customTitleBorderColor: "#000000",
+  customTitleLineSpacing: 15,
   ompPromptTheme: "powerline",
   ompWindowStyle: "windows",
   ompUserHost: "dev@startpage",
