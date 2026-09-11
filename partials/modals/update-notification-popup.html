@@ -1,48 +1,96 @@
 <!-- Update Notification Popup -->
 <div id="update-notification-popup" class="update-notification-popup" role="dialog" aria-modal="true"
     aria-labelledby="update-popup-main-title">
-    <div class="update-popup-card">
-        <button id="close-update-popup-x" class="update-popup-x-btn" aria-label="Close" title="Close">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+    <div class="update-popup-container">
+        <div class="update-popup-card">
+            <button id="close-update-popup-x" class="update-popup-x-btn" aria-label="Close" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-        <div class="update-popup-header">
-            <div class="update-popup-icon">
-                <i class="fa-solid fa-rocket"></i>
+            <div class="update-popup-header">
+                <div class="update-popup-icon">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <div class="update-popup-titles">
+                    <div class="update-popup-title-row">
+                        <h3 id="update-popup-main-title" data-i18n="update_title">Cập nhật mới!</h3>
+                        <span id="update-version-label" class="update-version-pill">v2.0.0</span>
+                    </div>
+                    <p class="update-popup-subtitle" data-i18n="update_desc">Zero Startpage đã được nâng cấp lên phiên bản
+                        mới.</p>
+                </div>
             </div>
-            <div class="update-popup-titles">
-                <div class="update-popup-title-row">
-                    <h3 id="update-popup-main-title" data-i18n="update_title">Cập nhật mới!</h3>
-                    <span id="update-version-label" class="update-version-pill">v2.0.0</span>
-                </div>
-                <p class="update-popup-subtitle" data-i18n="update_desc">Zero Startpage đã được nâng cấp lên phiên bản
-                    mới.</p>
+
+            <div class="update-popup-body">
+                <section class="update-popup-section update-changes-section">
+                    <div class="update-section-header">
+                        <h4 id="update-changes-title">Có gì mới</h4>
+                    </div>
+                    <ul id="update-change-list" class="update-change-list"></ul>
+                </section>
+
+                <section class="update-popup-section update-contributors-section">
+                    <div class="update-section-header">
+                        <h4 id="update-contributors-title">Người góp công</h4>
+                    </div>
+                    <div id="update-contributor-list" class="update-contributor-list"></div>
+                </section>
+            </div>
+
+            <div class="update-popup-actions">
+                <button id="close-update-popup" class="secondary-btn update-popup-close-btn"
+                    data-i18n="cancel">Close</button>
+                <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
+                    target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
+                    <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
+                </a>
             </div>
         </div>
 
-        <div class="update-popup-body">
-            <section class="update-popup-section update-changes-section">
-                <div class="update-section-header">
-                    <h4 id="update-changes-title">Có gì mới</h4>
-                </div>
-                <ul id="update-change-list" class="update-change-list"></ul>
-            </section>
+        <aside class="update-popup-note-card">
+            <button id="close-update-note-x" class="update-popup-x-btn update-note-x-btn" aria-label="Close" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-            <section class="update-popup-section update-contributors-section">
-                <div class="update-section-header">
-                    <h4 id="update-contributors-title">Người góp công</h4>
-                </div>
-                <div id="update-contributor-list" class="update-contributor-list"></div>
-            </section>
-        </div>
+            <div class="update-note-badge">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span data-i18n="update_note_badge">Lưu ý quan trọng</span>
+            </div>
+            
+            <h4 class="update-note-title" data-i18n="update_note_title">Lưu ý khi cập nhật</h4>
+            <p class="update-note-subtitle" data-i18n="update_note_subtitle">Thông tin quan trọng giúp bạn có trải nghiệm tối ưu nhất</p>
 
-        <div class="update-popup-actions">
-            <button id="close-update-popup" class="secondary-btn update-popup-close-btn"
-                data-i18n="cancel">Close</button>
-            <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
-                target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
-                <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
-            </a>
-        </div>
+            <div class="update-note-body">
+                <div class="update-note-item">
+                    <div class="update-note-item-icon warning">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div class="update-note-item-text">
+                        <strong data-i18n="update_note_compat_title">Cài đặt từ phiên bản cũ</strong>
+                        <p data-i18n="update_note_compat_desc">Bản mới cập nhật vẫn ăn được các setting từ version cũ nhưng có thể sẽ có một vài lỗi bug.</p>
+                    </div>
+                </div>
+
+                <div class="update-note-item">
+                    <div class="update-note-item-icon tip">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    <div class="update-note-item-text">
+                        <strong data-i18n="update_note_image_title">Khuyên dùng nếu không muốn bug</strong>
+                        <p data-i18n="update_note_image_desc">Nếu không muốn bug bạn chỉ nên chọn setting lấy hình ảnh!!</p>
+                    </div>
+                </div>
+
+                <div class="update-note-item highlight">
+                    <div class="update-note-item-icon speed">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                    </div>
+                    <div class="update-note-item-text">
+                        <strong data-i18n="update_note_smooth_title">Khắc phục lag - 100% mượt</strong>
+                        <p data-i18n="update_note_smooth_desc">Nếu version này bạn cảm thấy lag có thể do xung đột data cũ, bạn có thể xóa đi cài lại 100% mượt!</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
 </div>

@@ -170,11 +170,17 @@ function showUpdateUI(currentVersion, showModal, showArrow) {
       .getElementById("close-update-popup-x")
       ?.addEventListener("click", acknowledgeUpdate, { once: true })
     document
+      .getElementById("close-update-note-x")
+      ?.addEventListener("click", acknowledgeUpdate, { once: true })
+    document
       .getElementById("github-update-link")
       ?.addEventListener("click", acknowledgeUpdate, { once: true })
 
     popup.addEventListener("click", (e) => {
-      if (e.target === popup) {
+      if (
+        e.target === popup ||
+        e.target.classList.contains("update-popup-container")
+      ) {
         acknowledgeUpdate()
       }
     })
