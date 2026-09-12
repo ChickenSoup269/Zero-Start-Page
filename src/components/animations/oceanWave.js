@@ -40,6 +40,13 @@ export class OceanWaveEffect {
     this.time = 0
     this.lastTime = performance.now()
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // High-DPI Retina
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = window.innerWidth
@@ -150,6 +157,14 @@ export class OceanWaveEffect {
     if (opts.style !== undefined) this.updateStyle(opts.style)
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+  }
+
   _getLayerColor(layerIdx, totalLayers) {
     const t = totalLayers > 1 ? layerIdx / (totalLayers - 1) : 0.5
     const mood = this.mood || "white"
@@ -248,6 +263,7 @@ export class OceanWaveEffect {
 
     this.resize()
 
+    this._lastFrameTime = performance.now()
     const loop = (now) => {
       if (!this.active || this.destroyed) return
       this._animId = requestAnimationFrame(loop)
@@ -257,9 +273,14 @@ export class OceanWaveEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 2.5)
+      const dt = Math.min(elapsed / 16.67, 2.5) * (this.speedScale || 1.0)
       this.time += 0.012 * this.speed * dt
 
       this.draw()

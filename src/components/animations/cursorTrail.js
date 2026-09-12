@@ -42,6 +42,11 @@ export class CursorTrailEffect {
     this.lastDrawTime = 0
     this.time = 0
     this.hueCycle = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Mouse Tracking with velocity
     this.mouse = {
@@ -361,12 +366,22 @@ export class CursorTrailEffect {
     ctx.closePath()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.maxParticles = Math.max(80, Math.round(300 * (this.densityScale || 1.0)))
+  }
+
   // ── Lifecycle Methods ──────────────────────────────────────────────────────
 
   start() {
     if (this.active) return
     this.active = true
     this.lastDrawTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.particles = []
     this.trailPoints = []
     this.shockwaves = []
@@ -391,7 +406,16 @@ export class CursorTrailEffect {
         )
         return
       }
+
       this._animId = requestAnimationFrame(animateLoop)
+
+      if (this.fpsInterval) {
+        if (t - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = t - ((t - this._lastFrameTime) % this.fpsInterval)
+      }
+
       this.animate(t)
     }
     this._animId = requestAnimationFrame(animateLoop)
@@ -428,7 +452,7 @@ export class CursorTrailEffect {
     if (!this.active) return
 
     const elapsed = currentTime - this.lastDrawTime
-    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0)
+    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0) * (this.speedScale || 1.0)
     this.lastDrawTime = currentTime
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)

@@ -257,6 +257,12 @@ export class PixelSnowEffect {
     this.active = false
     this.startTime = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
     this.animationId = null
 
     // Interactive Mouse Aerodynamics & Shockwave
@@ -376,6 +382,18 @@ export class PixelSnowEffect {
       : [1, 1, 1]
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    if (this.active) {
+      this.handleResize()
+    }
+  }
+
   handleResize() {
     if (!this.canvas) return
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -383,7 +401,7 @@ export class PixelSnowEffect {
     const cssHeight = Math.max(1, window.innerHeight)
     const targetWidth = Math.max(
       120,
-      Math.min(this.options.pixelResolution || 200, cssWidth * dpr, 720),
+      Math.min((this.options.pixelResolution || 200) * (this.dprScale || 1.0), cssWidth * dpr, 720),
     )
     const targetHeight = Math.max(
       80,
@@ -411,6 +429,15 @@ export class PixelSnowEffect {
 
   animate(now = 0) {
     if (!this.active) return
+
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) {
+        this.animationId = requestAnimationFrame((nt) => this.animate(nt))
+        return
+      }
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
     this.animationId = requestAnimationFrame((nt) => this.animate(nt))
     if (document.visibilityState === "hidden") return
 
@@ -431,13 +458,13 @@ export class PixelSnowEffect {
     gl.uniform1f(u.uFlakeSize, o.flakeSize)
     gl.uniform1f(u.uMinFlakeSize, o.minFlakeSize)
     gl.uniform1f(u.uPixelResolution, o.pixelResolution)
-    gl.uniform1f(u.uSpeed, o.speed)
+    gl.uniform1f(u.uSpeed, o.speed * (this.speedScale || 1.0))
     gl.uniform1f(u.uDepthFade, o.depthFade)
     gl.uniform1f(u.uFarPlane, o.farPlane)
     gl.uniform3fv(u.uColor, new Float32Array(this._hexToRgb(o.color)))
     gl.uniform1f(u.uBrightness, o.brightness)
     gl.uniform1f(u.uGamma, o.gamma)
-    gl.uniform1f(u.uDensity, o.density)
+    gl.uniform1f(u.uDensity, o.density * (this.densityScale || 1.0))
 
     let variantVal = 0.0
     if (o.variant === "round" || o.variant === "circle") variantVal = 1.0

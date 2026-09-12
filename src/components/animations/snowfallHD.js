@@ -19,6 +19,11 @@ export class SnowfallHDEffect {
     this.active = false
     this.flakes = []
     this.flakeCount = 200
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Snow pile: column resolution
     this.colRes = 4
@@ -77,7 +82,20 @@ export class SnowfallHDEffect {
     if (this.pileHeights.length !== cols) {
       this.pileHeights = new Array(cols).fill(0)
     }
+    this.flakeCount = Math.max(30, Math.round(200 * (this.densityScale || 1.0)))
     this.initFlakes()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.flakeCount = Math.max(30, Math.round(200 * (this.densityScale || 1.0)))
+    if (this.active) {
+      this.initFlakes()
+    }
   }
 
   createFlake(fromTop = true) {
@@ -297,9 +315,14 @@ export class SnowfallHDEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastDrawTime, 100)
       this.lastDrawTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

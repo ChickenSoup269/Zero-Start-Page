@@ -11,6 +11,7 @@ export class WavyPatternEffect {
     this.color2 = color2
     this.size = size
     this.speed = speed
+    this.speedScale = 1.0
 
     this._initDOM()
     this._initStyle()
@@ -98,13 +99,22 @@ export class WavyPatternEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.speedScale = profile.speedScale ?? 1.0
+    if (this.active) {
+      this._updateVariables()
+    }
+  }
+
   // Cập nhật các biến CSS khi đổi màu/kích thước
   _updateVariables() {
     const style = this._outer.style
     style.setProperty("--s", `${this.size}px`)
     style.setProperty("--c1", this.color1)
     style.setProperty("--c2", this.color2)
-    style.setProperty("--dur", `${this.speed}s`)
+    const effectiveDur = this.speed / Math.max(0.1, this.speedScale || 1.0)
+    style.setProperty("--dur", `${effectiveDur}s`)
   }
 
   start() {

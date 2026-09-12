@@ -40,6 +40,11 @@ export class PixelCubes {
     this.width = window.innerWidth
     this.height = window.innerHeight
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this._resizeHandler = () => this.resize()
     this._visibilityHandler = () => this._onVisibilityChange()
@@ -96,10 +101,22 @@ export class PixelCubes {
     this.initCubes()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initCubes()
+    }
+  }
+
   initCubes() {
     this._cacheColor()
     this.cubes = []
-    const count = Math.min(Math.floor((this.width * this.height) / 28000), 45)
+    const baseCount = Math.min(Math.floor((this.width * this.height) / 28000), 45)
+    const count = Math.max(8, Math.round(baseCount * (this.densityScale || 1.0)))
     const baseShapes = ["cube", "circle", "triangle", "diamond", "cylinder", "ring"]
 
     for (let i = 0; i < count; i++) {
@@ -135,6 +152,7 @@ export class PixelCubes {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.canvas.style.display = "block"
     this.canvas.style.pointerEvents = "none"
 
@@ -149,9 +167,16 @@ export class PixelCubes {
         return
       }
 
+      if (this.fpsInterval) {
+        if (time - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = time - ((time - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(time - this.lastTime, 100)
       this.lastTime = time
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

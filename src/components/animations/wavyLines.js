@@ -25,8 +25,16 @@ export class WavyLinesEffect {
     this._mode = mode || "single"
     this.rgb = this._hexToRgb(this._color)
 
+    this.baseWaveCount = 11
     this.waveCount = 11
     this.waves = []
+
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this.width = window.innerWidth
     this.height = window.innerHeight
@@ -61,6 +69,18 @@ export class WavyLinesEffect {
     if (this._mode === mode) return
     this._mode = mode || "single"
     this._updateWaveColors()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.waveCount = Math.max(3, Math.round((this.baseWaveCount || 11) * this.densityScale))
+    if (this.active) {
+      this._initWaves()
+    }
   }
 
   updateColor(hex) {
@@ -316,9 +336,14 @@ export class WavyLinesEffect {
       return
     }
 
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = Math.min(now - this.lastTime, 100)
     this.lastTime = now
-    const dt = elapsed / 16.67
+    const dt = (elapsed / 16.67) * (this.speedScale || 1.0)
 
     this.time += 0.016 * dt
 

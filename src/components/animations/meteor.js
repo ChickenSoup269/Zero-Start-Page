@@ -37,6 +37,12 @@ export class MeteorEffect {
     this.colors = []
     this.setColor(color)
 
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     this.meteors = []
     this.sparks = []
     this.stars = []
@@ -60,6 +66,18 @@ export class MeteorEffect {
 
   // ─── PUBLIC API ───────────────────────────────────────────────
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   start() {
     if (this.active || this.destroyed) return
     this.active = true
@@ -76,6 +94,7 @@ export class MeteorEffect {
     this._spawnMeteor(false, 0, 0, 0.25)
     this._spawnMeteor(false, 0, 0, 0.6)
 
+    this._lastFrameTime = performance.now()
     const loop = (now) => {
       if (!this.active || this.destroyed) return
       this._animId = requestAnimationFrame(loop)
@@ -85,9 +104,16 @@ export class MeteorEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this._lastT, 100)
       this._lastT = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this._update(dt)
       this._draw(now)
@@ -218,7 +244,8 @@ export class MeteorEffect {
   _buildStars() {
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    const count = Math.max(50, Math.min(100, Math.floor((W * H) / 18000)))
+    const baseCount = Math.max(50, Math.min(100, Math.floor((W * H) / 18000)))
+    const count = Math.max(20, Math.round(baseCount * (this.densityScale || 1.0)))
 
     this.stars = Array.from({ length: count }, () => {
       const rand = Math.random()
@@ -339,9 +366,10 @@ export class MeteorEffect {
     const H = this.height || window.innerHeight
 
     // Organic Spawning rhythm (average 2-4 meteors simultaneously)
-    this._acc += this.spawnRate * (dt * 0.022)
+    this._acc += this.spawnRate * (this.densityScale || 1.0) * (dt * 0.022)
+    const maxMeteors = Math.max(2, Math.round(5 * (this.densityScale || 1.0)))
     while (this._acc >= 1) {
-      if (this.meteors.length < 5) {
+      if (this.meteors.length < maxMeteors) {
         this._spawnMeteor()
       }
       this._acc -= 1

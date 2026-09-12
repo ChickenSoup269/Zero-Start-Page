@@ -37,6 +37,11 @@ export class CrtScanlinesEffect {
     // Simulation Timing & Geometry
     this.beamPos = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.width = window.innerWidth
     this.height = window.innerHeight
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -127,10 +132,23 @@ export class CrtScanlinesEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   start() {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.canvas.style.display = "block"
     this.canvas.style.pointerEvents = "none"
 
@@ -145,9 +163,16 @@ export class CrtScanlinesEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 2.5)
+      const dt = Math.min(elapsed / 16.67, 2.5) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

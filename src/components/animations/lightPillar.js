@@ -84,6 +84,14 @@ export class LightPillarEffect {
     this.mouseY = 0
     this.lastFrameTime = 0
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
+
     // Quality Settings
     const isMobile =
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -382,7 +390,7 @@ export class LightPillarEffect {
 
   resize() {
     if (!this.canvas || !this.gl) return
-    const dpr = this.qualitySettings.pixelRatio
+    const dpr = this.qualitySettings.pixelRatio * (this.dprScale || 1.0)
     this.canvas.width = window.innerWidth * dpr
     this.canvas.height = window.innerHeight * dpr
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
@@ -392,6 +400,18 @@ export class LightPillarEffect {
         this.canvas.width,
         this.canvas.height,
       )
+    }
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    if (this.active) {
+      this.resize()
     }
   }
 
@@ -419,6 +439,7 @@ export class LightPillarEffect {
     this.active = true
     this.canvas.style.display = "block"
     this.lastFrameTime = performance.now()
+    this._lastFrameTime = performance.now()
     this._animate()
   }
 
@@ -435,7 +456,15 @@ export class LightPillarEffect {
     if (!this.active || !this.gl || !this.uniforms) return
 
     const now = currentTime || performance.now()
-    const deltaTime = (now - this.lastFrameTime) / 1000
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) {
+        this._animId = requestAnimationFrame(this._animate)
+        return
+      }
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const deltaTime = ((now - this.lastFrameTime) / 1000) * (this.speedScale || 1.0)
     this.lastFrameTime = now
 
     this.time += deltaTime * this.rotationSpeed

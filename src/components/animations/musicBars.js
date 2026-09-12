@@ -268,6 +268,13 @@ export class MusicBarsEffect {
     this.width = 0
     this.height = 0
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Mouse Interaction
     this.mouse = {
       x: -2000,
@@ -329,6 +336,18 @@ export class MusicBarsEffect {
     }
     if (opts.notes !== undefined) {
       this.notesEnabled = Boolean(opts.notes)
+    }
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this._buildMotes()
+      this._buildNotes()
     }
   }
 
@@ -461,7 +480,8 @@ export class MusicBarsEffect {
   _buildMotes() {
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    const count = Math.max(16, Math.min(30, Math.floor(W / 65)))
+    const baseCount = Math.max(16, Math.min(30, Math.floor(W / 65)))
+    const count = Math.max(6, Math.round(baseCount * (this.densityScale || 1.0)))
 
     this.motes = Array.from({ length: count }, () => ({
       x: Math.random() * W,
@@ -477,7 +497,8 @@ export class MusicBarsEffect {
   _buildNotes() {
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    const count = Math.max(8, Math.min(13, Math.floor(W / 150)))
+    const baseCount = Math.max(8, Math.min(13, Math.floor(W / 150)))
+    const count = Math.max(3, Math.round(baseCount * (this.densityScale || 1.0)))
 
     this._notes = Array.from({ length: count }, (_, i) => {
       const note = new MusicalNoteParticle(W, H, i % 4)
@@ -706,8 +727,14 @@ export class MusicBarsEffect {
 
   animate(currentTime = 0) {
     if (!this.active || this.destroyed) return
+
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = currentTime - this.lastDrawTime
-    const dt = Math.min(elapsed / 1000, 0.04) || 0.016
+    const dt = (Math.min(elapsed / 1000, 0.04) || 0.016) * (this.speedScale || 1.0)
     this.lastDrawTime = currentTime
 
     this._update(dt)

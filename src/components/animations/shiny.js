@@ -40,6 +40,11 @@ export class ShinyEffect {
     this.phase = 0
     this.time = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // 3D Tilt Parallax Tracking
     this.mouseEnabled = true
@@ -112,6 +117,18 @@ export class ShinyEffect {
     this.hueOffset = h * 360
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   updateColor(hex) {
     this.color = hex
     this._setHueFromColor(hex)
@@ -121,7 +138,8 @@ export class ShinyEffect {
     this.glints = []
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    for (let i = 0; i < this.glintCount; i++) {
+    const count = Math.max(10, Math.round(this.glintCount * (this.densityScale || 1.0)))
+    for (let i = 0; i < count; i++) {
       this.glints.push(this._makeGlint(W, H))
     }
   }
@@ -219,6 +237,7 @@ export class ShinyEffect {
     this.active = true
     this.phase = 0
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.mouse.x = 0.5
     this.mouse.y = 0.5
     this.targetMouse.x = 0.5
@@ -238,9 +257,16 @@ export class ShinyEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

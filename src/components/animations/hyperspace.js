@@ -44,6 +44,14 @@ export class HyperspaceEffect {
     this.fov = 340
     this.stars = []
 
+    // Performance budget
+    this.baseNumStars = this.numStars
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     this._updateRgb(this.color)
 
     this._resizeHandler = () => this.resize()
@@ -74,7 +82,21 @@ export class HyperspaceEffect {
 
   setStarCount(count) {
     this.numStars = Math.max(300, Math.min(2500, Number(count) || 1100))
+    this.baseNumStars = this.numStars
     this.initStars()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+
+    this.numStars = Math.max(150, Math.round((this.baseNumStars || 1100) * this.densityScale))
+    if (this.active) {
+      this.initStars()
+    }
   }
 
   setStyle(style) {
@@ -192,9 +214,14 @@ export class HyperspaceEffect {
     this.animationId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = currentTime - this.lastTime
     if (elapsed < 1) return
-    const dt = Math.min(elapsed / 16.67, 3.0) // Normalize to 60fps
+    const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0) // Normalize to 60fps
     this.lastTime = currentTime
 
     this.time += 0.005 * dt

@@ -90,6 +90,8 @@ export const BACKGROUND_ANIMATION_KEYS = [
 export const VISUAL_EFFECT_KEYS = [
   "effect",
   "performanceMode",
+  "reduceMotion",
+  "effectIntensity",
   "starColor",
   "meteorColor",
   "meteorAngle",

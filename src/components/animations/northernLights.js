@@ -30,6 +30,12 @@ export class NorthernLightsEffect {
     this.animationId = null
     this.time = 0
     this.lastTime = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
 
     // Entities
     this.curtainsHD = []
@@ -53,9 +59,21 @@ export class NorthernLightsEffect {
     this._onResize()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.75 : 1.0
+    if (this.active) {
+      this._onResize()
+    }
+  }
+
   _onResize() {
     if (!this.canvas) return
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const dpr = Math.min(window.devicePixelRatio || 1, 2) * (this.dprScale || 1.0)
     this.width = window.innerWidth
     this.height = window.innerHeight
 
@@ -162,7 +180,7 @@ export class NorthernLightsEffect {
       alpha: Math.random() * 0.06 + 0.02,
     }))
 
-    this.particlesClassic = Array.from({ length: 50 }, () =>
+    this.particlesClassic = Array.from({ length: Math.round(50 * (this.densityScale || 1.0)) }, () =>
       this._newParticleClassic(W, H, true),
     )
   }
@@ -350,7 +368,7 @@ export class NorthernLightsEffect {
       })
     }
 
-    this.particlesHD = Array.from({ length: 50 }, () => ({
+    this.particlesHD = Array.from({ length: Math.round(50 * (this.densityScale || 1.0)) }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
       size: Math.random() * 2 + 0.5,
@@ -503,7 +521,7 @@ export class NorthernLightsEffect {
       },
     ]
 
-    this.starsUltra = Array.from({ length: 110 }, () => ({
+    this.starsUltra = Array.from({ length: Math.round(110 * (this.densityScale || 1.0)) }, () => ({
       x: Math.random() * W,
       y: Math.random() * (H * 0.8),
       size: Math.random() * 1.6 + 0.4,
@@ -512,7 +530,7 @@ export class NorthernLightsEffect {
       twinklePhase: Math.random() * Math.PI * 2,
     }))
 
-    this.stardustUltra = Array.from({ length: 48 }, () => this._createStardust(W, H, true))
+    this.stardustUltra = Array.from({ length: Math.round(48 * (this.densityScale || 1.0)) }, () => this._createStardust(W, H, true))
     this.meteors = []
     this.nextMeteorTime = Math.random() * 320 + 160
   }
@@ -813,9 +831,17 @@ export class NorthernLightsEffect {
   _draw(currentTime) {
     if (!this.active) return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) {
+        this.animationId = requestAnimationFrame((t) => this._draw(t))
+        return
+      }
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     if (!this.lastTime) this.lastTime = currentTime
     const deltaMs = Math.min(currentTime - this.lastTime, 100)
-    const dt = deltaMs / 16.667
+    const dt = (deltaMs / 16.667) * (this.speedScale || 1.0)
     this.lastTime = currentTime
     this.time += 0.012 * dt * this.speed
 

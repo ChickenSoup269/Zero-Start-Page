@@ -30,6 +30,11 @@ export class AutumnLeavesEffect {
     this.leafType = leafType || "maple"
     this.settling = !!settling
     this.leafCount = 48
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.leaves = []
     this.settledCount = 0
 
@@ -123,6 +128,18 @@ export class AutumnLeavesEffect {
     window.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
     window.addEventListener("mouseleave", this._mouseLeaveHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.leafCount = Math.max(12, Math.round(48 * (this.densityScale || 1.0)))
+    if (this.active) {
+      this.initLeaves()
+    }
   }
 
   setLeafType(leafType) {
@@ -299,9 +316,14 @@ export class AutumnLeavesEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (time - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = time - ((time - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(time - this.lastDrawTime, 100)
       this.lastDrawTime = time
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

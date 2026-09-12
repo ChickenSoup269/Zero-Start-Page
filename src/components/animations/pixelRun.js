@@ -15,6 +15,9 @@ export class PixelRunEffect {
     this.color = color || "#00e5ff"
 
     this.fps = 60
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
     this.tick = 0
@@ -1935,6 +1938,15 @@ export class PixelRunEffect {
     ctx.fillText("Press [SPACE] or [R] to Play Again", W / 2, boxY + s * 43)
     ctx.globalAlpha = 1
     ctx.textAlign = "left"
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fps = this.targetFps
+    this.fpsInterval = 1000 / this.fps
   }
 
   animate(currentTime = 0) {

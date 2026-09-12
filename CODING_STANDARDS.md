@@ -1,4 +1,4 @@
-# 📘 QUY CHUẨN CODE (CODING STANDARDS) - ZERO STARTPAGE
+# QUY CHUẨN CODE (CODING STANDARDS) - ZERO STARTPAGE
 
 Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trúc hệ thống, và phong cách viết code áp dụng cho toàn bộ dự án **Zero Startpage (Manifest V3)**. Mọi lập trình viên và cộng tác viên cần tuân thủ nghiêm ngặt các quy tắc này nhằm đảm bảo tính đồng nhất, hiệu năng cao (60 FPS), bảo mật và khả năng tương thích đa trình duyệt (Chrome, Edge, Brave, Firefox, v.v.).
 
@@ -6,7 +6,7 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 
 ## 1. TRIẾT LÝ PHÁT TRIỂN & NGUYÊN TẮC CỐT LÕI
 
-1. **Local-First & Privacy-Centric**: 
+1. **Local-First & Privacy-Centric**:
    - Toàn bộ dữ liệu người dùng lưu trữ cục bộ (`chrome.storage.local`, `IndexedDB`).
    - Không tích hợp bất kỳ công cụ theo dõi (tracking), phân tích hành vi (analytics) hay gửi dữ liệu cá nhân ra máy chủ bên ngoài.
 2. **Vanilla JavaScript Tối Giản & Hiệu Năng Cao**:
@@ -58,14 +58,17 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 ## 3. QUY CHUẨN JAVASCRIPT (ES6+ ES MODULES)
 
 ### 3.1. Đặt tên (Naming Conventions)
+
 - **Biến & Hàm**: Dùng `camelCase` (ví dụ: `handleAudioReactiveToggle`, `userSettings`, `isPlaying`).
 - **Hằng số toàn cục (Constants)**: Dùng `UPPER_SNAKE_CASE` (ví dụ: `DEFAULT_CLOCK_SIZE`, `BUNDLED_LANGUAGES`).
 - **Class / Constructor**: Dùng `PascalCase` (ví dụ: `FontManager`, `SoundMixer`).
 - **File & Thư mục**: Dùng `camelCase.js` (ví dụ: `eventHandlers.js`, `themeManager.js`).
 
 ### 3.2. Quản lý trạng thái (State Management)
+
 - **Không tự ý gán biến toàn cục trên `window`**: Mọi cài đặt người dùng phải quản lý tập trung thông qua `src/services/state.js`.
 - Sử dụng các hàm getter/setter chuẩn:
+
   ```javascript
   import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 
@@ -79,8 +82,10 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
   ```
 
 ### 3.3. Tối ưu truy xuất DOM (DOM Caching Pattern)
+
 - **Tuyệt đối tránh** gọi `document.getElementById` hoặc `querySelector` lặp lại liên tục bên trong các hàm chạy theo chu kỳ (như vòng lặp render đồng hồ, requestAnimationFrame, canvas loop).
 - Mọi phần tử DOM tĩnh cần được đăng ký và cache tại [`src/utils/dom.js`](file:///d:/Personal/Project/HTML-CSS-JS/exxtension-save-pass/Startpage/src/utils/dom.js):
+
   ```javascript
   import * as DOM from "../utils/dom.js"
 
@@ -90,24 +95,27 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
   ```
 
 ### 3.4. Kiến trúc hướng sự kiện (Event-Driven Communication)
+
 - Giảm thiểu phụ thuộc chéo (tight coupling) giữa các component bằng cách bắn và lắng nghe `CustomEvent`:
+
   ```javascript
   // Bắn sự kiện thông báo cài đặt thay đổi
   window.dispatchEvent(
     new CustomEvent("settingsUpdated", {
-      detail: { key: "musicRealAudioReactive", value: true }
-    })
+      detail: { key: "musicRealAudioReactive", value: true },
+    }),
   )
 
   // Bắn sự kiện cập nhật bố cục
   window.dispatchEvent(
     new CustomEvent("layoutUpdated", {
-      detail: { key: "showQuotes", value: false }
-    })
+      detail: { key: "showQuotes", value: false },
+    }),
   )
   ```
 
 ### 3.5. Xử lý Bất đồng bộ & Error Handling
+
 - Ưu tiên sử dụng `async/await` thay vì chuỗi Promise `.then().catch()`.
 - Các lệnh gọi Chrome API hoặc tải tài nguyên mạng luôn phải có khối `try...catch`:
   ```javascript
@@ -122,6 +130,7 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 - Thống nhất prefix log trên console theo dạng `[TênComponent] Nội dung log` để dễ debug.
 
 ### 3.6. Chống rò rỉ bộ nhớ (Memory Leak Prevention)
+
 - Bất kỳ module nào đăng ký `setInterval`, `requestAnimationFrame`, `addEventListener` hoặc `Observer` phải có hàm dọn dẹp (cleanup/destroy):
   ```javascript
   destroy() {
@@ -136,6 +145,7 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 ## 4. QUY CHUẨN CSS & DESIGN SYSTEM
 
 ### 4.1. Sử dụng Design Tokens & CSS Variables
+
 - Toàn bộ giá trị màu sắc, bo góc, bóng mờ và khoảng cách phải sử dụng biến định nghĩa trong [`styles/variables.css`](file:///d:/Personal/Project/HTML-CSS-JS/exxtension-save-pass/Startpage/styles/variables.css):
   - **Khoảng cách**: `var(--space-1)` (8px), `var(--space-2)` (16px), `var(--space-3)` (24px), `var(--space-4)` (32px).
   - **Bo góc**: `var(--radius-sm)` (8px), `var(--radius-md)` (12px), `var(--radius-lg)` (16px), `var(--radius-full)` (9999px).
@@ -143,6 +153,7 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
   - **Accent Color**: `var(--accent-color)`, `var(--accent-color-rgb)`.
 
 ### 4.2. Nguyên tắc đặt tên Class & Specificity
+
 - Sử dụng quy ước dạng kebab-case ngữ nghĩa theo block:
   ```css
   /* Đúng chuẩn */
@@ -155,6 +166,7 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 - **Phân tách bộ chọn**: Tránh gán chung margin/padding cho cả phần tử cha và phần tử con dẫn tới lỗi nhân đôi khoảng cách.
 
 ### 4.3. Quy chuẩn Animation & Tối ưu GPU
+
 - Chỉ animate 2 thuộc tính chính có chi phí tính toán thấp: `transform` và `opacity`.
 - Khai báo `will-change` có chọn lọc:
   ```css
@@ -166,7 +178,9 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
 - Tôn trọng tùy chọn giảm chuyển động của người dùng (`prefers-reduced-motion`):
   ```css
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
@@ -174,9 +188,11 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
   ```
 
 ### 4.4. Đáp ứng kích thước (Responsive Design)
+
 - Tận dụng hàm `clamp(min, preferred, max)` để co giãn tự nhiên:
   ```css
-  padding: clamp(12px, 1.6vw, 16px) clamp(24px, 4vw, 36px) clamp(8px, 1.2vw, 12px);
+  padding: clamp(12px, 1.6vw, 16px) clamp(24px, 4vw, 36px)
+    clamp(8px, 1.2vw, 12px);
   ```
 - Điểm ngắt chuẩn (Standard Breakpoints):
   - Mobile: `@media (max-width: 640px)`
@@ -231,7 +247,9 @@ Tài liệu này định nghĩa toàn bộ quy chuẩn lập trình, kiến trú
    - Không giả định mọi trình duyệt đều có đầy đủ API của Chrome.
    - Luôn kiểm tra tính khả dụng trước khi sử dụng các API đặc thù:
      ```javascript
-     const isFirefox = /firefox|fxios/i.test(navigator.userAgent) || typeof InstallTrigger !== "undefined"
+     const isFirefox =
+       /firefox|fxios/i.test(navigator.userAgent) ||
+       typeof InstallTrigger !== "undefined"
      ```
 2. **Xử lý các API chưa hỗ trợ trên Firefox**:
    - `chrome.offscreen` và `chrome.tabCapture` hiện **chưa** được hỗ trợ hoàn chỉnh trên Firefox MV3.

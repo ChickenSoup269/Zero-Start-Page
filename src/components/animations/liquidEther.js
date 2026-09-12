@@ -35,6 +35,12 @@ export class LiquidEther {
     this.glowWidth = 4.5 // Mặc định độ rộng ánh sáng
     this.time = 0
     this.active = false
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
     this.colors = [
       [82, 39, 255], // #5227FF
       [255, 159, 252], // #FF9FFC
@@ -209,14 +215,27 @@ export class LiquidEther {
     this.updateSettings({ colors: hexColors })
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    if (this.active) {
+      this._handleResize()
+    }
+  }
+
   _handleMouseMove(e) {
     this.targetMouse.x = e.clientX / window.innerWidth
     this.targetMouse.y = 1.0 - e.clientY / window.innerHeight
   }
 
   _handleResize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    const scale = this.dprScale || 1.0
+    this.canvas.width = Math.floor(window.innerWidth * scale)
+    this.canvas.height = Math.floor(window.innerHeight * scale)
     if (this.gl) this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
   }
 
@@ -232,8 +251,19 @@ export class LiquidEther {
     window.addEventListener("mousemove", this._handleMouseMove)
 
     let lastTime = 0
+    this._lastFrameTime = performance.now()
     const render = (now) => {
-      this.time += (now - lastTime) * 0.001 // dt in seconds
+      if (!this.active) return
+
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          this.animationId = requestAnimationFrame(render)
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
+      this.time += ((now - lastTime) * 0.001) * (this.speedScale || 1.0) // dt in seconds
       lastTime = now
 
       // Tính toán tốc độ di chuyển chuột để tạo hiệu ứng "nhá khói"

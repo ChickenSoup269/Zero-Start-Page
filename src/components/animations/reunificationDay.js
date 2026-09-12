@@ -28,6 +28,12 @@ export class ReunificationDayEffect {
       transparent: options.transparent !== false,
       ...options,
     }
+    this.fps = 60
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
 
     // Strict entity limits for high performance
     this.MAX_FIREWORKS = 2
@@ -119,6 +125,16 @@ export class ReunificationDayEffect {
 
     this.resize()
     window.addEventListener("resize", this._resizeHandler)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fps = this.targetFps
+    this.fpsInterval = 1000 / this.fps
+    this.MAX_PARTICLES = Math.max(20, Math.round(50 * (this.densityScale || 1.0)))
   }
 
   setOptions(newOptions = {}) {

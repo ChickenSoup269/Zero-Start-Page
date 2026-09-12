@@ -61,6 +61,14 @@ export class InteractiveFluidBackground {
     this.mouseActivity = 0.0
     this.hasMovedMouse = false
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
+
     this.vertexShaderSource = `
       attribute vec2 position;
       void main() {
@@ -190,6 +198,18 @@ export class InteractiveFluidBackground {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "medium" ? 0.8 : 1.0
+    if (this.active) {
+      this._handleResize()
+    }
+  }
+
   initWebGL() {
     if (!this.gl) return false
     const gl = this.gl
@@ -247,8 +267,8 @@ export class InteractiveFluidBackground {
 
     // Adaptive resolution scaling: fluid looks inherently smooth with bilinear scaling,
     // capping max resolution to 1280x720 cuts fragment shader fill-rate workload by up to 80% with zero visual loss.
-    const maxW = 1280
-    const maxH = 720
+    const maxW = Math.round(1280 * (this.dprScale || 1.0))
+    const maxH = Math.round(720 * (this.dprScale || 1.0))
     const scale = Math.min(1.0, maxW / Math.max(w, 1), maxH / Math.max(h, 1))
 
     this.canvas.width = Math.max(320, Math.floor(w * scale))
@@ -280,6 +300,7 @@ export class InteractiveFluidBackground {
       }
     } else if (this.active && !this.animationId) {
       this.lastFrameTime = performance.now()
+      this._lastFrameTime = performance.now()
       this._renderLoop()
     }
   }
@@ -298,6 +319,7 @@ export class InteractiveFluidBackground {
     document.addEventListener("visibilitychange", this._handleVisibility)
 
     this.lastFrameTime = performance.now()
+    this._lastFrameTime = performance.now()
     this._renderLoop()
   }
 
@@ -305,7 +327,15 @@ export class InteractiveFluidBackground {
     if (!this.active) return
 
     const now = performance.now()
-    const dt = Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.1)
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) {
+        this.animationId = requestAnimationFrame(() => this._renderLoop())
+        return
+      }
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const dt = Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.1) * (this.speedScale || 1.0)
     this.lastFrameTime = now
     this.time += dt
 

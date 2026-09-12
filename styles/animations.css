@@ -109,6 +109,16 @@ body.bg-loading {
   }
 }
 
+/* User-toggled Reduce Motion in Settings */
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 /* Performance mode: cap all hover transitions to 50 ms for snappier UI */
 body.perf-hover-mode *,
 body.perf-hover-mode *::before,

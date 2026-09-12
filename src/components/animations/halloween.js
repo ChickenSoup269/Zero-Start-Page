@@ -33,6 +33,11 @@ export class HalloweenEffect {
     this.embers = []
     this.mistPuffs = []
     this.lastTime = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this._animId = null
 
     this.options = {
@@ -1027,6 +1032,18 @@ export class HalloweenEffect {
 
   // --- PUBLIC CONTROLLERS ---
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    const targetCount = Math.max(5, Math.round((this.options.density || 35) * (this.densityScale || 1.0)))
+    while (this.items.length > targetCount) {
+      this.items.pop()
+    }
+  }
+
   setOptions(opts = {}) {
     this.options = { ...this.options, ...opts }
     if (opts.density !== undefined) this.setDensity(opts.density)
@@ -1094,8 +1111,15 @@ export class HalloweenEffect {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this._renderLoop(t))
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) {
+        return
+      }
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     if (!this.lastTime) this.lastTime = currentTime
-    const dt = Math.min(currentTime - this.lastTime, 64)
+    const dt = Math.min(currentTime - this.lastTime, 64) * (this.speedScale || 1.0)
     this.lastTime = currentTime
 
     const ctx = this.ctx
@@ -1105,8 +1129,8 @@ export class HalloweenEffect {
     this._drawAtmosphericMist(ctx, dt)
 
     // 2. Spawn and update Spooky Items
-    const targetCount = this.options.density || 35
-    const speedMultiplier = this.options.speed || 1.0
+    const targetCount = Math.max(5, Math.round((this.options.density || 35) * (this.densityScale || 1.0)))
+    const speedMultiplier = (this.options.speed || 1.0) * (this.speedScale || 1.0)
 
     if (this.items.length < targetCount && Math.random() < 0.12) {
       this.items.push(this.createItem(true))
@@ -1165,6 +1189,7 @@ export class HalloweenEffect {
     this.active = true
     this.canvas.style.display = "block"
     this.lastTime = 0
+    this._lastFrameTime = performance.now()
 
     this.resize()
     window.addEventListener("resize", this._handleResize)
@@ -1174,7 +1199,7 @@ export class HalloweenEffect {
 
     // Pre-populate items across screen so it starts filled
     this.items = []
-    const initialCount = Math.floor((this.options.density || 35) * 0.75)
+    const initialCount = Math.max(3, Math.floor((this.options.density || 35) * 0.75 * (this.densityScale || 1.0)))
     for (let i = 0; i < initialCount; i++) {
       this.items.push(this.createItem(false))
     }

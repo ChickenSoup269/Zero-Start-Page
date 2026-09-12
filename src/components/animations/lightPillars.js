@@ -51,9 +51,18 @@ export class LightPillarsEffect {
         ? options.pillarCount
         : 8
     this.crystalCount = 50
+    this.basePillarCount = this.pillarCount || 8
+    this.baseCrystalCount = 50
     this.pillars = []
     this.crystals = []
     this.sparkles = []
+
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Mouse & Thermal Updraft
     this.mouse = {
@@ -107,7 +116,22 @@ export class LightPillarsEffect {
 
   setPillarCount(count) {
     this.pillarCount = Math.max(2, Math.min(30, Number(count) || 8))
+    this.basePillarCount = this.pillarCount
     this._initPillars()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.pillarCount = Math.max(3, Math.round((this.basePillarCount || 8) * this.densityScale))
+    this.crystalCount = Math.max(12, Math.round((this.baseCrystalCount || 50) * this.densityScale))
+    if (this.active) {
+      this._initPillars()
+      this._initCrystals()
+    }
   }
 
   updateColor(hex) {
@@ -661,9 +685,14 @@ export class LightPillarsEffect {
   animate(timestamp = 0) {
     if (!this.active || this.destroyed) return
 
+    if (this.fpsInterval) {
+      if (timestamp - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 2.5)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 2.5) * (this.speedScale || 1.0)
 
     this._update(dt)
 

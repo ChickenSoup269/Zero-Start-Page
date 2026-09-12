@@ -16,6 +16,11 @@ export class MatrixRain {
     this._animId = null
     this.lastDrawTime = 0
     this.time = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = 0
 
     this._color = color || "#00FF00"
     this.style = style || "hd"
@@ -127,6 +132,17 @@ export class MatrixRain {
 
   // ── Sizing & Initialization ────────────────────────────────────────────────
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   resize() {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
@@ -143,7 +159,10 @@ export class MatrixRain {
   // ── Classic Mode Initialization ────────────────────────────────────────────
 
   initClassicColumns() {
-    const columnsCount = Math.ceil(this.canvas.width / this.classicFontSize)
+    const fontSize = Math.round(
+      this.classicFontSize / Math.max(0.4, this.densityScale || 1.0),
+    )
+    const columnsCount = Math.ceil(this.canvas.width / fontSize)
     this.columns = []
     for (let i = 0; i < columnsCount; i++) {
       this.columns[i] = Math.random() * -100
@@ -157,7 +176,9 @@ export class MatrixRain {
     const W = this.canvas.width
     const H = this.canvas.height
 
-    const baseSpacing = 16
+    const baseSpacing = Math.round(
+      16 / Math.max(0.25, this.densityScale || 1.0),
+    )
     const totalColumns = Math.ceil(W / baseSpacing)
 
     for (let c = 0; c < totalColumns; c++) {
@@ -273,6 +294,12 @@ export class MatrixRain {
     this._animId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime =
+        currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     if (this.style === "classic") {
       this._renderClassic(currentTime)
     } else {
@@ -283,9 +310,14 @@ export class MatrixRain {
   // ── Render Classic Retro 2D Mode ───────────────────────────────────────────
 
   _renderClassic(currentTime) {
+    const effectiveFps = Math.min(
+      this.classicFps,
+      this.targetFps < 60 ? this.targetFps : this.classicFps,
+    )
+    const fpsInterval = 1000 / effectiveFps
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.classicFpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.classicFpsInterval)
+    if (elapsed < fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % fpsInterval)
 
     // 1. Trail Fade
     this.ctx.globalCompositeOperation = "destination-out"
@@ -319,7 +351,8 @@ export class MatrixRain {
 
   _renderHD(currentTime) {
     const elapsed = currentTime - this.lastDrawTime
-    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0)
+    const deltaTime =
+      Math.min(elapsed / (1000 / 60), 3.0) * (this.speedScale || 1.0)
     this.lastDrawTime = currentTime
 
     const W = this.canvas.width

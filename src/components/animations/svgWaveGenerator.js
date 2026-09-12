@@ -228,6 +228,10 @@ export class SvgWaveGenerator {
     this._applyBackground(params)
   }
 
+  setPerformanceBudget(profile) {
+    // Static SVG background generator: no active RAF tick loop
+  }
+
   update(params, fade = false) {
     if (this.active) this._applyBackground(params, fade)
   }

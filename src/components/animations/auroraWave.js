@@ -43,6 +43,11 @@ export class AuroraWaveEffect {
     // Timing & DPR
     this.time = 0
     this.lastTime = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
     this.width = 0
     this.height = 0
@@ -84,6 +89,18 @@ export class AuroraWaveEffect {
     this.resize()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   _buildCache() {
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
@@ -91,11 +108,12 @@ export class AuroraWaveEffect {
 
     this._gradients = []
     this._waveConfigs = []
+    const count = Math.max(2, Math.round(this.waveCount * (this.densityScale || 1.0)))
 
-    for (let w = 0; w < this.waveCount; w++) {
-      const z = 0.25 + (w / (this.waveCount - 1)) * 0.75
+    for (let w = 0; w < count; w++) {
+      const z = 0.25 + (w / (count - 1)) * 0.75
       // Natural aurora spectral shift (emerald green -> cyan -> violet crests)
-      const hueShift = (w - this.waveCount * 0.5) * 20
+      const hueShift = (w - count * 0.5) * 20
       const hue = (baseHsl.h + hueShift + 360) % 360
       const op = Math.max(0.12, Math.min(1.0, this.brightness * (0.32 + z * 0.38)))
 
@@ -113,14 +131,14 @@ export class AuroraWaveEffect {
         phase: Math.random() * Math.PI * 2,
         speed: 0.004 + w * 0.0016,
         amplitude: 0.7 + w * 0.16,
-        yOffset: (w - this.waveCount * 0.5) * (H * 0.065),
+        yOffset: (w - count * 0.5) * (H * 0.065),
         z,
         hue,
       })
     }
 
     // Gentle distant cosmic star motes (clean, subtle, non-intrusive)
-    const starCount = Math.floor(32 + 18 * this.brightness)
+    const starCount = Math.floor((32 + 18 * this.brightness) * (this.densityScale || 1.0))
     this._particles = Array.from({ length: starCount }, () => ({
       x: Math.random() * W,
       y: Math.random() * (H * 0.85),
@@ -198,6 +216,7 @@ export class AuroraWaveEffect {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.canvas.style.display = "block"
     this.resize()
 
@@ -205,6 +224,14 @@ export class AuroraWaveEffect {
       if (!this.active || this.destroyed) return
       this.rafId = requestAnimationFrame(loop)
       if (document.visibilityState === "hidden") return
+
+      if (this.fpsInterval) {
+        if (timestamp - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+      }
+
       this.animate(timestamp)
     }
     this.rafId = requestAnimationFrame(loop)
@@ -270,7 +297,7 @@ export class AuroraWaveEffect {
 
     const rawElapsed = this.lastTime ? currentTime - this.lastTime : 16.67
     this.lastTime = currentTime
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0) * (this.speedScale || 1.0)
     this.time += 0.011 * dt
 
     const ctx = this.ctx

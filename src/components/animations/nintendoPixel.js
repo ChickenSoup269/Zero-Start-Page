@@ -3448,6 +3448,12 @@ export class NintendoPixelEffect {
     this.color = color || "#63f5ff"
     this.mode = mode === "classic" ? "classic" : "mainframe"
 
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     this.lastTime = performance.now()
     this.lastClassicDraw = 0
     this.classicFpsInterval = 1000 / 30
@@ -3542,12 +3548,30 @@ export class NintendoPixelEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this._engine && typeof this._engine.setPerformanceBudget === "function") {
+      this._engine.setPerformanceBudget(profile)
+    }
+  }
+
   animate(currentTime = performance.now()) {
     if (!this.active || this.destroyed) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
-    const dt = Math.min((currentTime - (this.lastTime || currentTime)) * 0.001, 0.1)
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) {
+        return
+      }
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const dt = Math.min((currentTime - (this.lastTime || currentTime)) * 0.001, 0.1) * (this.speedScale || 1.0)
     this.lastTime = currentTime
 
     if (this._engine) {
@@ -3569,6 +3593,7 @@ export class NintendoPixelEffect {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.lastClassicDraw = 0
     if (this.canvas) this.canvas.style.display = "block"
     this.resize()

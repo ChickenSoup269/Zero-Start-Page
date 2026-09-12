@@ -241,6 +241,11 @@ export class FirefliesEffect {
     // Simulation Entities
     this.flies = []
     this.quantity = 42
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Timing & DPR Normalization
     this.time = 0
@@ -316,8 +321,22 @@ export class FirefliesEffect {
       this.ctx.scale(this.dpr, this.dpr)
     }
 
-    this.quantity = Math.max(32, Math.min(75, Math.floor(this.width / 36)))
+    const baseCount = Math.max(32, Math.min(75, Math.floor(this.width / 36)))
+    this.quantity = Math.max(8, Math.round(baseCount * (this.densityScale || 1.0)))
     this._buildFlies()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    const baseCount = Math.max(32, Math.min(75, Math.floor(this.width / 36)))
+    this.quantity = Math.max(8, Math.round(baseCount * (this.densityScale || 1.0)))
+    if (this.active) {
+      this._buildFlies()
+    }
   }
 
   _buildFlies() {
@@ -361,6 +380,12 @@ export class FirefliesEffect {
       if (!this.active || this.destroyed) return
       this.rafId = requestAnimationFrame(loop)
       if (document.visibilityState === "hidden") return
+
+      if (this.fpsInterval) {
+        if (timestamp - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+      }
+
       this.animate(timestamp)
     }
     this.rafId = requestAnimationFrame(loop)
@@ -409,7 +434,9 @@ export class FirefliesEffect {
 
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / 16.67, 0.1), 3.0)
+    const dt =
+      Math.min(Math.max(rawElapsed / 16.67, 0.1), 3.0) *
+      (this.speedScale || 1.0)
 
     this.update(dt)
 

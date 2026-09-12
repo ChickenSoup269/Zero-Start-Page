@@ -51,6 +51,14 @@ export class SunbeamEffect {
     this.smoothMouseY = 0.5
     this.time = 0
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
+
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
 
@@ -273,10 +281,22 @@ export class SunbeamEffect {
 
   resize() {
     if (!this.canvas || !this.gl) return
-    const dpr = Math.min(window.devicePixelRatio, 2) || 1
+    const dpr = (Math.min(window.devicePixelRatio, 2) || 1) * (this.dprScale || 1.0)
     this.canvas.width = window.innerWidth * dpr
     this.canvas.height = window.innerHeight * dpr
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    if (this.active) {
+      this.resize()
+    }
   }
 
   updateColor(color) {
@@ -334,7 +354,12 @@ export class SunbeamEffect {
     this._animId = requestAnimationFrame(() => this._animate())
 
     const now = performance.now()
-    const dt = now - this.lastTime
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const dt = (now - this.lastTime) * (this.speedScale || 1.0)
     this.lastTime = now
     this.time += dt
 

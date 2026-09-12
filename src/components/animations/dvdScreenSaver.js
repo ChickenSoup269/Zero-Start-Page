@@ -161,6 +161,11 @@ export class DVDEffect {
     this.animationFrameId = null
     this.lastTime = performance.now()
     this.time = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Interactive Drag & Fling Physics
     this.draggedItem = null
@@ -184,6 +189,14 @@ export class DVDEffect {
     window.addEventListener("pointerup", this._pointerUpHandler)
     window.addEventListener("pointercancel", this._pointerUpHandler)
     document.addEventListener("visibilitychange", this._visibilityHandler)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
   }
 
   getRandomColor(excludeColor) {
@@ -365,7 +378,8 @@ export class DVDEffect {
   }
 
   _emitBounceSparks(x, y, normalX, normalY, color, isCorner = false) {
-    const count = isCorner ? 48 : 16
+    const baseCount = isCorner ? 48 : 16
+    const count = Math.max(4, Math.round(baseCount * (this.densityScale || 1.0)))
     this.shockwaves.push(new PixelShockwave(x, y, color, isCorner ? 140 : 65))
 
     for (let i = 0; i < count; i++) {
@@ -584,6 +598,7 @@ export class DVDEffect {
 
     this.resize()
 
+    this._lastFrameTime = performance.now()
     const animateLoop = (now) => {
       if (!this.active) return
       this.animationFrameId = requestAnimationFrame(animateLoop)
@@ -593,9 +608,16 @@ export class DVDEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

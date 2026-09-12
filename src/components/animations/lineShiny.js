@@ -37,6 +37,11 @@ export class LineShinyEffect {
     this.phase = 0
     this.time = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // High-DPI Retina
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -128,13 +133,25 @@ export class LineShinyEffect {
     for (const s of this.streaks) s._colorBase = null
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
+  }
+
   setMode(mode) {
     this.mode = mode || "default"
   }
 
   _buildBeams() {
     this.beams = []
-    const count = 7 + Math.floor(Math.random() * 3)
+    const count = Math.max(3, Math.round((7 + Math.floor(Math.random() * 3)) * (this.densityScale || 1.0)))
     for (let i = 0; i < count; i++) {
       this.beams.push({
         originOffset: (i / count) * 0.9 - 0.45,
@@ -181,7 +198,8 @@ export class LineShinyEffect {
     this.motes = []
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    for (let i = 0; i < this.moteCount; i++) {
+    const count = Math.max(12, Math.round(this.moteCount * (this.densityScale || 1.0)))
+    for (let i = 0; i < count; i++) {
       this.motes.push({
         x: Math.random() * W,
         y: Math.random() * H,
@@ -229,6 +247,7 @@ export class LineShinyEffect {
     this.active = true
     this.phase = 0
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.mouse.x = 0.5
     this.mouse.y = 0.5
     this.targetMouse.x = 0.5
@@ -248,9 +267,16 @@ export class LineShinyEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

@@ -629,6 +629,13 @@ export class TetFireworksEffect {
     this.launchTimer = 0
     this.nextLaunchInterval = 0.8
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Screen & DPI
     this.width = window.innerWidth
     this.height = window.innerHeight
@@ -701,6 +708,14 @@ export class TetFireworksEffect {
         this.audio.unlock()
       }
     }
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
   }
 
   getNextCustomText() {
@@ -1208,6 +1223,7 @@ export class TetFireworksEffect {
 
     this.resize()
 
+    this._lastFrameTime = performance.now()
     const animateLoop = (now) => {
       if (!this.active) return
       this.animationId = requestAnimationFrame(animateLoop)
@@ -1217,9 +1233,14 @@ export class TetFireworksEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)
@@ -1271,7 +1292,7 @@ export class TetFireworksEffect {
     this.launchTimer += 0.016 * dt
     if (this.launchTimer >= this.nextLaunchInterval) {
       this.launchTimer = 0
-      this.nextLaunchInterval = Math.random() * 1.1 + 0.6
+      this.nextLaunchInterval = (Math.random() * 1.1 + 0.6) / Math.max(0.4, this.densityScale || 1.0)
       this.launchRandomFirework()
 
       if (Math.random() < 0.35) {

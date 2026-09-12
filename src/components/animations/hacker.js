@@ -162,6 +162,13 @@ export class HackerEffect {
     // Palette Configuration
     this.palette = this._computePalette(this._color)
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Sequence State Machine: "typing" -> "loading" -> "flood"
     this.sequenceState = "typing"
     this.sequenceTimer = 0
@@ -235,6 +242,17 @@ export class HackerEffect {
     this.sequenceTimer = performance.now()
     this.loadingProgress = 0
     this._initEntities()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this._initEntities()
+    }
   }
 
   _hexToRgb(hex) {
@@ -427,7 +445,7 @@ export class HackerEffect {
     this.classicParticles = []
 
     // 1. Digital Matrix Rain Columns
-    const fontSize = 15
+    const fontSize = Math.round(15 / Math.max(0.6, Math.min(1.2, this.densityScale || 1.0)))
     const totalCols = Math.floor(W / fontSize)
 
     for (let i = 0; i < totalCols; i++) {
@@ -962,9 +980,14 @@ export class HackerEffect {
   animate(timestamp = 0) {
     if (!this.active || this.destroyed) return
 
+    if (this.fpsInterval) {
+      if (timestamp - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0) * (this.speedScale || 1.0)
 
     this._update(dt)
 

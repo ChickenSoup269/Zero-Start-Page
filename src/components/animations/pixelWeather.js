@@ -193,6 +193,11 @@ export class PixelWeatherEffect {
 
     // Timing & DPR
     this.lastTime = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.dpr = 1
     this.width = 0
     this.height = 0
@@ -237,6 +242,18 @@ export class PixelWeatherEffect {
     window.addEventListener("resize", this._resizeHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
     this.resize()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this.resize()
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -412,6 +429,7 @@ export class PixelWeatherEffect {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.nextLightningTime = performance.now() + 2500 + Math.random() * 3500
 
     this.canvas.style.display = "block"
@@ -425,6 +443,14 @@ export class PixelWeatherEffect {
       if (!this.active || this.destroyed) return
       this.rafId = requestAnimationFrame(loop)
       if (document.visibilityState === "hidden") return
+
+      if (this.fpsInterval) {
+        if (timestamp - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+      }
+
       this.animate(timestamp)
     }
     this.rafId = requestAnimationFrame(loop)
@@ -491,7 +517,7 @@ export class PixelWeatherEffect {
 
     const W = this.width || window.innerWidth
     const H = this.height || window.innerHeight
-    const count = Math.floor(16 * this.densityMul)
+    const count = Math.floor(16 * this.densityMul * (this.densityScale || 1.0))
 
     for (let i = 0; i < count; i++) {
       this.windDashes.push({
@@ -515,7 +541,7 @@ export class PixelWeatherEffect {
     if (this.mode === "wind") baseCount = 130
     if (this.mode === "snow") baseCount = 220
 
-    const count = Math.floor(baseCount * this.densityMul)
+    const count = Math.floor(baseCount * this.densityMul * (this.densityScale || 1.0))
     for (let i = 0; i < count; i++) {
       this.particles.push(this._makeParticle(W, H, true))
     }
@@ -969,7 +995,7 @@ export class PixelWeatherEffect {
 
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0) * (this.speedScale || 1.0)
 
     this._update(dt)
 

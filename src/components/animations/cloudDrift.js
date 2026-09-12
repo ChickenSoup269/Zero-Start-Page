@@ -40,6 +40,13 @@ export class CloudDriftEffect {
     this.speedScale = options.speed !== undefined ? options.speed : 1.0
     this._updateColorCache()
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.budgetSpeedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Simulation State
     this.clouds = []
     this.time = 0
@@ -99,7 +106,8 @@ export class CloudDriftEffect {
 
   initClouds() {
     const W = this.width || window.innerWidth
-    const count = 5 + Math.floor(W / 380)
+    const baseCount = 5 + Math.floor(W / 380)
+    const count = Math.max(3, Math.round(baseCount * (this.densityScale || 1.0)))
     this.clouds = []
 
     for (let i = 0; i < count; i++) {
@@ -177,6 +185,17 @@ export class CloudDriftEffect {
       for (const c of this.clouds) {
         c.speed = (12 + c.layer * 22) * this.speedScale
       }
+    }
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.budgetSpeedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initClouds()
     }
   }
 
@@ -307,6 +326,7 @@ export class CloudDriftEffect {
 
     this.resize()
 
+    this._lastFrameTime = performance.now()
     const animateLoop = (now) => {
       if (!this.active || this.destroyed) return
       this._animId = requestAnimationFrame(animateLoop)
@@ -316,9 +336,14 @@ export class CloudDriftEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.budgetSpeedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

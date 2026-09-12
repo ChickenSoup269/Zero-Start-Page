@@ -61,6 +61,14 @@ export class Jellyfish {
     this.bubbles = []
     this.bubbleRings = []
 
+    // Performance budget
+    this.baseNumTentacles = numTentacles
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     this._setColorCache(this.color)
     this._initTentacles()
     this._initAmbientEnvironment()
@@ -148,6 +156,29 @@ export class Jellyfish {
     this._initTentacles()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+
+    this.numTentacles = Math.max(4, Math.round((this.baseNumTentacles || 12) * this.densityScale))
+    this._initTentacles()
+    const baseBubbles = 24
+    const count = Math.max(6, Math.round(baseBubbles * this.densityScale))
+    const W = window.innerWidth
+    const H = window.innerHeight
+    this.bubbles = Array.from({ length: count }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 1.2 + Math.random() * 2.8,
+      speed: 0.3 + Math.random() * 0.5,
+      sway: 0.5 + Math.random() * 1.2,
+      swayPhase: Math.random() * Math.PI * 2,
+    }))
+  }
+
   handleMouseMove(e) {
     this.mouse.x = e.clientX
     this.mouse.y = e.clientY
@@ -197,10 +228,16 @@ export class Jellyfish {
 
     ctx.clearRect(0, 0, W, H)
 
-    const now = Date.now()
-    this.pulseT += 0.045
-    this.swimT += 0.035
-    this.bobT += 0.02
+    const now = performance.now()
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const speed = this.speedScale || 1.0
+    this.pulseT += 0.045 * speed
+    this.swimT += 0.035 * speed
+    this.bobT += 0.02 * speed
 
     // AI Movement
     if (now - this.lastMouseTime > 2500) {

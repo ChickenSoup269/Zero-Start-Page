@@ -62,6 +62,14 @@ export class FrostedGlassOrbsBackground {
 
     this.mouse = { x: -1000, y: -1000 }
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
+
     this.vertexShaderSource = `
       precision mediump float;
       attribute vec2 position;
@@ -189,6 +197,20 @@ export class FrostedGlassOrbsBackground {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    this.numOrbs = Math.max(3, Math.min(8, Math.round(7 * this.densityScale)))
+    if (this.active) {
+      this.initOrbs()
+      this._handleResize()
+    }
+  }
+
   initWebGL() {
     if (!this.gl) return false
     const gl = this.gl
@@ -243,7 +265,7 @@ export class FrostedGlassOrbsBackground {
     const h = window.innerHeight
 
     // High performance DPR scaling
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * (this.dprScale || 1.0)
     this.canvas.width = Math.floor(w * dpr)
     this.canvas.height = Math.floor(h * dpr)
 
@@ -265,6 +287,7 @@ export class FrostedGlassOrbsBackground {
       }
     } else if (this.active && !this.animationId) {
       this.lastFrameTime = performance.now()
+      this._lastFrameTime = performance.now()
       this._renderLoop()
     }
   }
@@ -282,6 +305,7 @@ export class FrostedGlassOrbsBackground {
     document.addEventListener("visibilitychange", this._handleVisibility)
 
     this.lastFrameTime = performance.now()
+    this._lastFrameTime = performance.now()
     this._renderLoop()
   }
 
@@ -289,7 +313,15 @@ export class FrostedGlassOrbsBackground {
     if (!this.active) return
 
     const now = performance.now()
-    const dt = Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.05)
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) {
+        this.animationId = requestAnimationFrame(() => this._renderLoop())
+        return
+      }
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const dt = Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.05) * (this.speedScale || 1.0)
     this.lastFrameTime = now
 
     const w = window.innerWidth

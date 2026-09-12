@@ -35,6 +35,13 @@ export class NetworkEffect {
     this.shockwaves = [] // Click EMP rings
     this.time = 0
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Spatial hash grid for high performance
     this.gridCellSize = 150
     this.grid = new Map()
@@ -73,6 +80,17 @@ export class NetworkEffect {
     if (!hex) return
     this._color = hex
     this._palette = this._computePalette(hex)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initNodes()
+    }
   }
 
   _computePalette(hex) {
@@ -136,7 +154,8 @@ export class NetworkEffect {
     const W = this.canvas.width
     const H = this.canvas.height
     // Scale count slightly with screen resolution
-    const count = Math.min(130, Math.max(70, Math.floor((W * H) / 16000)))
+    const baseCount = Math.min(130, Math.max(70, Math.floor((W * H) / 16000)))
+    const count = Math.max(25, Math.round(baseCount * (this.densityScale || 1.0)))
 
     for (let i = 0; i < count; i++) {
       const depth = Math.random() // 0 (far/bg) to 1 (near/fg)
@@ -266,8 +285,13 @@ export class NetworkEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = currentTime - this.lastDrawTime
-    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0)
+    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0) * (this.speedScale || 1.0)
     this.lastDrawTime = currentTime
 
     const W = this.canvas.width

@@ -426,6 +426,11 @@ export class WindEffect {
     // Time & Delta Normalization (60Hz - 240Hz)
     this.lastTime = performance.now()
     this.time = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.width = window.innerWidth
     this.height = window.innerHeight
 
@@ -512,24 +517,35 @@ export class WindEffect {
     this.ctx.scale(dpr, dpr)
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this._animId) {
+      this.createEntities()
+    }
+  }
+
   createEntities() {
     this.blades = []
     this.motes = []
 
     if (this.mode === "3d") {
       // 3D Dimensional Anime Warp: 140 speed ribbons
-      const count = 140
+      const count = Math.max(15, Math.round(140 * (this.densityScale || 1.0)))
       for (let i = 0; i < count; i++) {
         this.blades.push(new AnimeWindBlade3D(this.width, this.height, this._rgb, true))
       }
     } else {
       // 2D Anime Horizontal Wind: 48 multi-depth ribbons + 55 atmospheric shimmer motes
-      const bladeCount = 48
+      const bladeCount = Math.max(8, Math.round(48 * (this.densityScale || 1.0)))
       for (let i = 0; i < bladeCount; i++) {
         this.blades.push(new AnimeWindBlade2D(this.width, this.height, this._rgb, true))
       }
 
-      const moteCount = 55
+      const moteCount = Math.max(10, Math.round(55 * (this.densityScale || 1.0)))
       for (let i = 0; i < moteCount; i++) {
         this.motes.push(new WindMote(this.width, this.height, this._rgb))
       }
@@ -544,11 +560,16 @@ export class WindEffect {
     if (document.visibilityState === "hidden") return
 
     const now = performance.now()
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = now - this.lastTime
     this.lastTime = now
 
     // Delta time normalization: target 60fps (16.67ms per frame), clamp to max 3.0
-    const dt = Math.min(elapsed / (1000 / 60), 3.0)
+    const dt = Math.min(elapsed / (1000 / 60), 3.0) * (this.speedScale || 1.0)
     this.time += 16.67 * dt
 
     // Natural atmospheric breathing gust cycle (harmonic wind waves)

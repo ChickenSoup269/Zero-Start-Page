@@ -47,6 +47,13 @@ export class OceanFishEffect {
     this.fishes = []
     this.bubbles = []
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Mouse & Fluid Interaction
     this.mouse = {
       x: -2000,
@@ -118,6 +125,17 @@ export class OceanFishEffect {
 
   setMode(mode) {
     this.setStyle(mode)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this._initMarineLife()
+    }
   }
 
   _resolveFishStyle(mainStyle, index) {
@@ -334,7 +352,8 @@ export class OceanFishEffect {
     const H = this.height || window.innerHeight
 
     // Scale count gracefully based on screen width
-    const count = Math.max(12, Math.min(30, Math.floor(W / 85)))
+    const baseCount = Math.max(12, Math.min(30, Math.floor(W / 85)))
+    const count = Math.max(4, Math.round(baseCount * (this.densityScale || 1.0)))
     this.fishes = []
 
     for (let i = 0; i < count; i++) {
@@ -395,7 +414,8 @@ export class OceanFishEffect {
     }
 
     // Underwater Bubbles
-    const bubbleCount = Math.max(18, Math.floor(W / 70))
+    const baseBubbleCount = Math.max(18, Math.floor(W / 70))
+    const bubbleCount = Math.max(5, Math.round(baseBubbleCount * (this.densityScale || 1.0)))
     this.bubbles = Array.from({ length: bubbleCount }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -946,10 +966,15 @@ export class OceanFishEffect {
   animate(timestamp = 0) {
     if (!this.active || this.destroyed) return
 
+    if (this.fpsInterval) {
+      if (timestamp - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+    }
+
     // Delta-time normalization
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0) * (this.speedScale || 1.0)
 
     // Physics update step
     this._update(dt)

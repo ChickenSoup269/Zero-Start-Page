@@ -92,6 +92,11 @@ export class FlashlightEffect {
     // Timing
     this.time = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // 3D Volumetric Dust Particles
     this.moteCount = 55
@@ -181,9 +186,22 @@ export class FlashlightEffect {
     this._initMotes()
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2) * (profile.level === "low" ? 0.75 : 1.0)
+    if (this.active) {
+      this._onResize()
+    }
+  }
+
   _initMotes() {
     this.motes = []
-    for (let i = 0; i < this.moteCount; i++) {
+    const count = Math.max(15, Math.round(this.moteCount * (this.densityScale || 1.0)))
+    for (let i = 0; i < count; i++) {
       this.motes.push(new VolumetricMote(this.width, this.height))
     }
   }
@@ -269,9 +287,16 @@ export class FlashlightEffect {
       return
     }
 
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) {
+        return
+      }
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = Math.min(now - this.lastTime, 100)
     this.lastTime = now
-    const dt = Math.min(elapsed / 16.67, 3.0)
+    const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
     this.time += 0.02 * dt
 
     const ctx = this.ctx

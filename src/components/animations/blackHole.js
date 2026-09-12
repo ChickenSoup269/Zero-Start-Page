@@ -69,6 +69,12 @@ export class BlackHoleBackground {
     this.animationId = null
     this.time = 0
     this.mouseEnabled = true
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFpsTick = performance.now()
 
     this.accretionColor = opts.accretionColor || "#ff5500"
     this.coreColor = opts.coreColor || "#ffcc00"
@@ -619,13 +625,27 @@ export class BlackHoleBackground {
     return true
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale =
+      profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.8 : 1.0
+    if (this.active) {
+      this._handleResize()
+    }
+  }
+
   _handleResize() {
     if (!this.canvas) return
     const w = window.innerWidth
     const h = window.innerHeight
 
     // Native High-DPI Retina Subpixel Rendering for razor-sharp HD visuals
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const baseDpr = Math.min(window.devicePixelRatio || 1, 2)
+    const dpr = Math.max(0.65, baseDpr * (this.dprScale || 1.0))
     this.canvas.width = Math.round(w * dpr)
     this.canvas.height = Math.round(h * dpr)
     this.canvas.style.width = `${w}px`
@@ -674,7 +694,17 @@ export class BlackHoleBackground {
     if (!this.active || this.destroyed) return
 
     const now = performance.now()
-    const dt = Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.1)
+    if (this.fpsInterval) {
+      if (now - this._lastFpsTick < this.fpsInterval) {
+        this.animationId = requestAnimationFrame(() => this._renderLoop())
+        return
+      }
+      this._lastFpsTick = now - ((now - this._lastFpsTick) % this.fpsInterval)
+    }
+
+    const dt =
+      Math.min((now - (this.lastFrameTime || now)) * 0.001, 0.1) *
+      (this.speedScale || 1.0)
     this.lastFrameTime = now
     this.time += dt
 

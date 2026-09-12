@@ -62,12 +62,12 @@ class Blob {
     this.color1 = `hsla(${this.hue}, 60%, 40%, 0)`
   }
 
-  update(width, height) {
-    this.sinPhase += this.sinSpeed
+  update(width, height, speedScale = 1.0) {
+    this.sinPhase += this.sinSpeed * speedScale
 
     // Chuyển động lững lờ kết hợp Sin để bớt cứng nhắc
-    this.x += this.vx + Math.sin(this.sinPhase) * 0.2
-    this.y += this.vy + Math.cos(this.sinPhase) * 0.2
+    this.x += (this.vx + Math.sin(this.sinPhase) * 0.2) * speedScale
+    this.y += (this.vy + Math.cos(this.sinPhase) * 0.2) * speedScale
 
     // Thay đổi kích thước nhẹ theo nhịp thở
     this.radius = this.baseRadius + Math.sin(this.sinPhase * 0.5) * 50
@@ -111,12 +111,27 @@ export class AuraEffect {
     this.animationFrameId = null
 
     this.fps = 60 // Tăng lên 60fps cho mượt
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     this._resizeHandler = () => this.handleResize()
     window.addEventListener("resize", this._resizeHandler)
     this.init()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fps = this.targetFps
+    this.fpsInterval = 1000 / this.fps
+    if (this.active) {
+      this.createBlobs()
+    }
   }
 
   init() {
@@ -136,7 +151,7 @@ export class AuraEffect {
   createBlobs() {
     this.blobs = []
     const hsl = hexToHsl(this.color)
-    const count = 8 // Tăng số lượng blob cho dày đặc hơn
+    const count = Math.max(2, Math.round(8 * (this.densityScale || 1.0)))
     for (let i = 0; i < count; i++) {
       this.blobs.push(new Blob(this.width, this.height, hsl.h))
     }
@@ -163,7 +178,7 @@ export class AuraEffect {
     ctx.globalCompositeOperation = "screen"
 
     this.blobs.forEach((blob) => {
-      blob.update(this.width, this.height)
+      blob.update(this.width, this.height, this.speedScale || 1.0)
       blob.draw(ctx)
     })
 

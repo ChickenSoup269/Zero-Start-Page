@@ -18,6 +18,11 @@ export class RetroGameEffect {
     this.rafId = null
     this.tick = 0
     this.lastTime = 0
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this.highScore = parseInt(localStorage.getItem("startpage_retrogame_highscore") || "0", 10)
     this.gameState = { level: 1, score: 0, state: "playing" }
@@ -1849,10 +1854,25 @@ export class RetroGameEffect {
     })
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+  }
+
   animate(currentTime = 0) {
     if (!this.active) return
     this.rafId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
+
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) {
+        return
+      }
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
 
     this.update()
     this.draw()
@@ -1862,6 +1882,7 @@ export class RetroGameEffect {
     if (this.active) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     if (this.canvas) this.canvas.style.display = "block"
     window.addEventListener("keydown", this._keydownHandler)
     window.addEventListener("keyup", this._keyupHandler)

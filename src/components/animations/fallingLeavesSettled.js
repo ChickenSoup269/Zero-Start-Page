@@ -34,6 +34,11 @@ export class FallingLeavesSettledEffect {
 
     this.leafType = leafType || "maple"
     this.leafCount = 50
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = 0
     this.leaves = []
 
     // Off-screen canvas for baking settled leaves (renders thousands at 60fps with zero lag)
@@ -143,6 +148,18 @@ export class FallingLeavesSettledEffect {
   }
 
   // ── Sizing & Mode Changes ──────────────────────────────────────────────────
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.leafCount = Math.max(12, Math.round(50 * (this.densityScale || 1.0)))
+    if (this.active) {
+      this.initLeaves()
+    }
+  }
 
   setLeafType(leafType) {
     if (!leafType) return
@@ -716,8 +733,15 @@ export class FallingLeavesSettledEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime =
+        currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = currentTime - this.lastDrawTime
-    const deltaTime = Math.min(elapsed / (1000 / 60), 3.0)
+    const deltaTime =
+      Math.min(elapsed / (1000 / 60), 3.0) * (this.speedScale || 1.0)
     this.lastDrawTime = currentTime
 
     const W = this.canvas.width

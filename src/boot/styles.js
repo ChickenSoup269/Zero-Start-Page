@@ -361,4 +361,12 @@ export function applyBasicStyles(settings) {
 
   // Performance hover mode — reduces all transition durations to 50 ms
   document.body.classList.toggle("perf-hover-mode", Boolean(settings.perfHoverMode))
+
+  // User-toggled or system Reduce Motion
+  const reduceMotionSetting = settings.reduceMotion || "system"
+  const shouldReduceMotion =
+    reduceMotionSetting === "always" ||
+    (reduceMotionSetting === "system" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
+  document.body.classList.toggle("reduce-motion", Boolean(shouldReduceMotion))
 }

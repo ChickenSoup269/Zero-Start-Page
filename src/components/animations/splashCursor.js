@@ -79,12 +79,39 @@ export class SplashCursor {
     this.active = false
     this.animationId = null
     this.isActive = false
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this._lastFrameTime = performance.now()
     this.options = { ...DEFAULT_OPTIONS, ...options }
     this._sim = null
     this._handlers = null
     this._webglFailed = false
     this._pendingDyeReinit = false
     this._handleResize = null
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    if (this._sim?.config) {
+      if (profile.level === "low") {
+        this._sim.config.PRESSURE_ITERATIONS = 8
+        this._sim.config.CURL = 1.5
+      } else if (profile.level === "medium") {
+        this._sim.config.PRESSURE_ITERATIONS = 14
+        this._sim.config.CURL = 2.5
+      } else {
+        this._sim.config.PRESSURE_ITERATIONS = this.options.pressureIterations ?? 20
+        this._sim.config.CURL = this.options.curl ?? 3
+      }
+    }
   }
 
   setOptions(partial) {
@@ -1359,7 +1386,17 @@ export class SplashCursor {
 
     function updateFrame() {
       if (!self.isActive) return
-      const dt = calcDeltaTime()
+      self.animationId = requestAnimationFrame(updateFrame)
+
+      const now = performance.now()
+      if (self.fpsInterval) {
+        if (now - self._lastFrameTime < self.fpsInterval) {
+          return
+        }
+        self._lastFrameTime = now - ((now - self._lastFrameTime) % self.fpsInterval)
+      }
+
+      const dt = calcDeltaTime() * (self.speedScale || 1.0)
       if (self._pendingDyeReinit) {
         self._pendingDyeReinit = false
         initFramebuffers()
@@ -1370,7 +1407,6 @@ export class SplashCursor {
       applyInputs()
       step(dt)
       render(null)
-      self.animationId = requestAnimationFrame(updateFrame)
     }
 
     let firstMouseMoveHandled = false

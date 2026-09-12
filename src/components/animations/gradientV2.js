@@ -148,6 +148,14 @@ export class GradientV2Effect {
 
     this.active = false
     this.startTime = 0
+    this.virtualTime = 0
+    this._prevTime = 0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this.dprScale = 1.0
+    this.lastFrameTime = 0
+
     this.program = this._initShaders()
     this._initBuffers()
     this._getUniformLocations()
@@ -240,15 +248,27 @@ export class GradientV2Effect {
   }
 
   handleResize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.2)
-    this.canvas.width = window.innerWidth * dpr
-    this.canvas.height = window.innerHeight * dpr
+    if (!this.canvas || !this.gl) return
+    const dpr = (Math.min(window.devicePixelRatio || 1, 1.2)) * (this.dprScale || 1.0)
+    this.canvas.width = Math.floor(window.innerWidth * dpr)
+    this.canvas.height = Math.floor(window.innerHeight * dpr)
     this.gl.viewport(
       0,
       0,
       this.gl.drawingBufferWidth,
       this.gl.drawingBufferHeight,
     )
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (profile.level) {
+      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+      if (this.gl) this.handleResize()
+    }
   }
 
   setOptions(newOptions) {
@@ -258,15 +278,25 @@ export class GradientV2Effect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.animationId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
-    const elapsed = currentTime - (this.lastFrameTime || 0)
-    if (elapsed < 16) return // Cap at ~60fps
-    this.lastFrameTime = currentTime
+    if (this.fpsInterval) {
+      if (currentTime - this.lastFrameTime < this.fpsInterval) return
+      this.lastFrameTime = currentTime - ((currentTime - this.lastFrameTime) % this.fpsInterval)
+    } else {
+      const elapsed = currentTime - (this.lastFrameTime || 0)
+      if (elapsed < 16) return // Cap at ~60fps
+      this.lastFrameTime = currentTime
+    }
 
-    this.render(currentTime)
+    const dt = (currentTime - (this._prevTime || currentTime)) * 0.001
+    this._prevTime = currentTime
+    this.virtualTime += Math.min(dt, 0.1) * (this.speedScale || 1.0)
+
+    this.render(this.virtualTime)
   }
 
-  render(currentTime) {
+  render(virtualTime) {
     const gl = this.gl
     const u = this.uniforms
     const opt = this.options
@@ -275,7 +305,7 @@ export class GradientV2Effect {
     gl.bindVertexArray(this.vao)
 
     gl.uniform2f(u.iResolution, gl.drawingBufferWidth, gl.drawingBufferHeight)
-    gl.uniform1f(u.iTime, (currentTime - this.startTime) * 0.001)
+    gl.uniform1f(u.iTime, virtualTime)
 
     gl.uniform1f(u.uTimeSpeed, opt.timeSpeed)
     gl.uniform1f(u.uColorBalance, opt.colorBalance)
@@ -308,6 +338,8 @@ export class GradientV2Effect {
     this.active = true
     this.canvas.style.display = "block"
     this.startTime = performance.now()
+    this.lastFrameTime = this.startTime
+    this._prevTime = this.startTime
     this.animate(this.startTime)
   }
 

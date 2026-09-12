@@ -42,6 +42,11 @@ export class SilkEffect {
     this.rotation = options.rotation !== undefined ? options.rotation : 0.0
 
     this.time = 0
+    this.speedScale = 1.0
+    this.dprScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
@@ -196,10 +201,21 @@ export class SilkEffect {
 
   resize() {
     if (!this.canvas || !this.gl) return
-    const dpr = Math.min(window.devicePixelRatio, 1.6) || 1
-    this.canvas.width = window.innerWidth * dpr
-    this.canvas.height = window.innerHeight * dpr
+    const dpr = (Math.min(window.devicePixelRatio, 1.6) || 1) * (this.dprScale || 1.0)
+    this.canvas.width = Math.floor(window.innerWidth * dpr)
+    this.canvas.height = Math.floor(window.innerHeight * dpr)
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (profile.level) {
+      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+      if (this.gl) this.resize()
+    }
   }
 
   updateParam(key, value) {
@@ -250,10 +266,15 @@ export class SilkEffect {
     if (document.visibilityState === "hidden") return
 
     const now = performance.now()
-    const dt = now - this.lastTime
-    if (dt < 16) return // Cap at ~60fps
+    if (this.fpsInterval) {
+      if (now - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+    }
+
+    const elapsed = now - this.lastTime
+    if (elapsed < 16 && !this.fpsInterval) return // Cap at ~60fps
     this.lastTime = now
-    this.time += dt
+    this.time += elapsed * (this.speedScale || 1.0)
 
     const gl = this.gl
     gl.clearColor(0, 0, 0, 0)

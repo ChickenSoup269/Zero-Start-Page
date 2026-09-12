@@ -169,6 +169,12 @@ export class SoftAuroraEffect {
 
     this.active = false;
     this.startTime = 0;
+    this.densityScale = 1.0;
+    this.speedScale = 1.0;
+    this.targetFps = 60;
+    this.fpsInterval = null;
+    this.dprScale = 1.0;
+    this._lastFrameTime = performance.now();
 
     this.program = this._initShaders();
     if (!this.program) return;
@@ -268,10 +274,22 @@ export class SoftAuroraEffect {
     this.targetMouse = [0.5, 0.5];
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return;
+    this.densityScale = profile.densityScale ?? 1.0;
+    this.speedScale = profile.speedScale ?? 1.0;
+    this.targetFps = profile.targetFps ?? 60;
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null;
+    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "medium" ? 0.8 : 1.0;
+    if (this.active) {
+      this.handleResize();
+    }
+  }
+
   handleResize() {
-    const dpr = 1.0; // Keep 1.0 for better performance with heavy noise
-    this.canvas.width = window.innerWidth * dpr;
-    this.canvas.height = window.innerHeight * dpr;
+    const dpr = 1.0 * (this.dprScale || 1.0);
+    this.canvas.width = Math.floor(window.innerWidth * dpr);
+    this.canvas.height = Math.floor(window.innerHeight * dpr);
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -286,6 +304,15 @@ export class SoftAuroraEffect {
       }, { once: true })
       return;
     }
+
+    if (this.fpsInterval) {
+      if (t - this._lastFrameTime < this.fpsInterval) {
+        this.animationId = requestAnimationFrame((nt) => this.animate(nt));
+        return;
+      }
+      this._lastFrameTime = t - ((t - this._lastFrameTime) % this.fpsInterval);
+    }
+
     this.animationId = requestAnimationFrame((nt) => this.animate(nt));
     this.render(t);
   }
@@ -298,7 +325,7 @@ export class SoftAuroraEffect {
 
     gl.uniform1f(u.uTime, (t - this.startTime) * 0.001);
     gl.uniform2f(u.uResolution, this.canvas.width, this.canvas.height);
-    gl.uniform1f(u.uSpeed, o.speed);
+    gl.uniform1f(u.uSpeed, o.speed * (this.speedScale || 1.0));
     gl.uniform1f(u.uScale, o.scale);
     gl.uniform1f(u.uBrightness, o.brightness);
     // Pre-allocated Float32Array buffers — avoid per-frame GC pressure

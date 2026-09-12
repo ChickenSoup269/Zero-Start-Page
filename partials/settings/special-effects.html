@@ -54,6 +54,34 @@
                             data-i18n="settings_performance_low">Low Setting</button>
                     </div>
                 </div>
+                <div class="setting-item-row" id="effect-reduce-motion-setting"
+                    style="margin-bottom: 12px; justify-content: space-between; align-items: center;">
+                    <label for="effect-reduce-motion-select" style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">
+                        <i class="fa-solid fa-person-walking" style="opacity: 0.8;"></i>
+                        <div>
+                            <span data-i18n="settings_reduce_motion">Reduce Motion</span>
+                            <small data-i18n="settings_reduce_motion_hint" style="display: block; opacity: 0.6; font-size: 0.75rem; font-weight: normal;">Reduce or disable UI and canvas animations</small>
+                        </div>
+                    </label>
+                    <select id="effect-reduce-motion-select" style="min-width: 140px; border-radius: 8px;">
+                        <option value="system" data-i18n="settings_reduce_motion_system">System Default</option>
+                        <option value="always" data-i18n="settings_reduce_motion_always">Always Reduce</option>
+                        <option value="never" data-i18n="settings_reduce_motion_never">Never Reduce</option>
+                    </select>
+                </div>
+                <div class="setting-item" id="effect-intensity-setting" style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label for="effect-intensity-slider" style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">
+                            <i class="fa-solid fa-sliders" style="opacity: 0.8;"></i>
+                            <div>
+                                <span data-i18n="settings_effect_intensity">Effect Intensity</span>
+                                <small data-i18n="settings_effect_intensity_hint" style="display: block; opacity: 0.6; font-size: 0.75rem; font-weight: normal;">Scale particle count, density and animation load</small>
+                            </div>
+                        </label>
+                        <span id="effect-intensity-val" style="font-weight: bold; font-size: 0.9rem;">100%</span>
+                    </div>
+                    <input type="range" id="effect-intensity-slider" min="20" max="100" step="5" value="100" class="full-width" />
+                </div>
                 <div class="setting-item-row effect-mouse-interaction-card" id="effect-mouse-interaction-setting"
                     style="margin-bottom: 12px; justify-content: space-between; align-items: center;">
                     <label for="effect-mouse-interaction-toggle" style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer;">

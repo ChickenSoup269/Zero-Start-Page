@@ -679,8 +679,17 @@ export class PlantGrowthEffect {
     this.grass = []
     this.spores = []
     this.petals = []
+    this.baseSporeCount = 45
+    this.basePetalCount = 35
     this.sporeCount = 45
     this.petalCount = 35
+
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this.time = 0
     this.lastTime = performance.now()
@@ -738,6 +747,19 @@ export class PlantGrowthEffect {
   setOptions(options = {}) {
     if (options.color !== undefined) this.updateColor(options.color)
     if (options.mode !== undefined) this.setMode(options.mode)
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.sporeCount = Math.max(10, Math.round((this.baseSporeCount || 45) * this.densityScale))
+    this.petalCount = Math.max(10, Math.round((this.basePetalCount || 35) * this.densityScale))
+    if (this.active) {
+      this.initPlants()
+    }
   }
 
   updateColor(hex) {
@@ -849,7 +871,8 @@ export class PlantGrowthEffect {
     }
 
     // 3. Layered Grass Blades (Background, Midground, Foreground)
-    const grassCount = Math.floor(W / 5.5)
+    const baseGrassCount = Math.floor(W / 5.5)
+    const grassCount = Math.max(20, Math.round(baseGrassCount * (this.densityScale || 1.0)))
     for (let i = 0; i < grassCount; i++) {
       const x = Math.random() * (W + 20) - 10
       const layer = i < grassCount * 0.3 ? 0 : i < grassCount * 0.75 ? 1 : 2
@@ -857,7 +880,8 @@ export class PlantGrowthEffect {
     }
 
     // 4. Majestic Bottom Botanical Plants & Vines
-    const bottomRootCount = Math.floor(W / 240) + 2
+    const baseBottomRoots = Math.floor(W / 240) + 2
+    const bottomRootCount = Math.max(2, Math.round(baseBottomRoots * (this.densityScale || 1.0)))
     for (let i = 0; i < bottomRootCount; i++) {
       const x = (W / (bottomRootCount - 1 || 1)) * i + (Math.random() * 80 - 40)
       const isVine = Math.random() < 0.35
@@ -908,6 +932,7 @@ export class PlantGrowthEffect {
     this.resize()
     this.initPlants()
 
+    this._lastFrameTime = performance.now()
     const animateLoop = (now) => {
       if (!this.active) return
       this._animId = requestAnimationFrame(animateLoop)
@@ -917,9 +942,14 @@ export class PlantGrowthEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

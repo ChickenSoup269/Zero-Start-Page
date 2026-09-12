@@ -28,6 +28,11 @@ export class BubblesEffect {
     this.bubbles = []
     this.interactiveBubbles = []
     this.bubbleCount = 55
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // High-DPI Retina
     this.dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -89,9 +94,21 @@ export class BubblesEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initBubbles()
+    }
+  }
+
   initBubbles() {
     const W = this.width || window.innerWidth
-    this.bubbleCount = Math.max(35, Math.floor(W / 36))
+    const baseCount = Math.max(35, Math.floor(W / 36))
+    this.bubbleCount = Math.max(8, Math.round(baseCount * (this.densityScale || 1.0)))
     this.bubbles = []
     for (let i = 0; i < this.bubbleCount; i++) {
       this.bubbles.push(this.createBubble(true))
@@ -332,6 +349,11 @@ export class BubblesEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
       const dt = Math.min(elapsed / 16.67, 3.0)
@@ -378,14 +400,15 @@ export class BubblesEffect {
     const H = this.height || window.innerHeight
 
     // 1. Ambient Background Bubbles
+    const speedMultiplier = this.speedScale || 1.0
     for (let i = 0; i < this.bubbles.length; i++) {
       const b = this.bubbles[i]
 
       // Rise upward
-      b.y -= (b.speedY + b.vy) * dt
-      b.swayOffset += b.swaySpeed * dt
-      b.x += (Math.sin(b.swayOffset) * 0.45 + b.vx) * dt
-      b.wobblePhase += b.wobbleSpeed * dt
+      b.y -= (b.speedY + b.vy) * dt * speedMultiplier
+      b.swayOffset += b.swaySpeed * dt * speedMultiplier
+      b.x += (Math.sin(b.swayOffset) * 0.45 + b.vx) * dt * speedMultiplier
+      b.wobblePhase += b.wobbleSpeed * dt * speedMultiplier
 
       // Hydrodynamic mouse deflection (gently nudge aside)
       if (this.mouse.active) {

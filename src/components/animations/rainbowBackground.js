@@ -54,6 +54,12 @@ export class RainbowBackground {
     this.particles = []
     this.sparkles = []
 
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Mouse & Wake Interaction
     this.mouse = {
       x: -2000,
@@ -549,6 +555,19 @@ export class RainbowBackground {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.beamCount = Math.max(8, Math.round(24 * (this.densityScale || 1.0)))
+    this.particleCount = Math.max(15, Math.round(75 * (this.densityScale || 1.0)))
+    if (this.active) {
+      this._initEntities()
+    }
+  }
+
   /* -------------------------------------------------------------------------- */
   /*                                MAIN LOOP                                   */
   /* -------------------------------------------------------------------------- */
@@ -556,10 +575,15 @@ export class RainbowBackground {
   animate(timestamp = 0) {
     if (!this.active || this.destroyed) return
 
+    if (this.fpsInterval) {
+      if (timestamp - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = timestamp - ((timestamp - this._lastFrameTime) % this.fpsInterval)
+    }
+
     // Delta-time normalization
     const rawElapsed = this.lastTime ? timestamp - this.lastTime : 16.67
     this.lastTime = timestamp
-    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0)
+    const dt = Math.min(Math.max(rawElapsed / (1000 / 60), 0.1), 3.0) * (this.speedScale || 1.0)
 
     // Physics step
     this._update(dt)

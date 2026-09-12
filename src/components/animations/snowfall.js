@@ -294,6 +294,11 @@ export class SnowfallEffect {
 
     this.snowflakes = []
     this.snowflakeCount = 140
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this.time = 0
     this.lastTime = performance.now()
@@ -354,8 +359,23 @@ export class SnowfallEffect {
     }
 
     // Adapt flake count dynamically based on viewport resolution
-    this.snowflakeCount = Math.max(90, Math.min(220, Math.floor(this.width / 11)))
+    const baseCount = Math.max(90, Math.min(220, Math.floor(this.width / 11)))
+    this.snowflakeCount = Math.max(
+      20,
+      Math.round(baseCount * (this.densityScale || 1.0)),
+    )
     this.initSnowflakes()
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.resize()
+    }
   }
 
   initSnowflakes() {
@@ -426,9 +446,14 @@ export class SnowfallEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

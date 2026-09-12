@@ -449,6 +449,11 @@ export class StarFall {
     this.time = 0
     this.lastTime = performance.now()
     this._animId = null
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     // Screen & High-DPI
     this.width = window.innerWidth
@@ -539,10 +544,20 @@ export class StarFall {
     if (options.mode) this.setMode(options.mode)
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this._updateEntityDensity()
+  }
+
   _updateEntityDensity() {
     const divisor = this.mode === "storm" ? 6.5 : 8.5
     const baseCount = Math.floor(this.width / divisor)
-    this.starCount = Math.max(40, Math.min(600, Math.floor(baseCount * this.density)))
+    const effectiveDensity = this.density * (this.densityScale || 1.0)
+    this.starCount = Math.max(20, Math.min(600, Math.floor(baseCount * effectiveDensity)))
 
     const isStorm = this.mode === "storm"
     // Expand or shrink stars array dynamically
@@ -753,9 +768,14 @@ export class StarFall {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
       this.time += 0.016 * dt
 
       this.update(dt)

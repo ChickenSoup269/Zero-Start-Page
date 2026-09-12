@@ -33,6 +33,11 @@ export class GridScanEffect {
 
     this.time = 0
     this.lastTime = performance.now()
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
     this.particles = []
     this.pulseRings = []
     this.scanZ = 2000
@@ -49,9 +54,20 @@ export class GridScanEffect {
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initParticles()
+    }
+  }
+
   initParticles() {
     this.particles = []
-    const count = 65
+    const count = Math.max(15, Math.round(65 * (this.densityScale || 1.0)))
     for (let i = 0; i < count; i++) {
       this.particles.push({
         x: (Math.random() - 0.5) * 3200,
@@ -95,6 +111,7 @@ export class GridScanEffect {
     if (this.active || this.destroyed) return
     this.active = true
     this.lastTime = performance.now()
+    this._lastFrameTime = performance.now()
     this.canvas.style.display = "block"
     this.canvas.style.pointerEvents = "none"
 
@@ -109,9 +126,16 @@ export class GridScanEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (now - this._lastFrameTime < this.fpsInterval) {
+          return
+        }
+        this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(now - this.lastTime, 100)
       this.lastTime = now
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

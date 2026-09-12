@@ -39,8 +39,15 @@ export class FloatingLinesEffect {
     this.color = opts.color || "#ffffff"
     this.angle = Number(opts.angle) || 0
     this.speed = typeof opts.speed === "number" ? opts.speed : 1.0
-    this.lineCount = typeof opts.count === "number" ? Math.max(2, Math.min(8, opts.count)) : 4
+    this._baseLineCount = typeof opts.count === "number" ? Math.max(2, Math.min(8, opts.count)) : 4
+    this.lineCount = this._baseLineCount
     this.transparent = !!opts.transparent
+
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
 
     this.config = {
       step: 44, // Optimized vertex step for buttery smooth 60-144 FPS
@@ -322,14 +329,31 @@ export class FloatingLinesEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    this.lineCount = Math.max(2, Math.round(this._baseLineCount * (this.densityScale || 1.0)))
+    this.config.starCount = Math.max(10, Math.round(50 * (this.densityScale || 1.0)))
+    this.stars = []
+    this._initStars()
+  }
+
   _animate(currentTime = 0) {
     if (!this.active) return
     this.animId = requestAnimationFrame((t) => this._animate(t))
     if (document.visibilityState === "hidden") return
 
+    if (this.fpsInterval) {
+      if (currentTime - this._lastFrameTime < this.fpsInterval) return
+      this._lastFrameTime = currentTime - ((currentTime - this._lastFrameTime) % this.fpsInterval)
+    }
+
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < 1) return
-    const dt = Math.min(elapsed / 16.67, 3.0) // Normalized 60fps delta-time
+    const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0) // Normalized 60fps delta-time
     this.lastDrawTime = currentTime
 
     this.time += 0.012 * dt

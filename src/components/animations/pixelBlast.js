@@ -53,6 +53,13 @@ export class PixelBlastEffect {
     this.mouse = { x: -9999, y: -9999, prevX: -9999, prevY: -9999, active: false }
     this.autoBlastTimer = 0
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     // Event Handlers
     this._resizeHandler = () => this.resize()
     this._mouseMoveHandler = (e) => this._onMouseMove(e)
@@ -93,6 +100,17 @@ export class PixelBlastEffect {
     }
   }
 
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+    if (this.active) {
+      this.initAmbientParticles()
+    }
+  }
+
   resize() {
     if (!this.canvas) return
     this.width = window.innerWidth
@@ -107,7 +125,8 @@ export class PixelBlastEffect {
   initAmbientParticles() {
     this._cacheColor()
     this.ambientParticles = []
-    const count = Math.min(Math.floor((this.width * this.height) / 16000), 70)
+    const baseCount = Math.min(Math.floor((this.width * this.height) / 16000), 70)
+    const count = Math.max(12, Math.round(baseCount * (this.densityScale || 1.0)))
     const baseVariants = ["square", "circle", "triangle", "diamond", "cross"]
 
     for (let i = 0; i < count; i++) {
@@ -217,6 +236,7 @@ export class PixelBlastEffect {
     window.addEventListener("mousedown", this._mouseDownHandler, { passive: true })
     document.addEventListener("visibilitychange", this._visibilityHandler)
 
+    this._lastFrameTime = performance.now()
     const animate = (time) => {
       if (!this.active || this.destroyed) return
       this._animId = requestAnimationFrame(animate)
@@ -226,9 +246,14 @@ export class PixelBlastEffect {
         return
       }
 
+      if (this.fpsInterval) {
+        if (time - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = time - ((time - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(time - this.lastTime, 100)
       this.lastTime = time
-      const dt = Math.min(elapsed / 16.67, 3.0)
+      const dt = Math.min(elapsed / 16.67, 3.0) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()

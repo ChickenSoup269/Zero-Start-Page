@@ -58,6 +58,13 @@ export class NeonGridBackground {
     // Distant Neon Mountain Peaks
     this.mountainPeaks = []
 
+    // Performance budget
+    this.densityScale = 1.0
+    this.speedScale = 1.0
+    this.targetFps = 60
+    this.fpsInterval = null
+    this._lastFrameTime = performance.now()
+
     this._resizeHandler = () => this.resize()
     this._visibilityHandler = () => this._onVisibilityChange()
 
@@ -77,6 +84,25 @@ export class NeonGridBackground {
     if (options.fullScreen !== undefined) {
       this.fullScreen = options.fullScreen
     }
+  }
+
+  setPerformanceBudget(profile) {
+    if (!profile) return
+    this.densityScale = profile.densityScale ?? 1.0
+    this.speedScale = profile.speedScale ?? 1.0
+    this.targetFps = profile.targetFps ?? 60
+    this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
+
+    const baseStreamers = [
+      { x: -350, z: 1800, speed: 850, length: 320, alpha: 0.8 },
+      { x: 280, z: 1200, speed: 920, length: 280, alpha: 0.9 },
+      { x: 0, z: 2100, speed: 1100, length: 420, alpha: 1.0 },
+      { x: -700, z: 1500, speed: 780, length: 260, alpha: 0.7 },
+      { x: 630, z: 1900, speed: 840, length: 300, alpha: 0.75 },
+    ]
+    const count = Math.max(1, Math.round(baseStreamers.length * this.densityScale))
+    this.streamers = baseStreamers.slice(0, count)
+    this.spacing = Math.round(70 / Math.max(0.6, Math.min(1.2, this.densityScale)))
   }
 
   resize() {
@@ -265,6 +291,7 @@ export class NeonGridBackground {
 
     this.resize()
 
+    this._lastFrameTime = performance.now()
     const loop = (time) => {
       if (!this.active || this.destroyed) return
       this.animationFrame = requestAnimationFrame(loop)
@@ -274,9 +301,14 @@ export class NeonGridBackground {
         return
       }
 
+      if (this.fpsInterval) {
+        if (time - this._lastFrameTime < this.fpsInterval) return
+        this._lastFrameTime = time - ((time - this._lastFrameTime) % this.fpsInterval)
+      }
+
       const elapsed = Math.min(time - this.lastTime, 100)
       this.lastTime = time
-      const dt = Math.min(elapsed / 1000, 0.1)
+      const dt = Math.min(elapsed / 1000, 0.1) * (this.speedScale || 1.0)
 
       this.update(dt)
       this.draw()
