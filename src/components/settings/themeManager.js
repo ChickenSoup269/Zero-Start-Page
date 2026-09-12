@@ -740,6 +740,16 @@ export function initThemeManager(
     }
   }
 
+  const updateScopeBadge = () => {
+    const badge = document.getElementById("theme-scope-badge")
+    if (!badge) return
+    const activeCount = scopeKeys.filter(({ id }) => {
+      const el = document.getElementById(id)
+      return el && el.checked
+    }).length
+    badge.textContent = `${activeCount}/${scopeKeys.length}`
+  }
+
   scopeKeys.forEach(({ id, key }) => {
     const el = document.getElementById(id)
     if (el) {
@@ -747,10 +757,12 @@ export function initThemeManager(
       el.addEventListener("change", () => {
         updateSetting(key, el.checked)
         saveSettings(true)
+        updateScopeBadge()
         reapplyActiveThemeIfAny()
       })
     }
   })
+  updateScopeBadge()
 
   // Show All / Show Less Themes toggle button
   const showAllThemesBtn = document.getElementById("themes-show-all-btn")

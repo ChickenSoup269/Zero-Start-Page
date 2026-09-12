@@ -193,6 +193,19 @@
                 </select>
             </div>
 
+            <div class="setting-item" style="margin-bottom: 14px;">
+                <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;"
+                    for="free-photos-quality-select" data-i18n="settings_background_media_quality">
+                    Media Quality
+                </label>
+                <select id="free-photos-quality-select" class="full-width">
+                    <option value="quality" data-i18n="settings_media_quality_quality">Quality (2K - 4K)</option>
+                    <option value="balanced" data-i18n="settings_media_quality_balanced">Balanced (1080p)</option>
+                    <option value="low" data-i18n="settings_media_quality_low">Low data (720p)</option>
+                    <option value="tiny" data-i18n="settings_media_quality_tiny">Tiny file (576p)</option>
+                </select>
+            </div>
+
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <button id="picsum-random-btn" class="bg-action-btn primary" style="flex:1;">
                     <i class="fa-solid fa-shuffle"></i> <span data-i18n="bg_random_photo">Random Photo</span>

@@ -35,6 +35,8 @@ import {
 } from "./services/firstRun.js"
 import { initPerfHud } from "./utils/perfHud.js"
 import { DriveSync } from "./services/googleDriveSync.js"
+import { GitHubSync } from "./services/githubSync.js"
+import { GitLabSync } from "./services/gitLabSync.js"
 import { makeDraggable } from "./utils/draggable.js"
 import {
   resetComponentPositions,
@@ -232,6 +234,8 @@ async function bootstrap() {
   initModal()
   initLcpCustomDropdowns()
   DriveSync.init()
+  GitHubSync.init()
+  GitLabSync.init()
 
   // ── 11. Draggable UI elements ─────────────────────────────────────────────
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")

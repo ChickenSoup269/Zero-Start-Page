@@ -15,128 +15,123 @@ import { showToast } from "../../utils/toast.js"
 import { getImageUrl } from "../../services/imageStore.js"
 
 const PREDEFINED_FONTS = [
-  {
-    label: "Space Grotesk",
-    value: "'Space Grotesk', sans-serif",
-    google: true,
-  },
-  { label: "Inter", value: "'Inter', sans-serif", google: true },
-  {
-    label: "Plus Jakarta Sans",
-    value: "'Plus Jakarta Sans', sans-serif",
-    google: true,
-  },
-  { label: "Outfit", value: "'Outfit', sans-serif", google: true },
-  {
-    label: "Bricolage Grotesque",
-    value: "'Bricolage Grotesque', sans-serif",
-    google: true,
-  },
-  { label: "Poppins", value: "'Poppins', sans-serif", google: true },
-  { label: "Roboto", value: "'Roboto', sans-serif", google: true },
-  { label: "Montserrat", value: "'Montserrat', sans-serif", google: true },
-  { label: "Nunito", value: "'Nunito', sans-serif", google: true },
-  { label: "Sora", value: "'Sora', sans-serif", google: true },
-  { label: "Syne", value: "'Syne', sans-serif", google: true },
-  {
-    label: "Playfair Display",
-    value: "'Playfair Display', serif",
-    google: true,
-  },
-  { label: "Cinzel", value: "'Cinzel', serif", google: true },
-  { label: "Caveat", value: "'Caveat', cursive", google: true },
-  { label: "Pacifico", value: "'Pacifico', cursive", google: true },
-  { label: "Monoton", value: "'Monoton', cursive", google: true },
-  { label: "Orbitron", value: "'Orbitron', sans-serif", google: true },
-  { label: "Audiowide", value: "'Audiowide', cursive", google: true },
-  { label: "Chakra Petch", value: "'Chakra Petch', sans-serif", google: true },
-  { label: "Oxanium", value: "'Oxanium', sans-serif", google: true },
-  { label: "Teko", value: "'Teko', sans-serif", google: true },
-  { label: "Russo One", value: "'Russo One', sans-serif", google: true },
-  { label: "Michroma", value: "'Michroma', sans-serif", google: true },
-  {
-    label: "Major Mono Display",
-    value: "'Major Mono Display', monospace",
-    google: true,
-  },
-  {
-    label: "Share Tech Mono",
-    value: "'Share Tech Mono', monospace",
-    google: true,
-    tag: "Clock/Date",
-  },
-  {
-    label: "JetBrains Mono",
-    value: "'JetBrains Mono', monospace",
-    google: true,
-    tag: "Clock/Date",
-  },
-  {
-    label: "Fira Code",
-    value: "'Fira Code', monospace",
-    google: true,
-    tag: "Clock/Date",
-  },
-  {
-    label: "Allerta Stencil",
-    value: "'Allerta Stencil', sans-serif",
-    google: true,
-    tag: "Clock/Date",
-  },
-  { label: "Arial", value: "'Arial', sans-serif" },
-  { label: "Courier New", value: "'Courier New', monospace" },
-  {
-    label: "Silkscreen",
-    value: "'Silkscreen', cursive",
-    tag: "Pixel",
-    google: true,
-  },
-  {
-    label: "Pixelify Sans",
-    value: "'Pixelify Sans', sans-serif",
-    tag: "Pixel",
-    google: true,
-  },
-  {
-    label: "Electroharmonix",
-    value: "'Electroharmonix', sans-serif",
-    tag: "Clock/Date",
-  },
-  { label: "Anurati", value: "'Anurati', sans-serif", tag: "Clock/Date" },
-  { label: "E1234", value: "'E1234', sans-serif", tag: "Clock/Date" },
-  { label: "SAIBA-45", value: "'SAIBA-45', sans-serif", tag: "Clock/Date" },
-  { label: "Reiko", value: "'Reiko', sans-serif", tag: "Clock/Date" },
-  {
-    label: "Aquire Light",
-    value: "'Aquire Light', sans-serif",
-    tag: "Clock/Date",
-  },
-  {
-    label: "Aquire Bold",
-    value: "'Aquire Bold', sans-serif",
-    tag: "Clock/Date",
-  },
-  { label: "Aquire", value: "'Aquire', sans-serif", tag: "Clock/Date" },
-  { label: "Blanka", value: "'Blanka', sans-serif", tag: "Clock/Date" },
-  { label: "Bungee Inline", value: "'Bungee Inline', cursive", google: true },
-  { label: "Viga", value: "'Viga', sans-serif", google: true },
-  { label: "GohuFont", value: "'GohuFont', sans-serif", tag: "Pixel" },
+  { label: "Space Grotesk", value: "'Space Grotesk', sans-serif", google: true, category: "modern" },
+  { label: "Inter", value: "'Inter', sans-serif", google: true, category: "modern" },
+  { label: "Plus Jakarta Sans", value: "'Plus Jakarta Sans', sans-serif", google: true, category: "modern" },
+  { label: "Outfit", value: "'Outfit', sans-serif", google: true, category: "modern" },
+  { label: "Bricolage Grotesque", value: "'Bricolage Grotesque', sans-serif", google: true, category: "modern" },
+  { label: "Poppins", value: "'Poppins', sans-serif", google: true, category: "modern" },
+  { label: "Roboto", value: "'Roboto', sans-serif", google: true, category: "modern" },
+  { label: "Montserrat", value: "'Montserrat', sans-serif", google: true, category: "modern" },
+  { label: "Nunito", value: "'Nunito', sans-serif", google: true, category: "modern" },
+  { label: "Sora", value: "'Sora', sans-serif", google: true, category: "modern" },
+  { label: "Syne", value: "'Syne', sans-serif", google: true, category: "modern" },
+  { label: "Playfair Display", value: "'Playfair Display', serif", google: true, category: "serif" },
+  { label: "Cinzel", value: "'Cinzel', serif", google: true, category: "serif" },
+  { label: "Caveat", value: "'Caveat', cursive", google: true, category: "serif" },
+  { label: "Pacifico", value: "'Pacifico', cursive", google: true, category: "serif" },
+  { label: "Monoton", value: "'Monoton', cursive", google: true, category: "serif" },
+  { label: "Orbitron", value: "'Orbitron', sans-serif", google: true, category: "clock" },
+  { label: "Audiowide", value: "'Audiowide', cursive", google: true, category: "clock" },
+  { label: "Chakra Petch", value: "'Chakra Petch', sans-serif", google: true, category: "clock" },
+  { label: "Oxanium", value: "'Oxanium', sans-serif", google: true, category: "clock" },
+  { label: "Teko", value: "'Teko', sans-serif", google: true, category: "clock" },
+  { label: "Russo One", value: "'Russo One', sans-serif", google: true, category: "clock" },
+  { label: "Michroma", value: "'Michroma', sans-serif", google: true, category: "clock" },
+  { label: "Major Mono Display", value: "'Major Mono Display', monospace", google: true, category: "clock" },
+  { label: "Share Tech Mono", value: "'Share Tech Mono', monospace", google: true, tag: "Clock/Date", category: "mono" },
+  { label: "JetBrains Mono", value: "'JetBrains Mono', monospace", google: true, tag: "Clock/Date", category: "mono" },
+  { label: "Fira Code", value: "'Fira Code', monospace", google: true, tag: "Clock/Date", category: "mono" },
+  { label: "Allerta Stencil", value: "'Allerta Stencil', sans-serif", google: true, tag: "Clock/Date", category: "mono" },
+  { label: "Arial", value: "'Arial', sans-serif", category: "modern" },
+  { label: "Courier New", value: "'Courier New', monospace", category: "mono" },
+  { label: "Silkscreen", value: "'Silkscreen', cursive", tag: "Pixel", google: true, category: "pixel" },
+  { label: "Pixelify Sans", value: "'Pixelify Sans', sans-serif", tag: "Pixel", google: true, category: "pixel" },
+  { label: "Electroharmonix", value: "'Electroharmonix', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Anurati", value: "'Anurati', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "E1234", value: "'E1234', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "SAIBA-45", value: "'SAIBA-45', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Reiko", value: "'Reiko', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Aquire Light", value: "'Aquire Light', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Aquire Bold", value: "'Aquire Bold', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Aquire", value: "'Aquire', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Blanka", value: "'Blanka', sans-serif", tag: "Clock/Date", category: "clock" },
+  { label: "Bungee Inline", value: "'Bungee Inline', cursive", google: true, category: "serif" },
+  { label: "Viga", value: "'Viga', sans-serif", google: true, category: "modern" },
+  { label: "GohuFont", value: "'GohuFont', sans-serif", tag: "Pixel", category: "pixel" },
 ]
 
 let fontSelectMode = false
 let fontSelectedLabels = new Set()
+let activeFontCategory = "all"
+let previewFontsLoaded = false
+let heroClockTimer = null
+let fontPreviewMode = localStorage.getItem("fontPreviewMode") || "auto"
 
 export function isFontSelectMode() {
   return fontSelectMode
 }
 
-function loadGoogleFont(fontName) {
+function getCardPreview(fontObj, target) {
+  if (fontPreviewMode === "clock") {
+    return { text: "12:45", isClock: true }
+  }
+  if (fontPreviewMode === "text") {
+    return { text: "Aa", isClock: false }
+  }
+  // Auto mode based on target tab and font category
+  if (target === "clock") {
+    return { text: "12:45", isClock: true }
+  }
+  if (target === "general") {
+    return { text: "Aa", isClock: false }
+  }
+  const isClockType =
+    fontObj.type === "clock" ||
+    fontObj.category === "clock" ||
+    fontObj.tag === "Clock/Date"
+  return { text: isClockType ? "12:45" : "Aa", isClock: isClockType }
+}
+
+/**
+ * Preload Google Fonts for preview cards in batch so typography displays authentic styles
+ */
+export function ensureGoogleFontsPreviewLoaded() {
+  if (previewFontsLoaded) return
+  previewFontsLoaded = true
+
+  const googleFonts = PREDEFINED_FONTS.filter((f) => f.google).map((f) => f.label)
+  const chunks = []
+  for (let i = 0; i < googleFonts.length; i += 12) {
+    chunks.push(googleFonts.slice(i, i + 12))
+  }
+
+  chunks.forEach((chunk, index) => {
+    const sheetId = `google-fonts-preview-sheet-${index}`
+    if (document.getElementById(sheetId)) return
+    const families = chunk.map((name) => `family=${name.replace(/\s+/g, "+")}:wght@400;700`).join("&")
+    const url = `https://fonts.googleapis.com/css2?${families}&display=swap`
+    const link = document.createElement("link")
+    link.id = sheetId
+    link.rel = "stylesheet"
+    link.href = url
+    document.head.appendChild(link)
+  })
+}
+
+function loadGoogleFont(fontName, target = "general") {
+  if (!fontName) return
   const formattedFontName = fontName.replace(/\s+/g, "+")
   const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
-  const customFontLink = document.getElementById("custom-google-font")
-  if (customFontLink) {
-    customFontLink.href = googleFontUrl
+  const linkId = target === "clock" ? "custom-clock-google-font" : "custom-google-font"
+  let customFontLink = document.getElementById(linkId)
+  if (!customFontLink) {
+    customFontLink = document.createElement("link")
+    customFontLink.id = linkId
+    customFontLink.rel = "stylesheet"
+    document.head.appendChild(customFontLink)
   }
+  customFontLink.href = googleFontUrl
 }
 
 /**
@@ -172,11 +167,11 @@ async function initFont() {
 
   // 2. Load Google Fonts for active font / clockFont
   const fontsToLoad = [
-    settings.font || "'Space Grotesk', sans-serif",
-    settings.clockFont || "'Space Grotesk', sans-serif",
+    { value: settings.font || "'Space Grotesk', sans-serif", target: "general" },
+    { value: settings.clockFont || "'Space Grotesk', sans-serif", target: "clock" },
   ]
-  fontsToLoad.forEach((currentFontValue) => {
-    const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
+  fontsToLoad.forEach(({ value, target }) => {
+    const fontName = value.replace(/['"]/g, "").split(",")[0].trim()
     const fontDef = PREDEFINED_FONTS.find((f) => f.label === fontName)
     const savedFontObj = savedFonts.find(
       (f) => (typeof f === "string" ? f : f.label) === fontName,
@@ -191,14 +186,213 @@ async function initFont() {
 
     if (isGoogleFont && !isPreloaded) {
       if (!(fontDef && !fontDef.google)) {
-        loadGoogleFont(fontName)
+        loadGoogleFont(fontName, target)
       }
     }
+  })
+
+  // 3. Preload preview sheet & start hero clock
+  ensureGoogleFontsPreviewLoaded()
+  updateActiveTypographyHero()
+  startHeroClock()
+}
+
+export function updateActiveTypographyHero() {
+  const settings = getSettings()
+  const currentFont = settings.font || "'Space Grotesk', sans-serif"
+  const currentClockFont =
+    settings.clockFont || settings.font || "'Space Grotesk', sans-serif"
+
+  const normalizeName = (f) =>
+    String(f || "")
+      .replace(/['"]/g, "")
+      .split(",")[0]
+      .trim()
+  const genName = normalizeName(currentFont)
+  const clockName = normalizeName(currentClockFont)
+
+  const genNameEl = document.getElementById("font-preview-general-name")
+  const genSampleEl = document.getElementById("font-preview-general-sample")
+  const clockNameEl = document.getElementById("font-preview-clock-name")
+  const clockSampleEl = document.getElementById("font-preview-clock-sample")
+
+  if (genNameEl) genNameEl.textContent = genName
+  if (genSampleEl) genSampleEl.style.fontFamily = currentFont
+
+  if (clockNameEl) clockNameEl.textContent = clockName
+  if (clockSampleEl) clockSampleEl.style.fontFamily = currentClockFont
+
+  updateHeroClockTime()
+}
+
+function updateHeroClockTime() {
+  const clockSampleEl = document.getElementById("font-preview-clock-sample")
+  if (!clockSampleEl) return
+  const clockTimeEl = clockSampleEl.querySelector(".preview-clock-time")
+  const clockDateEl = clockSampleEl.querySelector(".preview-clock-date")
+  if (!clockTimeEl || !clockDateEl) return
+
+  const now = new Date()
+  const hours = String(now.getHours()).padStart(2, "0")
+  const mins = String(now.getMinutes()).padStart(2, "0")
+  const secs = String(now.getSeconds()).padStart(2, "0")
+  clockTimeEl.textContent = `${hours}:${mins}:${secs}`
+
+  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+  const monthNames = [
+    "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+  ]
+  clockDateEl.textContent = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`
+}
+
+function startHeroClock() {
+  if (heroClockTimer) clearInterval(heroClockTimer)
+  heroClockTimer = setInterval(updateHeroClockTime, 1000)
+}
+
+function toggleFontFavorite(label, value, updateSettingCallback) {
+  const settings = getSettings()
+  let savedFonts = settings.userSavedFonts || []
+  const idx = savedFonts.findIndex(
+    (f) => (typeof f === "string" ? f : f.label) === label,
+  )
+
+  if (idx > -1) {
+    if (typeof savedFonts[idx] === "string") {
+      savedFonts[idx] = {
+        label: savedFonts[idx],
+        value: value || `"${savedFonts[idx]}", sans-serif`,
+        isFavorite: true,
+      }
+    } else {
+      savedFonts[idx].isFavorite = !savedFonts[idx].isFavorite
+    }
+  } else {
+    savedFonts.push({
+      label: label,
+      value: value || `"${label}", sans-serif`,
+      isFavorite: true,
+    })
+  }
+
+  updateSetting("userSavedFonts", savedFonts)
+  saveSettings()
+  const grid = document.getElementById("font-grid")
+  if (grid) renderFontGrid(grid, updateSettingCallback)
+}
+
+async function deleteFontItem(fontObj, updateSettingCallback) {
+  const i18n = geti18n()
+  const confirmMsg = `${i18n.settings_font_chip_delete || "Remove font"} "${fontObj.label}"?`
+  if (await showConfirm(confirmMsg)) {
+    const settings = getSettings()
+    let savedFonts = settings.userSavedFonts || []
+    const idx = savedFonts.findIndex(
+      (f) => (typeof f === "string" ? f : f.label) === fontObj.label,
+    )
+    if (idx > -1) {
+      const item = savedFonts[idx]
+      if (item && (item.isLocal || item.isLocalFile) && item.fileId) {
+        import("../../services/imageStore.js").then((m) => {
+          m.deleteImage(item.fileId).catch(console.error)
+        })
+      }
+      savedFonts.splice(idx, 1)
+      updateSetting("userSavedFonts", savedFonts)
+      saveSettings()
+      const grid = document.getElementById("font-grid")
+      if (grid) renderFontGrid(grid, updateSettingCallback)
+      showToast(i18n.alert_font_saved ? "Deleted" : "Font removed", {
+        type: "info",
+      })
+    }
+  }
+}
+
+function setupCategoryFilters(fontGrid, updateSettingCallback) {
+  const container = document.getElementById("font-category-filters")
+  if (!container || container._filtersSetup) return
+  container._filtersSetup = true
+
+  const chips = container.querySelectorAll(".font-filter-chip")
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.remove("active"))
+      chip.classList.add("active")
+      activeFontCategory = chip.dataset.category || "all"
+      renderFontGrid(fontGrid, updateSettingCallback)
+    })
+  })
+}
+
+function setupSearchAndClear(fontGrid, updateSettingCallback) {
+  const searchInput = document.getElementById("font-search-input")
+  const clearBtn = document.getElementById("font-search-clear-btn")
+  if (!searchInput || searchInput._setupDone) return
+  searchInput._setupDone = true
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = ""
+      clearBtn.style.display = "none"
+      renderFontGrid(fontGrid, updateSettingCallback)
+      searchInput.focus()
+    })
+  }
+
+  searchInput.addEventListener("input", () => {
+    if (clearBtn) {
+      clearBtn.style.display = searchInput.value.length > 0 ? "flex" : "none"
+    }
+    renderFontGrid(fontGrid, updateSettingCallback)
+  })
+}
+
+function setupCustomFontSuggestions(updateSettingCallback) {
+  const container = document.getElementById("custom-font-suggestions")
+  const input = document.getElementById("custom-font-input")
+  const loadBtn = document.getElementById("load-custom-font-btn")
+  if (!container || container._setupDone) return
+  container._setupDone = true
+
+  const chips = container.querySelectorAll(".font-suggest-chip")
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const fontName = chip.dataset.font
+      if (input && fontName) {
+        input.value = fontName
+        if (loadBtn) loadBtn.click()
+      }
+    })
+  })
+}
+
+function setupPreviewModeToggle(fontGrid, updateSettingCallback) {
+  const container = document.getElementById("font-preview-mode-toggle")
+  if (!container || container._setupDone) return
+  container._setupDone = true
+
+  const buttons = container.querySelectorAll(".preview-mode-btn")
+  buttons.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.previewMode === fontPreviewMode)
+    btn.addEventListener("click", () => {
+      buttons.forEach((b) => b.classList.remove("active"))
+      btn.classList.add("active")
+      fontPreviewMode = btn.dataset.previewMode || "auto"
+      localStorage.setItem("fontPreviewMode", fontPreviewMode)
+      renderFontGrid(fontGrid, updateSettingCallback)
+    })
   })
 }
 
 function renderFontGrid(fontGrid, updateSettingCallback) {
   if (!fontGrid) return
+
+  setupCategoryFilters(fontGrid, updateSettingCallback)
+  setupSearchAndClear(fontGrid, updateSettingCallback)
+  setupCustomFontSuggestions(updateSettingCallback)
+  setupPreviewModeToggle(fontGrid, updateSettingCallback)
 
   const settings = getSettings()
   const savedFonts = settings.userSavedFonts || []
@@ -220,9 +414,15 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
     ...PREDEFINED_FONTS.map((f) => {
       const fav = favoritesMap.get(f.label)
       const config = savedConfigMap.get(f.label) || {}
-      let type = f.tag === "Clock/Date" ? "clock" : "general"
+      let type =
+        f.tag === "Clock/Date" || f.category === "clock" ? "clock" : "general"
       if (config.type) type = config.type
-      return { ...f, type: type, isFavorite: !!fav }
+      return {
+        ...f,
+        type: type,
+        category: f.category || (type === "clock" ? "clock" : "modern"),
+        isFavorite: !!fav,
+      }
     }),
     ...savedFonts
       .filter((f) => {
@@ -248,6 +448,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           isFavorite: isFavorite,
           originalIndex: originalIndex,
           type: type,
+          category: "custom",
         }
       }),
   ]
@@ -255,40 +456,67 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
   const searchInput = document.getElementById("font-search-input")
   const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : ""
 
-  const filteredFonts = searchQuery
-    ? allFonts.filter(
-        (f) =>
-          f.label.toLowerCase().includes(searchQuery) ||
-          (f.tag && f.tag.toLowerCase().includes(searchQuery)),
-      )
-    : allFonts
+  let filteredFonts = allFonts
+
+  // 1. Category Filter
+  if (activeFontCategory === "favorites") {
+    filteredFonts = filteredFonts.filter((f) => f.isFavorite)
+  } else if (activeFontCategory === "custom") {
+    filteredFonts = filteredFonts.filter((f) => f.custom || f.isLocal)
+  } else if (activeFontCategory === "clock") {
+    filteredFonts = filteredFonts.filter(
+      (f) =>
+        f.category === "clock" || f.type === "clock" || f.tag === "Clock/Date",
+    )
+  } else if (activeFontCategory !== "all") {
+    filteredFonts = filteredFonts.filter((f) => f.category === activeFontCategory)
+  }
+
+  // 2. Search Query Filter
+  if (searchQuery) {
+    filteredFonts = filteredFonts.filter(
+      (f) =>
+        f.label.toLowerCase().includes(searchQuery) ||
+        (f.tag && f.tag.toLowerCase().includes(searchQuery)) ||
+        (f.category && f.category.toLowerCase().includes(searchQuery)),
+    )
+  }
 
   const fontCountDisplay = document.getElementById("font-count-display")
   if (fontCountDisplay) {
     fontCountDisplay.textContent = ` (${filteredFonts.length})`
   }
 
-  const favoriteFonts = filteredFonts.filter((f) => f.isFavorite)
-  const generalFonts = filteredFonts.filter(
-    (f) => !f.isFavorite && f.type === "general",
-  )
-  const clockFonts = filteredFonts.filter(
-    (f) => !f.isFavorite && f.type === "clock",
-  )
+  updateActiveTypographyHero()
 
-  const sections = [
-    { label: "--- Favorite ---", fonts: favoriteFonts },
-    { label: "--- General Fonts ---", fonts: generalFonts },
-    { label: "--- Clock Fonts ---", fonts: clockFonts },
-  ]
+  // Group into sections only when viewing "all" without active search
+  let sections = []
+  if (activeFontCategory === "all" && !searchQuery) {
+    const favoriteFonts = filteredFonts.filter((f) => f.isFavorite)
+    const generalFonts = filteredFonts.filter(
+      (f) => !f.isFavorite && f.type === "general",
+    )
+    const clockFonts = filteredFonts.filter(
+      (f) => !f.isFavorite && f.type === "clock",
+    )
+    sections = [
+      { label: "--- Favorite ---", fonts: favoriteFonts },
+      { label: "--- General Fonts ---", fonts: generalFonts },
+      { label: "--- Clock Fonts ---", fonts: clockFonts },
+    ]
+  } else {
+    sections = [{ label: "", fonts: filteredFonts }]
+  }
 
   sections.forEach((section) => {
     if (section.fonts.length === 0) return
 
-    const sep = document.createElement("div")
-    sep.className = "font-grid-separator"
-    sep.textContent = section.label
-    fontGrid.appendChild(sep)
+    if (section.label) {
+      const sep = document.createElement("div")
+      sep.className = "font-grid-separator"
+      sep.textContent = section.label
+      fontGrid.appendChild(sep)
+    }
 
     section.fonts.forEach((fontObj) => {
       const {
@@ -319,39 +547,52 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       card.dataset.fontValue = value
       card.dataset.fontType = type
 
+      // Favorite star button
+      const favBtn = document.createElement("button")
+      favBtn.type = "button"
+      favBtn.className = "favorite-star-btn"
+      favBtn.title = isFavorite ? "Unfavorite" : "Favorite"
+      favBtn.innerHTML = `<i class="${isFavorite ? "fa-solid" : "fa-regular"} fa-star"></i>`
+      favBtn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        toggleFontFavorite(label, value, updateSettingCallback)
+      })
+      card.appendChild(favBtn)
+
+      // Delete button for custom / local font
+      if (custom || isLocal) {
+        const delBtn = document.createElement("button")
+        delBtn.type = "button"
+        delBtn.className = "font-item-delete"
+        delBtn.title = "Delete font"
+        delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>'
+        delBtn.addEventListener("click", (e) => {
+          e.stopPropagation()
+          deleteFontItem(fontObj, updateSettingCallback)
+        })
+        card.appendChild(delBtn)
+      }
+
+      // Preview element: dynamic text/clock based on fontPreviewMode & target
+      const { text: previewText, isClock: isClockDisplay } = getCardPreview(
+        fontObj,
+        targetValue,
+      )
       const preview = document.createElement("span")
-      preview.className = "font-item-preview"
-      preview.textContent = "Aa"
+      preview.className =
+        "font-item-preview" + (isClockDisplay ? " clock-preview" : "")
+      preview.textContent = previewText
       preview.style.fontFamily = value
 
       const name = document.createElement("span")
       name.className = "font-item-name"
-
-      let displayTag = tag
-      if (custom && !google) displayTag = isLocal ? "Local Font" : "Saved Font"
-
-      name.textContent = label + (displayTag ? ` (${displayTag})` : "")
+      name.textContent = label
+      name.title = label
 
       const badgesContainer = document.createElement("div")
       badgesContainer.className = "font-badges-container"
       badgesContainer.style.cssText =
         "display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin-top: 2px;"
-
-      if (isFavorite) {
-        const favIcon = document.createElement("i")
-        favIcon.className = "fa-solid fa-star favorite-star"
-        card.appendChild(favIcon)
-
-        const badge = document.createElement("span")
-        badge.className = "font-category-badge"
-        badge.textContent =
-          type === "clock"
-            ? geti18n().clock || "Clock"
-            : geti18n().general || "Gen"
-        badge.style.cssText =
-          "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
-        badgesContainer.appendChild(badge)
-      }
 
       if (custom && !google) {
         const customBadge = document.createElement("span")
@@ -423,10 +664,10 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           return
         }
 
-        if (custom || google) loadGoogleFont(label)
-
         const targetSelect = document.getElementById("font-target-select")
         const target = targetSelect ? targetSelect.value : "general"
+
+        if (custom || google) loadGoogleFont(label, target)
 
         const prevSettings = getSettings()
         const normalizeFont = (f) =>
@@ -434,14 +675,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             .replace(/['"]/g, "")
             .split(",")[0]
             .trim()
-        const curFontForDecouple = normalizeFont(
-          prevSettings.font || "'Space Grotesk', sans-serif",
-        )
-        const curClockFontForDecouple = normalizeFont(
-          prevSettings.clockFont ||
-            prevSettings.font ||
-            "'Space Grotesk', sans-serif",
-        )
+
 
         if (target === "both") {
           updateSettingCallback("font", value)
@@ -449,23 +683,11 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         } else if (target === "clock") {
           updateSettingCallback("clockFont", value)
         } else {
-          if (
-            !prevSettings.clockFont ||
-            curClockFontForDecouple === curFontForDecouple
-          ) {
-            updateSettingCallback(
-              "clockFont",
-              prevSettings.clockFont ||
-                prevSettings.font ||
-                "'Space Grotesk', sans-serif",
-            )
-          }
           updateSettingCallback("font", value)
         }
 
         // Fast UI update: toggle active classes without full re-render
         const currentSettings = getSettings()
-        const isTargetClock = target === "clock"
         const allCards = fontGrid.querySelectorAll(".font-item")
 
         const curFont = normalizeFont(
@@ -479,7 +701,6 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
         allCards.forEach((c) => {
           const cVal = c.dataset.fontValue
-          const cType = c.dataset.fontType
           let isActiveCard = false
           if (target === "both") {
             isActiveCard = cVal === curClockFont || cVal === curFont
@@ -493,6 +714,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
           if (c._updateAppliedBadge) c._updateAppliedBadge()
         })
+
+        updateActiveTypographyHero()
       })
 
       card.addEventListener("contextmenu", (e) => {
@@ -786,7 +1009,7 @@ function setupMultiSelect(DOM, updateSettingCallback) {
     fontSelectedLabels.clear()
     if (DOM.fontGrid) DOM.fontGrid.classList.remove("bg-select-mode")
     if (DOM.fontSelectToolbar) DOM.fontSelectToolbar.style.display = "none"
-    if (DOM.fontSelectModeBtn) DOM.fontSelectModeBtn.style.display = "none"
+    if (DOM.fontSelectModeBtn) DOM.fontSelectModeBtn.style.display = "inline-flex"
 
     if (DOM.fontGrid) {
       const cards = DOM.fontGrid.querySelectorAll(".font-item")
@@ -799,7 +1022,11 @@ function setupMultiSelect(DOM, updateSettingCallback) {
   }
 
   if (DOM.fontSelectModeBtn) {
-    DOM.fontSelectModeBtn.style.display = "none"
+    DOM.fontSelectModeBtn.style.display = "inline-flex"
+    DOM.fontSelectModeBtn.addEventListener("click", () => {
+      if (fontSelectMode) exitSelectMode()
+      else enterSelectMode()
+    })
   }
 
   if (DOM.fontSelectCancelBtn)
@@ -809,6 +1036,8 @@ function setupMultiSelect(DOM, updateSettingCallback) {
   const btnGeneral = document.getElementById("font-target-general-btn")
   const btnClock = document.getElementById("font-target-clock-btn")
   const btnBoth = document.getElementById("font-target-both-btn")
+
+  const btnSync = document.getElementById("font-sync-btn")
 
   if (btnGeneral && btnClock && btnBoth && targetSelect) {
     const savedTarget = localStorage.getItem("fontTargetTab") || "general"
@@ -841,6 +1070,49 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       targetSelect.value = "both"
       localStorage.setItem("fontTargetTab", "both")
       targetSelect.dispatchEvent(new Event("change"))
+    })
+  }
+
+  if (btnSync) {
+    btnSync.addEventListener("click", () => {
+      const currentSettings = getSettings()
+      const currentTarget = targetSelect ? targetSelect.value : "general"
+      const curGeneralFont = currentSettings.font || "'Outfit', sans-serif"
+      const curClockFont = currentSettings.clockFont || currentSettings.font || "'Outfit', sans-serif"
+
+      // Trigger spin animation
+      btnSync.classList.add("syncing")
+      setTimeout(() => btnSync.classList.remove("syncing"), 600)
+
+      let syncedFontVal = curGeneralFont
+      let syncedFontName = curGeneralFont.replace(/['"]/g, "").split(",")[0].trim()
+
+      if (currentTarget === "clock") {
+        // In clock tab, sync clock font to general font
+        syncedFontVal = curClockFont
+        syncedFontName = curClockFont.replace(/['"]/g, "").split(",")[0].trim()
+        updateSettingCallback("font", curClockFont)
+        loadGoogleFont(syncedFontName, "general")
+      } else {
+        // In general (or both) tab, sync general font to clock font
+        syncedFontVal = curGeneralFont
+        syncedFontName = curGeneralFont.replace(/['"]/g, "").split(",")[0].trim()
+        updateSettingCallback("clockFont", curGeneralFont)
+        loadGoogleFont(syncedFontName, "clock")
+      }
+
+      // Fast UI update
+      if (DOM.fontGrid) {
+        const allCards = DOM.fontGrid.querySelectorAll(".font-item")
+        allCards.forEach((c) => {
+          if (c._updateAppliedBadge) c._updateAppliedBadge()
+        })
+      }
+      updateActiveTypographyHero()
+
+      const i18n = geti18n()
+      const toastMsg = (i18n.font_synced_toast || "Synced fonts: {font}").replace("{font}", syncedFontName)
+      showToast(toastMsg, { type: "success" })
     })
   }
 
@@ -881,7 +1153,17 @@ function setupMultiSelect(DOM, updateSettingCallback) {
         else c.classList.remove("active")
 
         if (c._updateAppliedBadge) c._updateAppliedBadge()
+
+        if (fontPreviewMode === "auto") {
+          const pEl = c.querySelector(".font-item-preview")
+          if (pEl) {
+            const isClk = isTargetClock || (isTargetBoth && cType === "clock")
+            pEl.textContent = isClk ? "12:45" : "Aa"
+            pEl.className = "font-item-preview" + (isClk ? " clock-preview" : "")
+          }
+        }
       })
+      updateActiveTypographyHero()
     })
   }
 

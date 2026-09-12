@@ -2,18 +2,16 @@
     <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
     <div class="section-content">
         <!-- Styles Subsection -->
-        <div class="settings-subsection-title">
+        <div class="settings-subsection-title" style="display: flex; justify-content: space-between; align-items: center;">
             <span data-i18n="style_presets_title">Style Presets</span>
-            <hr class="subsection-divider">
-        </div>
-        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
-            <button id="save-current-style-btn" class="secondary-btn style-save-btn">
-                <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom
-                    Style</span>
+            <button id="save-current-style-btn" class="secondary-btn style-save-btn" style="padding: 4px 10px; font-size: 0.75rem; height: 26px; border-radius: 6px;">
+                <i class="fa-solid fa-bookmark" style="font-size: 0.7rem;"></i> <span data-i18n="save_current_style">Save Custom Style</span>
             </button>
         </div>
+        <hr class="subsection-divider" style="margin-top: 4px; margin-bottom: 8px;">
+
         <div class="setting-group style-preset-panel">
-            <p class="setting-hint" data-i18n="style_presets_hint">
+            <p class="setting-hint" data-i18n="style_presets_hint" style="margin-top: 0; margin-bottom: 8px;">
                 One-click bundles for bookmark and music player styling.
             </p>
             <div class="style-preset-grid">
@@ -97,44 +95,48 @@
             </button>
             <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
                 rel="noopener noreferrer">
-                <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme
-                    Store</span>
+                <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
             </a>
         </div>
 
-        <!-- Theme Application Scope Panel -->
-        <div class="setting-group theme-scope-panel" id="theme-scope-panel"
-            style="margin-bottom: 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <label style="font-weight: 600; font-size: 0.82rem; color: var(--accent-color); display: flex; align-items: center; gap: 6px; margin: 0;">
+        <!-- Collapsible Theme Application Scope Accordion -->
+        <details class="theme-scope-accordion" id="theme-scope-accordion">
+            <summary class="theme-scope-summary">
+                <div class="theme-scope-summary-left">
                     <i class="fa-solid fa-sliders"></i>
                     <span data-i18n="theme_scope_title">Theme Application Scope</span>
-                </label>
-                <small style="opacity: 0.6; font-size: 0.72rem;" data-i18n="theme_scope_subtitle">Choose what changes</small>
+                    <span class="theme-scope-badge" id="theme-scope-badge">5/5</span>
+                </div>
+                <div class="theme-scope-summary-right">
+                    <small data-i18n="theme_scope_subtitle">Choose what changes</small>
+                    <i class="fa-solid fa-chevron-down theme-scope-chevron"></i>
+                </div>
+            </summary>
+            <div class="setting-group theme-scope-panel" id="theme-scope-panel">
+                <div class="theme-scope-chips">
+                    <label class="theme-scope-chip" title="Accent colors, sidebar & glass transparency">
+                        <input type="checkbox" id="theme-scope-colors" checked>
+                        <span class="chip-label"><i class="fa-solid fa-palette"></i> <span data-i18n="theme_scope_colors">Colors & Glass</span></span>
+                    </label>
+                    <label class="theme-scope-chip" title="Special background effects (Snowfall, Hacker, Waves...)">
+                        <input type="checkbox" id="theme-scope-effects" checked>
+                        <span class="chip-label"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="theme_scope_effects">Effects</span></span>
+                    </label>
+                    <label class="theme-scope-chip" title="Clock style, layout & clock colors">
+                        <input type="checkbox" id="theme-scope-clock" checked>
+                        <span class="chip-label"><i class="fa-solid fa-clock"></i> <span data-i18n="theme_scope_clock">Clock Style</span></span>
+                    </label>
+                    <label class="theme-scope-chip" title="Global font & clock font">
+                        <input type="checkbox" id="theme-scope-fonts" checked>
+                        <span class="chip-label"><i class="fa-solid fa-font"></i> <span data-i18n="theme_scope_fonts">Fonts</span></span>
+                    </label>
+                    <label class="theme-scope-chip" title="Background wallpaper image or color">
+                        <input type="checkbox" id="theme-scope-background" checked>
+                        <span class="chip-label"><i class="fa-solid fa-image"></i> <span data-i18n="theme_scope_background">Background</span></span>
+                    </label>
+                </div>
             </div>
-            <div class="theme-scope-chips" style="display: flex; flex-wrap: wrap; gap: 6px;">
-                <label class="theme-scope-chip" title="Accent colors, sidebar & glass transparency">
-                    <input type="checkbox" id="theme-scope-colors" checked>
-                    <span class="chip-label"><i class="fa-solid fa-palette"></i> <span data-i18n="theme_scope_colors">Colors & Glass</span></span>
-                </label>
-                <label class="theme-scope-chip" title="Special background effects (Snowfall, Hacker, Waves...)">
-                    <input type="checkbox" id="theme-scope-effects" checked>
-                    <span class="chip-label"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="theme_scope_effects">Effects</span></span>
-                </label>
-                <label class="theme-scope-chip" title="Clock style, layout & clock colors">
-                    <input type="checkbox" id="theme-scope-clock" checked>
-                    <span class="chip-label"><i class="fa-solid fa-clock"></i> <span data-i18n="theme_scope_clock">Clock Style</span></span>
-                </label>
-                <label class="theme-scope-chip" title="Global font & clock font">
-                    <input type="checkbox" id="theme-scope-fonts" checked>
-                    <span class="chip-label"><i class="fa-solid fa-font"></i> <span data-i18n="theme_scope_fonts">Fonts</span></span>
-                </label>
-                <label class="theme-scope-chip" title="Background wallpaper image or color">
-                    <input type="checkbox" id="theme-scope-background" checked>
-                    <span class="chip-label"><i class="fa-solid fa-image"></i> <span data-i18n="theme_scope_background">Background</span></span>
-                </label>
-            </div>
-        </div>
+        </details>
 
         <!-- Theme Category Filter Pills -->
         <div class="theme-category-filter-bar" id="theme-category-filter-bar">

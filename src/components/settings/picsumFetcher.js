@@ -174,23 +174,56 @@ function buildPicsumThumbUrl(seed) {
 function getPicsumTargetDimensions() {
   const settings = getSettings()
   const mode = settings.backgroundMediaQuality || "balanced"
+  const screenW = Math.max(
+    window.screen?.width || 0,
+    window.innerWidth || 0,
+    1920,
+  )
+  const screenH = Math.max(
+    window.screen?.height || 0,
+    window.innerHeight || 0,
+    1080,
+  )
+  const dpr = window.devicePixelRatio || 1
 
-  const profiles = {
-    quality: { dprCap: 2, widthCap: 3200, heightCap: 2200 },
-    balanced: { dprCap: 1.5, widthCap: 2400, heightCap: 1600 },
-    low: { dprCap: 1, widthCap: 1600, heightCap: 1000 },
-    tiny: { dprCap: 0.75, widthCap: 1024, heightCap: 640 },
-    still: { dprCap: 0.85, widthCap: 1280, heightCap: 800 },
-  }
-  const p = profiles[mode] || profiles.balanced
-
-  const dpr = Math.min(window.devicePixelRatio || 1, p.dprCap)
-  return {
-    width: Math.min(p.widthCap, Math.round((window.innerWidth || 1920) * dpr)),
-    height: Math.min(
-      p.heightCap,
-      Math.round((window.innerHeight || 1080) * dpr),
-    ),
+  switch (mode) {
+    case "quality": {
+      // High Quality (2.5K - 4K): minimum 2560x1440, up to 3840x2160 (4K) for crisp wallpaper
+      const targetW = Math.max(2560, Math.round(screenW * Math.max(dpr, 1.33)))
+      const targetH = Math.max(1440, Math.round(screenH * Math.max(dpr, 1.33)))
+      return {
+        width: Math.min(3840, targetW),
+        height: Math.min(2160, targetH),
+      }
+    }
+    case "low": {
+      return {
+        width: 1440,
+        height: Math.round((1440 * screenH) / screenW) || 810,
+      }
+    }
+    case "tiny": {
+      return {
+        width: 1024,
+        height: Math.round((1024 * screenH) / screenW) || 576,
+      }
+    }
+    case "still": {
+      return {
+        width: 1280,
+        height: Math.round((1280 * screenH) / screenW) || 720,
+      }
+    }
+    case "balanced":
+    default: {
+      // Balanced: 1920x1080 up to 2560x1440
+      const targetW = Math.max(1920, Math.round(screenW * Math.min(dpr, 1.25)))
+      const targetH = Math.max(1080, Math.round(screenH * Math.min(dpr, 1.25)))
+      return {
+        width: Math.min(2560, targetW),
+        height: Math.min(1440, targetH),
+      }
+    }
   }
 }
 
@@ -390,12 +423,22 @@ async function fetchFlickrPhotoInfo(tag, width, height) {
 async function getLoremFlickrRandomBackground(themeKey = "random") {
   const { width, height } = getPicsumTargetDimensions()
   const tag = FLICKR_TAG_MAP[themeKey] ?? ""
+  const settings = getSettings()
+  const mode = settings.backgroundMediaQuality || "balanced"
 
   // Fetch JSON first — it resolves to a specific photo, giving us the canonical URL
   const info = await fetchFlickrPhotoInfo(tag, width, height)
 
-  // Use the resolved file URL if available, otherwise use the redirect URL
-  const imageUrl = info?.file || buildFlickrUrl(tag, width, height)
+  // Prioritize raw high-res Flickr CDN photo for quality and balanced modes
+  // (info.file is heavily compressed and capped to 1280x720 by loremflickr cache)
+  let imageUrl = ""
+  if (mode === "low" || mode === "tiny") {
+    imageUrl =
+      info?.file || info?.rawFileUrl || buildFlickrUrl(tag, width, height)
+  } else {
+    imageUrl =
+      info?.rawFileUrl || info?.file || buildFlickrUrl(tag, width, height)
+  }
 
   rememberFlickrUrl(themeKey, imageUrl)
 
@@ -432,6 +475,123 @@ async function getFreeRandomBackground(
   return getLoremFlickrRandomBackground(themeKey)
 }
 
+/**
+ * Upgrade or adapt the active background URL when Media Quality changes.
+ * Supports Picsum, Unsplash, and Flickr backgrounds.
+ */
+async function refreshBackgroundForMediaQuality(newQuality, updateCallback) {
+  const settings = getSettings()
+  const currentBg = settings.background
+  if (!currentBg || typeof currentBg !== "string") return false
+
+  // 1. Picsum Photos
+  const picsumMatch = currentBg.match(
+    /(?:https?:\/\/(?:fastly\.)?picsum\.photos\/id\/(\d+))(?:\/(\d+)\/(\d+))?/i,
+  )
+  if (picsumMatch) {
+    const seed = picsumMatch[1]
+    const { width, height } = getPicsumTargetDimensions()
+    const newUrl = buildPicsumUrl(seed, width, height)
+    if (newUrl !== currentBg) {
+      try {
+        await preloadPicsumImage(newUrl)
+        if (typeof updateCallback === "function") {
+          await updateCallback("background", newUrl)
+        }
+        return true
+      } catch {}
+    }
+    return false
+  }
+
+  // 2. Unsplash Photos
+  if (currentBg.includes("unsplash.com") && currentBg.includes("w=")) {
+    const screenW = Math.max(
+      window.screen?.width || 0,
+      window.innerWidth || 0,
+      1920,
+    )
+    const screenH = Math.max(
+      window.screen?.height || 0,
+      window.innerHeight || 0,
+      1080,
+    )
+    const dpr = window.devicePixelRatio || 1
+    let targetW = 1920
+    let targetH = 1080
+    let q = 82
+    if (newQuality === "quality") {
+      targetW = Math.min(
+        3840,
+        Math.max(2560, Math.round(screenW * Math.max(dpr, 1.33))),
+      )
+      targetH = Math.min(
+        2160,
+        Math.max(1440, Math.round(screenH * Math.max(dpr, 1.33))),
+      )
+      q = 92
+    } else if (newQuality === "low") {
+      targetW = 1440
+      targetH = Math.round((1440 * screenH) / screenW) || 810
+      q = 68
+    } else if (newQuality === "tiny") {
+      targetW = 1024
+      targetH = Math.round((1024 * screenH) / screenW) || 576
+      q = 50
+    } else if (newQuality === "still") {
+      targetW = 1280
+      targetH = 720
+      q = 60
+    } else {
+      targetW = Math.min(
+        2560,
+        Math.max(1920, Math.round(screenW * Math.min(dpr, 1.25))),
+      )
+      targetH = Math.min(
+        1440,
+        Math.max(1080, Math.round(screenH * Math.min(dpr, 1.25))),
+      )
+      q = 82
+    }
+    const newUrl = currentBg
+      .replace(/([?&])w=\d+/i, `$1w=${targetW}`)
+      .replace(/([?&])h=\d+/i, `$1h=${targetH}`)
+      .replace(/([?&])q=\d+/i, `$1q=${q}`)
+    if (newUrl !== currentBg) {
+      try {
+        await preloadPicsumImage(newUrl)
+        if (typeof updateCallback === "function") {
+          await updateCallback("background", newUrl)
+        }
+        return true
+      } catch {}
+    }
+    return false
+  }
+
+  // 3. Flickr Photos
+  if (
+    currentBg.includes("staticflickr.com") &&
+    /_[a-z]\.jpg$/i.test(currentBg)
+  ) {
+    let targetSuffix = "_h.jpg"
+    if (newQuality === "low") targetSuffix = "_b.jpg"
+    else if (newQuality === "tiny") targetSuffix = "_z.jpg"
+    const newUrl = currentBg.replace(/_[a-z]\.jpg$/i, targetSuffix)
+    if (newUrl !== currentBg) {
+      try {
+        await preloadPicsumImage(newUrl)
+        if (typeof updateCallback === "function") {
+          await updateCallback("background", newUrl)
+        }
+        return true
+      } catch {}
+    }
+  }
+
+  return false
+}
+
 export {
   getPicsumRandomBackground,
   preloadPicsumImage,
@@ -441,5 +601,6 @@ export {
   buildPicsumThumbUrl,
   getLoremFlickrRandomBackground,
   getFreeRandomBackground,
+  refreshBackgroundForMediaQuality,
   FLICKR_TAG_MAP,
 }

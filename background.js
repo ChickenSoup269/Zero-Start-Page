@@ -407,6 +407,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "startRealAudioCapture") {
+    if (!chrome.tabCapture || !chrome.offscreen) {
+      chrome.storage.local.set({ musicRealAudioReactive: false })
+      sendResponse({ ok: false, error: "tabCapture or offscreen is not supported" })
+      return true
+    }
     chrome.storage.local.set({ musicRealAudioReactive: true }, () => {
       if (request.tabId) {
         startTabAudioCapture(request.tabId)

@@ -3361,7 +3361,7 @@ body.clock-style-transparent-bg.date-clock-style-aquarium .aquarium-glass-sheen 
 body.date-clock-style-aquarium .clock-date-wrap {
   width: fit-content !important;
   max-width: 100% !important;
-  margin: 0 auto var(--space-4) !important;
+  margin: 0 auto var(--space-1) !important;
   padding: 0 !important;
   background: transparent !important;
   border: none !important;
@@ -3372,15 +3372,25 @@ body.date-clock-style-aquarium .clock-date-wrap {
   overflow: visible !important;
 }
 
-body.date-clock-style-aquarium .date-fade-wrapper,
+body.date-clock-style-aquarium .date-fade-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-top: 8px !important;
+}
+
+body.date-clock-style-aquarium .date-fade-wrapper.is-hidden {
+  display: none !important;
+  margin: 0 !important;
+  height: 0 !important;
+}
+
 body.date-clock-style-aquarium #date {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  margin-top: 10px !important;
-}
-
-body.date-clock-style-aquarium #date {
+  margin: 0 !important;
+  padding: 0 !important;
   font-family: var(--font-date, var(--font-primary));
   font-size: var(--date-size, 1.15rem);
   font-weight: 600;
@@ -3410,7 +3420,7 @@ body.date-clock-style-aquarium #clock {
   width: fit-content;
   max-width: min(94vw, 680px);
   margin: 0 auto;
-  padding: clamp(14px, 2vw, 20px) clamp(24px, 4vw, 38px) clamp(16px, 2.2vw, 22px);
+  padding: clamp(12px, 1.6vw, 16px) clamp(24px, 4vw, 36px) clamp(8px, 1.2vw, 12px);
   border-radius: 0;
   background: var(--aquarium-tank-bg);
   border: 5px solid var(--aquarium-border, rgba(56, 189, 248, 0.9));
@@ -3465,14 +3475,21 @@ body.date-clock-style-aquarium #clock {
 /* Glass Style Variants (All in 8-Bit Pixel Structure) */
 .aquarium-glass-bowl {
   border-radius: 0;
-  padding: clamp(16px, 2.4vw, 22px) clamp(28px, 4.6vw, 44px) clamp(18px, 2.4vw, 24px);
+  padding: clamp(14px, 2vw, 18px) clamp(26px, 4.2vw, 40px) clamp(10px, 1.4vw, 14px);
 }
 
 .aquarium-glass-minimal {
   border-radius: 0;
   border-width: 5px;
-  padding: clamp(10px, 1.5vw, 16px) clamp(18px, 3.2vw, 30px) clamp(12px, 1.8vw, 18px);
+  padding: clamp(8px, 1.2vw, 12px) clamp(18px, 3.2vw, 28px) clamp(6px, 1vw, 10px);
   box-shadow: 0 6px 0 #000000;
+}
+
+.aquarium-feed-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* 8-Bit Pixel Top Rim */
@@ -4029,7 +4046,7 @@ body.date-clock-style-aquarium #clock {
 @media (max-width: 640px) {
   .aquarium-clock-tank {
     max-width: 95vw;
-    padding: 14px 20px 18px;
+    padding: 10px 18px 10px;
   }
 }
 

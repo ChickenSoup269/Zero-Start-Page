@@ -88,6 +88,9 @@ export let bgSaturationValue = document.getElementById("bg-saturation-value")
 export let backgroundMediaQualitySelect = document.getElementById(
   "background-media-quality-select",
 )
+export let freePhotosQualitySelect = document.getElementById(
+  "free-photos-quality-select",
+)
 export let bgSizeSelect = document.getElementById("bg-size-select")
 export let bgImageScaleRow = document.getElementById("bg-image-scale-row")
 export let bgImageScaleInput = document.getElementById("bg-image-scale-input")
@@ -155,6 +158,21 @@ export let fontSelectCancelBtn = document.getElementById(
 )
 export let fontTargetGeneralBtn = document.getElementById("font-target-general")
 export let fontTargetClockBtn = document.getElementById("font-target-clock")
+export let fontSearchClearBtn = document.getElementById(
+  "font-search-clear-btn",
+)
+export let fontCategoryFilters = document.getElementById(
+  "font-category-filters",
+)
+export let customFontPreviewBox = document.getElementById(
+  "custom-font-preview-box",
+)
+export let customFontPreviewText = document.getElementById(
+  "custom-font-preview-text",
+)
+export let customFontSuggestions = document.getElementById(
+  "custom-font-suggestions",
+)
 export let customFontInput = document.getElementById("custom-font-input")
 export let loadCustomFontBtn = document.getElementById("load-custom-font-btn")
 export let saveFontBtn = document.getElementById("save-font-btn")
@@ -2542,6 +2560,26 @@ export let forceDriveDownloadBtn = document.getElementById(
   "force-drive-download-btn",
 )
 
+// GitHub Gist Sync
+export let githubSyncCheckbox = document.getElementById("github-sync-checkbox")
+export let githubSyncOptionsWrapper = document.getElementById("github-sync-options-wrapper")
+export let githubSyncTokenInput = document.getElementById("github-sync-token-input")
+export let githubTokenToggleVisibilityBtn = document.getElementById("github-token-toggle-visibility-btn")
+export let githubSyncGistIdInput = document.getElementById("github-sync-gist-id-input")
+export let githubAutoBackupInterval = document.getElementById("github-auto-backup-interval")
+export let forceGithubSyncBtn = document.getElementById("force-github-sync-btn")
+export let forceGithubDownloadBtn = document.getElementById("force-github-download-btn")
+
+// GitLab Snippet Sync
+export let gitlabSyncCheckbox = document.getElementById("gitlab-sync-checkbox")
+export let gitlabSyncOptionsWrapper = document.getElementById("gitlab-sync-options-wrapper")
+export let gitlabSyncTokenInput = document.getElementById("gitlab-sync-token-input")
+export let gitlabTokenToggleVisibilityBtn = document.getElementById("gitlab-token-toggle-visibility-btn")
+export let gitlabSyncSnippetIdInput = document.getElementById("gitlab-sync-snippet-id-input")
+export let gitlabAutoBackupInterval = document.getElementById("gitlab-auto-backup-interval")
+export let forceGitlabSyncBtn = document.getElementById("force-gitlab-sync-btn")
+export let forceGitlabDownloadBtn = document.getElementById("force-gitlab-download-btn")
+
 export function refreshDOMReferences() {
   googleDriveSyncCheckbox = document.getElementById(
     "google-drive-sync-checkbox",
@@ -2554,6 +2592,24 @@ export function refreshDOMReferences() {
   driveAutoBackupInterval = document.getElementById(
     "drive-auto-backup-interval",
   )
+
+  githubSyncCheckbox = document.getElementById("github-sync-checkbox")
+  githubSyncOptionsWrapper = document.getElementById("github-sync-options-wrapper")
+  githubSyncTokenInput = document.getElementById("github-sync-token-input")
+  githubTokenToggleVisibilityBtn = document.getElementById("github-token-toggle-visibility-btn")
+  githubSyncGistIdInput = document.getElementById("github-sync-gist-id-input")
+  githubAutoBackupInterval = document.getElementById("github-auto-backup-interval")
+  forceGithubSyncBtn = document.getElementById("force-github-sync-btn")
+  forceGithubDownloadBtn = document.getElementById("force-github-download-btn")
+
+  gitlabSyncCheckbox = document.getElementById("gitlab-sync-checkbox")
+  gitlabSyncOptionsWrapper = document.getElementById("gitlab-sync-options-wrapper")
+  gitlabSyncTokenInput = document.getElementById("gitlab-sync-token-input")
+  gitlabTokenToggleVisibilityBtn = document.getElementById("gitlab-token-toggle-visibility-btn")
+  gitlabSyncSnippetIdInput = document.getElementById("gitlab-sync-snippet-id-input")
+  gitlabAutoBackupInterval = document.getElementById("gitlab-auto-backup-interval")
+  forceGitlabSyncBtn = document.getElementById("force-gitlab-sync-btn")
+  forceGitlabDownloadBtn = document.getElementById("force-gitlab-download-btn")
   settingsToggle = document.getElementById("settings-toggle")
   settingsSidebar = document.getElementById("settings-sidebar")
   settingsVersion = document.getElementById("settings-version")
@@ -2616,6 +2672,9 @@ export function refreshDOMReferences() {
   backgroundMediaQualitySelect = document.getElementById(
     "background-media-quality-select",
   )
+  freePhotosQualitySelect = document.getElementById(
+    "free-photos-quality-select",
+  )
   bgSizeSelect = document.getElementById("bg-size-select")
   bgImageScaleRow = document.getElementById("bg-image-scale-row")
   bgImageScaleInput = document.getElementById("bg-image-scale-input")
@@ -2665,6 +2724,11 @@ export function refreshDOMReferences() {
   fontTargetGeneralBtn = document.getElementById("font-target-general")
   fontTargetClockBtn = document.getElementById("font-target-clock")
   fontSearchInput = document.getElementById("font-search-input")
+  fontSearchClearBtn = document.getElementById("font-search-clear-btn")
+  fontCategoryFilters = document.getElementById("font-category-filters")
+  customFontPreviewBox = document.getElementById("custom-font-preview-box")
+  customFontPreviewText = document.getElementById("custom-font-preview-text")
+  customFontSuggestions = document.getElementById("custom-font-suggestions")
   customFontInput = document.getElementById("custom-font-input")
   loadCustomFontBtn = document.getElementById("load-custom-font-btn")
   saveFontBtn = document.getElementById("save-font-btn")

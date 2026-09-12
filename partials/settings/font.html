@@ -2,90 +2,197 @@
     <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span
             id="font-count-display" class="section-count"></span></h3>
     <div class="section-content">
-        <div class="setting-group">
-            <div class="font-target-wrapper">
-                <div class="font-target-toggles">
-                    <button id="font-target-general-btn" class="font-target-btn active" data-i18n="general_font">General
-                        Font</button>
-                    <button id="font-target-clock-btn" class="font-target-btn" data-i18n="clock_font">Clock
-                        Font</button>
-                    <button id="font-target-both-btn" class="font-target-btn" data-i18n="both_fonts">Both</button>
-                    <select id="font-target-select" style="display: none;">
-                        <option value="general">General</option>
-                        <option value="clock">Clock</option>
-                        <option value="both">Both</option>
-                    </select>
+        <!-- Card 1: Active Typography Preview & Target Switcher -->
+        <div class="setting-group settings-card font-preview-hero-card">
+            <div class="font-hero-header">
+                <div class="font-hero-title">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="font_active_preview">Active Typography Preview</span>
                 </div>
-                <button id="font-select-mode-btn" class="settings-action-btn" data-i18n="settings_select_fonts"
-                    style="display:none;">Select</button>
+                <div class="font-target-wrapper">
+                    <div class="font-target-toggles">
+                        <button id="font-target-general-btn" class="font-target-btn active">
+                            <i class="fa-solid fa-font"></i> <span data-i18n="settings_font_general">General</span>
+                        </button>
+                        <button id="font-target-clock-btn" class="font-target-btn">
+                            <i class="fa-solid fa-clock"></i> <span data-i18n="settings_font_clock">Clock</span>
+                        </button>
+                        <button id="font-target-both-btn" class="font-target-btn">
+                            <i class="fa-solid fa-arrows-split-up-and-left"></i> <span data-i18n="both_fonts">Both</span>
+                        </button>
+                        <button id="font-sync-btn" class="font-target-btn font-sync-action-btn" data-i18n-title="font_sync_title" title="Sync fonts between General and Clock">
+                            <i class="fa-solid fa-arrows-rotate"></i> <span data-i18n="font_sync_btn">Sync</span>
+                        </button>
+                        <select id="font-target-select" style="display: none;">
+                            <option value="general">General</option>
+                            <option value="clock">Clock</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <div class="font-preview-hero-grid">
+                <div id="font-preview-general-box" class="font-preview-box">
+                    <div class="font-preview-box-header">
+                        <span class="font-preview-badge general"><i class="fa-solid fa-font"></i> <span data-i18n="general_font">General Font</span></span>
+                        <span id="font-preview-general-name" class="font-preview-name">Space Grotesk</span>
+                    </div>
+                    <div id="font-preview-general-sample" class="font-preview-sample-text">
+                        The quick brown fox jumps over the lazy dog
+                    </div>
+                </div>
+
+                <div id="font-preview-clock-box" class="font-preview-box">
+                    <div class="font-preview-box-header">
+                        <span class="font-preview-badge clock"><i class="fa-solid fa-clock"></i> <span data-i18n="clock_font">Clock Font</span></span>
+                        <span id="font-preview-clock-name" class="font-preview-name">Space Grotesk</span>
+                    </div>
+                    <div id="font-preview-clock-sample" class="font-preview-sample-clock">
+                        <span class="preview-clock-time">14:05:28</span>
+                        <span class="preview-clock-date">SAT, SEP 12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Font Library & Explorer -->
+        <div class="setting-group settings-card">
+            <div class="font-library-header">
+                <div class="font-library-title-wrap">
+                    <span class="setting-label" style="margin-bottom: 0;">
+                        <i class="fa-solid fa-shapes"></i> <span data-i18n="settings_font">Font Library</span>
+                    </span>
+                </div>
+
+                <div class="font-header-actions">
+                    <!-- Preview Mode Toggle: Auto / Text (Aa) / Clock (12:45) -->
+                    <div id="font-preview-mode-toggle" class="font-preview-mode-toggle" role="group" aria-label="Font preview type">
+                        <button type="button" class="preview-mode-btn active" data-preview-mode="auto" title="Auto preview">
+                            <span data-i18n="font_preview_mode_auto">Auto</span>
+                        </button>
+                        <button type="button" class="preview-mode-btn" data-preview-mode="text" title="Text preview (Aa)">
+                            <i class="fa-solid fa-font"></i> <span data-i18n="font_preview_mode_text">Aa</span>
+                        </button>
+                        <button type="button" class="preview-mode-btn" data-preview-mode="clock" title="Clock preview (12:45)">
+                            <i class="fa-solid fa-clock"></i> <span data-i18n="font_preview_mode_clock">12:45</span>
+                        </button>
+                    </div>
+
+                    <button id="font-select-mode-btn" class="settings-action-btn font-select-trigger-btn" data-i18n="settings_select_fonts">
+                        <i class="fa-solid fa-list-check"></i> <span>Select</span>
+                    </button>
+                </div>
+            </div>
+
             <div id="font-select-toolbar" class="bg-select-toolbar" style="display: none;">
                 <span id="font-select-count" class="bg-select-count">0 selected</span>
                 <div class="bg-select-actions">
-                    <button id="font-select-all-btn" class="bg-select-btn" title="Select All"
-                        data-i18n-title="select_all"><i class="fa-solid fa-check-double"></i></button>
-                    <button id="font-favorite-selected-btn" class="bg-select-btn" title="Favorite"
-                        data-i18n-title="menu_favorite"><i class="fa-solid fa-star"></i></button>
-                    <button id="font-delete-selected-btn" class="bg-select-btn danger" title="Delete"
-                        data-i18n-title="menu_delete"><i class="fa-solid fa-trash"></i></button>
-                    <button id="font-select-cancel-btn" class="bg-select-btn" title="Cancel" data-i18n-title="cancel"><i
-                            class="fa-solid fa-xmark"></i></button>
+                    <button id="font-select-all-btn" class="bg-select-btn" title="Select All" data-i18n-title="select_all">
+                        <i class="fa-solid fa-check-double"></i>
+                    </button>
+                    <button id="font-favorite-selected-btn" class="bg-select-btn" title="Favorite" data-i18n-title="menu_favorite">
+                        <i class="fa-solid fa-star"></i>
+                    </button>
+                    <button id="font-delete-selected-btn" class="bg-select-btn danger" title="Delete" data-i18n-title="menu_delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <button id="font-select-cancel-btn" class="bg-select-btn" title="Cancel" data-i18n-title="cancel">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             </div>
-            <div style="margin-bottom: 0.75rem;">
-                <input type="text" id="font-search-input" data-i18n-placeholder="search" placeholder="Search fonts..."
-                    class="font-search-input" />
+
+            <!-- Search & Filter Bar -->
+            <div class="font-search-wrap">
+                <i class="fa-solid fa-magnifying-glass font-search-icon"></i>
+                <input type="text" id="font-search-input" data-i18n-placeholder="search" placeholder="Search fonts..." class="font-search-input" />
+                <button type="button" id="font-search-clear-btn" class="font-search-clear-btn" title="Clear search" data-i18n-title="font_clear_search" style="display: none;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
+
+            <!-- Category Filter Chips -->
+            <div id="font-category-filters" class="font-filter-chips">
+                <button type="button" class="font-filter-chip active" data-category="all" data-i18n="font_category_all">All</button>
+                <button type="button" class="font-filter-chip" data-category="favorites">
+                    <i class="fa-solid fa-star"></i> <span data-i18n="font_category_favorites">Favorites</span>
+                </button>
+                <button type="button" class="font-filter-chip" data-category="modern" data-i18n="font_category_modern">Modern (Sans)</button>
+                <button type="button" class="font-filter-chip" data-category="clock" data-i18n="font_category_clock">Clock / Sci-Fi</button>
+                <button type="button" class="font-filter-chip" data-category="mono" data-i18n="font_category_mono">Monospace / Code</button>
+                <button type="button" class="font-filter-chip" data-category="serif" data-i18n="font_category_serif">Serif & Script</button>
+                <button type="button" class="font-filter-chip" data-category="pixel" data-i18n="font_category_pixel">Pixel & Retro</button>
+                <button type="button" class="font-filter-chip" data-category="custom" data-i18n="font_category_custom">Custom & Local</button>
+            </div>
+
             <div id="font-grid" class="font-grid"></div>
-            <small class="setting-hint" data-i18n="settings_font_restriction_note"
-                style="margin-top: 0.75rem; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-circle-info"></i> Note: Some custom fonts (Electroharmonix, Anurati,
-                Reiko, Aquire, Blanka, etc.) only apply to Clock & Date.
+
+            <small class="setting-hint" data-i18n="settings_font_restriction_note" style="margin-top: 0.75rem; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-circle-info"></i> Note: Some custom fonts (Electroharmonix, Anurati, Reiko, Aquire, Blanka, etc.) only apply to Clock & Date.
             </small>
         </div>
 
-        <div class="setting-group">
-            <label data-i18n="settings_custom_font" for="custom-font-input"><i class="fa-solid fa-font"></i> Custom
-                Google Font</label>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <input type="text" id="custom-font-input" data-i18n-placeholder="settings_custom_font_placeholder"
-                    placeholder="Enter font name (e.g., Pacifico)" class="custom-font-input" />
+        <!-- Card 3: Custom Google Font -->
+        <div class="setting-group settings-card">
+            <div class="setting-label">
+                <i class="fa-brands fa-google"></i> <span data-i18n="settings_custom_font">Custom Google Font</span>
+            </div>
+            
+            <div class="custom-font-input-wrap">
+                <input type="text" id="custom-font-input" data-i18n-placeholder="settings_custom_font_placeholder" placeholder="Enter font name (e.g., Pacifico)" class="custom-font-input" />
                 <div class="custom-font-btn-row">
-                    <button id="load-custom-font-btn" class="custom-font-action-btn custom-font-load-btn"
-                        data-i18n="settings_load_font">
-                        <i class="fa-solid fa-cloud-arrow-down"></i>
-                        <span>Load</span>
+                    <button id="load-custom-font-btn" class="custom-font-action-btn custom-font-load-btn" data-i18n="settings_load_font">
+                        <i class="fa-solid fa-eye"></i> <span>Load</span>
                     </button>
-                    <button id="save-font-btn" class="custom-font-action-btn custom-font-save-btn"
-                        data-i18n="settings_save_font">
-                        <i class="fa-solid fa-bookmark"></i>
-                        <span>Save</span>
+                    <button id="save-font-btn" class="custom-font-action-btn custom-font-save-btn" data-i18n="settings_save_font">
+                        <i class="fa-solid fa-bookmark"></i> <span>Save</span>
                     </button>
                 </div>
             </div>
-            <small class="setting-hint" data-i18n="settings_custom_font_hint">Enter exact font name from Google
-                Fonts</small>
+
+            <!-- Live Test Preview Box -->
+            <div id="custom-font-preview-box" class="custom-font-preview-card" style="display: none;">
+                <div class="custom-font-preview-label" data-i18n="font_test_preview_label">Live Font Test Preview</div>
+                <div id="custom-font-preview-text" class="custom-font-preview-content">The quick brown fox jumps over the lazy dog 12345</div>
+            </div>
+
+            <!-- Trending suggestions -->
+            <div class="font-suggestions-wrap">
+                <span class="font-suggestions-label" data-i18n="font_popular_suggestions">Popular suggestions:</span>
+                <div id="custom-font-suggestions" class="font-suggest-chips">
+                    <button type="button" class="font-suggest-chip" data-font="Caveat">Caveat</button>
+                    <button type="button" class="font-suggest-chip" data-font="Cinzel">Cinzel</button>
+                    <button type="button" class="font-suggest-chip" data-font="Bungee">Bungee</button>
+                    <button type="button" class="font-suggest-chip" data-font="Comfortaa">Comfortaa</button>
+                    <button type="button" class="font-suggest-chip" data-font="Righteous">Righteous</button>
+                    <button type="button" class="font-suggest-chip" data-font="Press Start 2P">Press Start 2P</button>
+                </div>
+            </div>
+
+            <small class="setting-hint" data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
 
             <div id="saved-fonts-container" style="margin-top: 0.75rem; display: none;">
                 <div data-i18n="settings_saved_fonts" class="setting-label">Saved Fonts</div>
                 <div id="saved-fonts-list" class="saved-fonts-list-wrap"></div>
             </div>
 
-            <small class="setting-hint" style="margin-top: 12px; display: block;">
-                <a href="https://fonts.google.com/" target="_blank" rel="noopener" style="color: white;"
-                    data-i18n="settings_google_fonts_info">Get any google font here
+            <small class="setting-hint" style="margin-top: 10px; display: block;">
+                <a href="https://fonts.google.com/" target="_blank" rel="noopener" style="color: var(--accent-color, #a8c0ff); text-decoration: underline;" data-i18n="settings_google_fonts_info">
+                    Get any google font here
                 </a>
             </small>
         </div>
 
-        <div class="setting-group">
-            <div class="setting-label"><i class="fa-solid fa-laptop-code"></i> <span
-                    data-i18n="settings_local_fonts">Browse Local Fonts</span></div>
-            <button id="browse-local-fonts-btn" class="browse-local-fonts-action-btn browse-local-fonts-btn-styled"
-                data-i18n="settings_local_fonts">
-                <i class="fa-solid fa-laptop-code"></i> Browse Local Fonts
+        <!-- Card 4: Local Fonts -->
+        <div class="setting-group settings-card">
+            <div class="setting-label">
+                <i class="fa-solid fa-laptop-code"></i> <span data-i18n="settings_local_fonts">Browse Local Fonts</span>
+            </div>
+            <button id="browse-local-fonts-btn" class="browse-local-fonts-action-btn browse-local-fonts-btn-styled" data-i18n="settings_local_fonts">
+                <i class="fa-solid fa-cloud-arrow-up"></i> <span>Browse Local Fonts</span>
             </button>
-            <p class="setting-hint" data-i18n="settings_local_fonts_hint">Use fonts installed on your computer</p>
+            <p class="setting-hint" data-i18n="settings_local_fonts_hint" style="margin-top: 6px;">Use fonts installed on your computer (.ttf, .otf, .woff, .woff2)</p>
         </div>
     </div>
 </div>

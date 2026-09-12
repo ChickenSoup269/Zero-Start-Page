@@ -5197,6 +5197,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.backgroundMediaQualitySelect.value =
         settings.backgroundMediaQuality || "balanced"
     }
+    if (DOM.freePhotosQualitySelect) {
+      DOM.freePhotosQualitySelect.value =
+        settings.backgroundMediaQuality || "balanced"
+    }
     DOM.bgPosXInput.value = settings.bgPositionX || 50
     DOM.bgPosXValue.textContent = `${DOM.bgPosXInput.value}%`
     DOM.bgPosYInput.value = settings.bgPositionY || 50
@@ -5356,6 +5360,44 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.driveAutoBackupInterval) {
       DOM.driveAutoBackupInterval.value =
         settings.driveAutoBackupInterval || "none"
+    }
+
+    // GitHub Gist Sync
+    if (DOM.githubSyncCheckbox) {
+      DOM.githubSyncCheckbox.checked = settings.githubSync === true
+    }
+    if (DOM.githubSyncOptionsWrapper) {
+      DOM.githubSyncOptionsWrapper.style.display =
+        settings.githubSync === true ? "block" : "none"
+    }
+    if (DOM.githubSyncTokenInput) {
+      DOM.githubSyncTokenInput.value = settings.githubSyncToken || ""
+    }
+    if (DOM.githubSyncGistIdInput) {
+      DOM.githubSyncGistIdInput.value = settings.githubSyncGistId || ""
+    }
+    if (DOM.githubAutoBackupInterval) {
+      DOM.githubAutoBackupInterval.value =
+        settings.githubAutoBackupInterval || "none"
+    }
+
+    // GitLab Snippet Sync
+    if (DOM.gitlabSyncCheckbox) {
+      DOM.gitlabSyncCheckbox.checked = settings.gitlabSync === true
+    }
+    if (DOM.gitlabSyncOptionsWrapper) {
+      DOM.gitlabSyncOptionsWrapper.style.display =
+        settings.gitlabSync === true ? "block" : "none"
+    }
+    if (DOM.gitlabSyncTokenInput) {
+      DOM.gitlabSyncTokenInput.value = settings.gitlabSyncToken || ""
+    }
+    if (DOM.gitlabSyncSnippetIdInput) {
+      DOM.gitlabSyncSnippetIdInput.value = settings.gitlabSyncSnippetId || ""
+    }
+    if (DOM.gitlabAutoBackupInterval) {
+      DOM.gitlabAutoBackupInterval.value =
+        settings.gitlabAutoBackupInterval || "none"
     }
 
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
@@ -6745,16 +6787,19 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
+    const isFirefox =
+      /firefox|fxios/i.test(navigator.userAgent) ||
+      typeof InstallTrigger !== "undefined"
+    const isAudioReactiveActive = !isFirefox && settings.musicRealAudioReactive === true
+
     if (DOM.musicRealAudioReactiveCheckbox) {
-      DOM.musicRealAudioReactiveCheckbox.checked =
-        settings.musicRealAudioReactive === true
+      DOM.musicRealAudioReactiveCheckbox.checked = isAudioReactiveActive
     }
     if (DOM.lcpMusicRealAudioReactive) {
-      DOM.lcpMusicRealAudioReactive.checked =
-        settings.musicRealAudioReactive === true
+      DOM.lcpMusicRealAudioReactive.checked = isAudioReactiveActive
     }
     chrome.storage?.local?.set({
-      musicRealAudioReactive: settings.musicRealAudioReactive === true,
+      musicRealAudioReactive: isAudioReactiveActive,
     })
     if (DOM.musicPlayerUseDefaultColorMode) {
       if (settings.musicPlayerUseDefaultColor === "thumbnail") {
