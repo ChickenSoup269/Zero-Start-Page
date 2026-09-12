@@ -235,6 +235,15 @@ export let resetActiveEffectBtn = document.getElementById("reset-active-effect-b
 export let performanceModeBtns = document.querySelectorAll(
   ".performance-mode-btn",
 )
+export let effectReduceMotionSelect = document.getElementById(
+  "effect-reduce-motion-select",
+)
+export let effectIntensitySlider = document.getElementById(
+  "effect-intensity-slider",
+)
+export let effectIntensityVal = document.getElementById(
+  "effect-intensity-val",
+)
 export let effectMouseInteractionToggle = document.getElementById(
   "effect-mouse-interaction-toggle",
 )
@@ -1393,6 +1402,10 @@ export let clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )
 export let pageTitleInput = document.getElementById("page-title-input")
+export let pageTitleClearBtn = document.getElementById("page-title-clear-btn")
+export let pageTitleCharCount = document.getElementById("page-title-char-count")
+export let pageTitleCounterBadge = document.getElementById("page-title-counter-badge")
+export let pageTitleLengthWarning = document.getElementById("page-title-length-warning")
 export let tabIconInput = document.getElementById("tab-icon-input")
 export let tabIconFileInput = document.getElementById("tab-icon-file-input")
 export let tabIconUploadBtn = document.getElementById("tab-icon-upload-btn")
@@ -2773,6 +2786,11 @@ export function refreshDOMReferences() {
   )
   resetActiveEffectBtn = document.getElementById("reset-active-effect-btn")
   performanceModeBtns = document.querySelectorAll(".performance-mode-btn")
+  effectReduceMotionSelect = document.getElementById(
+    "effect-reduce-motion-select",
+  )
+  effectIntensitySlider = document.getElementById("effect-intensity-slider")
+  effectIntensityVal = document.getElementById("effect-intensity-val")
   effectMouseInteractionToggle = document.getElementById(
     "effect-mouse-interaction-toggle",
   )
@@ -3583,6 +3601,10 @@ export function refreshDOMReferences() {
   )
   clockFontTargetSelect = document.getElementById("clock-font-target-select")
   pageTitleInput = document.getElementById("page-title-input")
+  pageTitleClearBtn = document.getElementById("page-title-clear-btn")
+  pageTitleCharCount = document.getElementById("page-title-char-count")
+  pageTitleCounterBadge = document.getElementById("page-title-counter-badge")
+  pageTitleLengthWarning = document.getElementById("page-title-length-warning")
   tabIconInput = document.getElementById("tab-icon-input")
   tabIconFileInput = document.getElementById("tab-icon-file-input")
   tabIconUploadBtn = document.getElementById("tab-icon-upload-btn")

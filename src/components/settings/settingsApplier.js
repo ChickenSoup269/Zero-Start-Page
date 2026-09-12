@@ -23,6 +23,10 @@ import {
 } from "../../utils/colors.js"
 import { fadeToggle } from "../../utils/dom.js"
 import {
+  resolveDynamicTokens,
+  startTitleAutoUpdater,
+} from "../../utils/dynamicTokens.js"
+import {
   isIdbImage,
   isIdbVideo,
   isIdbMedia,
@@ -494,21 +498,55 @@ function getPerformanceProfile(settings) {
     navigator.hardwareConcurrency <= 4
   const smallScreen =
     Math.min(window.innerWidth || 0, window.innerHeight || 0) <= 720
+
+  const reduceMotionSetting = settings.reduceMotion || "system"
+  const reduceMotion =
+    reduceMotionSetting === "always" ||
+    (reduceMotionSetting === "system" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
+
+  const intensity = Number.isFinite(settings.effectIntensity)
+    ? Math.max(20, Math.min(100, settings.effectIntensity))
+    : 100
+
   const shouldSave =
     mode === "low" ||
     mode === "battery" ||
+    reduceMotion ||
+    intensity < 60 ||
     (mode === "auto" && (saveData || lowCores || smallScreen || _perfLagging))
 
   const level =
-    mode === "low"
+    mode === "low" || intensity <= 30
       ? "low"
       : shouldSave
         ? "battery"
-        : mode === "quality"
+        : mode === "quality" && intensity >= 90 && !reduceMotion
           ? "quality"
           : "balanced"
 
-  return { mode, shouldSave, level }
+  const intensityFactor = intensity / 100
+  const densityScale = Math.max(
+    0.15,
+    (level === "low" ? 0.35 : level === "battery" ? 0.6 : 1.0) * intensityFactor,
+  )
+  const speedScale = Math.max(
+    0.2,
+    (reduceMotion ? 0.35 : level === "low" ? 0.45 : level === "battery" ? 0.7 : 1.0) *
+      (intensity < 50 ? 0.65 : 1.0),
+  )
+  const targetFps = reduceMotion ? 20 : level === "low" ? 20 : level === "battery" ? 30 : 60
+
+  return {
+    mode,
+    shouldSave,
+    level,
+    reduceMotion,
+    intensity,
+    densityScale,
+    speedScale,
+    targetFps,
+  }
 }
 
 function trimMediaCacheForProfile(settings) {
@@ -755,7 +793,38 @@ function withPerformanceBudget(settings, type, options) {
 function applyEffectPerformanceBudget(effect, settings) {
   if (!effect) return
 
-  const { mode, shouldSave, level } = getPerformanceProfile(settings)
+  const profile = getPerformanceProfile(settings)
+  const { targetFps, densityScale } = profile
+
+  if (typeof effect.setPerformanceBudget === "function") {
+    effect.setPerformanceBudget(profile)
+  }
+
+  if (
+    Number.isFinite(effect.bubbleCount) &&
+    !Number.isFinite(effect._performanceBaseBubbleCount)
+  ) {
+    effect._performanceBaseBubbleCount = effect.bubbleCount
+  }
+  if (Number.isFinite(effect._performanceBaseBubbleCount)) {
+    effect.bubbleCount = Math.max(
+      8,
+      Math.round(effect._performanceBaseBubbleCount * densityScale),
+    )
+  }
+
+  if (
+    Number.isFinite(effect.snowflakeCount) &&
+    !Number.isFinite(effect._performanceBaseSnowflakeCount)
+  ) {
+    effect._performanceBaseSnowflakeCount = effect.snowflakeCount
+  }
+  if (Number.isFinite(effect._performanceBaseSnowflakeCount)) {
+    effect.snowflakeCount = Math.max(
+      20,
+      Math.round(effect._performanceBaseSnowflakeCount * densityScale),
+    )
+  }
 
   if (
     Number.isFinite(effect.fps) &&
@@ -767,15 +836,7 @@ function applyEffectPerformanceBudget(effect, settings) {
 
   const baseFps = effect._performanceBaseFps
   if (Number.isFinite(baseFps) && baseFps > 0) {
-    const nextFps =
-      level === "low"
-        ? Math.min(baseFps, 20)
-        : mode === "battery"
-          ? Math.min(baseFps, 30)
-          : shouldSave
-            ? Math.min(baseFps, 36)
-            : baseFps
-
+    const nextFps = Math.min(baseFps, targetFps)
     effect.fps = nextFps
     if ("fpsInterval" in effect) effect.fpsInterval = 1000 / nextFps
   }
@@ -790,14 +851,7 @@ function applyEffectPerformanceBudget(effect, settings) {
 
   const baseTargetFps = effect._performanceBaseTargetFps
   if (Number.isFinite(baseTargetFps) && baseTargetFps > 0) {
-    effect.targetFps =
-      level === "low"
-        ? Math.min(baseTargetFps, 20)
-        : mode === "battery"
-          ? Math.min(baseTargetFps, 30)
-          : shouldSave
-            ? Math.min(baseTargetFps, 36)
-            : baseTargetFps
+    effect.targetFps = Math.min(baseTargetFps, targetFps)
   }
 }
 
@@ -903,30 +957,8 @@ function createApplySettings(effectInstances) {
     let shouldUseLiquidEther = false
     let shouldUseSplashCursor = false
 
-    // 1. Page Title & Layout Preset
-    let resolvedPageTitle = settings.pageTitle || "Start Page"
-    if (resolvedPageTitle.includes("{time}")) {
-      const now = new Date()
-      resolvedPageTitle = resolvedPageTitle.replace(
-        /{time}/gi,
-        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
-      )
-    }
-    if (resolvedPageTitle.includes("{date}")) {
-      const now = new Date()
-      resolvedPageTitle = resolvedPageTitle.replace(
-        /{date}/gi,
-        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
-      )
-    }
-    if (resolvedPageTitle.includes("{music}")) {
-      const musicTitle = window._currentPlayingTrackTitle || ""
-      resolvedPageTitle = resolvedPageTitle.replace(
-        /{music}/gi,
-        musicTitle ? `🎵 ${musicTitle}` : "",
-      )
-    }
-    document.title = resolvedPageTitle
+    // 1. Page Title & Real-time Auto-Updater
+    startTitleAutoUpdater(() => getSettings()?.pageTitle || "Start Page")
     document.body.setAttribute(
       "data-layout-preset",
       settings.layoutPreset || "default",
@@ -1097,6 +1129,12 @@ function createApplySettings(effectInstances) {
       "perf-hover-mode",
       settings.perfHoverMode === true,
     )
+    const reduceMotionSetting = settings.reduceMotion || "system"
+    const shouldReduceMotion =
+      reduceMotionSetting === "always" ||
+      (reduceMotionSetting === "system" &&
+        window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
+    document.body.classList.toggle("reduce-motion", Boolean(shouldReduceMotion))
 
     // Apply Widget Skins
     const widgetSkinsMap = {
@@ -4783,8 +4821,29 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.analogBlurBgCheckbox)
       DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
 
-    if (DOM.pageTitleInput)
-      DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
+    if (DOM.pageTitleInput) {
+      const titleVal = settings.pageTitle || "Start Page"
+      DOM.pageTitleInput.value = titleVal
+      if (DOM.pageTitleClearBtn) {
+        DOM.pageTitleClearBtn.classList.toggle("hidden", !titleVal || titleVal === "Start Page")
+      }
+      if (DOM.pageTitleCharCount) {
+        DOM.pageTitleCharCount.textContent = String(titleVal.length)
+      }
+      if (DOM.pageTitleCounterBadge) {
+        DOM.pageTitleCounterBadge.classList.toggle("warning", titleVal.length > 40)
+      }
+      if (DOM.pageTitleLengthWarning) {
+        DOM.pageTitleLengthWarning.classList.toggle("hidden", titleVal.length <= 40)
+      }
+      if (DOM.ptTabTitlePreview) {
+        DOM.ptTabTitlePreview.textContent = resolveDynamicTokens(titleVal, settings, { isPreview: true })
+      }
+      if (DOM.ptTabAudioIcon) {
+        const isMusicPlaying = Boolean(window._currentPlayingTrackTitle)
+        DOM.ptTabAudioIcon.classList.toggle("hidden", !isMusicPlaying)
+      }
+    }
     if (DOM.pageTitleColorInput)
       DOM.pageTitleColorInput.value = settings.pageTitleColor || "#ffffff"
     if (DOM.tabIconBgColorInput)
@@ -4798,10 +4857,13 @@ function createUpdateSettingsInputs(effectInstances) {
         ? ""
         : settings.tabIcon || ""
     }
-    effectInstances.renderTabIconPreview(
-      settings.tabIcon || settings.tabIconFaClass || "",
-      DOM.tabIconPreview,
-    )
+    const tabIconVal = settings.tabIcon || settings.tabIconFaClass || ""
+    if (typeof effectInstances.renderTabIconPreview === "function") {
+      effectInstances.renderTabIconPreview(tabIconVal, DOM.tabIconPreview)
+      if (DOM.ptTabFaviconPreview) {
+        effectInstances.renderTabIconPreview(tabIconVal || "SP", DOM.ptTabFaviconPreview)
+      }
+    }
     if (DOM.tabIconClearBtn) {
       DOM.tabIconClearBtn.hidden = !Boolean(
         settings.tabIcon || settings.tabIconFaClass,
@@ -5296,6 +5358,18 @@ function createUpdateSettingsInputs(effectInstances) {
         btn.dataset.mode === (settings.performanceMode || "auto"),
       )
     })
+    if (DOM.effectReduceMotionSelect) {
+      DOM.effectReduceMotionSelect.value = settings.reduceMotion || "system"
+    }
+    if (DOM.effectIntensitySlider) {
+      const intensity = Number.isFinite(settings.effectIntensity)
+        ? settings.effectIntensity
+        : 100
+      DOM.effectIntensitySlider.value = intensity
+      if (DOM.effectIntensityVal) {
+        DOM.effectIntensityVal.textContent = `${intensity}%`
+      }
+    }
     if (DOM.effectMouseInteractionToggle) {
       DOM.effectMouseInteractionToggle.checked =
         settings.effectMouseInteraction !== false

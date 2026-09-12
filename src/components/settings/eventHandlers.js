@@ -97,6 +97,10 @@ import {
 } from "./tabIcon.js"
 import { initFaPicker } from "./faPicker.js"
 import {
+  resolveDynamicTokens,
+  startTitleAutoUpdater,
+} from "../../utils/dynamicTokens.js"
+import {
   applyAccentFromCurrentBackground,
   applyAccentFromMusicThumbnail,
 } from "./dynamicAccent.js"
@@ -5925,8 +5929,57 @@ export function setupGeneralEventHandlers(
         item.classList.toggle("active", item.dataset.mode === mode),
       )
       handleSettingUpdate("performanceMode", mode)
+      if (typeof window.appApplySettings === "function") {
+        window.appApplySettings()
+      }
     })
   })
+
+  if (DOM.effectReduceMotionSelect) {
+    DOM.effectReduceMotionSelect.addEventListener("change", (e) => {
+      const mode = e.target.value
+      handleSettingUpdate("reduceMotion", mode)
+      const shouldReduce =
+        mode === "always" ||
+        (mode === "system" &&
+          window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
+      document.body.classList.toggle("reduce-motion", Boolean(shouldReduce))
+      if (typeof window.appApplySettings === "function") {
+        window.appApplySettings()
+      }
+    })
+
+    try {
+      const motionMql = window.matchMedia?.("(prefers-reduced-motion: reduce)")
+      motionMql?.addEventListener?.("change", (e) => {
+        const currentMode = getSettings()?.reduceMotion || "system"
+        if (currentMode === "system") {
+          document.body.classList.toggle("reduce-motion", Boolean(e.matches))
+          if (typeof window.appApplySettings === "function") {
+            window.appApplySettings()
+          }
+        }
+      })
+    } catch {
+      // Ignore if not supported in environment
+    }
+  }
+
+  if (DOM.effectIntensitySlider) {
+    DOM.effectIntensitySlider.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10)
+      if (DOM.effectIntensityVal) {
+        DOM.effectIntensityVal.textContent = `${val}%`
+      }
+    })
+    DOM.effectIntensitySlider.addEventListener("change", (e) => {
+      const val = parseInt(e.target.value, 10)
+      handleSettingUpdate("effectIntensity", val)
+      if (typeof window.appApplySettings === "function") {
+        window.appApplySettings()
+      }
+    })
+  }
 
   if (DOM.effectMouseInteractionToggle) {
     DOM.effectMouseInteractionToggle.addEventListener("change", (e) => {
@@ -7422,43 +7475,102 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  const updateResolvedDocumentTitle = (rawTitle) => {
-    let resolved = rawTitle || "Start Page"
-    if (resolved.includes("{time}")) {
-      const now = new Date()
-      resolved = resolved.replace(
-        /{time}/gi,
-        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`,
-      )
+  const updatePageTitleUI = (rawVal) => {
+    const val = rawVal || ""
+    if (DOM.pageTitleClearBtn) {
+      DOM.pageTitleClearBtn.classList.toggle("hidden", !val || val === "Start Page")
     }
-    if (resolved.includes("{date}")) {
-      const now = new Date()
-      resolved = resolved.replace(
-        /{date}/gi,
-        `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`,
-      )
+    if (DOM.pageTitleCharCount) {
+      DOM.pageTitleCharCount.textContent = String(val.length)
     }
-    if (resolved.includes("{music}")) {
-      const musicTitle = window._currentPlayingTrackTitle || ""
-      resolved = resolved.replace(
-        /{music}/gi,
-        musicTitle ? `🎵 ${musicTitle}` : "",
-      )
+    if (DOM.pageTitleCounterBadge) {
+      DOM.pageTitleCounterBadge.classList.toggle("warning", val.length > 40)
     }
-    document.title = resolved
+    if (DOM.pageTitleLengthWarning) {
+      DOM.pageTitleLengthWarning.classList.toggle("hidden", val.length <= 40)
+    }
+    const resolved = resolveDynamicTokens(val || "Start Page", getSettings(), { isPreview: true })
+    if (DOM.ptTabTitlePreview) {
+      DOM.ptTabTitlePreview.textContent = resolved || "Start Page"
+    }
+    if (DOM.ptTabAudioIcon) {
+      const isMusicPlaying = Boolean(window._currentPlayingTrackTitle)
+      DOM.ptTabAudioIcon.classList.toggle("hidden", !isMusicPlaying)
+    }
   }
 
   DOM.pageTitleInput?.addEventListener("input", () => {
-    const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
+    const newTitle = DOM.pageTitleInput.value
     updateSetting("pageTitle", newTitle)
     saveSettings()
-    updateResolvedDocumentTitle(newTitle)
+    updatePageTitleUI(newTitle)
+    startTitleAutoUpdater(
+      () => getSettings()?.pageTitle || "Start Page",
+      (resolved) => {
+        if (DOM.ptTabTitlePreview) {
+          DOM.ptTabTitlePreview.textContent = resolved || "Start Page"
+        }
+      },
+    )
   })
 
-  // Delegated handler for quick token chips & custom title presets
+  DOM.pageTitleClearBtn?.addEventListener("click", () => {
+    if (!DOM.pageTitleInput) return
+    DOM.pageTitleInput.value = "Start Page"
+    DOM.pageTitleInput.dispatchEvent(new Event("input", { bubbles: true }))
+    DOM.pageTitleInput.focus()
+  })
+
+  // Helper to sync tab icon previews across settings panel & mock tab
+  const updateTabIconAndPreviews = (val) => {
+    applyTabIcon(val)
+    renderTabIconPreview(val, DOM.tabIconPreview)
+    if (DOM.ptTabFaviconPreview) {
+      renderTabIconPreview(val || "SP", DOM.ptTabFaviconPreview)
+    }
+  }
+
+  // Delegated handler for quick token chips, title presets, & custom title presets
   document
     .getElementById("settings-sidebar")
     ?.addEventListener("click", (e) => {
+      // 1. Page Title Presets
+      const titlePresetBtn = e.target.closest(".pt-preset-pill")
+      if (titlePresetBtn && DOM.pageTitleInput) {
+        const preset = titlePresetBtn.getAttribute("data-title-preset")
+        if (preset) {
+          DOM.pageTitleInput.value = preset
+          DOM.pageTitleInput.dispatchEvent(new Event("input", { bubbles: true }))
+          DOM.pageTitleInput.focus()
+        }
+        return
+      }
+
+      // 2. Favicon Presets (Font Awesome icon class or text)
+      const favPresetBtn = e.target.closest(".pt-fav-preset")
+      if (favPresetBtn) {
+        const fav = favPresetBtn.getAttribute("data-fav")
+        if (fav) {
+          if (fav.startsWith("fa-") || fav.startsWith("fas ") || fav.startsWith("fa-solid") || fav.startsWith("fa-regular")) {
+            updateSetting("tabIconFaClass", fav)
+            updateSetting("tabIcon", fav)
+            saveSettings()
+            if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+            if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = false
+            updateTabIconAndPreviews(fav)
+          } else {
+            updateSetting("tabIconFaClass", "")
+            updateSetting("tabIcon", fav)
+            saveSettings()
+            if (DOM.tabIconInput) DOM.tabIconInput.value = fav
+            if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = !fav
+            updateTabIconAndPreviews(fav)
+          }
+        }
+        return
+      }
+
+      // 3. Token chips
       const tokenChip = e.target.closest(".token-chip")
       if (tokenChip) {
         const token = tokenChip.getAttribute("data-token")
@@ -7480,6 +7592,7 @@ export function setupGeneralEventHandlers(
         return
       }
 
+      // 4. Custom title presets
       const presetBtn = e.target.closest(".preset-pill-btn")
       if (presetBtn) {
         const presetText = presetBtn.getAttribute("data-preset-text")
@@ -7488,6 +7601,48 @@ export function setupGeneralEventHandlers(
           titleInput1.value = presetText
           titleInput1.dispatchEvent(new Event("input", { bubbles: true }))
         }
+        return
+      }
+
+      // 5. Dynamic Tokens Accordion Toggle
+      const tokensToggleBtn = e.target.closest("#pt-tokens-toggle-btn")
+      if (tokensToggleBtn) {
+        const accordion = tokensToggleBtn.closest(".pt-tokens-accordion")
+        if (accordion) {
+          const isExpanded = accordion.classList.toggle("expanded")
+          tokensToggleBtn.setAttribute("aria-expanded", String(isExpanded))
+        }
+        return
+      }
+
+      // 6. Reset all title & icon settings to default
+      const resetAllBtn = e.target.closest("#page-title-reset-all-btn")
+      if (resetAllBtn) {
+        // Reset page title
+        updateSetting("pageTitle", "Start Page")
+        if (DOM.pageTitleInput) {
+          DOM.pageTitleInput.value = "Start Page"
+          updatePageTitleUI("Start Page")
+        }
+        // Reset tab icon
+        updateSetting("tabIcon", "")
+        updateSetting("tabIconFaClass", "")
+        updateSetting("tabIconBgColor", "#1e1e32")
+        updateSetting("tabIconTextColor", "#ffffff")
+        if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+        if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
+        if (DOM.tabIconBgColorInput) DOM.tabIconBgColorInput.value = "#1e1e32"
+        if (DOM.tabIconTextColorInput) DOM.tabIconTextColorInput.value = "#ffffff"
+        saveSettings()
+        updateTabIconAndPreviews("")
+        startTitleAutoUpdater(
+          () => "Start Page",
+          (resolved) => {
+            if (DOM.ptTabTitlePreview) {
+              DOM.ptTabTitlePreview.textContent = resolved || "Start Page"
+            }
+          },
+        )
         return
       }
     })
@@ -7504,15 +7659,13 @@ export function setupGeneralEventHandlers(
   DOM.tabIconBgColorInput?.addEventListener("change", () => {
     updateSetting("tabIconBgColor", DOM.tabIconBgColorInput.value)
     saveSettings()
-    applyTabIcon(getSettings().tabIcon)
-    renderTabIconPreview(getSettings().tabIcon, DOM.tabIconPreview)
+    updateTabIconAndPreviews(getSettings().tabIcon)
   })
 
   DOM.tabIconTextColorInput?.addEventListener("change", () => {
     updateSetting("tabIconTextColor", DOM.tabIconTextColorInput.value)
     saveSettings()
-    applyTabIcon(getSettings().tabIcon)
-    renderTabIconPreview(getSettings().tabIcon, DOM.tabIconPreview)
+    updateTabIconAndPreviews(getSettings().tabIcon)
   })
 
   const fileToDataUrl = (file) =>
@@ -7558,8 +7711,7 @@ export function setupGeneralEventHandlers(
     updateSetting("tabIcon", chars)
     updateSetting("tabIconFaClass", "") // clear FA icon when typing text
     saveSettings()
-    applyTabIcon(chars)
-    renderTabIconPreview(chars, DOM.tabIconPreview)
+    updateTabIconAndPreviews(chars)
     if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = !chars
   })
 
@@ -7574,8 +7726,7 @@ export function setupGeneralEventHandlers(
     if (DOM.tabIconInput) DOM.tabIconInput.value = ""
     if (DOM.tabIconFileInput) DOM.tabIconFileInput.value = ""
     if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
-    applyTabIcon("")
-    renderTabIconPreview("", DOM.tabIconPreview)
+    updateTabIconAndPreviews("")
   })
 
   DOM.tabIconFileInput?.addEventListener("change", async () => {
@@ -7593,8 +7744,7 @@ export function setupGeneralEventHandlers(
       saveSettings()
       if (DOM.tabIconInput) DOM.tabIconInput.value = ""
       if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = false
-      applyTabIcon(iconDataUrl)
-      renderTabIconPreview(iconDataUrl, DOM.tabIconPreview)
+      updateTabIconAndPreviews(iconDataUrl)
     } catch (err) {
       console.error("Failed to load tab icon:", err)
       showAlert("Could not use this image as a tab icon.")
@@ -7608,10 +7758,8 @@ export function setupGeneralEventHandlers(
     const isTransparent = DOM.tabIconTransparentBgCheckbox.checked
     updateSetting("tabIconTransparentBg", isTransparent)
     saveSettings()
-    applyTabIcon(getSettings().tabIcon || getSettings().tabIconFaClass)
-    renderTabIconPreview(
+    updateTabIconAndPreviews(
       getSettings().tabIcon || getSettings().tabIconFaClass,
-      DOM.tabIconPreview,
     )
   })
 
@@ -7625,8 +7773,7 @@ export function setupGeneralEventHandlers(
       saveSettings()
       if (DOM.tabIconInput) DOM.tabIconInput.value = ""
       if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = false
-      applyTabIcon(faClass)
-      renderTabIconPreview(faClass, DOM.tabIconPreview)
+      updateTabIconAndPreviews(faClass)
     },
     // onClear: user cleared the FA icon
     () => {
@@ -7636,8 +7783,7 @@ export function setupGeneralEventHandlers(
       if (DOM.tabIconInput) DOM.tabIconInput.value = ""
       if (DOM.tabIconFileInput) DOM.tabIconFileInput.value = ""
       if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
-      applyTabIcon("")
-      renderTabIconPreview("", DOM.tabIconPreview)
+      updateTabIconAndPreviews("")
     },
   )
 

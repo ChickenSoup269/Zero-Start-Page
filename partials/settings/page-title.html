@@ -1,33 +1,96 @@
 <div class="setting-group page-title-card-wrap" id="page-title-group" data-settings-tab="appearance">
-    <!-- Card Header -->
+    <!-- Header -->
     <div class="pt-card-header">
         <div class="pt-card-title">
-            <i class="fa-solid fa-heading"></i>
-            <span data-i18n="settings_page_title">Page Title & Tab Icon</span>
+            <span data-i18n="settings_page_title">Tiêu đề trang & Biểu tượng Tab</span>
         </div>
-        <span class="pt-card-badge">Browser Tab</span>
+        <button type="button" class="pt-reset-default-btn" id="page-title-reset-all-btn" title="Khôi phục mặc định" data-i18n-title="settings_reset_default">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span data-i18n="settings_reset_default">Mặc định</span>
+        </button>
     </div>
 
-    <!-- Section 1: Page Title Text -->
+    <!-- Section 1: Page Title -->
     <div class="pt-section">
-        <div class="pt-section-label">
-            <i class="fa-solid fa-pen-nib"></i>
-            <span data-i18n="settings_page_title">Page Title</span>
+        <div class="pt-section-header">
+            <label for="page-title-input" class="pt-field-label" data-i18n="settings_page_title_text">Tiêu đề trang</label>
+            <span class="pt-field-hint" data-i18n="settings_page_title_subhint">Hiển thị trên thanh tab trình duyệt</span>
         </div>
-        <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
-            placeholder="Enter custom page title" class="settings-page-title-input"
-            style="width: 100%; border-radius: 8px; margin-bottom: 8px;" />
 
-        <div class="quick-token-chips" style="margin-bottom: 6px;">
-            <button type="button" class="token-chip" data-token="{time}"><i class="fa-regular fa-clock"></i>
-                {time}</button>
-            <button type="button" class="token-chip" data-token="{date}"><i class="fa-regular fa-calendar-days"></i>
-                {date}</button>
-            <button type="button" class="token-chip" data-token="{music}"><i class="fa-solid fa-music"></i>
-                {music}</button>
+        <!-- Clean Input Box with Clear & Counter -->
+        <div class="pt-input-container">
+            <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
+                placeholder="Nhập tiêu đề hoặc chèn biến dữ liệu..." class="settings-page-title-input pt-smart-input"
+                maxlength="100" spellcheck="false" />
+            <button type="button" id="page-title-clear-btn" class="pt-clear-btn hidden" title="Xóa" data-i18n-title="settings_clear">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="pt-counter-badge" id="page-title-counter-badge">
+                <span id="page-title-char-count">0</span><span class="pt-counter-limit">/40</span>
+            </div>
         </div>
-        <small class="setting-hint" data-i18n="settings_page_title_hint">Appears in browser tab. Tap chips to insert
-            dynamic tokens.</small>
+
+        <!-- Truncation warning banner -->
+        <div id="page-title-length-warning" class="pt-length-warning hidden">
+            <i class="fa-solid fa-circle-info"></i>
+            <span data-i18n="settings_page_title_length_warning">Tiêu đề dài quá 40 ký tự có thể bị trình duyệt hiển thị dấu ba chấm (...).</span>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="pt-presets-section">
+            <span class="pt-sublabel" data-i18n="settings_page_title_presets">Mẫu gợi ý:</span>
+            <div class="pt-presets-row">
+                <button type="button" class="pt-preset-pill" data-title-preset="Start Page">Start Page</button>
+                <button type="button" class="pt-preset-pill" data-title-preset="{time} • {date}">{time} • {date}</button>
+                <button type="button" class="pt-preset-pill" data-title-preset="{greeting}, {name}">{greeting}, {name}</button>
+                <button type="button" class="pt-preset-pill" data-title-preset="{time} | {weather}">{time} | {weather}</button>
+                <button type="button" class="pt-preset-pill" data-title-preset="{music}">{music}</button>
+                <button type="button" class="pt-preset-pill" data-title-preset="Focus">Focus</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Tokens Accordion -->
+        <div class="pt-tokens-accordion">
+            <button type="button" class="pt-tokens-toggle-btn" id="pt-tokens-toggle-btn" aria-expanded="false">
+                <span class="pt-tokens-toggle-left" data-i18n="settings_page_title_tokens">Chèn biến dữ liệu tự động</span>
+                <i class="fa-solid fa-chevron-down pt-tokens-toggle-chevron"></i>
+            </button>
+
+            <div class="pt-tokens-body" id="pt-tokens-body">
+                <div class="pt-token-categories">
+                    <!-- Time & Date -->
+                    <div class="pt-token-group">
+                        <span class="pt-token-category-tag" data-i18n="settings_token_time">Thời gian:</span>
+                        <div class="quick-token-chips">
+                            <button type="button" class="token-chip" data-token="{time}" title="Giờ:Phút (24h)">{time}</button>
+                            <button type="button" class="token-chip" data-token="{time12}" title="Giờ AM/PM">{time12}</button>
+                            <button type="button" class="token-chip" data-token="{time_sec}" title="Giờ:Phút:Giây">{time_sec}</button>
+                            <button type="button" class="token-chip" data-token="{date}" title="Ngày/Tháng">{date}</button>
+                            <button type="button" class="token-chip" data-token="{date_full}" title="Ngày/Tháng/Năm">{date_full}</button>
+                            <button type="button" class="token-chip" data-token="{weekday}" title="Thứ trong tuần">{weekday}</button>
+                        </div>
+                    </div>
+
+                    <!-- Personal & Context -->
+                    <div class="pt-token-group">
+                        <span class="pt-token-category-tag" data-i18n="settings_token_personal">Cá nhân:</span>
+                        <div class="quick-token-chips">
+                            <button type="button" class="token-chip" data-token="{greeting}" title="Lời chào buổi sáng/chiều/tối">{greeting}</button>
+                            <button type="button" class="token-chip" data-token="{name}" title="Tên người dùng cài đặt">{name}</button>
+                        </div>
+                    </div>
+
+                    <!-- Media & Weather -->
+                    <div class="pt-token-group">
+                        <span class="pt-token-category-tag" data-i18n="settings_token_utilities">Tiện ích:</span>
+                        <div class="quick-token-chips">
+                            <button type="button" class="token-chip" data-token="{music}" title="Tên bài hát đang phát">{music}</button>
+                            <button type="button" class="token-chip" data-token="{weather}" title="Nhiệt độ thời tiết">{weather}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Divider -->
@@ -35,56 +98,71 @@
 
     <!-- Section 2: Tab Icon / Favicon -->
     <div class="pt-section">
-        <div class="pt-section-label">
-            <i class="fa-solid fa-icons"></i>
-            <span data-i18n="settings_tab_icon">Tab Favicon</span>
+        <div class="pt-section-header">
+            <label for="tab-icon-input" class="pt-field-label" data-i18n="settings_tab_icon">Biểu tượng Tab (Favicon)</label>
+            <span class="pt-field-hint" data-i18n="settings_tab_icon_subhint">Ký tự, biểu tượng hoặc tải ảnh lên</span>
         </div>
 
+        <!-- Input bar with integrated actions -->
         <div class="pt-favicon-row">
-            <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
-                placeholder="SP" maxlength="2" class="settings-tab-icon-input"
-                style="flex: 1; border-radius: 8px; height: 36px;" />
+            <div class="pt-favicon-input-wrap">
+                <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
+                    placeholder="SP" maxlength="2" class="settings-tab-icon-input pt-fav-smart-input" />
+            </div>
+
             <input type="file" id="tab-icon-file-input"
                 accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
-            <button type="button" id="tab-icon-fa-btn" class="icon-btn tab-icon-action-btn"
-                title="Pick Font Awesome icon" data-i18n-title="settings_tab_icon_fa_pick">
-                <i class="fas fa-mouse-pointer"></i>
-            </button>
-            <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn" title="Upload icon"
-                data-i18n-title="settings_tab_icon_upload">
-                <i class="fa-solid fa-upload"></i>
-            </button>
-            <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn" title="Remove icon"
-                data-i18n-title="settings_tab_icon_remove" hidden>
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div id="tab-icon-preview" class="settings-tab-icon-preview"></div>
-        </div>
-        <small class="setting-hint" data-i18n="settings_tab_icon_hint" style="margin-bottom: 10px; display: block;">Max
-            2 letters, 1 emoji, or Font Awesome icon (leave blank for default)</small>
 
-        <!-- Color Customization -->
+            <div class="pt-favicon-actions">
+                <button type="button" id="tab-icon-fa-btn" class="pt-action-square-btn"
+                    title="Chọn icon Font Awesome" data-i18n-title="settings_tab_icon_fa_pick">
+                    <i class="fa-regular fa-face-smile"></i>
+                </button>
+                <button type="button" id="tab-icon-upload-btn" class="pt-action-square-btn" title="Tải ảnh lên"
+                    data-i18n-title="settings_tab_icon_upload">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                </button>
+                <button type="button" id="tab-icon-clear-btn" class="pt-action-square-btn pt-action-danger" title="Xóa icon"
+                    data-i18n-title="settings_tab_icon_remove" hidden>
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="tab-icon-preview" class="settings-tab-icon-preview" title="Xem trước favicon"></div>
+        </div>
+
+        <!-- Quick Favicon Presets -->
+        <div class="pt-favicon-presets-row">
+            <span class="pt-sublabel" data-i18n="settings_tab_icon_quick_emojis">Biểu tượng gợi ý:</span>
+            <div class="pt-favicon-chips">
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-house" title="Trang chủ"><i class="fa-solid fa-house"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-star" title="Yêu thích"><i class="fa-solid fa-star"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-rocket" title="Tên lửa"><i class="fa-solid fa-rocket"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-code" title="Lập trình"><i class="fa-solid fa-code"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-music" title="Âm nhạc"><i class="fa-solid fa-music"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-mug-saucer" title="Thư giãn"><i class="fa-solid fa-mug-saucer"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-bolt" title="Năng lượng"><i class="fa-solid fa-bolt"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="fa-solid fa-compass" title="Khám phá"><i class="fa-solid fa-compass"></i></button>
+                <button type="button" class="pt-fav-preset" data-fav="SP" title="Mặc định: SP">SP</button>
+            </div>
+        </div>
+
+        <!-- Color Customization Row -->
         <div class="pt-icon-colors">
             <div class="pt-color-item">
-                <label for="tab-icon-bg-color" data-i18n="settings_icon_bg">Icon BG</label>
-                <div class="custom-color-input-group"
-                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
-                    <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker"
-                        style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                <label for="tab-icon-bg-color" data-i18n="settings_icon_bg">Màu nền icon</label>
+                <div class="pt-color-bubble-wrap">
+                    <input type="color" id="tab-icon-bg-color" class="settings-tab-icon-color-picker pt-color-picker-input">
                 </div>
             </div>
             <div class="pt-color-item">
-                <label for="tab-icon-text-color" data-i18n="settings_icon_text">Icon Text</label>
-                <div class="custom-color-input-group"
-                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
-                    <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker"
-                        style="width: 26px; height: 26px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                <label for="tab-icon-text-color" data-i18n="settings_icon_text">Màu chữ icon</label>
+                <div class="pt-color-bubble-wrap">
+                    <input type="color" id="tab-icon-text-color" class="settings-tab-icon-color-picker pt-color-picker-input">
                 </div>
             </div>
-            <div class="pt-color-item" style="margin-left: auto;">
+            <div class="pt-color-item pt-checkbox-item">
                 <input type="checkbox" id="tab-icon-transparent-bg" class="settings-tab-icon-checkbox">
-                <label style="cursor:pointer;" for="tab-icon-transparent-bg"
-                    data-i18n="settings_icon_transparent_bg">Transparent BG</label>
+                <label for="tab-icon-transparent-bg" data-i18n="settings_icon_transparent_bg">Nền trong suốt</label>
             </div>
         </div>
     </div>
