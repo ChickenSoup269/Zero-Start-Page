@@ -621,6 +621,22 @@ export const defaultSettings = {
   userSavedFonts: [],
   userThemes: [],
   userStyles: [],
+
+  // GitHub Gist Sync
+  githubSync: false,
+  githubSyncToken: "",
+  githubSyncGistId: "",
+  githubSyncFileName: "startpage_backup.json",
+  githubAutoBackupInterval: "none",
+  lastGithubBackupTime: 0,
+
+  // GitLab Snippet Sync
+  gitlabSync: false,
+  gitlabSyncToken: "",
+  gitlabSyncSnippetId: "",
+  gitlabSyncFileName: "startpage_backup.json",
+  gitlabAutoBackupInterval: "none",
+  lastGitlabBackupTime: 0,
 }
 
 // Bookmarks State Migration

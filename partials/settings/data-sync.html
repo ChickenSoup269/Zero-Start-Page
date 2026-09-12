@@ -49,6 +49,189 @@
                 </div>
             </div>
         </div>
+
+        <!-- GitHub Gist Sync (PAT) -->
+        <div class="setting-group data-sync-group-divider">
+            <div class="setting-item-row">
+                <label for="github-sync-checkbox"><i class="fa-brands fa-github"
+                        style="color: #ffffff; margin-right: 4px;"></i>
+                    <span data-i18n="settings_github_sync">Sync with GitHub (Gist)</span></label>
+                <input type="checkbox" id="github-sync-checkbox">
+            </div>
+            <p class="setting-hint" data-i18n="settings_github_sync_hint">Auto backup and restore settings &
+                bookmarks via a secret GitHub Gist with Personal Access Token.</p>
+
+            <div id="github-sync-options-wrapper" style="display: none;">
+                <div id="github-sync-status" class="github-sync-status-box">
+                    <img id="github-sync-avatar" src="" class="github-sync-avatar-img" alt="avatar">
+                    <span id="github-sync-username" class="github-sync-username-text"></span>
+                </div>
+
+                <details class="sync-guide-accordion">
+                    <summary class="sync-guide-summary">
+                        <span class="sync-guide-summary-title">
+                            <i class="fa-solid fa-circle-question"></i>
+                            <span data-i18n="settings_github_guide_title">Setup Guide: How to get Token</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down sync-guide-arrow"></i>
+                    </summary>
+                    <div class="sync-guide-content">
+                        <ol class="sync-guide-steps">
+                            <li data-i18n="settings_github_guide_step_1">Go to <a href="https://github.com/settings/tokens/new?scopes=gist&description=Zero+Start+Page+Backup" target="_blank" rel="noopener noreferrer">GitHub Token Settings</a>.</li>
+                            <li data-i18n="settings_github_guide_step_2">Ensure the <code>gist</code> checkbox is checked (only 'gist' permission is required).</li>
+                            <li data-i18n="settings_github_guide_step_3">Click <b>Generate token</b> and copy your token (starting with <code>ghp_</code>).</li>
+                            <li data-i18n="settings_github_guide_step_4">Paste token below, click <b>Upload</b> to create your private backup Gist.</li>
+                        </ol>
+                        <div class="sync-guide-note">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span data-i18n="settings_git_guide_security_note">Your token is stored only locally in your browser and connects directly to GitHub.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="setting-item" style="margin-top: 10px;">
+                    <label for="github-sync-token-input" class="setting-label">
+                        <span data-i18n="settings_github_token">Personal Access Token (PAT)</span>
+                    </label>
+                    <div class="github-token-input-row">
+                        <input type="password" id="github-sync-token-input" class="custom-font-input full-width-input"
+                            data-i18n-placeholder="settings_github_token_placeholder" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                        <button type="button" id="github-token-toggle-visibility-btn" class="icon-action-btn"
+                            title="Show/Hide Token">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="setting-hint">
+                        <span data-i18n="settings_github_token_hint">Create a token with 'gist' scope at</span>
+                        <a href="https://github.com/settings/tokens/new?scopes=gist&description=Zero+Start+Page+Backup"
+                            target="_blank" rel="noopener noreferrer" style="color: var(--accent-color, #a8c0ff); text-decoration: underline;">github.com/settings/tokens</a>.
+                    </p>
+                </div>
+
+                <div class="setting-item" style="margin-top: 8px;">
+                    <label for="github-sync-gist-id-input" class="setting-label">
+                        <span data-i18n="settings_github_gist_id">Gist ID (Optional)</span>
+                    </label>
+                    <input type="text" id="github-sync-gist-id-input" class="custom-font-input full-width-input"
+                        data-i18n-placeholder="settings_github_gist_id_placeholder" placeholder="Auto-created on upload, or paste existing Gist ID">
+                    <p class="setting-hint" data-i18n="settings_github_gist_id_hint">Leave blank to create a new secret Gist on upload, or enter an existing Gist ID to connect.</p>
+                </div>
+
+                <div class="setting-item-row" style="margin-top: 10px;">
+                    <label for="github-auto-backup-interval" data-i18n="settings_drive_auto_backup">Auto Backup
+                        Interval</label>
+                    <select id="github-auto-backup-interval">
+                        <option value="none" data-i18n="settings_drive_auto_backup_none">None (Manual only)</option>
+                        <option value="daily" data-i18n="settings_drive_auto_backup_daily">Daily</option>
+                        <option value="weekly" data-i18n="settings_drive_auto_backup_weekly">Weekly</option>
+                        <option value="monthly" data-i18n="settings_drive_auto_backup_monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="data-sync-btn-row">
+                    <button type="button" id="force-github-sync-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span
+                            data-i18n="settings_force_drive_sync">Upload</span>
+                    </button>
+                    <button type="button" id="force-github-download-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> <span
+                            data-i18n="settings_force_drive_download">Download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GitLab Snippet Sync (PAT) -->
+        <div class="setting-group data-sync-group-divider">
+            <div class="setting-item-row">
+                <label for="gitlab-sync-checkbox"><i class="fa-brands fa-gitlab"
+                        style="color: #fc6d26; margin-right: 4px;"></i>
+                    <span data-i18n="settings_gitlab_sync">Sync with GitLab (Snippet)</span></label>
+                <input type="checkbox" id="gitlab-sync-checkbox">
+            </div>
+            <p class="setting-hint" data-i18n="settings_gitlab_sync_hint">Auto backup and restore settings &
+                bookmarks via a private GitLab Snippet with Personal Access Token.</p>
+
+            <div id="gitlab-sync-options-wrapper" style="display: none;">
+                <div id="gitlab-sync-status" class="github-sync-status-box">
+                    <img id="gitlab-sync-avatar" src="" class="github-sync-avatar-img" alt="avatar">
+                    <span id="gitlab-sync-username" class="github-sync-username-text"></span>
+                </div>
+
+                <details class="sync-guide-accordion">
+                    <summary class="sync-guide-summary">
+                        <span class="sync-guide-summary-title">
+                            <i class="fa-solid fa-circle-question"></i>
+                            <span data-i18n="settings_gitlab_guide_title">Setup Guide: How to get Token</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down sync-guide-arrow"></i>
+                    </summary>
+                    <div class="sync-guide-content">
+                        <ol class="sync-guide-steps">
+                            <li data-i18n="settings_gitlab_guide_step_1">Go to <a href="https://gitlab.com/-/user_settings/personal_access_tokens" target="_blank" rel="noopener noreferrer">GitLab Access Tokens</a>.</li>
+                            <li data-i18n="settings_gitlab_guide_step_2">Enter a token name (e.g. <code>Startpage Sync</code>).</li>
+                            <li data-i18n="settings_gitlab_guide_step_3">In <b>Scopes</b>, check the <code>api</code> scope (required for Snippet API).</li>
+                            <li data-i18n="settings_gitlab_guide_step_4">Click <b>Create personal access token</b> and copy your token (starting with <code>glpat-</code>).</li>
+                            <li data-i18n="settings_gitlab_guide_step_5">Paste token below, click <b>Upload</b> to create your private Snippet backup.</li>
+                        </ol>
+                        <div class="sync-guide-note">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span data-i18n="settings_git_guide_security_note">Your token is stored only locally in your browser and connects directly to GitLab.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="setting-item" style="margin-top: 10px;">
+                    <label for="gitlab-sync-token-input" class="setting-label">
+                        <span data-i18n="settings_gitlab_token">Personal Access Token (PAT)</span>
+                    </label>
+                    <div class="github-token-input-row">
+                        <input type="password" id="gitlab-sync-token-input" class="custom-font-input full-width-input"
+                            data-i18n-placeholder="settings_gitlab_token_placeholder" placeholder="glpat-xxxxxxxxxxxxxxxxxxxx">
+                        <button type="button" id="gitlab-token-toggle-visibility-btn" class="icon-action-btn"
+                            title="Show/Hide Token">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="setting-hint">
+                        <span data-i18n="settings_gitlab_token_hint">Create a Personal Access Token with 'api' scope at</span>
+                        <a href="https://gitlab.com/-/user_settings/personal_access_tokens"
+                            target="_blank" rel="noopener noreferrer" style="color: var(--accent-color, #a8c0ff); text-decoration: underline;">gitlab.com/-/user_settings/personal_access_tokens</a>.
+                    </p>
+                </div>
+
+                <div class="setting-item" style="margin-top: 8px;">
+                    <label for="gitlab-sync-snippet-id-input" class="setting-label">
+                        <span data-i18n="settings_gitlab_snippet_id">Snippet ID (Optional)</span>
+                    </label>
+                    <input type="text" id="gitlab-sync-snippet-id-input" class="custom-font-input full-width-input"
+                        data-i18n-placeholder="settings_gitlab_snippet_id_placeholder" placeholder="Auto-created on upload, or paste existing Snippet ID">
+                    <p class="setting-hint" data-i18n="settings_gitlab_snippet_id_hint">Leave blank to create a new private Snippet on upload, or enter an existing Snippet ID to connect.</p>
+                </div>
+
+                <div class="setting-item-row" style="margin-top: 10px;">
+                    <label for="gitlab-auto-backup-interval" data-i18n="settings_drive_auto_backup">Auto Backup
+                        Interval</label>
+                    <select id="gitlab-auto-backup-interval">
+                        <option value="none" data-i18n="settings_drive_auto_backup_none">None (Manual only)</option>
+                        <option value="daily" data-i18n="settings_drive_auto_backup_daily">Daily</option>
+                        <option value="weekly" data-i18n="settings_drive_auto_backup_weekly">Weekly</option>
+                        <option value="monthly" data-i18n="settings_drive_auto_backup_monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="data-sync-btn-row">
+                    <button type="button" id="force-gitlab-sync-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span
+                            data-i18n="settings_force_drive_sync">Upload</span>
+                    </button>
+                    <button type="button" id="force-gitlab-download-btn" class="secondary-btn full-width-btn">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> <span
+                            data-i18n="settings_force_drive_download">Download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="setting-group data-sync-group-divider">
             <div style="margin-bottom: 8px; font-weight: 500;" data-i18n="settings_browser_sync_title">Browser Sync
             </div>

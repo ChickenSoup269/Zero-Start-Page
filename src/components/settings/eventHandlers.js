@@ -76,6 +76,7 @@ import {
   getPicsumRandomBackground,
   preloadPicsumImage,
   getFreeRandomBackground,
+  refreshBackgroundForMediaQuality,
 } from "./picsumFetcher.js"
 
 import {
@@ -99,7 +100,7 @@ import {
   applyAccentFromCurrentBackground,
   applyAccentFromMusicThumbnail,
 } from "./dynamicAccent.js"
-import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
+import { loadGoogleFont, renderFontGrid, updateActiveTypographyHero } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
@@ -116,6 +117,8 @@ import {
   renderTimerAlarmSelectOptions,
 } from "../../data/timerAlarmSounds.js"
 import { DriveSync } from "../../services/googleDriveSync.js"
+import { GitHubSync } from "../../services/githubSync.js"
+import { GitLabSync } from "../../services/gitLabSync.js"
 
 const BUG_REPORT_FORM_URLS = {
   vi: "https://docs.google.com/forms/d/e/1FAIpQLSfsOq7QtdqgxcZYIGiDeV-CimbfrmhLzANa0q0VTCb2mPOsmw/viewform?usp=publish-editor",
@@ -3572,11 +3575,25 @@ export function setupGeneralEventHandlers(
     throttleSettingUpdate("bgBrightness", Number(DOM.bgBrightnessInput.value))
   })
 
+  const onMediaQualityChange = async (val) => {
+    updateSetting("backgroundMediaQuality", val)
+    saveSettings()
+    if (DOM.backgroundMediaQualitySelect) {
+      DOM.backgroundMediaQualitySelect.value = val
+    }
+    if (DOM.freePhotosQualitySelect) {
+      DOM.freePhotosQualitySelect.value = val
+    }
+    await handleSettingUpdate("backgroundMediaQuality", val)
+    await refreshBackgroundForMediaQuality(val, handleSettingUpdate)
+  }
+
   DOM.backgroundMediaQualitySelect?.addEventListener("change", () => {
-    handleSettingUpdate(
-      "backgroundMediaQuality",
-      DOM.backgroundMediaQualitySelect.value,
-    )
+    onMediaQualityChange(DOM.backgroundMediaQualitySelect.value)
+  })
+
+  DOM.freePhotosQualitySelect?.addEventListener("change", () => {
+    onMediaQualityChange(DOM.freePhotosQualitySelect.value)
   })
 
   document
@@ -6170,13 +6187,11 @@ export function setupGeneralEventHandlers(
       return
     }
     loadGoogleFont(fontName)
-    setTimeout(() => {
-      const fontValue = `'${fontName}', sans-serif`
-      handleSettingUpdate("font", fontValue)
-      saveSettings()
-      renderFontGrid(DOM.fontGrid, handleSettingUpdate)
-      if (DOM.customFontInput) DOM.customFontInput.value = ""
-    }, 500)
+    if (DOM.customFontPreviewBox && DOM.customFontPreviewText) {
+      DOM.customFontPreviewBox.style.display = "block"
+      DOM.customFontPreviewText.style.fontFamily = `'${fontName}', sans-serif`
+    }
+    showToast(`${i18n.alert_font_loaded || "Loaded preview for"} "${fontName}"`, { type: "info" })
   })
 
   DOM.saveFontBtn?.addEventListener("click", () => {
@@ -6196,15 +6211,30 @@ export function setupGeneralEventHandlers(
       showAlert(i18n.alert_font_already_saved || "Font already saved.")
       return
     }
-    loadGoogleFont(fontName)
+
+    const targetSelect = document.getElementById("font-target-select")
+    const target = targetSelect ? targetSelect.value : "general"
+
+    loadGoogleFont(fontName, target)
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
-      handleSettingUpdate("font", fontValue)
+      if (target === "both") {
+        handleSettingUpdate("font", fontValue)
+        handleSettingUpdate("clockFont", fontValue)
+      } else if (target === "clock") {
+        handleSettingUpdate("clockFont", fontValue)
+      } else {
+        handleSettingUpdate("font", fontValue)
+      }
+
       updateSetting("userSavedFonts", [...savedFonts, fontName])
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
+      updateActiveTypographyHero()
       if (DOM.customFontInput) DOM.customFontInput.value = ""
-    }, 500)
+      if (DOM.customFontPreviewBox) DOM.customFontPreviewBox.style.display = "none"
+      showToast(i18n.alert_font_saved || "Font saved!", { type: "success" })
+    }, 400)
   })
 
   // Date/time settings
@@ -8776,43 +8806,80 @@ export function setupGeneralEventHandlers(
   })
 
   const handleAudioReactiveToggle = async (isChecked) => {
+    const isFirefox =
+      /firefox|fxios/i.test(navigator.userAgent) ||
+      typeof InstallTrigger !== "undefined"
+
     if (isChecked) {
-      if (chrome.permissions && chrome.permissions.request) {
-        chrome.permissions.request(
-          { permissions: ["tabCapture"] },
-          (granted) => {
-            if (granted) {
-              if (DOM.musicRealAudioReactiveCheckbox)
-                DOM.musicRealAudioReactiveCheckbox.checked = true
-              if (DOM.lcpMusicRealAudioReactive)
-                DOM.lcpMusicRealAudioReactive.checked = true
-              handleSettingUpdate("musicRealAudioReactive", true)
-              chrome.storage?.local?.set(
-                { musicRealAudioReactive: true },
-                () => {
-                  chrome.runtime
-                    ?.sendMessage({ action: "startRealAudioCapture" })
-                    ?.catch?.(() => {})
-                },
-              )
-              window.dispatchEvent(
-                new CustomEvent("settingsUpdated", {
-                  detail: {
-                    key: "musicRealAudioReactive",
-                    value: true,
-                  },
-                }),
-              )
-            } else {
-              if (DOM.musicRealAudioReactiveCheckbox)
-                DOM.musicRealAudioReactiveCheckbox.checked = false
-              if (DOM.lcpMusicRealAudioReactive)
-                DOM.lcpMusicRealAudioReactive.checked = false
-              handleSettingUpdate("musicRealAudioReactive", false)
-              chrome.storage?.local?.set({ musicRealAudioReactive: false })
-            }
-          },
+      if (isFirefox) {
+        const i18n = geti18n()
+        const msg =
+          i18n.music_real_audio_firefox_unsupported ||
+          "Firefox chưa hỗ trợ bắt âm thanh tab (Offscreen Tab Capture). Tính năng sóng nhạc phản hồi âm thanh thực tạm thời chỉ hoạt động trên Chrome, Edge, Brave..."
+        showToast(msg, { type: "warning", duration: 6000 })
+        if (DOM.musicRealAudioReactiveCheckbox)
+          DOM.musicRealAudioReactiveCheckbox.checked = false
+        if (DOM.lcpMusicRealAudioReactive)
+          DOM.lcpMusicRealAudioReactive.checked = false
+        handleSettingUpdate("musicRealAudioReactive", false)
+        chrome.storage?.local?.set({ musicRealAudioReactive: false })
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: {
+              key: "musicRealAudioReactive",
+              value: false,
+            },
+          }),
         )
+        return
+      }
+
+      if (chrome.permissions && chrome.permissions.request) {
+        try {
+          chrome.permissions.request(
+            { permissions: ["tabCapture"] },
+            (granted) => {
+              if (granted) {
+                if (DOM.musicRealAudioReactiveCheckbox)
+                  DOM.musicRealAudioReactiveCheckbox.checked = true
+                if (DOM.lcpMusicRealAudioReactive)
+                  DOM.lcpMusicRealAudioReactive.checked = true
+                handleSettingUpdate("musicRealAudioReactive", true)
+                chrome.storage?.local?.set(
+                  { musicRealAudioReactive: true },
+                  () => {
+                    chrome.runtime
+                      ?.sendMessage({ action: "startRealAudioCapture" })
+                      ?.catch?.(() => {})
+                  },
+                )
+                window.dispatchEvent(
+                  new CustomEvent("settingsUpdated", {
+                    detail: {
+                      key: "musicRealAudioReactive",
+                      value: true,
+                    },
+                  }),
+                )
+              } else {
+                if (DOM.musicRealAudioReactiveCheckbox)
+                  DOM.musicRealAudioReactiveCheckbox.checked = false
+                if (DOM.lcpMusicRealAudioReactive)
+                  DOM.lcpMusicRealAudioReactive.checked = false
+                handleSettingUpdate("musicRealAudioReactive", false)
+                chrome.storage?.local?.set({ musicRealAudioReactive: false })
+              }
+            },
+          )
+        } catch (err) {
+          console.warn("[Audio Reactive] Permission request error:", err)
+          if (DOM.musicRealAudioReactiveCheckbox)
+            DOM.musicRealAudioReactiveCheckbox.checked = false
+          if (DOM.lcpMusicRealAudioReactive)
+            DOM.lcpMusicRealAudioReactive.checked = false
+          handleSettingUpdate("musicRealAudioReactive", false)
+          chrome.storage?.local?.set({ musicRealAudioReactive: false })
+        }
       } else {
         handleSettingUpdate("musicRealAudioReactive", true)
         chrome.storage?.local?.set({ musicRealAudioReactive: true })
@@ -11159,6 +11226,218 @@ export function setupGeneralEventHandlers(
       DOM.forceDriveDownloadBtn.disabled = false
       DOM.forceDriveDownloadBtn.innerHTML =
         '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
+    })
+  }
+
+  // GitHub Gist Sync (PAT)
+  if (DOM.githubSyncCheckbox) {
+    DOM.githubSyncCheckbox.addEventListener("change", async (e) => {
+      const enabled = e.target.checked
+      if (DOM.githubSyncOptionsWrapper) {
+        DOM.githubSyncOptionsWrapper.style.display = enabled ? "block" : "none"
+      }
+      if (enabled && !GitHubSync.getToken()) {
+        DOM.githubSyncTokenInput?.focus()
+        return
+      }
+      try {
+        await GitHubSync.toggleSync(enabled, async () => {
+          return await buildExportPayload(false)
+        })
+      } catch (err) {
+        DOM.githubSyncCheckbox.checked = !enabled
+      }
+    })
+  }
+
+  if (DOM.githubSyncTokenInput) {
+    DOM.githubSyncTokenInput.addEventListener("change", async (e) => {
+      const token = e.target.value.trim()
+      handleSettingUpdate("githubSyncToken", token)
+      if (token) {
+        try {
+          const user = await GitHubSync.verifyToken(token)
+          localStorage.setItem("githubUserProfile", JSON.stringify(user))
+          window.dispatchEvent(
+            new CustomEvent("githubProfileUpdated", { detail: user }),
+          )
+          if (DOM.githubSyncCheckbox && DOM.githubSyncCheckbox.checked) {
+            await GitHubSync.toggleSync(true, async () => {
+              return await buildExportPayload(false)
+            })
+          }
+        } catch (err) {
+          console.warn("GitHub token verification failed:", err)
+        }
+      } else {
+        GitHubSync.clearUserProfile()
+      }
+    })
+  }
+
+  if (DOM.githubTokenToggleVisibilityBtn && DOM.githubSyncTokenInput) {
+    DOM.githubTokenToggleVisibilityBtn.addEventListener("click", () => {
+      const isPassword = DOM.githubSyncTokenInput.type === "password"
+      DOM.githubSyncTokenInput.type = isPassword ? "text" : "password"
+      const icon = DOM.githubTokenToggleVisibilityBtn.querySelector("i")
+      if (icon) {
+        icon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"
+      }
+    })
+  }
+
+  if (DOM.githubSyncGistIdInput) {
+    DOM.githubSyncGistIdInput.addEventListener("change", (e) => {
+      handleSettingUpdate("githubSyncGistId", e.target.value.trim())
+    })
+  }
+
+  if (DOM.githubAutoBackupInterval) {
+    DOM.githubAutoBackupInterval.addEventListener("change", (e) => {
+      handleSettingUpdate("githubAutoBackupInterval", e.target.value)
+    })
+  }
+
+  if (DOM.forceGithubSyncBtn) {
+    DOM.forceGithubSyncBtn.addEventListener("click", async () => {
+      const payload = await buildExportPayload(false)
+      if (!payload) return
+
+      DOM.forceGithubSyncBtn.disabled = true
+      DOM.forceGithubSyncBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
+      try {
+        await GitHubSync.syncToGist(payload)
+      } catch (err) {
+        showAlert(`Failed to upload to GitHub Gist: ${err.message || err}`)
+      } finally {
+        DOM.forceGithubSyncBtn.disabled = false
+        DOM.forceGithubSyncBtn.innerHTML =
+          '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
+      }
+    })
+  }
+
+  if (DOM.forceGithubDownloadBtn) {
+    DOM.forceGithubDownloadBtn.addEventListener("click", async () => {
+      DOM.forceGithubDownloadBtn.disabled = true
+      DOM.forceGithubDownloadBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+      try {
+        await GitHubSync.syncFromGist(true)
+      } catch (err) {
+        showAlert(`Failed to download from GitHub Gist: ${err.message || err}`)
+      } finally {
+        DOM.forceGithubDownloadBtn.disabled = false
+        DOM.forceGithubDownloadBtn.innerHTML =
+          '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
+      }
+    })
+  }
+
+  // GitLab Snippet Sync (PAT)
+  if (DOM.gitlabSyncCheckbox) {
+    DOM.gitlabSyncCheckbox.addEventListener("change", async (e) => {
+      const enabled = e.target.checked
+      if (DOM.gitlabSyncOptionsWrapper) {
+        DOM.gitlabSyncOptionsWrapper.style.display = enabled ? "block" : "none"
+      }
+      if (enabled && !GitLabSync.getToken()) {
+        DOM.gitlabSyncTokenInput?.focus()
+        return
+      }
+      try {
+        await GitLabSync.toggleSync(enabled, async () => {
+          return await buildExportPayload(false)
+        })
+      } catch (err) {
+        DOM.gitlabSyncCheckbox.checked = !enabled
+      }
+    })
+  }
+
+  if (DOM.gitlabSyncTokenInput) {
+    DOM.gitlabSyncTokenInput.addEventListener("change", async (e) => {
+      const token = e.target.value.trim()
+      handleSettingUpdate("gitlabSyncToken", token)
+      if (token) {
+        try {
+          const user = await GitLabSync.verifyToken(token)
+          localStorage.setItem("gitlabUserProfile", JSON.stringify(user))
+          window.dispatchEvent(
+            new CustomEvent("gitlabProfileUpdated", { detail: user }),
+          )
+          if (DOM.gitlabSyncCheckbox && DOM.gitlabSyncCheckbox.checked) {
+            await GitLabSync.toggleSync(true, async () => {
+              return await buildExportPayload(false)
+            })
+          }
+        } catch (err) {
+          console.warn("GitLab token verification failed:", err)
+        }
+      } else {
+        GitLabSync.clearUserProfile()
+      }
+    })
+  }
+
+  if (DOM.gitlabTokenToggleVisibilityBtn && DOM.gitlabSyncTokenInput) {
+    DOM.gitlabTokenToggleVisibilityBtn.addEventListener("click", () => {
+      const isPassword = DOM.gitlabSyncTokenInput.type === "password"
+      DOM.gitlabSyncTokenInput.type = isPassword ? "text" : "password"
+      const icon = DOM.gitlabTokenToggleVisibilityBtn.querySelector("i")
+      if (icon) {
+        icon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"
+      }
+    })
+  }
+
+  if (DOM.gitlabSyncSnippetIdInput) {
+    DOM.gitlabSyncSnippetIdInput.addEventListener("change", (e) => {
+      handleSettingUpdate("gitlabSyncSnippetId", e.target.value.trim())
+    })
+  }
+
+  if (DOM.gitlabAutoBackupInterval) {
+    DOM.gitlabAutoBackupInterval.addEventListener("change", (e) => {
+      handleSettingUpdate("gitlabAutoBackupInterval", e.target.value)
+    })
+  }
+
+  if (DOM.forceGitlabSyncBtn) {
+    DOM.forceGitlabSyncBtn.addEventListener("click", async () => {
+      const payload = await buildExportPayload(false)
+      if (!payload) return
+
+      DOM.forceGitlabSyncBtn.disabled = true
+      DOM.forceGitlabSyncBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
+      try {
+        await GitLabSync.syncToSnippet(payload)
+      } catch (err) {
+        showAlert(`Failed to upload to GitLab Snippet: ${err.message || err}`)
+      } finally {
+        DOM.forceGitlabSyncBtn.disabled = false
+        DOM.forceGitlabSyncBtn.innerHTML =
+          '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
+      }
+    })
+  }
+
+  if (DOM.forceGitlabDownloadBtn) {
+    DOM.forceGitlabDownloadBtn.addEventListener("click", async () => {
+      DOM.forceGitlabDownloadBtn.disabled = true
+      DOM.forceGitlabDownloadBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+      try {
+        await GitLabSync.syncFromSnippet(true)
+      } catch (err) {
+        showAlert(`Failed to download from GitLab Snippet: ${err.message || err}`)
+      } finally {
+        DOM.forceGitlabDownloadBtn.disabled = false
+        DOM.forceGitlabDownloadBtn.innerHTML =
+          '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
+      }
     })
   }
 
