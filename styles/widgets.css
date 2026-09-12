@@ -15013,6 +15013,7 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container {
+  display: none !important;
   opacity: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -15024,6 +15025,14 @@ body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container {
   );
   max-height: 0 !important;
   pointer-events: none !important;
+}
+
+/* Eliminate gap between dock and toggle when groups are hidden */
+body.bookmark-taskbar-mode.groups-hidden .bookmark-widget,
+body.bookmark-taskbar-top-mode.groups-hidden .bookmark-widget,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-widget,
+body.bookmark-taskbar-right-mode.groups-hidden .bookmark-widget {
+  gap: 0 !important;
 }
 
 /* Sidebar: Khi ẩn groups - toggle thu nhỏ thành pill dọc dính vào cạnh ngoài grid */
@@ -15051,24 +15060,63 @@ body.flip-layout.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
   right: -1px;
 }
 
-/* Taskbar Bottom: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía trên grid */
+/* Taskbar Bottom (macOS / Dock): Khi ẩn groups - toggle thu nhỏ thành tab dính sát vào mép trên của dock grid */
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle {
-  width: 56px !important;
-  height: 12px !important;
-  border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+  width: 52px !important;
+  height: 14px !important;
+  border-radius: 8px 8px 0 0 !important;
   margin: 0 auto !important;
   padding: 0 !important;
   border-bottom: none !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   position: relative !important;
   bottom: -1px !important;
   left: auto !important;
   right: auto !important;
   transform: none !important;
   align-self: center !important;
-  backdrop-filter: blur(10px);
+  z-index: 1001 !important;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover {
+  height: 18px !important;
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.25) !important;
+  border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.45) !important;
+  border-bottom: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 -3px 12px rgba(var(--accent-color-rgb, 100, 150, 255), 0.3) !important;
+}
+
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle i {
+  font-size: 9px !important;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover i {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Custom dock background inheritance for toggle */
+body.bookmark-taskbar-mode.groups-hidden.bookmark-layout-bg-colored .bookmark-groups-toggle {
+  background: var(--bookmark-layout-bg-color, #ffffff) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  border-bottom: none !important;
+}
+
+body.bookmark-taskbar-mode.groups-hidden.bookmark-layout-bg-white .bookmark-groups-toggle {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  border-bottom: none !important;
+  color: #333333 !important;
 }
 
 /* Taskbar Left/Right Mode: Toggle thu nhỏ thành viên nằm ngang dọc theo grid */
@@ -15083,20 +15131,33 @@ body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle {
   backdrop-filter: blur(10px);
 }
 
-/* Taskbar Top: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía dưới grid */
+/* Taskbar Top: Khi ẩn groups - toggle thu nhỏ thành tab dính sát mép dưới của grid */
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle {
-  width: 56px !important;
-  height: 12px !important;
-  border-radius: 0 0 var(--radius-md) var(--radius-md) !important;
-  margin: 10px 0 0 !important;
+  width: 52px !important;
+  height: 14px !important;
+  border-radius: 0 0 8px 8px !important;
+  margin: 0 auto !important;
   padding: 0 !important;
   border-top: none !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-  position: relative;
-  top: 2px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative !important;
+  top: -1px !important;
+  align-self: center !important;
+  z-index: 1001 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle:hover {
+  height: 18px !important;
+  background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.25) !important;
+  border-color: rgba(var(--accent-color-rgb, 100, 150, 255), 0.45) !important;
+  border-top: none !important;
+  color: #ffffff !important;
 }
 
 body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-toggle {
@@ -21131,35 +21192,630 @@ body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container { b
   top: 100px;
   right: 20px;
   z-index: 1041;
-  width: auto;
-  min-width: 300px;
-  max-width: 450px;
-  padding: 12px 14px;
+  width: 420px;
+  min-width: 360px;
+  max-width: 520px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
-  border-radius: 8px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+  user-select: none;
 }
 
-.habit-tracker-container .habit-add-btn:hover,
-.habit-tracker-container .habit-close-btn:hover {
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.habit-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.habit-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 0.96rem;
+  font-weight: 700;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.habit-title i {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.habit-summary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(76, 175, 80, 0.16);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.habit-summary-badge.all-done {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffd54f;
+  border-color: rgba(255, 193, 7, 0.4);
+  animation: habit-glow 2s infinite ease-in-out;
+}
+
+@keyframes habit-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(255, 193, 7, 0.2); }
+  50% { box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+}
+
+.habit-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.habit-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.86rem;
+  opacity: 0.75;
+  transition: all 0.18s ease;
+}
+
+.habit-action-btn:hover {
   background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
   opacity: 1 !important;
 }
 
-.habit-tracker-container .habit-delete-btn:hover {
-  background: rgba(255, 82, 82, 0.12) !important;
+.habit-action-btn.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  color: var(--accent-color, #a8c0ff) !important;
   opacity: 1 !important;
 }
 
-/* Habit Tracker Mini Mode */
+.habit-level-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 7px;
+  height: 30px;
+  box-sizing: border-box;
+}
+
+.habit-level-stepper button {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.74rem;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+.habit-level-stepper button:hover {
+  opacity: 1;
+}
+
+/* Habit Add & Edit Drawer */
+.habit-form-card {
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: habit-fade-in 0.2s ease-out;
+}
+
+@keyframes habit-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.habit-templates-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.habit-templates-label {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.6;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.habit-templates-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.habit-templates-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.habit-template-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.habit-template-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color, #a8c0ff);
+  transform: translateY(-1px);
+}
+
+.habit-form-inputs-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.habit-icon-picker-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.habit-form-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.habit-form-icon-btn:hover,
+.habit-form-icon-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 6px rgba(var(--accent-color-rgb, 129, 140, 248), 0.3);
+}
+
+.habit-icon-picker-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 999;
+  background: rgba(20, 22, 28, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+  animation: habit-popover-in 0.15s ease-out;
+}
+
+@keyframes habit-popover-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.habit-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 32px);
+  gap: 6px;
+}
+
+.habit-icon-choice-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.86rem;
+  transition: all 0.15s ease;
+}
+
+.habit-icon-choice-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-color, #a8c0ff);
+  transform: scale(1.08);
+}
+
+.habit-icon-choice-btn.active {
+  background: var(--accent-color, #4CAF50) !important;
+  color: #fff !important;
+  border-color: var(--accent-color, #4CAF50) !important;
+  box-shadow: 0 0 6px rgba(var(--accent-color-rgb, 76, 175, 80), 0.4);
+}
+
+.habit-form-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-color);
+  font-size: 0.86rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease;
+}
+
+.habit-form-input:focus {
+  border-color: var(--accent-color, #a8c0ff);
+}
+
+.habit-form-color {
+  width: 34px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.habit-form-submit-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-color, #4CAF50);
+  color: var(--accent-contrast-color, #fff);
+  cursor: pointer;
+  font-size: 0.86rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.18s ease;
+  box-sizing: border-box;
+}
+
+.habit-form-submit-btn:hover {
+  opacity: 0.9;
+}
+
+.habit-form-cancel-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.86rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.habit-form-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.habit-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/* Habit Grid & Cards */
+.habit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+  scrollbar-width: thin;
+}
+
+.habit-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.habit-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.habit-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.habit-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.13);
+}
+
+.habit-card.habit-completed {
+  background: rgba(76, 175, 80, 0.06);
+  border-color: rgba(76, 175, 80, 0.25);
+}
+
+.habit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.habit-card-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.habit-card-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.habit-streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 112, 67, 0.15);
+  color: #ff7043;
+  border: 1px solid rgba(255, 112, 67, 0.3);
+  flex-shrink: 0;
+}
+
+.habit-streak-badge.active-streak {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ffa726;
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+.habit-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.18s ease;
+}
+
+.habit-card:hover .habit-card-actions {
+  opacity: 1;
+}
+
+.habit-mini-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  opacity: 0.7;
+  transition: all 0.15s ease;
+}
+
+.habit-mini-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.habit-mini-btn.delete:hover {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+}
+
+/* Stepper Track */
+.habit-stepper-track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 22px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.habit-step-pill {
+  flex: 1;
+  height: 100%;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+
+.habit-step-pill:hover {
+  transform: scaleY(1.15);
+  filter: brightness(1.25);
+}
+
+.habit-step-pill.filled {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Weekly 7-Day Track */
+.habit-week-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 3px 0;
+}
+
+.habit-day-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.habit-day-label {
+  font-size: 0.7rem;
+  opacity: 0.65;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.habit-day-col.is-today .habit-day-label {
+  opacity: 1;
+  font-weight: 700;
+  color: var(--accent-color, #a8c0ff);
+}
+
+.habit-day-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+
+.habit-day-btn:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.habit-day-col.is-today .habit-day-btn {
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+}
+
+.habit-day-btn.completed {
+  border-color: transparent !important;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mini Mode */
 .habit-tracker-container.habitTracker-mini {
   min-width: unset;
   width: auto;
-  padding: 8px 10px;
+  padding: 8px 12px;
 }
+
 .habit-tracker-container.habitTracker-mini .habit-grid,
-.habit-tracker-container.habitTracker-mini .habit-add-form {
+.habit-tracker-container.habitTracker-mini .habit-form-card,
+.habit-tracker-container.habitTracker-mini .habit-level-stepper,
+.habit-tracker-container.habitTracker-mini .habit-view-toggle,
+.habit-tracker-container.habitTracker-mini .habit-add-btn {
   display: none !important;
 }
 

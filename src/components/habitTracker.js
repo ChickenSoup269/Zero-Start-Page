@@ -3,68 +3,130 @@ import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { applyTranslations, geti18n } from "../services/i18n.js"
 import { showConfirm } from "../utils/dialog.js"
 
+const WEEKDAY_NAMES = {
+  vi: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+  sv: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+}
+
+const DEFAULT_TEMPLATES = [
+  { name: "Drink Water", nameKey: "habit_preset_water", icon: "fa-solid fa-droplet", color: "#2196F3" },
+  { name: "Workout / Gym", nameKey: "habit_preset_workout", icon: "fa-solid fa-dumbbell", color: "#4CAF50" },
+  { name: "Read Book", nameKey: "habit_preset_reading", icon: "fa-solid fa-book-open", color: "#9C27B0" },
+  { name: "Meditation", nameKey: "habit_preset_meditate", icon: "fa-solid fa-spa", color: "#00BCD4" },
+  { name: "Coding / Study", nameKey: "habit_preset_coding", icon: "fa-solid fa-laptop-code", color: "#FF9800" },
+  { name: "Sleep 8 Hours", nameKey: "habit_preset_sleep", icon: "fa-solid fa-moon", color: "#673AB7" },
+  { name: "10k Steps", nameKey: "habit_preset_walk", icon: "fa-solid fa-person-walking", color: "#009688" },
+]
+
+const POPULAR_HABIT_ICONS = [
+  "fa-solid fa-circle-check",
+  "fa-solid fa-droplet",
+  "fa-solid fa-dumbbell",
+  "fa-solid fa-book-open",
+  "fa-solid fa-spa",
+  "fa-solid fa-laptop-code",
+  "fa-solid fa-moon",
+  "fa-solid fa-person-walking",
+  "fa-solid fa-heart-pulse",
+  "fa-solid fa-apple-whole",
+  "fa-solid fa-bicycle",
+  "fa-solid fa-music",
+  "fa-solid fa-pen-nib",
+  "fa-solid fa-briefcase",
+  "fa-solid fa-sun",
+  "fa-solid fa-bed",
+  "fa-solid fa-brain",
+  "fa-solid fa-mug-hot",
+  "fa-solid fa-fire",
+  "fa-solid fa-award",
+  "fa-solid fa-coins",
+  "fa-solid fa-seedling",
+  "fa-solid fa-bullseye",
+  "fa-solid fa-lightbulb",
+]
+
+function getTodayKey() {
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+function getPrevDateKey(dateKey, daysAgo = 1) {
+  const parts = dateKey.split("-").map(Number)
+  const d = new Date(parts[0], parts[1] - 1, parts[2])
+  d.setDate(d.getDate() - daysAgo)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+function getLast7Days() {
+  const result = []
+  const today = new Date()
+  const todayKey = getTodayKey()
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    const key = `${year}-${month}-${day}`
+
+    result.push({
+      key,
+      dateNum: d.getDate(),
+      weekdayIdx: d.getDay(),
+      isToday: key === todayKey,
+    })
+  }
+  return result
+}
+
+function computeStreak(habit, maxLevel) {
+  const history = habit.history || {}
+  const target = habit.target || maxLevel
+  const todayKey = getTodayKey()
+  const yesterdayKey = getPrevDateKey(todayKey, 1)
+
+  let streak = 0
+  const isTodayCompleted = (history[todayKey] || 0) >= target
+
+  let checkKey = yesterdayKey
+  while ((history[checkKey] || 0) >= target) {
+    streak++
+    checkKey = getPrevDateKey(checkKey, 1)
+  }
+
+  if (isTodayCompleted) {
+    streak += 1
+  }
+
+  return streak
+}
+
 export class HabitTracker {
   constructor(container) {
     this.container = container
     this.habits = []
-    this.maxLevel = 10 // default 10 levels
+    this.maxLevel = 10
+    this.viewMode = "stepper" // "stepper" or "week"
+    this.editingHabitId = null
+    this.selectedFormIcon = "fa-solid fa-circle-check"
 
-    // We will render the header dynamically to update the maxLevel label
     this.container.innerHTML = `
       <div class="habit-header-container"></div>
-      <div class="habit-add-form" style="display: none; margin-bottom: 10px; gap: 6px; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); align-items: center;">
-        <input type="text" class="habit-add-input" placeholder="New habit name..." data-i18n-placeholder="habit_prompt_name" style="flex: 1; height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.25); color: var(--text-color); font-size: 0.82rem; outline: none; box-sizing: border-box;">
-        <input type="color" class="habit-add-color" value="#4CAF50" style="width: 32px; height: 32px; padding: 2px; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; cursor: pointer; background: rgba(0,0,0,0.2); box-sizing: border-box;" title="Choose color">
-        <button class="habit-save-btn" style="height: 32px; padding: 0 10px; border-radius: 6px; border: none; background: var(--accent-color, #4CAF50); color: var(--accent-contrast-color, #fff); cursor: pointer; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-check"></i></button>
-        <button class="habit-cancel-btn" style="height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: var(--text-color); cursor: pointer; font-size: 0.82rem; display: inline-flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="habit-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      <div class="habit-form-container"></div>
+      <div class="habit-grid"></div>
     `
-    this.headerContainer = this.container.querySelector(
-      ".habit-header-container",
-    )
+    this.headerContainer = this.container.querySelector(".habit-header-container")
+    this.formContainer = this.container.querySelector(".habit-form-container")
     this.gridContainer = this.container.querySelector(".habit-grid")
-
-    const addForm = this.container.querySelector(".habit-add-form")
-    const saveBtn = this.container.querySelector(".habit-save-btn")
-    const cancelBtn = this.container.querySelector(".habit-cancel-btn")
-    const input = this.container.querySelector(".habit-add-input")
-
-    this.toggleForm = (show) => {
-      addForm.style.display = show ? "flex" : "none"
-      if (show) input.focus()
-    }
-
-    if (cancelBtn)
-      cancelBtn.addEventListener("click", () => {
-        this.toggleForm(false)
-        input.value = ""
-      })
-
-    const saveHabit = () => {
-      const name = input.value
-      const colorInput = this.container.querySelector(".habit-add-color")
-      const color = colorInput ? colorInput.value : "#4CAF50"
-      if (name && name.trim()) {
-        this.habits.push({
-          id: Date.now().toString(),
-          name: name.trim(),
-          progress: 0,
-          color: color,
-        })
-        this.saveData()
-        this.render()
-        this.toggleForm(false)
-        input.value = ""
-      }
-    }
-
-    if (saveBtn) saveBtn.addEventListener("click", saveHabit)
-    if (input)
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") saveHabit()
-        if (e.key === "Escape") this.toggleForm(false)
-      })
 
     this.loadData()
     this.render()
@@ -85,23 +147,10 @@ export class HabitTracker {
       }
       if (e.detail && e.detail.key === "habitColorMode") {
         this.render()
-        const addColorInput = this.container.querySelector(".habit-add-color")
-        if (addColorInput) {
-          addColorInput.style.display =
-            e.detail.value === "custom" ? "inline-block" : "none"
-        }
       }
     })
 
     fadeToggle(this.container, getSettings().showHabits === true, "flex")
-
-    // Initial sync of add color input
-    const initialColorMode = getSettings().habitColorMode || "custom"
-    const addColorInput = this.container.querySelector(".habit-add-color")
-    if (addColorInput) {
-      addColorInput.style.display =
-        initialColorMode === "custom" ? "inline-block" : "none"
-    }
   }
 
   applySkin() {
@@ -118,34 +167,51 @@ export class HabitTracker {
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
     this.container.classList.toggle("skin-transparent", skin === "transparent")
-    this.container.classList.toggle(
-      "skin-light-transparent",
-      skin === "light-transparent",
-    )
-    this.container.classList.toggle(
-      "widget-border-hidden",
-      settings.habitTrackerHideBorder === true,
-    )
-    this.container.classList.toggle(
-      "habitTracker-mini",
-      settings.habitTrackerMini === true,
-    )
+    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
+    this.container.classList.toggle("widget-border-hidden", settings.habitTrackerHideBorder === true)
+    this.container.classList.toggle("habitTracker-mini", settings.habitTrackerMini === true)
   }
 
   loadData() {
     const saved = localStorage.getItem("habitTrackerData")
+    const todayKey = getTodayKey()
+
     if (saved) {
       try {
         const data = JSON.parse(saved)
-        this.habits = (data.habits || []).map((h) => ({
-          ...h,
-          name:
-            typeof h.name === "string"
-              ? h.name
-              : h.name?.name || String(h.name || ""),
-        }))
         if (data.maxLevel) this.maxLevel = data.maxLevel
-      } catch (e) {}
+        if (data.viewMode) this.viewMode = data.viewMode
+
+        this.habits = (data.habits || []).map((h) => {
+          const name = typeof h.name === "string" ? h.name : h.name?.name || String(h.name || "")
+          const history = h.history || {}
+
+          // Backward compatibility: migrate legacy progress to today's date
+          if (h.progress !== undefined && history[todayKey] === undefined) {
+            history[todayKey] = h.progress
+          }
+
+          const target = h.target || this.maxLevel
+          const habitObj = {
+            id: h.id || Date.now().toString() + Math.random().toString(36).substr(2, 4),
+            name: name,
+            icon: h.icon || "fa-solid fa-circle-check",
+            color: h.color || "#4CAF50",
+            target: target,
+            history: history,
+            progress: history[todayKey] || 0,
+            streak: 0,
+            bestStreak: h.bestStreak || 0,
+            lastUpdated: todayKey,
+          }
+
+          habitObj.streak = computeStreak(habitObj, this.maxLevel)
+          habitObj.bestStreak = Math.max(habitObj.bestStreak, habitObj.streak)
+          return habitObj
+        })
+      } catch (e) {
+        console.error("Failed to parse habit tracker data:", e)
+      }
     }
   }
 
@@ -155,83 +221,183 @@ export class HabitTracker {
       JSON.stringify({
         habits: this.habits,
         maxLevel: this.maxLevel,
+        viewMode: this.viewMode,
       }),
     )
   }
 
   render() {
+    const i18n = geti18n() || {}
+    const totalHabits = this.habits.length
+    const completedHabits = this.habits.filter(
+      (h) => (h.progress || 0) >= (h.target || this.maxLevel),
+    ).length
+    const allDone = totalHabits > 0 && completedHabits === totalHabits
+
+    // Summary badge text
+    let summaryText = `${completedHabits}/${totalHabits}`
+    let summaryTooltip = `${completedHabits}/${totalHabits} ${i18n.habit_summary_done || "done"}`
+    if (allDone) {
+      summaryText = `<i class="fa-solid fa-check-double"></i> ${completedHabits}/${totalHabits}`
+      summaryTooltip = i18n.habit_all_done || "All done!"
+    } else if (totalHabits > 0) {
+      summaryText = `<i class="fa-solid fa-circle-check"></i> ${completedHabits}/${totalHabits}`
+    }
+
+    // 1. Header
     this.headerContainer.innerHTML = `
-      <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600; font-size: 0.95rem;">
-        <span class="habit-title"><i class="fa-solid fa-bars-progress" style="color: var(--accent-color); margin-right: 6px;"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
-        <div style="display: flex; align-items: center; gap: 5px;">
-          <div class="habit-level-stepper" style="display: inline-flex; align-items: center; gap: 3px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 6px; height: 26px; box-sizing: border-box;">
-            <button class="habit-dec-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75;" title="-1"><i class="fa-solid fa-minus" style="font-size: 0.72rem;"></i></button>
-            <span style="font-size: 0.78rem; opacity: 0.85; min-width: 16px; text-align: center; font-weight: 600;">${this.maxLevel}</span>
-            <button class="habit-inc-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75;" title="+1"><i class="fa-solid fa-plus" style="font-size: 0.72rem;"></i></button>
-          </div>
-          <button class="habit-add-btn" style="width: 26px; height: 26px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--text-color); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75; transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;" title="Add"><i class="fa-solid fa-plus" style="font-size: 0.82rem;"></i></button>
-          <button class="habit-close-btn widget-close-btn" style="width: 26px; height: 26px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--text-color); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 0.75; transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;" title="Close"><i class="fa-solid fa-xmark" style="font-size: 0.82rem;"></i></button>
+      <div class="habit-header">
+        <div class="habit-title-wrap">
+          <span class="habit-title">
+            <i class="fa-solid fa-bars-progress" style="color: var(--accent-color);"></i>
+            <span data-i18n="habit_title">Habit Tracker</span>
+          </span>
+          ${
+            totalHabits > 0
+              ? `<span class="habit-summary-badge ${allDone ? "all-done" : ""}" title="${summaryTooltip}">${summaryText}</span>`
+              : ""
+          }
+        </div>
+        <div class="habit-header-actions">
+          <button class="habit-action-btn habit-view-toggle ${this.viewMode === "week" ? "active" : ""}" 
+            title="${this.viewMode === "stepper" ? i18n.habit_view_week || "Weekly 7-Day View" : i18n.habit_view_stepper || "Stepper View"}">
+            <i class="fa-solid ${this.viewMode === "stepper" ? "fa-calendar-week" : "fa-bars-progress"}"></i>
+          </button>
+          ${
+            this.viewMode === "stepper"
+              ? `
+            <div class="habit-level-stepper" title="${i18n.habit_stepper_hint || "Daily Steps Target"}">
+              <button class="habit-dec-max" title="-1"><i class="fa-solid fa-minus" style="font-size: 0.68rem;"></i></button>
+              <span style="font-size: 0.74rem; opacity: 0.9; min-width: 15px; text-align: center; font-weight: 700;">${this.maxLevel}</span>
+              <button class="habit-inc-max" title="+1"><i class="fa-solid fa-plus" style="font-size: 0.68rem;"></i></button>
+            </div>
+          `
+              : ""
+          }
+          <button class="habit-action-btn habit-add-btn" title="${i18n.habit_add_title || "Add Habit"}">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <button class="habit-action-btn habit-close-btn widget-close-btn" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
       </div>
     `
 
-    this.headerContainer
-      .querySelector(".habit-close-btn")
-      ?.addEventListener("click", () => {
-        updateSetting("showHabits", false)
-        saveSettings()
-        fadeToggle(this.container, false, "flex")
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: "showHabits", value: false },
-          }),
-        )
-      })
+    // 2. Add / Edit Form Drawer
+    this.renderForm()
 
+    // 3. Habit Grid
     let gridHtml = ""
-
     if (this.habits.length === 0) {
-      gridHtml += `<div style="text-align: center; opacity: 0.6; font-size: 0.85rem; padding: 14px 0;" data-i18n="habit_no_habits">No habits yet. Click + to add.</div>`
+      gridHtml = `
+        <div style="text-align: center; opacity: 0.6; font-size: 0.85rem; padding: 18px 0;" data-i18n="habit_no_habits">
+          No habits yet. Click + to add.
+        </div>
+      `
     } else {
-      for (const habit of this.habits) {
-        gridHtml += `<div class="habit-row" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">`
+      const colorMode = getSettings().habitColorMode || "custom"
+      const last7Days = getLast7Days()
+      const lang = getSettings().language || "en"
+      const weekdays = WEEKDAY_NAMES[lang] || WEEKDAY_NAMES.en
 
-        gridHtml += `<div class="habit-squares-container" style="position: relative; flex: 1; display: flex; height: 30px; border-radius: 6px; overflow: hidden; background: rgba(0,0,0,0.18); border: 1px solid rgba(255,255,255,0.07); padding: 2px; box-sizing: border-box;">`
-        gridHtml += `<div class="habit-squares" style="display: flex; width: 100%; gap: 2px;">`
-
+      this.habits.forEach((habit, idx) => {
+        const target = habit.target || this.maxLevel
         const currentProgress = habit.progress || 0
+        const isDone = currentProgress >= target
         const habitColor = habit.color || "#4CAF50"
-        const colorMode = getSettings().habitColorMode || "custom"
+        const streak = habit.streak || 0
+        const habitIcon = habit.icon || "fa-solid fa-circle-check"
 
-        for (let i = 1; i <= this.maxLevel; i++) {
-          const isFilled = i <= currentProgress
-          let color = "rgba(255,255,255,0.08)"
-          if (isFilled) {
-            if (colorMode === "gradient") {
-              const hue = ((i - 1) / (this.maxLevel - 1)) * 120
-              color = `hsl(${hue}, 80%, 45%)`
-            } else if (colorMode === "m3") {
-              color = "var(--accent-color, #4CAF50)"
-            } else {
-              color = habitColor
+        gridHtml += `
+          <div class="habit-card ${isDone ? "habit-completed" : ""}" data-id="${habit.id}">
+            <div class="habit-card-header">
+              <div class="habit-card-info">
+                <span class="habit-card-icon" style="color: ${habitColor};"><i class="${habitIcon}"></i></span>
+                <span class="habit-card-name" title="${habit.name}">${habit.name}</span>
+                <span class="habit-streak-badge ${streak > 0 ? "active-streak" : ""}" title="${i18n.habit_streak || "Streak"}: ${streak} ${i18n.habit_days || "days"} (Best: ${habit.bestStreak || streak})">
+                  <i class="fa-solid fa-fire"></i> ${streak}d
+                </span>
+              </div>
+              <div class="habit-card-actions">
+                ${
+                  idx > 0
+                    ? `<button class="habit-mini-btn habit-move-up-btn" data-id="${habit.id}" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>`
+                    : ""
+                }
+                ${
+                  idx < this.habits.length - 1
+                    ? `<button class="habit-mini-btn habit-move-down-btn" data-id="${habit.id}" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>`
+                    : ""
+                }
+                <button class="habit-mini-btn habit-edit-btn" data-id="${habit.id}" title="${i18n.habit_edit_title || "Edit"}"><i class="fa-solid fa-pen"></i></button>
+                <button class="habit-mini-btn delete habit-delete-btn" data-id="${habit.id}" title="${i18n.habit_delete_title || "Delete"}"><i class="fa-solid fa-trash-can"></i></button>
+              </div>
+            </div>
+        `
+
+        // Card Body: Stepper Track vs Weekly Track
+        if (this.viewMode === "stepper") {
+          gridHtml += `<div class="habit-stepper-track" data-id="${habit.id}">`
+          for (let i = 1; i <= target; i++) {
+            const isFilled = i <= currentProgress
+            let bg = "rgba(255, 255, 255, 0.08)"
+            if (isFilled) {
+              if (colorMode === "gradient") {
+                const hue = ((i - 1) / Math.max(target - 1, 1)) * 120
+                bg = `hsl(${hue}, 80%, 45%)`
+              } else if (colorMode === "m3") {
+                bg = "var(--accent-color, #4CAF50)"
+              } else {
+                bg = habitColor
+              }
             }
+            gridHtml += `
+              <div class="habit-step-pill ${isFilled ? "filled" : ""}" 
+                data-level="${i}" 
+                data-id="${habit.id}" 
+                style="${isFilled ? `background: ${bg};` : ""}" 
+                title="${i}/${target}"></div>
+            `
           }
+          gridHtml += `</div>`
+        } else {
+          // Weekly 7-Day Track
+          gridHtml += `<div class="habit-week-track" data-id="${habit.id}">`
+          last7Days.forEach((d) => {
+            const dayProgress = habit.history?.[d.key] || 0
+            const dayCompleted = dayProgress >= target
+            const dayLabel = weekdays[d.weekdayIdx] || ""
 
-          gridHtml += `<div class="habit-square" data-no-drag="true" data-level="${i}" data-id="${habit.id}" style="flex: 1; height: 100%; background: ${color}; border-radius: 3px; cursor: pointer; transition: background-color 0.18s ease;"></div>`
+            let btnBg = "rgba(255, 255, 255, 0.06)"
+            if (dayCompleted) {
+              if (colorMode === "gradient") {
+                btnBg = "hsl(120, 80%, 45%)"
+              } else if (colorMode === "m3") {
+                btnBg = "var(--accent-color, #4CAF50)"
+              } else {
+                btnBg = habitColor
+              }
+            }
+
+            gridHtml += `
+              <div class="habit-day-col ${d.isToday ? "is-today" : ""}">
+                <span class="habit-day-label">${dayLabel}</span>
+                <button class="habit-day-btn ${dayCompleted ? "completed" : ""}" 
+                  data-id="${habit.id}" 
+                  data-date="${d.key}" 
+                  style="${dayCompleted ? `background: ${btnBg};` : ""}" 
+                  title="${d.key} (${dayCompleted ? "Completed" : "Not yet"})">
+                  ${dayCompleted ? '<i class="fa-solid fa-check"></i>' : d.dateNum}
+                </button>
+              </div>
+            `
+          })
+          gridHtml += `</div>`
         }
-        gridHtml += `</div>`
 
-        // Text overlay
-        gridHtml += `<div class="habit-name" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fff; font-size: 0.82rem; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.8); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 8px;">${habit.name}</div>`
-
-        gridHtml += `</div>` // end habit-squares-container
-
-        if (colorMode === "custom") {
-          gridHtml += `<input type="color" class="habit-change-color" data-id="${habit.id}" value="${habitColor}" style="width: 22px; height: 22px; padding: 1px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; cursor: pointer; background: transparent; opacity: 0.75; transition: opacity 0.18s ease; box-sizing: border-box;" title="Change color">`
-        }
-        gridHtml += `<button class="habit-delete-btn" data-id="${habit.id}" style="width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; color: #ff5252; cursor: pointer; opacity: 0.75; display: inline-flex; align-items: center; justify-content: center; transition: opacity 0.18s ease, background-color 0.18s ease;" title="Delete"><i class="fa-solid fa-trash-can" style="font-size: 0.8rem;"></i></button>`
-        gridHtml += `</div>`
-      }
+        gridHtml += `</div>` // end habit-card
+      })
     }
 
     this.gridContainer.innerHTML = gridHtml
@@ -239,31 +405,276 @@ export class HabitTracker {
     this.bindEvents()
   }
 
-  bindEvents() {
-    const addBtn = this.container.querySelector(".habit-add-btn")
-    if (addBtn) {
-      addBtn.addEventListener("click", () => this.toggleForm(true))
+  renderForm() {
+    if (!this.formContainer) return
+    const i18n = geti18n() || {}
+
+    if (this.isFormOpen) {
+      const isEditing = Boolean(this.editingHabitId)
+      const editingHabit = isEditing
+        ? this.habits.find((h) => h.id === this.editingHabitId)
+        : null
+
+      const initialName = editingHabit ? editingHabit.name : ""
+      const initialColor = editingHabit ? editingHabit.color : "#4CAF50"
+      this.selectedFormIcon = editingHabit
+        ? editingHabit.icon || "fa-solid fa-circle-check"
+        : this.selectedFormIcon || "fa-solid fa-circle-check"
+
+      let templatesHtml = ""
+      if (!isEditing) {
+        templatesHtml = `
+          <div class="habit-templates-bar">
+            <span class="habit-templates-label" title="${i18n.habit_templates || "Templates"}">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </span>
+            <div class="habit-templates-scroll">
+              ${DEFAULT_TEMPLATES.map(
+                (t) => `
+                <button type="button" class="habit-template-chip" data-name="${i18n[t.nameKey] || t.name}" data-color="${t.color}" data-icon="${t.icon}">
+                  <i class="${t.icon}"></i>
+                  <span>${i18n[t.nameKey] || t.name}</span>
+                </button>
+              `,
+              ).join("")}
+            </div>
+          </div>
+        `
+      }
+
+      this.formContainer.innerHTML = `
+        <div class="habit-form-card">
+          ${templatesHtml}
+          <div class="habit-form-inputs-row">
+            <div class="habit-icon-picker-wrap">
+              <button type="button" class="habit-form-icon-btn" title="${i18n.habit_choose_icon || "Choose icon"}" style="color: ${initialColor};">
+                <i class="${this.selectedFormIcon}"></i>
+              </button>
+              <div class="habit-icon-picker-popover" style="display: none;">
+                <div class="habit-icon-grid">
+                  ${POPULAR_HABIT_ICONS.map(
+                    (ic) => `
+                    <button type="button" class="habit-icon-choice-btn ${this.selectedFormIcon === ic ? "active" : ""}" data-icon="${ic}" title="${ic.replace("fa-solid fa-", "")}">
+                      <i class="${ic}"></i>
+                    </button>
+                  `,
+                  ).join("")}
+                </div>
+              </div>
+            </div>
+            <input type="text" class="habit-form-input" 
+              placeholder="${isEditing ? i18n.habit_edit_name || "Habit name..." : i18n.habit_prompt_name || "New habit name..."}" 
+              value="${initialName}">
+            <input type="color" class="habit-form-color" value="${initialColor}" title="Habit Color">
+            <button class="habit-form-submit-btn" title="Save">
+              <i class="fa-solid fa-check"></i>
+            </button>
+            <button class="habit-form-cancel-btn" title="Cancel">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      `
+
+      const input = this.formContainer.querySelector(".habit-form-input")
+      const colorPicker = this.formContainer.querySelector(".habit-form-color")
+      const submitBtn = this.formContainer.querySelector(".habit-form-submit-btn")
+      const cancelBtn = this.formContainer.querySelector(".habit-form-cancel-btn")
+      const iconTriggerBtn = this.formContainer.querySelector(".habit-form-icon-btn")
+      const iconPopover = this.formContainer.querySelector(".habit-icon-picker-popover")
+      const iconBtns = this.formContainer.querySelectorAll(".habit-icon-choice-btn")
+      const templatesScroll = this.formContainer.querySelector(".habit-templates-scroll")
+
+      // Horizontal smooth wheel scroll for template chips without showing scrollbar
+      if (templatesScroll) {
+        templatesScroll.addEventListener("wheel", (e) => {
+          if (e.deltaY) {
+            e.preventDefault()
+            templatesScroll.scrollLeft += e.deltaY
+          }
+        }, { passive: false })
+      }
+
+      // Color picker input -> update icon trigger color
+      if (colorPicker && iconTriggerBtn) {
+        colorPicker.addEventListener("input", () => {
+          iconTriggerBtn.style.color = colorPicker.value
+        })
+      }
+
+      // Toggle Icon Popover
+      if (iconTriggerBtn && iconPopover) {
+        iconTriggerBtn.addEventListener("click", (e) => {
+          e.stopPropagation()
+          const isShown = iconPopover.style.display !== "none"
+          iconPopover.style.display = isShown ? "none" : "block"
+          iconTriggerBtn.classList.toggle("active", !isShown)
+        })
+
+        // Close on click outside
+        const onDocClick = (e) => {
+          if (!iconPopover.contains(e.target) && !iconTriggerBtn.contains(e.target)) {
+            iconPopover.style.display = "none"
+            iconTriggerBtn.classList.remove("active")
+            document.removeEventListener("click", onDocClick)
+          }
+        }
+        document.addEventListener("click", onDocClick)
+      }
+
+      if (input) {
+        input.focus()
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") this.submitForm(input.value, colorPicker.value)
+          if (e.key === "Escape") this.closeForm()
+        })
+      }
+
+      if (submitBtn) {
+        submitBtn.addEventListener("click", () => {
+          this.submitForm(input.value, colorPicker.value)
+        })
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => this.closeForm())
+      }
+
+      // Icon choice selection
+      iconBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation()
+          const icon = btn.dataset.icon
+          this.selectedFormIcon = icon
+          if (iconTriggerBtn) {
+            iconTriggerBtn.innerHTML = `<i class="${icon}"></i>`
+            iconTriggerBtn.classList.remove("active")
+          }
+          iconBtns.forEach((b) => b.classList.toggle("active", b === btn))
+          if (iconPopover) iconPopover.style.display = "none"
+        })
+      })
+
+      // Template chip click handlers
+      const chips = this.formContainer.querySelectorAll(".habit-template-chip")
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const name = chip.dataset.name
+          const color = chip.dataset.color
+          const icon = chip.dataset.icon
+          if (input) input.value = name
+          if (colorPicker) {
+            colorPicker.value = color
+            if (iconTriggerBtn) iconTriggerBtn.style.color = color
+          }
+          if (icon) {
+            this.selectedFormIcon = icon
+            if (iconTriggerBtn) iconTriggerBtn.innerHTML = `<i class="${icon}"></i>`
+            iconBtns.forEach((b) => b.classList.toggle("active", b.dataset.icon === icon))
+          }
+          if (input) input.focus()
+        })
+      })
+    } else {
+      this.formContainer.innerHTML = ""
+    }
+  }
+
+  openAddForm() {
+    this.isFormOpen = true
+    this.editingHabitId = null
+    this.selectedFormIcon = "fa-solid fa-circle-check"
+    this.renderForm()
+  }
+
+  openEditForm(habitId) {
+    this.isFormOpen = true
+    this.editingHabitId = habitId
+    const habit = this.habits.find((h) => h.id === habitId)
+    this.selectedFormIcon = habit?.icon || "fa-solid fa-circle-check"
+    this.renderForm()
+  }
+
+  closeForm() {
+    this.isFormOpen = false
+    this.editingHabitId = null
+    this.renderForm()
+  }
+
+  submitForm(name, color) {
+    if (!name || !name.trim()) return
+    const cleanName = name.trim()
+    const todayKey = getTodayKey()
+    const icon = this.selectedFormIcon || "fa-solid fa-circle-check"
+
+    if (this.editingHabitId) {
+      const habit = this.habits.find((h) => h.id === this.editingHabitId)
+      if (habit) {
+        habit.name = cleanName
+        habit.color = color
+        habit.icon = icon
+      }
+    } else {
+      const newHabit = {
+        id: Date.now().toString(),
+        name: cleanName,
+        icon: icon,
+        color: color || "#4CAF50",
+        target: this.maxLevel,
+        history: { [todayKey]: 0 },
+        progress: 0,
+        streak: 0,
+        bestStreak: 0,
+        lastUpdated: todayKey,
+      }
+      this.habits.push(newHabit)
     }
 
-    const incBtn = this.container.querySelector(".habit-inc-max")
-    const decBtn = this.container.querySelector(".habit-dec-max")
+    this.saveData()
+    this.closeForm()
+    this.render()
+  }
+
+  bindEvents() {
+    // 1. Close widget
+    this.headerContainer.querySelector(".habit-close-btn")?.addEventListener("click", () => {
+      updateSetting("showHabits", false)
+      saveSettings()
+      fadeToggle(this.container, false, "flex")
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showHabits", value: false },
+        }),
+      )
+    })
+
+    // 2. View Mode Toggle (Stepper vs Weekly)
+    this.headerContainer.querySelector(".habit-view-toggle")?.addEventListener("click", () => {
+      this.viewMode = this.viewMode === "stepper" ? "week" : "stepper"
+      this.saveData()
+      this.render()
+    })
+
+    // 3. Add button
+    this.headerContainer.querySelector(".habit-add-btn")?.addEventListener("click", () => {
+      if (this.isFormOpen && !this.editingHabitId) {
+        this.closeForm()
+      } else {
+        this.openAddForm()
+      }
+    })
+
+    // 4. Stepper max level
+    const incBtn = this.headerContainer.querySelector(".habit-inc-max")
+    const decBtn = this.headerContainer.querySelector(".habit-dec-max")
 
     if (incBtn) {
       incBtn.addEventListener("click", () => {
         if (this.maxLevel < 31) {
           this.maxLevel++
-          this.saveData()
-          this.render()
-        }
-      })
-    }
-    if (decBtn) {
-      decBtn.addEventListener("click", () => {
-        if (this.maxLevel > 1) {
-          this.maxLevel--
-          // ensure no habit has progress > new maxLevel
           this.habits.forEach((h) => {
-            if (h.progress > this.maxLevel) h.progress = this.maxLevel
+            h.target = this.maxLevel
+            h.streak = computeStreak(h, this.maxLevel)
           })
           this.saveData()
           this.render()
@@ -271,63 +682,128 @@ export class HabitTracker {
       })
     }
 
-    const squares = this.container.querySelectorAll(".habit-square")
-    squares.forEach((sq) => {
-      sq.addEventListener("click", (e) => {
-        const level = parseInt(e.target.dataset.level, 10)
-        const id = e.target.dataset.id
+    if (decBtn) {
+      decBtn.addEventListener("click", () => {
+        if (this.maxLevel > 1) {
+          this.maxLevel--
+          this.habits.forEach((h) => {
+            h.target = this.maxLevel
+            if (h.progress > this.maxLevel) h.progress = this.maxLevel
+            const todayKey = getTodayKey()
+            if (h.history && h.history[todayKey] > this.maxLevel) {
+              h.history[todayKey] = this.maxLevel
+            }
+            h.streak = computeStreak(h, this.maxLevel)
+          })
+          this.saveData()
+          this.render()
+        }
+      })
+    }
 
-        const habitIndex = this.habits.findIndex((h) => h.id === id)
-        if (habitIndex !== -1) {
-          if (this.habits[habitIndex].progress === level) {
-            this.habits[habitIndex].progress = level - 1
+    // 5. Stepper pill clicks
+    const stepPills = this.container.querySelectorAll(".habit-step-pill")
+    stepPills.forEach((pill) => {
+      pill.addEventListener("click", (e) => {
+        const level = parseInt(e.currentTarget.dataset.level, 10)
+        const id = e.currentTarget.dataset.id
+        const habit = this.habits.find((h) => h.id === id)
+        if (habit) {
+          const todayKey = getTodayKey()
+          if (!habit.history) habit.history = {}
+
+          if (habit.progress === level) {
+            habit.progress = level - 1
           } else {
-            this.habits[habitIndex].progress = level
+            habit.progress = level
           }
+
+          habit.history[todayKey] = habit.progress
+          habit.streak = computeStreak(habit, this.maxLevel)
+          habit.bestStreak = Math.max(habit.bestStreak || 0, habit.streak)
+
           this.saveData()
           this.render()
         }
       })
     })
 
-    const colorPickers = this.container.querySelectorAll(".habit-change-color")
-    colorPickers.forEach((picker) => {
-      picker.addEventListener("input", (e) => {
-        const id = e.target.dataset.id
-        const newColor = e.target.value
-        const habitIndex = this.habits.findIndex((h) => h.id === id)
-        if (habitIndex !== -1) {
-          this.habits[habitIndex].color = newColor
-          const row = e.target.closest(".habit-row")
-          if (row) {
-            const squares = row.querySelectorAll(".habit-square")
-            squares.forEach((sq) => {
-              const level = parseInt(sq.dataset.level, 10)
-              const currentProgress = this.habits[habitIndex].progress || 0
-              if (level <= currentProgress) {
-                sq.style.background = newColor
-              }
-            })
+    // 6. Weekly day clicks
+    const dayBtns = this.container.querySelectorAll(".habit-day-btn")
+    dayBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.currentTarget.dataset.id
+        const dateKey = e.currentTarget.dataset.date
+        const habit = this.habits.find((h) => h.id === id)
+        if (habit) {
+          if (!habit.history) habit.history = {}
+          const target = habit.target || this.maxLevel
+          const currentVal = habit.history[dateKey] || 0
+
+          if (currentVal >= target) {
+            habit.history[dateKey] = 0
+          } else {
+            habit.history[dateKey] = target
           }
-        }
-      })
-      picker.addEventListener("change", (e) => {
-        const id = e.target.dataset.id
-        const newColor = e.target.value
-        const habitIndex = this.habits.findIndex((h) => h.id === id)
-        if (habitIndex !== -1) {
-          this.habits[habitIndex].color = newColor
+
+          const todayKey = getTodayKey()
+          if (dateKey === todayKey) {
+            habit.progress = habit.history[todayKey]
+          }
+
+          habit.streak = computeStreak(habit, this.maxLevel)
+          habit.bestStreak = Math.max(habit.bestStreak || 0, habit.streak)
+
           this.saveData()
+          this.render()
         }
-      })
-      picker.addEventListener("mouseenter", (e) => {
-        e.currentTarget.style.opacity = "1"
-      })
-      picker.addEventListener("mouseleave", (e) => {
-        e.currentTarget.style.opacity = "0.7"
       })
     })
 
+    // 7. Move Up & Down
+    const moveUpBtns = this.container.querySelectorAll(".habit-move-up-btn")
+    moveUpBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const id = e.currentTarget.dataset.id
+        const idx = this.habits.findIndex((h) => h.id === id)
+        if (idx > 0) {
+          const temp = this.habits[idx]
+          this.habits[idx] = this.habits[idx - 1]
+          this.habits[idx - 1] = temp
+          this.saveData()
+          this.render()
+        }
+      })
+    })
+
+    const moveDownBtns = this.container.querySelectorAll(".habit-move-down-btn")
+    moveDownBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const id = e.currentTarget.dataset.id
+        const idx = this.habits.findIndex((h) => h.id === id)
+        if (idx >= 0 && idx < this.habits.length - 1) {
+          const temp = this.habits[idx]
+          this.habits[idx] = this.habits[idx + 1]
+          this.habits[idx + 1] = temp
+          this.saveData()
+          this.render()
+        }
+      })
+    })
+
+    // 8. Edit Habit
+    const editBtns = this.container.querySelectorAll(".habit-edit-btn")
+    editBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const id = e.currentTarget.dataset.id
+        this.openEditForm(id)
+      })
+    })
+
+    // 9. Delete Habit
     const deleteBtns = this.container.querySelectorAll(".habit-delete-btn")
     deleteBtns.forEach((btn) => {
       btn.addEventListener("click", async (e) => {
@@ -352,16 +828,10 @@ export class HabitTracker {
 
         if (await showConfirm(message, title)) {
           this.habits = this.habits.filter((h) => h.id !== id)
+          if (this.editingHabitId === id) this.closeForm()
           this.saveData()
           this.render()
         }
-      })
-
-      btn.addEventListener("mouseenter", (e) => {
-        e.currentTarget.style.opacity = "1"
-      })
-      btn.addEventListener("mouseleave", (e) => {
-        e.currentTarget.style.opacity = "0.7"
       })
     })
   }
