@@ -2964,9 +2964,9 @@ body.hide-bookmark-text .bookmark span {
   display: none;
 }
 
-body.bookmark-long-text .bookmark span,
-body.bookmark-long-text .bookmark-stack-popup .bookmark-stack-popup-label,
-body.bookmark-long-text .bookmark-group-tab span {
+body.bookmark-long-text:not(.bookmark-macos-hover):not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark span,
+body.bookmark-long-text:not(.bookmark-macos-hover):not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark .bookmark-title,
+body.bookmark-long-text:not(.bookmark-macos-hover) .bookmark-stack-popup .bookmark-stack-popup-label {
   white-space: normal !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2;
@@ -2975,9 +2975,9 @@ body.bookmark-long-text .bookmark-group-tab span {
   word-break: break-word;
 }
 
-body.bookmark-full-text .bookmark:not(.bookmark-stack-popup-item) span:not(.bookmark-icon-fallback):not(.bookmark-stack-count):not(.bookmark-folder-count),
-body.bookmark-full-text .bookmark .bookmark-title,
-body.bookmark-full-text .bookmark-stack-popup .bookmark-stack-popup-label {
+body.bookmark-full-text:not(.bookmark-macos-hover):not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark:not(.bookmark-stack-popup-item) span:not(.bookmark-icon-fallback):not(.bookmark-stack-count):not(.bookmark-folder-count),
+body.bookmark-full-text:not(.bookmark-macos-hover):not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark .bookmark-title,
+body.bookmark-full-text:not(.bookmark-macos-hover) .bookmark-stack-popup .bookmark-stack-popup-label {
   white-space: normal !important;
   display: block !important;
   -webkit-line-clamp: unset !important;
@@ -2987,20 +2987,58 @@ body.bookmark-full-text .bookmark-stack-popup .bookmark-stack-popup-label {
   overflow: visible !important;
 }
 
-body.bookmark-full-text .bookmark-group-tab {
+body.bookmark-group-long-text:not(.bookmark-group-full-text) .bookmark-group-tab {
   height: auto !important;
-  min-height: 38px;
-  align-items: flex-start;
+  min-height: 36px;
+  align-items: center;
 }
 
-body.bookmark-full-text .bookmark-group-tab span {
+body.bookmark-group-long-text:not(.bookmark-group-full-text) .bookmark-group-tab .group-tab-name,
+body.bookmark-group-long-text:not(.bookmark-group-full-text) .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon) {
   white-space: normal !important;
-  display: block !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-height: 1.25 !important;
+  word-break: break-word !important;
+  max-width: var(--bookmark-group-long-text-width, 180px) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.bookmark-group-full-text .bookmark-group-tab {
+  height: auto !important;
+  min-height: 38px;
+  align-items: center;
+}
+
+body.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon) {
+  white-space: normal !important;
+  display: inline-block !important;
   -webkit-line-clamp: unset !important;
   line-height: 1.35;
   word-break: break-word;
-  max-width: 200px !important; 
+  max-width: none !important; 
   overflow: visible !important;
+}
+
+body.bookmark-sidebar-mode.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-sidebar-mode.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon) {
+  max-width: 100% !important;
+  word-break: break-word !important;
+}
+
+body.bookmark-taskbar-mode.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-top-mode.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-left-mode.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-right-mode.bookmark-group-full-text .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-mode.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon),
+body.bookmark-taskbar-top-mode.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon),
+body.bookmark-taskbar-left-mode.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon),
+body.bookmark-taskbar-right-mode.bookmark-group-full-text .bookmark-group-tab span:not(.group-tab-count):not(.custom-group-tab-icon) {
+  max-width: 160px !important;
+  word-break: break-word !important;
 }
 
 body.hide-bookmark-text .bookmark .bookmark-stack-count {
@@ -12391,6 +12429,48 @@ body.widgets-m3-accent .timer-controls #timer-start-pause i {
   position: relative;
 }
 
+/* --- Max Rows / Wrap Control for Bookmark Groups --- */
+body.bookmark-group-rows-1 .bookmark-groups-container:not(.bookmark-sidebar-mode) {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  justify-content: center !important;
+  max-width: min(92%, 1200px) !important;
+}
+
+body.bookmark-group-rows-1 .bookmark-groups-container:not(.bookmark-sidebar-mode) .bookmark-group-tab {
+  flex-shrink: 0 !important;
+}
+
+body.bookmark-group-rows-2 .bookmark-groups-container:not(.bookmark-sidebar-mode) {
+  flex-wrap: wrap !important;
+  max-height: calc((var(--bookmark-group-font-size, 14px) * 1.5 + 24px) * 2 + 40px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+body.bookmark-group-rows-3 .bookmark-groups-container:not(.bookmark-sidebar-mode) {
+  flex-wrap: wrap !important;
+  max-height: calc((var(--bookmark-group-font-size, 14px) * 1.5 + 24px) * 3 + 52px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+body.bookmark-group-rows-1 .bookmark-groups-container::-webkit-scrollbar,
+body.bookmark-group-rows-2 .bookmark-groups-container::-webkit-scrollbar,
+body.bookmark-group-rows-3 .bookmark-groups-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 .bookmark-group-active-runner {
   background: var(--accent-color);
   border-radius: 999px;
@@ -12463,12 +12543,15 @@ body.widgets-m3-accent .timer-controls #timer-start-pause i {
   -webkit-backdrop-filter: blur(4px);
 }
 
-.bookmark-group-tab span {
+.bookmark-group-tab span,
+.bookmark-group-tab .group-tab-name {
   min-width: 0;
   max-width: var(--bookmark-group-text-width, 120px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .bookmark-group-tab:hover {
@@ -18610,7 +18693,7 @@ body.bookmark-group-accent-enabled .bookmark-group-tab.active .group-tab-count {
   color: inherit !important;
 }
 
-body.bookmark-group-border-hidden .bookmark-groups-container,
+body.bookmark-group-border-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
@@ -18807,23 +18890,23 @@ body.hide-bookmark-text .bookmark-stack-popup .bookmark-stack-popup-label {
 }
 
 /* Hide only the wrapper around bookmark folder tabs; tab color settings stay active. */
-body.bookmark-group-container-bg-hidden .bookmark-groups-container,
+body.bookmark-group-container-bg-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden:not(.bookmark-sidebar-mode):not(
     .bookmark-taskbar-mode
   ):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(
     .bookmark-taskbar-right-mode
   )
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden.bookmark-sidebar-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-top-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-left-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-right-mode
-  .bookmark-groups-container {
+  .bookmark-groups-container:not(.setting-target-spotlight-active) {
   background: transparent !important;
   border: none !important;
   border-color: transparent !important;
@@ -18960,14 +19043,14 @@ body.bookmark-group-count-hidden.bookmark-taskbar-left-mode
   display: none !important;
 }
 
-body.bookmark-group-border-hidden .bookmark-groups-container,
+body.bookmark-group-border-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
 body.bookmark-group-border-hidden .bookmark-stack-icon,
 body.bookmark-group-border-hidden .bookmark-stack-cell,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden.bookmark-sidebar-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode
   .bookmark-group-tab
@@ -18976,7 +19059,7 @@ body.bookmark-group-border-hidden.bookmark-sidebar-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden.bookmark-taskbar-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-mode
   .bookmark-group-tab
@@ -18985,7 +19068,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
   .bookmark-group-tab
@@ -18994,7 +19077,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
   .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
@@ -19004,7 +19087,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
-  .bookmark-groups-container,
+  .bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
   .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
@@ -19544,7 +19627,7 @@ body.bookmark-taskbar-right-mode .bookmarks-grid {
 
 /* --- UNIVERSAL OVERRIDES FOR BOOKMARK SETTINGS --- */
 /* Fixes "Hide folder bar background" not working on all layouts due to specificity */
-body.bookmark-group-container-bg-hidden #bookmark-groups-container {
+body.bookmark-group-container-bg-hidden #bookmark-groups-container:not(.setting-target-spotlight-active) {
   background: transparent !important;
   border: none !important;
   border-color: transparent !important;
@@ -19554,7 +19637,7 @@ body.bookmark-group-container-bg-hidden #bookmark-groups-container {
 }
 
 /* Fixes "Hide folder border" not working in default grid and other layout specificities */
-body.bookmark-group-border-hidden #bookmark-groups-container,
+body.bookmark-group-border-hidden #bookmark-groups-container:not(.setting-target-spotlight-active),
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-count,
@@ -21869,89 +21952,138 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
 #hidden-groups-popup {
   position: fixed;
   z-index: 10040;
-  min-width: 200px;
-  max-width: min(340px, calc(100vw - 24px));
-  max-height: min(380px, calc(100vh - 120px));
-  background: rgba(22, 24, 32, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-md, 14px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-  padding: 10px;
+  min-width: 220px;
+  max-width: min(360px, calc(100vw - 24px));
+  max-height: min(420px, calc(100vh - 100px));
+  background: rgba(20, 23, 31, 0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 16px);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  padding: 10px 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   animation: fadeInMenu 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
 .hidden-groups-popup-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 4px 6px;
+  padding: 4px 6px 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hidden-groups-popup-title {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-color, #fff);
-  opacity: 0.9;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  letter-spacing: 0.01em;
+}
+
+.hidden-groups-popup-title i {
+  color: var(--accent-color, #a8c0ff);
+  font-size: 0.9rem;
 }
 
 .hidden-groups-popup-close-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
-  padding: 4px;
+  width: 24px;
+  height: 24px;
   font-size: 0.85rem;
-  border-radius: 4px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .hidden-groups-popup-close-btn:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.05);
 }
 
 .hidden-groups-popup-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 280px;
-  padding-right: 2px;
+  max-height: 320px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.hidden-groups-popup-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.hidden-groups-popup-list::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 3px 0;
+}
+
+.hidden-groups-popup-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.hidden-groups-popup-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .hidden-groups-popup-list .bookmark-group-tab {
   width: 100%;
+  box-sizing: border-box;
   justify-content: flex-start;
   padding: 8px 12px !important;
-  border-radius: var(--radius-sm, 8px);
+  border-radius: var(--radius-sm, 10px);
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.86rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hidden-groups-popup-list .bookmark-group-tab .group-tab-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.hidden-groups-popup-list .bookmark-group-tab .group-tab-count {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .hidden-groups-popup-list .bookmark-group-tab:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(2px);
 }
 
 .hidden-groups-popup-list .bookmark-group-tab.active {
-  background: var(--accent-color, rgba(168, 192, 255, 0.25)) !important;
+  background: color-mix(in srgb, var(--accent-color, #a8c0ff) 25%, rgba(255, 255, 255, 0.08)) !important;
   color: var(--accent-contrast-color, #fff) !important;
-  border-color: var(--accent-color) !important;
+  border-color: var(--accent-color, #a8c0ff) !important;
+  box-shadow: 0 2px 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
 }
 
 /* === RESPONSIVE FIT (MAINTAINS FULL SIZES AT 90% & 100% ZOOM) === */

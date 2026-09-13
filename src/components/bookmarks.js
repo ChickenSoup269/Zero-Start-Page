@@ -3391,8 +3391,10 @@ function openHiddenGroupsPopup(anchor, hiddenGroups, activeId, enableDrag) {
   const list = document.createElement("div")
   list.className = "hidden-groups-popup-list"
 
+  const allGroups = getBookmarkGroups()
   hiddenGroups.forEach((group, idx) => {
-    const realIndex = 8 + idx
+    const realIndex =
+      allGroups.indexOf(group) >= 0 ? allGroups.indexOf(group) : idx
     const tabEl = createGroupTabElement(
       group,
       realIndex,
@@ -3484,8 +3486,6 @@ function createGroupTabElement(
   const nameSpan = document.createElement("span")
   nameSpan.textContent = group.name
   nameSpan.className = "group-tab-name"
-  nameSpan.style.flexGrow = "1"
-  nameSpan.style.marginRight = "8px"
   tab.appendChild(nameSpan)
 
   const hasNestedFolder =
@@ -3548,112 +3548,85 @@ function createGroupTabElement(
   return tab
 }
 
-function renderGroupTabs() {
-  const groups = getBookmarkGroups()
-  const activeId = getActiveGroupId()
-  const settings = getSettings()
-  const enableDrag = settings.bookmarkEnableDrag !== false
-  bookmarkGroupsContainer.innerHTML = ""
+function createMoreTabElement(hiddenGroups, activeId, enableDrag) {
+  const activeHiddenGroup = hiddenGroups.find((g) => g.id === activeId)
+  const isHiddenActive = !!activeHiddenGroup
+  const currentI18n = geti18n()
 
-  const isSidebar =
-    document.body.classList.contains("bookmark-sidebar-mode") ||
-    settings.bookmarkLayout === "sidebar"
-  const MAX_VISIBLE_GROUPS = 8
-  const shouldCollapse = !isSidebar && groups.length > MAX_VISIBLE_GROUPS
+  const moreTab = document.createElement("div")
+  moreTab.className = `bookmark-group-tab bookmark-groups-more-tab ${isHiddenActive ? "active has-active-hidden" : ""}`
+  moreTab.setAttribute("role", "button")
+  moreTab.setAttribute(
+    "aria-label",
+    `${hiddenGroups.length} more bookmark groups`,
+  )
+  moreTab.title = isHiddenActive
+    ? `${activeHiddenGroup.name} (${hiddenGroups.length} other groups)`
+    : `${currentI18n.more_groups || "Other groups"} (+${hiddenGroups.length})`
 
-  let visibleGroups = groups
-  let hiddenGroups = []
+  const moreIcon =
+    isHiddenActive && activeHiddenGroup.icon
+      ? createStoredIconElement(
+          activeHiddenGroup.icon,
+          activeHiddenGroup.name,
+        )
+      : document.createElement("i")
 
-  if (shouldCollapse) {
-    visibleGroups = groups.slice(0, MAX_VISIBLE_GROUPS)
-    hiddenGroups = groups.slice(MAX_VISIBLE_GROUPS)
+  if (isHiddenActive && activeHiddenGroup.icon) {
+    moreIcon.classList.add("group-tab-icon", "custom-group-tab-icon")
+  } else if (isHiddenActive) {
+    moreIcon.className = `fa-solid ${getGroupIcon(activeHiddenGroup.name)} group-tab-icon`
+  } else {
+    moreIcon.className = "fa-solid fa-layer-group group-tab-icon"
   }
+  moreTab.appendChild(moreIcon)
 
-  visibleGroups.forEach((group, index) => {
-    const tab = createGroupTabElement(group, index, activeId, enableDrag, false)
-    bookmarkGroupsContainer.appendChild(tab)
+  const moreName = document.createElement("span")
+  moreName.className = "group-tab-name"
+  moreName.textContent = isHiddenActive
+    ? activeHiddenGroup.name
+    : currentI18n.more_groups || "More"
+  moreName.style.flexGrow = "1"
+  moreName.style.marginRight = "6px"
+  moreTab.appendChild(moreName)
+
+  const moreBadge = document.createElement("small")
+  moreBadge.className = "group-tab-count"
+  moreBadge.textContent = isHiddenActive
+    ? String(
+        Array.isArray(activeHiddenGroup.items)
+          ? activeHiddenGroup.items.length
+          : 0,
+      )
+    : `+${hiddenGroups.length}`
+  moreTab.appendChild(moreBadge)
+
+  moreTab.addEventListener("click", (e) => {
+    e.stopPropagation()
+    openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
   })
 
-  // If there are overflow hidden groups, add the "More Groups" toggle tab
-  if (shouldCollapse && hiddenGroups.length > 0) {
-    const activeHiddenGroup = hiddenGroups.find((g) => g.id === activeId)
-    const isHiddenActive = !!activeHiddenGroup
-    const currentI18n = geti18n()
-
-    const moreTab = document.createElement("div")
-    moreTab.className = `bookmark-group-tab bookmark-groups-more-tab ${isHiddenActive ? "active has-active-hidden" : ""}`
-    moreTab.setAttribute("role", "button")
-    moreTab.setAttribute(
-      "aria-label",
-      `${hiddenGroups.length} more bookmark groups`,
-    )
-    moreTab.title = isHiddenActive
-      ? `${activeHiddenGroup.name} (${hiddenGroups.length} other groups)`
-      : `${currentI18n.more_groups || "Other groups"} (+${hiddenGroups.length})`
-
-    const moreIcon =
-      isHiddenActive && activeHiddenGroup.icon
-        ? createStoredIconElement(
-            activeHiddenGroup.icon,
-            activeHiddenGroup.name,
-          )
-        : document.createElement("i")
-
-    if (isHiddenActive && activeHiddenGroup.icon) {
-      moreIcon.classList.add("group-tab-icon", "custom-group-tab-icon")
-    } else if (isHiddenActive) {
-      moreIcon.className = `fa-solid ${getGroupIcon(activeHiddenGroup.name)} group-tab-icon`
-    } else {
-      moreIcon.className = "fa-solid fa-layer-group group-tab-icon"
-    }
-    moreTab.appendChild(moreIcon)
-
-    const moreName = document.createElement("span")
-    moreName.className = "group-tab-name"
-    moreName.textContent = isHiddenActive
-      ? activeHiddenGroup.name
-      : currentI18n.more_groups || "More"
-    moreName.style.flexGrow = "1"
-    moreName.style.marginRight = "6px"
-    moreTab.appendChild(moreName)
-
-    const moreBadge = document.createElement("small")
-    moreBadge.className = "group-tab-count"
-    moreBadge.textContent = isHiddenActive
-      ? String(
-          Array.isArray(activeHiddenGroup.items)
-            ? activeHiddenGroup.items.length
-            : 0,
-        )
-      : `+${hiddenGroups.length}`
-    moreTab.appendChild(moreBadge)
-
-    moreTab.addEventListener("click", (e) => {
-      e.stopPropagation()
-      openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
+  // Allow dropping dragged bookmarks into the more tab / active hidden group
+  if (enableDrag) {
+    moreTab.addEventListener("dragover", handleDragOver)
+    moreTab.addEventListener("dragenter", handleDragEnter)
+    moreTab.addEventListener("dragleave", handleDragLeave)
+    moreTab.addEventListener("drop", (e) => {
+      if (isHiddenActive) {
+        const allGroups = getBookmarkGroups()
+        const realIdx = allGroups.indexOf(activeHiddenGroup)
+        moreTab.dataset.index = realIdx
+        handleGroupDrop.call(moreTab, e)
+      } else {
+        openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
+      }
     })
-
-    // Allow dropping dragged bookmarks into the more tab / active hidden group
-    if (enableDrag) {
-      moreTab.addEventListener("dragover", handleDragOver)
-      moreTab.addEventListener("dragenter", handleDragEnter)
-      moreTab.addEventListener("dragleave", handleDragLeave)
-      moreTab.addEventListener("drop", (e) => {
-        if (isHiddenActive) {
-          const allGroups = getBookmarkGroups()
-          const realIdx = allGroups.indexOf(activeHiddenGroup)
-          moreTab.dataset.index = realIdx
-          handleGroupDrop.call(moreTab, e)
-        } else {
-          openHiddenGroupsPopup(moreTab, hiddenGroups, activeId, enableDrag)
-        }
-      })
-    }
-
-    bookmarkGroupsContainer.appendChild(moreTab)
   }
 
-  // "Add Group" Tab
+  return moreTab
+}
+
+function createAddGroupTabElement(groups) {
   const addTab = document.createElement("div")
   addTab.className = "bookmark-group-tab add-group-tab"
   addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
@@ -3697,7 +3670,81 @@ function renderGroupTabs() {
       )
     }
   })
-  bookmarkGroupsContainer.appendChild(addTab)
+  return addTab
+}
+
+function renderGroupTabs() {
+  const groups = getBookmarkGroups()
+  const activeId = getActiveGroupId()
+  const settings = getSettings()
+  const enableDrag = settings.bookmarkEnableDrag !== false
+  bookmarkGroupsContainer.innerHTML = ""
+
+  const isSidebar =
+    document.body.classList.contains("bookmark-sidebar-mode") ||
+    settings.bookmarkLayout === "sidebar"
+  const isOneRow =
+    settings.bookmarkGroupMaxRows === "1" ||
+    document.body.classList.contains("bookmark-group-rows-1")
+
+  const maxVisibleSetting = Number(settings.bookmarkGroupMaxVisible ?? 8)
+  const isUnlimited = maxVisibleSetting <= 0 || maxVisibleSetting >= 25
+  const configMaxVisible = isUnlimited ? Infinity : maxVisibleSetting
+
+  const renderWithCount = (visibleCount) => {
+    bookmarkGroupsContainer.innerHTML = ""
+    const shouldCollapse =
+      !isSidebar && isFinite(visibleCount) && groups.length > visibleCount
+    const visibleGroups = shouldCollapse ? groups.slice(0, visibleCount) : groups
+    const hiddenGroups = shouldCollapse ? groups.slice(visibleCount) : []
+
+    visibleGroups.forEach((group, index) => {
+      const tab = createGroupTabElement(
+        group,
+        index,
+        activeId,
+        enableDrag,
+        false,
+      )
+      bookmarkGroupsContainer.appendChild(tab)
+    })
+
+    if (shouldCollapse && hiddenGroups.length > 0) {
+      const moreTab = createMoreTabElement(hiddenGroups, activeId, enableDrag)
+      bookmarkGroupsContainer.appendChild(moreTab)
+    }
+
+    const addTab = createAddGroupTabElement(groups)
+    bookmarkGroupsContainer.appendChild(addTab)
+  }
+
+  if (isOneRow && !isSidebar && groups.length > 1) {
+    let count = Math.min(
+      groups.length,
+      isFinite(configMaxVisible) ? configMaxVisible : groups.length,
+    )
+    renderWithCount(count)
+
+    const parent = bookmarkGroupsContainer.parentElement || document.body
+    const availableWidth = Math.min(
+      (parent.clientWidth || window.innerWidth) * 0.9,
+      1200,
+    )
+
+    while (
+      count > 1 &&
+      bookmarkGroupsContainer.scrollWidth > availableWidth
+    ) {
+      count--
+      renderWithCount(count)
+    }
+  } else {
+    const initialCount = isFinite(configMaxVisible)
+      ? configMaxVisible
+      : groups.length
+    renderWithCount(initialCount)
+  }
+
   requestAnimationFrame(animateGroupTabActiveRunner)
 }
 
@@ -3736,6 +3783,23 @@ function initGlobalStackDragListeners() {
 export function initBookmarks() {
   initGlobalStackDragListeners()
   renderBookmarks()
+
+  bookmarkGroupsContainer.addEventListener(
+    "wheel",
+    (e) => {
+      if (
+        bookmarkGroupsContainer.scrollWidth >
+          bookmarkGroupsContainer.clientWidth &&
+        !document.body.classList.contains("bookmark-sidebar-mode")
+      ) {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault()
+          bookmarkGroupsContainer.scrollLeft += e.deltaY * 0.9
+        }
+      }
+    },
+    { passive: false },
+  )
 
   bookmarkGroupsContainer.addEventListener("dragover", (e) => {
     e.preventDefault()
@@ -4312,3 +4376,14 @@ document.addEventListener(
   },
   { passive: false },
 )
+
+let folderResizeDebounceTimer = null
+window.addEventListener("resize", () => {
+  if (document.body.classList.contains("bookmark-group-rows-1")) {
+    clearTimeout(folderResizeDebounceTimer)
+    folderResizeDebounceTimer = setTimeout(() => {
+      renderGroupTabs()
+    }, 120)
+  }
+})
+
