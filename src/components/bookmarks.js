@@ -22,6 +22,19 @@ import {
   updateSetting,
   saveSettings,
 } from "../services/state.js"
+import { geti18n } from "../services/i18n.js"
+import {
+  openBookmarkEditPopover,
+  openBookmarkGroupEditPopover,
+  openBookmarkStackEditPopover,
+  openModal,
+} from "./modal.js"
+import { showContextMenu } from "./contextMenu.js"
+import {
+  captureBookmarkSnapshot,
+  showBookmarkUndo as showBookmarkUndoBase,
+} from "./bookmarks/bookmarkUndo.js"
+export { captureBookmarkSnapshot }
 
 export let currentFolderStack = []
 
@@ -56,15 +69,6 @@ export function setBookmarks(newItems) {
     parent.items = newItems
   }
 }
-
-import { geti18n } from "../services/i18n.js"
-import {
-  openBookmarkEditPopover,
-  openBookmarkGroupEditPopover,
-  openBookmarkStackEditPopover,
-  openModal,
-} from "./modal.js"
-import { showContextMenu } from "./contextMenu.js"
 
 let bookmarkOpenBehaviorPromptPending = false
 let pendingGroupTabActiveAnimation = null
@@ -164,7 +168,6 @@ function saveIconCache() {
   }
 }
 
-let bookmarkUndoTimeout = null
 
 export function invalidateBookmarkIconCache(url = null) {
   if (url) {
@@ -182,53 +185,12 @@ let isStackSelectionMode = false
 let selectedStackIndices = new Set()
 let activeStackIndex = null
 
-export function captureBookmarkSnapshot() {
-  return JSON.parse(JSON.stringify(getBookmarkState()))
-}
-
-function restoreBookmarkSnapshot(snapshot) {
-  if (!snapshot?.groups) return
-  setBookmarkGroups(snapshot.groups)
-  setActiveGroupId(snapshot.activeGroupId || snapshot.groups[0]?.id)
-  saveBookmarks()
-  selectedIndices.clear()
-  isSelectionMode = false
-  document.getElementById("hidden-bookmarks-popup")?.remove()
-  document.getElementById("bookmark-stack-popup")?.remove()
-  renderBookmarks()
-}
-
 export function showBookmarkUndo(message, snapshot) {
-  if (!snapshot) return
-  const i18n = geti18n()
-  let toast = document.getElementById("bookmark-undo-toast")
-  if (!toast) {
-    toast = document.createElement("div")
-    toast.id = "bookmark-undo-toast"
-    toast.className = "bookmark-undo-toast"
-    document.body.appendChild(toast)
-  }
-
-  toast.innerHTML = ""
-  const text = document.createElement("span")
-  text.textContent = message
-  const undoBtn = document.createElement("button")
-  undoBtn.type = "button"
-  undoBtn.textContent = i18n.bookmark_undo || "Undo"
-  undoBtn.addEventListener("click", () => {
-    if (bookmarkUndoTimeout) clearTimeout(bookmarkUndoTimeout)
-    restoreBookmarkSnapshot(snapshot)
-    toast.classList.remove("show")
+  return showBookmarkUndoBase(message, snapshot, () => {
+    selectedIndices.clear()
+    isSelectionMode = false
+    renderBookmarks()
   })
-
-  toast.appendChild(text)
-  toast.appendChild(undoBtn)
-  requestAnimationFrame(() => toast.classList.add("show"))
-
-  if (bookmarkUndoTimeout) clearTimeout(bookmarkUndoTimeout)
-  bookmarkUndoTimeout = setTimeout(() => {
-    toast.classList.remove("show")
-  }, 5200)
 }
 
 export function toggleSelectionMode(initialIndex = -1) {

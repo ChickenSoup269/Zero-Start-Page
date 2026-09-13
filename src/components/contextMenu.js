@@ -8,6 +8,7 @@ import {
   menuMove,
 } from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
+import { escapeHtml } from "../utils/strings.js"
 import {
   getBookmarks,
   setBookmarks,
@@ -24,8 +25,10 @@ import { geti18n } from "../services/i18n.js"
 import { openBookmarkEditPopover, openModal } from "./modal.js"
 import {
   captureBookmarkSnapshot,
-  renderBookmarks,
   showBookmarkUndo,
+} from "./bookmarks/bookmarkUndo.js"
+import {
+  renderBookmarks,
   toggleSelectionMode,
 } from "./bookmarks.js"
 
@@ -40,15 +43,6 @@ let hoverDetailTimer = null
 let currentHoveredMenuItem = null
 let contextMenuDetailToastEl = null
 
-function escapeHtml(str) {
-  if (!str) return ""
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-}
 
 function getOrCreateDetailToast() {
   if (!contextMenuDetailToastEl) {
