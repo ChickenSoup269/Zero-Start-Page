@@ -6,6 +6,7 @@
 import { applyTranslations, geti18n } from "../services/i18n.js"
 import { getSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
+import { escapeHtml } from "../utils/strings.js"
 
 function setUpdateNoticePending(isPending) {
   window.startpageUpdateNoticePending = isPending
@@ -22,14 +23,6 @@ function isFirstRunOnboardingPending() {
   )
 }
 
-function escapeHtml(value) {
-  return String(value || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
-}
 
 function getInitials(name) {
   if (!name) return "U"

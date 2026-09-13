@@ -2,6 +2,7 @@ import { searchInput, clearBtn } from "../utils/dom.js"
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { showAlert } from "../utils/dialog.js"
+import { escapeHtml } from "../utils/strings.js"
 
 const GEMINI_APP_URL = "https://gemini.google.com/app"
 const MAX_GEMINI_DIRECT_URL_LENGTH = 1900
@@ -448,13 +449,6 @@ async function fetchSuggestions(query) {
   }
 }
 
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-}
 
 function highlightQuery(suggestion, query) {
   if (!query) return `<strong>${escapeHtml(suggestion)}</strong>`

@@ -339,7 +339,7 @@ const rgbToHsl = ({ r, g, b }) => {
   return { h: h * 360, s: s * 100, l: l * 100 }
 }
 
-const hslToHex = (h, s, l) => {
+export const hslToHex = (h, s, l) => {
   h = ((h % 360) + 360) % 360
   s = clamp(s, 0, 100) / 100
   l = clamp(l, 0, 100) / 100

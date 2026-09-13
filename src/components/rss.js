@@ -1,4 +1,5 @@
 import { fadeToggle } from "../utils/dom.js"
+import { escapeHtml } from "../utils/strings.js"
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { applyTranslations, geti18n } from "../services/i18n.js"
 
@@ -93,15 +94,6 @@ export function getDefaultFeeds(lang = "en") {
   ]
 }
 
-function escapeHtml(str) {
-  if (!str) return ""
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-}
 
 function formatRelativeTime(dateStr) {
   if (!dateStr) return ""
