@@ -1,6 +1,7 @@
 import { applyTranslations, geti18n, loadLanguage } from "./i18n.js"
 import {
   getBookmarkState,
+  getSettings,
   setActiveGroupId,
   setBookmarkGroups,
   updateSetting,
@@ -8,6 +9,8 @@ import {
   saveBookmarks,
   saveSettings,
 } from "./state.js"
+import { applyMaterialAccentTokens } from "../boot/styles.js"
+import { applyAccentFromCurrentBackground } from "../components/settings/dynamicAccent.js"
 import {
   showAlert,
   showChecklistConfirm,
@@ -26,6 +29,7 @@ import { ensureSettingsInitialized } from "../boot/lazyInit.js"
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
 const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
+const FIRST_RUN_ACCENT_KEY = "startpageFirstRunAccentColorV1"
 const FIRST_RUN_LAYOUT_KEY = "startpageFirstRunBookmarkLayoutV1"
 const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
@@ -95,6 +99,7 @@ export function prepareFirstRunDefaults() {
     FIRST_RUN_BG_KEY,
     FIRST_RUN_LANGUAGE_KEY,
     FIRST_RUN_NAME_KEY,
+    FIRST_RUN_ACCENT_KEY,
     FIRST_RUN_LAYOUT_KEY,
     FIRST_RUN_ZOOM_KEY,
     FIRST_RUN_OPEN_SOURCE_KEY,
@@ -730,6 +735,301 @@ async function promptFirstRunUserName() {
   }
 
   localStorage.setItem(FIRST_RUN_NAME_KEY, name)
+}
+
+const FIRST_RUN_ACCENT_PRESETS = [
+  "#3b82f6", // Blue
+  "#8b5cf6", // Purple
+  "#ec4899", // Pink
+  "#ef4444", // Red
+  "#f97316", // Orange
+  "#f59e0b", // Amber
+  "#10b981", // Emerald
+  "#06b6d4", // Cyan
+  "#14b8a6", // Teal
+  "#64748b", // Slate
+  "#6366f1", // Indigo
+]
+
+function promptFirstRunAccentColorDialog({ title, message, i18n }) {
+  return new Promise((resolve) => {
+    let overlay = document.getElementById("custom-dialog-overlay")
+    if (!overlay) {
+      overlay = document.createElement("div")
+      overlay.id = "custom-dialog-overlay"
+      overlay.className = "custom-dialog-overlay"
+      document.body.appendChild(overlay)
+    }
+
+    overlay.classList.add("active")
+    overlay.style.pointerEvents = "auto"
+
+    const settings = getSettings()
+    let isSyncActive = Boolean(settings.m3AutoAccentFromBg)
+    let selectedColor = (settings.accentColor || "#3b82f6").toLowerCase()
+    const paletteStyle = settings.m3PaletteStyle || "tonalSpot"
+
+    const syncTitle = i18n.first_run_accent_sync_bg || "Sync with background"
+    const syncHint =
+      i18n.first_run_accent_sync_bg_hint ||
+      "Automatically extract M3 dynamic accent colors from your wallpaper"
+    const statusAuto = i18n.first_run_accent_status_on || "Auto sync"
+    const statusManual = i18n.first_run_accent_status_off || "Manual"
+    const presetsLabel =
+      i18n.first_run_accent_presets || "Or pick a preset color"
+    const customLabel = i18n.first_run_accent_custom || "Custom color"
+
+    const swatchesHtml = FIRST_RUN_ACCENT_PRESETS.map((color) => {
+      const isMatch = !isSyncActive && color.toLowerCase() === selectedColor
+      return `
+        <button type="button" class="first-run-swatch-btn ${isMatch ? "active" : ""}" data-color="${color}" style="background-color: ${color};" title="${color}">
+          <i class="fa-solid fa-check"></i>
+        </button>
+      `
+    }).join("")
+
+    overlay.innerHTML = `
+      <div class="custom-dialog custom-prompt first-run-accent-dialog">
+        <div class="dialog-header">
+          <i class="fa-solid fa-palette dialog-icon" style="margin-right: 8px;"></i>
+          <span>${title}</span>
+        </div>
+        <div class="dialog-body" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; text-align: left;">
+          <div class="dialog-message" style="font-size: 0.95rem; font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, 0.92);">
+            ${message}
+          </div>
+
+          <!-- Sync with wallpaper card -->
+          <div class="first-run-toggle-card" id="first-run-accent-sync-row">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 0.88rem; font-weight: 600; color: #ffffff;">${syncTitle}</span>
+              <span style="font-size: 0.76rem; color: rgba(255, 255, 255, 0.6);">${syncHint}</span>
+            </div>
+            <button type="button" class="first-run-toggle-pill" id="first-run-accent-sync-btn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span class="first-run-toggle-label">${isSyncActive ? statusAuto : statusManual}</span>
+            </button>
+          </div>
+
+          <!-- Preset Swatches Grid -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="first-run-accent-presets-label">
+              <span>${presetsLabel}</span>
+            </div>
+            <div class="first-run-accent-swatches" id="first-run-swatches-grid">
+              ${swatchesHtml}
+              <button type="button" class="first-run-swatch-btn first-run-custom-swatch" id="first-run-custom-swatch-btn" title="${customLabel}">
+                <i class="fa-solid fa-eye-dropper"></i>
+                <input type="color" class="first-run-custom-color-input" id="first-run-custom-color-input" value="${selectedColor}" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button type="button" class="dialog-btn dialog-btn-secondary" id="first-run-accent-skip">
+            ${i18n.skip || "Skip"}
+          </button>
+          <button type="button" class="dialog-btn dialog-btn-primary" id="first-run-accent-ok">
+            ${i18n.ok || "OK"}
+          </button>
+        </div>
+      </div>
+    `
+
+    const syncRow = overlay.querySelector("#first-run-accent-sync-row")
+    const syncBtn = overlay.querySelector("#first-run-accent-sync-btn")
+    const syncLabel = syncBtn?.querySelector(".first-run-toggle-label")
+    const syncIcon = syncBtn?.querySelector("i")
+    const swatchesGrid = overlay.querySelector("#first-run-swatches-grid")
+    const customColorInput = overlay.querySelector("#first-run-custom-color-input")
+    const customSwatchBtn = overlay.querySelector("#first-run-custom-swatch-btn")
+    const skipBtn = overlay.querySelector("#first-run-accent-skip")
+    const okBtn = overlay.querySelector("#first-run-accent-ok")
+
+    const updateSyncUI = () => {
+      if (isSyncActive) {
+        if (syncBtn) {
+          syncBtn.style.background = "var(--accent-color, #3b82f6)"
+          syncBtn.style.borderColor = "rgba(255, 255, 255, 0.25)"
+          syncBtn.style.color = "#ffffff"
+        }
+        if (syncLabel) syncLabel.textContent = statusAuto
+        if (syncIcon) syncIcon.className = "fa-solid fa-wand-magic-sparkles"
+        swatchesGrid?.querySelectorAll(".first-run-swatch-btn").forEach((btn) => {
+          btn.classList.remove("active")
+        })
+      } else {
+        if (syncBtn) {
+          syncBtn.style.background = "rgba(255, 255, 255, 0.08)"
+          syncBtn.style.borderColor = "rgba(255, 255, 255, 0.15)"
+          syncBtn.style.color = "rgba(255, 255, 255, 0.6)"
+        }
+        if (syncLabel) syncLabel.textContent = statusManual
+        if (syncIcon) syncIcon.className = "fa-solid fa-palette"
+
+        let hasActive = false
+        swatchesGrid?.querySelectorAll(".first-run-swatch-btn[data-color]").forEach((btn) => {
+          const match = btn.dataset.color?.toLowerCase() === selectedColor.toLowerCase()
+          btn.classList.toggle("active", match)
+          if (match) hasActive = true
+        })
+        if (customSwatchBtn) {
+          customSwatchBtn.classList.toggle("active", !hasActive)
+        }
+      }
+    }
+
+    updateSyncUI()
+
+    const triggerSyncBg = async (e) => {
+      if (e) e.stopPropagation()
+      isSyncActive = true
+      if (syncIcon) syncIcon.className = "fa-solid fa-spinner fa-spin"
+      try {
+        const extracted = await applyAccentFromCurrentBackground({
+          handleSettingUpdate: (k, v) => updateSetting(k, v),
+          fallbackRandom: true,
+          silent: true,
+        })
+        if (extracted) {
+          selectedColor = extracted
+          applyMaterialAccentTokens(extracted, paletteStyle)
+        }
+      } catch (err) {
+        console.warn("First run accent extraction error:", err)
+      } finally {
+        updateSyncUI()
+      }
+    }
+
+    syncBtn?.addEventListener("click", triggerSyncBg)
+    syncRow?.addEventListener("click", triggerSyncBg)
+
+    swatchesGrid?.querySelectorAll(".first-run-swatch-btn[data-color]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        isSyncActive = false
+        selectedColor = btn.dataset.color
+        applyMaterialAccentTokens(selectedColor, paletteStyle)
+        if (customColorInput) customColorInput.value = selectedColor
+        updateSyncUI()
+      })
+    })
+
+    if (customColorInput) {
+      customColorInput.addEventListener("input", (e) => {
+        isSyncActive = false
+        selectedColor = e.target.value
+        applyMaterialAccentTokens(selectedColor, paletteStyle)
+        updateSyncUI()
+      })
+    }
+
+    const close = () => {
+      overlay.classList.remove("active")
+      overlay.style.pointerEvents = "none"
+      setTimeout(() => {
+        if (!overlay.classList.contains("active")) {
+          overlay.innerHTML = ""
+        }
+      }, 250)
+    }
+
+    const cleanup = () => {
+      document.removeEventListener("keydown", onKeydown)
+    }
+
+    const onKeydown = (e) => {
+      if (e.key === "Escape") {
+        cleanup()
+        close()
+        resolve(null)
+      } else if (e.key === "Enter") {
+        cleanup()
+        close()
+        resolve({
+          isSyncActive,
+          accentColor: selectedColor,
+        })
+      }
+    }
+    document.addEventListener("keydown", onKeydown)
+
+    skipBtn?.addEventListener("click", () => {
+      cleanup()
+      close()
+      resolve(null)
+    })
+
+    okBtn?.addEventListener("click", () => {
+      cleanup()
+      close()
+      resolve({
+        isSyncActive,
+        accentColor: selectedColor,
+      })
+    })
+  })
+}
+
+async function promptFirstRunAccentColor() {
+  if (localStorage.getItem(FIRST_RUN_ACCENT_KEY)) return
+
+  const i18n = geti18n()
+  const result = await promptFirstRunAccentColorDialog({
+    title: i18n.first_run_accent_title || "Choose Accent Color",
+    message:
+      i18n.first_run_accent_prompt ||
+      "Choose your favorite Material 3 accent color or sync automatically with your background.",
+    i18n,
+  })
+
+  if (!result) {
+    localStorage.setItem(FIRST_RUN_ACCENT_KEY, "skipped")
+    return
+  }
+
+  const { isSyncActive, accentColor } = result
+  updateSetting("m3AutoAccentFromBg", isSyncActive)
+  if (isSyncActive) {
+    updateSetting("m3AutoAccentFromMusic", false)
+  }
+  if (accentColor) {
+    updateSetting("accentColor", accentColor)
+  }
+  saveSettings(true)
+
+  const settings = getSettings()
+  applyMaterialAccentTokens(
+    accentColor || settings.accentColor || "#3b82f6",
+    settings.m3PaletteStyle || "tonalSpot",
+  )
+
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key: "m3AutoAccentFromBg", value: isSyncActive },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key: "accentColor", value: accentColor },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("startpage:settingChanged", {
+      detail: { key: "m3AutoAccentFromBg", value: isSyncActive },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("startpage:settingChanged", {
+      detail: { key: "accentColor", value: accentColor },
+    }),
+  )
+
+  localStorage.setItem(
+    FIRST_RUN_ACCENT_KEY,
+    isSyncActive ? "sync-bg" : accentColor,
+  )
 }
 
 async function promptFirstRunBookmarkLayout(renderBookmarks) {
@@ -1799,6 +2099,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   }
   await promptFirstRunLanguage()
   await promptFirstRunUserName()
+  await promptFirstRunAccentColor()
   await promptFirstRunBookmarkLayout(renderBookmarks)
   await promptFirstRunBrowserZoom()
 
