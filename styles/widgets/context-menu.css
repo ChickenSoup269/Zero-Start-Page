@@ -1,0 +1,821 @@
+/* ============================================================
+   BOOKMARK STACK POPUP - CONTEXT MENU THEME ADAPTATION & CONTRAST
+   ============================================================ */
+
+/* 1. DARK GLASS (Default / body.context-menu-dark) */
+.bookmark-stack-popup,
+body.context-menu-dark .bookmark-stack-popup {
+  background: rgba(35, 35, 45, 0.85) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-header-icon {
+  color: var(--accent-color, #60a5fa) !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-title {
+  color: #ffffff !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-title-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  opacity: 0.85 !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-title-icon:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-count {
+  background: rgba(var(--accent-color-rgb, 96, 165, 250), 0.22) !important;
+  color: var(--accent-color, #93c5fd) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 96, 165, 250), 0.45) !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup .bookmark span,
+body.context-menu-dark .bookmark-stack-popup .bookmark-label,
+body.context-menu-dark .bookmark-stack-popup .bookmark-stack-popup-label {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+body.context-menu-dark .bookmark-stack-popup-search-input {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-dark .bookmark-stack-empty {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.context-menu-dark .bookmark-stack-empty i {
+  color: var(--accent-color, #60a5fa) !important;
+}
+
+/* 2. LIGHT GLASS (body.context-menu-light) */
+body.context-menu-light .bookmark-stack-popup {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: #0f172a !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-header-icon {
+  color: var(--accent-color, #2563eb) !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+body.context-menu-light span.bookmark-stack-popup-header-icon {
+  background: var(--accent-color, #2563eb) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-title:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-title-icon {
+  color: #334155 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  opacity: 0.9 !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-title-icon:hover {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-title-input {
+  background: #ffffff !important;
+  border: 1.5px solid var(--accent-color, #2563eb) !important;
+  color: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 37, 99, 235), 0.2) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-count {
+  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.14) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 37, 99, 235), 0.35) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-header-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-header-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.24) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-header-btn.active {
+  background: var(--accent-color, #2563eb) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-close-btn {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.08) !important;
+  border: 1px solid rgba(220, 38, 38, 0.22) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-close-btn:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-input {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-input::placeholder {
+  color: #64748b !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-input:focus {
+  background: #ffffff !important;
+  border-color: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 37, 99, 235), 0.2) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-icon {
+  color: #475569 !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-clear {
+  color: #64748b !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-search-clear:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup-selection-bar {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: #0f172a !important;
+}
+
+body.context-menu-light .selection-bar-count {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-light .selection-bar-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+}
+
+body.context-menu-light .selection-bar-btn:hover {
+  background: rgba(0, 0, 0, 0.12) !important;
+  color: #000000 !important;
+}
+
+body.context-menu-light .selection-bar-btn.danger {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  color: #dc2626 !important;
+}
+
+body.context-menu-light .selection-bar-btn.danger:not(:disabled):hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-light .selection-bar-btn:disabled {
+  opacity: 0.45 !important;
+  color: rgba(15, 23, 42, 0.4) !important;
+}
+
+body.context-menu-light .bookmark-stack-popup .bookmark span,
+body.context-menu-light .bookmark-stack-popup .bookmark-label,
+body.context-menu-light .bookmark-stack-popup .bookmark-stack-popup-label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+body.context-menu-light .bookmark-stack-popup .bookmark:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px;
+}
+
+body.context-menu-light .bookmark-stack-empty {
+  color: #334155 !important;
+}
+
+body.context-menu-light .bookmark-stack-empty i {
+  color: var(--accent-color, #2563eb) !important;
+}
+
+/* 3. MACOS GRAPHITE / FROST (body.context-menu-macos) */
+body.context-menu-macos .bookmark-stack-popup {
+  background: rgba(246, 246, 248, 0.88) !important;
+  backdrop-filter: blur(38px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(38px) saturate(190%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.65) inset,
+    0 12px 36px rgba(0, 0, 0, 0.22),
+    0 32px 72px rgba(0, 0, 0, 0.2) !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-header-icon {
+  color: var(--accent-color, #007aff) !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+body.context-menu-macos span.bookmark-stack-popup-header-icon {
+  background: var(--accent-color, #007aff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-title {
+  color: rgba(15, 15, 18, 0.94) !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-title:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-title-icon {
+  color: rgba(15, 15, 18, 0.85) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  opacity: 0.9 !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-title-icon:hover {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-title-input {
+  background: #ffffff !important;
+  border: 1.5px solid var(--accent-color, #007aff) !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 0, 122, 255), 0.2) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-count {
+  background: rgba(var(--accent-color-rgb, 0, 122, 255), 0.14) !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 0, 122, 255), 0.35) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-header-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: rgba(15, 15, 18, 0.9) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-header-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.24) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-header-btn.active {
+  background: var(--accent-color, #007aff) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #007aff) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-close-btn {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.08) !important;
+  border: 1px solid rgba(220, 38, 38, 0.22) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-close-btn:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-search-input {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-search-input::placeholder {
+  color: rgba(0, 0, 0, 0.48) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-search-icon {
+  color: rgba(0, 0, 0, 0.55) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-search-clear {
+  color: rgba(15, 15, 18, 0.6) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-search-clear:hover {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup-selection-bar {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: rgba(15, 15, 18, 0.94) !important;
+}
+
+body.context-menu-macos .selection-bar-count {
+  color: rgba(15, 15, 18, 0.88) !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-macos .selection-bar-btn {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: rgba(15, 15, 18, 0.9) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.context-menu-macos .selection-bar-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
+body.context-menu-macos .selection-bar-btn.danger {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  color: #dc2626 !important;
+}
+
+body.context-menu-macos .selection-bar-btn.danger:not(:disabled):hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-macos .selection-bar-btn:disabled {
+  opacity: 0.45 !important;
+  color: rgba(15, 15, 18, 0.4) !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup .bookmark span,
+body.context-menu-macos .bookmark-stack-popup .bookmark-label,
+body.context-menu-macos .bookmark-stack-popup .bookmark-stack-popup-label {
+  color: rgba(15, 15, 18, 0.94) !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+body.context-menu-macos .bookmark-stack-popup .bookmark:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px;
+}
+
+body.context-menu-macos .bookmark-stack-empty {
+  color: #1d1d1f !important;
+}
+
+body.context-menu-macos .bookmark-stack-empty i {
+  color: var(--accent-color, #007aff) !important;
+}
+
+/* 4. TRANSPARENT (body.context-menu-none) */
+body.context-menu-none .bookmark-stack-popup {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.85) inset,
+    0 16px 40px rgba(15, 23, 42, 0.22) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  color: rgba(15, 23, 42, 0.95) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: rgba(15, 23, 42, 0.95) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-header-icon {
+  color: var(--accent-color, #0284c7) !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+body.context-menu-none span.bookmark-stack-popup-header-icon {
+  background: var(--accent-color, #0284c7) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-title {
+  color: rgba(15, 23, 42, 0.95) !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-title:hover {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-title-icon {
+  color: #0f172a !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  opacity: 0.9 !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-title-icon:hover {
+  color: #000000 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-title-input {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid var(--accent-color, #0284c7) !important;
+  color: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 2, 132, 199), 0.2) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-count {
+  background: rgba(var(--accent-color-rgb, 2, 132, 199), 0.14) !important;
+  color: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 2, 132, 199), 0.35) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-header-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-header-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.24) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-header-btn.active {
+  background: var(--accent-color, #2563eb) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+  border-color: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-close-btn {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.08) !important;
+  border: 1px solid rgba(220, 38, 38, 0.22) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-close-btn:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-search-input {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-search-input::placeholder {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-search-icon {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-search-clear {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-search-clear:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup-selection-bar {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: #0f172a !important;
+}
+
+body.context-menu-none .selection-bar-count {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-none .selection-bar-btn {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.context-menu-none .selection-bar-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
+body.context-menu-none .selection-bar-btn.danger {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  color: #dc2626 !important;
+}
+
+body.context-menu-none .selection-bar-btn.danger:not(:disabled):hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-none .selection-bar-btn:disabled {
+  opacity: 0.45 !important;
+  color: rgba(15, 23, 42, 0.4) !important;
+}
+
+body.context-menu-none .bookmark-stack-popup .bookmark span,
+body.context-menu-none .bookmark-stack-popup .bookmark-label,
+body.context-menu-none .bookmark-stack-popup .bookmark-stack-popup-label {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+body.context-menu-none .bookmark-stack-popup .bookmark:hover {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 12px;
+}
+
+body.context-menu-none .bookmark-stack-empty {
+  color: #0f172a !important;
+}
+
+body.context-menu-none .bookmark-stack-empty i {
+  color: var(--accent-color, #0284c7) !important;
+}
+
+/* 5. MATERIAL YOU 3 (body.context-menu-m3) */
+body.context-menu-m3 .bookmark-stack-popup {
+  background:
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 20%,
+        transparent
+      ),
+      transparent 36%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--m3-primary-container, var(--safe-accent)) 76%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--m3-secondary-container, var(--safe-accent)) 58%,
+        transparent
+      )
+    ) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.35), inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 22%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 25%, transparent) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-header-icon {
+  color: var(--m3-primary, var(--safe-accent)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-title {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-title-icon {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 8%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-on-primary-container, #000) 18%, transparent) !important;
+  opacity: 0.9 !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-title-icon:hover {
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 16%, transparent) !important;
+  opacity: 1 !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-count {
+  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 25%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 45%, transparent) !important;
+  font-weight: 700 !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-selection-bar {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 25%, transparent) !important;
+  border-radius: 0 !important;
+  padding: 0 0 10px 0 !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .selection-bar-count {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+  font-weight: 600 !important;
+}
+
+body.context-menu-m3 .selection-bar-btn {
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 10%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-on-primary-container, #000) 20%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .selection-bar-btn:hover {
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 18%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .selection-bar-btn.danger {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #ff8a8a !important;
+}
+
+body.context-menu-m3 .selection-bar-btn.danger:not(:disabled):hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+body.context-menu-m3 .selection-bar-btn:disabled {
+  opacity: 0.45 !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup .bookmark span,
+body.context-menu-m3 .bookmark-stack-popup .bookmark-label,
+body.context-menu-m3 .bookmark-stack-popup .bookmark-stack-popup-label {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-search-input {
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 8%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-on-primary-container, #000) 18%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-search-input::placeholder {
+  color: color-mix(in srgb, var(--m3-on-primary-container, #fff) 60%, transparent) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-search-clear {
+  color: color-mix(in srgb, var(--m3-on-primary-container, #fff) 60%, transparent) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-popup-search-clear:hover {
+  color: var(--m3-on-primary-container, #fff) !important;
+  background: color-mix(in srgb, var(--m3-on-primary-container, #000) 15%, transparent) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-empty {
+  color: var(--m3-on-primary-container, var(--text-color, #ffffff)) !important;
+}
+
+body.context-menu-m3 .bookmark-stack-empty i {
+  color: var(--m3-primary, var(--safe-accent)) !important;
+}
+
+/* Ensure tooltip text is always white/text-color when macOS hover is active, regardless of light theme context */
+body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popup-label {
+  display: none !important; /* Handled by global tooltip */
+}
+
+/* FORCE MacOS hover effect inside bookmark-stack-popup against all overrides */
+body.bookmark-macos-hover .bookmark-stack-popup .bookmark {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+body.bookmark-macos-hover .bookmark-stack-popup .bookmark:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+

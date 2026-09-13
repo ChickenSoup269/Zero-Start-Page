@@ -1,0 +1,110 @@
+/* Google Apps Dropdown */
+.g-apps-dropdown {
+  position: absolute;
+  top: var(--space-8);
+  right: 0;
+  width: 336px;
+  max-height: 520px;
+  background: rgba(15, 18, 25, 0.9);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1) var(--space-0-5) var(--space-2);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  display: none;
+  flex-direction: column;
+  z-index: 10021;
+  transform-origin: top right;
+  will-change: transform, opacity;
+}
+
+.g-apps-dropdown.show {
+  display: flex;
+  animation: fadeInMenu 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.g-apps-dropdown.g-apps-large-popup {
+  width: 380px;
+  max-height: 590px;
+}
+
+.g-apps-mini-search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 var(--space-2);
+  padding: 7px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 16, 24, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.g-apps-mini-search:focus-within {
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.5);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.3);
+  background: rgba(16, 20, 30, 0.95);
+}
+
+.g-apps-search-icon {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+  color: var(--accent-color, #818cf8);
+}
+
+.g-apps-mini-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.95);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0;
+}
+
+.g-apps-mini-search input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.g-apps-search-clear-btn,
+.g-apps-search-gear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.g-apps-search-clear-btn:hover,
+.g-apps-search-gear-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.08);
+}
+
+.g-apps-search-gear-btn:active {
+  transform: rotate(45deg) scale(0.95);
+}
+
