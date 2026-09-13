@@ -1628,6 +1628,21 @@ export let bookmarkGroupContainerBgHidden = document.getElementById(
 export let bookmarkGroupBorderHidden = document.getElementById(
   "bookmark-group-border-hidden",
 )
+export let bookmarkGroupLongText = document.getElementById(
+  "bookmark-group-long-text",
+)
+export let bookmarkGroupFullText = document.getElementById(
+  "bookmark-group-full-text",
+)
+export let bookmarkGroupMaxVisibleInput = document.getElementById(
+  "bookmark-group-max-visible-input",
+)
+export let bookmarkGroupMaxVisibleValue = document.getElementById(
+  "bookmark-group-max-visible-value",
+)
+export let bookmarkGroupMaxRowsSelect = document.getElementById(
+  "bookmark-group-max-rows-select",
+)
 export let bookmarkLayoutShowGroups = document.getElementById(
   "bookmark-layout-show-groups",
 )
@@ -3781,6 +3796,17 @@ export function refreshDOMReferences() {
   )
   bookmarkGroupBorderHidden = document.getElementById(
     "bookmark-group-border-hidden",
+  )
+  bookmarkGroupLongText = document.getElementById("bookmark-group-long-text")
+  bookmarkGroupFullText = document.getElementById("bookmark-group-full-text")
+  bookmarkGroupMaxVisibleInput = document.getElementById(
+    "bookmark-group-max-visible-input",
+  )
+  bookmarkGroupMaxVisibleValue = document.getElementById(
+    "bookmark-group-max-visible-value",
+  )
+  bookmarkGroupMaxRowsSelect = document.getElementById(
+    "bookmark-group-max-rows-select",
   )
   bookmarkLayoutShowGroups = document.getElementById(
     "bookmark-layout-show-groups",

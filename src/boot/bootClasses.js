@@ -48,6 +48,12 @@ export function applyBootBodyClasses(settings) {
     body.classList.add("bookmark-group-container-bg-hidden")
   if (settings.bookmarkGroupBorderHidden === true)
     body.classList.add("bookmark-group-border-hidden")
+  if (settings.bookmarkGroupLongText === true)
+    body.classList.add("bookmark-group-long-text")
+  if (settings.bookmarkGroupFullText === true)
+    body.classList.add("bookmark-group-full-text")
+  if (settings.bookmarkGroupMaxRows && settings.bookmarkGroupMaxRows !== "auto")
+    body.classList.add(`bookmark-group-rows-${settings.bookmarkGroupMaxRows}`)
   body.classList.add("auto-hide-groups-toggle")
 
   if (settings.showTopRightControls !== false)
