@@ -41,34 +41,73 @@ const TARGET_MAP = {
   "search-text-color-picker": "#search-container",
   "search-border-color-picker": "#search-container",
 
-  // Bookmarks
+  // Bookmarks - Folder Tabs Interface
+  "bookmark-tabs-group": "#bookmark-groups-container",
+  "bookmark-group-tabs": "#bookmark-groups-container",
+  "show-bookmark-groups-checkbox": "#bookmark-groups-container",
+  "bookmark-layout-show-groups": "#bookmark-groups-container",
+  "bookmark-group-use-accent": "#bookmark-groups-container",
+  "bookmark-group-auto-contrast": "#bookmark-groups-container",
+  "bookmark-group-auto-text-contrast": "#bookmark-groups-container",
+  "bookmark-group-full-text": "#bookmark-groups-container",
+  "bookmark-group-bg-color-picker": "#bookmark-groups-container",
+  "bookmark-group-bg-opacity-input": "#bookmark-groups-container",
+  "bookmark-group-text-color-picker": "#bookmark-groups-container",
+  "bookmark-group-font-size-input": "#bookmark-groups-container",
+  "bookmark-group-text-width-input": "#bookmark-groups-container",
+  "bookmark-group-border-radius-input": "#bookmark-groups-container",
+  "bookmark-group-show-count": "#bookmark-groups-container",
+  "bookmark-group-keep-bg-on-interaction": "#bookmark-groups-container",
+  "bookmark-group-container-bg-hidden": "#bookmark-groups-container",
+  "bookmark-group-border-hidden": "#bookmark-groups-container",
+  "bookmark-group-max-visible-input": "#bookmark-groups-container",
+  "bookmark-group-max-rows-select": "#bookmark-groups-container",
+  "bookmark-hide-scrollbar": "#bookmark-groups-container",
+  "reset-bookmark-tabs-btn": "#bookmark-groups-container",
+
+  // Bookmarks - Cards & Items Appearance
   "bookmark-custom": "#bookmarks-container",
+  "bookmark-sizes-group": "#bookmarks-container",
+  "bookmark-appearance-group": "#bookmarks-container",
   "show-bookmarks-checkbox": "#bookmarks-container",
-  "bookmark-layout": "#bookmarks-container",
-  "bookmark-layout-bg-style": "#bookmarks-container",
-  "bookmark-layout-bg-style-row": "#bookmarks-container",
-  "bookmark-layout-bg-color": "#bookmarks-container",
-  "bookmark-layout-bg-color-row": "#bookmarks-container",
-  "bookmark-group-tabs": ".bookmark-groups-container",
-  "show-bookmark-groups-checkbox": ".bookmark-groups-container",
-  "bookmark-group-use-accent": ".bookmark-groups-container",
-  "bookmark-group-auto-contrast": ".bookmark-groups-container",
+  "bookmark-icon-size-input": "#bookmarks-container",
   "bookmark-icon-size-slider": "#bookmarks-container",
+  "bookmark-font-size-input": "#bookmarks-container",
   "bookmark-font-size-slider": "#bookmarks-container",
-  "bookmark-item-style": "#bookmarks-container",
-  "bookmark-item-style-row": "#bookmarks-container",
+  "bookmark-favicon-res": "#bookmarks-container",
+  "bookmark-gap-input": "#bookmarks-container",
+  "bookmark-text-color-picker": "#bookmarks-container",
+  "bookmark-bg-color-picker": "#bookmarks-container",
+  "bookmark-bg-opacity-input": "#bookmarks-container",
+  "bookmark-shadow-color-picker": "#bookmarks-container",
+  "bookmark-shadow-opacity-input": "#bookmarks-container",
+  "bookmark-shadow-blur-input": "#bookmarks-container",
+  "hide-bookmark-text": "#bookmarks-container",
   "hide-bookmark-text-checkbox": "#bookmarks-container",
   "hide-bookmark-bg": "#bookmarks-container",
   "hide-bookmark-bg-checkbox": "#bookmarks-container",
   "bookmark-long-text": "#bookmarks-container",
   "bookmark-full-text": "#bookmarks-container",
+  "reset-bookmark-sizes-btn": "#bookmarks-container",
+  "reset-bookmark-appearance-btn": "#bookmarks-container",
+
+  // Bookmarks - Layout & General Behavior
+  "bookmark-layout-group": "#bookmarks-container",
+  "bookmark-layout": "#bookmarks-container",
+  "bookmark-layout-bg-style": "#bookmarks-container",
+  "bookmark-layout-bg-style-row": "#bookmarks-container",
+  "bookmark-layout-bg-color": "#bookmarks-container",
+  "bookmark-layout-bg-color-row": "#bookmarks-container",
+  "bookmark-sidebar-width-input": "#bookmarks-container",
+  "bookmark-item-style": "#bookmarks-container",
+  "bookmark-item-style-row": "#bookmarks-container",
   "bookmark-macos-hover": "#bookmarks-container",
   "bookmark-limit-20": "#bookmarks-container",
   "show-add-bookmark-button": "#bookmarks-container",
   "enable-bookmark-drag": "#bookmarks-container",
   "bookmark-keep-nested-folders": "#bookmarks-container",
   "bookmark-open-new-tab": "#bookmarks-container",
-  "bookmark-sidebar-width-input": "#bookmarks-container",
+  "reset-bookmark-layout-btn": "#bookmarks-container",
 
   // Custom Title
   "custom-title": "#custom-title-display",
@@ -187,8 +226,20 @@ function canonicalizeWidget(el) {
   ) {
     return document.getElementById("search-container") || el
   }
+  // Bookmark Groups (Folder tabs) hierarchy -> always focus on groups container
+  if (
+    el.id === "bookmark-groups-container" ||
+    el.closest?.("#bookmark-groups-container") ||
+    el.closest?.(".bookmark-groups-container")
+  ) {
+    return document.getElementById("bookmark-groups-container") || el
+  }
   // Bookmarks hierarchy -> always focus on bookmarks container
-  if (el.closest?.("#bookmarks-container")) {
+  if (
+    el.id === "bookmarks-container" ||
+    el.closest?.("#bookmarks-container") ||
+    el.closest?.(".bookmarks-grid")
+  ) {
     return document.getElementById("bookmarks-container") || el
   }
   return el

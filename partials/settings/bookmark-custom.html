@@ -5,18 +5,10 @@
 
         <!-- Live Interactive Bookmark Preview Card -->
         <div class="bookmark-live-preview-card" style="margin-bottom: 16px;">
-            <div class="bookmark-preview-header">
-                <span class="bookmark-preview-badge">
-                    <span class="bookmark-preview-live-dot"></span>
-                    <span data-i18n="settings_bookmark_preview_title">Live Preview</span>
-                </span>
-                <span class="bookmark-preview-hint" data-i18n="settings_bookmark_preview_desc">Thay đổi settings bên
-                    dưới → xem ngay ở đây</span>
-            </div>
             <div class="bookmark-preview-stage" id="bookmark-preview-stage">
                 <!-- Sample Folder Group Tab -->
-                <div class="bookmark-preview-col">
-                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-folder"></i> Folder Tab</span>
+                <div class="bookmark-preview-col" data-target-selector="#bookmark-groups-container">
+                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-folder"></i> Folder</span>
                     <div class="bookmark-preview-tab-wrap">
                         <div class="bookmark-preview-tab" id="bookmark-preview-tab">
                             <i class="fa-solid fa-folder"></i>
@@ -24,15 +16,14 @@
                             <span class="bookmark-preview-tab-count" id="bookmark-preview-tab-count">4</span>
                         </div>
                     </div>
-                    <span class="bookmark-preview-col-caption">Group Tabs Interface</span>
                 </div>
 
                 <!-- Divider -->
                 <div class="bookmark-preview-divider"></div>
 
                 <!-- Sample Bookmark Item -->
-                <div class="bookmark-preview-col">
-                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-bookmark"></i> Bookmark Item</span>
+                <div class="bookmark-preview-col" data-target-selector="#bookmarks-container">
+                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-bookmark"></i> Bookmark</span>
                     <div class="bookmark-preview-item-wrap">
                         <div class="bookmark-preview-item" id="bookmark-preview-item">
                             <div class="bookmark-preview-icon-box" id="bookmark-preview-icon-box">
@@ -41,27 +32,26 @@
                             <span class="bookmark-preview-title" id="bookmark-preview-title">Google</span>
                         </div>
                     </div>
-                    <span class="bookmark-preview-col-caption">Sizes & Appearance</span>
                 </div>
             </div>
         </div>
 
         <!-- Sizes & Spacing Group -->
-        <div class="setting-group collapsible-group" id="bookmark-sizes-group" style="margin-bottom: 15px;">
+        <div class="setting-group collapsible-group" id="bookmark-sizes-group" data-target-selector="#bookmarks-container" style="margin-bottom: 15px;">
             <div class="group-header">
                 <i class="fa-solid fa-ruler-combined group-icon"></i>
                 <span data-i18n="settings_bookmark_size_header">Sizes & Spacing</span>
                 <button type="button" class="bg-card-reset-btn" id="reset-bookmark-sizes-btn"
-                    title="Reset Sizes & Spacing" style="margin-left: auto; margin-right: 8px;">
-                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
+                    title="Reset Sizes & Spacing" data-i18n-title="settings_reset_default" style="margin-left: auto; margin-right: 6px; padding: 4px 8px;">
+                    <i class="fa-solid fa-rotate-left"></i>
                 </button>
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
                 <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
-                    style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                    = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
-                <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 10px;">
+                    style="font-size: 0.85em; opacity: 0.75; margin-bottom: 12px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                    = Tùy chỉnh kích thước, biểu tượng và khoảng cách cho từng ô Dấu trang.</p>
+                <div class="setting-sub-section">
                     <div class="setting-item no-margin-top">
                         <label for="bookmark-font-size-input"
                             style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
@@ -151,18 +141,18 @@
         </div>
 
         <!-- Appearance Group -->
-        <div class="setting-group collapsible-group" id="bookmark-appearance-group" style="margin-bottom: 15px;">
+        <div class="setting-group collapsible-group" id="bookmark-appearance-group" data-target-selector="#bookmarks-container" style="margin-bottom: 15px;">
             <div class="group-header">
                 <i class="fa-solid fa-palette group-icon"></i>
                 <span data-i18n="settings_bookmark_appearance_header">Appearance</span>
                 <button type="button" class="bg-card-reset-btn" id="reset-bookmark-appearance-btn"
-                    title="Reset Appearance" style="margin-left: auto; margin-right: 8px;">
-                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
+                    title="Reset Appearance" data-i18n-title="settings_reset_default" style="margin-left: auto; margin-right: 6px; padding: 4px 8px;">
+                    <i class="fa-solid fa-rotate-left"></i>
                 </button>
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
-                <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="setting-sub-section">
                     <div class="setting-item no-margin-top">
                         <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"
                             for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span
@@ -286,21 +276,28 @@
         </div>
 
         <!-- Group Tabs Interface -->
-        <div class="setting-group collapsible-group" id="bookmark-tabs-group" style="margin-bottom: 15px;">
+        <div class="setting-group collapsible-group" id="bookmark-tabs-group" data-target-selector="#bookmark-groups-container" style="margin-bottom: 15px;">
             <div class="group-header">
                 <i class="fa-regular fa-folder group-icon"></i>
                 <span data-i18n="settings_bookmark_group_header">Group Tabs Interface</span>
                 <button type="button" class="bg-card-reset-btn" id="reset-bookmark-tabs-btn" title="Reset Tabs"
-                    style="margin-left: auto; margin-right: 8px;">
-                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
+                    data-i18n-title="settings_reset_default" style="margin-left: auto; margin-right: 6px; padding: 4px 8px;">
+                    <i class="fa-solid fa-rotate-left"></i>
                 </button>
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
                 <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
-                    style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                    style="font-size: 0.85em; opacity: 0.75; margin-bottom: 12px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                     = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
-                <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+
+                <!-- Sub-section: Colors & Style -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-palette"></i>
+                        <span data-i18n="settings_bookmark_sub_colors_style">Colors & Style</span>
+                    </div>
+
                     <div class="setting-item no-margin-top">
                         <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><span
                                 data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
@@ -363,6 +360,14 @@
                             style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Auto text
                             contrast</label>
                         <input type="checkbox" id="bookmark-group-auto-text-contrast">
+                    </div>
+                </div>
+
+                <!-- Sub-section: Sizes & Spacing -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                        <span data-i18n="settings_bookmark_sub_sizes_spacing">Sizes & Spacing</span>
                     </div>
 
                     <div class="setting-item no-margin-top">
@@ -435,11 +440,76 @@
                             <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-border-radius-input" data-preset-val="16">16px</button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Sub-section: Folder Display & Rows -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-list-ol"></i>
+                        <span data-i18n="settings_bookmark_sub_folder_overflow">Folder Display & Rows</span>
+                    </div>
+
+                    <div class="setting-item no-margin-top">
+                        <label for="bookmark-group-max-visible-input"
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                            <span data-i18n="settings_bookmark_group_max_visible">Max Visible Folders (before More)</span>
+                            <span id="bookmark-group-max-visible-value" class="bg-slider-value">8</span>
+                        </label>
+                        <div class="bg-slider-stepper-wrap">
+                            <button type="button" class="bg-step-btn" data-step-target="bookmark-group-max-visible-input"
+                                data-step="-1" title="-1"><i class="fa-solid fa-minus"></i></button>
+                            <input type="range" id="bookmark-group-max-visible-input" min="3" max="25" step="1"
+                                value="8" class="bg-wheel-scrollable">
+                            <button type="button" class="bg-step-btn" data-step-target="bookmark-group-max-visible-input"
+                                data-step="1" title="+1"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <div class="lcp-width-presets" role="group" aria-label="Folder max visible presets">
+                            <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-max-visible-input" data-preset-val="4">4</button>
+                            <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-max-visible-input" data-preset-val="6">6</button>
+                            <button type="button" class="lcp-preset-btn active" data-preset-target="bookmark-group-max-visible-input" data-preset-val="8">8</button>
+                            <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-max-visible-input" data-preset-val="12">12</button>
+                            <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-max-visible-input" data-preset-val="16">16</button>
+                            <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-group-max-visible-input" data-preset-val="25" data-i18n="settings_all">All</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item no-margin-top"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-bars"></i> <span
+                                data-i18n="settings_bookmark_group_max_rows">Max Folder Rows</span></span>
+                        <select id="bookmark-group-max-rows-select" class="settings-select"
+                            style="width: 155px; padding: 6px 10px; border-radius: 6px;">
+                            <option value="auto" data-i18n="settings_bookmark_group_rows_auto">Auto (Wrap)</option>
+                            <option value="1" data-i18n="settings_bookmark_group_rows_1">1 Row (Scroll)</option>
+                            <option value="2" data-i18n="settings_bookmark_group_rows_2">Max 2 Rows</option>
+                            <option value="3" data-i18n="settings_bookmark_group_rows_3">Max 3 Rows</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Display & Toggles -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-toggle-on"></i>
+                        <span data-i18n="settings_bookmark_sub_display_toggles">Display & Toggles</span>
+                    </div>
 
                     <div class="setting-item-row">
                         <label for="bookmark-group-show-count" data-i18n="settings_bookmark_group_show_count"
                             style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show bookmark count</label>
                         <input type="checkbox" id="bookmark-group-show-count" checked>
+                    </div>
+
+                    <div class="setting-item-row">
+                        <label for="bookmark-group-long-text" data-i18n="settings_bookmark_group_long_text"
+                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show Long Folder Name</label>
+                        <input type="checkbox" id="bookmark-group-long-text">
+                    </div>
+
+                    <div class="setting-item-row">
+                        <label for="bookmark-group-full-text" data-i18n="settings_bookmark_group_full_text"
+                            style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show Full Folder Name</label>
+                        <input type="checkbox" id="bookmark-group-full-text">
                     </div>
 
                     <div class="setting-item-row">
@@ -481,23 +551,23 @@
         </div>
 
         <!-- Toggles & Layout Options -->
-        <div class="setting-group collapsible-group" id="bookmark-layout-group" style="margin-bottom: 15px;">
+        <div class="setting-group collapsible-group" id="bookmark-layout-group" data-target-selector="#bookmarks-container" style="margin-bottom: 15px;">
             <div class="group-header">
                 <i class="fa-solid fa-layer-group group-icon"></i>
                 <span data-i18n="settings_bookmark_layout_header">Layout & Behavior</span>
                 <button type="button" class="bg-card-reset-btn" id="reset-bookmark-layout-btn" title="Reset Layout"
-                    style="margin-left: auto; margin-right: 8px;">
-                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset_default">Reset</span>
+                    data-i18n-title="settings_reset_default" style="margin-left: auto; margin-right: 6px; padding: 4px 8px;">
+                    <i class="fa-solid fa-rotate-left"></i>
                 </button>
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                    <div class="setting-item-row">
-                        <label for="bookmark-layout-show-groups" data-i18n="settings_bookmark_layout_show_groups"
-                            style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show bookmark
-                            folders</label>
-                        <input type="checkbox" id="bookmark-layout-show-groups" checked>
+
+                <!-- Sub-section: Title & Item Display -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-font"></i>
+                        <span data-i18n="settings_bookmark_sub_title_display">Title & Item Display</span>
                     </div>
 
                     <div class="setting-item-row">
@@ -522,6 +592,108 @@
                         <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg"
                             style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide Bg</label>
                         <input type="checkbox" id="hide-bookmark-bg">
+                    </div>
+
+                    <div class="setting-item no-margin-top" id="bookmark-item-style-row">
+                        <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
+                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item
+                            Style</label>
+                        <select id="bookmark-item-style" class="settings-select"
+                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
+                            <option value="default" data-i18n="item_style_default">Default</option>
+                            <option value="card" data-i18n="item_style_card">Card</option>
+                            <option value="glass" data-i18n="item_style_glass">Glass</option>
+                            <option value="neon" data-i18n="item_style_neon">Neon</option>
+                            <option value="neumorphism" data-i18n="item_style_neumorphism">Neumorphism</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Layout Styles -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-table-columns"></i>
+                        <span data-i18n="settings_bookmark_sub_layout_style">Layout Style</span>
+                    </div>
+
+                    <div class="setting-item-row" data-target-selector="#bookmark-groups-container">
+                        <label for="bookmark-layout-show-groups" data-i18n="settings_bookmark_layout_show_groups"
+                            style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show bookmark
+                            folders</label>
+                        <input type="checkbox" id="bookmark-layout-show-groups" checked>
+                    </div>
+
+                    <div class="setting-item no-margin-top">
+                        <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
+                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Bookmark
+                            Layout</label>
+                        <select id="bookmark-layout" class="settings-select"
+                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
+                            <option value="default" data-i18n="layout_default">Default Grid</option>
+                            <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                            <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
+                            <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)</option>
+                            <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)</option>
+                            <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom Right)
+                            </option>
+                        </select>
+                        <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 12px;">
+                            <label for="bookmark-sidebar-width-input"
+                                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; opacity: 0.8; margin-bottom: 6px;">
+                                <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
+                                <span id="bookmark-sidebar-width-value" class="bg-slider-value">300px</span>
+                            </label>
+                            <div class="bg-slider-stepper-wrap">
+                                <button type="button" class="bg-step-btn"
+                                    data-step-target="bookmark-sidebar-width-input" data-step="-20" title="-20px"><i
+                                        class="fa-solid fa-minus"></i></button>
+                                <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10"
+                                    value="300" class="bg-wheel-scrollable">
+                                <button type="button" class="bg-step-btn"
+                                    data-step-target="bookmark-sidebar-width-input" data-step="20" title="+20px"><i
+                                        class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <div class="lcp-width-presets" role="group" aria-label="Bookmark sidebar width presets">
+                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="240">240px</button>
+                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="280">280px</button>
+                                <button type="button" class="lcp-preset-btn active" data-preset-target="bookmark-sidebar-width-input" data-preset-val="300">300px</button>
+                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="350">350px</button>
+                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="400">400px</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none;">
+                        <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg"
+                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
+                            Background</label>
+                        <select id="bookmark-layout-bg-style" class="settings-select"
+                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
+                            <option value="default" data-i18n="layout_bg_default">Default</option>
+                            <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
+                            <option value="white" data-i18n="layout_bg_white">White</option>
+                            <option value="m3-accent" data-i18n="layout_bg_m3_accent">M3 Accent</option>
+                            <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none;">
+                        <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color"
+                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
+                            Color</label>
+                        <div class="custom-color-input-group"
+                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
+                            <input type="color" id="bookmark-layout-bg-color"
+                                style="width: 100%; height: 32px; border: none; border-radius: 6px; padding: 0; cursor: pointer; background: transparent;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Interaction & System Behavior -->
+                <div class="setting-sub-section">
+                    <div class="setting-sub-header">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span data-i18n="settings_bookmark_sub_behavior">Interaction & Behavior</span>
                     </div>
 
                     <div class="setting-item-row">
@@ -566,91 +738,11 @@
                         <input type="checkbox" id="bookmark-open-new-tab">
                     </div>
                 </div>
-                <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
+
+                <p style="font-size: 0.75rem; opacity: 0.5; margin: 8px 0 0 10px; line-height: 1.4;"
                     data-i18n="settings_drag_note">
                     (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
                 </p>
-
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <div class="setting-item no-margin-top">
-                        <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
-                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Bookmark
-                            Layout</label>
-                        <select id="bookmark-layout" class="settings-select"
-                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
-                            <option value="default" data-i18n="layout_default">Default Grid</option>
-                            <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
-                            <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
-                            <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)</option>
-                            <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)</option>
-                            <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom Right)
-                            </option>
-                        </select>
-                        <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 12px;">
-                            <label for="bookmark-sidebar-width-input"
-                                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; opacity: 0.8; margin-bottom: 6px;">
-                                <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
-                                <span id="bookmark-sidebar-width-value" class="bg-slider-value">300px</span>
-                            </label>
-                            <div class="bg-slider-stepper-wrap">
-                                <button type="button" class="bg-step-btn"
-                                    data-step-target="bookmark-sidebar-width-input" data-step="-20" title="-20px"><i
-                                        class="fa-solid fa-minus"></i></button>
-                                <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10"
-                                    value="300" class="bg-wheel-scrollable">
-                                <button type="button" class="bg-step-btn"
-                                    data-step-target="bookmark-sidebar-width-input" data-step="20" title="+20px"><i
-                                        class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <div class="lcp-width-presets" role="group" aria-label="Bookmark sidebar width presets">
-                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="240">240px</button>
-                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="280">280px</button>
-                                <button type="button" class="lcp-preset-btn active" data-preset-target="bookmark-sidebar-width-input" data-preset-val="300">300px</button>
-                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="350">350px</button>
-                                <button type="button" class="lcp-preset-btn" data-preset-target="bookmark-sidebar-width-input" data-preset-val="400">400px</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item no-margin-top" id="bookmark-item-style-row">
-                        <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
-                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item
-                            Style</label>
-                        <select id="bookmark-item-style" class="settings-select"
-                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
-                            <option value="default" data-i18n="item_style_default">Default</option>
-                            <option value="card" data-i18n="item_style_card">Card</option>
-                            <option value="glass" data-i18n="item_style_glass">Glass</option>
-                            <option value="neon" data-i18n="item_style_neon">Neon</option>
-                            <option value="neumorphism" data-i18n="item_style_neumorphism">Neumorphism</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none;">
-                        <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg"
-                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
-                            Background</label>
-                        <select id="bookmark-layout-bg-style" class="settings-select"
-                            style="width: 100%; border-radius: 8px; padding: 8px 12px;">
-                            <option value="default" data-i18n="layout_bg_default">Default</option>
-                            <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
-                            <option value="white" data-i18n="layout_bg_white">White</option>
-                            <option value="m3-accent" data-i18n="layout_bg_m3_accent">M3 Accent</option>
-                            <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none;">
-                        <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color"
-                            style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Container
-                            Color</label>
-                        <div class="custom-color-input-group"
-                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
-                            <input type="color" id="bookmark-layout-bg-color"
-                                style="width: 100%; height: 32px; border: none; border-radius: 6px; padding: 0; cursor: pointer; background: transparent;">
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

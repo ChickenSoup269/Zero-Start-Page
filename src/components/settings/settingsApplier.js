@@ -1037,6 +1037,7 @@ function createApplySettings(effectInstances) {
       "bookmark-group-tab-bg-transparent",
       "bookmark-group-container-bg-hidden",
       "bookmark-group-border-hidden",
+      "bookmark-group-full-text",
       "hide-bookmark-text",
       "bookmark-long-text",
       "bookmark-full-text",
@@ -2712,6 +2713,27 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bookmark-full-text")
     } else {
       document.body.classList.remove("bookmark-full-text")
+    }
+
+    if (settings.bookmarkGroupLongText) {
+      document.body.classList.add("bookmark-group-long-text")
+    } else {
+      document.body.classList.remove("bookmark-group-long-text")
+    }
+
+    if (settings.bookmarkGroupFullText) {
+      document.body.classList.add("bookmark-group-full-text")
+    } else {
+      document.body.classList.remove("bookmark-group-full-text")
+    }
+
+    document.body.classList.remove(
+      "bookmark-group-rows-1",
+      "bookmark-group-rows-2",
+      "bookmark-group-rows-3",
+    )
+    if (settings.bookmarkGroupMaxRows && settings.bookmarkGroupMaxRows !== "auto") {
+      document.body.classList.add(`bookmark-group-rows-${settings.bookmarkGroupMaxRows}`)
     }
 
     if (settings.bookmarkHideBg) {
@@ -5177,6 +5199,33 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.bookmarkGroupBorderHidden.checked =
           settings.bookmarkGroupBorderHidden === true
       }
+      if (DOM.bookmarkGroupLongText) {
+        DOM.bookmarkGroupLongText.checked =
+          settings.bookmarkGroupLongText === true
+      }
+      if (DOM.bookmarkGroupFullText) {
+        DOM.bookmarkGroupFullText.checked =
+          settings.bookmarkGroupFullText === true
+      }
+      if (DOM.bookmarkGroupMaxVisibleInput) {
+        const mvVal = settings.bookmarkGroupMaxVisible ?? 8
+        DOM.bookmarkGroupMaxVisibleInput.value = mvVal
+        if (DOM.bookmarkGroupMaxVisibleValue) {
+          DOM.bookmarkGroupMaxVisibleValue.textContent =
+            mvVal >= 25 ? "All" : String(mvVal)
+        }
+        document
+          .querySelectorAll(
+            '.lcp-preset-btn[data-preset-target="bookmark-group-max-visible-input"]',
+          )
+          .forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.presetVal === String(mvVal))
+          })
+      }
+      if (DOM.bookmarkGroupMaxRowsSelect) {
+        DOM.bookmarkGroupMaxRowsSelect.value =
+          settings.bookmarkGroupMaxRows || "auto"
+      }
       const swEarly = settings.settingsSidebarWidth || 500
       document.documentElement.style.setProperty(
         "--sidebar-width",
@@ -5197,7 +5246,7 @@ function createUpdateSettingsInputs(effectInstances) {
         })
       if (settings.bookmarkSidebarWidth) {
         document.documentElement.style.setProperty(
-          "--bookmark-group-text-width",
+          "--bookmark-sidebar-width",
           settings.bookmarkSidebarWidth + "px",
         )
         if (DOM.bookmarkSidebarWidthInput)
@@ -7101,7 +7150,7 @@ function createUpdateSettingsInputs(effectInstances) {
       })
     if (settings.bookmarkSidebarWidth) {
       document.documentElement.style.setProperty(
-        "--bookmark-group-text-width",
+        "--bookmark-sidebar-width",
         settings.bookmarkSidebarWidth + "px",
       )
       if (DOM.bookmarkSidebarWidthInput)

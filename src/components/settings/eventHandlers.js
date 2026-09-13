@@ -3745,13 +3745,16 @@ export function setupGeneralEventHandlers(
     }
 
     DOM.bookmarkGroupTextWidthInput.addEventListener("input", () => {
+      const w = Number(DOM.bookmarkGroupTextWidthInput.value)
       if (DOM.bookmarkGroupTextWidthValue)
-        DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
-      throttleSettingUpdate(
-        "bookmarkGroupTextWidth",
-        Number(DOM.bookmarkGroupTextWidthInput.value),
+        DOM.bookmarkGroupTextWidthValue.textContent = `${w}px`
+      document.documentElement.style.setProperty(
+        "--bookmark-group-text-width",
+        `${w}px`,
       )
+      throttleSettingUpdate("bookmarkGroupTextWidth", w)
       updateBookmarkLivePreview()
+      renderBookmarks()
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
@@ -4027,6 +4030,54 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkGroupLongText) {
+      DOM.bookmarkGroupLongText.addEventListener("change", () => {
+        const longText = DOM.bookmarkGroupLongText.checked
+        document.body.classList.toggle("bookmark-group-long-text", longText)
+        markInterfaceStyleCustom("bookmarkGroupLongText")
+        throttleSettingUpdate("bookmarkGroupLongText", longText)
+        renderBookmarks()
+      })
+    }
+
+    if (DOM.bookmarkGroupFullText) {
+      DOM.bookmarkGroupFullText.addEventListener("change", () => {
+        const fullText = DOM.bookmarkGroupFullText.checked
+        document.body.classList.toggle("bookmark-group-full-text", fullText)
+        markInterfaceStyleCustom("bookmarkGroupFullText")
+        throttleSettingUpdate("bookmarkGroupFullText", fullText)
+        renderBookmarks()
+      })
+    }
+
+    if (DOM.bookmarkGroupMaxVisibleInput) {
+      DOM.bookmarkGroupMaxVisibleInput.addEventListener("input", () => {
+        const val = Number(DOM.bookmarkGroupMaxVisibleInput.value)
+        if (DOM.bookmarkGroupMaxVisibleValue) {
+          DOM.bookmarkGroupMaxVisibleValue.textContent =
+            val >= 25 ? "All" : String(val)
+        }
+        throttleSettingUpdate("bookmarkGroupMaxVisible", val)
+        renderBookmarks()
+      })
+    }
+
+    if (DOM.bookmarkGroupMaxRowsSelect) {
+      DOM.bookmarkGroupMaxRowsSelect.addEventListener("change", () => {
+        const val = DOM.bookmarkGroupMaxRowsSelect.value || "auto"
+        document.body.classList.remove(
+          "bookmark-group-rows-1",
+          "bookmark-group-rows-2",
+          "bookmark-group-rows-3",
+        )
+        if (val !== "auto") {
+          document.body.classList.add(`bookmark-group-rows-${val}`)
+        }
+        throttleSettingUpdate("bookmarkGroupMaxRows", val)
+        renderBookmarks()
+      })
+    }
+
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {
         throttleSettingUpdate(
@@ -4128,7 +4179,7 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkSidebarWidthValue.textContent = `${DOM.bookmarkSidebarWidthInput.value}px`
         }
         document.documentElement.style.setProperty(
-          "--bookmark-group-text-width",
+          "--bookmark-sidebar-width",
           `${DOM.bookmarkSidebarWidthInput.value}px`,
         )
         throttleSettingUpdate(
@@ -4295,6 +4346,31 @@ export function setupGeneralEventHandlers(
         DOM.bookmarkGroupBorderHidden.checked = false
         document.body.classList.remove("bookmark-group-border-hidden")
         throttleSettingUpdate("bookmarkGroupBorderHidden", false)
+      }
+      if (DOM.bookmarkGroupLongText) {
+        DOM.bookmarkGroupLongText.checked = false
+        document.body.classList.remove("bookmark-group-long-text")
+        throttleSettingUpdate("bookmarkGroupLongText", false)
+      }
+      if (DOM.bookmarkGroupFullText) {
+        DOM.bookmarkGroupFullText.checked = false
+        document.body.classList.remove("bookmark-group-full-text")
+        throttleSettingUpdate("bookmarkGroupFullText", false)
+      }
+      if (DOM.bookmarkGroupMaxVisibleInput) {
+        DOM.bookmarkGroupMaxVisibleInput.value = 8
+        if (DOM.bookmarkGroupMaxVisibleValue)
+          DOM.bookmarkGroupMaxVisibleValue.textContent = "8"
+        throttleSettingUpdate("bookmarkGroupMaxVisible", 8)
+      }
+      if (DOM.bookmarkGroupMaxRowsSelect) {
+        DOM.bookmarkGroupMaxRowsSelect.value = "auto"
+        document.body.classList.remove(
+          "bookmark-group-rows-1",
+          "bookmark-group-rows-2",
+          "bookmark-group-rows-3",
+        )
+        throttleSettingUpdate("bookmarkGroupMaxRows", "auto")
       }
       if (DOM.bookmarkHideScrollbarCheckbox) {
         DOM.bookmarkHideScrollbarCheckbox.checked = false

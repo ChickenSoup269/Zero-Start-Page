@@ -3077,17 +3077,105 @@ body.sidebar-light .setting-group.collapsible-group.expanded > .group-header {
   border-bottom-color: rgba(0, 0, 0, 0.08) !important;
 }
 
+.setting-sub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.setting-sub-section:last-child {
+  margin-bottom: 0;
+}
+
 .setting-sub-header {
-  margin-bottom: var(--space-3);
-  opacity: 0.9;
-  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.65);
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 10px;
+  margin-bottom: 6px;
+  user-select: none;
 }
 
 .setting-sub-header i {
-  color: var(--accent-color);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0.9;
+}
+
+.setting-target-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+.setting-target-badge.target-folder {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.setting-target-badge.target-bookmark {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+.setting-target-badge.target-layout {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+body.sidebar-light .setting-sub-section {
+  background: transparent;
+  border: none;
+}
+
+body.sidebar-light .setting-sub-header {
+  color: rgba(0, 0, 0, 0.65);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+body.sidebar-light .setting-sub-header i {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+body.sidebar-light .setting-target-badge.target-folder {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: #1d4ed8;
+}
+
+body.sidebar-light .setting-target-badge.target-bookmark {
+  background: rgba(147, 51, 234, 0.1);
+  border-color: rgba(147, 51, 234, 0.25);
+  color: #7e22ce;
+}
+
+body.sidebar-light .setting-target-badge.target-layout {
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.25);
+  color: #047857;
 }
 
 .custom-title-lines-wrapper {
@@ -11366,52 +11454,11 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
 
 /* Bookmark Live Preview Card */
 .bookmark-live-preview-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 12px 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  margin-bottom: 16px;
-}
-
-.bookmark-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.bookmark-preview-badge {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--accent-color, #a8c0ff);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Pulsing green live dot */
-.bookmark-preview-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 6px rgba(74, 222, 128, 0.7);
-  animation: bm-live-pulse 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes bm-live-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.75); }
-}
-
-.bookmark-preview-hint {
-  font-size: 0.73rem;
-  color: rgba(255, 255, 255, 0.45);
-  font-style: italic;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 15px;
 }
 
 .bookmark-preview-stage {
@@ -11419,47 +11466,38 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   align-items: center;
   justify-content: space-around;
   gap: 12px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  min-height: 110px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  min-height: 90px;
   position: relative;
   overflow: hidden;
 }
 
-/* Two-column annotation layout */
+/* Two-column layout */
 .bookmark-preview-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
 }
 
 .bookmark-preview-col-label {
   font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
   display: flex;
   align-items: center;
-  gap: 5px;
-}
-
-.bookmark-preview-col-caption {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.35);
-  font-style: italic;
-  text-align: center;
+  gap: 4px;
 }
 
 /* Vertical divider between columns */
 .bookmark-preview-divider {
   width: 1px;
-  height: 70px;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+  height: 55px;
+  background: rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
 
@@ -12167,13 +12205,94 @@ body.sidebar-light .pt-field-hint {
 
 
 
-/* Custom Bookmark / Custom Title readability polish */
-.settings-section[data-section-id="bookmark-custom"] .setting-group,
+/* Custom Bookmark Polish */
+.settings-section[data-section-id="bookmark-custom"] .setting-group {
+  gap: 10px;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .group-header {
+  gap: 8px;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .group-header > span:not(.setting-target-badge) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .group-header .bg-card-reset-btn {
+  padding: 4px 7px;
+  min-width: 26px;
+  min-height: 24px;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item {
+  padding: 8px 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item-row {
+  min-height: 38px;
+  padding: 6px 10px;
+  margin-bottom: 5px;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item-row label {
+  font-size: 0.84rem;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-hint {
+  font-size: 0.8rem !important;
+  line-height: 1.4 !important;
+  margin-bottom: 8px !important;
+  opacity: 0.72 !important;
+}
+
+.settings-section[data-section-id="bookmark-custom"] span[id$="-value"] {
+  min-width: 36px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: color-mix(in srgb, var(--accent-color) 82%, #ffffff);
+  font-size: 0.76rem !important;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace !important;
+  text-align: center;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .lcp-preset-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 5px 2px;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+#bookmark-preview-tab-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80px;
+}
+
+.bookmark-preview-title {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Custom Title readability polish */
 .settings-section[data-section-id="custom-title"] .setting-group {
   gap: 12px;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .setting-group h4,
 .settings-section[data-section-id="custom-title"] .setting-group h4 {
   font-size: 0.98rem !important;
   line-height: 1.35 !important;
@@ -12181,7 +12300,6 @@ body.sidebar-light .pt-field-hint {
   color: var(--text-color) !important;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .setting-hint,
 .settings-section[data-section-id="custom-title"] .setting-hint {
   font-size: 0.9rem !important;
   line-height: 1.55 !important;
@@ -12190,7 +12308,6 @@ body.sidebar-light .pt-field-hint {
   color: color-mix(in srgb, var(--text-color) 86%, transparent) !important;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .setting-item,
 .settings-section[data-section-id="custom-title"] .setting-item,
 .settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
   border-radius: 10px !important;
@@ -12203,9 +12320,7 @@ body.sidebar-light .pt-field-hint {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
 }
 
-.settings-section[data-section-id="bookmark-custom"] .setting-item label,
 .settings-section[data-section-id="custom-title"] .setting-item label,
-.settings-section[data-section-id="bookmark-custom"] .setting-item-row label,
 .settings-section[data-section-id="custom-title"] .setting-item-row label {
   font-size: 0.93rem !important;
   line-height: 1.42 !important;
@@ -12213,14 +12328,11 @@ body.sidebar-light .pt-field-hint {
   opacity: 0.96 !important;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .setting-item label i,
 .settings-section[data-section-id="custom-title"] .setting-item label i,
-.settings-section[data-section-id="bookmark-custom"] .setting-group h4 i,
 .settings-section[data-section-id="custom-title"] .setting-group h4 i {
   color: var(--accent-color);
 }
 
-.settings-section[data-section-id="bookmark-custom"] span[id$="-value"],
 .settings-section[data-section-id="custom-title"] span[id$="-val"] {
   min-width: 44px;
   padding: 2px 7px;
@@ -14556,7 +14668,10 @@ body.sidebar-light .sync-guide-note {
 .setting-target-spotlight-active,
 body .setting-target-spotlight-active,
 body[class] .setting-target-spotlight-active,
-body[class] [id].setting-target-spotlight-active {
+body[class] [id].setting-target-spotlight-active,
+body.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-active,
+body.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-active,
+body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-active {
   /* Dynamic double-ring border effect conforming to ANY border-radius */
   box-shadow:
     0 0 0 2px var(--accent-color, #4a80f0),
@@ -14572,7 +14687,10 @@ body[class] [id].setting-target-spotlight-active {
 .setting-target-spotlight-fadeout,
 body .setting-target-spotlight-fadeout,
 body[class] .setting-target-spotlight-fadeout,
-body[class] [id].setting-target-spotlight-fadeout {
+body[class] [id].setting-target-spotlight-fadeout,
+body.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-fadeout {
   box-shadow:
     0 0 0 0 var(--accent-color, transparent),
     0 0 0 0 transparent,
@@ -14585,7 +14703,10 @@ body[class] [id].setting-target-spotlight-fadeout {
 
 body.sidebar-light .setting-target-spotlight-active,
 body.sidebar-light [id].setting-target-spotlight-active,
-body.sidebar-light[class] [id].setting-target-spotlight-active {
+body.sidebar-light[class] [id].setting-target-spotlight-active,
+body.sidebar-light.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-active,
+body.sidebar-light.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-active,
+body.sidebar-light.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-active {
   box-shadow:
     0 0 0 2px var(--accent-color, #1a73e8),
     0 0 0 5px rgba(var(--accent-color-rgb, 26, 115, 232), 0.22),
@@ -14597,7 +14718,10 @@ body.sidebar-light[class] [id].setting-target-spotlight-active {
 
 body.sidebar-light .setting-target-spotlight-fadeout,
 body.sidebar-light [id].setting-target-spotlight-fadeout,
-body.sidebar-light[class] [id].setting-target-spotlight-fadeout {
+body.sidebar-light[class] [id].setting-target-spotlight-fadeout,
+body.sidebar-light.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.sidebar-light.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.sidebar-light.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-fadeout {
   box-shadow:
     0 0 0 0 transparent,
     0 0 0 0 transparent,
@@ -14654,6 +14778,7 @@ body.sidebar-light .setting-target-badge {
 body.sidebar-light .setting-hint-example {
   color: #64748b;
 }
+
 
 /* ==========================================================================
    Gradient & Multi-Color Modern UI Redesign
