@@ -630,7 +630,8 @@
 }
 
 .bookmark-folder-section-header i {
-  color: var(--accent-color, #a8c0ff);
+  color: inherit;
+  opacity: 0.9;
   font-size: 0.82rem;
 }
 
@@ -648,7 +649,8 @@
 }
 
 .bookmark-edit-popover-title > i {
-  color: var(--accent-color, #8b9cff);
+  color: inherit;
+  opacity: 0.95;
 }
 
 .bookmark-edit-popover-title span {
@@ -722,9 +724,9 @@
 }
 
 .bookmark-folder-icon-search:focus {
-  border-color: var(--accent-color, #a8c0ff);
+  border-color: rgba(255, 255, 255, 0.45);
   background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 100, 150, 255), 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
 }
 
 .bookmark-folder-category-chips {
@@ -795,10 +797,17 @@
   transition: all 0.18s ease;
 }
 
-.bookmark-edit-icon-grid button:hover,
+.bookmark-edit-icon-grid button:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
 .bookmark-edit-icon-grid button.active {
-  border-color: var(--accent-color, #a8c0ff);
-  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.2);
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
@@ -806,8 +815,8 @@
   width: 16px;
   font-size: 0.85rem;
   text-align: center;
-  opacity: 0.9;
-  color: var(--accent-color, inherit);
+  opacity: 0.95;
+  color: currentColor;
   flex-shrink: 0;
 }
 
@@ -848,8 +857,8 @@
 }
 
 .bookmark-edit-field input:focus {
-  border-color: var(--accent-color, #8b9cff);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 129, 140, 248), 0.16);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 .bookmark-edit-color-field input[type="color"] {
@@ -887,6 +896,14 @@
   height: 38px;
   padding: 0;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.bookmark-edit-color-reset:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .bookmark-edit-actions {
@@ -902,6 +919,57 @@
   height: 38px;
   justify-content: center;
   gap: 8px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.bookmark-edit-actions .primary-btn {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  font-weight: 650 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.18s ease !important;
+}
+
+.bookmark-edit-actions .primary-btn i {
+  color: #0f172a !important;
+}
+
+.bookmark-edit-actions .primary-btn:hover {
+  background: #f1f5f9 !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3) !important;
+}
+
+.bookmark-edit-actions .primary-btn:active {
+  background: #e2e8f0 !important;
+  transform: translateY(0);
+}
+
+.bookmark-edit-actions .secondary-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  font-weight: 600 !important;
+  transition: all 0.18s ease !important;
+}
+
+.bookmark-edit-actions .secondary-btn i {
+  color: #ffffff !important;
+}
+
+.bookmark-edit-actions .secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.bookmark-edit-actions .secondary-btn:active {
+  background: rgba(255, 255, 255, 0.22) !important;
+  transform: translateY(0);
 }
 
 /* Transparent & Light Context Menu Theme Support for Bookmark Edit Popover */
@@ -958,12 +1026,12 @@ body.context-menu-macos .bookmark-edit-popover-title {
   gap: 10px;
 }
 
-/* Accent Icon in Title with High Contrast Badge */
+/* High Contrast Icon in Title */
 body.context-menu-light .bookmark-edit-popover-title > i,
 body.context-menu-light-transparent .bookmark-edit-popover-title > i,
 body.context-menu-macos .bookmark-edit-popover-title > i {
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 75%, #0f172a);
-  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.13);
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.06);
   width: 28px;
   height: 28px;
   display: inline-flex;
@@ -1004,7 +1072,7 @@ body.context-menu-macos .bookmark-edit-icon-preview {
 body.context-menu-light .bookmark-edit-icon-preview i,
 body.context-menu-light-transparent .bookmark-edit-icon-preview i,
 body.context-menu-macos .bookmark-edit-icon-preview i {
-  color: var(--folder-edit-icon-color, color-mix(in srgb, var(--accent-color, #2563eb) 80%, #0f172a));
+  color: var(--folder-edit-icon-color, #0f172a);
 }
 
 /* Folder Identity Card & Section Header */
@@ -1024,7 +1092,7 @@ body.context-menu-macos .bookmark-folder-icon-section {
 body.context-menu-light .bookmark-folder-section-header,
 body.context-menu-light-transparent .bookmark-folder-section-header,
 body.context-menu-macos .bookmark-folder-section-header {
-  color: rgba(15, 23, 42, 0.72);
+  color: rgba(15, 23, 42, 0.85);
 }
 
 /* Folder Category Chips */
@@ -1046,9 +1114,9 @@ body.context-menu-macos .bookmark-folder-chip:hover {
 body.context-menu-light .bookmark-folder-chip.active,
 body.context-menu-light-transparent .bookmark-folder-chip.active,
 body.context-menu-macos .bookmark-folder-chip.active {
-  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.14);
-  border-color: var(--accent-color, #2563eb);
-  color: var(--accent-color, #2563eb);
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
 }
 
 body.context-menu-light .bookmark-folder-icon-search,
@@ -1074,14 +1142,14 @@ body.context-menu-macos .bookmark-edit-icon-grid button {
 body.context-menu-light .bookmark-edit-icon-grid button i,
 body.context-menu-light-transparent .bookmark-edit-icon-grid button i,
 body.context-menu-macos .bookmark-edit-icon-grid button i {
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 80%, #0f172a);
+  color: #0f172a;
 }
 
 body.context-menu-light .bookmark-edit-icon-grid button:hover,
 body.context-menu-light-transparent .bookmark-edit-icon-grid button:hover,
 body.context-menu-macos .bookmark-edit-icon-grid button:hover {
-  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.09);
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 65%, #0f172a);
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(0, 0, 0, 0.2);
   color: #0f172a;
   transform: translateY(-1px);
 }
@@ -1089,17 +1157,17 @@ body.context-menu-macos .bookmark-edit-icon-grid button:hover {
 body.context-menu-light .bookmark-edit-icon-grid button.active,
 body.context-menu-light-transparent .bookmark-edit-icon-grid button.active,
 body.context-menu-macos .bookmark-edit-icon-grid button.active {
-  background: rgba(var(--accent-color-rgb, 37, 99, 235), 0.16);
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
-  color: #0f172a;
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 body.context-menu-light .bookmark-edit-icon-grid button.active i,
 body.context-menu-light-transparent .bookmark-edit-icon-grid button.active i,
 body.context-menu-macos .bookmark-edit-icon-grid button.active i {
-  color: color-mix(in srgb, var(--accent-color, #2563eb) 90%, #0f172a);
+  color: #ffffff;
 }
 
 /* Custom Icon Button */
@@ -1154,8 +1222,8 @@ body.context-menu-light .bookmark-edit-field input:focus,
 body.context-menu-light-transparent .bookmark-edit-field input:focus,
 body.context-menu-macos .bookmark-edit-field input:focus {
   background: #ffffff;
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 37, 99, 235), 0.18);
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
   color: #0f172a;
 }
 
@@ -1181,6 +1249,12 @@ body.context-menu-macos .bookmark-edit-actions .secondary-btn {
   transition: all 0.2s ease !important;
 }
 
+body.context-menu-light .bookmark-edit-actions .secondary-btn i,
+body.context-menu-light-transparent .bookmark-edit-actions .secondary-btn i,
+body.context-menu-macos .bookmark-edit-actions .secondary-btn i {
+  color: #1e293b !important;
+}
+
 body.context-menu-light .bookmark-edit-actions .secondary-btn:hover,
 body.context-menu-light-transparent .bookmark-edit-actions .secondary-btn:hover,
 body.context-menu-macos .bookmark-edit-actions .secondary-btn:hover {
@@ -1197,37 +1271,42 @@ body.context-menu-macos .bookmark-edit-actions .secondary-btn:active {
   transform: translateY(0);
 }
 
-/* Save / Primary Button - Fix Contrast */
+/* Save / Primary Button - Pure Solid Black in Light Mode */
 body.context-menu-light .bookmark-edit-actions .primary-btn,
 body.context-menu-light-transparent .bookmark-edit-actions .primary-btn,
 body.context-menu-macos .bookmark-edit-actions .primary-btn {
-  background: var(--accent-color, #2563eb) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #0f172a !important;
   height: 40px !important;
   border-radius: 8px !important;
-  font-weight: 600 !important;
-  box-shadow:
-    0 3px 10px rgba(var(--accent-color-rgb, 37, 99, 235), 0.25),
-    0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  font-weight: 650 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
   transition: all 0.2s ease !important;
+}
+
+body.context-menu-light .bookmark-edit-actions .primary-btn i,
+body.context-menu-light-transparent .bookmark-edit-actions .primary-btn i,
+body.context-menu-macos .bookmark-edit-actions .primary-btn i {
+  color: #ffffff !important;
 }
 
 body.context-menu-light .bookmark-edit-actions .primary-btn:hover,
 body.context-menu-light-transparent .bookmark-edit-actions .primary-btn:hover,
 body.context-menu-macos .bookmark-edit-actions .primary-btn:hover {
-  background: color-mix(in srgb, var(--accent-color, #2563eb) 88%, #000000) !important;
-  color: var(--accent-contrast-color, #ffffff) !important;
-  box-shadow:
-    0 5px 14px rgba(var(--accent-color-rgb, 37, 99, 235), 0.35) !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24) !important;
   transform: translateY(-1px);
 }
 
 body.context-menu-light .bookmark-edit-actions .primary-btn:active,
 body.context-menu-light-transparent .bookmark-edit-actions .primary-btn:active,
 body.context-menu-macos .bookmark-edit-actions .primary-btn:active {
+  background: #334155 !important;
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(var(--accent-color-rgb, 37, 99, 235), 0.2) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Folder Edit specific elements (chips, search, color picker) */
@@ -1250,8 +1329,8 @@ body.context-menu-light .bookmark-folder-icon-search:focus,
 body.context-menu-light-transparent .bookmark-folder-icon-search:focus,
 body.context-menu-macos .bookmark-folder-icon-search:focus {
   background: #ffffff;
-  border-color: color-mix(in srgb, var(--accent-color, #2563eb) 85%, #0f172a);
-  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 37, 99, 235), 0.18);
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 body.context-menu-light .bookmark-folder-chip,

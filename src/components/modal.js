@@ -920,6 +920,12 @@ function createFolderIconEditor({
   identityFields.appendChild(nameGroup)
 
   if (showIconColor) {
+    const isLightContext =
+      document.body.classList.contains("context-menu-light") ||
+      document.body.classList.contains("context-menu-light-transparent") ||
+      document.body.classList.contains("context-menu-macos")
+    const defaultIconColor = isLightContext ? "#0f172a" : "#ffffff"
+
     const iconColorGroup = document.createElement("label")
     iconColorGroup.className =
       "bookmark-edit-field bookmark-edit-color-field bookmark-folder-color-field"
@@ -928,7 +934,7 @@ function createFolderIconEditor({
     iconColorControl.className = "bookmark-edit-color-control"
     iconColorInput = document.createElement("input")
     iconColorInput.type = "color"
-    iconColorInput.value = iconColor || "#ffffff"
+    iconColorInput.value = iconColor || defaultIconColor
     iconColorInput.addEventListener("input", () => {
       iconColorDirty = true
       iconColorReset = false
@@ -946,7 +952,7 @@ function createFolderIconEditor({
       event.preventDefault()
       iconColorDirty = true
       iconColorReset = true
-      iconColorInput.value = "#ffffff"
+      iconColorInput.value = defaultIconColor
       updatePreview()
     })
     iconColorControl.appendChild(iconColorInput)
