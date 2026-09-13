@@ -25,17 +25,28 @@
                     <input type="checkbox" id="flip-layout-checkbox">
                 </div>
                 <div class="setting-item">
-                    <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings Sidebar Width</label>
+                    <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings Sidebar
+                        Width</label>
                     <div class="range-wrapper">
                         <input type="range" id="settings-sidebar-width-input" min="400" max="900" step="10" value="500">
                         <span class="range-val" id="settings-sidebar-width-value">500px</span>
                     </div>
                     <div class="lcp-width-presets" role="group" aria-label="Settings sidebar width presets">
-                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="450" data-sidebar-width="450">450px</button>
-                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn active" data-preset-target="settings-sidebar-width-input" data-preset-val="500" data-sidebar-width="500">500px</button>
-                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="600" data-sidebar-width="600">600px</button>
-                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="700" data-sidebar-width="700">700px</button>
-                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn" data-preset-target="settings-sidebar-width-input" data-preset-val="800" data-sidebar-width="800">800px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn"
+                            data-preset-target="settings-sidebar-width-input" data-preset-val="450"
+                            data-sidebar-width="450">450px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn active"
+                            data-preset-target="settings-sidebar-width-input" data-preset-val="500"
+                            data-sidebar-width="500">500px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn"
+                            data-preset-target="settings-sidebar-width-input" data-preset-val="600"
+                            data-sidebar-width="600">600px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn"
+                            data-preset-target="settings-sidebar-width-input" data-preset-val="700"
+                            data-sidebar-width="700">700px</button>
+                        <button type="button" class="lcp-preset-btn sidebar-width-preset-btn"
+                            data-preset-target="settings-sidebar-width-input" data-preset-val="800"
+                            data-sidebar-width="800">800px</button>
                     </div>
                 </div>
 
@@ -76,7 +87,8 @@
                     <input type="checkbox" id="show-top-right-controls-checkbox" checked>
                 </div>
                 <div class="setting-item-row" id="app-launcher-provider-row">
-                    <label for="app-launcher-provider-select" data-i18n="g_apps_launcher_style">App Launcher Style</label>
+                    <label for="app-launcher-provider-select" data-i18n="g_apps_launcher_style">App Launcher
+                        Style</label>
                     <select id="app-launcher-provider-select" class="settings-select">
                         <option value="google" data-i18n="g_apps_provider_google">Google Apps</option>
                         <option value="edge" data-i18n="g_apps_provider_edge">Microsoft 365 (Edge)</option>
@@ -88,7 +100,8 @@
                             <i class="fa-brands fa-microsoft"></i>
                             <span data-i18n="m365_customize_links">Customize Microsoft 365 Links</span>
                         </div>
-                        <button type="button" class="m365-subcard-reset-all" id="m365-reset-all-btn" title="Reset to default">
+                        <button type="button" class="m365-subcard-reset-all" id="m365-reset-all-btn"
+                            title="Reset to default">
                             <i class="fa-solid fa-rotate-left"></i>
                             <span data-i18n="m365_reset_links">Reset</span>
                         </button>
@@ -101,12 +114,15 @@
                         </label>
                         <div class="m365-input-wrap">
                             <span class="m365-input-icon"><i class="fa-solid fa-link"></i></span>
-                            <input type="url" id="setting-m365-header-url" class="setting-text-input m365-setting-input" placeholder="https://m365.cloud.microsoft/chat" autocomplete="off" spellcheck="false">
-                            <button type="button" class="m365-field-reset-btn" id="m365-reset-header-btn" title="Reset default">
+                            <input type="url" id="setting-m365-header-url" class="setting-text-input m365-setting-input"
+                                placeholder="https://m365.cloud.microsoft/chat" autocomplete="off" spellcheck="false">
+                            <button type="button" class="m365-field-reset-btn" id="m365-reset-header-btn"
+                                title="Reset default">
                                 <i class="fa-solid fa-rotate-left"></i>
                             </button>
                         </div>
-                        <span class="m365-field-hint" data-i18n="m365_header_link_hint">URL opened when clicking Microsoft 365 header at the top</span>
+                        <span class="m365-field-hint" data-i18n="m365_header_link_hint">URL opened when clicking
+                            Microsoft 365 header at the top</span>
                     </div>
 
                     <div class="m365-field-group">
@@ -116,12 +132,16 @@
                         </label>
                         <div class="m365-input-wrap">
                             <span class="m365-input-icon"><i class="fa-solid fa-table-cells"></i></span>
-                            <input type="url" id="setting-m365-all-apps-url" class="setting-text-input m365-setting-input" placeholder="https://m365.cloud.microsoft/apps" autocomplete="off" spellcheck="false">
-                            <button type="button" class="m365-field-reset-btn" id="m365-reset-all-apps-btn" title="Reset default">
+                            <input type="url" id="setting-m365-all-apps-url"
+                                class="setting-text-input m365-setting-input"
+                                placeholder="https://m365.cloud.microsoft/apps" autocomplete="off" spellcheck="false">
+                            <button type="button" class="m365-field-reset-btn" id="m365-reset-all-apps-btn"
+                                title="Reset default">
                                 <i class="fa-solid fa-rotate-left"></i>
                             </button>
                         </div>
-                        <span class="m365-field-hint" data-i18n="m365_all_apps_link_hint">URL opened when clicking 'All apps' at the bottom</span>
+                        <span class="m365-field-hint" data-i18n="m365_all_apps_link_hint">URL opened when clicking 'All
+                            apps' at the bottom</span>
                     </div>
                 </div>
                 <div class="setting-item-row">
@@ -136,7 +156,8 @@
                     <select id="context-menu-style-select" class="settings-select">
                         <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
                         <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
-                        <option value="light-transparent" data-i18n="settings_context_menu_light_transparent">Light Transparent</option>
+                        <option value="light-transparent" data-i18n="settings_context_menu_light_transparent">Light
+                            Transparent</option>
                         <option value="transparent" data-i18n="settings_context_menu_transparent">Transparent</option>
                         <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
                         <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
@@ -224,23 +245,29 @@
                         <option value="custom" data-i18n="search_bar_style_custom">Custom Colors...</option>
                     </select>
                 </div>
-                <div id="search-bar-custom-colors-wrap" style="display: none; padding: 8px 10px; background: rgba(0, 0, 0, 0.15); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); margin: 6px 0 10px 0;">
+                <div id="search-bar-custom-colors-wrap"
+                    style="display: none; padding: 8px 10px; background: rgba(0, 0, 0, 0.15); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); margin: 6px 0 10px 0;">
                     <div class="setting-item-row" style="margin-bottom: 6px;">
-                        <label for="search-bg-color-picker" data-i18n="settings_search_bg_color">Background Color</label>
+                        <label for="search-bg-color-picker" data-i18n="settings_search_bg_color">Background
+                            Color</label>
                         <input type="color" id="search-bg-color-picker" value="#1a1d24">
                     </div>
                     <div class="setting-item-row" style="margin-bottom: 6px;">
-                        <label for="search-text-color-picker" data-i18n="settings_search_text_color">Text & Icon Color</label>
+                        <label for="search-text-color-picker" data-i18n="settings_search_text_color">Text & Icon
+                            Color</label>
                         <input type="color" id="search-text-color-picker" value="#ffffff">
                     </div>
                     <div class="setting-item-row">
-                        <label for="search-border-color-picker" data-i18n="settings_search_border_color">Border / Glow Color</label>
+                        <label for="search-border-color-picker" data-i18n="settings_search_border_color">Border / Glow
+                            Color</label>
                         <input type="color" id="search-border-color-picker" value="#6366f1">
                     </div>
                 </div>
                 <div class="setting-item">
-                    <label for="search-bar-custom-placeholder" data-i18n="settings_search_custom_placeholder">Custom Placeholder</label>
-                    <input type="text" id="search-bar-custom-placeholder" class="setting-text-input" placeholder="e.g. Search" autocomplete="off">
+                    <label for="search-bar-custom-placeholder" data-i18n="settings_search_custom_placeholder">Custom
+                        Placeholder</label>
+                    <input type="text" id="search-bar-custom-placeholder" class="setting-text-input"
+                        placeholder="e.g. Search" autocomplete="off">
                 </div>
                 <div class="setting-item">
                     <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
@@ -282,7 +309,8 @@
                     <div class="lcp-width-presets" role="group" aria-label="Search bar radius presets">
                         <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="0">0px</button>
                         <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="10">10px</button>
-                        <button type="button" class="lcp-preset-btn radius-preset-btn active" data-radius="20">20px</button>
+                        <button type="button" class="lcp-preset-btn radius-preset-btn active"
+                            data-radius="20">20px</button>
                         <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="30">30px</button>
                         <button type="button" class="lcp-preset-btn radius-preset-btn" data-radius="50">50px</button>
                     </div>
