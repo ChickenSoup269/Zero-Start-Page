@@ -12168,6 +12168,7 @@ body.widgets-m3-accent .timer-controls #timer-start-pause i {
   border-radius: var(--radius-md);
   background: transparent;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* --- Max Rows / Wrap Control for Bookmark Groups --- */
@@ -18434,7 +18435,7 @@ body.bookmark-group-accent-enabled .bookmark-group-tab.active .group-tab-count {
   color: inherit !important;
 }
 
-body.bookmark-group-border-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
+body.bookmark-group-border-hidden .bookmark-groups-container,
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
@@ -18631,23 +18632,23 @@ body.hide-bookmark-text .bookmark-stack-popup .bookmark-stack-popup-label {
 }
 
 /* Hide only the wrapper around bookmark folder tabs; tab color settings stay active. */
-body.bookmark-group-container-bg-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
+body.bookmark-group-container-bg-hidden .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden:not(.bookmark-sidebar-mode):not(
     .bookmark-taskbar-mode
   ):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(
     .bookmark-taskbar-right-mode
   )
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden.bookmark-sidebar-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-top-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-left-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-container-bg-hidden.bookmark-taskbar-right-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active) {
+  .bookmark-groups-container {
   background: transparent !important;
   border: none !important;
   border-color: transparent !important;
@@ -18784,14 +18785,14 @@ body.bookmark-group-count-hidden.bookmark-taskbar-left-mode
   display: none !important;
 }
 
-body.bookmark-group-border-hidden .bookmark-groups-container:not(.setting-target-spotlight-active),
+body.bookmark-group-border-hidden .bookmark-groups-container,
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
 body.bookmark-group-border-hidden .bookmark-stack-icon,
 body.bookmark-group-border-hidden .bookmark-stack-cell,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode
   .bookmark-group-tab
@@ -18800,7 +18801,7 @@ body.bookmark-group-border-hidden.bookmark-sidebar-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-taskbar-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-mode
   .bookmark-group-tab
@@ -18809,7 +18810,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
   .bookmark-group-tab
@@ -18818,7 +18819,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
   .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
@@ -18828,7 +18829,7 @@ body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
   .bookmark-group-tab
   .group-tab-count,
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
-  .bookmark-groups-container:not(.setting-target-spotlight-active),
+  .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
   .bookmark-group-tab,
 body.bookmark-group-border-hidden.bookmark-taskbar-right-mode
@@ -19368,7 +19369,7 @@ body.bookmark-taskbar-right-mode .bookmarks-grid {
 
 /* --- UNIVERSAL OVERRIDES FOR BOOKMARK SETTINGS --- */
 /* Fixes "Hide folder bar background" not working on all layouts due to specificity */
-body.bookmark-group-container-bg-hidden #bookmark-groups-container:not(.setting-target-spotlight-active) {
+body.bookmark-group-container-bg-hidden #bookmark-groups-container {
   background: transparent !important;
   border: none !important;
   border-color: transparent !important;
@@ -19378,7 +19379,7 @@ body.bookmark-group-container-bg-hidden #bookmark-groups-container:not(.setting-
 }
 
 /* Fixes "Hide folder border" not working in default grid and other layout specificities */
-body.bookmark-group-border-hidden #bookmark-groups-container:not(.setting-target-spotlight-active),
+body.bookmark-group-border-hidden #bookmark-groups-container,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-count,

@@ -49,11 +49,13 @@ const TARGET_MAP = {
   "bookmark-group-use-accent": "#bookmark-groups-container",
   "bookmark-group-auto-contrast": "#bookmark-groups-container",
   "bookmark-group-auto-text-contrast": "#bookmark-groups-container",
+  "bookmark-group-long-text": "#bookmark-groups-container",
   "bookmark-group-full-text": "#bookmark-groups-container",
   "bookmark-group-bg-color-picker": "#bookmark-groups-container",
   "bookmark-group-bg-opacity-input": "#bookmark-groups-container",
   "bookmark-group-text-color-picker": "#bookmark-groups-container",
   "bookmark-group-font-size-input": "#bookmark-groups-container",
+  "bookmark-group-font-weight-select": "#bookmark-groups-container",
   "bookmark-group-text-width-input": "#bookmark-groups-container",
   "bookmark-group-border-radius-input": "#bookmark-groups-container",
   "bookmark-group-show-count": "#bookmark-groups-container",
@@ -64,6 +66,8 @@ const TARGET_MAP = {
   "bookmark-group-max-rows-select": "#bookmark-groups-container",
   "bookmark-hide-scrollbar": "#bookmark-groups-container",
   "reset-bookmark-tabs-btn": "#bookmark-groups-container",
+  "reset-bookmark-group-bg-btn": "#bookmark-groups-container",
+  "reset-bookmark-group-text-color-btn": "#bookmark-groups-container",
 
   // Bookmarks - Cards & Items Appearance
   "bookmark-custom": "#bookmarks-container",
@@ -74,6 +78,7 @@ const TARGET_MAP = {
   "bookmark-icon-size-slider": "#bookmarks-container",
   "bookmark-font-size-input": "#bookmarks-container",
   "bookmark-font-size-slider": "#bookmarks-container",
+  "bookmark-font-weight-select": "#bookmarks-container",
   "bookmark-favicon-res": "#bookmarks-container",
   "bookmark-gap-input": "#bookmarks-container",
   "bookmark-text-color-picker": "#bookmarks-container",
@@ -253,10 +258,11 @@ function resolveTargetElement(settingEl) {
 
   let resolved = null
 
-  // 1. Direct data-target-selector attribute
+  // 1. Direct or closest ancestor data-target-selector attribute
   const directSelector =
     settingEl.getAttribute("data-target-selector") ||
-    settingEl.querySelector("[data-target-selector]")?.getAttribute("data-target-selector")
+    settingEl.closest?.("[data-target-selector]")?.getAttribute("data-target-selector") ||
+    settingEl.querySelector?.("[data-target-selector]")?.getAttribute("data-target-selector")
   if (directSelector) {
     resolved = document.querySelector(directSelector)
   }
