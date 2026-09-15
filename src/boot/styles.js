@@ -355,8 +355,16 @@ export function applyBasicStyles(settings) {
     `${settings.bookmarkFontSize ?? 10}px`,
   )
   root.style.setProperty(
+    "--bookmark-font-weight",
+    String(settings.bookmarkFontWeight ?? 600),
+  )
+  root.style.setProperty(
     "--bookmark-group-font-size",
     `${settings.bookmarkGroupFontSize ?? 10}px`,
+  )
+  root.style.setProperty(
+    "--bookmark-group-font-weight",
+    String(settings.bookmarkGroupFontWeight ?? 500),
   )
 
   // Performance hover mode — reduces all transition durations to 50 ms

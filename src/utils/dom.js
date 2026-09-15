@@ -1525,6 +1525,9 @@ export let bookmarkFontSizeInput = document.getElementById(
 export let bookmarkFontSizeValue = document.getElementById(
   "bookmark-font-size-value",
 )
+export let bookmarkFontWeightSelect = document.getElementById(
+  "bookmark-font-weight-select",
+)
 export let bookmarkIconSizeInput = document.getElementById(
   "bookmark-icon-size-input",
 )
@@ -1532,6 +1535,9 @@ export let bookmarkIconSizeValue = document.getElementById(
   "bookmark-icon-size-value",
 )
 export let bookmarkFaviconRes = document.getElementById("bookmark-favicon-res")
+export let bookmarkGroupFontWeightSelect = document.getElementById(
+  "bookmark-group-font-weight-select",
+)
 export let bookmarkGroupTextWidthInput = document.getElementById(
   "bookmark-group-text-width-input",
 )
@@ -3710,9 +3716,15 @@ export function refreshDOMReferences() {
   bookmarkGroupsToggle = document.getElementById("bookmark-groups-toggle")
   bookmarkFontSizeInput = document.getElementById("bookmark-font-size-input")
   bookmarkFontSizeValue = document.getElementById("bookmark-font-size-value")
+  bookmarkFontWeightSelect = document.getElementById(
+    "bookmark-font-weight-select",
+  )
   bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
   bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")
   bookmarkFaviconRes = document.getElementById("bookmark-favicon-res")
+  bookmarkGroupFontWeightSelect = document.getElementById(
+    "bookmark-group-font-weight-select",
+  )
   bookmarkGroupTextWidthInput = document.getElementById(
     "bookmark-group-text-width-input",
   )

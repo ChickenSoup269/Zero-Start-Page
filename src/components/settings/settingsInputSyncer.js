@@ -1113,6 +1113,18 @@ export function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkFontSizeValue && DOM.bookmarkFontSizeInput)
         DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
 
+      if (DOM.bookmarkFontWeightSelect) {
+        const bwVal = String(settings.bookmarkFontWeight ?? 600)
+        DOM.bookmarkFontWeightSelect.value = bwVal
+        document
+          .querySelectorAll(
+            '.lcp-preset-btn[data-preset-target="bookmark-font-weight-select"]',
+          )
+          .forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.presetVal === bwVal)
+          })
+      }
+
       if (DOM.bookmarkIconSizeInput)
         DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42
       if (DOM.bookmarkIconSizeValue && DOM.bookmarkIconSizeInput)
@@ -1127,6 +1139,18 @@ export function createUpdateSettingsInputs(effectInstances) {
           settings.bookmarkGroupTextWidth ?? 120
       if (DOM.bookmarkGroupTextWidthValue && DOM.bookmarkGroupTextWidthInput)
         DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
+
+      if (DOM.bookmarkGroupFontWeightSelect) {
+        const gbwVal = String(settings.bookmarkGroupFontWeight ?? 500)
+        DOM.bookmarkGroupFontWeightSelect.value = gbwVal
+        document
+          .querySelectorAll(
+            '.lcp-preset-btn[data-preset-target="bookmark-group-font-weight-select"]',
+          )
+          .forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.presetVal === gbwVal)
+          })
+      }
 
       if (DOM.bookmarkGapInput)
         DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8

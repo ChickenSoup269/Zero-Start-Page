@@ -648,11 +648,13 @@
         --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
         --bookmark-group-text-width: ${settings.bookmarkGroupTextWidth ?? 120}px;
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
+        --bookmark-font-weight: ${settings.bookmarkFontWeight ?? 600};
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;
         --bookmark-border-radius: ${settings.bookmarkBorderRadius ?? 12}px;
         --bookmark-group-tab-bg: ${groupTabBg};
         ${groupTextColor ? `--bookmark-group-text-color: ${groupTextColor};` : ""}
         --bookmark-group-font-size: ${settings.bookmarkGroupFontSize ?? 14}px;
+        --bookmark-group-font-weight: ${settings.bookmarkGroupFontWeight ?? 500};
         --bookmark-group-border-radius: ${settings.bookmarkGroupBorderRadius ?? 8}px;
         --bg-pos-x: ${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%;
         --bg-pos-y: ${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%;

@@ -203,6 +203,7 @@ export const defaultSettings = {
   meteorFullColor: false,
 
   bookmarkFontSize: 10,
+  bookmarkFontWeight: 600,
   bookmarkIconSize: 42,
   bookmarkGroupTextWidth: 120,
   bookmarkGap: 8,
@@ -213,6 +214,7 @@ export const defaultSettings = {
   bookmarkGroupTextColor: null,
   bookmarkGroupAutoTextContrast: false,
   bookmarkGroupFontSize: 14,
+  bookmarkGroupFontWeight: 500,
   bookmarkGroupBorderRadius: 8,
   bookmarkGroupShowCount: true,
   bookmarkGroupUseAccent: false,

@@ -1726,6 +1726,10 @@ function createApplySettings(effectInstances) {
       `${settings.bookmarkFontSize ?? 10}px`,
     )
     document.documentElement.style.setProperty(
+      "--bookmark-font-weight",
+      String(settings.bookmarkFontWeight ?? 600),
+    )
+    document.documentElement.style.setProperty(
       "--bookmark-icon-size",
       `${settings.bookmarkIconSize ?? 42}px`,
     )
@@ -1784,6 +1788,10 @@ function createApplySettings(effectInstances) {
     document.documentElement.style.setProperty(
       "--bookmark-group-font-size",
       `${settings.bookmarkGroupFontSize ?? 14}px`,
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-group-font-weight",
+      String(settings.bookmarkGroupFontWeight ?? 500),
     )
     document.documentElement.style.setProperty(
       "--bookmark-group-border-radius",

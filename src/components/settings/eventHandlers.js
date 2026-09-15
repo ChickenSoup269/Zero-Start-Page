@@ -99,7 +99,11 @@ import {
   applyAccentFromCurrentBackground,
   applyAccentFromMusicThumbnail,
 } from "./dynamicAccent.js"
-import { loadGoogleFont, renderFontGrid, updateActiveTypographyHero } from "./fontManager.js"
+import {
+  loadGoogleFont,
+  renderFontGrid,
+  updateActiveTypographyHero,
+} from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
@@ -203,7 +207,10 @@ export function setupGeneralEventHandlers(
   const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
   const MAX_TIMER_ALARM_SIZE = 12 * 1024 * 1024
   const applyInterfaceStylePreset = (presetId) =>
-    applyInterfaceStylePresetCore(presetId, { updateSettingsInputs, applySettings })
+    applyInterfaceStylePresetCore(presetId, {
+      updateSettingsInputs,
+      applySettings,
+    })
 
   const updateTimerAlarmCustomUi = () => {
     const settings = getSettings()
@@ -260,7 +267,8 @@ export function setupGeneralEventHandlers(
       const option = document.createElement("option")
       option.value = item.code
       option.textContent = item.name
-      option.dataset.flag = item.flag || getLanguageGuideOption(item.code)?.flag || "🌐"
+      option.dataset.flag =
+        item.flag || getLanguageGuideOption(item.code)?.flag || "🌐"
       if (!BUNDLED_LANGUAGES.includes(item.code)) {
         if (isLanguageDownloaded(item.code)) {
           option.dataset.badge = "DEMO"
@@ -346,7 +354,10 @@ export function setupGeneralEventHandlers(
           if (btn.classList.contains("active")) return
 
           // If not downloaded yet, download from GitHub on click!
-          if (!BUNDLED_LANGUAGES.includes(code) && !isLanguageDownloaded(code)) {
+          if (
+            !BUNDLED_LANGUAGES.includes(code) &&
+            !isLanguageDownloaded(code)
+          ) {
             const badge = btn.querySelector(".lang-download-badge")
             if (badge) {
               badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'
@@ -381,8 +392,7 @@ export function setupGeneralEventHandlers(
               }
             } catch (err) {
               if (badge) {
-                badge.innerHTML =
-                  '<i class="fa-solid fa-cloud-arrow-down"></i>'
+                badge.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i>'
               }
               showAlert(
                 `${geti18n().language_download_error || "Could not download language file from GitHub."}\n\n${err.message || err}`,
@@ -804,6 +814,8 @@ export function setupGeneralEventHandlers(
       }
       if (k === "bookmarkFontSize")
         rootStyle.setProperty("--bookmark-font-size", `${v}px`)
+      else if (k === "bookmarkFontWeight")
+        rootStyle.setProperty("--bookmark-font-weight", String(v))
       else if (k === "bookmarkIconSize")
         rootStyle.setProperty("--bookmark-icon-size", `${v}px`)
       else if (k === "bookmarkFaviconRes") {
@@ -853,6 +865,8 @@ export function setupGeneralEventHandlers(
         applyBookmarkGroupTextColor()
       } else if (k === "bookmarkGroupFontSize") {
         rootStyle.setProperty("--bookmark-group-font-size", `${v}px`)
+      } else if (k === "bookmarkGroupFontWeight") {
+        rootStyle.setProperty("--bookmark-group-font-weight", String(v))
       } else if (k === "bookmarkGroupBorderRadius") {
         rootStyle.setProperty("--bookmark-group-border-radius", `${v}px`)
       } else if (
@@ -968,7 +982,7 @@ export function setupGeneralEventHandlers(
         presetNames[presetId] ||
         presetId
       const i18n = geti18n()
-      showToast(`${i18n.toast_style_preset || 'Style preset'}: ${presetName}`, {
+      showToast(`${i18n.toast_style_preset || "Style preset"}: ${presetName}`, {
         type: "success",
         undoFn: () => applyInterfaceStylePreset(prevPreset),
       })
@@ -1766,21 +1780,29 @@ export function setupGeneralEventHandlers(
                 canvas.height = img.naturalHeight || img.height
                 const ctx = canvas.getContext("2d")
                 ctx.drawImage(img, 0, 0)
-                canvas.toBlob((b) => {
-                  if (b) resolve(b)
-                  else reject(new Error("Canvas blob failed"))
-                }, "image/jpeg", 0.92)
+                canvas.toBlob(
+                  (b) => {
+                    if (b) resolve(b)
+                    else reject(new Error("Canvas blob failed"))
+                  },
+                  "image/jpeg",
+                  0.92,
+                )
               } catch (e) {
                 reject(e)
               }
             }
-            img.onerror = () => reject(new Error("Failed to load image for saving"))
+            img.onerror = () =>
+              reject(new Error("Failed to load image for saving"))
             img.src = currentBg
           })
         }
 
         const providerPrefix = isFlickr ? "loremflickr" : "picsum"
-        const savedId = await saveImage(blob, `idb-img-${providerPrefix}-${Date.now()}`)
+        const savedId = await saveImage(
+          blob,
+          `idb-img-${providerPrefix}-${Date.now()}`,
+        )
         const info = _lastPicsumResult?.info
         const fallbackAuthor = isFlickr ? "LoremFlickr" : "Picsum"
         const fallbackUrl = isFlickr
@@ -2207,14 +2229,21 @@ export function setupGeneralEventHandlers(
         })
         if (color) {
           const i18n = geti18n()
-          showToast(`${i18n.toast_m3_updated || 'M3 accent updated from music'}: ${color.toUpperCase()}`, {
-            type: "success",
-          })
+          showToast(
+            `${i18n.toast_m3_updated || "M3 accent updated from music"}: ${color.toUpperCase()}`,
+            {
+              type: "success",
+            },
+          )
         } else {
           const i18n = geti18n()
-          showToast(i18n.toast_m3_no_thumbnail || "No music thumbnail currently available", {
-            type: "info",
-          })
+          showToast(
+            i18n.toast_m3_no_thumbnail ||
+              "No music thumbnail currently available",
+            {
+              type: "info",
+            },
+          )
         }
       } catch (e) {
         console.error("M3 music color extraction failed:", e)
@@ -2269,9 +2298,12 @@ export function setupGeneralEventHandlers(
         })
         if (color) {
           const i18n = geti18n()
-          showToast(`${i18n.toast_m3_updated || 'M3 accent updated from music'}: ${color.toUpperCase()}`, {
-            type: "success",
-          })
+          showToast(
+            `${i18n.toast_m3_updated || "M3 accent updated from music"}: ${color.toUpperCase()}`,
+            {
+              type: "success",
+            },
+          )
         }
       } catch (err) {
         console.warn("Initial auto music M3 accent update failed:", err)
@@ -2857,6 +2889,9 @@ export function setupGeneralEventHandlers(
     const fontSize = DOM.bookmarkFontSizeInput
       ? `${DOM.bookmarkFontSizeInput.value}px`
       : "10px"
+    const fontWeight = DOM.bookmarkFontWeightSelect
+      ? DOM.bookmarkFontWeightSelect.value
+      : "600"
     const iconSize = DOM.bookmarkIconSizeInput
       ? `${DOM.bookmarkIconSizeInput.value}px`
       : "42px"
@@ -2882,6 +2917,9 @@ export function setupGeneralEventHandlers(
     const groupFontSize = DOM.bookmarkGroupFontSizeInput
       ? `${DOM.bookmarkGroupFontSizeInput.value}px`
       : "14px"
+    const groupFontWeight = DOM.bookmarkGroupFontWeightSelect
+      ? DOM.bookmarkGroupFontWeightSelect.value
+      : "500"
     const groupRadius = DOM.bookmarkGroupBorderRadiusInput
       ? `${DOM.bookmarkGroupBorderRadiusInput.value}px`
       : "8px"
@@ -2914,6 +2952,7 @@ export function setupGeneralEventHandlers(
 
     if (previewTitle) {
       previewTitle.style.color = textColor
+      previewTitle.style.fontWeight = fontWeight
       if (DOM.hideBookmarkText) {
         previewTitle.style.display = DOM.hideBookmarkText.checked
           ? "none"
@@ -2923,6 +2962,7 @@ export function setupGeneralEventHandlers(
 
     // Apply to group tab preview
     previewTab.style.fontSize = groupFontSize
+    previewTab.style.fontWeight = groupFontWeight
     previewTab.style.borderRadius = groupRadius
     previewTab.style.backgroundColor = hexToRgba(groupBg, groupBgOpacity)
     previewTab.style.color = groupText
@@ -2938,6 +2978,30 @@ export function setupGeneralEventHandlers(
       )
       updateBookmarkLivePreview()
     })
+
+    if (DOM.bookmarkFontWeightSelect) {
+      DOM.bookmarkFontWeightSelect.addEventListener("change", () => {
+        const val = Number(DOM.bookmarkFontWeightSelect.value)
+        handleSettingUpdate("bookmarkFontWeight", val)
+        syncPresetButtons(
+          "bookmark-font-weight-select",
+          DOM.bookmarkFontWeightSelect.value,
+        )
+        updateBookmarkLivePreview()
+      })
+    }
+
+    if (DOM.bookmarkGroupFontWeightSelect) {
+      DOM.bookmarkGroupFontWeightSelect.addEventListener("change", () => {
+        const val = Number(DOM.bookmarkGroupFontWeightSelect.value)
+        handleSettingUpdate("bookmarkGroupFontWeight", val)
+        syncPresetButtons(
+          "bookmark-group-font-weight-select",
+          DOM.bookmarkGroupFontWeightSelect.value,
+        )
+        updateBookmarkLivePreview()
+      })
+    }
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
       if (DOM.bookmarkIconSizeValue)
@@ -3418,15 +3482,24 @@ export function setupGeneralEventHandlers(
           )
           .forEach((btn) => {
             const v = btn.dataset.presetVal || btn.dataset.sidebarWidth
-            btn.classList.toggle("active", v === String(DOM.settingsSidebarWidthInput.value))
+            btn.classList.toggle(
+              "active",
+              v === String(DOM.settingsSidebarWidthInput.value),
+            )
           })
         throttleSettingUpdate(
           "settingsSidebarWidth",
           DOM.settingsSidebarWidthInput.value,
         )
       }
-      DOM.settingsSidebarWidthInput.addEventListener("input", handleSidebarWidth)
-      DOM.settingsSidebarWidthInput.addEventListener("change", handleSidebarWidth)
+      DOM.settingsSidebarWidthInput.addEventListener(
+        "input",
+        handleSidebarWidth,
+      )
+      DOM.settingsSidebarWidthInput.addEventListener(
+        "change",
+        handleSidebarWidth,
+      )
     }
 
     // Section Reset Handlers
@@ -3438,6 +3511,11 @@ export function setupGeneralEventHandlers(
         DOM.bookmarkFontSizeInput.value = 10
         DOM.bookmarkFontSizeValue.textContent = "10px"
         throttleSettingUpdate("bookmarkFontSize", 10)
+      }
+      if (DOM.bookmarkFontWeightSelect) {
+        DOM.bookmarkFontWeightSelect.value = "600"
+        syncPresetButtons("bookmark-font-weight-select", "600")
+        throttleSettingUpdate("bookmarkFontWeight", 600)
       }
       if (DOM.bookmarkIconSizeInput) {
         DOM.bookmarkIconSizeInput.value = 42
@@ -3523,6 +3601,11 @@ export function setupGeneralEventHandlers(
         if (DOM.bookmarkGroupFontSizeValue)
           DOM.bookmarkGroupFontSizeValue.textContent = "14px"
         throttleSettingUpdate("bookmarkGroupFontSize", 14)
+      }
+      if (DOM.bookmarkGroupFontWeightSelect) {
+        DOM.bookmarkGroupFontWeightSelect.value = "500"
+        syncPresetButtons("bookmark-group-font-weight-select", "500")
+        throttleSettingUpdate("bookmarkGroupFontWeight", 500)
       }
       if (DOM.bookmarkGroupTextWidthInput) {
         DOM.bookmarkGroupTextWidthInput.value = 120
@@ -3685,10 +3768,13 @@ export function setupGeneralEventHandlers(
     }
 
     // Wire up Draggable Grid lock toggle
-    const lcpDraggableGridLock = document.getElementById("lcp-draggable-grid-lock")
+    const lcpDraggableGridLock = document.getElementById(
+      "lcp-draggable-grid-lock",
+    )
     if (lcpDraggableGridLock) {
       // Set initial checked state from settings
-      lcpDraggableGridLock.checked = getSettings().bookmarkDraggableGridLocked === true
+      lcpDraggableGridLock.checked =
+        getSettings().bookmarkDraggableGridLocked === true
 
       lcpDraggableGridLock.addEventListener("change", () => {
         const isLocked = lcpDraggableGridLock.checked
@@ -3697,7 +3783,9 @@ export function setupGeneralEventHandlers(
     }
 
     // Wire up LCP Free Move Bookmarks toggle
-    const lcpFreeMoveBookmarks = document.getElementById("lcp-free-move-bookmarks")
+    const lcpFreeMoveBookmarks = document.getElementById(
+      "lcp-free-move-bookmarks",
+    )
     if (lcpFreeMoveBookmarks) {
       lcpFreeMoveBookmarks.checked = getSettings().freeMoveBookmarks === true
 
@@ -5023,7 +5111,9 @@ export function setupGeneralEventHandlers(
       if (linesBadge) {
         linesBadge.textContent = `${params.lines || 5} Lines`
       }
-      const statusBadge = document.getElementById("svg-wave-preview-status-badge")
+      const statusBadge = document.getElementById(
+        "svg-wave-preview-status-badge",
+      )
       if (statusBadge) {
         statusBadge.textContent = params.fill ? "Filled" : "Outline"
       }
@@ -5081,7 +5171,9 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  const svgWaveTopApplyBtn = document.getElementById("svg-wave-quick-apply-top-btn")
+  const svgWaveTopApplyBtn = document.getElementById(
+    "svg-wave-quick-apply-top-btn",
+  )
   if (svgWaveTopApplyBtn) {
     svgWaveTopApplyBtn.addEventListener("click", () => {
       _applyWaveFromInputs(true)
@@ -5288,13 +5380,22 @@ export function setupGeneralEventHandlers(
   if (DOM.rainModeSelect) {
     DOM.rainModeSelect.addEventListener("change", (e) => {
       handleSettingUpdate("rainMode", e.target.value)
-      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setMode) {
+      if (
+        effectInstances.starFallEffect &&
+        effectInstances.starFallEffect.setMode
+      ) {
         effectInstances.starFallEffect.setMode(e.target.value)
       }
-      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setMode) {
+      if (
+        effectInstances.galaxyEffect &&
+        effectInstances.galaxyEffect.setMode
+      ) {
         effectInstances.galaxyEffect.setMode(e.target.value)
       }
-      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setMode) {
+      if (
+        effectInstances.rainHDEffect &&
+        effectInstances.rainHDEffect.setMode
+      ) {
         effectInstances.rainHDEffect.setMode(e.target.value)
       }
     })
@@ -5305,13 +5406,22 @@ export function setupGeneralEventHandlers(
       const val = parseFloat(e.target.value)
       if (DOM.rainSpeedVal) DOM.rainSpeedVal.textContent = `${val.toFixed(1)}x`
       handleSettingUpdate("rainSpeed", val)
-      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setSpeed) {
+      if (
+        effectInstances.starFallEffect &&
+        effectInstances.starFallEffect.setSpeed
+      ) {
         effectInstances.starFallEffect.setSpeed(val)
       }
-      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setSpeed) {
+      if (
+        effectInstances.galaxyEffect &&
+        effectInstances.galaxyEffect.setSpeed
+      ) {
         effectInstances.galaxyEffect.setSpeed(val)
       }
-      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setSpeed) {
+      if (
+        effectInstances.rainHDEffect &&
+        effectInstances.rainHDEffect.setSpeed
+      ) {
         effectInstances.rainHDEffect.setSpeed(val)
       }
     })
@@ -5320,15 +5430,25 @@ export function setupGeneralEventHandlers(
   if (DOM.rainDensitySlider) {
     DOM.rainDensitySlider.addEventListener("input", (e) => {
       const val = parseFloat(e.target.value)
-      if (DOM.rainDensityVal) DOM.rainDensityVal.textContent = `${val.toFixed(1)}x`
+      if (DOM.rainDensityVal)
+        DOM.rainDensityVal.textContent = `${val.toFixed(1)}x`
       handleSettingUpdate("rainDensity", val)
-      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setDensity) {
+      if (
+        effectInstances.starFallEffect &&
+        effectInstances.starFallEffect.setDensity
+      ) {
         effectInstances.starFallEffect.setDensity(val)
       }
-      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setDensity) {
+      if (
+        effectInstances.galaxyEffect &&
+        effectInstances.galaxyEffect.setDensity
+      ) {
         effectInstances.galaxyEffect.setDensity(val)
       }
-      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setDensity) {
+      if (
+        effectInstances.rainHDEffect &&
+        effectInstances.rainHDEffect.setDensity
+      ) {
         effectInstances.rainHDEffect.setDensity(val)
       }
     })
@@ -5338,13 +5458,22 @@ export function setupGeneralEventHandlers(
     DOM.rainMistToggle.addEventListener("change", (e) => {
       const checked = e.target.checked
       handleSettingUpdate("rainMist", checked)
-      if (effectInstances.starFallEffect && effectInstances.starFallEffect.setMist) {
+      if (
+        effectInstances.starFallEffect &&
+        effectInstances.starFallEffect.setMist
+      ) {
         effectInstances.starFallEffect.setMist(checked)
       }
-      if (effectInstances.galaxyEffect && effectInstances.galaxyEffect.setMist) {
+      if (
+        effectInstances.galaxyEffect &&
+        effectInstances.galaxyEffect.setMist
+      ) {
         effectInstances.galaxyEffect.setMist(checked)
       }
-      if (effectInstances.rainHDEffect && effectInstances.rainHDEffect.setMist) {
+      if (
+        effectInstances.rainHDEffect &&
+        effectInstances.rainHDEffect.setMist
+      ) {
         effectInstances.rainHDEffect.setMist(checked)
       }
     })
@@ -5353,10 +5482,16 @@ export function setupGeneralEventHandlers(
   if (DOM.firefliesModeSelect) {
     DOM.firefliesModeSelect.addEventListener("change", (e) => {
       handleSettingUpdate("firefliesMode", e.target.value)
-      if (effectInstances.firefliesEffect && effectInstances.firefliesEffect.setMode) {
+      if (
+        effectInstances.firefliesEffect &&
+        effectInstances.firefliesEffect.setMode
+      ) {
         effectInstances.firefliesEffect.setMode(e.target.value)
       }
-      if (effectInstances.firefliesHDEffect && effectInstances.firefliesHDEffect.setMode) {
+      if (
+        effectInstances.firefliesHDEffect &&
+        effectInstances.firefliesHDEffect.setMode
+      ) {
         effectInstances.firefliesHDEffect.setMode(e.target.value)
       }
     })
@@ -5365,7 +5500,10 @@ export function setupGeneralEventHandlers(
   if (DOM.pixelWeatherStyleSelect) {
     DOM.pixelWeatherStyleSelect.addEventListener("change", (e) => {
       handleSettingUpdate("pixelWeatherStyle", e.target.value)
-      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setMode) {
+      if (
+        effectInstances.pixelWeatherEffect &&
+        effectInstances.pixelWeatherEffect.setMode
+      ) {
         effectInstances.pixelWeatherEffect.setMode(e.target.value)
       }
     })
@@ -5376,7 +5514,10 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherResolutionVal)
         DOM.pixelWeatherResolutionVal.textContent = val
       handleSettingUpdate("pixelWeatherResolution", val)
-      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setOptions) {
+      if (
+        effectInstances.pixelWeatherEffect &&
+        effectInstances.pixelWeatherEffect.setOptions
+      ) {
         effectInstances.pixelWeatherEffect.setOptions({ resolution: val })
       }
     })
@@ -5404,7 +5545,10 @@ export function setupGeneralEventHandlers(
       if (DOM.pixelWeatherSizeVal)
         DOM.pixelWeatherSizeVal.textContent = val.toFixed(1)
       handleSettingUpdate("pixelWeatherSize", val)
-      if (effectInstances.pixelWeatherEffect && effectInstances.pixelWeatherEffect.setOptions) {
+      if (
+        effectInstances.pixelWeatherEffect &&
+        effectInstances.pixelWeatherEffect.setOptions
+      ) {
         effectInstances.pixelWeatherEffect.setOptions({ size: val })
       }
     })
@@ -5534,7 +5678,10 @@ export function setupGeneralEventHandlers(
       DOM.customFontPreviewBox.style.display = "block"
       DOM.customFontPreviewText.style.fontFamily = `'${fontName}', sans-serif`
     }
-    showToast(`${i18n.alert_font_loaded || "Loaded preview for"} "${fontName}"`, { type: "info" })
+    showToast(
+      `${i18n.alert_font_loaded || "Loaded preview for"} "${fontName}"`,
+      { type: "info" },
+    )
   })
 
   DOM.saveFontBtn?.addEventListener("click", () => {
@@ -5575,7 +5722,8 @@ export function setupGeneralEventHandlers(
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       updateActiveTypographyHero()
       if (DOM.customFontInput) DOM.customFontInput.value = ""
-      if (DOM.customFontPreviewBox) DOM.customFontPreviewBox.style.display = "none"
+      if (DOM.customFontPreviewBox)
+        DOM.customFontPreviewBox.style.display = "none"
       showToast(i18n.alert_font_saved || "Font saved!", { type: "success" })
     }, 400)
   })
@@ -5816,8 +5964,16 @@ export function setupGeneralEventHandlers(
   bindColorPicker("satellite-anim-color", "satelliteAnimColor", "--sat-color")
   bindColorPicker("satellite-sec-color", "satelliteSecColor", "--sat-sec-color")
   bindColorPicker("satellite-ter-color", "satelliteTerColor", "--sat-ter-color")
-  bindColorPicker("satellite-date-color", "satelliteDateColor", "--sat-date-color")
-  bindColorPicker("satellite-border-color", "satelliteBorderColor", "--sat-border-color")
+  bindColorPicker(
+    "satellite-date-color",
+    "satelliteDateColor",
+    "--sat-date-color",
+  )
+  bindColorPicker(
+    "satellite-border-color",
+    "satelliteBorderColor",
+    "--sat-border-color",
+  )
 
   bindColorPicker("hud-color-1", "hudColor1", "--hud-color-1")
   bindColorPicker("hud-color-2", "hudColor2", "--hud-color-2")
@@ -5910,7 +6066,10 @@ export function setupGeneralEventHandlers(
     ?.addEventListener("change", aquariumHandler("aquariumGlassStyle"))
   document
     .getElementById("aquarium-fish-count-select")
-    ?.addEventListener("change", aquariumHandler("aquariumFishCount", false, true))
+    ?.addEventListener(
+      "change",
+      aquariumHandler("aquariumFishCount", false, true),
+    )
   document
     .getElementById("aquarium-fish-speed-select")
     ?.addEventListener("change", aquariumHandler("aquariumFishSpeed"))
@@ -6768,7 +6927,10 @@ export function setupGeneralEventHandlers(
   const updatePageTitleUI = (rawVal) => {
     const val = rawVal || ""
     if (DOM.pageTitleClearBtn) {
-      DOM.pageTitleClearBtn.classList.toggle("hidden", !val || val === "Start Page")
+      DOM.pageTitleClearBtn.classList.toggle(
+        "hidden",
+        !val || val === "Start Page",
+      )
     }
     if (DOM.pageTitleCharCount) {
       DOM.pageTitleCharCount.textContent = String(val.length)
@@ -6779,7 +6941,9 @@ export function setupGeneralEventHandlers(
     if (DOM.pageTitleLengthWarning) {
       DOM.pageTitleLengthWarning.classList.toggle("hidden", val.length <= 40)
     }
-    const resolved = resolveDynamicTokens(val || "Start Page", getSettings(), { isPreview: true })
+    const resolved = resolveDynamicTokens(val || "Start Page", getSettings(), {
+      isPreview: true,
+    })
     if (DOM.ptTabTitlePreview) {
       DOM.ptTabTitlePreview.textContent = resolved || "Start Page"
     }
@@ -6830,7 +6994,9 @@ export function setupGeneralEventHandlers(
         const preset = titlePresetBtn.getAttribute("data-title-preset")
         if (preset) {
           DOM.pageTitleInput.value = preset
-          DOM.pageTitleInput.dispatchEvent(new Event("input", { bubbles: true }))
+          DOM.pageTitleInput.dispatchEvent(
+            new Event("input", { bubbles: true }),
+          )
           DOM.pageTitleInput.focus()
         }
         return
@@ -6841,7 +7007,12 @@ export function setupGeneralEventHandlers(
       if (favPresetBtn) {
         const fav = favPresetBtn.getAttribute("data-fav")
         if (fav) {
-          if (fav.startsWith("fa-") || fav.startsWith("fas ") || fav.startsWith("fa-solid") || fav.startsWith("fa-regular")) {
+          if (
+            fav.startsWith("fa-") ||
+            fav.startsWith("fas ") ||
+            fav.startsWith("fa-solid") ||
+            fav.startsWith("fa-regular")
+          ) {
             updateSetting("tabIconFaClass", fav)
             updateSetting("tabIcon", fav)
             saveSettings()
@@ -6922,7 +7093,8 @@ export function setupGeneralEventHandlers(
         if (DOM.tabIconInput) DOM.tabIconInput.value = ""
         if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
         if (DOM.tabIconBgColorInput) DOM.tabIconBgColorInput.value = "#1e1e32"
-        if (DOM.tabIconTextColorInput) DOM.tabIconTextColorInput.value = "#ffffff"
+        if (DOM.tabIconTextColorInput)
+          DOM.tabIconTextColorInput.value = "#ffffff"
         saveSettings()
         updateTabIconAndPreviews("")
         startTitleAutoUpdater(
@@ -7790,7 +7962,10 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.freeMoveBookmarksCheckbox, "freeMoveBookmarks", {})
   if (DOM.freeMoveBookmarksCheckbox) {
     DOM.freeMoveBookmarksCheckbox.addEventListener("change", (e) => {
-      document.body.classList.toggle("bookmark-free-move-active", e.target.checked)
+      document.body.classList.toggle(
+        "bookmark-free-move-active",
+        e.target.checked,
+      )
       if (!e.target.checked) {
         const bw = document.getElementById("bookmark-widget")
         if (bw) {
@@ -8012,7 +8187,10 @@ export function setupGeneralEventHandlers(
     if (!presetBtn) return
 
     // Generic preset target handler (for bookmark sliders, sidebar width, etc.)
-    if (presetBtn.dataset.presetTarget && presetBtn.dataset.presetVal !== undefined) {
+    if (
+      presetBtn.dataset.presetTarget &&
+      presetBtn.dataset.presetVal !== undefined
+    ) {
       const targetId = presetBtn.dataset.presetTarget
       const val = presetBtn.dataset.presetVal
       const targetInput = document.getElementById(targetId)
@@ -8030,8 +8208,12 @@ export function setupGeneralEventHandlers(
       if (isNaN(width)) return
       if (DOM.settingsSidebarWidthInput) {
         DOM.settingsSidebarWidthInput.value = width
-        DOM.settingsSidebarWidthInput.dispatchEvent(new Event("input", { bubbles: true }))
-        DOM.settingsSidebarWidthInput.dispatchEvent(new Event("change", { bubbles: true }))
+        DOM.settingsSidebarWidthInput.dispatchEvent(
+          new Event("input", { bubbles: true }),
+        )
+        DOM.settingsSidebarWidthInput.dispatchEvent(
+          new Event("change", { bubbles: true }),
+        )
       }
       return
     }
@@ -8042,7 +8224,8 @@ export function setupGeneralEventHandlers(
 
       if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
       if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
-      if (DOM.searchBarWidthVal) DOM.searchBarWidthVal.textContent = `${width}px`
+      if (DOM.searchBarWidthVal)
+        DOM.searchBarWidthVal.textContent = `${width}px`
       if (DOM.lcpSearchBarWidthVal)
         DOM.lcpSearchBarWidthVal.textContent = `${width}px`
 
@@ -8563,8 +8746,7 @@ export function setupGeneralEventHandlers(
   }
 
   const setLcpTab = (tabName = "layout", persist = true) => {
-    const targetTab =
-      tabName === "quick-access" ? "quick-access" : "layout"
+    const targetTab = tabName === "quick-access" ? "quick-access" : "layout"
     DOM.lcpTabs?.forEach((tab) => {
       const active = tab.dataset.lcpTab === targetTab
       tab.classList.toggle("active", active)
@@ -8769,8 +8951,7 @@ export function setupGeneralEventHandlers(
   appLauncherProviderSelect?.addEventListener("change", async () => {
     const provider = appLauncherProviderSelect.value
     if (m365SettingsSubcard) {
-      m365SettingsSubcard.style.display =
-        provider === "edge" ? "flex" : "none"
+      m365SettingsSubcard.style.display = provider === "edge" ? "flex" : "none"
     }
     const { setLauncherProvider } = await import("../googleApps.js")
     setLauncherProvider(provider)
@@ -8810,7 +8991,10 @@ export function setupGeneralEventHandlers(
     saveM365Inputs()
   })
 
-  window.addEventListener("startpage:launcherModeChanged", syncLauncherProviderUI)
+  window.addEventListener(
+    "startpage:launcherModeChanged",
+    syncLauncherProviderUI,
+  )
 
   if (DOM.lcpTopRightControls) {
     DOM.lcpTopRightControls.addEventListener("change", () => {
@@ -10073,10 +10257,18 @@ export function setupGeneralEventHandlers(
     const s = getSettings()
 
     const inputs = [
-      document.getElementById("custom-title-text")?.value ?? s.customTitleText ?? "",
-      document.getElementById("custom-title-text-2")?.value ?? s.customTitleText2 ?? "",
-      document.getElementById("custom-title-text-3")?.value ?? s.customTitleText3 ?? "",
-      document.getElementById("custom-title-text-4")?.value ?? s.customTitleText4 ?? "",
+      document.getElementById("custom-title-text")?.value ??
+        s.customTitleText ??
+        "",
+      document.getElementById("custom-title-text-2")?.value ??
+        s.customTitleText2 ??
+        "",
+      document.getElementById("custom-title-text-3")?.value ??
+        s.customTitleText3 ??
+        "",
+      document.getElementById("custom-title-text-4")?.value ??
+        s.customTitleText4 ??
+        "",
     ]
     lineTabs.forEach((tab, i) => {
       tab.classList.toggle("has-content", !!(inputs[i] && inputs[i].trim()))
@@ -10198,65 +10390,146 @@ export function setupGeneralEventHandlers(
 
     // Direction & Layout Configuration
     const dirEl = document.getElementById("custom-title-direction")
-    const direction = dirEl ? dirEl.value : (s.customTitleDirection || "horizontal")
+    const direction = dirEl
+      ? dirEl.value
+      : s.customTitleDirection || "horizontal"
 
     const orderEl = document.getElementById("custom-title-order")
-    const order = orderEl ? orderEl.value : (s.customTitleOrder || "normal")
+    const order = orderEl ? orderEl.value : s.customTitleOrder || "normal"
 
     const wwEl = document.getElementById("custom-title-word-wrap")
-    const wordWrap = wwEl ? wwEl.checked : (s.customTitleWordWrap === true)
+    const wordWrap = wwEl ? wwEl.checked : s.customTitleWordWrap === true
 
     const fonts = [
-      document.getElementById("custom-title-font")?.value || s.customTitleFont || "inherit",
-      document.getElementById("custom-title-font-2")?.value || s.customTitleFont2 || "inherit",
-      document.getElementById("custom-title-font-3")?.value || s.customTitleFont3 || "inherit",
-      document.getElementById("custom-title-font-4")?.value || s.customTitleFont4 || "inherit",
+      document.getElementById("custom-title-font")?.value ||
+        s.customTitleFont ||
+        "inherit",
+      document.getElementById("custom-title-font-2")?.value ||
+        s.customTitleFont2 ||
+        "inherit",
+      document.getElementById("custom-title-font-3")?.value ||
+        s.customTitleFont3 ||
+        "inherit",
+      document.getElementById("custom-title-font-4")?.value ||
+        s.customTitleFont4 ||
+        "inherit",
     ]
 
     const orientations = [
-      document.getElementById("custom-title-orientation")?.value || s.customTitleOrientation || "upright",
-      document.getElementById("custom-title-orientation-2")?.value || s.customTitleOrientation2 || "mixed",
-      document.getElementById("custom-title-orientation-3")?.value || s.customTitleOrientation3 || "mixed",
-      document.getElementById("custom-title-orientation-4")?.value || s.customTitleOrientation4 || "mixed",
+      document.getElementById("custom-title-orientation")?.value ||
+        s.customTitleOrientation ||
+        "upright",
+      document.getElementById("custom-title-orientation-2")?.value ||
+        s.customTitleOrientation2 ||
+        "mixed",
+      document.getElementById("custom-title-orientation-3")?.value ||
+        s.customTitleOrientation3 ||
+        "mixed",
+      document.getElementById("custom-title-orientation-4")?.value ||
+        s.customTitleOrientation4 ||
+        "mixed",
     ]
 
     const fontSizes = [
-      parseInt(document.getElementById("custom-title-font-size")?.value || s.customTitleFontSize || 24),
-      parseInt(document.getElementById("custom-title-font-size-2")?.value || s.customTitleFontSize2 || 24),
-      parseInt(document.getElementById("custom-title-font-size-3")?.value || s.customTitleFontSize3 || 24),
-      parseInt(document.getElementById("custom-title-font-size-4")?.value || s.customTitleFontSize4 || 24),
+      parseInt(
+        document.getElementById("custom-title-font-size")?.value ||
+          s.customTitleFontSize ||
+          24,
+      ),
+      parseInt(
+        document.getElementById("custom-title-font-size-2")?.value ||
+          s.customTitleFontSize2 ||
+          24,
+      ),
+      parseInt(
+        document.getElementById("custom-title-font-size-3")?.value ||
+          s.customTitleFontSize3 ||
+          24,
+      ),
+      parseInt(
+        document.getElementById("custom-title-font-size-4")?.value ||
+          s.customTitleFontSize4 ||
+          24,
+      ),
     ]
 
     const letterSpacings = [
-      parseInt(document.getElementById("custom-title-letter-spacing")?.value || s.customTitleLetterSpacing || 0),
-      parseInt(document.getElementById("custom-title-letter-spacing-2")?.value || s.customTitleLetterSpacing2 || 0),
-      parseInt(document.getElementById("custom-title-letter-spacing-3")?.value || s.customTitleLetterSpacing3 || 0),
-      parseInt(document.getElementById("custom-title-letter-spacing-4")?.value || s.customTitleLetterSpacing4 || 0),
+      parseInt(
+        document.getElementById("custom-title-letter-spacing")?.value ||
+          s.customTitleLetterSpacing ||
+          0,
+      ),
+      parseInt(
+        document.getElementById("custom-title-letter-spacing-2")?.value ||
+          s.customTitleLetterSpacing2 ||
+          0,
+      ),
+      parseInt(
+        document.getElementById("custom-title-letter-spacing-3")?.value ||
+          s.customTitleLetterSpacing3 ||
+          0,
+      ),
+      parseInt(
+        document.getElementById("custom-title-letter-spacing-4")?.value ||
+          s.customTitleLetterSpacing4 ||
+          0,
+      ),
     ]
 
     const lineSpcInput = document.getElementById("custom-title-line-spacing")
-    const rawLineSpacing = lineSpcInput ? parseInt(lineSpcInput.value) : (s.customTitleLineSpacing ?? 15)
-    const previewLineSpacing = Math.max(3, Math.min(Math.round(rawLineSpacing * 0.5), 18))
+    const rawLineSpacing = lineSpcInput
+      ? parseInt(lineSpcInput.value)
+      : (s.customTitleLineSpacing ?? 15)
+    const previewLineSpacing = Math.max(
+      3,
+      Math.min(Math.round(rawLineSpacing * 0.5), 18),
+    )
 
-    const isMulti = document.getElementById("custom-title-multicolor")?.checked ?? s.customTitleMulticolor ?? false
-    const baseColor = document.getElementById("custom-title-color")?.value || s.customTitleColor || "#ffffff"
+    const isMulti =
+      document.getElementById("custom-title-multicolor")?.checked ??
+      s.customTitleMulticolor ??
+      false
+    const baseColor =
+      document.getElementById("custom-title-color")?.value ||
+      s.customTitleColor ||
+      "#ffffff"
 
-    const shadowBlur = parseInt(document.getElementById("custom-title-shadow-blur")?.value || s.customTitleShadowBlur || 0)
-    const shadowY = parseInt(document.getElementById("custom-title-shadow-y")?.value || s.customTitleShadowY || 0)
-    const shadowColor = document.getElementById("custom-title-shadow-color")?.value || s.customTitleShadowColor || "#000000"
+    const shadowBlur = parseInt(
+      document.getElementById("custom-title-shadow-blur")?.value ||
+        s.customTitleShadowBlur ||
+        0,
+    )
+    const shadowY = parseInt(
+      document.getElementById("custom-title-shadow-y")?.value ||
+        s.customTitleShadowY ||
+        0,
+    )
+    const shadowColor =
+      document.getElementById("custom-title-shadow-color")?.value ||
+      s.customTitleShadowColor ||
+      "#000000"
 
-    const borderSize = parseInt(document.getElementById("custom-title-border-size")?.value || s.customTitleBorderSize || 0)
-    const borderColor = document.getElementById("custom-title-border-color")?.value || s.customTitleBorderColor || "#000000"
+    const borderSize = parseInt(
+      document.getElementById("custom-title-border-size")?.value ||
+        s.customTitleBorderSize ||
+        0,
+    )
+    const borderColor =
+      document.getElementById("custom-title-border-color")?.value ||
+      s.customTitleBorderColor ||
+      "#000000"
 
     previewEl.innerHTML = ""
 
     // Set container direction & layout
     if (direction === "vertical") {
       previewEl.className = "is-vertical"
-      previewEl.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+      previewEl.style.writingMode =
+        order === "reverse" ? "vertical-rl" : "vertical-lr"
       previewEl.style.textOrientation = "mixed"
       previewEl.style.display = "flex"
-      previewEl.style.flexDirection = order === "reverse" ? "row-reverse" : "row"
+      previewEl.style.flexDirection =
+        order === "reverse" ? "row-reverse" : "row"
       previewEl.style.justifyContent = "center"
       previewEl.style.alignItems = "center"
       previewEl.style.width = "auto"
@@ -10267,7 +10540,8 @@ export function setupGeneralEventHandlers(
       previewEl.style.writingMode = "horizontal-tb"
       previewEl.style.textOrientation = "mixed"
       previewEl.style.display = "flex"
-      previewEl.style.flexDirection = order === "reverse" ? "column-reverse" : "column"
+      previewEl.style.flexDirection =
+        order === "reverse" ? "column-reverse" : "column"
       previewEl.style.justifyContent = "center"
       previewEl.style.alignItems = "center"
       previewEl.style.width = "100%"
@@ -10292,7 +10566,10 @@ export function setupGeneralEventHandlers(
       }
 
       // Proportional font size for live preview
-      const scaledFontSize = Math.max(11, Math.min(22, Math.round(fontSizes[idx] * 0.72)))
+      const scaledFontSize = Math.max(
+        11,
+        Math.min(22, Math.round(fontSizes[idx] * 0.72)),
+      )
       div.style.fontSize = `${scaledFontSize}px`
 
       if (letterSpacings[idx]) {
@@ -10334,7 +10611,8 @@ export function setupGeneralEventHandlers(
             }
           })
         } else {
-          div.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+          div.style.writingMode =
+            order === "reverse" ? "vertical-rl" : "vertical-lr"
           div.style.textOrientation = orientations[idx] || "upright"
           div.style.display = "inline-block"
           div.textContent = item.text
@@ -10684,7 +10962,9 @@ export function setupGeneralEventHandlers(
       DOM.githubSyncTokenInput.type = isPassword ? "text" : "password"
       const icon = DOM.githubTokenToggleVisibilityBtn.querySelector("i")
       if (icon) {
-        icon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"
+        icon.className = isPassword
+          ? "fa-solid fa-eye-slash"
+          : "fa-solid fa-eye"
       }
     })
   }
@@ -10790,7 +11070,9 @@ export function setupGeneralEventHandlers(
       DOM.gitlabSyncTokenInput.type = isPassword ? "text" : "password"
       const icon = DOM.gitlabTokenToggleVisibilityBtn.querySelector("i")
       if (icon) {
-        icon.className = isPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"
+        icon.className = isPassword
+          ? "fa-solid fa-eye-slash"
+          : "fa-solid fa-eye"
       }
     })
   }
@@ -10835,7 +11117,9 @@ export function setupGeneralEventHandlers(
       try {
         await GitLabSync.syncFromSnippet(true)
       } catch (err) {
-        showAlert(`Failed to download from GitLab Snippet: ${err.message || err}`)
+        showAlert(
+          `Failed to download from GitLab Snippet: ${err.message || err}`,
+        )
       } finally {
         DOM.forceGitlabDownloadBtn.disabled = false
         DOM.forceGitlabDownloadBtn.innerHTML =

@@ -11518,6 +11518,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   background: var(--bookmark-group-tab-bg, rgba(255, 255, 255, 0.08));
   color: var(--bookmark-group-text-color, var(--text-color, #ffffff));
   font-size: var(--bookmark-group-font-size, 14px);
+  font-weight: var(--bookmark-group-font-weight, 500);
   border: 1px solid rgba(255, 255, 255, 0.12);
   transition: all 0.25s ease;
   max-width: 140px;
@@ -11561,7 +11562,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
 }
 
 .bookmark-preview-title {
-  font-weight: 500;
+  font-weight: var(--bookmark-font-weight, 600);
   text-align: center;
   white-space: nowrap;
   letter-spacing: 0.2px;

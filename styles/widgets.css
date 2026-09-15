@@ -2685,7 +2685,7 @@ body.hide-bookmark-bg .bookmark .stored-bookmark-icon-fallback {
 .bookmark span {
   font-size: var(--bookmark-font-size, 10px);
   color: var(--bookmark-text-color, var(--text-color));
-  font-weight: 600;
+  font-weight: var(--bookmark-font-weight, 600);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -12273,7 +12273,7 @@ body.bookmark-group-rows-3 .bookmark-groups-container::-webkit-scrollbar {
   border-radius: var(--bookmark-group-border-radius, var(--radius-sm));
   font-size: var(--bookmark-group-font-size, 0.9rem);
   flex-shrink: 0;
-  font-weight: 500;
+  font-weight: var(--bookmark-group-font-weight, 500);
   cursor: pointer;
   transition: all 0.25s ease;
   border: 1px solid rgba(255, 255, 255, 0.12);
