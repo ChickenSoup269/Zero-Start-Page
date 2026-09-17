@@ -286,12 +286,8 @@ body.clock-occlusion-enabled #clock {
   margin-bottom: var(--space-1);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   color: var(--clock-color);
-  color: var(--clock-color);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
-
-body.date-clock-style-default #clock,
-/* Clock style variants have been extracted to styles/clock-styles.css */
 
 /* Layout Presets (CSS Flexbox approach) */
 body[data-layout-preset="left"] .main-container {
