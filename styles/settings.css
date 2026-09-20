@@ -149,7 +149,10 @@
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-1);
   cursor: pointer;
-  transition: background-color 0.14s ease-out, border-color 0.14s ease-out, transform 0.14s ease-out;
+  transition:
+    background-color 0.14s ease-out,
+    border-color 0.14s ease-out,
+    transform 0.14s ease-out;
   contain: paint layout;
   text-align: center;
   position: relative;
@@ -329,7 +332,9 @@
   gap: 6px;
   min-height: 80px;
   justify-content: space-between;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .font-preview-box:hover {
@@ -546,7 +551,9 @@
   display: none;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   z-index: 2;
   width: 22px;
   height: 22px;
@@ -714,7 +721,9 @@
   padding: 3px;
   line-height: 1;
   border-radius: 4px;
-  transition: color 0.15s, transform 0.15s;
+  transition:
+    color 0.15s,
+    transform 0.15s;
   z-index: 2;
 }
 
@@ -740,7 +749,9 @@
   line-height: 1;
   padding: 3px;
   border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   z-index: 2;
 }
 
@@ -818,7 +829,6 @@
   transform: translateY(-1px);
 }
 
-
 .settings-sidebar {
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -871,12 +881,14 @@ body.sidebar-m3-accent .settings-sidebar {
   }
 }
 
-.settings-sidebar[data-active-tab="background"]:not(.nav-collapsed) .sidebar-content {
+.settings-sidebar[data-active-tab="background"]:not(.nav-collapsed)
+  .sidebar-content {
   padding-top: 250px;
 }
 
 @container settings-sidebar (min-width: 520px) {
-  .settings-sidebar[data-active-tab="background"]:not(.nav-collapsed) .sidebar-content {
+  .settings-sidebar[data-active-tab="background"]:not(.nav-collapsed)
+    .sidebar-content {
     padding-top: 205px;
   }
 }
@@ -966,7 +978,9 @@ body.sidebar-m3-accent .settings-sidebar {
   border: 1px solid var(--glass-border);
   border-top: 1px solid var(--glass-edge);
   box-shadow: var(--inner-glow);
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   contain: paint layout;
   width: 100%;
   box-sizing: border-box;
@@ -1088,7 +1102,10 @@ body.sidebar-m3-accent .settings-sidebar {
   cursor: pointer;
   border-radius: 8px;
   padding: 0;
-  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    color 0.08s ease,
+    border-color 0.08s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1342,7 +1359,10 @@ body.sidebar-light .toc-live-badge {
   border: 1px solid rgba(var(--accent-color-rgb, 100, 150, 255), 0.28);
   flex-shrink: 0;
   text-transform: capitalize;
-  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    color 0.08s ease,
+    border-color 0.08s ease;
   line-height: 1.2;
 }
 
@@ -1375,13 +1395,15 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
 }
 
 @keyframes tocIconPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     filter: drop-shadow(0 0 3px var(--accent-color, #4a80f0));
   }
   50% {
     transform: scale(1.15);
-    filter: drop-shadow(0 0 8px var(--accent-color, #4a80f0)) drop-shadow(0 0 12px #ec4899);
+    filter: drop-shadow(0 0 8px var(--accent-color, #4a80f0))
+      drop-shadow(0 0 12px #ec4899);
   }
 }
 
@@ -1407,7 +1429,9 @@ body.sidebar-light .toc-item:hover .toc-item-badge {
     0 0 28px rgba(var(--accent-color-rgb, 100, 150, 255), 0.08),
     inset 0 0 10px rgba(var(--accent-color-rgb, 100, 150, 255), 0.06);
   border: 1px solid transparent;
-  transition: box-shadow 0.12s ease, transform 0.08s ease;
+  transition:
+    box-shadow 0.12s ease,
+    transform 0.08s ease;
   margin-top: 4px;
   box-sizing: border-box;
   width: 100%;
@@ -1586,7 +1610,9 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
 }
 
 .sidebar-nav-toggle-btn i {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.2s ease;
 }
 
 .sidebar-nav-toggle-btn:hover {
@@ -1609,7 +1635,10 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
     pointer-events: none !important;
     visibility: hidden !important;
     transform: translateY(-8px);
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0.25s ease;
   }
 }
 
@@ -1768,7 +1797,10 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   font-size: 0.74rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    color 0.08s ease,
+    border-color 0.08s ease;
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1873,7 +1905,10 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
   user-select: none;
 }
 
@@ -1950,7 +1985,10 @@ body.sidebar-light .theme-filter-pill.active {
   font-weight: 500;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .token-chip:hover {
@@ -1977,7 +2015,10 @@ body.sidebar-light .theme-filter-pill.active {
   font-weight: 500;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .preset-pill-btn:hover {
@@ -2038,7 +2079,9 @@ body.sidebar-light .preset-pill-btn:hover {
   font-size: 0.78rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.16s ease, color 0.16s ease;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
   user-select: none;
 }
 
@@ -2167,7 +2210,9 @@ body.sidebar-light .preset-pill-btn:hover {
   padding: 7px 10px;
   border-radius: 8px;
   font-size: 0.84rem;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
   outline: none;
 }
 
@@ -2351,7 +2396,10 @@ body.sidebar-light .ct-preview-hint {
   font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    color 0.08s ease,
+    border-color 0.08s ease;
   user-select: none;
   text-align: center;
   line-height: 1.2;
@@ -2518,7 +2566,6 @@ body.sidebar-light .settings-search-empty p {
   font-weight: 500;
 }
 
-
 .sidebar-content::-webkit-scrollbar {
   width: 5px;
   height: 0px;
@@ -2660,7 +2707,10 @@ body.sidebar-light .settings-search-empty p {
   height: 0 !important;
   margin: 0;
   overflow: hidden;
-  transition: opacity 0.2s ease, transform 0.2s ease, height 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    height 0.2s ease;
 }
 
 .sidebar-scroll-top-btn.visible {
@@ -2929,7 +2979,10 @@ body.sidebar-light .section-live-badge {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   padding: 10px 14px;
-  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .setting-group.collapsible-group:hover {
@@ -2941,7 +2994,9 @@ body.sidebar-light .section-live-badge {
 .setting-group.collapsible-group.expanded {
   background: rgba(255, 255, 255, 0.055) !important;
   border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.5) !important;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.2) !important;
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--accent-color-rgb, 129, 140, 248), 0.2) !important;
   padding: 12px 14px 14px;
 }
 
@@ -2958,7 +3013,9 @@ body.sidebar-light .section-live-badge {
   cursor: pointer;
   user-select: none;
   padding: 4px 0;
-  transition: color 0.08s ease, border-color 0.08s ease;
+  transition:
+    color 0.08s ease,
+    border-color 0.08s ease;
 }
 
 .setting-group.collapsible-group > .group-header:hover {
@@ -3047,26 +3104,40 @@ body.sidebar-light .setting-group.collapsible-group > .group-header {
 body.sidebar-light .setting-group.collapsible-group.expanded {
   background: #ffffff !important;
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.45) !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
 }
 
-body.sidebar-light .setting-group.collapsible-group > .group-header i.group-icon {
+body.sidebar-light
+  .setting-group.collapsible-group
+  > .group-header
+  i.group-icon {
   background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.08);
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
 }
 
-body.sidebar-light .setting-group.collapsible-group.expanded > .group-header i.group-icon {
+body.sidebar-light
+  .setting-group.collapsible-group.expanded
+  > .group-header
+  i.group-icon {
   background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.15) !important;
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.35) !important;
 }
 
-body.sidebar-light .setting-group.collapsible-group > .group-header .group-chevron {
+body.sidebar-light
+  .setting-group.collapsible-group
+  > .group-header
+  .group-chevron {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
   color: #64748b;
 }
 
-body.sidebar-light .setting-group.collapsible-group.expanded > .group-header .group-chevron {
+body.sidebar-light
+  .setting-group.collapsible-group.expanded
+  > .group-header
+  .group-chevron {
   background: rgba(var(--accent-color-rgb, 99, 102, 241), 0.12) !important;
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.3) !important;
   color: var(--accent-color) !important;
@@ -3080,7 +3151,7 @@ body.sidebar-light .setting-group.collapsible-group.expanded > .group-header {
 .setting-sub-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -3209,14 +3280,15 @@ body.sidebar-light .setting-target-badge.target-layout {
 }
 
 .setting-item {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
+  margin: 0;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   contain: paint layout;
   box-sizing: border-box;
   width: 100%;
@@ -3229,6 +3301,14 @@ body.sidebar-light .setting-target-badge.target-layout {
 
 .setting-item:last-child {
   margin-bottom: 0;
+}
+
+.setting-item i {
+  margin-right: 10px;
+}
+
+.setting-item button i {
+  margin-right: 0;
 }
 
 .setting-item label,
@@ -3626,7 +3706,11 @@ body.sidebar-light .setting-item .setting-label {
   padding: 8px 10px;
   text-align: left;
   position: relative;
-  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
   user-select: none;
 }
 
@@ -3655,7 +3739,9 @@ body.sidebar-light .setting-item .setting-label {
   width: 32px;
   color: var(--accent-color, #a8c0ff);
   font-size: 0.9rem;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .style-preset-btn:hover .style-preset-icon {
@@ -3893,7 +3979,9 @@ body.sidebar-light .preset-code-line-value {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   box-sizing: border-box;
   width: 100%;
 }
@@ -3941,8 +4029,9 @@ body.sidebar-light .preset-code-line-value {
   border-radius: 8px !important;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.08s ease,
-              border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   margin: 0;
   flex-shrink: 0;
   align-self: center;
@@ -3970,7 +4059,9 @@ body.sidebar-light .preset-code-line-value {
   left: 2px !important;
   transform: translateY(-50%) !important;
   background-color: #ffffff;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.25s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
   z-index: 2;
 }
@@ -4001,7 +4092,9 @@ body.sidebar-light .preset-code-line-value {
   color: var(--text-color, #ffffff) !important;
   cursor: pointer;
   outline: none;
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   box-sizing: border-box;
 }
 
@@ -4074,7 +4167,9 @@ body.sidebar-light .settings-select option {
   cursor: pointer;
   background: transparent;
   padding: 0;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .setting-item-row input[type="color"]:hover {
@@ -4405,7 +4500,9 @@ body.sidebar-light .btn-group-item.active {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
   flex-shrink: 0 !important;
   box-sizing: border-box !important;
-  transition: border-color 0.2s ease, transform 0.2s ease !important;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease !important;
 }
 
 .custom-color-input-group:not(:has(input[type="text"]))
@@ -4783,7 +4880,9 @@ body.sidebar-light .btn-group-item.active {
 
 .user-gradient-item.active {
   border-color: #ffffff;
-  box-shadow: 0 0 0 2px var(--accent-color, #4a80f0), 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 0 2px var(--accent-color, #4a80f0),
+    0 4px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-1px);
 }
 
@@ -5099,7 +5198,9 @@ body.sidebar-light .custom-font-save-btn:hover {
       rgba(255, 255, 255, 0.015)
     ),
     rgba(15, 18, 25, 0.6);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -5136,7 +5237,11 @@ body.sidebar-light .custom-font-save-btn:hover {
 
 .language-guide-btn {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 99, 102, 241), 0.15), rgba(var(--accent-color-rgb, 99, 102, 241), 0.06)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.15),
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.06)
+  ) !important;
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.3) !important;
   color: var(--text-color) !important;
 }
@@ -5147,7 +5252,11 @@ body.sidebar-light .custom-font-save-btn:hover {
 }
 
 .language-guide-btn:hover {
-  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 99, 102, 241), 0.25), rgba(var(--accent-color-rgb, 99, 102, 241), 0.12)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.25),
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.12)
+  ) !important;
   border-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.5) !important;
   color: #ffffff !important;
 }
@@ -5186,7 +5295,9 @@ body.sidebar-light .custom-font-save-btn:hover {
   max-height: min(800px, calc(100vh - 36px));
   border-radius: var(--radius-lg, 16px);
   border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.22);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -5204,7 +5315,8 @@ body.sidebar-light .custom-font-save-btn:hover {
   max-height: calc(100vh - 200px);
   padding: 18px 22px 14px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.45) rgba(255, 255, 255, 0.04);
+  scrollbar-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.45)
+    rgba(255, 255, 255, 0.04);
 }
 
 .language-modal-content .modal-body::-webkit-scrollbar,
@@ -5241,7 +5353,11 @@ body.sidebar-light .custom-font-save-btn:hover {
   padding: 14px 16px;
   margin-bottom: 14px;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(var(--accent-color-rgb, 99, 102, 241), 0.09), rgba(var(--accent-color-rgb, 99, 102, 241), 0.03));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.09),
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.03)
+  );
   border: 1px solid rgba(var(--accent-color-rgb, 99, 102, 241), 0.2);
   position: relative;
 }
@@ -5414,10 +5530,16 @@ body.sidebar-light .custom-font-save-btn:hover {
 
 /* 1. Download from GitHub Button */
 .lang-btn-github {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  ) !important;
   border: 1px solid rgba(255, 255, 255, 0.16) !important;
   color: #f0f6fc !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .lang-btn-github i {
@@ -5427,11 +5549,17 @@ body.sidebar-light .custom-font-save-btn:hover {
 }
 
 .lang-btn-github:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.08)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.08)
+  ) !important;
   border-color: rgba(255, 255, 255, 0.32) !important;
   color: #ffffff !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .lang-btn-github:hover i {
@@ -5445,25 +5573,39 @@ body.sidebar-light .custom-font-save-btn:hover {
 
 /* 2. Copy AI Prompt Button */
 .lang-btn-ai {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.16), rgba(99, 102, 241, 0.14)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.16),
+    rgba(99, 102, 241, 0.14)
+  ) !important;
   border: 1px solid rgba(168, 85, 247, 0.35) !important;
   color: #e9d5ff !important;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 2px 8px rgba(168, 85, 247, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .lang-btn-ai i {
   font-size: 0.95rem;
   color: #c084fc;
   filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.5));
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.25s ease;
 }
 
 .lang-btn-ai:hover {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(99, 102, 241, 0.24)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.28),
+    rgba(99, 102, 241, 0.24)
+  ) !important;
   border-color: rgba(168, 85, 247, 0.65) !important;
   color: #ffffff !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(168, 85, 247, 0.28), 0 0 14px rgba(168, 85, 247, 0.2);
+  box-shadow:
+    0 6px 22px rgba(168, 85, 247, 0.28),
+    0 0 14px rgba(168, 85, 247, 0.2);
 }
 
 .lang-btn-ai:hover i {
@@ -5478,10 +5620,16 @@ body.sidebar-light .custom-font-save-btn:hover {
 
 /* 3. Install Language Button (Primary Action) */
 .lang-btn-install {
-  background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb, 99, 102, 241), 0.86)) !important;
+  background: linear-gradient(
+    135deg,
+    var(--accent-color),
+    rgba(var(--accent-color-rgb, 99, 102, 241), 0.86)
+  ) !important;
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(var(--accent-color-rgb, 99, 102, 241), 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  box-shadow:
+    0 4px 14px rgba(var(--accent-color-rgb, 99, 102, 241), 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
 }
 
 .lang-btn-install i {
@@ -5491,10 +5639,16 @@ body.sidebar-light .custom-font-save-btn:hover {
 }
 
 .lang-btn-install:hover {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-color)) !important;
+  background: linear-gradient(
+    135deg,
+    var(--accent-color),
+    var(--accent-color)
+  ) !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(var(--accent-color-rgb, 99, 102, 241), 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  box-shadow:
+    0 8px 24px rgba(var(--accent-color-rgb, 99, 102, 241), 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
 }
 
 .lang-btn-install:hover i {
@@ -5732,7 +5886,9 @@ body.sidebar-light .custom-font-save-btn:hover {
 
 .local-bg-item.active {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 74, 128, 240), 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 0 2px rgba(var(--accent-color-rgb, 74, 128, 240), 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.3);
   border-width: 2px;
 }
 
@@ -6540,7 +6696,11 @@ body.sidebar-light .custom-font-save-btn:hover {
   width: 100%;
   height: 100%;
   min-height: 142px;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
   border: 1.5px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-md, 10px);
   overflow: hidden;
@@ -6548,17 +6708,23 @@ body.sidebar-light .custom-font-save-btn:hover {
   user-select: none;
   touch-action: none;
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .bg-position-pad:hover {
   border-color: rgba(var(--accent-color-rgb), 0.45);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4), 0 0 12px rgba(var(--accent-color-rgb), 0.15);
+  box-shadow:
+    inset 0 2px 10px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(var(--accent-color-rgb), 0.15);
 }
 
 .bg-position-pad.is-dragging {
   border-color: var(--accent-color);
-  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.5), 0 0 18px rgba(var(--accent-color-rgb), 0.35);
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(var(--accent-color-rgb), 0.35);
 }
 
 .bg-position-pad-preview {
@@ -6604,15 +6770,21 @@ body.sidebar-light .custom-font-save-btn:hover {
   border: 2.5px solid #fff;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.7), 0 0 8px rgba(var(--accent-color-rgb), 0.7);
-  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+  box-shadow:
+    0 0 12px rgba(0, 0, 0, 0.7),
+    0 0 8px rgba(var(--accent-color-rgb), 0.7);
+  transition:
+    transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.2s ease;
   z-index: 3;
 }
 
 .bg-position-pad:active .bg-position-pad-handle,
 .bg-position-pad.is-dragging .bg-position-pad-handle {
   transform: translate(-50%, -50%) scale(1.25);
-  box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.9), 0 0 6px #fff;
+  box-shadow:
+    0 0 20px rgba(var(--accent-color-rgb), 0.9),
+    0 0 6px #fff;
 }
 
 .bg-position-pad-coords {
@@ -6758,7 +6930,11 @@ body.sidebar-light .bg-step-btn:hover {
 }
 
 body.sidebar-light .bg-position-pad {
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.1) 100%);
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.02) 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -6794,7 +6970,11 @@ body.sidebar-light .bg-9grid-btn.active {
 /* Active Wallpaper Mini Preview Card */
 .bg-current-wallpaper-card {
   padding: 12px 14px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(var(--accent-color-rgb), 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(var(--accent-color-rgb), 0.08) 100%
+  );
   border: 1px solid rgba(var(--accent-color-rgb), 0.25);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   margin-bottom: 12px;
@@ -7416,7 +7596,9 @@ body.sidebar-light .bg-9grid-btn.active {
 .user-color-item.active,
 .user-gradient-item.active {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .random-color-item {
@@ -7494,7 +7676,10 @@ body.sidebar-light .bg-9grid-btn.active {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.08s ease, border-color 0.08s ease, color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease,
+    color 0.08s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7541,7 +7726,10 @@ body.sidebar-light .bg-9grid-btn.active {
 .settings-sidebar .secondary-btn,
 .settings-sidebar .setting-btn,
 .settings-sidebar .sidebar-btn {
-  transition: background-color 0.08s ease, border-color 0.08s ease, color 0.08s ease !important;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease,
+    color 0.08s ease !important;
 }
 
 .settings-sidebar .secondary-btn:hover,
@@ -7964,7 +8152,9 @@ body.sidebar-light .bg-9grid-btn.active {
   user-select: none;
   overflow: hidden;
   text-align: center;
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -8046,7 +8236,9 @@ body.sidebar-light .bg-9grid-btn.active {
   line-height: 1;
   flex-shrink: 0;
   border-radius: 3px;
-  font-family: "Twemoji Country Flags", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-family:
+    "Twemoji Country Flags", "Apple Color Emoji", "Segoe UI Emoji",
+    "Noto Color Emoji", sans-serif;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
   transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -8143,7 +8335,9 @@ body.sidebar-light .lang-download-badge {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  transition: background-color 0.08s ease, border-color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    border-color 0.08s ease;
 }
 
 .github-lang-card:hover {
@@ -8398,7 +8592,10 @@ body.sidebar-light .theme-scope-chip .chip-label:hover {
   color: #1e293b;
 }
 
-body.sidebar-light .theme-scope-chip input[type="checkbox"]:checked + .chip-label {
+body.sidebar-light
+  .theme-scope-chip
+  input[type="checkbox"]:checked
+  + .chip-label {
   background: rgba(var(--accent-color-rgb, 100, 150, 255), 0.15);
   border-color: var(--accent-color);
   color: #0f172a;
@@ -8416,7 +8613,8 @@ body.sidebar-light .theme-scope-chip input[type="checkbox"]:checked + .chip-labe
 }
 
 /* Limit visible themes by default (show 6 items = 2 rows of 3), expand when .show-all is present */
-.themes-grid:not(.show-all) .theme-item:nth-child(n+7):not(.active):not([data-theme^="user-"]) {
+.themes-grid:not(.show-all)
+  .theme-item:nth-child(n + 7):not(.active):not([data-theme^="user-"]) {
   display: none !important;
 }
 
@@ -8443,7 +8641,10 @@ body.sidebar-light .theme-scope-chip input[type="checkbox"]:checked + .chip-labe
   font-size: 0.74rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
   user-select: none;
 }
 
@@ -8484,7 +8685,11 @@ body.sidebar-light .themes-show-all-btn:hover {
   user-select: none;
   overflow: hidden;
   text-align: center;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
@@ -8515,7 +8720,10 @@ body.sidebar-light .themes-show-all-btn:hover {
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .theme-item:hover .theme-preview {
@@ -8710,7 +8918,9 @@ body.sidebar-light .themes-show-all-btn:hover {
   font-size: 7.5px;
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   z-index: 5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   pointer-events: none;
@@ -8739,7 +8949,10 @@ body.sidebar-light .themes-show-all-btn:hover {
   cursor: pointer;
   opacity: 0;
   transform: scale(0.8);
-  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease;
   z-index: 6;
 }
 
@@ -9593,9 +9806,9 @@ body.sidebar-light .settings-sidebar .primary-btn:hover {
 body.sidebar-light .settings-sidebar .secondary-btn,
 body.sidebar-light
   .settings-sidebar
-  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
-    .btn-group-item
-  ):not(.settings-tab-btn) {
+  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(
+    .toggle-password-btn
+  ):not(.btn-group-item):not(.settings-tab-btn) {
   background: rgba(0, 0, 0, 0.05) !important;
   color: #0f172a !important;
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
@@ -9609,9 +9822,9 @@ body.sidebar-light .settings-sidebar .secondary-btn span {
 body.sidebar-light .settings-sidebar .secondary-btn:hover,
 body.sidebar-light
   .settings-sidebar
-  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
-    .btn-group-item
-  ):not(.settings-tab-btn):hover {
+  button:not(.primary-btn):not(.accent-color-preset):not(.icon-btn):not(
+    .toggle-password-btn
+  ):not(.btn-group-item):not(.settings-tab-btn):hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35) !important;
   color: var(--accent-color, #a8c0ff) !important;
@@ -10574,7 +10787,9 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   background: rgba(255, 255, 255, 0.025);
   padding: 12px 14px;
   margin-bottom: 14px;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .settings-section[data-section-id="animated-backgrounds"] .setting-group:hover {
@@ -10582,11 +10797,15 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 }
 
 /* Accordion Open/Configure Toggle Buttons */
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-toggle-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-toggle-btn,
 .settings-section[data-section-id="animated-backgrounds"] #silk-toggle-btn,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-toggle-btn,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-toggle-btn,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-toggle-btn {
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-toggle-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-toggle-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-toggle-btn {
   height: 34px;
   border-radius: 8px;
   font-size: 0.84rem;
@@ -10603,16 +10822,22 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   cursor: pointer;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-toggle-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #silk-toggle-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-toggle-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-toggle-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-toggle-btn:hover {
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-toggle-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #silk-toggle-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-toggle-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-toggle-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-toggle-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.settings-section[data-section-id="animated-backgrounds"] button[aria-expanded="true"] {
+.settings-section[data-section-id="animated-backgrounds"]
+  button[aria-expanded="true"] {
   border-color: rgba(var(--accent-color-rgb), 0.45) !important;
   background: rgba(var(--accent-color-rgb), 0.12) !important;
   color: var(--accent-color) !important;
@@ -10700,12 +10925,14 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   box-sizing: border-box;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] input[type="color"]:hover {
+.settings-section[data-section-id="animated-backgrounds"]
+  input[type="color"]:hover {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Stepper Wrappers and buttons */
-.settings-section[data-section-id="animated-backgrounds"] .bg-slider-stepper-wrap {
+.settings-section[data-section-id="animated-backgrounds"]
+  .bg-slider-stepper-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -10748,20 +10975,30 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 }
 
 /* Action Buttons Grid (Randomize / Reset / Save) */
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-randomize-btn,
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-reset-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-randomize-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-reset-btn,
 .settings-section[data-section-id="animated-backgrounds"] #gradient-v2-save-btn,
 .settings-section[data-section-id="animated-backgrounds"] #silk-random-btn,
 .settings-section[data-section-id="animated-backgrounds"] #silk-reset-btn,
 .settings-section[data-section-id="animated-backgrounds"] #silk-save-btn,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-random-btn,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-reset-btn,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-save-btn,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-random-btn,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-reset-btn,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-save-btn,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-reset-btn,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-dark-bg-btn {
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-random-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-reset-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-save-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-random-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-reset-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-save-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-reset-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-dark-bg-btn {
   height: 34px;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -10777,16 +11014,25 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   cursor: pointer;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-randomize-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-reset-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #silk-random-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-randomize-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-reset-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #silk-random-btn:hover,
 .settings-section[data-section-id="animated-backgrounds"] #silk-reset-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-random-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-reset-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-random-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-reset-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-reset-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #splash-cursor-dark-bg-btn:hover {
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-random-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-reset-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-random-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-reset-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-reset-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #splash-cursor-dark-bg-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
 }
@@ -10794,18 +11040,23 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 /* Save buttons - highlighted with accent tint */
 .settings-section[data-section-id="animated-backgrounds"] #gradient-v2-save-btn,
 .settings-section[data-section-id="animated-backgrounds"] #silk-save-btn,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-save-btn,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-save-btn {
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-save-btn,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-save-btn {
   background: rgba(var(--accent-color-rgb), 0.14);
   border: 1px solid rgba(var(--accent-color-rgb), 0.35);
   color: var(--accent-color);
   font-weight: 600;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] #gradient-v2-save-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #gradient-v2-save-btn:hover,
 .settings-section[data-section-id="animated-backgrounds"] #silk-save-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #light-pillar-save-btn:hover,
-.settings-section[data-section-id="animated-backgrounds"] #liquid-ether-save-btn:hover {
+.settings-section[data-section-id="animated-backgrounds"]
+  #light-pillar-save-btn:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  #liquid-ether-save-btn:hover {
   background: rgba(var(--accent-color-rgb), 0.24);
   border-color: var(--accent-color);
   color: #fff;
@@ -10855,7 +11106,9 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   align-items: center;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] .bg-select-toolbar .icon-btn {
+.settings-section[data-section-id="animated-backgrounds"]
+  .bg-select-toolbar
+  .icon-btn {
   width: 28px;
   height: 28px;
   border-radius: 6px;
@@ -10866,12 +11119,15 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 .settings-section[data-section-id="animated-backgrounds"] .local-bg-item {
   border-radius: 8px !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease !important;
   transform: none !important;
   animation: none !important;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] .user-gradientV2-item:hover,
+.settings-section[data-section-id="animated-backgrounds"]
+  .user-gradientV2-item:hover,
 .settings-section[data-section-id="animated-backgrounds"] .local-bg-item:hover {
   border-color: rgba(255, 255, 255, 0.28) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
@@ -10879,8 +11135,10 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   animation: none !important;
 }
 
-.settings-section[data-section-id="animated-backgrounds"] .user-gradientV2-item.selected,
-.settings-section[data-section-id="animated-backgrounds"] .local-bg-item.selected {
+.settings-section[data-section-id="animated-backgrounds"]
+  .user-gradientV2-item.selected,
+.settings-section[data-section-id="animated-backgrounds"]
+  .local-bg-item.selected {
   border: 2px solid var(--accent-color) !important;
   box-shadow: 0 2px 8px rgba(var(--accent-color-rgb), 0.25) !important;
 }
@@ -10932,7 +11190,6 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   border-radius: 2px;
   margin-top: 6px;
 }
-
 
 /* Material Design 3 dynamic accent layer */
 .settings-sidebar {
@@ -11570,7 +11827,11 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
 
 /* Light Theme overrides for Bookmark Preview */
 body.sidebar-light .bookmark-live-preview-card {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(var(--accent-color-rgb, 168, 192, 255), 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.03) 0%,
+    rgba(var(--accent-color-rgb, 168, 192, 255), 0.08) 100%
+  );
   border-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -11587,9 +11848,13 @@ body.sidebar-light .bookmark-preview-col-caption {
 }
 
 body.sidebar-light .bookmark-preview-divider {
-  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.15), transparent);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 0, 0, 0.15),
+    transparent
+  );
 }
-
 
 /* Appearance Tab - Page Title & Tab Icon Modernization */
 .page-title-card-wrap {
@@ -11598,7 +11863,9 @@ body.sidebar-light .bookmark-preview-divider {
   background: rgba(255, 255, 255, 0.04) !important;
   padding: 14px 16px 16px !important;
   margin-bottom: 16px !important;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .page-title-card-wrap:hover {
@@ -11723,7 +11990,9 @@ body.sidebar-light .bookmark-preview-divider {
   background: rgba(0, 0, 0, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .pt-smart-input:focus {
@@ -11845,7 +12114,9 @@ body.sidebar-light .bookmark-preview-divider {
   font-size: 0.76rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .pt-tokens-toggle-btn:hover {
@@ -12202,10 +12473,6 @@ body.sidebar-light .pt-field-hint {
   color: rgba(0, 0, 0, 0.45);
 }
 
-
-
-
-
 /* Custom Bookmark Polish */
 .settings-section[data-section-id="bookmark-custom"] .setting-group {
   gap: 10px;
@@ -12215,7 +12482,9 @@ body.sidebar-light .pt-field-hint {
   gap: 8px;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .group-header > span:not(.setting-target-badge) {
+.settings-section[data-section-id="bookmark-custom"]
+  .group-header
+  > span:not(.setting-target-badge) {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -12223,7 +12492,9 @@ body.sidebar-light .pt-field-hint {
   white-space: nowrap;
 }
 
-.settings-section[data-section-id="bookmark-custom"] .group-header .bg-card-reset-btn {
+.settings-section[data-section-id="bookmark-custom"]
+  .group-header
+  .bg-card-reset-btn {
   padding: 4px 7px;
   min-width: 26px;
   min-height: 24px;
@@ -12232,9 +12503,8 @@ body.sidebar-light .pt-field-hint {
 }
 
 .settings-section[data-section-id="bookmark-custom"] .setting-item {
-  padding: 8px 10px;
-  margin-top: 6px;
-  margin-bottom: 6px;
+  padding: 12px 16px;
+  margin: 0;
 }
 
 .settings-section[data-section-id="bookmark-custom"] .setting-item-row {
@@ -12443,7 +12713,6 @@ body.sidebar-light
   .setting-hint {
   color: rgba(0, 0, 0, 0.68) !important;
 }
-
 
 /* Keep sidebar toggle switches visually centered in rows with long or stacked labels. */
 .settings-sidebar .setting-item-row {
@@ -13176,8 +13445,12 @@ body.sidebar-light .weather-api-connection-state {
 }
 
 @keyframes fontSyncSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 /* Progressive Disclosure & Advanced Collapsible Groups */
 .setting-group-collapsible {
@@ -13214,7 +13487,10 @@ body.sidebar-light .weather-api-connection-state {
   user-select: none;
   background: transparent !important;
   border-bottom: 1px solid rgba(var(--accent-color-rgb, 129, 140, 248), 0.2) !important;
-  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .setting-group-title:hover {
@@ -13231,10 +13507,14 @@ body.sidebar-light .weather-api-connection-state {
   font-size: 0.78rem;
   color: var(--accent-color);
   opacity: 0.8;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.2s;
 }
 
-.setting-group-collapsible:not(.is-collapsed) .setting-group-title i.toggle-icon {
+.setting-group-collapsible:not(.is-collapsed)
+  .setting-group-title
+  i.toggle-icon {
   color: var(--accent-color) !important;
   filter: none !important;
 }
@@ -13249,10 +13529,11 @@ body.sidebar-light .weather-api-connection-state {
   max-height: 2500px;
   opacity: 1;
   transform: translateY(0);
-  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.25s ease,
-              padding 0.3s ease,
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease,
+    padding 0.3s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .setting-group-collapsible.is-collapsed .setting-group-content {
@@ -13303,7 +13584,9 @@ body.sidebar-light .weather-api-connection-state {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  transition:
+    max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
 }
 
 .settings-advanced-panel.is-open {
@@ -13327,12 +13610,20 @@ body.sidebar-light .setting-group-collapsible:not(.is-collapsed) {
 body.sidebar-light .setting-group-title {
   color: var(--accent-color) !important;
   background: transparent !important;
-  border-bottom-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
+  border-bottom-color: rgba(
+    var(--accent-color-rgb, 99, 102, 241),
+    0.2
+  ) !important;
 }
 
-body.sidebar-light .setting-group-collapsible:not(.is-collapsed) .setting-group-title {
+body.sidebar-light
+  .setting-group-collapsible:not(.is-collapsed)
+  .setting-group-title {
   color: var(--accent-color) !important;
-  border-bottom-color: rgba(var(--accent-color-rgb, 99, 102, 241), 0.2) !important;
+  border-bottom-color: rgba(
+    var(--accent-color-rgb, 99, 102, 241),
+    0.2
+  ) !important;
 }
 
 body.sidebar-light .setting-group-title:hover {
@@ -13368,7 +13659,11 @@ body.sidebar-light .settings-advanced-toggle-btn {
   align-items: center;
   gap: 14px;
   padding: 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -13404,7 +13699,11 @@ body.sidebar-light .settings-advanced-toggle-btn {
 .about-hero-glow {
   position: absolute;
   inset: -4px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.35) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   filter: blur(8px);
   z-index: 1;
@@ -13571,7 +13870,9 @@ body.sidebar-light .settings-advanced-toggle-btn {
 .about-btn-arrow {
   font-size: 0.75rem;
   opacity: 0.45;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .about-action-btn:hover .about-btn-arrow {
@@ -14052,7 +14353,9 @@ body.sidebar-light .about-footer {
   color: var(--text-color);
   font-size: 0.85rem;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .settings-page-title-input:focus {
@@ -14091,7 +14394,9 @@ body.sidebar-light .about-footer {
   font-weight: 600;
   letter-spacing: 0.5px;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .settings-tab-icon-input:focus {
@@ -14332,7 +14637,6 @@ body.sidebar-light .about-footer {
   align-items: center;
   margin-bottom: 0.5rem;
 }
-
 
 .custom-font-input {
   padding: 0.5rem;
@@ -14670,9 +14974,12 @@ body.sidebar-light .sync-guide-note {
 body .setting-target-spotlight-active,
 body[class] .setting-target-spotlight-active,
 body[class] [id].setting-target-spotlight-active,
-body.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-active,
-body.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-active,
-body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-active {
+body.bookmark-group-container-bg-hidden
+  #bookmark-groups-container.setting-target-spotlight-active,
+body.bookmark-group-border-hidden
+  #bookmark-groups-container.setting-target-spotlight-active,
+body.bookmark-layout-bg-hidden
+  #bookmarks-container.setting-target-spotlight-active {
   /* Dynamic double-ring border effect conforming to ANY border-radius */
   box-shadow:
     0 0 0 2px var(--accent-color, #4a80f0),
@@ -14689,9 +14996,12 @@ body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-act
 body .setting-target-spotlight-fadeout,
 body[class] .setting-target-spotlight-fadeout,
 body[class] [id].setting-target-spotlight-fadeout,
-body.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
-body.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
-body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-fadeout {
+body.bookmark-group-container-bg-hidden
+  #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.bookmark-group-border-hidden
+  #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.bookmark-layout-bg-hidden
+  #bookmarks-container.setting-target-spotlight-fadeout {
   box-shadow:
     0 0 0 0 var(--accent-color, transparent),
     0 0 0 0 transparent,
@@ -14705,9 +15015,12 @@ body.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-fad
 body.sidebar-light .setting-target-spotlight-active,
 body.sidebar-light [id].setting-target-spotlight-active,
 body.sidebar-light[class] [id].setting-target-spotlight-active,
-body.sidebar-light.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-active,
-body.sidebar-light.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-active,
-body.sidebar-light.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-active {
+body.sidebar-light.bookmark-group-container-bg-hidden
+  #bookmark-groups-container.setting-target-spotlight-active,
+body.sidebar-light.bookmark-group-border-hidden
+  #bookmark-groups-container.setting-target-spotlight-active,
+body.sidebar-light.bookmark-layout-bg-hidden
+  #bookmarks-container.setting-target-spotlight-active {
   box-shadow:
     0 0 0 2px var(--accent-color, #1a73e8),
     0 0 0 5px rgba(var(--accent-color-rgb, 26, 115, 232), 0.22),
@@ -14720,9 +15033,12 @@ body.sidebar-light.bookmark-layout-bg-hidden #bookmarks-container.setting-target
 body.sidebar-light .setting-target-spotlight-fadeout,
 body.sidebar-light [id].setting-target-spotlight-fadeout,
 body.sidebar-light[class] [id].setting-target-spotlight-fadeout,
-body.sidebar-light.bookmark-group-container-bg-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
-body.sidebar-light.bookmark-group-border-hidden #bookmark-groups-container.setting-target-spotlight-fadeout,
-body.sidebar-light.bookmark-layout-bg-hidden #bookmarks-container.setting-target-spotlight-fadeout {
+body.sidebar-light.bookmark-group-container-bg-hidden
+  #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.sidebar-light.bookmark-group-border-hidden
+  #bookmark-groups-container.setting-target-spotlight-fadeout,
+body.sidebar-light.bookmark-layout-bg-hidden
+  #bookmarks-container.setting-target-spotlight-fadeout {
   box-shadow:
     0 0 0 0 transparent,
     0 0 0 0 transparent,
@@ -14780,7 +15096,6 @@ body.sidebar-light .setting-hint-example {
   color: #64748b;
 }
 
-
 /* ==========================================================================
    Gradient & Multi-Color Modern UI Redesign
    ========================================================================== */
@@ -14813,7 +15128,9 @@ body.sidebar-light .setting-hint-example {
   background: transparent;
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: background-color 0.08s ease, color 0.08s ease;
+  transition:
+    background-color 0.08s ease,
+    color 0.08s ease;
   white-space: normal;
   text-align: center;
   line-height: 1.2;
@@ -14977,7 +15294,8 @@ body.sidebar-light .setting-hint-example {
 }
 
 /* Universal iOS Toggle Switch for GMC */
-.settings-section[data-section-id="gradient-multi-color"] input[type="checkbox"] {
+.settings-section[data-section-id="gradient-multi-color"]
+  input[type="checkbox"] {
   appearance: none !important;
   -webkit-appearance: none !important;
   width: 44px !important;
@@ -14989,26 +15307,30 @@ body.sidebar-light .setting-hint-example {
   border-radius: 8px !important;
   position: relative !important;
   cursor: pointer !important;
-  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition:
+    background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   margin: 0 !important;
   flex-shrink: 0 !important;
   align-self: center !important;
   outline: none !important;
 }
 
-.settings-section[data-section-id="gradient-multi-color"] input[type="checkbox"]:hover {
+.settings-section[data-section-id="gradient-multi-color"]
+  input[type="checkbox"]:hover {
   background-color: rgba(255, 255, 255, 0.2) !important;
   border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
-.settings-section[data-section-id="gradient-multi-color"] input[type="checkbox"]:checked {
+.settings-section[data-section-id="gradient-multi-color"]
+  input[type="checkbox"]:checked {
   background-color: var(--accent-color, #4a80f0) !important;
   border-color: var(--accent-color, #4a80f0) !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
 }
 
-.settings-section[data-section-id="gradient-multi-color"] input[type="checkbox"]::before {
+.settings-section[data-section-id="gradient-multi-color"]
+  input[type="checkbox"]::before {
   content: "" !important;
   position: absolute !important;
   width: 18px !important;
@@ -15018,12 +15340,15 @@ body.sidebar-light .setting-hint-example {
   left: 2px !important;
   transform: translateY(-50%) !important;
   background-color: #ffffff !important;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease !important;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.25s ease !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35) !important;
   z-index: 2 !important;
 }
 
-.settings-section[data-section-id="gradient-multi-color"] input[type="checkbox"]:checked::before {
+.settings-section[data-section-id="gradient-multi-color"]
+  input[type="checkbox"]:checked::before {
   left: 2px !important;
   transform: translate(20px, -50%) !important;
   background-color: var(--accent-contrast-color, #ffffff) !important;
@@ -15553,10 +15878,3 @@ body.sidebar-light .gmc-toggle-row {
   background: rgba(0, 0, 0, 0.02);
   border-color: rgba(0, 0, 0, 0.06);
 }
-
-
-
-
-
-
-
