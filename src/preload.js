@@ -18,7 +18,7 @@
       rss: s.showRss === true || s.qaShowRss === true,
       ambient: s.qaShowAmbient === true,
       ai: s.qaShowAiAssistant === true,
-      whiteaccess: s.showQuickAccessBg === true,
+      lighttheme: s.settingsCardBgMode === "light",
     }
     document.querySelectorAll('link[data-defer-css]').forEach((link) => {
       const kind = link.getAttribute("data-defer-css")
