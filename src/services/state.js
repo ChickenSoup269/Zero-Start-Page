@@ -366,6 +366,8 @@ export const resetComponentPositions = (options = {}) => {
         "sidebarLabelFontWeight",
         "sidebarNavFontWeight",
         "sidebarValueFontWeight",
+        "settingsCardBgMode",
+        "settingsCardTitleAccent",
       ]
       styleKeys.forEach((key) => {
         if (defaultSettings[key] !== undefined) {

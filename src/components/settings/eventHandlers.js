@@ -3030,6 +3030,24 @@ export function setupGeneralEventHandlers(
       })
     })
 
+    // Sidebar background mode select + accent-tinted titles toggle
+    if (DOM.settingsCardBgModeSelect) {
+      DOM.settingsCardBgModeSelect.addEventListener("change", () => {
+        handleSettingUpdate(
+          "settingsCardBgMode",
+          DOM.settingsCardBgModeSelect.value,
+        )
+      })
+    }
+    if (DOM.settingsTitleAccentToggle) {
+      DOM.settingsTitleAccentToggle.addEventListener("change", () => {
+        handleSettingUpdate(
+          "settingsCardTitleAccent",
+          DOM.settingsTitleAccentToggle.checked,
+        )
+      })
+    }
+
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
       if (DOM.bookmarkIconSizeValue)
         DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`

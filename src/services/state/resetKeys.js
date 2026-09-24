@@ -269,6 +269,8 @@ export const MODULE_RESET_KEYS = {
     "sidebarLabelFontWeight",
     "sidebarNavFontWeight",
     "sidebarValueFontWeight",
+    "settingsCardBgMode",
+    "settingsCardTitleAccent",
   ],
   bookmarks: [
     "showBookmarks",

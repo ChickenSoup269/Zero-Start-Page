@@ -1,17 +1,18 @@
 <div class="settings-section" data-section-id="themes" data-settings-tab="appearance">
     <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
     <div class="section-content">
-        <!-- Styles Subsection -->
-        <div class="settings-subsection-title" style="display: flex; justify-content: space-between; align-items: center;">
-            <span data-i18n="style_presets_title">Style Presets</span>
-            <button id="save-current-style-btn" class="secondary-btn style-save-btn" style="padding: 4px 10px; font-size: 0.75rem; height: 26px; border-radius: 6px;">
-                <i class="fa-solid fa-bookmark" style="font-size: 0.7rem;"></i> <span data-i18n="save_current_style">Save Custom Style</span>
-            </button>
-        </div>
-        <hr class="subsection-divider" style="margin-top: 4px; margin-bottom: 8px;">
-
-        <div class="setting-group style-preset-panel">
-            <p class="setting-hint" data-i18n="style_presets_hint" style="margin-top: 0; margin-bottom: 8px;">
+        <!-- Card 1: Style Presets -->
+        <div class="settings-card style-preset-card">
+            <div class="settings-card-header">
+                <span class="settings-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                <span class="settings-card-title" data-i18n="style_presets_title">Style Presets</span>
+                <span class="settings-card-actions">
+                    <button id="save-current-style-btn" class="secondary-btn style-save-btn" style="padding: 4px 10px; font-size: 0.75rem; height: 26px; border-radius: 6px;">
+                        <i class="fa-solid fa-bookmark" style="font-size: 0.7rem;"></i> <span data-i18n="save_current_style">Save Custom Style</span>
+                    </button>
+                </span>
+            </div>
+            <p class="settings-card-hint" data-i18n="style_presets_hint">
                 One-click bundles for bookmark and music player styling.
             </p>
             <div class="style-preset-grid">
@@ -83,23 +84,24 @@
             </div>
         </div>
 
-        <!-- Themes Subsection -->
-        <div class="settings-subsection-title" style="margin-top: 15px;">
-            <span data-i18n="settings_themes">Themes</span>
-            <hr class="subsection-divider">
-        </div>
-        <div class="theme-actions-grid">
-            <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
-                <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
-                    data-i18n="save_current_theme">Create Theme</span>
-            </button>
-            <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
-                rel="noopener noreferrer">
-                <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
-            </a>
-        </div>
+        <!-- Card 2: Themes -->
+        <div class="settings-card themes-card">
+            <div class="settings-card-header">
+                <span class="settings-card-icon"><i class="fa-solid fa-palette"></i></span>
+                <span class="settings-card-title" data-i18n="settings_themes">Themes</span>
+                <span class="settings-card-actions">
+                    <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
+                            data-i18n="save_current_theme">Create Theme</span>
+                    </button>
+                    <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
+                        rel="noopener noreferrer">
+                        <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
+                    </a>
+                </span>
+            </div>
 
-        <!-- Collapsible Theme Application Scope Accordion -->
+            <!-- Collapsible Theme Application Scope Accordion -->
         <details class="theme-scope-accordion" id="theme-scope-accordion">
             <summary class="theme-scope-summary">
                 <div class="theme-scope-summary-left">
@@ -472,5 +474,6 @@
             <i class="fa-solid fa-chevron-down"></i>
             <span id="themes-show-all-text" data-i18n="themes_show_all">Show all</span>
         </button>
+        </div>
     </div>
 </div>

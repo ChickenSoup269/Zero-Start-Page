@@ -220,6 +220,9 @@ export const defaultSettings = {
   sidebarLabelFontWeight: 400,
   sidebarNavFontWeight: 500,
   sidebarValueFontWeight: 500,
+
+  settingsCardBgMode: "glass",
+  settingsCardTitleAccent: false,
   bookmarkGroupBorderRadius: 8,
   bookmarkGroupShowCount: true,
   bookmarkGroupUseAccent: false,

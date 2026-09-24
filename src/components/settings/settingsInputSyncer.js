@@ -1125,6 +1125,16 @@ export function createUpdateSettingsInputs(effectInstances) {
         })
     })
 
+    // Sidebar background mode select + accent-tinted titles toggle
+    if (DOM.settingsCardBgModeSelect) {
+      DOM.settingsCardBgModeSelect.value =
+        settings.settingsCardBgMode || "glass"
+    }
+    if (DOM.settingsTitleAccentToggle) {
+      DOM.settingsTitleAccentToggle.checked =
+        settings.settingsCardTitleAccent === true
+    }
+
     // Custom Bookmark Inputs
     if (DOM.bookmarkFontSizeInput) {
       if (DOM.bookmarkFontSizeInput)

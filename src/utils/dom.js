@@ -1540,6 +1540,12 @@ export let sidebarNavWeightSelect = document.getElementById(
 export let sidebarValueWeightSelect = document.getElementById(
   "sidebar-value-weight-select",
 )
+export let settingsCardBgModeSelect = document.getElementById(
+  "settings-card-bg-mode-select",
+)
+export let settingsTitleAccentToggle = document.getElementById(
+  "settings-title-accent-toggle",
+)
 export let bookmarkIconSizeInput = document.getElementById(
   "bookmark-icon-size-input",
 )
@@ -3740,6 +3746,12 @@ export function refreshDOMReferences() {
   sidebarNavWeightSelect = document.getElementById("sidebar-nav-weight-select")
   sidebarValueWeightSelect = document.getElementById(
     "sidebar-value-weight-select",
+  )
+  settingsCardBgModeSelect = document.getElementById(
+    "settings-card-bg-mode-select",
+  )
+  settingsTitleAccentToggle = document.getElementById(
+    "settings-title-accent-toggle",
   )
   bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
   bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")

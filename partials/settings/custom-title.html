@@ -2,22 +2,26 @@
     <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
             data-i18n="settings_custom_title">Custom Title</span></h3>
     <div class="section-content">
-        <!-- Toggles & Basic Setup -->
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+        <!-- General Card: Toggles & Basic Setup -->
+        <div class="settings-card ct-general-card">
+            <div class="settings-card-header">
+                <span class="settings-card-icon"><i class="fa-solid fa-sliders"></i></span>
+                <span class="settings-card-title" data-i18n="settings_custom_title_general">General</span>
+            </div>
             <div class="setting-item-row">
-                <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title" style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;"><i
+                <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i
                         class="fa-solid fa-eye" style="color: var(--accent-color);"></i> Show Title</label>
                 <input type="checkbox" id="show-custom-title-checkbox">
             </div>
             <div class="setting-item-row">
-                <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title" style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;"><i
+                <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i
                         class="fa-solid fa-arrows-up-down-left-right" style="color: var(--accent-color);"></i> Free Move</label>
                 <input type="checkbox" id="free-move-custom-title-checkbox">
             </div>
         </div>
 
         <!-- Text Input & Font Settings -->
-        <div class="setting-group collapsible-group" id="custom-title-typography-group" style="margin-bottom: 15px;">
+        <div class="setting-group collapsible-group" id="custom-title-typography-group">
             <div class="group-header">
                 <i class="fa-solid fa-pen-nib group-icon"></i>
                 <span data-i18n="settings_custom_title_typography">Text Content & Typography</span>
@@ -28,7 +32,7 @@
             </div>
             <div class="group-body">
                 <!-- Live Preview Box -->
-                <div class="custom-title-live-preview" id="custom-title-live-preview" style="margin-bottom: 14px;">
+                <div class="custom-title-live-preview ct-margin-14" id="custom-title-live-preview">
                     <div class="ct-preview-header">
                         <span class="custom-title-live-preview-tag">
                             <span class="ct-preview-live-dot"></span>
@@ -39,7 +43,7 @@
                     <div id="custom-title-preview-render" style="font-weight: 600; font-size: 1.1rem; line-height: 1.3; text-align: center; padding-top: 4px;"></div>
                 </div>
 
-                <div class="custom-title-presets" style="margin-bottom: 14px;">
+                <div class="custom-title-presets ct-margin-14">
                     <button type="button" class="preset-pill-btn" data-preset-text="{greeting}, User!"><i class="fa-regular fa-sun"></i> Greeting</button>
                     <button type="button" class="preset-pill-btn" data-preset-text="SYSTEM // ONLINE"><i class="fa-solid fa-terminal"></i> Cyberpunk</button>
                     <button type="button" class="preset-pill-btn" data-preset-text="{time} — {date}"><i class="fa-regular fa-clock"></i> Time & Date</button>
@@ -47,7 +51,7 @@
                 </div>
 
                 <!-- Segmented Line Switcher -->
-                <div class="custom-title-line-tabs-nav" id="custom-title-line-tabs" style="margin-bottom: 14px;">
+                <div class="custom-title-line-tabs-nav ct-margin-14" id="custom-title-line-tabs">
                     <button type="button" class="ct-tab-btn active" data-target-line="1">
                         <span>Dòng 1</span>
                         <span class="ct-line-status-dot"></span>
@@ -102,15 +106,15 @@
                             <label for="custom-title-font" class="ct-field-label">
                                 <i class="fa-solid fa-font"></i> <span data-i18n="settings_font">Phông chữ</span>
                             </label>
-                            <select id="custom-title-font" class="settings-select" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem;">
+                            <select id="custom-title-font" class="settings-select ct-inline-select">
                                 <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
                             </select>
                         </div>
 
                         <!-- Sliders with Stepper -->
-                        <div class="ct-control-grid" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        <div class="ct-control-grid">
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-font-size" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-font-size" class="ct-slider-label">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span></span>
                                     <span class="val-badge"><span id="custom-title-fontsize-val">24</span>px</span>
                                 </label>
@@ -121,7 +125,7 @@
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-letter-spacing" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-letter-spacing" class="ct-slider-label">
                                     <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span></span>
                                     <span class="val-badge"><span id="custom-title-letter-spacing-val">0</span>px</span>
                                 </label>
@@ -134,7 +138,7 @@
                         </div>
 
                         <!-- Xoay chữ -->
-                        <div class="ct-field-group" style="margin-top: 10px;">
+                        <div class="ct-field-group ct-field-gap">
                             <label for="custom-title-orientation" class="ct-field-label">
                                 <i class="fa-solid fa-rotate"></i> <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
                             </label>
@@ -180,15 +184,15 @@
                             <label for="custom-title-font-2" class="ct-field-label">
                                 <i class="fa-solid fa-font"></i> <span data-i18n="settings_font">Phông chữ</span>
                             </label>
-                            <select id="custom-title-font-2" class="settings-select" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem;">
+                            <select id="custom-title-font-2" class="settings-select ct-inline-select">
                                 <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
                             </select>
                         </div>
 
                         <!-- Sliders with Stepper -->
-                        <div class="ct-control-grid" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        <div class="ct-control-grid">
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-font-size-2" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-font-size-2" class="ct-slider-label">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span></span>
                                     <span class="val-badge"><span id="custom-title-fontsize-2-val">24</span>px</span>
                                 </label>
@@ -199,7 +203,7 @@
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-letter-spacing-2" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-letter-spacing-2" class="ct-slider-label">
                                     <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span></span>
                                     <span class="val-badge"><span id="custom-title-letter-spacing-2-val">0</span>px</span>
                                 </label>
@@ -212,7 +216,7 @@
                         </div>
 
                         <!-- Xoay chữ -->
-                        <div class="ct-field-group" style="margin-top: 10px;">
+                        <div class="ct-field-group ct-field-gap">
                             <label for="custom-title-orientation-2" class="ct-field-label">
                                 <i class="fa-solid fa-rotate"></i> <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
                             </label>
@@ -261,15 +265,15 @@
                             <label for="custom-title-font-3" class="ct-field-label">
                                 <i class="fa-solid fa-font"></i> <span data-i18n="settings_font">Phông chữ</span>
                             </label>
-                            <select id="custom-title-font-3" class="settings-select" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem;">
+                            <select id="custom-title-font-3" class="settings-select ct-inline-select">
                                 <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
                             </select>
                         </div>
 
                         <!-- Sliders with Stepper -->
-                        <div class="ct-control-grid" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        <div class="ct-control-grid">
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-font-size-3" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-font-size-3" class="ct-slider-label">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span></span>
                                     <span class="val-badge"><span id="custom-title-fontsize-3-val">24</span>px</span>
                                 </label>
@@ -280,7 +284,7 @@
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-letter-spacing-3" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-letter-spacing-3" class="ct-slider-label">
                                     <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span></span>
                                     <span class="val-badge"><span id="custom-title-letter-spacing-3-val">0</span>px</span>
                                 </label>
@@ -293,7 +297,7 @@
                         </div>
 
                         <!-- Xoay chữ -->
-                        <div class="ct-field-group" style="margin-top: 10px;">
+                        <div class="ct-field-group ct-field-gap">
                             <label for="custom-title-orientation-3" class="ct-field-label">
                                 <i class="fa-solid fa-rotate"></i> <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
                             </label>
@@ -341,15 +345,15 @@
                             <label for="custom-title-font-4" class="ct-field-label">
                                 <i class="fa-solid fa-font"></i> <span data-i18n="settings_font">Phông chữ</span>
                             </label>
-                            <select id="custom-title-font-4" class="settings-select" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; font-size: 0.85rem;">
+                            <select id="custom-title-font-4" class="settings-select ct-inline-select">
                                 <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
                             </select>
                         </div>
 
                         <!-- Sliders with Stepper -->
-                        <div class="ct-control-grid" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        <div class="ct-control-grid">
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-font-size-4" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-font-size-4" class="ct-slider-label">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span></span>
                                     <span class="val-badge"><span id="custom-title-fontsize-4-val">24</span>px</span>
                                 </label>
@@ -360,7 +364,7 @@
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-letter-spacing-4" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                <label for="custom-title-letter-spacing-4" class="ct-slider-label">
                                     <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span></span>
                                     <span class="val-badge"><span id="custom-title-letter-spacing-4-val">0</span>px</span>
                                 </label>
@@ -373,7 +377,7 @@
                         </div>
 
                         <!-- Xoay chữ -->
-                        <div class="ct-field-group" style="margin-top: 10px;">
+                        <div class="ct-field-group ct-field-gap">
                             <label for="custom-title-orientation-4" class="ct-field-label">
                                 <i class="fa-solid fa-rotate"></i> <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
                             </label>
@@ -388,7 +392,7 @@
                 <!-- Line Spacing Slider -->
                 <div class="setting-item no-margin-top" style="margin-top: 14px;">
                     <label for="custom-title-line-spacing"
-                        style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                     >
                         <span><i class="fa-solid fa-up-down"></i> <span
                                 data-i18n="settings_custom_title_line_spacing">Khoảng cách giữa các dòng</span></span>
                         <span class="val-badge"><span id="custom-title-line-spacing-val">15</span>px</span>
@@ -528,7 +532,7 @@
 
                         <!-- Shadow Blur -->
                         <div>
-                            <label for="custom-title-shadow-blur" style="display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 6px;">
+                            <label for="custom-title-shadow-blur" class="ct-slider-label ct-slider-label-sm">
                                 <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
                                 <span class="val-badge"><span id="custom-title-shadow-blur-val">0</span>px</span>
                             </label>
@@ -541,7 +545,7 @@
 
                         <!-- Shadow Offset Y -->
                         <div>
-                            <label for="custom-title-shadow-y" style="display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 6px;">
+                            <label for="custom-title-shadow-y" class="ct-slider-label ct-slider-label-sm">
                                 <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
                                 <span class="val-badge"><span id="custom-title-shadow-y-val">0</span>px</span>
                             </label>
@@ -572,7 +576,7 @@
 
                         <!-- Border Thickness -->
                         <div>
-                            <label for="custom-title-border-size" style="display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 6px;">
+                            <label for="custom-title-border-size" class="ct-slider-label ct-slider-label-sm">
                                 <span data-i18n="settings_custom_title_border_size">Thickness</span>
                                 <span class="val-badge"><span id="custom-title-border-size-val">0</span>px</span>
                             </label>
