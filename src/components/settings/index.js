@@ -1062,7 +1062,7 @@ export async function initSettings() {
       saveSettings(true)
     }
 
-    applySettings()
+    scheduleApplySettings()
 
     const shouldUpdateAutoAccent =
       getSettings().m3AutoAccentFromBg === true &&
@@ -1071,6 +1071,19 @@ export async function initSettings() {
     if (shouldUpdateAutoAccent) {
       scheduleAutoAccentUpdate()
     }
+  }
+
+  // Coalesce full applySettings() runs into one per animation frame. Slider /
+  // color-input handlers can fire handleSettingUpdate many times in quick
+  // succession; without this, each call re-runs the entire ~3000-line applier.
+  let applySettingsScheduled = false
+  const scheduleApplySettings = () => {
+    if (applySettingsScheduled) return
+    applySettingsScheduled = true
+    requestAnimationFrame(() => {
+      applySettingsScheduled = false
+      applySettings()
+    })
   }
 
   ctx.handleSettingUpdate = handleSettingUpdate

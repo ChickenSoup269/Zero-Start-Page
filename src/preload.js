@@ -1,4 +1,49 @@
 ;(function () {
+  // ── Deferred stylesheet promotion ─────────────────────────────────────────
+  // Sheets tagged data-defer-css load with media="print" so they never block
+  // first paint. Promote them to media="all" here — synchronously when a boot
+  // setting actually needs them, otherwise as soon as the file finishes
+  // loading (with a hard fallback timer for reliability).
+  try {
+    let rawSettings = null
+    try {
+      rawSettings = JSON.parse(localStorage.getItem("pageSettings") || "null")
+    } catch (e) {
+      rawSettings = null
+    }
+    const s = rawSettings || {}
+    const neededAtBoot = {
+      settings: false, // settings sidebar is always closed at first paint
+      music: s.musicPlayerEnabled === true,
+      rss: s.showRss === true || s.qaShowRss === true,
+      ambient: s.qaShowAmbient === true,
+      ai: s.qaShowAiAssistant === true,
+      whiteaccess: s.showQuickAccessBg === true,
+    }
+    document.querySelectorAll('link[data-defer-css]').forEach((link) => {
+      const kind = link.getAttribute("data-defer-css")
+      if (neededAtBoot[kind]) {
+        link.media = "all"
+        return
+      }
+      const promote = () => {
+        link.media = "all"
+      }
+      if (link.sheet) {
+        promote()
+      } else {
+        link.addEventListener("load", promote, { once: true })
+        link.addEventListener("error", promote, { once: true })
+        setTimeout(promote, 2500)
+      }
+    })
+  } catch (e) {
+    // Never let deferred-CSS handling break the rest of preload
+    document.querySelectorAll('link[data-defer-css]').forEach((link) => {
+      link.media = "all"
+    })
+  }
+
   try {
     const body = document.body
     const shouldShowStartupLoader =
@@ -619,7 +664,7 @@
         }
 
         const formattedFontName = fontName.replace(/\s+/g, "+")
-        const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
+        const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@400;500;600;700&display=swap`
 
         const existingLink = document.querySelector(
           `link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`,
@@ -655,6 +700,10 @@
         ${groupTextColor ? `--bookmark-group-text-color: ${groupTextColor};` : ""}
         --bookmark-group-font-size: ${settings.bookmarkGroupFontSize ?? 14}px;
         --bookmark-group-font-weight: ${settings.bookmarkGroupFontWeight ?? 500};
+        --sidebar-section-weight: ${settings.sidebarSectionFontWeight ?? 600};
+        --sidebar-label-weight: ${settings.sidebarLabelFontWeight ?? 400};
+        --sidebar-nav-weight: ${settings.sidebarNavFontWeight ?? 500};
+        --sidebar-value-weight: ${settings.sidebarValueFontWeight ?? 500};
         --bookmark-group-border-radius: ${settings.bookmarkGroupBorderRadius ?? 8}px;
         --bg-pos-x: ${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%;
         --bg-pos-y: ${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%;

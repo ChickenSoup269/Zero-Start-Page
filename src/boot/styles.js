@@ -46,7 +46,7 @@ export function loadFontOnBoot(fontValue) {
   }
 
   const formattedFontName = fontName.replace(/\s+/g, "+")
-  const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
+  const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@400;500;600;700&display=swap`
 
   const existingLink = document.querySelector(
     `link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`,
@@ -365,6 +365,22 @@ export function applyBasicStyles(settings) {
   root.style.setProperty(
     "--bookmark-group-font-weight",
     String(settings.bookmarkGroupFontWeight ?? 500),
+  )
+  root.style.setProperty(
+    "--sidebar-section-weight",
+    String(settings.sidebarSectionFontWeight ?? 600),
+  )
+  root.style.setProperty(
+    "--sidebar-label-weight",
+    String(settings.sidebarLabelFontWeight ?? 400),
+  )
+  root.style.setProperty(
+    "--sidebar-nav-weight",
+    String(settings.sidebarNavFontWeight ?? 500),
+  )
+  root.style.setProperty(
+    "--sidebar-value-weight",
+    String(settings.sidebarValueFontWeight ?? 500),
   )
 
   // Performance hover mode — reduces all transition durations to 50 ms
