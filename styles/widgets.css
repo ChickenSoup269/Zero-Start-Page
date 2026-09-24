@@ -19836,3 +19836,104 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
 
 
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUICK ACCESS BAR LIGHT (ported from removed white-access-mode.css)
+   Driven by settings key showQuickAccessBg → .side-controls.light-mode +
+   body.quick-access-white. Light bar look is accent-independent.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.side-controls.light-mode #settings-toggle,
+.side-controls.light-mode .quick-access-bar,
+body.quick-access-white #settings-toggle,
+body.quick-access-white .quick-access-bar,
+body.quick-access-light #settings-toggle,
+body.quick-access-light .quick-access-bar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+body.quick-access-white.quick-access-transparent #settings-toggle,
+body.quick-access-white.quick-access-transparent .quick-access-bar,
+body.quick-access-light.quick-access-transparent #settings-toggle,
+body.quick-access-light.quick-access-transparent .quick-access-bar,
+.side-controls.light-mode.quick-access-transparent #settings-toggle,
+.side-controls.light-mode.quick-access-transparent .quick-access-bar {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.side-controls.light-mode .quick-btn,
+.side-controls.light-mode #settings-toggle,
+.side-controls.light-mode .collapse-btn i,
+body.quick-access-white #settings-toggle,
+body.quick-access-white .quick-access-bar .quick-btn,
+body.quick-access-white #settings-toggle i,
+body.quick-access-white .quick-access-bar .quick-btn i,
+body.quick-access-white .quick-access-bar .collapse-btn i,
+.side-controls.light-mode .quick-btn i,
+.side-controls.light-mode #settings-toggle i {
+  color: #0f172a !important;
+}
+
+.side-controls.light-mode .quick-btn.active,
+.side-controls.light-mode #settings-toggle.active,
+body.sidebar-open .side-controls.light-mode #settings-toggle,
+body.quick-access-white #settings-toggle.active,
+body.quick-access-white .quick-access-bar .quick-btn.active,
+body.sidebar-open.quick-access-white #settings-toggle {
+  color: #ffffff !important;
+  background: #0f172a !important;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .quick-btn.active {
+  border-radius: var(--quick-access-button-radius, var(--radius-md, 10px));
+}
+
+.side-controls.light-mode #settings-toggle.active,
+body.sidebar-open .side-controls.light-mode #settings-toggle,
+body.quick-access-white #settings-toggle.active,
+body.sidebar-open.quick-access-white #settings-toggle {
+  border-radius: var(--quick-access-toggle-radius, 50%) !important;
+}
+
+.side-controls.light-mode .quick-btn.active i,
+.side-controls.light-mode #settings-toggle.active i,
+body.sidebar-open .side-controls.light-mode #settings-toggle i,
+body.quick-access-white #settings-toggle.active i,
+body.sidebar-open.quick-access-white #settings-toggle i,
+body.quick-access-white .quick-access-bar .quick-btn.active i {
+  color: #ffffff !important;
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active),
+.side-controls.light-mode #settings-toggle:hover:not(.active),
+body.quick-access-white #settings-toggle:hover:not(.active),
+body.quick-access-white .quick-access-bar .quick-btn:hover:not(.active) {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active) i,
+.side-controls.light-mode #settings-toggle:hover:not(.active) i,
+body.quick-access-white #settings-toggle:hover:not(.active) i,
+body.quick-access-white .quick-access-bar .quick-btn:hover:not(.active) i {
+  color: #000000 !important;
+}
+
+.side-controls.light-mode .quick-access-divider,
+body.quick-access-white .quick-access-bar .quick-access-divider {
+  background: rgba(0, 0, 0, 0.14) !important;
+}

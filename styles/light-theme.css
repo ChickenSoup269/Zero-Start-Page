@@ -1,0 +1,694 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME (GitHub Light) — body.scard-bg-light
+   Flat white surfaces, crisp 1px borders, subtle gray hovers, accent focus.
+   Scope: settings sidebar + layout-controls popup. Loaded LAST on purpose so
+   plain rules win ties; !important is only used against skin gradients (LCP).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. Tokens — defined on body so BOTH the sidebar and the (DOM-sibling)
+      layout-controls popup resolve them ───────────────────────────────────── */
+body.scard-bg-light {
+  --lt-canvas: #ffffff;
+  --lt-subtle: #f6f8fa;
+  --lt-border: #d1d9e0;
+  --lt-border-muted: #d8dee4;
+  --lt-fg: #1f2328;
+  --lt-muted: #59636e;
+  --lt-faint: #818b98;
+  --lt-accent-subtle: color-mix(in srgb, var(--accent-color, #0969da) 8%, #ffffff);
+  --lt-shadow: 0 1px 3px rgba(31, 35, 40, 0.08);
+}
+
+body.scard-bg-light .settings-sidebar {
+  --text-color: #1f2328;
+  --input-bg: #ffffff;
+  --input-border: #d1d9e0;
+  --glass-bg: #ffffff;
+  --glass-border: #d1d9e0;
+  --glass-edge: #d8dee4;
+  --sidebar-border: #d1d9e0;
+  --sidebar-shadow: 0 8px 32px rgba(31, 35, 40, 0.12);
+  background: var(--lt-canvas);
+  color: var(--lt-fg);
+}
+
+/* ── 1. Sidebar surface & header ────────────────────────────────────────── */
+body.scard-bg-light .settings-sidebar .sidebar-header {
+  background: var(--lt-canvas);
+  border-bottom: 1px solid var(--lt-border-muted);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-header h2 {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: var(--lt-fg);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .settings-version {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-update-link {
+  color: #9a6700;
+}
+
+/* ── 2. Tab nav (GitHub segmented control) ──────────────────────────────── */
+body.scard-bg-light .settings-sidebar .settings-tab-nav {
+  background: var(--lt-subtle);
+  border: 1px solid var(--lt-border);
+}
+
+body.scard-bg-light .settings-sidebar .settings-tab-btn {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .settings-tab-btn:hover {
+  background: rgba(31, 35, 40, 0.06);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .settings-tab-btn.active {
+  background: var(--lt-canvas);
+  border: 1px solid var(--lt-border);
+  box-shadow: 0 1px 2px rgba(31, 35, 40, 0.1);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .settings-nav-container {
+  background: transparent;
+}
+
+/* ── 3. Cards & groups ──────────────────────────────────────────────────── */
+body.scard-bg-light .settings-sidebar .settings-card,
+body.scard-bg-light .settings-sidebar .setting-group {
+  background: var(--lt-canvas);
+  border-color: var(--lt-border);
+  box-shadow: var(--lt-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.scard-bg-light .settings-sidebar .settings-card-title {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .settings-card-hint {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  box-shadow: var(--lt-shadow);
+}
+
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group.expanded {
+  background: var(--lt-canvas) !important;
+  border-color: var(--accent-color, #0969da) !important;
+  box-shadow: 0 2px 8px rgba(31, 35, 40, 0.1) !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group > .group-header,
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group.expanded > .group-header {
+  color: var(--lt-fg) !important;
+  border-bottom-color: var(--lt-border-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group > .group-header:hover {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group > .group-header i.group-icon,
+body.scard-bg-light .settings-sidebar .setting-group.collapsible-group.expanded > .group-header i.group-icon {
+  color: var(--accent-color, #0969da) !important;
+  background: var(--lt-accent-subtle) !important;
+  border-color: color-mix(in srgb, var(--accent-color, #0969da) 25%, transparent) !important;
+}
+
+/* ── 4. Section toggles, rows, labels ──────────────────────────────────── */
+body.scard-bg-light .settings-sidebar .section-toggle {
+  background: transparent;
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .section-toggle:hover {
+  background: var(--lt-subtle);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .settings-subsection-title {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .section-count {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .section-live-badge {
+  background: var(--lt-accent-subtle) !important;
+  color: var(--accent-color, #0969da) !important;
+  border-color: color-mix(in srgb, var(--accent-color, #0969da) 25%, transparent) !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-item-row {
+  background: transparent;
+  border-color: var(--lt-border-muted);
+}
+
+body.scard-bg-light .settings-sidebar .setting-item-row:hover {
+  background: var(--lt-subtle);
+  border-color: var(--lt-border);
+}
+
+body.scard-bg-light .settings-sidebar .setting-item-row label,
+body.scard-bg-light .settings-sidebar .setting-item-row .setting-label,
+body.scard-bg-light .settings-sidebar .setting-item .setting-label,
+body.scard-bg-light .settings-sidebar .setting-group > .setting-label,
+body.scard-bg-light .settings-sidebar .setting-item label {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .setting-hint {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar hr.subsection-divider,
+body.scard-bg-light .settings-sidebar .subsection-divider {
+  border-color: var(--lt-border-muted);
+}
+
+/* ── 5. Inputs, selects, sliders, checkboxes ───────────────────────────── */
+body.scard-bg-light .settings-sidebar :is(input[type="text"], input[type="search"],
+input[type="number"], input[type="email"], input[type="url"], input[type="password"],
+textarea, select, .settings-select) {
+  background-color: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(select, .settings-select) option {
+  background-color: var(--lt-canvas) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(input[type="text"], input[type="search"],
+input[type="number"], select, .settings-select):hover {
+  border-color: var(--lt-faint) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(input[type="text"], input[type="search"],
+input[type="number"], select, .settings-select):focus {
+  border-color: var(--accent-color, #0969da) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #0969da) 20%, transparent);
+  outline: none;
+}
+
+body.scard-bg-light .settings-sidebar input[type="checkbox"],
+body.scard-bg-light .settings-sidebar input[type="radio"] {
+  accent-color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .settings-sidebar input[type="range"] {
+  accent-color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .settings-sidebar .settings-search-input,
+body.scard-bg-light .settings-sidebar .effect-search-input {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .unsplash-key-input {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+/* ── 6. Card families: themes, presets, chips ──────────────────────────── */
+body.scard-bg-light .settings-sidebar .theme-item,
+body.scard-bg-light .settings-sidebar .style-preset-btn,
+body.scard-bg-light .settings-sidebar .token-chip,
+body.scard-bg-light .settings-sidebar .theme-filter-pill,
+body.scard-bg-light .settings-sidebar .themes-show-all-btn,
+body.scard-bg-light .settings-sidebar .secondary-btn,
+body.scard-bg-light .settings-sidebar .settings-action-btn {
+  background: var(--lt-canvas);
+  border-color: var(--lt-border);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .theme-item:hover,
+body.scard-bg-light .settings-sidebar .style-preset-btn:hover,
+body.scard-bg-light .settings-sidebar .token-chip:hover,
+body.scard-bg-light .settings-sidebar .theme-filter-pill:hover,
+body.scard-bg-light .settings-sidebar .themes-show-all-btn:hover,
+body.scard-bg-light .settings-sidebar .secondary-btn:hover,
+body.scard-bg-light .settings-sidebar .settings-action-btn:hover {
+  background: var(--lt-subtle);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .theme-item.active,
+body.scard-bg-light .settings-sidebar .style-preset-btn.active {
+  background: var(--lt-accent-subtle);
+  border-color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .settings-sidebar .theme-filter-pill.active,
+body.scard-bg-light .settings-sidebar .token-chip.active {
+  background: var(--lt-accent-subtle);
+  border-color: var(--accent-color, #0969da);
+  color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .settings-sidebar .style-preset-btn small,
+body.scard-bg-light .settings-sidebar .theme-name,
+body.scard-bg-light .settings-sidebar .setting-hint {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .theme-scope-chip .chip-label {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .theme-scope-accordion,
+body.scard-bg-light .settings-sidebar .theme-scope-summary {
+  color: var(--lt-fg);
+}
+
+/* ── 7. Badges & value chips ────────────────────────────────────────────── */
+body.scard-bg-light .settings-sidebar .val-badge,
+body.scard-bg-light .settings-sidebar .bg-slider-value {
+  color: var(--accent-color, #0969da);
+  background: var(--lt-subtle);
+}
+
+body.scard-bg-light .settings-sidebar .pt-field-label {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .pt-field-hint,
+body.scard-bg-light .settings-sidebar .pt-sublabel {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .settings-sidebar .ct-field-label,
+body.scard-bg-light .settings-sidebar .ct-preview-hint {
+  color: var(--lt-muted);
+}
+
+/* ── 8. Layout Controls Popup (needs !important: skin gradients in
+      widgets.css force dark with !important) ────────────────────────────── */
+body.scard-bg-light .layout-controls-popup,
+body.scard-bg-light .layout-controls-popup.quick-access-popup {
+  --text-color: #1f2328;
+  background: var(--lt-canvas) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: 0 12px 32px rgba(31, 35, 40, 0.16) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-title,
+body.scard-bg-light .layout-controls-popup.quick-access-popup .lcp-title {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border-muted) !important;
+  color: var(--lt-fg) !important;
+  opacity: 1 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-header-sticky {
+  background: var(--lt-canvas) !important;
+  border-bottom: 1px solid var(--lt-border-muted) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tabs {
+  background: var(--lt-subtle) !important;
+  border: 1px solid var(--lt-border) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab:hover {
+  background: rgba(31, 35, 40, 0.06) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab.active {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+  box-shadow: 0 1px 2px rgba(31, 35, 40, 0.1) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab.active i,
+body.scard-bg-light .layout-controls-popup .lcp-tab.active span {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-row:hover {
+  background: var(--lt-subtle) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-label {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-icon {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-select,
+body.scard-bg-light .layout-controls-popup select {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider {
+  background: var(--lt-border) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-switch input:checked + .lcp-slider {
+  background: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-switch input:checked + .lcp-slider::before {
+  background: #ffffff !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider::before {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(31, 35, 40, 0.25) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip:hover {
+  background: var(--lt-subtle) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip.active {
+  background: var(--lt-accent-subtle) !important;
+  border-color: var(--accent-color, #0969da) !important;
+  color: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip.active * {
+  color: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-selected-badge {
+  color: var(--accent-color, #0969da) !important;
+  background: var(--lt-accent-subtle) !important;
+  border-color: color-mix(in srgb, var(--accent-color, #0969da) 30%, transparent) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn {
+  background: var(--lt-canvas);
+  border-color: var(--lt-border);
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn:hover {
+  background: var(--lt-subtle);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn.active {
+  background: var(--lt-accent-subtle) !important;
+  border-color: var(--accent-color, #0969da) !important;
+  color: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn.active * {
+  color: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider-row input[type="range"] {
+  accent-color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider-row .range-val {
+  color: var(--accent-color, #0969da);
+  background: var(--lt-subtle);
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-group-header .lcp-label,
+body.scard-bg-light .layout-controls-popup .lcp-group-title .lcp-label {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-group-chevron {
+  color: var(--lt-muted);
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-divider-line {
+  border-color: var(--lt-border-muted);
+}
+
+body.scard-bg-light .layout-controls-popup .quick-access-section-row,
+body.scard-bg-light .layout-controls-popup .quick-access-border-row {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border) !important;
+}
+
+body.scard-bg-light .layout-controls-popup ::-webkit-scrollbar-thumb {
+  background: var(--lt-border);
+}
+
+/* ── 9. Scrollbar ───────────────────────────────────────────────────────── */
+body.scard-bg-light .settings-sidebar ::-webkit-scrollbar-thumb {
+  background: var(--lt-border);
+}
+
+body.scard-bg-light .settings-sidebar ::-webkit-scrollbar-thumb:hover {
+  background: var(--lt-faint);
+}
+
+/* ── 10. Contrast sweep: pt-* card, sidebar footer, badges ─────────────── */
+body.scard-bg-light .settings-sidebar .pt-counter-badge,
+body.scard-bg-light .settings-sidebar .pt-counter-limit {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .pt-length-warning {
+  background: #fff8eb !important;
+  border-color: rgba(154, 103, 0, 0.25) !important;
+  color: #92610a !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-tokens-toggle-btn,
+body.scard-bg-light .settings-sidebar .pt-tokens-toggle-left {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-fav-preset,
+body.scard-bg-light .settings-sidebar .pt-preset-pill,
+body.scard-bg-light .settings-sidebar .pt-action-square-btn {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-fav-preset:hover,
+body.scard-bg-light .settings-sidebar .pt-preset-pill:hover {
+  background: var(--lt-subtle) !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-color-item label,
+body.scard-bg-light .settings-sidebar .pt-checkbox-item label,
+body.scard-bg-light .settings-sidebar .pt-reset-default-btn,
+body.scard-bg-light .settings-sidebar .pt-favicon-presets-row .pt-sublabel {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-reset-default-btn:hover {
+  color: var(--accent-color, #0969da) !important;
+}
+
+body.scard-bg-light .settings-sidebar .section-live-badge {
+  color: var(--lt-fg) !important;
+}
+
+/* Sidebar footer: Export / Import + Reset rows + copyright */
+body.scard-bg-light .settings-sidebar .sidebar-footer {
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn {
+  background: var(--lt-canvas);
+  border-color: var(--lt-border);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn:hover {
+  background: var(--lt-subtle);
+  color: var(--lt-fg);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn.reset-btn {
+  color: #cf222e;
+  border-color: rgba(207, 34, 46, 0.35);
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn.reset-btn:hover {
+  background: rgba(207, 34, 46, 0.06);
+  color: #a40e26;
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-copyright,
+body.scard-bg-light .settings-sidebar .sidebar-footer-export-label,
+body.scard-bg-light .settings-sidebar .sidebar-footer-hint {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-footer-toggle-circle {
+  background: var(--lt-subtle);
+  color: var(--lt-muted);
+}
+
+/* Generic safety net: unlabeled spans/labels in card sections inherit dark */
+body.scard-bg-light .settings-sidebar .pt-section :is(span, label, small, button, div:not([class])),
+body.scard-bg-light .settings-sidebar .setting-group :is(span:not([class]), label:not([class]), small:not([class])) {
+  color: inherit;
+}
+
+/* ── 11. Accent text on white must darken (GitHub style) ─────────────────
+   A light accent (e.g. cream/yellow) is unreadable as text on white.
+   Text/icons that are pure accent get a 60/40 accent→dark mix; backgrounds
+   keep the soft accent tint. ────────────────────────────────────────────── */
+body.scard-bg-light {
+  --lt-accent-text: color-mix(in srgb, var(--accent-color, #0969da) 58%, #1f2328);
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .section-toggle i,
+  .settings-card-icon,
+  .setting-group > .setting-label i,
+  .group-header i.group-icon,
+  .section-toggle:hover::after,
+  .bg-slider-value,
+  .val-badge,
+  .font-hero-title,
+  .font-preview-badge,
+  .font-preview-name,
+  .font-item.active .font-item-name,
+  .font-target-btn.active,
+  .font-sync-btn,
+  .section-live-badge,
+  .setting-label i
+) {
+  color: var(--lt-accent-text, #1f2328);
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .preview-mode-btn,
+  .preview-mode-btn.active,
+  .font-filter-chip,
+  .font-filter-chip.active,
+  .font-suggest-chip,
+  .custom-font-load-btn,
+  .custom-font-save-btn
+) {
+  background: var(--lt-subtle);
+  border-color: var(--lt-border);
+  color: var(--lt-accent-text, #1f2328);
+}
+
+body.scard-bg-light .settings-sidebar .preview-mode-btn:hover,
+body.scard-bg-light .settings-sidebar .font-filter-chip:hover,
+body.scard-bg-light .settings-sidebar .font-suggest-chip:hover {
+  background: #eef1f4;
+  color: var(--lt-fg);
+}
+
+/* Font items: white text/borders → dark; preview boxes get subtle bg */
+body.scard-bg-light .settings-sidebar .font-item {
+  background: var(--lt-canvas);
+  border-color: var(--lt-border);
+  box-shadow: none;
+}
+
+body.scard-bg-light .settings-sidebar .font-item:hover {
+  background: var(--lt-subtle);
+  border-color: var(--lt-border);
+}
+
+body.scard-bg-light .settings-sidebar .font-item.active {
+  background: var(--lt-accent-subtle);
+  border-color: var(--accent-color, #0969da);
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .font-item-name,
+  .font-item-preview,
+  .font-item-preview.clock-preview,
+  .font-preview-sample-text,
+  .font-preview-sample-clock .preview-clock-time,
+  .font-preview-sample-clock .preview-clock-date,
+  .custom-font-preview-label,
+  .custom-font-preview-content,
+  .saved-fonts-list-wrap,
+  .setting-hint a,
+  .font-library-header .setting-label,
+  .font-select-trigger-btn
+) {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .font-item.is-favorite .font-item-name {
+  color: var(--lt-accent-text, #1f2328) !important;
+}
+
+body.scard-bg-light .settings-sidebar .font-preview-box {
+  background: var(--lt-subtle);
+  border-color: var(--lt-border-muted);
+}
+
+body.scard-bg-light .settings-sidebar .font-preview-badge.general {
+  background: var(--lt-accent-subtle);
+  border-color: color-mix(in srgb, var(--accent-color, #0969da) 30%, transparent);
+}
+
+body.scard-bg-light .settings-sidebar .font-preview-badge.clock {
+  background: var(--lt-accent-subtle);
+  border-color: color-mix(in srgb, var(--accent-color, #0969da) 30%, transparent);
+}
+
+/* Warning + colored banners on white */
+body.scard-bg-light .settings-sidebar .pt-length-warning,
+body.scard-bg-light .settings-sidebar .settings-note-warning {
+  color: #92610a !important;
+}
+
+/* ── 12. Placeholders don't inherit color — force dark gray on white ───── */
+body.scard-bg-light .settings-sidebar :is(input, textarea)::placeholder {
+  color: var(--lt-faint, #818b98) !important;
+  opacity: 1;
+}
+
+body.scard-bg-light .settings-sidebar ::-webkit-input-placeholder {
+  color: var(--lt-faint, #818b98) !important;
+}
+
+/* Search input inside nav container (stacking context above cards) */
+body.scard-bg-light .settings-nav-container .settings-search-input {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-nav-container .settings-search-input::placeholder {
+  color: var(--lt-faint, #818b98) !important;
+}

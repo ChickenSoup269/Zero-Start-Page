@@ -254,6 +254,15 @@ function createApplySettings(effectInstances) {
         window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches)
     document.body.classList.toggle("reduce-motion", Boolean(shouldReduceMotion))
 
+    // Settings card background mode (glass = no class) + accent-tinted titles
+    const scardBgMode = settings.settingsCardBgMode || "glass"
+    document.body.classList.toggle("scard-bg-dark", scardBgMode === "dark")
+    document.body.classList.toggle("scard-bg-light", scardBgMode === "light")
+    document.body.classList.toggle(
+      "scard-title-accent",
+      settings.settingsCardTitleAccent === true,
+    )
+
     // Apply Widget Skins
     const widgetSkinsMap = {
       todo: "todo-container",
@@ -2457,27 +2466,13 @@ function createApplySettings(effectInstances) {
     if (settings.accentColor) {
       const accentScheme = applyAccentTokens(settings)
 
-      // Sidebar Dynamic Color & Monochrome Logic
-      const forceLightSidebar = settings.showQuickAccessBg === true
-
-      if (forceLightSidebar) {
-        // Force sidebar color but keep accent color independent
+      // Default sidebar color from theme/settings. Light theming is handled
+      // by body.scard-bg-light + styles/light-theme.css, not by this variable.
+      if (settings.sidebarBg) {
         document.documentElement.style.setProperty(
           "--sidebar-bg",
-          "rgba(240, 240, 245, 0.98)",
+          settings.sidebarBg,
         )
-        document.body.classList.add("sidebar-light")
-      } else {
-        applyAccentTokens(settings)
-
-        // Default sidebar color from theme/settings
-        if (settings.sidebarBg) {
-          document.documentElement.style.setProperty(
-            "--sidebar-bg",
-            settings.sidebarBg,
-          )
-        }
-        document.body.classList.remove("sidebar-light")
       }
 
       // Ensure Unsplash random button icon has contrast

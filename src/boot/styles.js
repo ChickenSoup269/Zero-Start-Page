@@ -215,15 +215,8 @@ export function applyBasicStyles(settings) {
 
   if (settings.accentColor) {
     applyAccentTokens(settings)
-    const forceLightSidebar = settings.showQuickAccessBg === true
-    if (forceLightSidebar) {
-      root.style.setProperty("--sidebar-bg", "rgba(240, 240, 245, 0.98)")
-      document.body.classList.add("sidebar-light")
-    } else {
-      if (settings.sidebarBg)
-        root.style.setProperty("--sidebar-bg", settings.sidebarBg)
-      document.body.classList.remove("sidebar-light")
-    }
+    if (settings.sidebarBg)
+      root.style.setProperty("--sidebar-bg", settings.sidebarBg)
   }
 
   const primaryFont = settings.font || "'Outfit', sans-serif"
@@ -385,6 +378,15 @@ export function applyBasicStyles(settings) {
 
   // Performance hover mode — reduces all transition durations to 50 ms
   document.body.classList.toggle("perf-hover-mode", Boolean(settings.perfHoverMode))
+
+  // Settings card background mode (glass = no class) + accent-tinted titles
+  const cardBgMode = settings.settingsCardBgMode || "glass"
+  document.body.classList.toggle("scard-bg-dark", cardBgMode === "dark")
+  document.body.classList.toggle("scard-bg-light", cardBgMode === "light")
+  document.body.classList.toggle(
+    "scard-title-accent",
+    settings.settingsCardTitleAccent === true,
+  )
 
   // User-toggled or system Reduce Motion
   const reduceMotionSetting = settings.reduceMotion || "system"
