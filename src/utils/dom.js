@@ -1528,6 +1528,18 @@ export let bookmarkFontSizeValue = document.getElementById(
 export let bookmarkFontWeightSelect = document.getElementById(
   "bookmark-font-weight-select",
 )
+export let sidebarSectionWeightSelect = document.getElementById(
+  "sidebar-section-weight-select",
+)
+export let sidebarLabelWeightSelect = document.getElementById(
+  "sidebar-label-weight-select",
+)
+export let sidebarNavWeightSelect = document.getElementById(
+  "sidebar-nav-weight-select",
+)
+export let sidebarValueWeightSelect = document.getElementById(
+  "sidebar-value-weight-select",
+)
 export let bookmarkIconSizeInput = document.getElementById(
   "bookmark-icon-size-input",
 )
@@ -3718,6 +3730,16 @@ export function refreshDOMReferences() {
   bookmarkFontSizeValue = document.getElementById("bookmark-font-size-value")
   bookmarkFontWeightSelect = document.getElementById(
     "bookmark-font-weight-select",
+  )
+  sidebarSectionWeightSelect = document.getElementById(
+    "sidebar-section-weight-select",
+  )
+  sidebarLabelWeightSelect = document.getElementById(
+    "sidebar-label-weight-select",
+  )
+  sidebarNavWeightSelect = document.getElementById("sidebar-nav-weight-select")
+  sidebarValueWeightSelect = document.getElementById(
+    "sidebar-value-weight-select",
   )
   bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
   bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")

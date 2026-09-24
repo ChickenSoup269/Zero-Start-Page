@@ -362,6 +362,10 @@ export const resetComponentPositions = (options = {}) => {
         "bookmarkGroupKeepBgOnInteraction",
         "clockDateStrokeColor",
         "clockDateStrokeWidth",
+        "sidebarSectionFontWeight",
+        "sidebarLabelFontWeight",
+        "sidebarNavFontWeight",
+        "sidebarValueFontWeight",
       ]
       styleKeys.forEach((key) => {
         if (defaultSettings[key] !== undefined) {

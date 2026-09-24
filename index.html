@@ -19,12 +19,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link id="custom-google-font" rel="stylesheet" href="">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="icon/fontawesome/all.min.css">
 
     <!-- Modular Styles -->
+    <!-- Deferred stylesheets load with media="print" (non-render-blocking) and are
+         promoted to media="all" by src/preload.js, either synchronously (when a
+         setting needs them at first paint) or as soon as they finish loading. -->
     <link rel="stylesheet" href="styles/boot-overlay.css">
     <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/animations.css">
@@ -33,13 +36,13 @@
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/widgets.css?v=2" />
     <link rel="stylesheet" href="styles/quotes.css" />
-    <link rel="stylesheet" href="styles/settings.css" />
-    <link rel="stylesheet" href="styles/music-player.css?v=4">
+    <link rel="stylesheet" href="styles/settings.css" media="print" data-defer-css="settings">
+    <link rel="stylesheet" href="styles/music-player.css?v=4" media="print" data-defer-css="music">
     <link rel="stylesheet" href="styles/dialog.css">
-    <link rel="stylesheet" href="styles/rss.css">
-    <link rel="stylesheet" href="styles/ambient-sounds.css">
-    <link rel="stylesheet" href="styles/ai-assistant.css">
-    <link rel="stylesheet" href="styles/white-access-mode.css">
+    <link rel="stylesheet" href="styles/rss.css" media="print" data-defer-css="rss">
+    <link rel="stylesheet" href="styles/ambient-sounds.css" media="print" data-defer-css="ambient">
+    <link rel="stylesheet" href="styles/ai-assistant.css" media="print" data-defer-css="ai">
+    <link rel="stylesheet" href="styles/white-access-mode.css" media="print" data-defer-css="whiteaccess">
 </head>
 
 <body class="loading-state">

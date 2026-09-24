@@ -9,7 +9,7 @@
   margin-bottom: var(--space-2);
   box-sizing: border-box;
   outline: none;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
 }
 
 .settings-subsection-title {
@@ -17,7 +17,7 @@
   align-items: center;
   gap: 12px;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: var(--sidebar-section-weight, 600);
   color: rgba(255, 255, 255, 0.85);
   margin: 14px 0 12px 0;
   text-transform: uppercase;
@@ -192,7 +192,7 @@
   color: #fff;
   opacity: 0;
   transform: scale(0.5);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .effect-item.active .active-indicator {
@@ -215,7 +215,7 @@
   font-size: 0.52rem;
   color: var(--accent-color, #60c8ff);
   opacity: 0.8;
-  transition: all 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
   pointer-events: none;
 }
 
@@ -448,7 +448,7 @@
   background: transparent;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -484,7 +484,7 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .font-select-trigger-btn:hover {
@@ -526,7 +526,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: var(--text-color, #fff) !important;
   outline: none;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .font-search-wrap .font-search-input:focus,
@@ -581,7 +581,7 @@
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -773,7 +773,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   margin-top: 8px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .custom-font-preview-label {
@@ -819,7 +819,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
 }
 
 .font-suggest-chip:hover {
@@ -1001,6 +1001,7 @@ body.sidebar-m3-accent .settings-sidebar {
 .setting-item-row label,
 .setting-item-row .setting-label {
   font-size: 0.95rem;
+  font-weight: var(--sidebar-label-weight, 400);
   color: #eee;
   cursor: pointer;
   flex: 1;
@@ -1031,7 +1032,7 @@ body.sidebar-m3-accent .settings-sidebar {
 
 .sidebar-header h2 {
   font-size: 1.6rem;
-  font-weight: 600;
+  font-weight: var(--sidebar-section-weight, 600);
   margin: 0;
   letter-spacing: 0.5px;
   background: linear-gradient(to right, #fff, var(--accent-color));
@@ -1065,7 +1066,7 @@ body.sidebar-m3-accent .settings-sidebar {
   color: #ffcc00;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   transform: translateY(-4px);
   animation: updatePulse 2s infinite ease-in-out;
   text-decoration: none;
@@ -1564,7 +1565,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 50%;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1605,7 +1606,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   align-items: center;
   justify-content: center;
   font-size: 0.82rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
 }
 
@@ -1702,7 +1703,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   background: rgba(255, 255, 255, 0.05) !important;
   color: var(--text-color, #fff) !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important, filter 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-sizing: border-box !important;
 }
 
@@ -1741,7 +1742,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   padding: 0;
   line-height: 1;
   box-sizing: border-box;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.18s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
 }
 
@@ -1774,7 +1775,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 8px;
   box-sizing: border-box;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @container settings-sidebar (min-width: 520px) {
@@ -1795,7 +1796,7 @@ body.sidebar-light .toc-highlight-glow .toc-item-badge {
   border: 1px solid transparent;
   color: rgba(255, 255, 255, 0.62);
   font-size: 0.74rem;
-  font-weight: 500;
+  font-weight: var(--sidebar-nav-weight, 500);
   cursor: pointer;
   transition:
     background-color 0.08s ease,
@@ -2125,7 +2126,7 @@ body.sidebar-light .preset-pill-btn:hover {
   padding: 12px 14px;
   margin-bottom: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .custom-title-line-panel.active {
@@ -2251,7 +2252,7 @@ body.sidebar-light .preset-pill-btn:hover {
   max-height: 210px;
   box-sizing: border-box;
   overflow: auto;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 #custom-title-preview-render.is-vertical {
@@ -2632,7 +2633,7 @@ body.sidebar-light .settings-search-empty p {
   justify-content: center;
   font-size: 0.72rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-sizing: border-box;
 }
 
@@ -2690,7 +2691,7 @@ body.sidebar-light .settings-search-empty p {
   justify-content: center;
   align-items: center;
   font-size: 0.88rem;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -2832,7 +2833,7 @@ body.sidebar-light .settings-search-empty p {
   padding: var(--space-2) var(--space-3);
   margin: 0;
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: var(--sidebar-section-weight, 600);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2907,7 +2908,7 @@ body.sidebar-light .settings-search-empty p {
   text-overflow: ellipsis;
   pointer-events: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .section-live-badge::before {
@@ -2963,7 +2964,7 @@ body.sidebar-light .section-live-badge {
   margin-bottom: var(--space-2);
   font-size: 0.85rem;
   color: #fff;
-  font-weight: 600;
+  font-weight: var(--sidebar-section-weight, 600);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -3041,7 +3042,7 @@ body.sidebar-light .section-live-badge {
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.85rem;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .setting-group.collapsible-group.expanded > .group-header i.group-icon {
@@ -3064,7 +3065,7 @@ body.sidebar-light .section-live-badge {
   font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.6);
   flex-shrink: 0;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: color 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .setting-group.collapsible-group.expanded > .group-header .group-chevron {
@@ -3317,7 +3318,7 @@ body.sidebar-light .setting-target-badge.target-layout {
   font-size: 0.86rem;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: var(--sidebar-label-weight, 400);
   line-height: 1.35;
 }
 
@@ -3888,7 +3889,7 @@ body.sidebar-light .preset-code-line-value {
   color: var(--text-color, #e0e0e0);
   opacity: 0.75;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4085,7 +4086,7 @@ body.sidebar-light .preset-code-line-value {
   min-width: 120px;
   padding: 0 32px 0 12px !important;
   font-size: 0.84rem !important;
-  font-weight: 500 !important;
+  font-weight: var(--sidebar-value-weight, 500) !important;
   border-radius: 8px !important;
   background-color: rgba(255, 255, 255, 0.07) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -4253,7 +4254,7 @@ body.sidebar-light .btn-group-item.active {
   font-size: 0.95rem;
   line-height: 1.2;
   box-sizing: border-box;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .setting-group input[type="text"]:hover,
@@ -4292,7 +4293,7 @@ body.sidebar-light .btn-group-item.active {
   font-weight: 500;
   line-height: 1.2;
   box-sizing: border-box;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .setting-group select:hover,
@@ -4375,7 +4376,7 @@ body.sidebar-light .btn-group-item.active {
   color: #ffffff;
   font-size: 0.95rem;
   outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
@@ -4409,7 +4410,7 @@ body.sidebar-light .btn-group-item.active {
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -5104,7 +5105,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: var(--text-color);
   font-weight: 600;
   font-size: 0.88rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -5224,7 +5225,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   font-weight: 600;
   font-size: 0.86rem;
   border-radius: 8px;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.22s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), filter 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .language-tools .secondary-btn:hover {
@@ -5400,7 +5401,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(8px);
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.22s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), filter 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .language-ai-links a:hover {
@@ -5458,7 +5459,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: var(--text-color);
   font-size: 0.85rem;
   outline: none;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .language-modal-grid select:focus,
@@ -5483,7 +5484,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   line-height: 1.5;
   outline: none;
   box-sizing: border-box;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .language-json-input:focus {
@@ -5519,7 +5520,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   white-space: nowrap;
   outline: none;
@@ -5693,7 +5694,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   bottom: var(--space-1);
   backdrop-filter: blur(4px);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   opacity: 1;
 }
 
@@ -5729,7 +5730,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   padding: var(--space-0-5) var(--space-2);
   border-radius: var(--radius-lg);
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   white-space: nowrap;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -5978,7 +5979,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  transition: all 0.2s;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s, filter 0.2s;
   z-index: 3;
 }
 
@@ -6031,7 +6032,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   align-items: center;
   justify-content: center;
   z-index: 5;
-  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: color 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   backdrop-filter: blur(4px);
 }
 
@@ -6044,7 +6045,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: var(--accent-contrast-color, white);
   opacity: 0;
   transform: scale(0.5);
-  transition: all 0.2s;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s, filter 0.2s;
 }
 
 .bg-item-checkbox.checked {
@@ -6182,7 +6183,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border: 1px solid transparent;
@@ -6332,7 +6333,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bg-slider-item:hover {
@@ -6408,7 +6409,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   -webkit-appearance: none;
   margin-top: -8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: color 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 4px solid var(--accent-color);
   position: relative;
   z-index: 2;
@@ -6455,7 +6456,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: var(--accent-contrast-color, #1a1a2e) !important;
   border: none !important;
   font-size: 1.2rem !important;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  transition: color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, background-color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, border-color 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, filter 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.3);
 }
@@ -6484,7 +6485,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -6521,7 +6522,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   border: 1.5px dashed rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.7);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: auto;
   min-height: 75px;
   font-weight: 500;
@@ -6531,7 +6532,7 @@ body.sidebar-light .custom-font-save-btn:hover {
 .local-bg-gallery-controls .secondary-btn i {
   font-size: 21px;
   color: rgba(255, 255, 255, 0.4);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0;
 }
 
@@ -6600,7 +6601,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-sm, 6px);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 2;
   letter-spacing: 0.3px;
@@ -6657,7 +6658,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   flex-shrink: 0;
 }
@@ -6868,7 +6869,7 @@ body.sidebar-light .custom-font-save-btn:hover {
   color: rgba(255, 255, 255, 0.75);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
@@ -7061,7 +7062,7 @@ body.sidebar-light .bg-9grid-btn.active {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.72rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bg-mini-action-btn:hover {
@@ -7090,7 +7091,7 @@ body.sidebar-light .bg-9grid-btn.active {
   background: rgba(255, 255, 255, 0.02);
   text-align: center;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 12px;
   overflow: hidden;
 }
@@ -7178,7 +7179,7 @@ body.sidebar-light .bg-9grid-btn.active {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
   user-select: none;
 }
@@ -7213,7 +7214,7 @@ body.sidebar-light .bg-9grid-btn.active {
   color: #fff;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .unsplash-save-btn {
@@ -7231,7 +7232,7 @@ body.sidebar-light .bg-9grid-btn.active {
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
 }
 
 .unsplash-save-btn:hover {
@@ -7540,7 +7541,7 @@ body.sidebar-light .bg-9grid-btn.active {
   border-radius: 8px;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
@@ -7793,7 +7794,7 @@ body.sidebar-light .bg-9grid-btn.active {
   border-radius: var(--radius-md);
   padding: var(--space-3);
   box-shadow: var(--inner-glow, inset 0 1px 1px rgba(255, 255, 255, 0.1));
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
 }
 
 #active-effect-settings-body {
@@ -7813,7 +7814,7 @@ body.sidebar-light .bg-9grid-btn.active {
   background: rgba(255, 255, 255, 0.035);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 #active-effect-settings-body .setting-item:hover {
@@ -7838,7 +7839,7 @@ body.sidebar-light .bg-9grid-btn.active {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(0, 0, 0, 0.3);
   padding: var(--space-0-5);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
 }
 
 #active-effect-settings-body .setting-item input[type="color"]:hover {
@@ -7937,7 +7938,7 @@ body.sidebar-light .bg-9grid-btn.active {
   cursor: pointer;
   flex-shrink: 0;
   margin: 0;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
 }
 
 #active-effect-settings-body
@@ -8303,7 +8304,7 @@ body.sidebar-light .lang-demo-badge {
   border: 1px solid rgba(96, 165, 250, 0.3);
   margin-left: auto;
   line-height: 1.2;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .lang-download-badge:hover {
@@ -8426,7 +8427,7 @@ body.sidebar-light .github-lang-sub {
   background: rgba(255, 255, 255, 0.02);
   margin-bottom: 12px;
   overflow: hidden;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .theme-scope-accordion[open] {
@@ -8537,7 +8538,7 @@ body.sidebar-light .github-lang-sub {
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
 }
 
 .theme-scope-chip .chip-label:hover {
@@ -9108,7 +9109,7 @@ body.sidebar-light .btn-group-item:hover {
   font-size: 10px;
   opacity: 0;
   transform: scale(0.5) rotate(-45deg);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 10;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   pointer-events: none;
@@ -10600,7 +10601,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   color: #fff;
   font-size: 0.9rem;
   outline: none;
-  transition: all 0.3s;
+  transition: color 0.3s, background-color 0.3s, border-color 0.3s, box-shadow 0.3s, opacity 0.3s, transform 0.3s, filter 0.3s;
 }
 
 .unsplash-premium-input:focus {
@@ -10620,7 +10621,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1.1rem;
 }
 
@@ -10644,7 +10645,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  transition: all 0.3s;
+  transition: color 0.3s, background-color 0.3s, border-color 0.3s, box-shadow 0.3s, opacity 0.3s, transform 0.3s, filter 0.3s;
 }
 
 .unsplash-shortcut-btn:hover {
@@ -10702,7 +10703,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  transition: all 0.2s;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s, filter 0.2s;
   padding: var(--space-1);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.02);
@@ -10749,7 +10750,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   padding: var(--space-1) var(--space-2);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
 }
 
@@ -10817,7 +10818,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color, #f1f1f1);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   margin-top: 4px;
   cursor: pointer;
 }
@@ -10949,7 +10950,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.72rem;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -11007,7 +11008,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color, #f1f1f1);
@@ -11777,7 +11778,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   font-size: var(--bookmark-group-font-size, 14px);
   font-weight: var(--bookmark-group-font-weight, 500);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
   max-width: 140px;
 }
 
@@ -11800,7 +11801,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   border: none !important;
   color: var(--bookmark-text-color, #ffffff);
   font-size: var(--bookmark-font-size, 12px);
-  transition: all 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
   min-width: 60px;
 }
 
@@ -11815,7 +11816,7 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   color: var(--accent-color, #a8c0ff);
   background-color: var(--bookmark-bg-color, #ffffff);
   box-shadow: var(--bookmark-box-shadow, 0 3px 8px rgba(0, 0, 0, 0.24));
-  transition: all 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
 }
 
 .bookmark-preview-title {
@@ -11908,7 +11909,7 @@ body.sidebar-light .bookmark-preview-divider {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .pt-reset-default-btn:hover {
@@ -12079,7 +12080,7 @@ body.sidebar-light .bookmark-preview-divider {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color, #ffffff);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
 }
 
 .pt-preset-pill:hover {
@@ -12195,7 +12196,7 @@ body.sidebar-light .bookmark-preview-divider {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color, #ffffff);
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease, transform 0.16s ease, filter 0.16s ease;
 }
 
 .pt-token-group .token-chip:hover {
@@ -12233,7 +12234,7 @@ body.sidebar-light .bookmark-preview-divider {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease, transform 0.16s ease, filter 0.16s ease;
 }
 
 .pt-fav-preset:hover {
@@ -12288,7 +12289,7 @@ body.sidebar-light .bookmark-preview-divider {
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   font-size: 0.85rem;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
 }
 
 .pt-action-square-btn:hover {
@@ -13396,7 +13397,7 @@ body.sidebar-light .weather-api-connection-state {
   color: rgba(255, 255, 255, 0.75);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   display: inline-flex;
   align-items: center;
@@ -13561,7 +13562,7 @@ body.sidebar-light .weather-api-connection-state {
   border: 1px dashed rgba(var(--accent-color-rgb, 100, 150, 255), 0.3);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   user-select: none;
 }
 
@@ -13784,7 +13785,7 @@ body.sidebar-light .settings-advanced-toggle-btn {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: #fff;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-sizing: border-box;
   width: 100%;
 }
@@ -14060,7 +14061,7 @@ details[open] .about-history-arrow {
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 4px;
   color: rgba(255, 255, 255, 0.6);
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
 }
 
 .ver-chip:hover {
@@ -14109,7 +14110,7 @@ details[open] .about-history-arrow {
   border-radius: 10px;
   text-decoration: none;
   color: #fff;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .about-store-btn:hover {
@@ -14421,7 +14422,7 @@ body.sidebar-light .about-footer {
   color: var(--text-color) !important;
   cursor: pointer !important;
   box-sizing: border-box !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important, filter 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .tab-icon-action-btn:hover {
@@ -14572,7 +14573,7 @@ body.sidebar-light .about-footer {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   padding: 0 10px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   cursor: pointer;
 }
 
@@ -14596,7 +14597,7 @@ body.sidebar-light .about-footer {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   padding: 0 10px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   text-decoration: none;
   cursor: pointer;
 }
@@ -14621,7 +14622,7 @@ body.sidebar-light .about-footer {
   font-size: 0.78rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .style-save-btn:hover {
@@ -14665,7 +14666,7 @@ body.sidebar-light .about-footer {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 /* Data Sync Module */
@@ -14772,7 +14773,7 @@ body.sidebar-light .about-footer {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s, filter 0.2s;
   flex-shrink: 0;
 }
 
@@ -14790,7 +14791,7 @@ body.sidebar-light .about-footer {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .sync-guide-summary {
@@ -15062,7 +15063,7 @@ body.sidebar-light.bookmark-layout-bg-hidden
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-color, #ffffff);
   opacity: 0.85;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   user-select: none;
 }
 
@@ -15367,7 +15368,7 @@ body.sidebar-light .setting-hint-example {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .gmc-code-copy-chip:hover {
@@ -15416,7 +15417,7 @@ body.sidebar-light .setting-hint-example {
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
   font-size: 0.74rem;
   text-align: left;
 }
@@ -15524,7 +15525,7 @@ body.sidebar-light .setting-hint-example {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition: color 0.25s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1), opacity 0.25s cubic-bezier(0.2, 0, 0, 1), transform 0.25s cubic-bezier(0.2, 0, 0, 1), filter 0.25s cubic-bezier(0.2, 0, 0, 1);
   flex-shrink: 0;
 }
 
@@ -15593,7 +15594,7 @@ body.sidebar-light .setting-hint-example {
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease, transform 0.16s ease, filter 0.16s ease;
   text-align: center;
 }
 
@@ -15877,4 +15878,10 @@ body.sidebar-light .gmc-angle-chip.active {
 body.sidebar-light .gmc-toggle-row {
   background: rgba(0, 0, 0, 0.02);
   border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Sidebar text font weight customization (settings keys: sidebarSectionFontWeight,
+   sidebarLabelFontWeight, sidebarNavFontWeight, sidebarValueFontWeight) ── */
+.settings-sidebar .setting-hint {
+  font-weight: var(--sidebar-value-weight, 500);
 }

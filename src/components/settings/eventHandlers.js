@@ -762,6 +762,10 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupTextColor",
       "bookmarkGroupAutoTextContrast",
       "bookmarkGroupFontSize",
+      "sidebarSectionFontWeight",
+      "sidebarLabelFontWeight",
+      "sidebarNavFontWeight",
+      "sidebarValueFontWeight",
       "bookmarkGroupBorderRadius",
       "bookmarkGroupUseAccent",
       "bookmarkGroupKeepBgOnInteraction",
@@ -867,6 +871,14 @@ export function setupGeneralEventHandlers(
         rootStyle.setProperty("--bookmark-group-font-size", `${v}px`)
       } else if (k === "bookmarkGroupFontWeight") {
         rootStyle.setProperty("--bookmark-group-font-weight", String(v))
+      } else if (k === "sidebarSectionFontWeight") {
+        rootStyle.setProperty("--sidebar-section-weight", String(v))
+      } else if (k === "sidebarLabelFontWeight") {
+        rootStyle.setProperty("--sidebar-label-weight", String(v))
+      } else if (k === "sidebarNavFontWeight") {
+        rootStyle.setProperty("--sidebar-nav-weight", String(v))
+      } else if (k === "sidebarValueFontWeight") {
+        rootStyle.setProperty("--sidebar-value-weight", String(v))
       } else if (k === "bookmarkGroupBorderRadius") {
         rootStyle.setProperty("--bookmark-group-border-radius", `${v}px`)
       } else if (
@@ -3002,6 +3014,21 @@ export function setupGeneralEventHandlers(
         updateBookmarkLivePreview()
       })
     }
+
+    const sidebarWeightSelects = [
+      ["sidebarSectionWeightSelect", "sidebarSectionFontWeight", "sidebar-section-weight-select", 600],
+      ["sidebarLabelWeightSelect", "sidebarLabelFontWeight", "sidebar-label-weight-select", 400],
+      ["sidebarNavWeightSelect", "sidebarNavFontWeight", "sidebar-nav-weight-select", 500],
+      ["sidebarValueWeightSelect", "sidebarValueFontWeight", "sidebar-value-weight-select", 500],
+    ]
+    sidebarWeightSelects.forEach(([domKey, settingKey, selectId, fallback]) => {
+      const select = DOM[domKey]
+      if (!select) return
+      select.addEventListener("change", () => {
+        handleSettingUpdate(settingKey, Number(select.value))
+        syncPresetButtons(selectId, select.value)
+      })
+    })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
       if (DOM.bookmarkIconSizeValue)

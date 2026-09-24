@@ -194,5 +194,88 @@
             </button>
             <p class="setting-hint" data-i18n="settings_local_fonts_hint" style="margin-top: 6px;">Use fonts installed on your computer (.ttf, .otf, .woff, .woff2)</p>
         </div>
+
+        <!-- Card 5: Sidebar & Interface Text Weight -->
+        <div class="setting-group settings-card">
+            <div class="setting-label">
+                <i class="fa-solid fa-bars-staggered"></i> <span data-i18n="settings_sidebar_text_card">Sidebar &amp; Interface Text</span>
+            </div>
+
+            <div class="setting-item no-margin-top">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
+                    <span><i class="fa-solid fa-heading"></i> <span data-i18n="settings_sidebar_section_weight">Section Titles</span></span>
+                    <select id="sidebar-section-weight-select" class="settings-select"
+                        style="width: 140px; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                        <option value="400" data-i18n="font_weight_normal">Normal (400)</option>
+                        <option value="500" data-i18n="font_weight_medium">Medium (500)</option>
+                        <option value="600" data-i18n="font_weight_semibold" selected>Semi-Bold (600)</option>
+                        <option value="700" data-i18n="font_weight_bold">Bold (700)</option>
+                    </select>
+                </div>
+                <div class="lcp-width-presets" role="group" aria-label="Sidebar section font weight presets">
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-section-weight-select" data-preset-val="400" data-i18n="font_weight_normal">Normal</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-section-weight-select" data-preset-val="500" data-i18n="font_weight_medium">Medium</button>
+                    <button type="button" class="lcp-preset-btn active" data-preset-target="sidebar-section-weight-select" data-preset-val="600" data-i18n="font_weight_semibold">Semi-Bold</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-section-weight-select" data-preset-val="700" data-i18n="font_weight_bold">Bold</button>
+                </div>
+            </div>
+
+            <div class="setting-item no-margin-top">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
+                    <span><i class="fa-solid fa-tag"></i> <span data-i18n="settings_sidebar_label_weight">Option Labels</span></span>
+                    <select id="sidebar-label-weight-select" class="settings-select"
+                        style="width: 140px; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                        <option value="400" data-i18n="font_weight_normal" selected>Normal (400)</option>
+                        <option value="500" data-i18n="font_weight_medium">Medium (500)</option>
+                        <option value="600" data-i18n="font_weight_semibold">Semi-Bold (600)</option>
+                        <option value="700" data-i18n="font_weight_bold">Bold (700)</option>
+                    </select>
+                </div>
+                <div class="lcp-width-presets" role="group" aria-label="Sidebar label font weight presets">
+                    <button type="button" class="lcp-preset-btn active" data-preset-target="sidebar-label-weight-select" data-preset-val="400" data-i18n="font_weight_normal">Normal</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-label-weight-select" data-preset-val="500" data-i18n="font_weight_medium">Medium</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-label-weight-select" data-preset-val="600" data-i18n="font_weight_semibold">Semi-Bold</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-label-weight-select" data-preset-val="700" data-i18n="font_weight_bold">Bold</button>
+                </div>
+            </div>
+
+            <div class="setting-item no-margin-top">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
+                    <span><i class="fa-solid fa-table-columns"></i> <span data-i18n="settings_sidebar_nav_weight">Tab Navigation</span></span>
+                    <select id="sidebar-nav-weight-select" class="settings-select"
+                        style="width: 140px; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                        <option value="400" data-i18n="font_weight_normal">Normal (400)</option>
+                        <option value="500" data-i18n="font_weight_medium" selected>Medium (500)</option>
+                        <option value="600" data-i18n="font_weight_semibold">Semi-Bold (600)</option>
+                        <option value="700" data-i18n="font_weight_bold">Bold (700)</option>
+                    </select>
+                </div>
+                <div class="lcp-width-presets" role="group" aria-label="Sidebar nav font weight presets">
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-nav-weight-select" data-preset-val="400" data-i18n="font_weight_normal">Normal</button>
+                    <button type="button" class="lcp-preset-btn active" data-preset-target="sidebar-nav-weight-select" data-preset-val="500" data-i18n="font_weight_medium">Medium</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-nav-weight-select" data-preset-val="600" data-i18n="font_weight_semibold">Semi-Bold</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-nav-weight-select" data-preset-val="700" data-i18n="font_weight_bold">Bold</button>
+                </div>
+            </div>
+
+            <div class="setting-item no-margin-top">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px;">
+                    <span><i class="fa-solid fa-sliders"></i> <span data-i18n="settings_sidebar_value_weight">Values &amp; Hints</span></span>
+                    <select id="sidebar-value-weight-select" class="settings-select"
+                        style="width: 140px; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                        <option value="400" data-i18n="font_weight_normal">Normal (400)</option>
+                        <option value="500" data-i18n="font_weight_medium" selected>Medium (500)</option>
+                        <option value="600" data-i18n="font_weight_semibold">Semi-Bold (600)</option>
+                        <option value="700" data-i18n="font_weight_bold">Bold (700)</option>
+                    </select>
+                </div>
+                <div class="lcp-width-presets" role="group" aria-label="Sidebar value font weight presets">
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-value-weight-select" data-preset-val="400" data-i18n="font_weight_normal">Normal</button>
+                    <button type="button" class="lcp-preset-btn active" data-preset-target="sidebar-value-weight-select" data-preset-val="500" data-i18n="font_weight_medium">Medium</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-value-weight-select" data-preset-val="600" data-i18n="font_weight_semibold">Semi-Bold</button>
+                    <button type="button" class="lcp-preset-btn" data-preset-target="sidebar-value-weight-select" data-preset-val="700" data-i18n="font_weight_bold">Bold</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

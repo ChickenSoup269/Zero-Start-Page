@@ -265,6 +265,10 @@ export const MODULE_RESET_KEYS = {
     "musicPlayerWaveBgColor",
     "musicPlayerHideBorder",
     "interfaceStylePreset",
+    "sidebarSectionFontWeight",
+    "sidebarLabelFontWeight",
+    "sidebarNavFontWeight",
+    "sidebarValueFontWeight",
   ],
   bookmarks: [
     "showBookmarks",

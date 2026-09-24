@@ -1794,6 +1794,22 @@ function createApplySettings(effectInstances) {
       String(settings.bookmarkGroupFontWeight ?? 500),
     )
     document.documentElement.style.setProperty(
+      "--sidebar-section-weight",
+      String(settings.sidebarSectionFontWeight ?? 600),
+    )
+    document.documentElement.style.setProperty(
+      "--sidebar-label-weight",
+      String(settings.sidebarLabelFontWeight ?? 400),
+    )
+    document.documentElement.style.setProperty(
+      "--sidebar-nav-weight",
+      String(settings.sidebarNavFontWeight ?? 500),
+    )
+    document.documentElement.style.setProperty(
+      "--sidebar-value-weight",
+      String(settings.sidebarValueFontWeight ?? 500),
+    )
+    document.documentElement.style.setProperty(
       "--bookmark-group-border-radius",
       `${settings.bookmarkGroupBorderRadius ?? 8}px`,
     )

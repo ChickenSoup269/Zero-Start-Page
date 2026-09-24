@@ -215,6 +215,11 @@ export const defaultSettings = {
   bookmarkGroupAutoTextContrast: false,
   bookmarkGroupFontSize: 14,
   bookmarkGroupFontWeight: 500,
+
+  sidebarSectionFontWeight: 600,
+  sidebarLabelFontWeight: 400,
+  sidebarNavFontWeight: 500,
+  sidebarValueFontWeight: 500,
   bookmarkGroupBorderRadius: 8,
   bookmarkGroupShowCount: true,
   bookmarkGroupUseAccent: false,

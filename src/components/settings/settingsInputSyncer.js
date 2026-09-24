@@ -1106,6 +1106,25 @@ export function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.dateColorPicker.value = currentDateColor
 
+    // Sidebar text font weight selects
+    const sidebarWeightSync = [
+      ["sidebarSectionWeightSelect", "sidebarSectionFontWeight", "sidebar-section-weight-select", 600],
+      ["sidebarLabelWeightSelect", "sidebarLabelFontWeight", "sidebar-label-weight-select", 400],
+      ["sidebarNavWeightSelect", "sidebarNavFontWeight", "sidebar-nav-weight-select", 500],
+      ["sidebarValueWeightSelect", "sidebarValueFontWeight", "sidebar-value-weight-select", 500],
+    ]
+    sidebarWeightSync.forEach(([domKey, settingKey, selectId, fallback]) => {
+      const select = DOM[domKey]
+      if (!select) return
+      const weightVal = String(settings[settingKey] ?? fallback)
+      select.value = weightVal
+      document
+        .querySelectorAll(`.lcp-preset-btn[data-preset-target="${selectId}"]`)
+        .forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.presetVal === weightVal)
+        })
+    })
+
     // Custom Bookmark Inputs
     if (DOM.bookmarkFontSizeInput) {
       if (DOM.bookmarkFontSizeInput)
