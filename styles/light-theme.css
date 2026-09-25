@@ -467,6 +467,127 @@ body.scard-bg-light .layout-controls-popup ::-webkit-scrollbar-thumb {
   background: var(--lt-border);
 }
 
+/* ── 8b. Layout Controls Popup — high-contrast pass ─────────────────────────
+   Gray card surfaces become black with white text; anything sitting on the
+   white canvas gets near-black text. Keeps the popup readable in light mode. */
+body.scard-bg-light .layout-controls-popup .lcp-title {
+  background: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-title i,
+body.scard-bg-light .layout-controls-popup .lcp-title span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-header-sticky {
+  background: #ffffff !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tabs {
+  background: #111418 !important;
+  border-color: #111418 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab i,
+body.scard-bg-light .layout-controls-popup .lcp-tab span {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab.active {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #111418 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab.active i,
+body.scard-bg-light .layout-controls-popup .lcp-tab.active span {
+  color: #111418 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-row,
+body.scard-bg-light .layout-controls-popup .lcp-row .lcp-label,
+body.scard-bg-light .layout-controls-popup .lcp-label,
+body.scard-bg-light .layout-controls-popup .lcp-group-header .lcp-label,
+body.scard-bg-light .layout-controls-popup .lcp-group-title .lcp-label {
+  color: #111418 !important;
+  opacity: 1 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-row .lcp-icon,
+body.scard-bg-light .layout-controls-popup .lcp-icon {
+  color: #3a4149 !important;
+  opacity: 1 !important;
+}
+
+/* Gray value chips and selects become black surfaces with white text */
+body.scard-bg-light .layout-controls-popup .lcp-select,
+body.scard-bg-light .layout-controls-popup select {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider-row .range-val,
+body.scard-bg-light .layout-controls-popup .range-val {
+  background: #111418 !important;
+  color: #ffffff !important;
+  border: 1px solid #111418 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .quick-access-section-row,
+body.scard-bg-light .layout-controls-popup .quick-access-border-row,
+body.scard-bg-light .layout-controls-popup .quick-access-radius-chip,
+body.scard-bg-light .layout-controls-popup .quick-access-section-current {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .layout-controls-popup .quick-access-section-row .lcp-label,
+body.scard-bg-light .layout-controls-popup .quick-access-section-current .lcp-label,
+body.scard-bg-light .layout-controls-popup .quick-access-radius-chip span,
+body.scard-bg-light .layout-controls-popup .quick-access-section-row i,
+body.scard-bg-light .layout-controls-popup .quick-access-radius-chip i {
+  color: #ffffff !important;
+}
+
+/* Chips that sit on the white canvas stay white with black text */
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip,
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn {
+  background: #ffffff !important;
+  border-color: var(--lt-border) !important;
+  color: #111418 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-btn-chip:hover,
+body.scard-bg-light .layout-controls-popup .lcp-preset-btn:hover {
+  background: var(--lt-subtle) !important;
+  color: #111418 !important;
+}
+
+/* Switches: darker off-track so the state reads clearly on white */
+body.scard-bg-light .layout-controls-popup .lcp-slider {
+  background: #c7cfd8 !important;
+  border: 1px solid #b3bcc6 !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-slider::before {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(31, 35, 40, 0.35) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-divider-line {
+  border-color: #b3bcc6 !important;
+}
+
 /* ── 9. Scrollbar ───────────────────────────────────────────────────────── */
 body.scard-bg-light .settings-sidebar ::-webkit-scrollbar-thumb {
   background: var(--lt-border);
