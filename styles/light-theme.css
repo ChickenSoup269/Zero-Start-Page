@@ -398,18 +398,21 @@ body.scard-bg-light .layout-controls-popup .lcp-btn-chip:hover {
   background: var(--lt-subtle) !important;
 }
 
+/* Selected chips keep the solid-accent treatment (like dark mode) instead of
+   accent-on-tint: pastel accents (e.g. light pink) are unreadable as text on
+   white, but always readable as a background with their contrast color. */
 body.scard-bg-light .layout-controls-popup .lcp-btn-chip.active {
-  background: var(--lt-accent-subtle) !important;
+  background: var(--accent-color, #0969da) !important;
   border-color: var(--accent-color, #0969da) !important;
-  color: var(--accent-color, #0969da) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-btn-chip.active * {
-  color: var(--accent-color, #0969da) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-selected-badge {
-  color: var(--accent-color, #0969da) !important;
+  color: color-mix(in srgb, var(--accent-color, #0969da) 30%, #1f2328) !important;
   background: var(--lt-accent-subtle) !important;
   border-color: color-mix(in srgb, var(--accent-color, #0969da) 30%, transparent) !important;
 }
@@ -426,13 +429,13 @@ body.scard-bg-light .layout-controls-popup .lcp-preset-btn:hover {
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-preset-btn.active {
-  background: var(--lt-accent-subtle) !important;
+  background: var(--accent-color, #0969da) !important;
   border-color: var(--accent-color, #0969da) !important;
-  color: var(--accent-color, #0969da) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-preset-btn.active * {
-  color: var(--accent-color, #0969da) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-slider-row input[type="range"] {
@@ -468,48 +471,55 @@ body.scard-bg-light .layout-controls-popup ::-webkit-scrollbar-thumb {
 }
 
 /* ── 8b. Layout Controls Popup — high-contrast pass ─────────────────────────
-   Gray card surfaces become black with white text; anything sitting on the
-   white canvas gets near-black text. Keeps the popup readable in light mode. */
+   Header is transparent so the popup blends with the user's wallpaper; the
+   title is a rounded frosted pill and only the two tab buttons show. */
 body.scard-bg-light .layout-controls-popup .lcp-title {
-  background: #111418 !important;
-  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-title i,
 body.scard-bg-light .layout-controls-popup .lcp-title span {
-  color: #ffffff !important;
+  color: var(--lt-fg) !important;
   opacity: 1 !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-header-sticky {
-  background: #ffffff !important;
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-tabs {
-  background: #111418 !important;
-  border-color: #111418 !important;
+  background: transparent !important;
+  border: none !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-tab {
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
-  color: rgba(255, 255, 255, 0.78) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-tab i,
 body.scard-bg-light .layout-controls-popup .lcp-tab span {
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .layout-controls-popup .lcp-tab:hover {
+  background: #ffffff !important;
+  color: var(--lt-fg) !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-tab.active {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: #111418 !important;
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-tab.active i,
 body.scard-bg-light .layout-controls-popup .lcp-tab.active span {
-  color: #111418 !important;
+  color: #ffffff !important;
 }
 
 body.scard-bg-light .layout-controls-popup .lcp-row,
@@ -642,30 +652,58 @@ body.scard-bg-light .settings-sidebar .section-live-badge {
   color: var(--lt-fg) !important;
 }
 
-/* Sidebar footer: Export / Import + Reset rows + copyright */
+/* System & Data: monochrome pass — white surfaces with black text; selected
+   cards and action buttons go black with white text (user preference).
+   Accent-tinted badges read as washed-out pink with pastel accents. */
+body.scard-bg-light .settings-sidebar .section-live-badge {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+/* Selected option cards (language, clock style, …) become black-on-white */
+body.scard-bg-light .settings-sidebar .clock-style-card.active,
+body.scard-bg-light .settings-sidebar .compact-style-card.active,
+body.scard-bg-light .settings-sidebar .lang-style-card.active {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(31, 35, 40, 0.35) !important;
+}
+
+body.scard-bg-light .settings-sidebar .clock-style-card.active *,
+body.scard-bg-light .settings-sidebar .compact-style-card.active *,
+body.scard-bg-light .settings-sidebar .lang-style-card.active * {
+  color: #ffffff !important;
+}
+
+/* Sidebar footer: solid white surface instead of the dark scrim over white */
 body.scard-bg-light .settings-sidebar .sidebar-footer {
+  background: var(--lt-canvas) !important;
+  border-top: 1px solid var(--lt-border) !important;
   color: var(--lt-fg);
 }
 
 body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn {
-  background: var(--lt-canvas);
-  border-color: var(--lt-border);
-  color: var(--lt-fg);
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
 }
 
 body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn:hover {
-  background: var(--lt-subtle);
-  color: var(--lt-fg);
+  background: #2b3038 !important;
+  color: #ffffff !important;
 }
 
 body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn.reset-btn {
-  color: #cf222e;
-  border-color: rgba(207, 34, 46, 0.35);
+  background: #ffffff !important;
+  border-color: rgba(207, 34, 46, 0.45) !important;
+  color: #cf222e !important;
 }
 
 body.scard-bg-light .settings-sidebar .sidebar-footer .footer-btn.reset-btn:hover {
-  background: rgba(207, 34, 46, 0.06);
-  color: #a40e26;
+  background: rgba(207, 34, 46, 0.06) !important;
+  color: #a40e26 !important;
 }
 
 body.scard-bg-light .settings-sidebar .sidebar-copyright,
@@ -812,4 +850,597 @@ body.scard-bg-light .settings-nav-container .settings-search-input {
 
 body.scard-bg-light .settings-nav-container .settings-search-input::placeholder {
   color: var(--lt-faint, #818b98) !important;
+}
+
+/* ── 12. Background & FX sub-tabs + misc chrome (computed-style sweep found
+      white-on-white leftovers) ────────────────────────────────────────────── */
+body.scard-bg-light .settings-sidebar .bg-subtab-btn {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-subtab-btn i,
+body.scard-bg-light .settings-sidebar .bg-subtab-btn span {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-subtab-btn:hover {
+  background: var(--lt-subtle) !important;
+}
+
+/* Selected sub-tab: black button with white text (user's monochrome rule) */
+body.scard-bg-light .settings-sidebar .bg-subtab-btn.active {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-subtab-btn.active i,
+body.scard-bg-light .settings-sidebar .bg-subtab-btn.active span {
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .settings-search-icon {
+  color: var(--lt-muted) !important;
+}
+
+/* Option-card labels (language names, clock style names) */
+body.scard-bg-light .settings-sidebar .clock-style-name,
+body.scard-bg-light .settings-sidebar .clock-style-card:not(.active) .clock-style-name {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .clock-style-card.active .clock-style-name,
+body.scard-bg-light .settings-sidebar .clock-style-card.active .clock-style-name * {
+  color: #ffffff !important;
+}
+
+/* Collapsible chevrons / reset icons that stayed white */
+body.scard-bg-light .settings-sidebar .pt-tokens-toggle-chevron,
+body.scard-bg-light .settings-sidebar .theme-scope-chevron {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .no-results-message,
+body.scard-bg-light .settings-sidebar p[style*="center"] {
+  color: var(--lt-muted) !important;
+}
+
+/* ── 13. About Project card (was fully dark-styled: white text on white) ── */
+body.scard-bg-light .settings-sidebar .about-hero-card,
+body.scard-bg-light .settings-sidebar .about-card {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-hero-title,
+body.scard-bg-light .settings-sidebar .about-hero-subtitle,
+body.scard-bg-light .settings-sidebar .about-card-title,
+body.scard-bg-light .settings-sidebar .about-status-time,
+body.scard-bg-light .settings-sidebar .about-platforms-label,
+body.scard-bg-light .settings-sidebar .about-footer {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-hero-subtitle,
+body.scard-bg-light .settings-sidebar .about-card-title,
+body.scard-bg-light .settings-sidebar .about-platforms-label,
+body.scard-bg-light .settings-sidebar .about-footer,
+body.scard-bg-light .settings-sidebar .about-status-time {
+  opacity: 1 !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-card-title i,
+body.scard-bg-light .settings-sidebar .about-platforms-label i,
+body.scard-bg-light .settings-sidebar .about-hero-glow {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-version-badge {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-version-num {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-version-tag,
+body.scard-bg-light .settings-sidebar .ver-chip-latest {
+  background: rgba(9, 105, 218, 0.1) !important;
+  border-color: rgba(9, 105, 218, 0.3) !important;
+  color: #0550ae !important;
+}
+
+/* Action buttons: white surfaces, black text; donate keeps its accent fill */
+body.scard-bg-light .settings-sidebar .about-action-btn,
+body.scard-bg-light .settings-sidebar .about-store-btn {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-action-btn:hover,
+body.scard-bg-light .settings-sidebar .about-store-btn:hover {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-btn-icon-wrap {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-btn-label,
+body.scard-bg-light .settings-sidebar .about-btn-arrow,
+body.scard-bg-light .settings-sidebar .store-btn-text small,
+body.scard-bg-light .settings-sidebar .store-btn-text strong {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .store-btn-text small {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-star-badge {
+  background: rgba(154, 103, 0, 0.12) !important;
+  border-color: rgba(154, 103, 0, 0.35) !important;
+  color: #7d4e00 !important;
+}
+
+/* Status guide: darker readable variants of the status colors */
+body.scard-bg-light .settings-sidebar .badge-active {
+  color: #1a7f37 !important;
+}
+
+body.scard-bg-light .settings-sidebar .badge-maintained {
+  color: #9a6700 !important;
+}
+
+body.scard-bg-light .settings-sidebar .badge-stable {
+  color: #57606a !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-status-item {
+  border-bottom-color: var(--lt-border-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-history-accordion {
+  border-top-color: var(--lt-border-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-history-summary {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-history-summary:hover {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .ver-chip {
+  background: var(--lt-subtle) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .ver-chip:hover {
+  background: #eef1f4 !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .about-footer {
+  border-top-color: var(--lt-border-muted) !important;
+}
+
+/* ── 14. Toggle rows + secondary buttons: gray glass → black w/ white text ─
+      .setting-item-row kept its dark-glass translucency, reading as murky
+      gray with white text on the white canvas (e.g. "Sync with Google
+      Drive"). Per user preference these become solid black buttons. */
+body.scard-bg-light .settings-sidebar .setting-item-row {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-item-row:hover {
+  background: #2b3038 !important;
+  border-color: #2b3038 !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-item-row label,
+body.scard-bg-light .settings-sidebar .setting-item-row .setting-label,
+body.scard-bg-light .settings-sidebar .setting-item-row span,
+body.scard-bg-light .settings-sidebar .setting-item-row i {
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .secondary-btn {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .secondary-btn i,
+body.scard-bg-light .settings-sidebar .secondary-btn span {
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .secondary-btn:hover:not(:disabled) {
+  background: #2b3038 !important;
+  border-color: #2b3038 !important;
+  color: #ffffff !important;
+}
+
+/* ── 15. Custom Bookmark panel + preset chips reused outside the LCP popup ─ */
+/* Sub-section headers ("Colors & Opacity", "Sizes & Spacing", …) */
+body.scard-bg-light .settings-sidebar .setting-sub-header,
+body.scard-bg-light .settings-sidebar .setting-sub-header span {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .setting-sub-header i {
+  color: var(--lt-muted) !important;
+}
+
+/* Bookmark live preview mock: white labels on pale tiles → dark */
+body.scard-bg-light .settings-sidebar .bookmark-preview-tab,
+body.scard-bg-light .settings-sidebar .bookmark-preview-tab span,
+body.scard-bg-light .settings-sidebar .bookmark-preview-tab i,
+body.scard-bg-light .settings-sidebar .bookmark-preview-caption,
+body.scard-bg-light .settings-sidebar .bookmark-preview-empty,
+body.scard-bg-light .settings-sidebar .bookmark-preview-footer,
+body.scard-bg-light .settings-sidebar .bookmark-preview-footer span,
+body.scard-bg-light .settings-sidebar .settings-card-hint {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bookmark-preview-tab .group-tab-icon,
+body.scard-bg-light .settings-sidebar .bookmark-preview-empty i {
+  color: var(--lt-muted) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bookmark-preview-tab-count {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+/* "FOLDER TAB" badge: dark text on the pale accent chip */
+body.scard-bg-light .settings-sidebar .bookmark-preview-badge.badge-folder,
+body.scard-bg-light .settings-sidebar .bookmark-preview-badge.badge-folder span {
+  color: var(--lt-fg) !important;
+  opacity: 1 !important;
+}
+
+body.scard-bg-light .settings-sidebar .badge-folder .group-tab-icon {
+  color: var(--lt-muted) !important;
+}
+
+/* Preset/chip buttons reused from the LCP outside the popup keep the same
+   treatment as the popup: white canvas chips, solid accent when active */
+body.scard-bg-light .settings-sidebar .lcp-preset-btn,
+body.scard-bg-light .settings-sidebar .lcp-btn-chip {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .lcp-preset-btn:hover,
+body.scard-bg-light .settings-sidebar .lcp-btn-chip:hover {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .lcp-preset-btn.active,
+body.scard-bg-light .settings-sidebar .lcp-btn-chip.active {
+  background: var(--accent-color, #0969da) !important;
+  border-color: var(--accent-color, #0969da) !important;
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.scard-bg-light .settings-sidebar .lcp-preset-btn.active *,
+body.scard-bg-light .settings-sidebar .lcp-btn-chip.active * {
+  color: var(--accent-contrast-color, #ffffff) !important;
+}
+
+body.scard-bg-light .settings-sidebar .lcp-preset-btn,
+body.scard-bg-light .settings-sidebar .lcp-btn-chip {
+  box-shadow: none;
+}
+
+/* ── 16. Background controls: wallpaper card + Unsplash source block ────── */
+body.scard-bg-light .settings-sidebar .bg-current-wallpaper-badge,
+body.scard-bg-light .settings-sidebar .bg-current-wallpaper-badge span {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-current-wallpaper-name,
+body.scard-bg-light .settings-sidebar .bg-current-wallpaper-details span,
+body.scard-bg-light .settings-sidebar .bg-current-wallpaper-details div {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-control-title,
+body.scard-bg-light .settings-sidebar .bg-control-title span,
+body.scard-bg-light .settings-sidebar .bg-control-title i {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .unsplash-shortcut-btn,
+body.scard-bg-light .settings-sidebar .unsplash-save-btn,
+body.scard-bg-light .settings-sidebar .unsplash-premium-search-btn {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .unsplash-shortcut-btn span,
+body.scard-bg-light .settings-sidebar .unsplash-shortcut-btn i,
+body.scard-bg-light .settings-sidebar .unsplash-save-btn span,
+body.scard-bg-light .settings-sidebar .unsplash-save-btn i,
+body.scard-bg-light .settings-sidebar .unsplash-premium-search-btn span,
+body.scard-bg-light .settings-sidebar .unsplash-premium-search-btn i {
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .unsplash-shortcut-btn.highlight,
+body.scard-bg-light .settings-sidebar .unsplash-shortcut-btn:hover,
+body.scard-bg-light .settings-sidebar .unsplash-save-btn:hover,
+body.scard-bg-light .settings-sidebar .unsplash-premium-search-btn:hover {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+/* ── 17. Kill remaining translucent-glass gray backgrounds ────────────────
+   Every leftover rgba(255,255,255,x) glass button reads as murky gray on the
+   white canvas. Secondary controls become solid white with a crisp border;
+   solid-accent primaries/selected states become black with white text. */
+body.scard-bg-light .settings-sidebar :is(
+  .sidebar-toc-btn,
+  .sidebar-nav-toggle-btn,
+  .close-sidebar,
+  .settings-search-clear-btn,
+  .pt-reset-default-btn,
+  .icon-btn,
+  .bg-mini-action-btn,
+  .bg-action-btn,
+  .bg-action-btn.secondary,
+  .bg-card-reset-btn,
+  .bg-step-btn,
+  .bg-9grid-btn,
+  .bg-gallery-filter-pill,
+  .unsplash-shortcut-btn,
+  .gmc-swap-btn,
+  .gmc-code-copy-chip,
+  .m3-auto-bg-toggle,
+  .m3-auto-music-toggle,
+  .m3-widgets-toggle,
+  .m3-sidebar-toggle,
+  .gradient-repeating-toggle,
+  .multi-color-repeating-toggle,
+  .multi-color-dividers-toggle
+) {
+  background: var(--lt-canvas) !important;
+  border: 1px solid var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .sidebar-toc-btn,
+  .sidebar-nav-toggle-btn,
+  .close-sidebar,
+  .settings-search-clear-btn,
+  .pt-reset-default-btn,
+  .icon-btn,
+  .bg-mini-action-btn,
+  .bg-action-btn,
+  .bg-step-btn,
+  .bg-9grid-btn,
+  .bg-gallery-filter-pill,
+  .unsplash-shortcut-btn,
+  .gmc-swap-btn,
+  .gmc-code-copy-chip,
+  .m3-auto-bg-toggle,
+  .m3-auto-music-toggle,
+  .m3-widgets-toggle,
+  .m3-sidebar-toggle,
+  .gradient-repeating-toggle,
+  .multi-color-repeating-toggle,
+  .multi-color-dividers-toggle
+):hover {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .settings-tab-icon-preview {
+  background: var(--lt-subtle) !important;
+  border: 1px solid var(--lt-border) !important;
+}
+
+body.scard-bg-light .settings-sidebar .pt-divider {
+  background: var(--lt-border-muted) !important;
+}
+
+/* Danger icon buttons keep red accents */
+body.scard-bg-light .settings-sidebar .icon-btn.danger-btn,
+body.scard-bg-light .settings-sidebar .bg-mini-action-btn.danger {
+  color: #cf222e !important;
+  border-color: rgba(207, 34, 46, 0.4) !important;
+}
+
+body.scard-bg-light .settings-sidebar .bg-gallery-filter-pill.active,
+body.scard-bg-light .settings-sidebar .bg-9grid-btn.active,
+body.scard-bg-light .settings-sidebar .gmc-tab-btn.active,
+body.scard-bg-light .settings-sidebar .theme-scope-colors,
+body.scard-bg-light .settings-sidebar .theme-scope-effects,
+body.scard-bg-light .settings-sidebar .theme-scope-clock,
+body.scard-bg-light .settings-sidebar .theme-scope-fonts,
+body.scard-bg-light .settings-sidebar .theme-scope-background {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .bg-gallery-filter-pill.active,
+  .bg-9grid-btn.active,
+  .gmc-tab-btn.active,
+  .theme-scope-colors,
+  .theme-scope-effects,
+  .theme-scope-clock,
+  .theme-scope-fonts,
+  .theme-scope-background
+) * {
+  color: #ffffff !important;
+}
+
+/* Solid-accent primary CTAs → black */
+body.scard-bg-light .settings-sidebar .primary-btn {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .primary-btn:hover:not(:disabled) {
+  background: #2b3038 !important;
+}
+
+body.scard-bg-light .settings-sidebar .primary-btn span,
+body.scard-bg-light .settings-sidebar .primary-btn i {
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .gmc-pill-badge.primary {
+  background: #111418 !important;
+  color: #ffffff !important;
+}
+
+/* Position-pad handle: dark knob instead of pastel accent */
+body.scard-bg-light .settings-sidebar .bg-position-pad-handle {
+  background: #111418 !important;
+  border-color: #ffffff !important;
+}
+
+/* Accent Mode segmented control */
+body.scard-bg-light .settings-sidebar .accent-mode-option {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .accent-mode-option.active {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .accent-mode-option.active * {
+  color: #ffffff !important;
+}
+
+/* ── 17b. Same treatment, but those names are element IDs, not classes ──── */
+body.scard-bg-light .settings-sidebar :is(
+  [id="m3-auto-bg-toggle"],
+  [id="m3-auto-music-toggle"],
+  [id="m3-widgets-toggle"],
+  [id="m3-sidebar-toggle"],
+  [id="gradient-repeating-toggle"],
+  [id="multi-color-repeating-toggle"],
+  [id="gradient-v2-active"],
+  [id="gradient-v2-grain-animated"],
+  [id="silk-active"],
+  [id="light-pillar-active"],
+  [id="multi-color-free-line-angles"],
+  [class="gallery-count"],
+  .user-gradient-item,
+  .bg-step-btn,
+  .bg-9grid-btn,
+  .bg-gallery-filter-pill,
+  .accent-mode-option
+) {
+  background: var(--lt-canvas) !important;
+  border-color: var(--lt-border) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  [id="theme-scope-colors"],
+  [id="theme-scope-effects"],
+  [id="theme-scope-clock"],
+  [id="theme-scope-fonts"],
+  [id="theme-scope-background"],
+  [id="multi-color-dividers-toggle"],
+  [id="svg-wave-active"],
+  .performance-mode-btn.active,
+  .bg-gallery-filter-pill.active,
+  .bg-9grid-btn.active,
+  .accent-mode-option.active
+) {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  [id="theme-scope-colors"],
+  [id="theme-scope-effects"],
+  [id="theme-scope-clock"],
+  [id="theme-scope-fonts"],
+  [id="theme-scope-background"],
+  [id="multi-color-dividers-toggle"],
+  [id="svg-wave-active"],
+  .performance-mode-btn.active
+) * {
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar [class="gallery-count"] {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+/* Accent Mode: checked state uses :has(input:checked), not .active */
+body.scard-bg-light .settings-sidebar .accent-mode-option:has(input:checked) {
+  background: #111418 !important;
+  border-color: #111418 !important;
+  color: #ffffff !important;
+}
+
+body.scard-bg-light .settings-sidebar .accent-mode-option:has(input:checked) * {
+  color: #ffffff !important;
+}
+
+/* Scrolled LCP header: frosted white band so rows sliding under it stay legible */
+body.scard-bg-light .layout-controls-popup .lcp-header-sticky.lcp-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid var(--lt-border-muted) !important;
+}
+
+/* ── 18. Sidebar floating action buttons (scroll-to-top, hotkeys, bug):
+      glass + white icons were invisible on the white sidebar → white solid
+      buttons with black icons. Scroll-to-top keeps its accent fill. ─────── */
+body.scard-bg-light .settings-sidebar :is(
+  .sidebar-hotkeys-btn,
+  .sidebar-bug-btn,
+  .sidebar-quick-actions-toggle
+) {
+  background: var(--lt-canvas) !important;
+  color: var(--lt-fg) !important;
+  border: 1px solid var(--lt-border) !important;
+  box-shadow: 0 1px 4px rgba(31, 35, 40, 0.18) !important;
+}
+
+body.scard-bg-light .settings-sidebar :is(
+  .sidebar-hotkeys-btn,
+  .sidebar-bug-btn,
+  .sidebar-quick-actions-toggle
+):hover {
+  background: var(--lt-subtle) !important;
+  color: var(--lt-fg) !important;
+}
+
+body.scard-bg-light .settings-sidebar .sidebar-scroll-top-btn.visible {
+  color: var(--accent-contrast-color, #ffffff) !important;
 }
