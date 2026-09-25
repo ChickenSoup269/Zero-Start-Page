@@ -1020,11 +1020,14 @@ export function setupGeneralEventHandlers(
   const closeDonateBtn = document.getElementById("close-donate-modal-btn")
   const showMomo = document.getElementById("show-momo-qr-btn")
   const momoQr = document.getElementById("momo-qr-container")
+  const showBank = document.getElementById("show-bank-qr-btn")
+  const bankQr = document.getElementById("bank-qr-container")
 
   if (btnDonate) {
     btnDonate.addEventListener("click", () => {
       if (modDonate) modDonate.classList.add("open")
       if (momoQr) momoQr.style.display = "none"
+      if (bankQr) bankQr.style.display = "none"
     })
   }
   const handleCloseDonate = () => {
@@ -1036,9 +1039,19 @@ export function setupGeneralEventHandlers(
   if (showMomo) {
     showMomo.addEventListener("click", (e) => {
       e.stopPropagation()
+      if (bankQr) bankQr.style.display = "none"
       if (momoQr)
         momoQr.style.display =
           momoQr.style.display === "none" ? "block" : "none"
+    })
+  }
+  if (showBank) {
+    showBank.addEventListener("click", (e) => {
+      e.stopPropagation()
+      if (momoQr) momoQr.style.display = "none"
+      if (bankQr)
+        bankQr.style.display =
+          bankQr.style.display === "none" ? "block" : "none"
     })
   }
 
@@ -1049,9 +1062,12 @@ export function setupGeneralEventHandlers(
       modDonate.classList.remove("open")
     }
 
-    // Close MoMo QR if clicking outside or on the QR itself
+    // Close MoMo/Bank QR if clicking outside or on the QR itself
     if (momoQr && momoQr.style.display === "block") {
       momoQr.style.display = "none"
+    }
+    if (bankQr && bankQr.style.display === "block") {
+      bankQr.style.display = "none"
     }
 
     // Close Bug Report Modal

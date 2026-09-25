@@ -2772,3 +2772,57 @@ kbd {
   border-radius: 50%;
   object-fit: cover;
 }
+
+/* Bank donation option (same popup pattern as MoMo) */
+.donate-bank-btn {
+  flex: 1 1 0;
+  width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #146eb4;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.bank-qr-popup-body {
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f8fa;
+}
+
+.bank-qr-img {
+  max-height: 320px;
+  object-fit: contain;
+}
+
+.bank-qr-placeholder {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 24px;
+  color: #818b98;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.bank-qr-placeholder i {
+  font-size: 2.2rem;
+  opacity: 0.6;
+}
+
+.bank-qr-popup-banner {
+  background: #146eb4;
+}

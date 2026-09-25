@@ -19,6 +19,9 @@
                 <button id="show-momo-qr-btn" class="primary-btn donate-momo-btn">
                     <i class="fa-solid fa-qrcode"></i> <span>MoMo</span>
                 </button>
+                <button id="show-bank-qr-btn" class="primary-btn donate-bank-btn">
+                    <i class="fa-solid fa-building-columns"></i> <span>Bank</span>
+                </button>
             </div>
         </div>
         <div class="modal-footer">
@@ -54,4 +57,17 @@
     <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/momo_qr.png?raw=true"
         alt="MoMo QR" class="momo-qr-popup-img">
     <div class="momo-qr-popup-banner">Scan to support via MoMo</div>
+</div>
+
+<!-- Bank QR Popup (image added later — placeholder shows until assets/qr/bank_qr.png exists) -->
+<div id="bank-qr-container" class="momo-qr-popup-container">
+    <div class="bank-qr-popup-body">
+        <img src="assets/qr/bank_qr.png" alt="Bank QR" class="momo-qr-popup-img bank-qr-img"
+            onerror="this.style.display='none'; this.parentElement.querySelector('.bank-qr-placeholder').style.display='flex';">
+        <div class="bank-qr-placeholder" style="display:none;">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>Bank QR coming soon</span>
+        </div>
+    </div>
+    <div class="momo-qr-popup-banner bank-qr-popup-banner">Scan to support via Bank Transfer</div>
 </div>
