@@ -8,6 +8,8 @@
                 <span class="settings-card-icon"><i class="fa-solid fa-sliders"></i></span>
                 <span class="settings-card-title" data-i18n="settings_custom_title_general">General</span>
             </div>
+            <p class="settings-card-hint" data-i18n="settings_custom_title_general_hint">Show Title bật/tắt tiêu đề
+                tùy chỉnh; Free Move cho phép kéo thả tiêu đề tới vị trí bất kỳ trên trang.</p>
             <div class="setting-item-row">
                 <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i
                         class="fa-solid fa-eye" style="color: var(--accent-color);"></i> Show Title</label>
@@ -38,7 +40,8 @@
                             <span class="ct-preview-live-dot"></span>
                             <span>Live Preview</span>
                         </span>
-                        <span class="ct-preview-hint">Xem ngay khi chỉnh</span>
+                        <span class="ct-preview-hint" data-i18n="settings_custom_title_live_hint">Xem ngay khi
+                            chỉnh</span>
                     </div>
                     <div id="custom-title-preview-render" style="font-weight: 600; font-size: 1.1rem; line-height: 1.3; text-align: center; padding-top: 4px;"></div>
                 </div>
@@ -53,19 +56,19 @@
                 <!-- Segmented Line Switcher -->
                 <div class="custom-title-line-tabs-nav ct-margin-14" id="custom-title-line-tabs">
                     <button type="button" class="ct-tab-btn active" data-target-line="1">
-                        <span>Dòng 1</span>
+                        <span data-i18n="settings_custom_title_line_1">Dòng 1</span>
                         <span class="ct-line-status-dot"></span>
                     </button>
                     <button type="button" class="ct-tab-btn" data-target-line="2">
-                        <span>Dòng 2</span>
+                        <span data-i18n="settings_custom_title_line_2">Dòng 2</span>
                         <span class="ct-line-status-dot"></span>
                     </button>
                     <button type="button" class="ct-tab-btn" data-target-line="3">
-                        <span>Dòng 3</span>
+                        <span data-i18n="settings_custom_title_line_3">Dòng 3</span>
                         <span class="ct-line-status-dot"></span>
                     </button>
                     <button type="button" class="ct-tab-btn" data-target-line="4">
-                        <span>Dòng 4</span>
+                        <span data-i18n="settings_custom_title_line_4">Dòng 4</span>
                         <span class="ct-line-status-dot"></span>
                     </button>
                 </div>
@@ -91,7 +94,8 @@
                         <!-- Chèn Token nhanh -->
                         <div class="token-chip-container">
                             <span class="token-chip-label">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý chèn nhanh:
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                    data-i18n="settings_custom_title_line_hint">Gợi ý chèn nhanh:</span>
                             </span>
                             <div class="quick-token-chips">
                                 <button type="button" class="token-chip" data-target-input="custom-title-text" data-token="{greeting}"><i class="fa-regular fa-face-smile"></i> {greeting}</button>
@@ -169,7 +173,8 @@
                         <!-- Chèn Token nhanh -->
                         <div class="token-chip-container">
                             <span class="token-chip-label">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý chèn nhanh:
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                    data-i18n="settings_custom_title_line_hint">Gợi ý chèn nhanh:</span>
                             </span>
                             <div class="quick-token-chips">
                                 <button type="button" class="token-chip" data-target-input="custom-title-text-2" data-token="{weekday}"><i class="fa-regular fa-calendar"></i> {weekday}</button>
@@ -233,9 +238,9 @@
                             <span class="ct-panel-badge">
                                 <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_custom_title_line_3">Dòng 3</span>
                             </span>
-                            <button class="remove-line-btn" data-target="3" title="Xóa dòng 3"
+                            <button class="remove-line-btn" data-target="3" title="Xóa dòng 3" data-i18n-title="settings_custom_title_delete_line"
                                 style="background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.25); color: #ff6b6b; cursor: pointer; font-size: 0.78rem; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fa-solid fa-trash"></i> <span>Xóa dòng</span>
+                                <i class="fa-solid fa-trash"></i> <span data-i18n="settings_custom_title_delete_line">Xóa dòng</span>
                             </button>
                         </div>
 
@@ -251,7 +256,8 @@
                         <!-- Chèn Token nhanh -->
                         <div class="token-chip-container">
                             <span class="token-chip-label">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý chèn nhanh:
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                    data-i18n="settings_custom_title_line_hint">Gợi ý chèn nhanh:</span>
                             </span>
                             <div class="quick-token-chips">
                                 <button type="button" class="token-chip" data-target-input="custom-title-text-3" data-token="{date}"><i class="fa-regular fa-calendar-days"></i> {date}</button>
@@ -314,9 +320,9 @@
                             <span class="ct-panel-badge">
                                 <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_custom_title_line_4">Dòng 4</span>
                             </span>
-                            <button class="remove-line-btn" data-target="4" title="Xóa dòng 4"
+                            <button class="remove-line-btn" data-target="4" title="Xóa dòng 4" data-i18n-title="settings_custom_title_delete_line"
                                 style="background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.25); color: #ff6b6b; cursor: pointer; font-size: 0.78rem; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fa-solid fa-trash"></i> <span>Xóa dòng</span>
+                                <i class="fa-solid fa-trash"></i> <span data-i18n="settings_custom_title_delete_line">Xóa dòng</span>
                             </button>
                         </div>
 
@@ -332,7 +338,8 @@
                         <!-- Chèn Token nhanh -->
                         <div class="token-chip-container">
                             <span class="token-chip-label">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý chèn nhanh:
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                    data-i18n="settings_custom_title_line_hint">Gợi ý chèn nhanh:</span>
                             </span>
                             <div class="quick-token-chips">
                                 <button type="button" class="token-chip" data-target-input="custom-title-text-4" data-token="{time_12}"><i class="fa-regular fa-clock"></i> {time_12}</button>
@@ -487,6 +494,9 @@
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
+                <p class="setting-hint" data-i18n="settings_custom_title_color_hint"
+                    style="font-size: 0.78em; opacity: 0.7; margin-bottom: 12px;">Rainbow Effect khi bật sẽ ghi đè
+                    màu Solid Color phía trên.</p>
                 <div class="setting-item no-margin-top" id="custom-title-color-wrap" style="margin-bottom: 12px;">
                     <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" data-i18n="settings_solid_color">Solid Color</label>
                     <div class="custom-color-input-group"

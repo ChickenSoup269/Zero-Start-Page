@@ -9,6 +9,9 @@
                         data-i18n="settings_font_general">General Settings</span></div>
                 <i class="fa-solid fa-chevron-down toggle-icon" style="font-size: 0.8em; opacity: 0.7;"></i>
             </div>
+            <p class="setting-hint" data-i18n="settings_clock_general_hint"
+                style="font-size: 0.8em; opacity: 0.7; margin: 10px 0 12px;">Định dạng cơ bản của đồng hồ & ngày:
+                kiểu ngày, ngôn ngữ, 12/24h, múi giờ, chữ Hán – âm lịch và hiệu ứng màu chữ ngẫu nhiên.</p>
             <div class="setting-group-content">
 
                 <div class="settings-checkbox-grid">
@@ -192,6 +195,9 @@
                         <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
                     </select>
                 </div>
+                <p class="setting-hint" data-i18n="settings_clock_hue_hint"
+                    style="font-size: 0.75em; opacity: 0.65; margin-top: 6px;">Tô ngẫu nhiên mỗi chữ số / chữ cái
+                    bằng màu sắc khác nhau.</p>
             </div> <!-- end setting-group-content -->
         </div> <!-- end setting-group (General Settings) -->
 
@@ -203,6 +209,9 @@
                 <i class="fa-solid fa-chevron-down group-chevron"></i>
             </div>
             <div class="group-body">
+                <p class="setting-hint" data-i18n="settings_clock_style_hint"
+                    style="font-size: 0.8em; opacity: 0.7; margin-bottom: 12px;">Chọn kiểu hiển thị đồng hồ trên
+                    startpage. Một số style có bộ tùy chỉnh riêng hiện ở mục "Style Customization" bên dưới.</p>
                 <div id="clock-style-grid" class="clock-style-grid">
                     <div class="clock-style-card" data-value="default">
                         <i class="fa-solid fa-clock"></i>
@@ -449,6 +458,9 @@
                 <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="effect_customization">Style
                     Customization</span>
             </div>
+            <p class="setting-hint" data-i18n="settings_clock_style_custom_hint"
+                style="font-size: 0.78em; opacity: 0.7; margin-bottom: 12px;">Các tùy chỉnh ở đây chỉ áp dụng cho
+                style đồng hồ đang chọn ở trên — mỗi style có bộ tùy chỉnh riêng (màu sắc, hiệu ứng, chi tiết).</p>
 
             <div id="clock-fade-bottom-setting" class="setting-item no-margin-top" style="display: none;">
                 <label for="clock-fade-bottom-select" data-i18n="settings_clock_fade_bottom">Fade Intensity</label>
@@ -1095,6 +1107,9 @@
                 <i class="fa-solid fa-mask"></i> <span data-i18n="settings_global_masking_effect">Clock Masking Effect
                     (3D Depth)</span>
             </div>
+            <p class="setting-hint" data-i18n="settings_clock_masking_hint"
+                style="font-size: 0.78em; opacity: 0.7; margin-bottom: 12px;">Cắt hoặc làm mờ dần phần đáy chữ số
+                để tạo cảm giác 3D chiều sâu cho đồng hồ.</p>
             <div class="setting-item no-margin-top">
                 <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
                     <label for="global-clock-cut-bottom-input" data-i18n="settings_global_cut_bottom">Cut Bottom
@@ -1118,6 +1133,9 @@
                         data-i18n="settings_font_style">Appearance & Colors</span></div>
                 <i class="fa-solid fa-chevron-down toggle-icon" style="font-size: 0.8em; opacity: 0.8;"></i>
             </div>
+            <p class="setting-hint" data-i18n="settings_clock_appearance_hint"
+                style="font-size: 0.8em; opacity: 0.7; margin: 10px 0 12px;">Kích thước, màu sắc, bóng đổ và viền
+                cho đồng hồ & ngày. Các thẻ "Target" chọn phần được áp dụng (giờ / ngày / thứ).</p>
             <div class="setting-group-content">
 
                 <!-- 1. Font Application Target -->
@@ -1240,8 +1258,9 @@
                             <i class="fa-solid fa-circle-half-stroke"></i> <span
                                 data-i18n="settings_clock_auto_contrast">Auto Contrast Text Color</span>
                         </label>
-                        <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;">Tự động đổi màu chữ sáng/tối
-                            theo nền hình nền</div>
+                        <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;"><span
+                                data-i18n="settings_clock_auto_contrast_caption">Auto light/dark text color based on
+                                wallpaper</span></div>
                     </div>
                     <label class="switch">
                         <input type="checkbox" id="clock-auto-contrast-checkbox">
@@ -1265,8 +1284,9 @@
                                 style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.82rem;">
                                 <span data-i18n="settings_clock_use_accent">Use M3 Dynamic Accent</span>
                             </label>
-                            <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;">Đồng bộ màu sắc với bảng màu
-                                hệ thống Material 3</div>
+                            <div style="font-size: 0.72rem; opacity: 0.6; margin-top: 2px;"><span
+                                    data-i18n="settings_clock_m3_accent_caption">Sync colors with the Material 3
+                                    system palette</span></div>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="clock-use-accent-checkbox">
