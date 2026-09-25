@@ -8,6 +8,8 @@ import {
   switchSettingsTab,
   switchBgSubTab,
   scrollToSidebarElement,
+  getElementTab,
+  getElementBgSubTab,
 } from "./sidebarNavigation.js"
 
 export const initSidebarToC = (DOM, sidebarContent) => {
