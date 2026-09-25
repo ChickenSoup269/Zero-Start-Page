@@ -8904,7 +8904,22 @@ export function setupGeneralEventHandlers(
 
   window.addEventListener("openLayoutControls", (e) => {
     showLcp(e.detail?.tab || getSavedLcpTab())
+    updateLcpScrolledState()
   })
+
+  // Frosted header background only appears once the popup content is scrolled
+  function updateLcpScrolledState() {
+    const header = DOM.layoutControlsPopup?.querySelector(".lcp-header-sticky")
+    header?.classList.toggle(
+      "lcp-scrolled",
+      (DOM.layoutControlsPopup?.scrollTop || 0) > 4,
+    )
+  }
+  DOM.layoutControlsPopup?.addEventListener(
+    "scroll",
+    updateLcpScrolledState,
+    { passive: true },
+  )
 
   document.addEventListener("click", (e) => {
     if (
