@@ -89,16 +89,21 @@
             <div class="settings-card-header">
                 <span class="settings-card-icon"><i class="fa-solid fa-palette"></i></span>
                 <span class="settings-card-title" data-i18n="settings_themes">Themes</span>
-                <span class="settings-card-actions">
-                    <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
-                        <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
-                            data-i18n="save_current_theme">Create Theme</span>
-                    </button>
-                    <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
-                        rel="noopener noreferrer">
-                        <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span data-i18n="theme_web_beta_link">Theme Store</span>
-                    </a>
-                </span>
+            </div>
+            <p class="settings-card-hint" data-i18n="settings_themes_hint">A theme applies colors, effects, clock,
+                fonts and background all at once.</p>
+
+            <!-- Create / Store actions (own row so long translations never overflow the header) -->
+            <div class="theme-actions-grid">
+                <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
+                        data-i18n="save_current_theme">Create Theme</span>
+                </button>
+                <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span
+                        data-i18n="theme_web_beta_link">Theme Store</span>
+                </a>
             </div>
 
             <!-- Collapsible Theme Application Scope Accordion -->
