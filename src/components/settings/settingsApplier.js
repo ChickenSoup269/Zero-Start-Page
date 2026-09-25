@@ -2602,6 +2602,20 @@ function createApplySettings(effectInstances) {
       }
     }
 
+    if (effectToStart === "murmuration" && selectedEffect) {
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions(
+          withPerformanceBudget(settings, "murmuration", {
+            color: settings.murmurationColor || "#1a1a2e",
+            count: settings.murmurationCount ?? 220,
+            speed: settings.murmurationSpeed ?? 1,
+            cohesion: settings.murmurationCohesion ?? 1,
+            mouseRepel: settings.murmurationMouseRepel !== false,
+          }),
+        )
+      }
+    }
+
     if (effectToStart === "pixelSnowHQ" && selectedEffect) {
       if (selectedEffect.setOptions) {
         selectedEffect.setOptions({

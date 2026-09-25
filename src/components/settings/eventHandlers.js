@@ -20,6 +20,7 @@ import {
   isLanguageDownloaded,
   BUNDLED_LANGUAGES,
 } from "../../services/i18n.js"
+import { renderBookmarkPreviewData } from "./bookmarkPreview.js"
 import {
   getLanguageGuideOption,
   languageGuideOptions,
@@ -3780,6 +3781,8 @@ export function setupGeneralEventHandlers(
 
     // Initial update of preview
     setTimeout(updateBookmarkLivePreview, 100)
+    setTimeout(renderBookmarkPreviewData, 100)
+    window.addEventListener("bookmarkGroupsChanged", renderBookmarkPreviewData)
 
     if (DOM.lcpBookmarkLayout) {
       DOM.lcpBookmarkLayout.addEventListener("change", () => {
@@ -5539,6 +5542,52 @@ export function setupGeneralEventHandlers(
       ) {
         effectInstances.firefliesHDEffect.setMode(e.target.value)
       }
+    })
+  }
+
+  if (DOM.murmurationCountSlider) {
+    DOM.murmurationCountSlider.addEventListener("input", () => {
+      const val = Number(DOM.murmurationCountSlider.value)
+      if (DOM.murmurationCountValue)
+        DOM.murmurationCountValue.textContent = String(val)
+      updateSetting("murmurationCount", val)
+      if (effectInstances.murmurationEffect)
+        effectInstances.murmurationEffect.setOptions({ count: val })
+    })
+  }
+
+  if (DOM.murmurationSpeedSlider) {
+    DOM.murmurationSpeedSlider.addEventListener("input", () => {
+      const val = Number(DOM.murmurationSpeedSlider.value)
+      if (DOM.murmurationSpeedValue)
+        DOM.murmurationSpeedValue.textContent = `${val.toFixed(1)}x`
+      updateSetting("murmurationSpeed", val)
+      if (effectInstances.murmurationEffect)
+        effectInstances.murmurationEffect.setOptions({ speed: val })
+    })
+  }
+
+  if (DOM.murmurationCohesionSlider) {
+    DOM.murmurationCohesionSlider.addEventListener("input", () => {
+      const val = Number(DOM.murmurationCohesionSlider.value)
+      if (DOM.murmurationCohesionValue)
+        DOM.murmurationCohesionValue.textContent = val.toFixed(1)
+      updateSetting("murmurationCohesion", val)
+      if (effectInstances.murmurationEffect)
+        effectInstances.murmurationEffect.setOptions({ cohesion: val })
+    })
+  }
+
+  if (DOM.murmurationMouseToggle) {
+    DOM.murmurationMouseToggle.addEventListener("change", () => {
+      handleSettingUpdate(
+        "murmurationMouseRepel",
+        DOM.murmurationMouseToggle.checked,
+      )
+      if (effectInstances.murmurationEffect)
+        effectInstances.murmurationEffect.setOptions({
+          mouseRepel: DOM.murmurationMouseToggle.checked,
+        })
     })
   }
 
@@ -10425,7 +10474,10 @@ export function setupGeneralEventHandlers(
     const t4 = resolvePreviewTokens(inputs[3] || "")
 
     if (!t1 && !t2 && !t3 && !t4) {
-      previewEl.innerHTML = `<span style="opacity: 0.4; font-size: 0.85rem; font-style: italic;">Chưa có nội dung tiêu đề...</span>`
+      const emptyText =
+        geti18n().settings_custom_title_preview_empty ||
+        "No title content yet..."
+      previewEl.innerHTML = `<span style="opacity: 0.4; font-size: 0.85rem; font-style: italic;">${emptyText}</span>`
       previewEl.className = ""
       previewEl.style.writingMode = "horizontal-tb"
       previewEl.style.textOrientation = "mixed"

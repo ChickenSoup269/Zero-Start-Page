@@ -65,6 +65,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.firefliesHDEffect.updateColor(DOM.firefliesColorPicker.value)
   })
 
+  DOM.murmurationColorPicker?.addEventListener("change", () => {
+    updateSetting("murmurationColor", DOM.murmurationColorPicker.value)
+    saveSettings()
+    if (effectInstances.murmurationEffect)
+      effectInstances.murmurationEffect.updateColor(
+        DOM.murmurationColorPicker.value,
+      )
+  })
+
   DOM.meteorColorPicker?.addEventListener("change", () => {
     updateSetting("meteorColor", DOM.meteorColorPicker.value)
     saveSettings()

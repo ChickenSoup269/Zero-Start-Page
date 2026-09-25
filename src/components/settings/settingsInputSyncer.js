@@ -2045,6 +2045,33 @@ export function createUpdateSettingsInputs(effectInstances) {
           : "none"
     if (DOM.firefliesModeSelect)
       DOM.firefliesModeSelect.value = settings.firefliesMode || "enchanted"
+    const isMurmuration = settings.effect === "murmuration"
+    if (DOM.murmurationColorSetting)
+      DOM.murmurationColorSetting.style.display = isMurmuration ? "block" : "none"
+    if (DOM.murmurationColorPicker)
+      DOM.murmurationColorPicker.value = settings.murmurationColor || "#1a1a2e"
+    if (DOM.murmurationCountSetting)
+      DOM.murmurationCountSetting.style.display = isMurmuration ? "block" : "none"
+    if (DOM.murmurationCountSlider)
+      DOM.murmurationCountSlider.value = settings.murmurationCount ?? 220
+    if (DOM.murmurationCountValue)
+      DOM.murmurationCountValue.textContent = String(settings.murmurationCount ?? 220)
+    if (DOM.murmurationSpeedSetting)
+      DOM.murmurationSpeedSetting.style.display = isMurmuration ? "block" : "none"
+    if (DOM.murmurationSpeedSlider)
+      DOM.murmurationSpeedSlider.value = settings.murmurationSpeed ?? 1
+    if (DOM.murmurationSpeedValue)
+      DOM.murmurationSpeedValue.textContent = `${(settings.murmurationSpeed ?? 1).toFixed(1)}x`
+    if (DOM.murmurationCohesionSetting)
+      DOM.murmurationCohesionSetting.style.display = isMurmuration ? "block" : "none"
+    if (DOM.murmurationCohesionSlider)
+      DOM.murmurationCohesionSlider.value = settings.murmurationCohesion ?? 1
+    if (DOM.murmurationCohesionValue)
+      DOM.murmurationCohesionValue.textContent = (settings.murmurationCohesion ?? 1).toFixed(1)
+    if (DOM.murmurationMouseSetting)
+      DOM.murmurationMouseSetting.style.display = isMurmuration ? "block" : "none"
+    if (DOM.murmurationMouseToggle)
+      DOM.murmurationMouseToggle.checked = settings.murmurationMouseRepel !== false
     if (DOM.meteorColorSetting)
       DOM.meteorColorSetting.style.display =
         settings.effect === "meteor" ? "block" : "none"

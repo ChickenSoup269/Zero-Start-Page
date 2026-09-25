@@ -269,6 +269,13 @@ export function withPerformanceBudget(settings, type, options) {
         scale: Math.max(0.65, options.scale * scale.detail),
         noise: Math.max(0.35, options.noise * scale.detail),
       }
+    case "murmuration":
+      return {
+        ...options,
+        count: Math.max(40, Math.round(options.count * scale.density)),
+        speed: Math.max(0.3, options.speed * scale.speed),
+        cohesion: Math.max(0.4, options.cohesion * scale.detail),
+      }
     case "lightPillar":
       return {
         ...options,

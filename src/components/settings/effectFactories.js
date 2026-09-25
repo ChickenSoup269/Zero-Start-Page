@@ -1,5 +1,6 @@
 import { StarFall } from "../animations/rainGalaxy.js"
 import { FirefliesEffect } from "../animations/fireflies.js"
+import { MurmurationEffect } from "../animations/murmuration.js"
 import { NetworkEffect } from "../animations/network.js"
 import { MatrixRain } from "../animations/matrixRain.js"
 import { AuraEffect } from "../animations/aura.js"
@@ -83,6 +84,14 @@ export function createEffectFactories(settings) {
         settings.firefliesColor || "#ffe855",
         settings.firefliesMode || "enchanted",
       ),
+    murmurationEffect: () =>
+      new MurmurationEffect("effect-canvas", {
+        color: settings.murmurationColor || "#1a1a2e",
+        count: settings.murmurationCount ?? 220,
+        speed: settings.murmurationSpeed ?? 1,
+        cohesion: settings.murmurationCohesion ?? 1,
+        mouseRepel: settings.murmurationMouseRepel !== false,
+      }),
     networkEffect: () =>
       new NetworkEffect(
         "effect-canvas",

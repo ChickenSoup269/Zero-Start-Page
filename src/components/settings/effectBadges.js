@@ -6,6 +6,7 @@
 export const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
   fireflies: "firefliesEffect",
+  murmuration: "murmurationEffect",
   network: "networkEffect",
   matrix: "matrixRainEffect",
   aura: "auraEffect",
@@ -113,6 +114,7 @@ export const EFFECTS_WITH_CUSTOM_SETTINGS = new Set([
   "oceanFish",
   "rainHD",
   "musicBars",
+  "murmuration",
   "wavyLines",
   "oceanWave",
   "cloudDrift",

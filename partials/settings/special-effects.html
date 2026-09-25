@@ -125,6 +125,11 @@
                         <span class="effect-name" data-i18n="effect_fireflies">Fireflies</span>
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </button>
+                    <button class="effect-item" data-value="murmuration" data-search="murmuration birds flock boids swarm">
+                        <span class="effect-icon"><i class="fa-solid fa-crow"></i></span>
+                        <span class="effect-name" data-i18n="effect_murmuration">Murmuration</span>
+                        <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                    </button>
                     <button class="effect-item" data-value="network" data-search="network connect">
                         <span class="effect-icon"><i class="fa-solid fa-circle-nodes"></i></span>
                         <span class="effect-name" data-i18n="effect_network">Network</span>
@@ -846,6 +851,43 @@
                             </select>
                         </div>
 
+                        <!-- Murmuration Settings -->
+                        <div id="murmuration-color-setting" class="setting-item" style="display: none;">
+                            <label for="murmuration-color-picker" data-i18n="setting_murmuration_color">Bird Color</label>
+                            <input type="color" id="murmuration-color-picker" value="#1a1a2e" />
+                        </div>
+
+                        <div id="murmuration-count-setting" class="setting-item" style="display: none;">
+                            <label for="murmuration-count-slider" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span data-i18n="setting_murmuration_count">Flock Size</span>
+                                <span id="murmuration-count-value" class="bg-slider-value">220</span>
+                            </label>
+                            <input type="range" id="murmuration-count-slider" min="60" max="600" step="10" value="220" class="bg-wheel-scrollable" />
+                        </div>
+
+                        <div id="murmuration-speed-setting" class="setting-item" style="display: none;">
+                            <label for="murmuration-speed-slider" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span data-i18n="setting_murmuration_speed">Flight Speed</span>
+                                <span id="murmuration-speed-value" class="bg-slider-value">1.0x</span>
+                            </label>
+                            <input type="range" id="murmuration-speed-slider" min="0.4" max="2" step="0.1" value="1" class="bg-wheel-scrollable" />
+                        </div>
+
+                        <div id="murmuration-cohesion-setting" class="setting-item" style="display: none;">
+                            <label for="murmuration-cohesion-slider" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span data-i18n="setting_murmuration_cohesion">Flock Tightness</span>
+                                <span id="murmuration-cohesion-value" class="bg-slider-value">1.0</span>
+                            </label>
+                            <input type="range" id="murmuration-cohesion-slider" min="0.4" max="1.6" step="0.1" value="1" class="bg-wheel-scrollable" />
+                        </div>
+
+                        <div id="murmuration-mouse-setting" class="setting-item" style="display: none;">
+                            <div class="setting-item-row" style="margin: 0;">
+                                <label for="murmuration-mouse-toggle" data-i18n="setting_murmuration_mouse" style="flex: 1; margin: 0; font-weight: 500;">Mouse Scatters Flock</label>
+                                <input type="checkbox" id="murmuration-mouse-toggle" checked />
+                            </div>
+                        </div>
+
                         <!-- Meteor Color -->
                         <div id="meteor-color-setting" class="setting-item" style="display: none;">
                             <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor
@@ -1049,8 +1091,8 @@
                             <div class="setting-item">
                                 <label for="black-hole-celestial-select" data-i18n="setting_black_hole_celestial">Celestial Object / Vũ Trụ</label>
                                 <select id="black-hole-celestial-select" class="full-width">
-                                    <option value="blackHole">Gargantua Black Hole (Lỗ Đen Vũ Trụ)</option>
-                                    <option value="galaxy">Spiral Galaxy 3D (Thiên Hà Xoắn Ốc)</option>
+                                    <option value="blackHole" data-i18n="effect_gargantua_black_hole">Gargantua Black Hole (Lỗ Đen Vũ Trụ)</option>
+                                    <option value="galaxy" data-i18n="effect_spiral_galaxy_3d">Spiral Galaxy 3D (Thiên Hà Xoắn Ốc)</option>
                                 </select>
                             </div>
                             <div class="setting-item-row">
