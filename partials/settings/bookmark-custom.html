@@ -4,36 +4,66 @@
     <div class="section-content">
 
         <!-- Live Interactive Bookmark Preview Card -->
-        <div class="bookmark-live-preview-card" style="margin-bottom: 16px;">
+        <div class="settings-card bookmark-live-preview-card">
+            <div class="settings-card-header">
+                <span class="settings-card-icon"><i class="fa-solid fa-eye"></i></span>
+                <span class="settings-card-title" data-i18n="settings_bookmark_preview_title">Live Bookmark
+                    Preview</span>
+            </div>
+            <p class="settings-card-hint" data-i18n="settings_bookmark_preview_desc">Folder tab &amp; bookmark card
+                live preview</p>
+
             <div class="bookmark-preview-stage" id="bookmark-preview-stage">
-                <!-- Sample Folder Group Tab -->
+                <!-- Folder Group Tab (real data) -->
                 <div class="bookmark-preview-col" data-target-selector="#bookmark-groups-container">
-                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-folder"></i> Folder</span>
+                    <span class="bookmark-preview-badge badge-folder"><i class="fa-regular fa-folder"></i>
+                        <span data-i18n="settings_bookmark_preview_badge_folder">Folder Tab</span></span>
                     <div class="bookmark-preview-tab-wrap">
                         <div class="bookmark-preview-tab" id="bookmark-preview-tab">
-                            <i class="fa-solid fa-folder"></i>
+                            <span class="bookmark-preview-tab-icon" id="bookmark-preview-tab-icon-wrap"><i
+                                    class="fa-solid fa-folder"></i></span>
                             <span id="bookmark-preview-tab-text">Favorites</span>
                             <span class="bookmark-preview-tab-count" id="bookmark-preview-tab-count">4</span>
                         </div>
                     </div>
+                    <span class="bookmark-preview-caption"
+                        data-i18n="settings_bookmark_preview_folder_caption">Represents a folder of bookmarks on the
+                        startpage</span>
                 </div>
 
                 <!-- Divider -->
                 <div class="bookmark-preview-divider"></div>
 
-                <!-- Sample Bookmark Item -->
+                <!-- Bookmark Item (real data) -->
                 <div class="bookmark-preview-col" data-target-selector="#bookmarks-container">
-                    <span class="bookmark-preview-col-label"><i class="fa-regular fa-bookmark"></i> Bookmark</span>
+                    <span class="bookmark-preview-badge badge-bookmark"><i class="fa-regular fa-bookmark"></i>
+                        <span data-i18n="settings_bookmark_preview_badge_bookmark">Bookmark</span></span>
                     <div class="bookmark-preview-item-wrap">
                         <div class="bookmark-preview-item" id="bookmark-preview-item">
                             <div class="bookmark-preview-icon-box" id="bookmark-preview-icon-box">
-                                <i class="fa-brands fa-google" id="bookmark-preview-icon"></i>
+                                <i class="fa-brands fa-google"></i>
                             </div>
                             <span class="bookmark-preview-title" id="bookmark-preview-title">Google</span>
                         </div>
                     </div>
+                    <span class="bookmark-preview-caption"
+                        data-i18n="settings_bookmark_preview_bookmark_caption">A single link stored inside the
+                        folder</span>
                 </div>
             </div>
+
+            <!-- Empty state: no folders yet -->
+            <div class="bookmark-preview-empty" id="bookmark-preview-empty" hidden>
+                <i class="fa-regular fa-folder-open"></i>
+                <span data-i18n="settings_bookmark_preview_empty">No folders yet — add one with the + button on the
+                    startpage tab bar.</span>
+            </div>
+
+            <p class="bookmark-preview-footer">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span data-i18n="settings_bookmark_preview_footer">Each tab on the startpage = one bookmark folder.
+                    Bookmarks are the tiles inside it.</span>
+            </p>
         </div>
 
         <!-- Sizes & Spacing Group -->

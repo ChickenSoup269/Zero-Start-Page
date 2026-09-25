@@ -184,6 +184,7 @@ export function resetSettingsState() {
 
 export function saveBookmarks() {
   localStorage.setItem("bookmarks", JSON.stringify(bookmarksState))
+  window.dispatchEvent(new CustomEvent("bookmarkGroupsChanged"))
 }
 
 export const saveComponentPosition = (componentId, position) => {

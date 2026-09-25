@@ -7924,7 +7924,7 @@ select.full-width {
    ========================================================================== */
 .themes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
   gap: 8px;
   margin-top: 10px;
   padding: 2px;
@@ -9862,23 +9862,27 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   }
 }
 
-/* Bookmark Live Preview Card */
+/* Bookmark Live Preview Card (uses .settings-card for theme-aware chrome) */
 .bookmark-live-preview-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  padding: 10px 12px;
   margin-bottom: 15px;
 }
 
 .bookmark-preview-stage {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-around;
   gap: 12px;
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 14px 12px 12px;
+  background: color-mix(
+    in srgb,
+    var(--text-color, #ffffff) 4%,
+    transparent
+  );
+  border: 1px solid color-mix(
+    in srgb,
+    var(--text-color, #ffffff) 8%,
+    transparent
+  );
   border-radius: 8px;
   min-height: 90px;
   position: relative;
@@ -9890,17 +9894,99 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 
-.bookmark-preview-col-label {
+/* Type badge chips */
+.bookmark-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.bookmark-preview-badge.badge-folder {
+  color: var(--accent-color, #a8c0ff);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+}
+
+.bookmark-preview-badge.badge-bookmark {
+  color: var(--text-color, #ffffff);
+  background: color-mix(
+    in srgb,
+    var(--text-color, #ffffff) 12%,
+    transparent
+  );
+}
+
+.bookmark-preview-caption {
   font-size: 0.68rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.35;
+  text-align: center;
+  color: color-mix(in srgb, var(--text-color, #ffffff) 55%, transparent);
+  max-width: 160px;
+}
+
+.bookmark-preview-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 12px 0 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--text-color, #ffffff) 60%, transparent);
+}
+
+.bookmark-preview-footer i {
+  color: var(--accent-color, #a8c0ff);
+  margin-top: 1px;
+}
+
+.bookmark-preview-empty {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--text-color, #ffffff) 65%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--text-color, #ffffff) 4%,
+    transparent
+  );
+  border: 1px dashed color-mix(
+    in srgb,
+    var(--text-color, #ffffff) 15%,
+    transparent
+  );
+}
+
+.bookmark-preview-empty[hidden] {
+  display: none;
+}
+
+.bookmark-preview-empty i {
+  color: var(--accent-color, #a8c0ff);
+}
+
+/* Custom stored icons inside the preview tab (mirror .custom-group-tab-icon sizing) */
+.bookmark-preview-tab .custom-group-tab-icon {
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  color: var(--bookmark-group-icon-color, inherit);
 }
 
 /* Vertical divider between columns */
@@ -12292,8 +12378,21 @@ details[open] .about-history-arrow {
 .theme-actions-grid {
   margin-bottom: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 8px;
+}
+
+.theme-actions-grid .theme-create-btn,
+.theme-actions-grid .theme-store-link {
+  min-width: 0;
+}
+
+.theme-actions-grid .theme-create-btn span,
+.theme-actions-grid .theme-store-link span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .theme-create-btn {
@@ -13445,6 +13544,13 @@ body.bookmark-layout-bg-hidden
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.settings-card-actions > * {
   flex-shrink: 0;
 }
 

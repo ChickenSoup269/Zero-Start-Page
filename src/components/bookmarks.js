@@ -533,7 +533,7 @@ function createBookmarkStackIcon(stack) {
   return wrap
 }
 
-function createStoredIconElement(value, label = "Bookmark") {
+export function createStoredIconElement(value, label = "Bookmark") {
   const iconValue = String(value || "").trim()
 
   if (iconValue.startsWith("fa:")) {
@@ -3115,7 +3115,7 @@ export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   }
 }
 
-function getGroupIcon(name) {
+export function getGroupIcon(name) {
   const lower = name.toLowerCase()
   if (/social|friend|chat|mạng xã hội/.test(lower)) return "fa-users"
   if (/work|office|job|công việc/.test(lower)) return "fa-briefcase"
