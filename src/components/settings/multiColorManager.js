@@ -507,7 +507,13 @@ export function setupMultiColorManager(applySettings) {
 
     const stopsBadge = document.getElementById("multi-preview-stops-badge")
     if (stopsBadge) {
-      stopsBadge.textContent = `${colors.length} Màu (${mode === "blocks" ? "Khối ô" : "Chuyển tiếp"})`
+      const t = geti18n()
+      const unit = t.gradient_colors_count || "colors"
+      const modeLabel =
+        mode === "blocks"
+          ? t.gradient_mode_blocks || "Blocks"
+          : t.gradient_mode_transition || "Transition"
+      stopsBadge.textContent = `${colors.length} ${unit} (${modeLabel})`
     }
   }
 

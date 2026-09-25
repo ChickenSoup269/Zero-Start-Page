@@ -197,12 +197,12 @@
                                 <label style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; letter-spacing: 0.05em;"
                                     data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
                                 <select id="gradient-extra-color-count" class="gmc-compact-select">
-                                    <option value="0">0 màu</option>
-                                    <option value="1">1 màu</option>
-                                    <option value="2">2 màu</option>
-                                    <option value="3">3 màu</option>
-                                    <option value="4">4 màu</option>
-                                    <option value="5">5 màu</option>
+                                    <option value="0" data-i18n="gradient_colors_0">0 màu</option>
+                                    <option value="1" data-i18n="gradient_colors_1">1 màu</option>
+                                    <option value="2" data-i18n="gradient_colors_2">2 màu</option>
+                                    <option value="3" data-i18n="gradient_colors_3">3 màu</option>
+                                    <option value="4" data-i18n="gradient_colors_4">4 màu</option>
+                                    <option value="5" data-i18n="gradient_colors_5">5 màu</option>
                                 </select>
                             </div>
                             <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container"></div>
@@ -222,7 +222,8 @@
                                     <i class="fa-solid fa-shuffle"></i>
                                     <span data-i18n="settings_gradient_random_colors">Random</span>
                                 </button>
-                                <button id="generate-modern-gradient-btn" class="secondary-btn" title="Tự động tạo dải màu AI hiện đại">
+                                <button id="generate-modern-gradient-btn" class="secondary-btn" title="Tự động tạo dải màu AI hiện đại"
+                                    data-i18n-title="settings_gradient_ai_title">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                                     <span data-i18n="settings_gradient_generate_modern">AI Presets</span>
                                 </button>
@@ -292,7 +293,7 @@
             <div class="gmc-presets-section">
                 <div class="gmc-sub-label">
                     <i class="fa-solid fa-palette"></i>
-                    <span>Phối màu Multi-Color gợi ý</span>
+                    <span data-i18n="settings_gradient_multicolor_presets">Phối màu Multi-Color gợi ý</span>
                 </div>
                 <div class="gmc-presets-grid" id="multi-color-quick-presets-container">
                     <button type="button" class="gmc-preset-chip multi-chip" data-colors="#f72585,#7209b7,#3a0ca3,#4cc9f0" title="Neon City">
@@ -542,7 +543,7 @@
                     <!-- Section 1: Hình dạng sóng (Geometry) -->
                     <div class="gmc-sub-label" style="margin-bottom: 12px;">
                         <i class="fa-solid fa-shapes"></i>
-                        <span>Hình dạng sóng (Geometry)</span>
+                        <span data-i18n="settings_svg_wave_geometry">Hình dạng sóng (Geometry)</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                         <div class="setting-item no-margin-top">
@@ -603,7 +604,7 @@
                     <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); margin: 14px 0; padding-top: 14px;">
                         <div class="gmc-sub-label" style="margin-bottom: 12px;">
                             <i class="fa-solid fa-arrows-up-down-left-right"></i>
-                            <span>Biên độ & Hướng (Amplitude & Direction)</span>
+                            <span data-i18n="settings_svg_wave_amplitude">Biên độ & Hướng (Amplitude & Direction)</span>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                             <div class="setting-item no-margin-top">
@@ -668,7 +669,7 @@
                     <div style="border-top: 1px solid rgba(255, 255, 255, 0.07); margin: 14px 0; padding-top: 14px;">
                         <div class="gmc-sub-label" style="margin-bottom: 12px;">
                             <i class="fa-solid fa-palette"></i>
-                            <span>Màu sắc (Colors)</span>
+                            <span data-i18n="settings_svg_wave_colors">Màu sắc (Colors)</span>
                         </div>
 
                         <div style="margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08);">
