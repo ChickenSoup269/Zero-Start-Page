@@ -1312,6 +1312,11 @@ export function updateTime() {
     const showWeather = settings.bentoShowWeather === true
     const showEvent = settings.bentoShowNextEvent === true
     const showWeekYear = settings.bentoShowWeekYear !== false
+    const bentoLabels = {
+      day: getClockLabel("clock_label_bento_day", "DAY"),
+      week: getClockLabel("clock_label_bento_week", "WEEK"),
+      year: getClockLabel("clock_label_bento_year", "YEAR"),
+    }
 
     let bentoRoot = clockElement.querySelector(".bento-clock")
     // Rebuild when the DOM predates the info-hub bottom tile (upgrade path)
@@ -1350,21 +1355,21 @@ export function updateTime() {
             </div>
             <div class="bento-bars">
               <div class="bento-bar-row bento-bar-day">
-                <span class="bento-progress-label">DAY</span>
+                <span class="bento-progress-label">${bentoLabels.day}</span>
                 <div class="bento-progress-track">
                   <div class="bento-progress-fill" style="width: ${dayPct}%"></div>
                 </div>
                 <span class="bento-progress-pct">${dayPct}%</span>
               </div>
               <div class="bento-bar-row bento-bar-week"${showWeekYear ? "" : ' style="display: none;"'}>
-                <span class="bento-progress-label">WEEK</span>
+                <span class="bento-progress-label">${bentoLabels.week}</span>
                 <div class="bento-progress-track">
                   <div class="bento-progress-fill" style="width: ${weekPct}%"></div>
                 </div>
                 <span class="bento-progress-pct">${weekPct}%</span>
               </div>
               <div class="bento-bar-row bento-bar-year"${showWeekYear ? "" : ' style="display: none;"'}>
-                <span class="bento-progress-label">YEAR</span>
+                <span class="bento-progress-label">${bentoLabels.year}</span>
                 <div class="bento-progress-track">
                   <div class="bento-progress-fill" style="width: ${yearPct}%"></div>
                 </div>
@@ -1497,7 +1502,7 @@ export function updateTime() {
               upcoming._start.toDateString() === zonedNow.toDateString()
             const timeStr = upcoming.allDay
               ? sameDay
-                ? "all-day"
+                ? getClockLabel("clock_label_bento_all_day", "all-day")
                 : upcoming._start.toLocaleDateString(langCode, {
                     day: "numeric",
                     month: "numeric",
@@ -1510,7 +1515,7 @@ export function updateTime() {
                 : `${upcoming._start.toLocaleDateString(langCode, { day: "numeric", month: "numeric" })} ${upcoming._start.toLocaleTimeString(langCode, { hour: "2-digit", minute: "2-digit" })}`
             setBentoText(
               eventChip.querySelector(".bento-event-text"),
-              `${upcoming.title || "Event"} · ${timeStr}`,
+              `${upcoming.title || getClockLabel("clock_label_bento_event", "Event")} · ${timeStr}`,
             )
             eventChip.style.display = ""
           } else {

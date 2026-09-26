@@ -7,18 +7,18 @@ let englishI18n = null
 async function loadEnglishTranslations() {
   if (englishI18n) return englishI18n
   try {
-    const cached = sessionStorage.getItem("startpageCachedI18n_v5_en")
+    const cached = sessionStorage.getItem("startpageCachedI18n_v6_en")
     if (cached) {
       englishI18n = JSON.parse(cached)
       return englishI18n
     }
   } catch {}
 
-  const response = await fetch("./locales/en.json?v=5")
+  const response = await fetch("./locales/en.json?v=6")
   englishI18n = await response.json()
   try {
     sessionStorage.setItem(
-      "startpageCachedI18n_v5_en",
+      "startpageCachedI18n_v6_en",
       JSON.stringify(englishI18n),
     )
   } catch {}
@@ -37,7 +37,7 @@ export function isLanguageDownloaded(code) {
   if (BUNDLED_LANGUAGES.includes(cleanCode)) return true
   const settings = getSettings()
   if (settings.customLanguages?.[cleanCode]?.translations) return true
-  if (sessionStorage.getItem(`startpageCachedI18n_v5_${cleanCode}`)) return true
+  if (sessionStorage.getItem(`startpageCachedI18n_v6_${cleanCode}`)) return true
   return false
 }
 
@@ -110,7 +110,7 @@ export async function loadLanguage(lang) {
     let translations = null
     try {
       const cached = sessionStorage.getItem(
-        `startpageCachedI18n_v5_${language}`,
+        `startpageCachedI18n_v6_${language}`,
       )
       if (cached) {
         translations = JSON.parse(cached)
@@ -119,12 +119,12 @@ export async function loadLanguage(lang) {
 
     if (!translations) {
       try {
-        const response = await fetch(`./locales/${language}.json?v=5`)
+        const response = await fetch(`./locales/${language}.json?v=6`)
         if (response.ok) {
           translations = await response.json()
           try {
             sessionStorage.setItem(
-              `startpageCachedI18n_v5_${language}`,
+              `startpageCachedI18n_v6_${language}`,
               JSON.stringify(translations),
             )
           } catch {}
