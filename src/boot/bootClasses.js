@@ -89,6 +89,12 @@ export function applyBootBodyClasses(settings) {
   const dateClockStyle = settings.dateClockStyle || "default"
   body.classList.add(`date-clock-style-${dateClockStyle}`)
 
+  // Low-memory devices: flag for CSS to drop the heaviest clock effects
+  // (reflections / backdrop blurs) without user intervention
+  if (navigator.deviceMemory && navigator.deviceMemory <= 4) {
+    body.classList.add("perf-low")
+  }
+
   const clockStyleBackground = settings.clockStyleTransparentBackground
     ? "transparent"
     : settings.clockStyleBackground || "default"
