@@ -503,6 +503,18 @@ export function createUpdateSettingsInputs(effectInstances) {
         settings.dateClockStyle === "pixel-hud" ? "block" : "none"
     }
 
+    const clock3dSettings = document.getElementById("clock-3d-settings")
+    if (clock3dSettings) {
+      clock3dSettings.style.display =
+        settings.dateClockStyle === "clock-3d" ? "block" : "none"
+    }
+    const clock3dTilesCheckbox = document.getElementById(
+      "clock-3d-tiles-checkbox",
+    )
+    if (clock3dTilesCheckbox) {
+      clock3dTilesCheckbox.checked = settings.clock3dShowTiles === true
+    }
+
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
       hudColor1Input.value = settings.hudColor1 || "#ffb703"

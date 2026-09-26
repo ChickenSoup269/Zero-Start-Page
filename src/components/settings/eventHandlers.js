@@ -6189,6 +6189,9 @@ export function setupGeneralEventHandlers(
   document
     .getElementById("aquarium-show-bubbles-checkbox")
     ?.addEventListener("change", aquariumHandler("aquariumShowBubbles", true))
+  document
+    .getElementById("clock-3d-tiles-checkbox")
+    ?.addEventListener("change", aquariumHandler("clock3dShowTiles", true))
 
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()

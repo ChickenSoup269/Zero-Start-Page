@@ -248,6 +248,8 @@
   "settings_clock_date_style_aurora_ribbon": "Aurora-Band",
   "settings_clock_date_style_lunar_orbit": "Mondumlaufbahn",
   "settings_clock_date_style_bento": "Bento Card",
+  "settings_clock3d_show_tiles": "Digit Background Tiles",
+  "settings_clock3d_show_tiles_hint": "Off = clean macOS-style floating digits. On = glass pedestal tiles behind each digit.",
   "settings_clock_date_style_cartoon": "Cartoon",
   "settings_clock_date_style_glass_float": "Schwebendes Glas",
   "settings_clock_date_style_macos_vintage": "Oh My Posh",

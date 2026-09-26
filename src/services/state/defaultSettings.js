@@ -40,6 +40,7 @@ export const defaultSettings = {
   globalZenMode: false,
   fliqloTransparent: false,
   clockStyleBackground: "default",
+  clock3dShowTiles: false,
   clockStyleAccentColors: {},
   clockStyleUseM3Accent: {},
   clockStyleCustomBgColor: "#1f2937",

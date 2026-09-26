@@ -2657,6 +2657,7 @@ export function updateTime() {
     }
   } else if (dateClockStyle === "clock-3d") {
     const showSec = !settings.hideSeconds
+    const tilesEnabled = settings.clock3dShowTiles === true
     const is12Hour =
       settings.timeFormat === "12h" || settings.clockTimeFormat === "12"
     let displayHH = hh
@@ -2698,6 +2699,7 @@ export function updateTime() {
 
     if (existingScene && hasSecMatch) {
       // Fast path: update each digit with smooth GPU tick animation
+      existingScene.classList.toggle("clock-3d-tiles-off", !tilesEnabled)
       const digits = [d1, d2, d3, d4]
       if (showSec) digits.push(d5, d6)
 
@@ -2741,7 +2743,7 @@ export function updateTime() {
       `
 
       clockElement.innerHTML = `
-        <div class="clock-3d-scene">
+        <div class="clock-3d-scene${tilesEnabled ? "" : " clock-3d-tiles-off"}">
           <div class="clock-3d-stage clock-3d-idle-floating" style="${shouldShowClock ? "" : "display: none;"}">
             <div class="clock-3d-cubes-row">
               <!-- Hours Cubes -->
@@ -3564,6 +3566,7 @@ export function initClock() {
     "macosVintageVariant",
     "ompCrtScanlines",
     "clock3dVariant",
+    "clock3dShowTiles",
     "splitPillLayout",
     "splitPillVariant",
     "c4BombArmState",

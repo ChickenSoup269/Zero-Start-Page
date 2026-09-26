@@ -150,7 +150,8 @@ body.date-clock-style-prism-stack .clock-date-wrap,
 body.date-clock-style-metro-panel .clock-date-wrap,
 body.date-clock-style-aurora-ribbon .clock-date-wrap,
 body.date-clock-style-lunar-orbit .clock-date-wrap,
-body.date-clock-style-cartoon .clock-date-wrap {
+body.date-clock-style-cartoon .clock-date-wrap,
+body.date-clock-style-bento .clock-date-wrap {
   --clock-style-default-accent-color: #ffffff;
   --clock-style-default-accent-rgb: 255, 255, 255;
 }
@@ -175,7 +176,8 @@ body.date-clock-style-prism-stack .clock-date-wrap,
 body.date-clock-style-metro-panel .clock-date-wrap,
 body.date-clock-style-aurora-ribbon .clock-date-wrap,
 body.date-clock-style-lunar-orbit .clock-date-wrap,
-body.date-clock-style-cartoon .clock-date-wrap {
+body.date-clock-style-cartoon .clock-date-wrap,
+body.date-clock-style-bento .clock-date-wrap {
   --accent-color: var(
     --clock-style-accent-color,
     var(--clock-style-default-accent-color)
@@ -1476,6 +1478,21 @@ body.date-clock-style-clock-3d #clock {
   cursor: default;
 }
 
+/* Stage spotlight: warm radial glow behind the cubes */
+.clock-3d-scene::before {
+  content: "";
+  position: absolute;
+  inset: -8% -16%;
+  background: radial-gradient(
+    ellipse at 50% 34%,
+    rgba(255, 240, 208, 0.13) 0%,
+    rgba(255, 240, 208, 0.05) 34%,
+    transparent 62%
+  );
+  transform: translateZ(-60px);
+  pointer-events: none;
+}
+
 .clock-3d-stage {
   position: relative;
   display: inline-flex;
@@ -1511,6 +1528,8 @@ body.date-clock-style-clock-3d #clock {
   justify-content: center;
   gap: clamp(8px, calc(var(--clock-size, 6rem) * 0.13), 24px);
   transform-style: preserve-3d;
+  -webkit-box-reflect: below clamp(6px, calc(var(--clock-size, 6rem) * 0.09), 18px)
+    linear-gradient(transparent 62%, rgba(0, 0, 0, 0.24) 100%);
 }
 
 /* 3D Glass Pedestal Tile */
@@ -1527,13 +1546,18 @@ body.date-clock-style-clock-3d #clock {
   width: var(--tile-w);
   height: var(--tile-h);
   border-radius: clamp(14px, calc(var(--clock-size, 6rem) * 0.22), 26px);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: linear-gradient(
+    160deg,
+    rgba(46, 52, 68, 0.62) 0%,
+    rgba(12, 15, 24, 0.58) 55%,
+    rgba(22, 26, 40, 0.6) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 16px 36px rgba(0, 0, 0, 0.4),
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    0 22px 44px rgba(0, 0, 0, 0.46),
+    0 6px 14px rgba(0, 0, 0, 0.28),
+    inset 0 1px 2px rgba(255, 255, 255, 0.24),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -1545,14 +1569,42 @@ body.date-clock-style-clock-3d #clock {
   overflow: hidden;
 }
 
+/* Champagne-gold bezel ring (gradient border via mask) */
 .clock-3d-cube-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 246, 220, 0.9) 0%,
+    rgba(214, 180, 118, 0.75) 26%,
+    rgba(126, 98, 50, 0.5) 52%,
+    rgba(242, 222, 172, 0.85) 78%,
+    rgba(255, 250, 236, 0.9) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Top glass gloss */
+.clock-3d-cube-card::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+  height: 42%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 100%);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -1560,26 +1612,37 @@ body.date-clock-style-clock-3d #clock {
 .clock-3d-cube-box:hover .clock-3d-cube-card {
   transform: translateZ(28px) scale(1.05);
   box-shadow:
-    0 24px 48px rgba(0, 0, 0, 0.5),
-    0 6px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.95);
+    0 26px 52px rgba(0, 0, 0, 0.52),
+    0 8px 18px rgba(0, 0, 0, 0.3),
+    0 0 26px rgba(226, 194, 130, 0.22),
+    inset 0 1px 2px rgba(255, 255, 255, 0.45);
 }
 
-/* 3D Extruded Typographic Digit */
+/* 3D Platinum Extruded Typographic Digit */
 .clock-3d-cube-digit {
   font-family: var(--font-clock);
   font-size: clamp(2.8rem, calc(var(--clock-size, 6rem) * 1.02), 11rem);
   font-weight: 900;
   line-height: 1;
   color: var(--clock-color, #ffffff);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f1f5ff 30%,
+    #b6c3da 52%,
+    #f2f6ff 74%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
   text-shadow:
-    0 1px 1px rgba(255, 255, 255, 0.9),
-    1px 2px 0 rgba(210, 225, 255, 0.6),
-    2px 4px 0 rgba(0, 0, 0, 0.2),
-    3px 6px 0 rgba(0, 0, 0, 0.28),
-    4px 9px 16px rgba(0, 0, 0, 0.45),
-    0 0 24px rgba(var(--clock-color-rgb, 255, 255, 255), 0.4);
+    0 1px 0 rgba(255, 255, 255, 0.35),
+    2px 3px 0 rgba(158, 172, 198, 0.55),
+    3px 5px 0 rgba(84, 98, 128, 0.5),
+    4px 9px 14px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(var(--clock-color-rgb, 255, 255, 255), 0.35);
   font-variant-numeric: tabular-nums;
   transform: translateZ(18px);
   will-change: transform, opacity;
@@ -1636,10 +1699,17 @@ body.date-clock-style-clock-3d #clock {
   width: clamp(10px, calc(var(--clock-size, 6rem) * 0.14), 22px);
   height: clamp(10px, calc(var(--clock-size, 6rem) * 0.14), 22px);
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--clock-color, #a8c0ff) 55%, rgba(0, 0, 0, 0.45) 100%);
+  background: radial-gradient(
+    circle at 32% 28%,
+    #fffdf4 0%,
+    #f6e2b0 32%,
+    #cfa85e 58%,
+    rgba(74, 50, 12, 0.6) 100%
+  );
   box-shadow:
-    0 0 16px rgba(var(--clock-color-rgb, 255, 255, 255), 0.95),
-    0 0 32px rgba(var(--clock-color-rgb, 255, 255, 255), 0.5),
+    0 0 14px rgba(233, 199, 128, 0.85),
+    0 0 34px rgba(233, 199, 128, 0.4),
+    inset 0 -2px 4px rgba(94, 62, 14, 0.55),
     0 4px 10px rgba(0, 0, 0, 0.4);
   animation: clock3DOrbPulse 2.5s ease-in-out infinite alternate;
 }
@@ -1672,9 +1742,12 @@ body.date-clock-style-clock-3d #clock {
   margin-left: 6px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: linear-gradient(150deg, rgba(52, 58, 74, 0.6), rgba(14, 17, 26, 0.55));
+  border: 1px solid rgba(222, 190, 128, 0.42);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.38),
+    0 0 16px rgba(226, 194, 130, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transform-style: preserve-3d;
@@ -1714,9 +1787,12 @@ body.date-clock-style-clock-3d #clock {
   gap: 8px;
   padding: 8px 22px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  background: linear-gradient(150deg, rgba(52, 58, 74, 0.55), rgba(14, 17, 26, 0.5));
+  border: 1px solid rgba(222, 190, 128, 0.4);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.44),
+    0 0 20px rgba(226, 194, 130, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   font-size: clamp(0.85rem, calc(var(--date-size, 1.5rem) * 0.72), 1.35rem);
@@ -10974,6 +11050,7 @@ body.gf-anim-glitch .gf-char::after {
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); transform: translateZ(0); will-change: transform; contain: layout style; }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container { background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important; box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important; border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important; }
 body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container { background: var(--clock-style-custom-bg-color, rgba(12, 14, 20, 0.5)); box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.05); }
+
 /* Bento Card Style */
 body.date-clock-style-bento .bento-clock {
   display: grid;
@@ -11137,6 +11214,127 @@ body.date-clock-style-bento .bento-progress-fill {
   }
 }
 
+/* 3D Luxe polish: keep solid extruded digits when a background mode re-themes them */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-digit,
+body.clock-style-bg-accent.date-clock-style-clock-3d .clock-3d-cube-digit,
+body.clock-style-bg-custom.date-clock-style-clock-3d .clock-3d-cube-digit {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Softer gold ring on the light card so the bezel stays elegant on white */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-card::before {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(203, 213, 225, 0.8) 40%,
+    rgba(148, 163, 184, 0.6) 60%,
+    rgba(226, 232, 240, 0.9) 100%
+  ) !important;
+}
+
+/* ==========================================================================
+   3D Clock — macOS clean mode (tiles off, default)
+   Digits float without pedestal tiles; toggle via clock3dShowTiles setting.
+   ========================================================================== */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card::before,
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card::after {
+  display: none;
+}
+
+/* macOS-style digit: smooth platinum gradient, soft blurred depth (no hard extrusion) */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-digit {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f4f7fc 42%,
+    #ccd6e6 76%,
+    #f6f9fd 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.26),
+    0 12px 36px rgba(0, 0, 0, 0.2),
+    0 0 46px rgba(var(--clock-color-rgb, 255, 255, 255), 0.2);
+}
+
+/* Neutral silver-white orbs to match the minimal look */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-orb {
+  background: radial-gradient(
+    circle at 35% 30%,
+    #ffffff 0%,
+    #e2e9f4 52%,
+    rgba(96, 110, 136, 0.55) 100%
+  );
+  box-shadow:
+    0 0 12px rgba(255, 255, 255, 0.5),
+    0 0 28px rgba(255, 255, 255, 0.2),
+    0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Softer neutral spotlight instead of the warm gold wash */
+.clock-3d-scene.clock-3d-tiles-off::before {
+  background: radial-gradient(
+    ellipse at 50% 34%,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.04) 34%,
+    transparent 62%
+  );
+}
+
+/* Cleaner pill badges in tiles-off mode */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-ampm-cube,
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-date-pill {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.05)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Wider breathing room now that tiles are gone */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-colon-separator {
+  padding: 0 10px;
+}
+
+/* Softer reflection in clean mode */
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cubes-row {
+  -webkit-box-reflect: below clamp(6px, calc(var(--clock-size, 6rem) * 0.09), 18px)
+    linear-gradient(transparent 70%, rgba(0, 0, 0, 0.16) 100%);
+}
+
+/* Tighten rhythm in clean mode: shrink reserved tile width, allow digits to breathe */
+.clock-3d-scene.clock-3d-tiles-off {
+  --tile-w: clamp(2.3rem, calc(var(--clock-size, 6rem) * 0.6), 6.8rem);
+  --tile-sec-w: clamp(1.7rem, calc(var(--clock-size, 6rem) * 0.46), 5rem);
+}
+
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cubes-row {
+  gap: clamp(3px, calc(var(--clock-size, 6rem) * 0.055), 12px);
+}
+
+.clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card {
+  overflow: visible;
+}
+
 /* ==========================================================================
    Bento Card — background modes (light / dark / accent / custom / transparent)
    ========================================================================== */
@@ -11234,24 +11432,3 @@ body.clock-style-bg-light.date-clock-style-bento .bento-progress-fill {
   background: linear-gradient(90deg, rgba(180, 83, 9, 0.55), #b45309);
   box-shadow: 0 0 10px rgba(180, 83, 9, 0.4);
 }
-/* 3D Luxe polish: keep solid extruded digits when a background mode re-themes them */
-body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-digit,
-body.clock-style-bg-accent.date-clock-style-clock-3d .clock-3d-cube-digit,
-body.clock-style-bg-custom.date-clock-style-clock-3d .clock-3d-cube-digit {
-  background: none !important;
-  -webkit-background-clip: border-box !important;
-  background-clip: border-box !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-/* Softer gold ring on the light card so the bezel stays elegant on white */
-body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-card::before {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(203, 213, 225, 0.8) 40%,
-    rgba(148, 163, 184, 0.6) 60%,
-    rgba(226, 232, 240, 0.9) 100%
-  ) !important;
-}
-
