@@ -11432,3 +11432,66 @@ body.clock-style-bg-light.date-clock-style-bento .bento-progress-fill {
   background: linear-gradient(90deg, rgba(180, 83, 9, 0.55), #b45309);
   box-shadow: 0 0 10px rgba(180, 83, 9, 0.4);
 }
+
+/* ==========================================================================
+   3D Clock — tiles-off must stay transparent across ALL background modes
+   (bg-mode card rules use !important, so these need matching specificity)
+   ========================================================================== */
+body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card::before,
+body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-card::after {
+  display: none !important;
+}
+
+/* macOS gradient digits win over bg-mode solid resets (except bg-light,
+   where dark extruded digits on the white plate are the correct look) */
+body:not(.clock-style-bg-light).date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-digit {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f4f7fc 42%,
+    #ccd6e6 76%,
+    #f6f9fd 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 800;
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.26),
+    0 12px 36px rgba(0, 0, 0, 0.2),
+    0 0 46px rgba(var(--clock-color-rgb, 255, 255, 255), 0.2) !important;
+}
+
+/* Neutral pill badges in tiles-off win over bg-custom re-theming */
+body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-ampm-cube,
+body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-date-pill {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.05)
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Never let flex squeeze the digit boxes on narrow viewports */
+.clock-3d-cubes-row .clock-3d-cube-box,
+.clock-3d-cubes-row .clock-3d-colon-separator {
+  flex-shrink: 0;
+}
+
+/* bg-light: digits must be dark slate regardless of the user clock color
+   (var(--clock-color) is always defined, so the old fallback never fired) */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-digit,
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-ampm-cube span {
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+}
