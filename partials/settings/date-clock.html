@@ -414,6 +414,44 @@
                         <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                     </div>
                 </div>
+
+                <!-- Auto style by time of day -->
+                <div id="clock-style-schedule-settings" class="setting-item"
+                    style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+                    <div class="setting-item-row" style="margin-top: 5px; background: transparent; padding: 0; border: none;">
+                        <label for="clock-style-schedule-checkbox" data-i18n="settings_clock_style_schedule">Auto style
+                            by time of day</label>
+                        <label class="switch">
+                            <input type="checkbox" id="clock-style-schedule-checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div id="clock-style-schedule-options" style="display: none;">
+                        <div class="setting-item-row" style="margin-top: 8px; background: transparent; padding: 0; border: none;">
+                            <label for="clock-style-schedule-day-select" data-i18n="settings_clock_style_schedule_day">Day
+                                style</label>
+                            <select id="clock-style-schedule-day-select"></select>
+                        </div>
+                        <div class="setting-item-row" style="margin-top: 8px; background: transparent; padding: 0; border: none;">
+                            <label for="clock-style-schedule-night-select" data-i18n="settings_clock_style_schedule_night">Night
+                                style</label>
+                            <select id="clock-style-schedule-night-select"></select>
+                        </div>
+                        <div class="setting-item-row" style="margin-top: 8px; background: transparent; padding: 0; border: none;">
+                            <label for="clock-style-schedule-day-start" data-i18n="settings_clock_style_schedule_day_start">Day
+                                starts at</label>
+                            <input type="time" id="clock-style-schedule-day-start" value="07:00">
+                        </div>
+                        <div class="setting-item-row" style="margin-top: 8px; background: transparent; padding: 0; border: none;">
+                            <label for="clock-style-schedule-night-start" data-i18n="settings_clock_style_schedule_night_start">Night
+                                starts at</label>
+                            <input type="time" id="clock-style-schedule-night-start" value="19:00">
+                        </div>
+                        <p class="setting-hint" data-i18n="settings_clock_style_schedule_hint"
+                            style="font-size: 0.75em; opacity: 0.65; margin-top: 8px;">The clock switches between the
+                            two styles automatically. Manual changes last until the next switch time.</p>
+                    </div>
+                </div>
             </div>
             <select id="clock-date-style-select" style="display: none;">
                 <option value="default">Default</option>

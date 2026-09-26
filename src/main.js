@@ -13,6 +13,7 @@
 // ── Imports: Services & Utils ─────────────────────────────────────────────────
 import { initI18n, geti18n } from "./services/i18n.js"
 import { initClock } from "./components/clock.js"
+import { startClockStyleScheduler } from "./components/clock/clockStyleScheduler.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
 import {
@@ -219,6 +220,7 @@ async function bootstrap() {
   // ── 10. Critical UI components ────────────────────────────────────────────
   initPerfHud()
   initClock()
+  startClockStyleScheduler()
 
   if (
     currentSettings.showBookmarks !== false ||

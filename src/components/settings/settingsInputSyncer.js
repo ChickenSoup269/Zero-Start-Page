@@ -534,6 +534,60 @@ export function createUpdateSettingsInputs(effectInstances) {
       }
     }
 
+    // Clock style schedule: populate the two style selects from the master
+    // style list, then sync values
+    const scheduleDaySelect = document.getElementById(
+      "clock-style-schedule-day-select",
+    )
+    const scheduleNightSelect = document.getElementById(
+      "clock-style-schedule-night-select",
+    )
+    const masterStyleSelect = document.getElementById(
+      "clock-date-style-select",
+    )
+    if (scheduleDaySelect && scheduleNightSelect) {
+      if (!scheduleDaySelect.options.length && masterStyleSelect) {
+        for (const opt of masterStyleSelect.options) {
+          for (const target of [scheduleDaySelect, scheduleNightSelect]) {
+            const clone = document.createElement("option")
+            clone.value = opt.value
+            clone.textContent = opt.textContent
+            target.appendChild(clone)
+          }
+        }
+      }
+      scheduleDaySelect.value =
+        settings.clockStyleScheduleDay || "default"
+      scheduleNightSelect.value =
+        settings.clockStyleScheduleNight || "default"
+    }
+    const scheduleCheckbox = document.getElementById(
+      "clock-style-schedule-checkbox",
+    )
+    if (scheduleCheckbox) {
+      scheduleCheckbox.checked = settings.clockStyleScheduleEnabled === true
+    }
+    const scheduleOptions = document.getElementById(
+      "clock-style-schedule-options",
+    )
+    if (scheduleOptions) {
+      scheduleOptions.style.display =
+        settings.clockStyleScheduleEnabled === true ? "block" : "none"
+    }
+    const scheduleDayStart = document.getElementById(
+      "clock-style-schedule-day-start",
+    )
+    if (scheduleDayStart) {
+      scheduleDayStart.value = settings.clockStyleScheduleDayStart || "07:00"
+    }
+    const scheduleNightStart = document.getElementById(
+      "clock-style-schedule-night-start",
+    )
+    if (scheduleNightStart) {
+      scheduleNightStart.value =
+        settings.clockStyleScheduleNightStart || "19:00"
+    }
+
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
       hudColor1Input.value = settings.hudColor1 || "#ffb703"

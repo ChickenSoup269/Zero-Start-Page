@@ -6205,6 +6205,31 @@ export function setupGeneralEventHandlers(
     .getElementById("bento-show-week-year-checkbox")
     ?.addEventListener("change", aquariumHandler("bentoShowWeekYear", true))
 
+  // Clock style schedule
+  const scheduleEnabledCheckbox = document.getElementById(
+    "clock-style-schedule-checkbox",
+  )
+  scheduleEnabledCheckbox?.addEventListener("change", (e) => {
+    aquariumHandler("clockStyleScheduleEnabled", true)(e)
+    const options = document.getElementById("clock-style-schedule-options")
+    if (options) options.style.display = e.target.checked ? "block" : "none"
+  })
+  document
+    .getElementById("clock-style-schedule-day-select")
+    ?.addEventListener("change", aquariumHandler("clockStyleScheduleDay"))
+  document
+    .getElementById("clock-style-schedule-night-select")
+    ?.addEventListener("change", aquariumHandler("clockStyleScheduleNight"))
+  document
+    .getElementById("clock-style-schedule-day-start")
+    ?.addEventListener("change", aquariumHandler("clockStyleScheduleDayStart"))
+  document
+    .getElementById("clock-style-schedule-night-start")
+    ?.addEventListener(
+      "change",
+      aquariumHandler("clockStyleScheduleNightStart"),
+    )
+
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()
     const style = settings.dateClockStyle || "default"
