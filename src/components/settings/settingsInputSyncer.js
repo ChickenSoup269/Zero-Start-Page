@@ -515,6 +515,25 @@ export function createUpdateSettingsInputs(effectInstances) {
       clock3dTilesCheckbox.checked = settings.clock3dShowTiles === true
     }
 
+    const bentoSettings = document.getElementById("bento-settings")
+    if (bentoSettings) {
+      bentoSettings.style.display =
+        settings.dateClockStyle === "bento" ? "block" : "none"
+    }
+    const bentoToggles = [
+      ["bento-show-lunar-checkbox", "bentoShowLunar", true],
+      ["bento-show-weather-checkbox", "bentoShowWeather", false],
+      ["bento-show-next-event-checkbox", "bentoShowNextEvent", false],
+      ["bento-show-week-year-checkbox", "bentoShowWeekYear", true],
+    ]
+    for (const [id, key, fallback] of bentoToggles) {
+      const checkbox = document.getElementById(id)
+      if (checkbox) {
+        checkbox.checked =
+          settings[key] === undefined ? fallback : settings[key] === true
+      }
+    }
+
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
       hudColor1Input.value = settings.hudColor1 || "#ffb703"

@@ -6192,6 +6192,18 @@ export function setupGeneralEventHandlers(
   document
     .getElementById("clock-3d-tiles-checkbox")
     ?.addEventListener("change", aquariumHandler("clock3dShowTiles", true))
+  document
+    .getElementById("bento-show-lunar-checkbox")
+    ?.addEventListener("change", aquariumHandler("bentoShowLunar", true))
+  document
+    .getElementById("bento-show-weather-checkbox")
+    ?.addEventListener("change", aquariumHandler("bentoShowWeather", true))
+  document
+    .getElementById("bento-show-next-event-checkbox")
+    ?.addEventListener("change", aquariumHandler("bentoShowNextEvent", true))
+  document
+    .getElementById("bento-show-week-year-checkbox")
+    ?.addEventListener("change", aquariumHandler("bentoShowWeekYear", true))
 
   DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
     const settings = getSettings()

@@ -1,5 +1,9 @@
 import { clockElement, dateElement, fadeToggle } from "../utils/dom.js"
-import { DEFAULT_MEDIA_ORB_IMAGE_URL, getSettings } from "../services/state.js"
+import {
+  DEFAULT_MEDIA_ORB_IMAGE_URL,
+  getCalendarEvents,
+  getSettings,
+} from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
 import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
@@ -1293,8 +1297,27 @@ export function updateTime() {
       zonedNow.getMinutes() * 60 +
       (parseInt(ss, 10) || 0)
     const dayPct = isTimer ? 0 : Math.round((nowSecOfDay / 86400) * 100)
+    // Week starts Monday (VN convention); both share the zone-time second count
+    const weekDayIdx = (getZonedWeekdayIndex(zonedNow, tz) + 6) % 7
+    const weekPct = isTimer
+      ? 0
+      : Math.round(((weekDayIdx * 86400 + nowSecOfDay) / 604800) * 100)
+    const yearStart = new Date(zonedNow.getFullYear(), 0, 1)
+    const yearEnd = new Date(zonedNow.getFullYear() + 1, 0, 1)
+    const yearPct = isTimer
+      ? 0
+      : Math.round(((zonedNow - yearStart) / (yearEnd - yearStart)) * 100)
+
+    const showLunar = settings.bentoShowLunar !== false
+    const showWeather = settings.bentoShowWeather === true
+    const showEvent = settings.bentoShowNextEvent === true
+    const showWeekYear = settings.bentoShowWeekYear !== false
 
     let bentoRoot = clockElement.querySelector(".bento-clock")
+    // Rebuild when the DOM predates the info-hub bottom tile (upgrade path)
+    if (bentoRoot && !bentoRoot.querySelector(".bento-bottom-tile")) {
+      bentoRoot = null
+    }
     if (!bentoRoot) {
       clockElement.innerHTML = `
         <div class="bento-clock">
@@ -1310,12 +1333,44 @@ export function updateTime() {
             <span class="bento-daynum">${isTimer ? timerLabel : dayNumber}</span>
             <span class="bento-month"${isTimer ? ' style="display: none;"' : ""}>${monthShort}</span>
           </div>
-          <div class="bento-tile bento-progress-tile">
-            <span class="bento-progress-label">DAY</span>
-            <div class="bento-progress-track">
-              <div class="bento-progress-fill" style="width: ${dayPct}%"></div>
+          <div class="bento-tile bento-bottom-tile">
+            <div class="bento-chips"${showLunar || showWeather || showEvent ? "" : ' style="display: none;"'}>
+              <span class="bento-chip bento-lunar-chip"${showLunar ? "" : ' style="display: none;"'}>
+                <i class="fa-regular fa-moon"></i>
+                <span class="bento-lunar-text"></span>
+              </span>
+              <span class="bento-chip bento-weather-chip"${showWeather ? "" : ' style="display: none;"'}>
+                <i class="bento-weather-icon fa-solid fa-sun"></i>
+                <span class="bento-weather-text"></span>
+              </span>
+              <span class="bento-chip bento-event-chip"${showEvent ? "" : ' style="display: none;"'}>
+                <i class="fa-regular fa-bell"></i>
+                <span class="bento-event-text"></span>
+              </span>
             </div>
-            <span class="bento-progress-pct">${dayPct}%</span>
+            <div class="bento-bars">
+              <div class="bento-bar-row bento-bar-day">
+                <span class="bento-progress-label">DAY</span>
+                <div class="bento-progress-track">
+                  <div class="bento-progress-fill" style="width: ${dayPct}%"></div>
+                </div>
+                <span class="bento-progress-pct">${dayPct}%</span>
+              </div>
+              <div class="bento-bar-row bento-bar-week"${showWeekYear ? "" : ' style="display: none;"'}>
+                <span class="bento-progress-label">WEEK</span>
+                <div class="bento-progress-track">
+                  <div class="bento-progress-fill" style="width: ${weekPct}%"></div>
+                </div>
+                <span class="bento-progress-pct">${weekPct}%</span>
+              </div>
+              <div class="bento-bar-row bento-bar-year"${showWeekYear ? "" : ' style="display: none;"'}>
+                <span class="bento-progress-label">YEAR</span>
+                <div class="bento-progress-track">
+                  <div class="bento-progress-fill" style="width: ${yearPct}%"></div>
+                </div>
+                <span class="bento-progress-pct">${yearPct}%</span>
+              </div>
+            </div>
           </div>
         </div>
       `
@@ -1351,16 +1406,156 @@ export function updateTime() {
       setBentoText(bentoMonthEl, isTimer ? "" : monthShort)
       bentoMonthEl.style.display = isTimer || !monthShort ? "none" : ""
     }
-    const bentoProgressTile = bentoRoot.querySelector(".bento-progress-tile")
-    if (bentoProgressTile) {
-      bentoProgressTile.style.display = isTimer ? "none" : "flex"
+
+    // Bottom info-hub tile: hidden entirely during timer mode
+    const bentoBottomTile = bentoRoot.querySelector(".bento-bottom-tile")
+    if (bentoBottomTile) {
+      bentoBottomTile.style.display = isTimer ? "none" : "flex"
     }
-    const bentoFillEl = bentoRoot.querySelector(".bento-progress-fill")
-    if (bentoFillEl) bentoFillEl.style.width = `${dayPct}%`
-    setBentoText(
-      bentoRoot.querySelector(".bento-progress-pct"),
-      `${dayPct}%`,
-    )
+
+    // Lunar chip
+    const lunarChip = bentoRoot.querySelector(".bento-lunar-chip")
+    if (lunarChip) {
+      if (showLunar && !isTimer) {
+        const zl = getZonedDate(now, tz)
+        const lunar = convertSolar2Lunar(
+          zl.getDate(),
+          zl.getMonth() + 1,
+          zl.getFullYear(),
+        )
+        setBentoText(
+          lunarChip.querySelector(".bento-lunar-text"),
+          `${String(lunar.day).padStart(2, "0")}/${lunar.month}`,
+        )
+        lunarChip.style.display = ""
+      } else {
+        lunarChip.style.display = "none"
+      }
+    }
+
+    // Weather chip (reuses the weather widget cache)
+    const weatherChip = bentoRoot.querySelector(".bento-weather-chip")
+    if (weatherChip) {
+      if (showWeather && !isTimer) {
+        let wCache = null
+        try {
+          wCache = JSON.parse(
+            localStorage.getItem("weatherWidgetCache") || "null",
+          )
+        } catch {
+          wCache = null
+        }
+        const cur = wCache?.data?.current
+        if (cur && cur.temperature_2m !== undefined) {
+          const unit = (cur.current_units?.temperature_2m || "°C").replace(
+            "°",
+            "",
+          )
+          setBentoText(
+            weatherChip.querySelector(".bento-weather-text"),
+            `${Math.round(cur.temperature_2m)}°${unit} · ${cur.relative_humidity_2m ?? "--"}%`,
+          )
+          const code = cur.weather_code
+          const wIcon =
+            code === 0
+              ? "fa-sun"
+              : code >= 1 && code <= 3
+                ? "fa-cloud-sun"
+                : code === 45 || code === 48
+                  ? "fa-smog"
+                  : (code >= 51 && code <= 67) || (code >= 80 && code <= 82)
+                    ? "fa-cloud-rain"
+                    : (code >= 71 && code <= 77) || code === 85 || code === 86
+                      ? "fa-snowflake"
+                      : code >= 95
+                        ? "fa-cloud-bolt"
+                        : "fa-cloud"
+          const iconEl = weatherChip.querySelector(".bento-weather-icon")
+          if (iconEl) iconEl.className = `bento-weather-icon fa-solid ${wIcon}`
+          weatherChip.style.display = ""
+        } else {
+          weatherChip.style.display = "none"
+        }
+      } else {
+        weatherChip.style.display = "none"
+      }
+    }
+
+    // Next-event chip (recomputed once per minute)
+    const eventChip = bentoRoot.querySelector(".bento-event-chip")
+    if (eventChip) {
+      if (showEvent && !isTimer) {
+        const minuteKey = `${zonedNow.getHours()}:${zonedNow.getMinutes()}`
+        if (bentoRoot._bentoEventKey !== minuteKey) {
+          bentoRoot._bentoEventKey = minuteKey
+          const upcoming = (getCalendarEvents() || [])
+            .map((ev) => ({ ...ev, _start: new Date(ev.start) }))
+            .filter((ev) => !isNaN(ev._start) && ev._start > zonedNow)
+            .sort((a, b) => a._start - b._start)[0]
+          if (upcoming) {
+            const sameDay =
+              upcoming._start.toDateString() === zonedNow.toDateString()
+            const timeStr = upcoming.allDay
+              ? sameDay
+                ? "all-day"
+                : upcoming._start.toLocaleDateString(langCode, {
+                    day: "numeric",
+                    month: "numeric",
+                  })
+              : sameDay
+                ? upcoming._start.toLocaleTimeString(langCode, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : `${upcoming._start.toLocaleDateString(langCode, { day: "numeric", month: "numeric" })} ${upcoming._start.toLocaleTimeString(langCode, { hour: "2-digit", minute: "2-digit" })}`
+            setBentoText(
+              eventChip.querySelector(".bento-event-text"),
+              `${upcoming.title || "Event"} · ${timeStr}`,
+            )
+            eventChip.style.display = ""
+          } else {
+            eventChip.style.display = "none"
+          }
+        }
+      } else {
+        eventChip.style.display = "none"
+      }
+    }
+
+    // Hide the chips row entirely when no chip is visible (avoids dead gap)
+    const chipsRow = bentoRoot.querySelector(".bento-chips")
+    if (chipsRow) {
+      const anyChipVisible = [
+        ".bento-lunar-chip",
+        ".bento-weather-chip",
+        ".bento-event-chip",
+      ].some((sel) => {
+        const chip = bentoRoot.querySelector(sel)
+        return chip && chip.style.display !== "none"
+      })
+      chipsRow.style.display = anyChipVisible ? "" : "none"
+    }
+
+    // Progress bars: DAY always, WEEK/YEAR optional
+    const setBar = (rowSel, pct) => {
+      const fill = bentoRoot.querySelector(`${rowSel} .bento-progress-fill`)
+      if (fill) fill.style.width = `${pct}%`
+      setBentoText(
+        bentoRoot.querySelector(`${rowSel} .bento-progress-pct`),
+        `${pct}%`,
+      )
+    }
+    setBar(".bento-bar-day", dayPct)
+    const weekRow = bentoRoot.querySelector(".bento-bar-week")
+    if (weekRow) {
+      weekRow.style.display = showWeekYear && !isTimer ? "" : "none"
+      if (showWeekYear && !isTimer) setBar(".bento-bar-week", weekPct)
+    }
+    const yearRow = bentoRoot.querySelector(".bento-bar-year")
+    if (yearRow) {
+      yearRow.style.display = showWeekYear && !isTimer ? "" : "none"
+      if (showWeekYear && !isTimer) setBar(".bento-bar-year", yearPct)
+    }
   } else if (dateClockStyle === "lunar-orbit") {
     const rawWeekday = isTimer
       ? timerLabel
@@ -3567,6 +3762,10 @@ export function initClock() {
     "ompCrtScanlines",
     "clock3dVariant",
     "clock3dShowTiles",
+    "bentoShowLunar",
+    "bentoShowWeather",
+    "bentoShowNextEvent",
+    "bentoShowWeekYear",
     "splitPillLayout",
     "splitPillVariant",
     "c4BombArmState",

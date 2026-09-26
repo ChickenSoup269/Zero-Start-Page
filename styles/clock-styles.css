@@ -11167,11 +11167,52 @@ body.date-clock-style-bento .bento-month {
   color: var(--accent-color, #ffffff);
 }
 
-body.date-clock-style-bento .bento-progress-tile {
+body.date-clock-style-bento .bento-bottom-tile {
   grid-area: progress;
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(var(--clock-size, 6rem) * 0.05);
+  padding: calc(var(--clock-size, 6rem) * 0.05) calc(var(--clock-size, 6rem) * 0.1);
+}
+
+/* Info chips (lunar / weather / next event) */
+body.date-clock-style-bento .bento-chips {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: calc(var(--clock-size, 6rem) * 0.08);
-  padding: calc(var(--clock-size, 6rem) * 0.045) calc(var(--clock-size, 6rem) * 0.1);
+  gap: calc(var(--clock-size, 6rem) * 0.04);
+}
+
+body.date-clock-style-bento .bento-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.26em 0.75em;
+  border-radius: 999px;
+  background: rgba(var(--clock-color-rgb, 255, 255, 255), 0.08);
+  font-family: var(--font-date, "Inter", sans-serif);
+  font-size: clamp(0.62rem, calc(var(--clock-size, 6rem) * 0.1), 0.88rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--date-color, rgba(255, 255, 255, 0.82));
+}
+
+body.date-clock-style-bento .bento-chip i {
+  font-size: 0.92em;
+  color: var(--accent-color, #ffffff);
+}
+
+body.date-clock-style-bento .bento-bars {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--clock-size, 6rem) * 0.032);
+}
+
+body.date-clock-style-bento .bento-bar-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--clock-size, 6rem) * 0.06);
 }
 
 body.date-clock-style-bento .bento-progress-label,
@@ -11186,7 +11227,7 @@ body.date-clock-style-bento .bento-progress-pct {
 body.date-clock-style-bento .bento-progress-track {
   position: relative;
   flex: 1;
-  height: 6px;
+  height: 4px;
   border-radius: 999px;
   background: rgba(var(--clock-color-rgb, 255, 255, 255), 0.12);
   overflow: hidden;
@@ -11525,4 +11566,17 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-digit,
 body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-ampm-cube span {
   color: #1e293b !important;
   -webkit-text-fill-color: #1e293b !important;
+}
+
+/* Bento info chips on the light card */
+body.clock-style-bg-light.date-clock-style-bento .bento-chip {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+body.clock-style-bg-light.date-clock-style-bento .bento-chip i {
+  color: #b45309;
+}
+
+body.clock-style-bg-light.date-clock-style-bento .bento-chip {
+  color: rgba(31, 41, 55, 0.85);
 }
