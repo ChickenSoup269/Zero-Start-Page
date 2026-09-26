@@ -406,6 +406,7 @@ export function createUpdateSettingsInputs(effectInstances) {
       "metro-panel",
       "minimalist-word",
       "aurora-ribbon",
+      "bento",
       "lunar-orbit",
       "space-concentric",
       "audio-wave",

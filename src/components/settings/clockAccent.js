@@ -25,6 +25,7 @@ export const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "metro-panel": "#ffffff",
   "aurora-ribbon": "#ffffff",
   "lunar-orbit": "#ffffff",
+  bento: "#ffffff",
   cartoon: "#ffffff",
   "space-concentric": "#00ff66",
   "split-pill": "#111111",

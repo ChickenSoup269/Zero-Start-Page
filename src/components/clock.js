@@ -1274,6 +1274,93 @@ export function updateTime() {
         ${isTimer ? `<div class="aurora-ribbon-date">${timerRunningLabel}</div>` : dateStr ? `<div class="aurora-ribbon-date">${dateStr}</div>` : ""}
       </div>
     `
+  } else if (dateClockStyle === "bento") {
+    const weekday = isTimer
+      ? timerShortLabel
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(
+          /^<span class="weekday-part">|<\/span>$/g,
+          "",
+        )
+    const zonedParts = getZonedDateParts(now, tz)
+    const monthShort = isTimer
+      ? ""
+      : getLocalizedMonthName(now, langCode, tz, settings, "short")
+    const dayNumber = zonedParts.day
+    // Use 24h zone time for the day-progress bar (12h hh would break the math)
+    const zonedNow = isTimer ? now : getZonedDate(now, tz)
+    const nowSecOfDay =
+      zonedNow.getHours() * 3600 +
+      zonedNow.getMinutes() * 60 +
+      (parseInt(ss, 10) || 0)
+    const dayPct = isTimer ? 0 : Math.round((nowSecOfDay / 86400) * 100)
+
+    let bentoRoot = clockElement.querySelector(".bento-clock")
+    if (!bentoRoot) {
+      clockElement.innerHTML = `
+        <div class="bento-clock">
+          <div class="bento-tile bento-time-tile">
+            <span class="bento-hh">${hh}</span>
+            <span class="bento-colon">:</span>
+            <span class="bento-mm">${mm}</span>
+            <span class="bento-ss"${ss ? "" : ' style="display: none;"'}>${ss || ""}</span>
+            <span class="bento-ampm"${ampm ? "" : ' style="display: none;"'}>${ampm || ""}</span>
+          </div>
+          <div class="bento-tile bento-side-tile">
+            <span class="bento-weekday">${weekday}</span>
+            <span class="bento-daynum">${isTimer ? timerLabel : dayNumber}</span>
+            <span class="bento-month"${isTimer ? ' style="display: none;"' : ""}>${monthShort}</span>
+          </div>
+          <div class="bento-tile bento-progress-tile">
+            <span class="bento-progress-label">DAY</span>
+            <div class="bento-progress-track">
+              <div class="bento-progress-fill" style="width: ${dayPct}%"></div>
+            </div>
+            <span class="bento-progress-pct">${dayPct}%</span>
+          </div>
+        </div>
+      `
+      bentoRoot = clockElement.querySelector(".bento-clock")
+    }
+
+    // Fast path: update text nodes in place so CSS transitions stay smooth
+    const setBentoText = (el, text) => {
+      if (el && el.textContent !== text) el.textContent = text
+    }
+    setBentoText(bentoRoot.querySelector(".bento-hh"), hh)
+    setBentoText(bentoRoot.querySelector(".bento-mm"), mm)
+    const bentoSsEl = bentoRoot.querySelector(".bento-ss")
+    if (bentoSsEl) {
+      setBentoText(bentoSsEl, ss || "")
+      bentoSsEl.style.display = ss ? "" : "none"
+    }
+    const bentoAmpmEl = bentoRoot.querySelector(".bento-ampm")
+    if (bentoAmpmEl) {
+      setBentoText(bentoAmpmEl, ampm || "")
+      bentoAmpmEl.style.display = ampm ? "" : "none"
+    }
+    setBentoText(
+      bentoRoot.querySelector(".bento-weekday"),
+      isTimer ? timerShortLabel : weekday,
+    )
+    setBentoText(
+      bentoRoot.querySelector(".bento-daynum"),
+      isTimer ? timerLabel : String(dayNumber),
+    )
+    const bentoMonthEl = bentoRoot.querySelector(".bento-month")
+    if (bentoMonthEl) {
+      setBentoText(bentoMonthEl, isTimer ? "" : monthShort)
+      bentoMonthEl.style.display = isTimer || !monthShort ? "none" : ""
+    }
+    const bentoProgressTile = bentoRoot.querySelector(".bento-progress-tile")
+    if (bentoProgressTile) {
+      bentoProgressTile.style.display = isTimer ? "none" : "flex"
+    }
+    const bentoFillEl = bentoRoot.querySelector(".bento-progress-fill")
+    if (bentoFillEl) bentoFillEl.style.width = `${dayPct}%`
+    setBentoText(
+      bentoRoot.querySelector(".bento-progress-pct"),
+      `${dayPct}%`,
+    )
   } else if (dateClockStyle === "lunar-orbit") {
     const rawWeekday = isTimer
       ? timerLabel

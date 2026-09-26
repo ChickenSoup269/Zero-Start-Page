@@ -127,6 +127,8 @@ export function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".metro-panel-time"))
     } else if (style === "aurora-ribbon") {
       clockTargets.push(clockElement.querySelector(".aurora-ribbon-time"))
+    } else if (style === "bento") {
+      clockTargets.push(clockElement.querySelector(".bento-time-tile"))
     } else if (style === "lunar-orbit") {
       clockTargets.push(clockElement.querySelector(".lunar-orbit-time"))
     } else if (style === "cartoon") {
@@ -218,6 +220,8 @@ export function applyHueMode(settings) {
       } else if (style === "aurora-ribbon") {
         dateTargets.push(clockElement.querySelector(".aurora-ribbon-weekday"))
         dateTargets.push(clockElement.querySelector(".aurora-ribbon-date"))
+      } else if (style === "bento") {
+        dateTargets.push(clockElement.querySelector(".bento-side-tile"))
       } else if (style === "lunar-orbit") {
         dateTargets.push(clockElement.querySelector(".lunar-orbit-weekday"))
         dateTargets.push(clockElement.querySelector(".lunar-orbit-date-line"))
