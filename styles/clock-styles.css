@@ -11286,14 +11286,9 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-card::before 
     0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Softer neutral spotlight instead of the warm gold wash */
+/* No stage spotlight in clean mode: the glow reads as fog on dark wallpapers */
 .clock-3d-scene.clock-3d-tiles-off::before {
-  background: radial-gradient(
-    ellipse at 50% 34%,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.04) 34%,
-    transparent 62%
-  );
+  display: none;
 }
 
 /* Cleaner pill badges in tiles-off mode */
