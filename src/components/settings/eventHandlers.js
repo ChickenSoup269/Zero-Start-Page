@@ -6205,6 +6205,25 @@ export function setupGeneralEventHandlers(
     .getElementById("bento-show-week-year-checkbox")
     ?.addEventListener("change", aquariumHandler("bentoShowWeekYear", true))
 
+  // Minimal look toggle (per style, stored as a map like the accent colors)
+  document
+    .getElementById("clock-style-minimal-checkbox")
+    ?.addEventListener("change", () => {
+      const settings = getSettings()
+      const style = settings.dateClockStyle || "default"
+      const checked =
+        document.getElementById("clock-style-minimal-checkbox").checked
+      handleSettingUpdate("clockStyleMinimal", {
+        ...(settings.clockStyleMinimal || {}),
+        [style]: checked,
+      })
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "clockStyleMinimal", value: style },
+        }),
+      )
+    })
+
   // Clock style schedule
   const scheduleEnabledCheckbox = document.getElementById(
     "clock-style-schedule-checkbox",

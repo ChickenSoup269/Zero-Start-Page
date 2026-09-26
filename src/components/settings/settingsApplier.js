@@ -2049,6 +2049,12 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
+    // Minimal-look variant (per style, e.g. prism-stack / metro-panel / cyber-pulse)
+    document.body.classList.toggle(
+      "clock-style-minimal",
+      (settings.clockStyleMinimal || {})[dateClockStyle] === true,
+    )
+
     // Apply sidestyle alignment body class
     document.body.classList.remove(
       "sidestyle-align-left",

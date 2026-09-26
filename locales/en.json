@@ -318,6 +318,8 @@
   "settings_clock_style_schedule_day_start": "Day starts at",
   "settings_clock_style_schedule_night_start": "Night starts at",
   "settings_clock_style_schedule_hint": "The clock switches between the two styles automatically. Manual changes last until the next switch time.",
+  "settings_clock_style_minimal": "Minimal look",
+  "settings_clock_style_minimal_hint": "Strips the decorative card, glows and ornaments for a clean, flat look.",
   "settings_clock_date_style_cartoon": "Cartoon",
   "settings_clock_date_style_glass_float": "Glass Float",
   "settings_clock_date_style_macos_vintage": "Oh My Posh",

@@ -588,6 +588,22 @@ export function createUpdateSettingsInputs(effectInstances) {
         settings.clockStyleScheduleNightStart || "19:00"
     }
 
+    // Minimal-look toggle: only shown for styles that ship a minimal variant
+    const MINIMAL_CAPABLE_STYLES = ["prism-stack", "metro-panel", "cyber-pulse"]
+    const minimalSetting = document.getElementById("minimal-style-setting")
+    if (minimalSetting) {
+      minimalSetting.style.display = MINIMAL_CAPABLE_STYLES.includes(style)
+        ? "block"
+        : "none"
+    }
+    const minimalCheckbox = document.getElementById(
+      "clock-style-minimal-checkbox",
+    )
+    if (minimalCheckbox) {
+      minimalCheckbox.checked =
+        (settings.clockStyleMinimal || {})[style] === true
+    }
+
     const hudColor1Input = document.getElementById("hud-color-1")
     if (hudColor1Input) {
       hudColor1Input.value = settings.hudColor1 || "#ffb703"

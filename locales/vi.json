@@ -318,6 +318,8 @@
   "settings_clock_style_schedule_day_start": "Ban ngày bắt đầu lúc",
   "settings_clock_style_schedule_night_start": "Ban đêm bắt đầu lúc",
   "settings_clock_style_schedule_hint": "Đồng hồ tự chuyển giữa hai style. Thay đổi thủ công sẽ giữ đến mốc chuyển tiếp theo.",
+  "settings_clock_style_minimal": "Kiểu tối giản",
+  "settings_clock_style_minimal_hint": "Bỏ khung trang trí, bóng phát sáng và họa tiết thừa để còn phẳng, sạch sẽ.",
   "settings_clock_date_style_cartoon": "Hoạt hình",
   "settings_clock_date_style_glass_float": "Kính Nổi (Glass Float)",
   "settings_clock_date_style_macos_vintage": "Oh My Posh",
