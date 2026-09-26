@@ -18,6 +18,7 @@ import {
   searchInput as searchBarInput,
 } from "../utils/dom.js"
 import { geti18n } from "../services/i18n.js"
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 
 let commandPaletteController = null
 
@@ -78,6 +79,62 @@ export function initCommandPalette(options = {}) {
 
   const toggleCheckbox = (checkbox, labelKey) =>
     setCheckboxState(checkbox, !checkbox?.checked, labelKey)
+
+  // Cycle the clock style through the settings pipeline exactly like the
+  // settings UI does (hidden select → change event), with a fallback to the
+  // global settings updater when the Clock tab partial isn't hydrated yet.
+  const CLOCK_STYLE_ORDER = [
+    "default", "glow", "minimal", "glass", "cool", "sidestyle", "jp-style",
+    "round", "square", "analog", "sidebar", "weekday-style", "fliqlo",
+    "cyber-pulse", "neon-grid", "terminal", "code", "custom-angle", "c4-bomb",
+    "holo-ring", "media-orb", "prism-stack", "metro-panel", "minimalist-word",
+    "space-concentric", "aurora-ribbon", "lunar-orbit", "cartoon", "audio-wave",
+    "glass-float", "satellite", "pixel-hud", "split-pill", "clock-3d",
+    "macos-vintage", "aquarium", "bento",
+  ]
+  const setClockStyle = (val) => {
+    const select = document.getElementById("clock-date-style-select")
+    if (select && select.querySelector(`option[value="${val}"]`)) {
+      select.value = val
+      select.dispatchEvent(new Event("change", { bubbles: true }))
+    } else if (window.appHandleSettingUpdate) {
+      window.appHandleSettingUpdate("dateClockStyle", val)
+    } else {
+      updateSetting("dateClockStyle", val)
+      saveSettings()
+    }
+    // Keep Weekday Style's display-mode sync consistent with the settings UI
+    const settings = getSettings()
+    if (val === "weekday-style") {
+      if (window.appHandleSettingUpdate) {
+        window.appHandleSettingUpdate("clockDisplayMode", "weekday")
+      } else {
+        updateSetting("clockDisplayMode", "weekday")
+        saveSettings()
+      }
+    } else if (settings.clockDisplayMode === "weekday") {
+      if (window.appHandleSettingUpdate) {
+        window.appHandleSettingUpdate("clockDisplayMode", "all")
+      } else {
+        updateSetting("clockDisplayMode", "all")
+        saveSettings()
+      }
+    }
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "dateClockStyle", value: val },
+      }),
+    )
+    showToast(`Clock Style: ${val}`)
+  }
+  const cycleClockStyle = (dir) => {
+    const current = getSettings().dateClockStyle || "default"
+    let idx = CLOCK_STYLE_ORDER.indexOf(current)
+    if (idx === -1) idx = 0
+    const next = CLOCK_STYLE_ORDER[(idx + dir + CLOCK_STYLE_ORDER.length) % CLOCK_STYLE_ORDER.length]
+    setClockStyle(next)
+    return true
+  }
 
   const SHORTCUTS_KEY = "startpageCommandShortcuts"
   const loadCustomShortcuts = () => {
@@ -236,6 +293,26 @@ export function initCommandPalette(options = {}) {
       keywords:
         "background size bg fill fit cover contain custom hinh nen phong nen w s",
       action: () => cycleBgSize(),
+    },
+    {
+      id: "clock-style-next",
+      title: "Đồng hồ: Style kế tiếp",
+      desc: "Chuyển sang kiểu hiển thị đồng hồ tiếp theo trong danh sách",
+      icon: '<i class="fa-solid fa-clock-rotate-left"></i>',
+      shortcut: "",
+      keywords:
+        "clock style dong ho kieu giao dien next tiep theo switch doi date time",
+      action: () => cycleClockStyle(1),
+    },
+    {
+      id: "clock-style-prev",
+      title: "Đồng hồ: Style trước",
+      desc: "Quay lại kiểu hiển thị đồng hồ trước đó",
+      icon: '<i class="fa-solid fa-clock"></i>',
+      shortcut: "",
+      keywords:
+        "clock style dong ho kieu giao dien previous truoc back quay lai date time",
+      action: () => cycleClockStyle(-1),
     },
     {
       id: "hide-all",

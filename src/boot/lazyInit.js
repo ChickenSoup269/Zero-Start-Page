@@ -82,13 +82,19 @@ export function ensureCommandPaletteInitialized(reason = "idle", options = {}) {
         commandPaletteController = initCommandPalette({
           openOnInit: commandPaletteOpenOnReady,
         })
-        commandPaletteOpenOnReady = false
-        commandPaletteInitialized = true
-        window.dispatchEvent(
-          new CustomEvent("startpage:commandPaletteReady", {
-            detail: { reason },
-          }),
-        )
+        if (commandPaletteController) {
+          commandPaletteOpenOnReady = false
+          commandPaletteInitialized = true
+          window.dispatchEvent(
+            new CustomEvent("startpage:commandPaletteReady", {
+              detail: { reason },
+            }),
+          )
+        } else {
+          // Modal partial not injected into the DOM yet — reset so the
+          // next hotkey/button trigger can retry initialization
+          commandPaletteInitPromise = null
+        }
       })
       .catch((error) => {
         commandPaletteInitPromise = null
