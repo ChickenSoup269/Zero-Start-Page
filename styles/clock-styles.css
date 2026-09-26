@@ -11234,3 +11234,24 @@ body.clock-style-bg-light.date-clock-style-bento .bento-progress-fill {
   background: linear-gradient(90deg, rgba(180, 83, 9, 0.55), #b45309);
   box-shadow: 0 0 10px rgba(180, 83, 9, 0.4);
 }
+/* 3D Luxe polish: keep solid extruded digits when a background mode re-themes them */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-digit,
+body.clock-style-bg-accent.date-clock-style-clock-3d .clock-3d-cube-digit,
+body.clock-style-bg-custom.date-clock-style-clock-3d .clock-3d-cube-digit {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Softer gold ring on the light card so the bezel stays elegant on white */
+body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-card::before {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(203, 213, 225, 0.8) 40%,
+    rgba(148, 163, 184, 0.6) 60%,
+    rgba(226, 232, 240, 0.9) 100%
+  ) !important;
+}
+
