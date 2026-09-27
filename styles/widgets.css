@@ -19696,6 +19696,19 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
   body.quick-access-horizontal .quick-access-bar {
     max-width: calc(100vw - 70px);
   }
+
+  /* Horizontal bar on small screens: many toggles overflow the row —
+     allow panning instead of clipping them off */
+  body.quick-access-horizontal .quick-access-bar:not(.collapsed) {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none;
+  }
+
+  body.quick-access-horizontal
+    .quick-access-bar:not(.collapsed)::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -19730,10 +19743,16 @@ body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-tas
     height: 52px !important;
     border-radius: 14px !important;
     background: rgba(255, 255, 255, 0.06) !important;
-    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 1.25rem !important;
+  }
+
+  /* Keep inline display:none from syncQuickButtons() working — hidden
+     toggles must not render as empty grid cells on mobile */
+  .quick-access-bar:not(.collapsed) .quick-btn[style*="display: none"],
+  .quick-access-bar:not(.collapsed) .quick-btn[style*="display:none"] {
+    display: none !important;
   }
 
   .quick-access-bar:not(.collapsed) .quick-btn:active {
