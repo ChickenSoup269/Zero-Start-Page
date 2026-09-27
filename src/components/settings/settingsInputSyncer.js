@@ -3517,7 +3517,7 @@ export function createUpdateSettingsInputs(effectInstances) {
       "picsum-provider-select",
     )
     if (picsumProviderSelect) {
-      picsumProviderSelect.value = settings.freePhotosProvider || "loremflickr"
+      picsumProviderSelect.value = settings.freePhotosProvider || "picsum"
     }
 
     const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")

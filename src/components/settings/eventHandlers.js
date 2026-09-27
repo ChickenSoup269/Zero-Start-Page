@@ -1723,7 +1723,7 @@ export function setupGeneralEventHandlers(
 
   // Restore saved provider preference
   if (picsumProviderSelect) {
-    const saved = getSettings().freePhotosProvider || "loremflickr"
+    const saved = getSettings().freePhotosProvider || "picsum"
     picsumProviderSelect.value = saved
     picsumProviderSelect.addEventListener("change", () => {
       updateSetting("freePhotosProvider", picsumProviderSelect.value)
@@ -1734,14 +1734,31 @@ export function setupGeneralEventHandlers(
   if (picsumRandomBtn) {
     picsumRandomBtn.addEventListener("click", async () => {
       const themeKey = picsumCategorySelect?.value || "random"
-      const provider = picsumProviderSelect?.value || "loremflickr"
+      let provider = picsumProviderSelect?.value || "loremflickr"
       const originalHtml = picsumRandomBtn.innerHTML
       picsumRandomBtn.disabled = true
       picsumRandomBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Loading...</span>`
       if (picsumCreditEl) picsumCreditEl.textContent = ""
       try {
-        const result = await getFreeRandomBackground(themeKey, provider)
-        await preloadPicsumImage(result.imageUrl)
+        let result
+        try {
+          result = await getFreeRandomBackground(themeKey, provider)
+          await preloadPicsumImage(result.imageUrl)
+        } catch (fetchErr) {
+          if (provider !== "loremflickr") throw fetchErr
+          // LoremFlickr currently serves a 401 bot-check page instead of
+          // images — fall back to Picsum so the button keeps working
+          provider = "picsum"
+          result = await getFreeRandomBackground(themeKey, provider)
+          await preloadPicsumImage(result.imageUrl)
+          if (picsumProviderSelect) picsumProviderSelect.value = "picsum"
+          updateSetting("freePhotosProvider", "picsum")
+          saveSettings()
+          showToast(
+            geti18n().free_photos_fallback_toast ||
+              "LoremFlickr is unavailable — used Picsum instead",
+          )
+        }
         _lastPicsumResult = result
 
         // Apply as background
