@@ -1625,13 +1625,14 @@ body.date-clock-style-clock-3d #clock {
   font-weight: 900;
   line-height: 1;
   color: var(--clock-color, #ffffff);
+  --c3d-base: var(--clock-color, #ffffff);
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #f1f5ff 30%,
-    #b6c3da 52%,
-    #f2f6ff 74%,
-    #ffffff 100%
+    color-mix(in srgb, var(--c3d-base) 78%, #ffffff) 0%,
+    color-mix(in srgb, var(--c3d-base) 92%, #ffffff) 30%,
+    var(--c3d-base) 52%,
+    color-mix(in srgb, var(--c3d-base) 92%, #ffffff) 74%,
+    color-mix(in srgb, var(--c3d-base) 80%, #ffffff) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -11299,10 +11300,10 @@ body.clock-style-bg-light.date-clock-style-clock-3d .clock-3d-cube-card::before 
   letter-spacing: 0.02em;
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #f4f7fc 42%,
-    #ccd6e6 76%,
-    #f6f9fd 100%
+    color-mix(in srgb, var(--clock-color, #ffffff) 90%, #ffffff) 0%,
+    color-mix(in srgb, var(--clock-color, #ffffff) 96%, #ffffff) 42%,
+    var(--clock-color, #ffffff) 76%,
+    color-mix(in srgb, var(--clock-color, #ffffff) 94%, #ffffff) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -11527,10 +11528,10 @@ body.date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube
 body:not(.clock-style-bg-light).date-clock-style-clock-3d .clock-3d-scene.clock-3d-tiles-off .clock-3d-cube-digit {
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    #f4f7fc 42%,
-    #ccd6e6 76%,
-    #f6f9fd 100%
+    color-mix(in srgb, var(--clock-color, #ffffff) 90%, #ffffff) 0%,
+    color-mix(in srgb, var(--clock-color, #ffffff) 96%, #ffffff) 42%,
+    var(--clock-color, #ffffff) 76%,
+    color-mix(in srgb, var(--clock-color, #ffffff) 94%, #ffffff) 100%
   ) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
