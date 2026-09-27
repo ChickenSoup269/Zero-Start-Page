@@ -48,6 +48,7 @@ import {
 } from "./services/state.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initLcpCustomDropdowns } from "./utils/lcpDropdowns.js"
+import { initSaveToStartpage } from "./services/saveToStartpage.js"
 
 // ── Imports: Boot Modules ─────────────────────────────────────────────────────
 import {
@@ -182,6 +183,9 @@ async function bootstrap() {
 
   // ── 4. Wire lazy-init triggers (settings panel, google apps, cmd palette) ─
   setupLazyInitTriggers()
+
+  // ── 4b. Receive browser context-menu saves into Read later ────────────────
+  initSaveToStartpage()
 
   // ── 5. Tab hidden → trim media from memory ────────────────────────────────
   document.addEventListener("visibilitychange", () => {

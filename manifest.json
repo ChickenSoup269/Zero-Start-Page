@@ -13,7 +13,8 @@
     "offscreen",
     "tabCapture",
     "search",
-    "sidePanel"
+    "sidePanel",
+    "contextMenus"
   ],
   "icons": {
     "16": "icon/icon_16.png",

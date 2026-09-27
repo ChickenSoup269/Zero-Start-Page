@@ -172,9 +172,89 @@ function clearRememberedKnownMediaTab(tabId = null) {
 // Set the uninstall URL and refresh/reload any existing or restored startpage tabs
 chrome.runtime.onInstalled.addListener(() => {
   restoreUninstallUrlFromStorage()
+  setupWebSaveContextMenus()
 })
 chrome.runtime.onStartup?.addListener(() => {
   restoreUninstallUrlFromStorage()
+  setupWebSaveContextMenus()
+})
+
+// ── Save to Startpage: right-click link/image/selection → Startpage Read later ──
+const WEB_SAVE_QUEUE_KEY = "startpageWebSaveQueue"
+
+function setupWebSaveContextMenus() {
+  if (!chrome.contextMenus) return
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: "sts-save-link",
+      title: "Save link to Startpage",
+      contexts: ["link"],
+    })
+    chrome.contextMenus.create({
+      id: "sts-save-image",
+      title: "Save image to Startpage",
+      contexts: ["image"],
+    })
+    chrome.contextMenus.create({
+      id: "sts-save-text",
+      title: "Save selection to Startpage",
+      contexts: ["selection"],
+    })
+  })
+}
+
+chrome.contextMenus?.onClicked.addListener(async (info, tab) => {
+  const now = new Date().toISOString()
+  let item = null
+  if (info.menuItemId === "sts-save-link" && info.linkUrl) {
+    let host = info.linkUrl
+    try {
+      host = new URL(info.linkUrl).hostname
+    } catch {}
+    item = {
+      title: host,
+      link: info.linkUrl,
+      description: "",
+      thumbnail: "",
+      pubDate: now,
+    }
+  } else if (info.menuItemId === "sts-save-image" && info.srcUrl) {
+    item = {
+      title: tab?.title || "Image",
+      link: info.srcUrl,
+      description: info.pageUrl || "",
+      thumbnail: info.srcUrl,
+      pubDate: now,
+    }
+  } else if (info.menuItemId === "sts-save-text" && info.selectionText) {
+    item = {
+      title: info.selectionText.trim().slice(0, 140),
+      link: info.pageUrl,
+      description: info.pageUrl || "",
+      thumbnail: "",
+      pubDate: now,
+    }
+  }
+  if (!item) return
+  try {
+    const data = await chrome.storage.local.get(WEB_SAVE_QUEUE_KEY)
+    const queue = data[WEB_SAVE_QUEUE_KEY] || []
+    queue.push(item)
+    await chrome.storage.local.set({
+      [WEB_SAVE_QUEUE_KEY]: queue.slice(-50),
+    })
+  } catch (err) {
+    console.error("Failed to queue web save", err)
+    return
+  }
+  // Brief ✓ badge on the tab that triggered the save
+  if (tab?.id != null) {
+    chrome.action.setBadgeText({ text: "✓", tabId: tab.id })
+    setTimeout(
+      () => chrome.action.setBadgeText({ text: "", tabId: tab.id }),
+      1500,
+    )
+  }
 })
 
 chrome.action?.onClicked?.addListener((tab) => {

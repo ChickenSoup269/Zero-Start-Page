@@ -170,6 +170,13 @@ export class RssReader {
       }
     })
 
+    // Saved from the browser context menu (Save to Startpage) while the
+    // widget is visible — refresh the badge and the Read later view
+    window.addEventListener("rssReadLaterChanged", () => {
+      this.renderTabs()
+      if (this.isReadLaterMode) this.fetchRSS(false)
+    })
+
     window.addEventListener("languageChanged", () => {
       const lang = (getSettings().language || "en").toLowerCase()
       if (!this.config.userCustomized) {
