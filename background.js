@@ -548,6 +548,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "fetchSuggestions") {
+    if (!sender || sender.id !== chrome.runtime.id || typeof request.query !== "string") {
+      sendResponse({ error: "Unauthorized sender" })
+      return true
+    }
     fetch(
       `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(request.query)}`,
     )
