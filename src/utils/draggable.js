@@ -149,7 +149,8 @@ export function makeDraggable(
     magicOffsetY = 0,
     initialWidth = 0,
     initialHeight = 0,
-    cachedZoom = 1
+    cachedZoom = 1,
+    activeDragSession = null
   const settings = getSettings()
   const savedPos = settings.componentPositions?.[componentId]
 
@@ -332,7 +333,7 @@ export function makeDraggable(
   element._draggableContextMenu = onContextMenu
   element.addEventListener("contextmenu", onContextMenu)
 
-  function dragMouseDown(e) {
+  function canStartDrag(e) {
     const currentSettings = getSettings()
     if (
       currentSettings.lockedWidgets?.[componentId] ||
@@ -363,15 +364,41 @@ export function makeDraggable(
       return
 
     if (isInteractiveTarget(e.target)) return
+    return true
+  }
 
+  function dragMouseDown(e) {
+    if (activeDragSession) return
+    if (!canStartDrag(e)) return
     e.preventDefault()
+    activeDragSession = startDragSession(e.clientX, e.clientY)
 
+    const onMouseMove = (moveEvent) => {
+      moveEvent.preventDefault()
+      activeDragSession?.move(moveEvent.clientX, moveEvent.clientY)
+    }
+    const onMouseUp = () => {
+      window.removeEventListener("mousemove", onMouseMove, { capture: true })
+      window.removeEventListener("mouseup", onMouseUp, { capture: true })
+      const session = activeDragSession
+      activeDragSession = null
+      session?.end()
+    }
+    window.addEventListener("mousemove", onMouseMove, {
+      passive: false,
+      capture: true,
+    })
+    window.addEventListener("mouseup", onMouseUp, { passive: true, capture: true })
+  }
+
+  function startDragSession(startClientX, startClientY) {
     // 1. Measure current visual rect BEFORE altering any styles or transforms
+    const currentSettings = getSettings()
     const currentRect = element.getBoundingClientRect()
     cachedZoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
 
-    offsetX = e.clientX - currentRect.left
-    offsetY = e.clientY - currentRect.top
+    offsetX = startClientX - currentRect.left
+    offsetY = startClientY - currentRect.top
     initialWidth = currentRect.width
     initialHeight = currentRect.height
 
@@ -416,8 +443,8 @@ export function makeDraggable(
     let vw = document.documentElement.clientWidth
     let vh = document.documentElement.clientHeight
     let isTicking = false
-    let latestClientX = e.clientX
-    let latestClientY = e.clientY
+    let latestClientX = startClientX
+    let latestClientY = startClientY
     let rafId = null
 
     const updatePosition = () => {
@@ -454,51 +481,123 @@ export function makeDraggable(
       isTicking = false
     }
 
-    const onPointerMove = (moveEvent) => {
-      moveEvent.preventDefault()
-      latestClientX = moveEvent.clientX
-      latestClientY = moveEvent.clientY
-      if (!isTicking) {
-        isTicking = true
-        rafId = requestAnimationFrame(updatePosition)
-      }
+    return {
+      move: (clientX, clientY) => {
+        latestClientX = clientX
+        latestClientY = clientY
+        if (!isTicking) {
+          isTicking = true
+          rafId = requestAnimationFrame(updatePosition)
+        }
+      },
+      end: () => {
+        if (rafId) {
+          cancelAnimationFrame(rafId)
+          rafId = null
+        }
+        if (isTicking) {
+          updatePosition()
+        }
+
+        element.classList.remove("dragging")
+        document.body.classList.remove("is-dragging-widget")
+        document.body.classList.remove("show-snap-grid")
+        element.style.willChange = ""
+        element.style.removeProperty("transition")
+        element.style.right = "auto"
+        element.style.bottom = "auto"
+        element.classList.add("has-position")
+
+        saveComponentPosition(componentId, {
+          top: element.style.top,
+          left: element.style.left,
+          right: "auto",
+          transform: element.style.transform || "none",
+        })
+
+        if (onDragEndCallback) onDragEndCallback(element)
+      },
     }
-
-    const onPointerUp = () => {
-      window.removeEventListener("mousemove", onPointerMove, { capture: true })
-      window.removeEventListener("mouseup", onPointerUp, { capture: true })
-      document.onmousemove = null
-      document.onmouseup = null
-
-      if (rafId) {
-        cancelAnimationFrame(rafId)
-        rafId = null
-      }
-      if (isTicking) {
-        updatePosition()
-      }
-
-      element.classList.remove("dragging")
-      document.body.classList.remove("is-dragging-widget")
-      document.body.classList.remove("show-snap-grid")
-      element.style.willChange = ""
-      element.style.removeProperty("transition")
-      element.style.right = "auto"
-      element.style.bottom = "auto"
-      element.classList.add("has-position")
-
-      saveComponentPosition(componentId, {
-        top: element.style.top,
-        left: element.style.left,
-        right: "auto",
-        transform: element.style.transform || "none",
-      })
-
-      if (onDragEndCallback) onDragEndCallback(element)
-    }
-
-    window.addEventListener("mousemove", onPointerMove, { passive: false, capture: true })
-    window.addEventListener("mouseup", onPointerUp, { passive: true, capture: true })
   }
+
+  // ── Touch: long-press (~300ms) then drag. Moving before the hold engages
+  // keeps native scrolling; once engaged, touchmove is prevented so the
+  // widget follows the finger instead of the page scrolling. ──
+  const TOUCH_HOLD_MS = 300
+  const TOUCH_CANCEL_PX = 12
+  let touchHoldTimer = null
+  let touchId = null
+  let touchStartX = 0
+  let touchStartY = 0
+
+  const onTouchMove = (e) => {
+    if (!activeDragSession) return
+    const touch = Array.from(e.touches).find((t) => t.identifier === touchId)
+    if (!touch) return
+    e.preventDefault()
+    activeDragSession.move(touch.clientX, touch.clientY)
+  }
+
+  const onTouchEnd = () => {
+    if (activeDragSession) {
+      const session = activeDragSession
+      activeDragSession = null
+      session.end()
+    }
+    resetTouchDrag()
+  }
+
+  function resetTouchDrag() {
+    if (touchHoldTimer) {
+      clearTimeout(touchHoldTimer)
+      touchHoldTimer = null
+    }
+    touchId = null
+    window.removeEventListener("touchmove", onTouchMove)
+    window.removeEventListener("touchend", onTouchEnd)
+    window.removeEventListener("touchcancel", onTouchEnd)
+  }
+
+  const onTouchStart = (e) => {
+    if (activeDragSession || touchHoldTimer) return
+    if (e.touches.length !== 1) return
+    if (handleSelector && handleSelector !== ".drag-handle") {
+      if (!e.target.closest(handleSelector)) return
+    }
+    if (!canStartDrag(e)) return
+    const touch = e.touches[0]
+    touchId = touch.identifier
+    touchStartX = touch.clientX
+    touchStartY = touch.clientY
+    window.addEventListener("touchmove", onTouchMove, { passive: false })
+    window.addEventListener("touchend", onTouchEnd)
+    window.addEventListener("touchcancel", onTouchEnd)
+    touchHoldTimer = setTimeout(() => {
+      touchHoldTimer = null
+      activeDragSession = startDragSession(touchStartX, touchStartY)
+      navigator.vibrate?.(20)
+    }, TOUCH_HOLD_MS)
+  }
+
+  const onTouchMovePreDrag = (e) => {
+    if (activeDragSession || !touchHoldTimer) return
+    const touch = Array.from(e.touches).find((t) => t.identifier === touchId)
+    if (
+      touch &&
+      Math.hypot(touch.clientX - touchStartX, touch.clientY - touchStartY) >
+        TOUCH_CANCEL_PX
+    ) {
+      resetTouchDrag()
+    }
+  }
+
+  if (element._draggableTouchStart) {
+    element.removeEventListener("touchstart", element._draggableTouchStart)
+    element.removeEventListener("touchmove", element._draggableTouchMove)
+  }
+  element._draggableTouchStart = onTouchStart
+  element._draggableTouchMove = onTouchMovePreDrag
+  element.addEventListener("touchstart", onTouchStart, { passive: true })
+  element.addEventListener("touchmove", onTouchMovePreDrag, { passive: true })
 }
 

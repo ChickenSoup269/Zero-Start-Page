@@ -49,6 +49,7 @@ import {
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initLcpCustomDropdowns } from "./utils/lcpDropdowns.js"
 import { initSaveToStartpage } from "./services/saveToStartpage.js"
+import { initTouchContextMenu } from "./utils/touchContextMenu.js"
 
 // ── Imports: Boot Modules ─────────────────────────────────────────────────────
 import {
@@ -184,8 +185,9 @@ async function bootstrap() {
   // ── 4. Wire lazy-init triggers (settings panel, google apps, cmd palette) ─
   setupLazyInitTriggers()
 
-  // ── 4b. Receive browser context-menu saves into Read later ────────────────
+  // ── 4b. Receive browser context-menu saves + enable long-press menus ──────
   initSaveToStartpage()
+  initTouchContextMenu()
 
   // ── 5. Tab hidden → trim media from memory ────────────────────────────────
   document.addEventListener("visibilitychange", () => {

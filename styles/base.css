@@ -377,5 +377,49 @@ body[data-layout-preset="right"] .custom-title-display {
   }
 }
 
+/* ==========================================================================
+   Touch devices — tap targets, long-press menus, scroll containment
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  body {
+    /* Stop page-level pull-to-refresh fighting widget scroll areas */
+    overscroll-behavior-y: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Keep the native iOS copy/callout UI in editable fields while
+     suppressing it elsewhere so long-press opens our menus instead */
+  body:not(.editing-text) :not(input):not(textarea):not([contenteditable]) {
+    -webkit-touch-callout: none;
+  }
+
+  /* Comfortable tap targets for the compact icon controls */
+  .top-control-btn,
+  .quick-btn,
+  .close-sidebar,
+  .sidebar-nav-toggle-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .quick-btn i,
+  .top-control-btn i {
+    pointer-events: none;
+  }
+
+  /* Context menus open near the finger — never overflow the screen */
+  .context-menu,
+  .calendar-context-menu,
+  .custom-context-menu {
+    max-width: calc(100vw - 24px);
+  }
+
+  .context-menu .context-item,
+  .context-menu .cm-item {
+    min-height: 40px;
+  }
+}
+
 
 
