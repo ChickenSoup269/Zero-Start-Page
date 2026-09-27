@@ -6,6 +6,10 @@ import { runLegacyControlMediaTab, getMediaFromTab } from "./src/background/lega
 chrome.storage.local.get(["actionBehavior"], (data) => {
   const behavior = data.actionBehavior || "sidepanel"
   if (chrome.sidePanel) {
+    // A panel path must be registered or the panel opens blank
+    chrome.sidePanel
+      .setOptions({ path: "index.html", enabled: true })
+      .catch(() => {})
     chrome.sidePanel
       .setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" })
       .catch(() => {})
@@ -172,6 +176,7 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onStartup?.addListener(() => {
   restoreUninstallUrlFromStorage()
 })
+
 chrome.action?.onClicked?.addListener((tab) => {
   chrome.storage.local.get(["actionBehavior"], (data) => {
     const behavior = data.actionBehavior || "sidepanel"
@@ -179,7 +184,7 @@ chrome.action?.onClicked?.addListener((tab) => {
       openStartpageTab()
     } else if (behavior === "popup") {
       chrome.windows.create({
-        url: chrome.runtime.getURL("sidepanel.html"),
+        url: chrome.runtime.getURL("index.html"),
         type: "popup",
         width: 450,
         height: 600,
@@ -437,6 +442,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const behavior = request.behavior || "sidepanel"
     chrome.storage.local.set({ actionBehavior: behavior }, () => {
       if (chrome.sidePanel) {
+        if (behavior === "sidepanel") {
+          chrome.sidePanel
+            .setOptions({ path: "index.html", enabled: true })
+            .catch(() => {})
+        }
         chrome.sidePanel
           .setPanelBehavior({
             openPanelOnActionClick: behavior === "sidepanel",

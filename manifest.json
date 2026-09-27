@@ -12,7 +12,8 @@
     "identity",
     "offscreen",
     "tabCapture",
-    "search"
+    "search",
+    "sidePanel"
   ],
   "icons": {
     "16": "icon/icon_16.png",
