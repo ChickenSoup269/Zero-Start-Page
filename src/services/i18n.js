@@ -1,4 +1,4 @@
-import { getSettings, updateSetting } from "./state.js"
+import { getSettings, updateSetting, saveSettings } from "./state.js"
 import { updateTime } from "../components/clock.js"
 
 let i18n = {}

@@ -1,6 +1,6 @@
 import { clockElement } from "../../utils/dom.js"
 import { getSettings } from "../../services/state.js"
-import { getSafeWeekday, getCustomDateString } from "./clockLocale.js"
+import { getSafeWeekday, getCustomDateString, getClockLabel } from "./clockLocale.js"
 
 let c4BombArmed = false
 let c4BombPulseUntil = 0

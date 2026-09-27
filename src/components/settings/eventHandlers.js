@@ -1054,6 +1054,16 @@ export function setupGeneralEventHandlers(
           bankQr.style.display === "none" ? "block" : "none"
     })
   }
+  const bankQrImg = document.querySelector(".bank-qr-img")
+  if (bankQrImg) {
+    bankQrImg.addEventListener("error", () => {
+      bankQrImg.style.display = "none"
+      const placeholder = bankQrImg.parentElement.querySelector(
+        ".bank-qr-placeholder",
+      )
+      if (placeholder) placeholder.style.display = "flex"
+    })
+  }
 
   // Handle closing of various popups/modals
   window.addEventListener("click", (e) => {

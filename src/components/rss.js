@@ -948,6 +948,14 @@ export class RssReader {
     this.contentEl.innerHTML = html
     applyTranslations(this.contentEl)
 
+    this.contentEl.querySelectorAll(".rss-item-thumb").forEach((img) => {
+      img.addEventListener("error", () => {
+        img.style.display = "none"
+        const placeholder = img.nextElementSibling
+        if (placeholder) placeholder.style.display = "flex"
+      })
+    })
+
     const loadMoreBtn = this.contentEl.querySelector(".rss-load-more")
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener("click", () => {
