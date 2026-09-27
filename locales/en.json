@@ -2997,5 +2997,12 @@
   "effect_gargantua_black_hole": "Gargantua Black Hole",
   "effect_spiral_galaxy_3d": "Spiral Galaxy 3D",
   "settings_clock_auto_contrast_caption": "Auto light/dark text color based on wallpaper",
-  "settings_clock_m3_accent_caption": "Sync colors with the Material 3 system palette"
+  "settings_clock_m3_accent_caption": "Sync colors with the Material 3 system palette",
+  "settings_action_behavior": "When Clicking Extension Icon",
+  "settings_action_behavior_sidepanel": "Open Side Panel",
+  "settings_action_behavior_newtab": "Open New Tab",
+  "settings_action_behavior_popup": "Open Popup Window",
+  "save_to_startpage_done": "Saved to Read later",
+  "save_to_startpage_exists": "Already in Read later",
+  "free_photos_fallback_toast": "LoremFlickr is unavailable — used Picsum instead"
 }

@@ -2996,5 +2996,12 @@
   "effect_gargantua_black_hole": "Gargantua - Lỗ đen vũ trụ",
   "effect_spiral_galaxy_3d": "Thiên hà xoắn ốc 3D",
   "settings_clock_auto_contrast_caption": "Tự động đổi màu chữ sáng/tối theo nền hình nền",
-  "settings_clock_m3_accent_caption": "Đồng bộ màu sắc với bảng màu hệ thống Material 3"
+  "settings_clock_m3_accent_caption": "Đồng bộ màu sắc với bảng màu hệ thống Material 3",
+  "settings_action_behavior": "Khi nhấn icon extension",
+  "settings_action_behavior_sidepanel": "Mở Side Panel",
+  "settings_action_behavior_newtab": "Mở tab mới",
+  "settings_action_behavior_popup": "Mở cửa sổ popup",
+  "save_to_startpage_done": "Đã lưu vào Read later",
+  "save_to_startpage_exists": "Liên kết này đã có trong Read later",
+  "free_photos_fallback_toast": "LoremFlickr đang lỗi — đã dùng Picsum thay thế"
 }

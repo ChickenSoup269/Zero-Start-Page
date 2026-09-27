@@ -2977,5 +2977,12 @@
   "settings_reduce_motion_always": "Immer reduzieren",
   "settings_reduce_motion_hint": "UI- und Canvas-Animationen reduzieren oder deaktivieren",
   "settings_reduce_motion_never": "Nie reduzieren",
-  "settings_reduce_motion_system": "Systemstandard"
+  "settings_reduce_motion_system": "Systemstandard",
+  "settings_action_behavior": "Beim Klick auf das Erweiterungssymbol",
+  "settings_action_behavior_sidepanel": "Seitenpanel öffnen",
+  "settings_action_behavior_newtab": "Neuen Tab öffnen",
+  "settings_action_behavior_popup": "Popup-Fenster öffnen",
+  "save_to_startpage_done": "In „Später lesen“ gespeichert",
+  "save_to_startpage_exists": "Bereits in „Später lesen“",
+  "free_photos_fallback_toast": "LoremFlickr ist nicht verfügbar — stattdessen Picsum verwendet"
 }

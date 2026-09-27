@@ -2978,5 +2978,12 @@
   "settings_reduce_motion_always": "Minska alltid",
   "settings_reduce_motion_hint": "Minska eller inaktivera UI- och canvas-animationer",
   "settings_reduce_motion_never": "Minska aldrig",
-  "settings_reduce_motion_system": "Systemstandard"
+  "settings_reduce_motion_system": "Systemstandard",
+  "settings_action_behavior": "Vid klick på utökningsikonen",
+  "settings_action_behavior_sidepanel": "Öppna sidopanel",
+  "settings_action_behavior_newtab": "Öppna ny flik",
+  "settings_action_behavior_popup": "Öppna popup-fönster",
+  "save_to_startpage_done": "Sparad till Läs senare",
+  "save_to_startpage_exists": "Redan i Läs senare",
+  "free_photos_fallback_toast": "LoremFlickr är otillgängligt — använde Picsum istället"
 }
