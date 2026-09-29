@@ -237,6 +237,11 @@ function init3DClockInteractiveTilt() {
 // their --rotation var is updated per tick (see updateTime)
 const analogHandsCache = new WeakMap()
 
+// Fliqlo flip-clock cache: cards are built once per structure (seconds
+// visibility, ampm); digits update in place and only changed slots re-run
+// the flip animation
+const fliqloCache = new WeakMap()
+
 export function updateTime() {
   if (!clockElement) return
   // Skip heavy rendering when tab is hidden to save CPU/battery
@@ -818,62 +823,100 @@ export function updateTime() {
       settings.fliqloTransparent === true,
     )
 
-    // Build flip cards for each digit
-    const buildFlipCard = (digit, label) => {
-      const prevKey = `_fliqlo_prev_${label}`
-      const prev = clockElement[prevKey]
-      clockElement[prevKey] = digit
-      const changed = prev !== undefined && prev !== digit
-      const animClass = changed ? " fliqlo-flip" : ""
-      const oldDigit = prev !== undefined ? prev : digit
-      return `
-        <div class="fliqlo-card${animClass}" data-digit="${label}">
-          <div class="fliqlo-card-top"><span>${digit}</span></div>
-          <div class="fliqlo-card-bottom"><span>${oldDigit}</span></div>
-          <div class="fliqlo-card-flip-top"><span>${oldDigit}</span></div>
-          <div class="fliqlo-card-flip-bottom"><span>${digit}</span></div>
+    // Build the flip cards once per structure; afterwards update digits in
+    // place. Rebuilding innerHTML every second destroyed the subtree and
+    // re-ran layout/paint for unchanged digits.
+    const fliqloStructKey = `${ss ? 1 : 0}|${ampm || ""}`
+    let fliqlo = fliqloCache.get(clockElement)
+    if (!fliqlo || fliqlo.structKey !== fliqloStructKey || !fliqlo.root?.isConnected) {
+      const buildFlipCard = (label) => `
+        <div class="fliqlo-card" data-digit="${label}">
+          <div class="fliqlo-card-top"><span></span></div>
+          <div class="fliqlo-card-bottom"><span></span></div>
+          <div class="fliqlo-card-flip-top"><span></span></div>
+          <div class="fliqlo-card-flip-bottom"><span></span></div>
         </div>
       `
-    }
-
-    const hhCards = hh
-      .split("")
-      .map((d, i) => buildFlipCard(d, `h${i}`))
-      .join("")
-    const mmCards = mm
-      .split("")
-      .map((d, i) => buildFlipCard(d, `m${i}`))
-      .join("")
-    let ssHtml = ""
-    if (ss) {
-      ssHtml = `
-        <span class="fliqlo-colon">:</span>
-        <div class="fliqlo-group fliqlo-group-ss">
-          ${ss
-            .split("")
-            .map((d, i) => buildFlipCard(d, `s${i}`))
-            .join("")}
+      clockElement.innerHTML = `
+        <div class="fliqlo-wrapper">
+          <div class="fliqlo-time">
+            <div class="fliqlo-group">${buildFlipCard("h0")}${buildFlipCard("h1")}</div>
+            <span class="fliqlo-colon">:</span>
+            <div class="fliqlo-group">${buildFlipCard("m0")}${buildFlipCard("m1")}</div>
+            ${
+              ss
+                ? `<span class="fliqlo-colon">:</span>
+            <div class="fliqlo-group fliqlo-group-ss">${buildFlipCard("s0")}${buildFlipCard("s1")}</div>`
+                : ""
+            }
+            ${ampm ? `<span class="fliqlo-ampm"></span>` : ""}
+          </div>
+          <div class="fliqlo-date"></div>
         </div>
       `
+      const slots = {}
+      clockElement.querySelectorAll(".fliqlo-card").forEach((card) => {
+        slots[card.dataset.digit] = {
+          el: card,
+          digit: null,
+          top: card.querySelector(".fliqlo-card-top span"),
+          bottom: card.querySelector(".fliqlo-card-bottom span"),
+          flipTop: card.querySelector(".fliqlo-card-flip-top span"),
+          flipBottom: card.querySelector(".fliqlo-card-flip-bottom span"),
+        }
+      })
+      fliqlo = {
+        structKey: fliqloStructKey,
+        root: clockElement.querySelector(".fliqlo-wrapper"),
+        slots,
+        ampmEl: clockElement.querySelector(".fliqlo-ampm"),
+        dateEl: clockElement.querySelector(".fliqlo-date"),
+      }
+      fliqloCache.set(clockElement, fliqlo)
     }
-    let ampmHtml = ampm ? `<span class="fliqlo-ampm">${ampm}</span>` : ""
 
-    const dateStr = shouldShowDate
-      ? `<div class="fliqlo-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
-      : ""
+    const setFliqloDigit = (slot, digit) => {
+      if (!slot) return
+      if (slot.digit === digit) {
+        // Normalize a finished flip so the static halves hold the new digit
+        if (slot.el.classList.contains("fliqlo-flip")) {
+          slot.top.textContent = digit
+          slot.bottom.textContent = digit
+          slot.el.classList.remove("fliqlo-flip")
+        }
+        return
+      }
+      const oldDigit = slot.digit === null ? digit : slot.digit
+      slot.flipTop.textContent = oldDigit
+      slot.bottom.textContent = oldDigit
+      slot.top.textContent = digit
+      slot.flipBottom.textContent = digit
+      slot.digit = digit
+      // Re-trigger the CSS flip animation
+      slot.el.classList.remove("fliqlo-flip")
+      void slot.el.offsetWidth
+      slot.el.classList.add("fliqlo-flip")
+    }
 
-    clockElement.innerHTML = `
-      <div class="fliqlo-wrapper">
-        <div class="fliqlo-time">
-          <div class="fliqlo-group">${hhCards}</div>
-          <span class="fliqlo-colon">:</span>
-          <div class="fliqlo-group">${mmCards}</div>
-          ${ssHtml}
-          ${ampmHtml}
-        </div>
-        ${isTimer ? `<div class="fliqlo-date">${countdownLabel}</div>` : dateStr}
-      </div>
-    `
+    hh.split("").forEach((d, i) => setFliqloDigit(fliqlo.slots[`h${i}`], d))
+    mm.split("").forEach((d, i) => setFliqloDigit(fliqlo.slots[`m${i}`], d))
+    if (ss)
+      ss.split("").forEach((d, i) => setFliqloDigit(fliqlo.slots[`s${i}`], d))
+
+    if (fliqlo.ampmEl) fliqlo.ampmEl.textContent = ampm || ""
+
+    const dateText = isTimer
+      ? countdownLabel
+      : shouldShowDate
+        ? getCustomDateString(now, langCode, tz, settings)
+        : ""
+    if (fliqlo.dateEl) {
+      if (fliqlo.dateEl.getAttribute("data-raw-html") !== dateText) {
+        fliqlo.dateEl.innerHTML = dateText
+        fliqlo.dateEl.setAttribute("data-raw-html", dateText)
+      }
+      fliqlo.dateEl.style.display = dateText ? "block" : "none"
+    }
   } else if (dateClockStyle === "cyber-pulse") {
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
