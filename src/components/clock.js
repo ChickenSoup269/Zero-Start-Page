@@ -242,6 +242,10 @@ const analogHandsCache = new WeakMap()
 // the flip animation
 const fliqloCache = new WeakMap()
 
+// Terminal clock cache: chrome (title bar, controls) is built once per
+// structure (variant, seconds, ampm); text updates in place per tick
+const terminalCache = new WeakMap()
+
 export function updateTime() {
   if (!clockElement) return
   // Skip heavy rendering when tab is hidden to save CPU/battery
@@ -988,18 +992,6 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "terminal") {
-    const weekday = isTimer
-      ? timerLabel
-      : getSafeWeekday(
-          now,
-          langCode,
-          settings.shortWeekday,
-          tz,
-          settings,
-        ).toUpperCase()
-    const dateStr = shouldShowDate
-      ? getCustomDateString(now, langCode, tz, settings)
-      : ""
     const promptLabel = isTimer ? "timer" : "startpage"
     const terminalVariant = ["window", "linux", "macos"].includes(
       settings.terminalClockVariant,
@@ -1008,38 +1000,101 @@ export function updateTime() {
       : "window"
     const terminalPrompt =
       terminalVariant === "linux" ? "user@startpage:~$" : "~/now"
-    const terminalControls =
-      terminalVariant === "macos"
-        ? `
+
+    // Build once per structure (variant, seconds, ampm); afterwards only the
+    // time/weekday/date text updates per tick
+    const terminalStructKey = `${terminalVariant}|${ss ? 1 : 0}|${ampm || ""}`
+    let terminal = terminalCache.get(clockElement)
+    if (
+      !terminal ||
+      terminal.structKey !== terminalStructKey ||
+      !terminal.root?.isConnected
+    ) {
+      const terminalControls =
+        terminalVariant === "macos"
+          ? `
           <span class="terminal-dot terminal-dot-red"></span>
           <span class="terminal-dot terminal-dot-yellow"></span>
           <span class="terminal-dot terminal-dot-green"></span>`
-        : `
+          : `
           <span class="terminal-window-btn" aria-hidden="true"><i class="fa-solid fa-minus"></i></span>
           <span class="terminal-window-btn" aria-hidden="true"><i class="fa-regular fa-square"></i></span>
           <span class="terminal-window-btn terminal-window-close" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>`
-    clockElement.innerHTML = `
-      <div class="terminal-clock terminal-clock-${terminalVariant}">
-        <div class="terminal-clock-bar">
-          <span class="terminal-window-controls">${terminalControls}</span>
-          <span class="terminal-clock-title">${promptLabel}.time</span>
-        </div>
-        <div class="terminal-clock-body">
-          <div class="terminal-clock-meta">
-            <span class="terminal-prompt">${terminalPrompt}</span>
-            <span>${weekday}</span>
+      clockElement.innerHTML = `
+        <div class="terminal-clock terminal-clock-${terminalVariant}">
+          <div class="terminal-clock-bar">
+            <span class="terminal-window-controls">${terminalControls}</span>
+            <span class="terminal-clock-title">${promptLabel}.time</span>
           </div>
-          <div class="terminal-clock-time">
-            <span class="terminal-clock-hour">${hh}</span>
-            <span class="terminal-clock-cursor">:</span>
-            <span class="terminal-clock-minute">${mm}</span>
-            ${ss ? `<span class="terminal-clock-second">${ss}</span>` : ""}
-            ${ampm ? `<span class="terminal-clock-ampm">${ampm}</span>` : ""}
+          <div class="terminal-clock-body">
+            <div class="terminal-clock-meta">
+              <span class="terminal-prompt">${terminalPrompt}</span>
+              <span class="terminal-clock-weekday"></span>
+            </div>
+            <div class="terminal-clock-time">
+              <span class="terminal-clock-hour"></span>
+              <span class="terminal-clock-cursor">:</span>
+              <span class="terminal-clock-minute"></span>
+              ${ss ? `<span class="terminal-clock-second"></span>` : ""}
+              ${ampm ? `<span class="terminal-clock-ampm"></span>` : ""}
+            </div>
+            <div class="terminal-clock-date"></div>
           </div>
-          ${isTimer ? `<div class="terminal-clock-date">${countdownLabel}</div>` : dateStr ? `<div class="terminal-clock-date">${dateStr}</div>` : ""}
         </div>
-      </div>
-    `
+      `
+      terminal = {
+        structKey: terminalStructKey,
+        root: clockElement.querySelector(".terminal-clock"),
+        titleEl: clockElement.querySelector(".terminal-clock-title"),
+        weekdayEl: clockElement.querySelector(".terminal-clock-weekday"),
+        hourEl: clockElement.querySelector(".terminal-clock-hour"),
+        minuteEl: clockElement.querySelector(".terminal-clock-minute"),
+        secondEl: clockElement.querySelector(".terminal-clock-second"),
+        ampmEl: clockElement.querySelector(".terminal-clock-ampm"),
+        dateEl: clockElement.querySelector(".terminal-clock-date"),
+      }
+      terminalCache.set(clockElement, terminal)
+    }
+
+    const terminalWeekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(
+          now,
+          langCode,
+          settings.shortWeekday,
+          tz,
+          settings,
+        ).toUpperCase()
+    if (terminal.titleEl && terminal.titleEl.textContent !== `${promptLabel}.time`)
+      terminal.titleEl.textContent = `${promptLabel}.time`
+    if (terminal.weekdayEl && terminal.weekdayEl.textContent !== terminalWeekday)
+      terminal.weekdayEl.textContent = terminalWeekday
+    if (terminal.hourEl && terminal.hourEl.textContent !== hh)
+      terminal.hourEl.textContent = hh
+    if (terminal.minuteEl && terminal.minuteEl.textContent !== mm)
+      terminal.minuteEl.textContent = mm
+    if (terminal.secondEl) {
+      if (ss && terminal.secondEl.textContent !== ss)
+        terminal.secondEl.textContent = ss
+      terminal.secondEl.style.display = ss ? "inline" : "none"
+    }
+    if (terminal.ampmEl) {
+      if (ampm && terminal.ampmEl.textContent !== ampm)
+        terminal.ampmEl.textContent = ampm
+      terminal.ampmEl.style.display = ampm ? "inline" : "none"
+    }
+    if (terminal.dateEl) {
+      const terminalDate = isTimer
+        ? countdownLabel
+        : shouldShowDate
+          ? getCustomDateString(now, langCode, tz, settings)
+          : ""
+      if (terminal.dateEl.getAttribute("data-raw-html") !== terminalDate) {
+        terminal.dateEl.innerHTML = terminalDate
+        terminal.dateEl.setAttribute("data-raw-html", terminalDate)
+      }
+      terminal.dateEl.style.display = terminalDate ? "block" : "none"
+    }
   } else if (dateClockStyle === "c4-bomb") {
     renderC4BombClock(clockElement, {
       now,
