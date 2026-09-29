@@ -250,6 +250,13 @@ const terminalCache = new WeakMap()
 // updates in place per tick
 const auroraCache = new WeakMap()
 
+// Lunar orbit cache: built once per structure (seconds, ampm); text
+// updates in place per tick
+const lunarOrbitCache = new WeakMap()
+
+// Solar→lunar conversion is date-granular, so one result per zoned day
+const lunarPartsCache = { key: null, parts: null }
+
 export function updateTime() {
   if (!clockElement) return
   // Skip heavy rendering when tab is hidden to save CPU/battery
@@ -1736,40 +1743,95 @@ export function updateTime() {
       if (showWeekYear && !isTimer) setBar(".bento-bar-year", yearPct)
     }
   } else if (dateClockStyle === "lunar-orbit") {
+    // Lunar conversion is date-granular; cache it per zoned day + timezone
+    // instead of re-running the solar→lunar conversion every tick
+    const lunarZonedParts = getZonedDateParts(now, tz)
+    const lunarKey = `${tz || "local"}|${lunarZonedParts.year}-${lunarZonedParts.month}-${lunarZonedParts.day}`
+    if (lunarPartsCache.key !== lunarKey) {
+      lunarPartsCache.key = lunarKey
+      lunarPartsCache.parts = getVietnameseLunarParts(now, tz)
+    }
+    const lunarParts = lunarPartsCache.parts
+
+    // Build once per structure (seconds, ampm); afterwards only text updates
+    const lunarStructKey = `${ss ? 1 : 0}|${ampm || ""}`
+    let lunarOrbit = lunarOrbitCache.get(clockElement)
+    if (
+      !lunarOrbit ||
+      lunarOrbit.structKey !== lunarStructKey ||
+      !lunarOrbit.root?.isConnected
+    ) {
+      clockElement.innerHTML = `
+        <div class="lunar-orbit-clock">
+          <div class="lunar-orbit-date-dial">
+            <span class="lunar-orbit-weekday"></span>
+            <span class="lunar-orbit-day"></span>
+            <span class="lunar-orbit-month"></span>
+          </div>
+          <div class="lunar-orbit-main">
+            <div class="lunar-orbit-time">
+              <span class="lunar-orbit-hour"></span>
+              <span class="lunar-orbit-colon">:</span>
+              <span class="lunar-orbit-minute"></span>
+              ${ss ? `<span class="lunar-orbit-second"></span>` : ""}
+              ${ampm ? `<span class="lunar-orbit-ampm"></span>` : ""}
+            </div>
+            <div class="lunar-orbit-date-line"></div>
+          </div>
+        </div>
+      `
+      lunarOrbit = {
+        structKey: lunarStructKey,
+        root: clockElement.querySelector(".lunar-orbit-clock"),
+        dialLabelEl: clockElement.querySelector(".lunar-orbit-weekday"),
+        dialDayEl: clockElement.querySelector(".lunar-orbit-day"),
+        dialMonthEl: clockElement.querySelector(".lunar-orbit-month"),
+        hourEl: clockElement.querySelector(".lunar-orbit-hour"),
+        minuteEl: clockElement.querySelector(".lunar-orbit-minute"),
+        secondEl: clockElement.querySelector(".lunar-orbit-second"),
+        ampmEl: clockElement.querySelector(".lunar-orbit-ampm"),
+        dateLineEl: clockElement.querySelector(".lunar-orbit-date-line"),
+      }
+      lunarOrbitCache.set(clockElement, lunarOrbit)
+    }
+
     const rawWeekday = isTimer
       ? timerLabel
       : getSafeWeekday(now, langCode, true, tz, settings).replace(/^<span class="weekday-part">|<\/span>$/g, "")
-    const dateStr = shouldShowDate
-      ? getCustomDateString(now, langCode, tz, settings)
-      : ""
-    const lunarParts = getVietnameseLunarParts(now, tz)
     const orbDay = isTimer ? (timerH > 0 ? hh : mm) : lunarParts.day
     const orbMonth = isTimer ? (timerH > 0 ? "HR" : "MIN") : lunarParts.month
     const orbLabel = isTimer ? rawWeekday : lunarParts.label
-    const dateLine = isTimer
-      ? countdownLabel
-      : dateStr
-        ? `${lunarParts.line} - ${dateStr}`
-        : lunarParts.line
-    clockElement.innerHTML = `
-      <div class="lunar-orbit-clock">
-        <div class="lunar-orbit-date-dial">
-          <span class="lunar-orbit-weekday">${orbLabel}</span>
-          <span class="lunar-orbit-day">${orbDay}</span>
-          <span class="lunar-orbit-month">${orbMonth}</span>
-        </div>
-        <div class="lunar-orbit-main">
-          <div class="lunar-orbit-time">
-            <span class="lunar-orbit-hour">${hh}</span>
-            <span class="lunar-orbit-colon">:</span>
-            <span class="lunar-orbit-minute">${mm}</span>
-            ${ss ? `<span class="lunar-orbit-second">${ss}</span>` : ""}
-            ${ampm ? `<span class="lunar-orbit-ampm">${ampm}</span>` : ""}
-          </div>
-          <div class="lunar-orbit-date-line">${dateLine}</div>
-        </div>
-      </div>
-    `
+    if (lunarOrbit.dialLabelEl && lunarOrbit.dialLabelEl.textContent !== orbLabel)
+      lunarOrbit.dialLabelEl.textContent = orbLabel
+    if (lunarOrbit.dialDayEl && lunarOrbit.dialDayEl.textContent !== orbDay)
+      lunarOrbit.dialDayEl.textContent = orbDay
+    if (lunarOrbit.dialMonthEl && lunarOrbit.dialMonthEl.textContent !== orbMonth)
+      lunarOrbit.dialMonthEl.textContent = orbMonth
+    if (lunarOrbit.hourEl && lunarOrbit.hourEl.textContent !== hh)
+      lunarOrbit.hourEl.textContent = hh
+    if (lunarOrbit.minuteEl && lunarOrbit.minuteEl.textContent !== mm)
+      lunarOrbit.minuteEl.textContent = mm
+    if (lunarOrbit.secondEl) {
+      if (ss && lunarOrbit.secondEl.textContent !== ss)
+        lunarOrbit.secondEl.textContent = ss
+      lunarOrbit.secondEl.style.display = ss ? "inline" : "none"
+    }
+    if (lunarOrbit.ampmEl) {
+      if (ampm && lunarOrbit.ampmEl.textContent !== ampm)
+        lunarOrbit.ampmEl.textContent = ampm
+      lunarOrbit.ampmEl.style.display = ampm ? "inline" : "none"
+    }
+    if (lunarOrbit.dateLineEl) {
+      const dateLine = isTimer
+        ? countdownLabel
+        : shouldShowDate
+          ? `${lunarParts.line} - ${getCustomDateString(now, langCode, tz, settings)}`
+          : lunarParts.line
+      if (lunarOrbit.dateLineEl.getAttribute("data-raw-html") !== dateLine) {
+        lunarOrbit.dateLineEl.innerHTML = dateLine
+        lunarOrbit.dateLineEl.setAttribute("data-raw-html", dateLine)
+      }
+    }
   } else if (dateClockStyle === "cartoon") {
     const weekday = isTimer
       ? timerLabel
