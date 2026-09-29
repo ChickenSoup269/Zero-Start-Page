@@ -1,5 +1,14 @@
 ;(function () {
   let updateInterval = null
+  // Media tracking only does work while the Startpage music widget is enabled
+  // (mirrored to chrome.storage.local by the new-tab page). Everything below
+  // funnels through sendStateUpdate(), so a single guard here makes every
+  // observer/interval/poll a no-op when the widget is off.
+  let mediaWidgetActive = false
+  // Full DOM scrape is expensive (~100 querySelectors); never run it more
+  // often than this for non-forced updates
+  const SCRAPE_MIN_INTERVAL = 900
+  let lastScrapeTs = 0
 
   function getMediaState() {
     const metadata = navigator.mediaSession?.metadata
@@ -545,6 +554,10 @@
   let lastBroadcastTime = -1
 
   function sendStateUpdate(force = false) {
+    if (!mediaWidgetActive) return null
+    const now = Date.now()
+    if (!force && now - lastScrapeTs < SCRAPE_MIN_INTERVAL) return null
+    lastScrapeTs = now
     try {
       const state = getMediaState()
       if (!state) return null
@@ -629,6 +642,7 @@
     document.addEventListener(
       ev,
       () => {
+        if (!mediaWidgetActive) return
         if (ev === "play" || ev === "playing") {
           handlePlay()
         } else if (ev === "pause") {
@@ -654,10 +668,16 @@
     })
   }
 
-  // Observe Document Head for title/meta tag changes in SPAs
+  // Observe Document Head for title/meta tag changes in SPAs (debounced:
+  // YouTube/Spotify mutate <head> constantly and a scrape per mutation is hot)
   if (document.head) {
+    let headCheckTimeout = null
     const headObserver = new MutationObserver(() => {
-      sendStateUpdate(false)
+      if (headCheckTimeout) return
+      headCheckTimeout = setTimeout(() => {
+        headCheckTimeout = null
+        sendStateUpdate(false)
+      }, 1000)
     })
     headObserver.observe(document.head, {
       childList: true,
@@ -749,7 +769,9 @@
   }
 
   observePlayerContainers()
-  setInterval(observePlayerContainers, 3000)
+  setInterval(() => {
+    if (mediaWidgetActive) observePlayerContainers()
+  }, 3000)
 
   // Listen for control commands from background script
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -973,15 +995,50 @@
   // Initial update
   sendStateUpdate()
 
-  // Backup polling to detect play state if events fail or elements load later
+  // Backup polling to detect play state if events fail or elements load later.
+  // Cheap pre-check first: only scrape when a media element is actually
+  // playing or mediaSession reports playback (web players like Spotify do not
+  // always expose an <audio> element, hence the mediaSession check)
   setInterval(() => {
-    if (!updateInterval) {
-      try {
-        const state = getMediaState()
-        if (state && !state.paused) {
-          handlePlay()
-        }
-      } catch (e) {}
-    }
+    if (!mediaWidgetActive) return
+    if (updateInterval) return
+    try {
+      const mediaPlaying = [
+        ...document.querySelectorAll("video,audio"),
+      ].some((m) => m && !m.paused && !m.ended)
+      const sessionPlaying =
+        navigator.mediaSession?.playbackState === "playing"
+      if (!mediaPlaying && !sessionPlaying) return
+      const state = getMediaState()
+      if (state && !state.paused) {
+        handlePlay()
+      }
+    } catch (e) {}
   }, 2000)
+
+  // ── Widget-gated activation ────────────────────────────────
+  // The new-tab page mirrors its musicPlayerEnabled setting into
+  // chrome.storage.local; stay fully dormant until it turns true.
+  function setMediaWidgetActive(active) {
+    if (active === mediaWidgetActive) return
+    mediaWidgetActive = active
+    if (active) {
+      lastScrapeTs = 0
+      sendStateUpdate(true)
+    } else {
+      stopPeriodicSync()
+    }
+  }
+
+  try {
+    chrome.storage.local.get(["startpageMediaEnabled"], (data) => {
+      if (chrome.runtime.lastError) return
+      if (data?.startpageMediaEnabled === true) setMediaWidgetActive(true)
+    })
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === "local" && "startpageMediaEnabled" in changes) {
+        setMediaWidgetActive(changes.startpageMediaEnabled.newValue === true)
+      }
+    })
+  } catch (e) {}
 })()

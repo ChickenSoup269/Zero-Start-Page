@@ -140,8 +140,21 @@ function hasDetachedNotepadNotes() {
   }
 }
 
+// Mirror the music-widget setting into chrome.storage so content scripts on
+// media sites (content-media.js) can stay fully dormant when it is disabled.
+// Write only on change: chrome.storage writes are IO + SW wakeups.
+let lastMediaWidgetFlag = null
+function syncMediaWidgetFlag(enabled) {
+  if (enabled === lastMediaWidgetFlag) return
+  lastMediaWidgetFlag = enabled
+  try {
+    chrome.storage?.local?.set({ startpageMediaEnabled: enabled === true })
+  } catch (e) {}
+}
+
 export function initVisibleWidgets() {
   const settings = getSettings()
+  syncMediaWidgetFlag(settings.musicPlayerEnabled === true)
   if (settings.showTodoList !== false) void initWidget("todo")
   if (settings.showNotepad !== false || hasDetachedNotepadNotes()) void initWidget("notepad")
   if (settings.showQuotes !== false) void initWidget("quotes")
@@ -190,6 +203,9 @@ export function setupWidgetLayoutListeners() {
   })
 
   window.addEventListener("settingsUpdated", async (e) => {
+    if (e.detail?.key === "musicPlayerEnabled") {
+      syncMediaWidgetFlag(e.detail.value === true)
+    }
     if (e.detail?.key === "musicPlayerEnabled" && e.detail.value === true) {
       const music = await initWidget("music")
       music.setEnabled(true)
