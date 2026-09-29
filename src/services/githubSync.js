@@ -65,11 +65,13 @@ export const GitHubSync = {
       }
 
       if (shouldBackup) {
-        this.syncToGist().then(() => {
-          const currentSettings = getSettings()
-          currentSettings.lastGithubBackupTime = Date.now()
-          saveSettings(true)
-        })
+        this.syncToGist()
+          .then(() => {
+            const currentSettings = getSettings()
+            currentSettings.lastGithubBackupTime = Date.now()
+            saveSettings(true)
+          })
+          .catch((e) => console.warn("[GitHubSync] auto backup failed:", e))
       }
     }
   },

@@ -569,10 +569,15 @@
         lastBroadcastPaused = state.paused
         lastBroadcastTime = state.currentTime || 0
 
-        chrome.runtime.sendMessage({
-          action: "mediaStateUpdated",
-          state: state,
-        })
+        // .catch is required: the promise rejects ("Receiving end does not
+        // exist") while the service worker is restarting, and a try/catch here
+        // does not catch async rejections
+        chrome.runtime
+          .sendMessage({
+            action: "mediaStateUpdated",
+            state: state,
+          })
+          .catch(() => {})
       }
       return state
     } catch (e) {

@@ -65,11 +65,13 @@ export const GitLabSync = {
       }
 
       if (shouldBackup) {
-        this.syncToSnippet().then(() => {
-          const currentSettings = getSettings()
-          currentSettings.lastGitlabBackupTime = Date.now()
-          saveSettings(true)
-        })
+        this.syncToSnippet()
+          .then(() => {
+            const currentSettings = getSettings()
+            currentSettings.lastGitlabBackupTime = Date.now()
+            saveSettings(true)
+          })
+          .catch((e) => console.warn("[GitLabSync] auto backup failed:", e))
       }
     }
   },

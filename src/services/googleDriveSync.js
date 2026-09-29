@@ -53,11 +53,13 @@ export const DriveSync = {
       }
 
       if (shouldBackup) {
-        this.syncToDrive().then(() => {
-          const currentSettings = getSettings()
-          currentSettings.lastDriveBackupTime = Date.now()
-          saveSettings(true)
-        })
+        this.syncToDrive()
+          .then(() => {
+            const currentSettings = getSettings()
+            currentSettings.lastDriveBackupTime = Date.now()
+            saveSettings(true)
+          })
+          .catch((e) => console.warn("[DriveSync] auto backup failed:", e))
       } else {
         this.syncFromDrive()
       }
