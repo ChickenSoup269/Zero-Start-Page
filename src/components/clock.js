@@ -357,7 +357,9 @@ export function updateTime() {
     // destroyed the subtree and forced style/layout/paint each tick.
     const markerKey = `${markerMode}|${secondClass}`
     let hands = analogHandsCache.get(clockElement)
-    if (!hands || hands.markerKey !== markerKey) {
+    // isConnected: switching to another clock style replaces #clock's
+    // innerHTML, detaching the cached hand elements
+    if (!hands || hands.markerKey !== markerKey || !hands.hour?.isConnected) {
       let markerHtml = ""
 
       if (markerMode === "full") {
