@@ -246,6 +246,10 @@ const fliqloCache = new WeakMap()
 // structure (variant, seconds, ampm); text updates in place per tick
 const terminalCache = new WeakMap()
 
+// Aurora ribbon cache: built once per structure (seconds, ampm); text
+// updates in place per tick
+const auroraCache = new WeakMap()
+
 export function updateTime() {
   if (!clockElement) return
   // Skip heavy rendering when tab is hidden to save CPU/battery
@@ -1375,7 +1379,43 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "aurora-ribbon") {
-    const rawWeekday = isTimer
+    // Build once per structure (seconds, ampm); afterwards only text updates
+    const auroraStructKey = `${ss ? 1 : 0}|${ampm || ""}`
+    let aurora = auroraCache.get(clockElement)
+    if (
+      !aurora ||
+      aurora.structKey !== auroraStructKey ||
+      !aurora.root?.isConnected
+    ) {
+      clockElement.innerHTML = `
+        <div class="aurora-ribbon-clock">
+          <div class="aurora-ribbon-top">
+            <span class="aurora-ribbon-weekday"></span>
+            ${ampm ? `<span class="aurora-ribbon-ampm"></span>` : ""}
+          </div>
+          <div class="aurora-ribbon-time">
+            <span class="aurora-ribbon-hour"></span>
+            <span class="aurora-ribbon-colon">:</span>
+            <span class="aurora-ribbon-minute"></span>
+            ${ss ? `<span class="aurora-ribbon-second"></span>` : ""}
+          </div>
+          <div class="aurora-ribbon-date"></div>
+        </div>
+      `
+      aurora = {
+        structKey: auroraStructKey,
+        root: clockElement.querySelector(".aurora-ribbon-clock"),
+        weekdayEl: clockElement.querySelector(".aurora-ribbon-weekday"),
+        ampmEl: clockElement.querySelector(".aurora-ribbon-ampm"),
+        hourEl: clockElement.querySelector(".aurora-ribbon-hour"),
+        minuteEl: clockElement.querySelector(".aurora-ribbon-minute"),
+        secondEl: clockElement.querySelector(".aurora-ribbon-second"),
+        dateEl: clockElement.querySelector(".aurora-ribbon-date"),
+      }
+      auroraCache.set(clockElement, aurora)
+    }
+
+    const auroraWeekday = isTimer
       ? countdownLabel
       : getSafeWeekday(
           now,
@@ -1384,24 +1424,34 @@ export function updateTime() {
           tz,
           settings,
         ).replace(/^<span class="weekday-part">|<\/span>$/g, "").toUpperCase()
-    const dateStr = shouldShowDate
-      ? getCustomDateString(now, langCode, tz, settings)
-      : ""
-    clockElement.innerHTML = `
-      <div class="aurora-ribbon-clock">
-        <div class="aurora-ribbon-top">
-          <span class="aurora-ribbon-weekday">${rawWeekday}</span>
-          ${ampm ? `<span class="aurora-ribbon-ampm">${ampm}</span>` : ""}
-        </div>
-        <div class="aurora-ribbon-time">
-          <span class="aurora-ribbon-hour">${hh}</span>
-          <span class="aurora-ribbon-colon">:</span>
-          <span class="aurora-ribbon-minute">${mm}</span>
-          ${ss ? `<span class="aurora-ribbon-second">${ss}</span>` : ""}
-        </div>
-        ${isTimer ? `<div class="aurora-ribbon-date">${timerRunningLabel}</div>` : dateStr ? `<div class="aurora-ribbon-date">${dateStr}</div>` : ""}
-      </div>
-    `
+    if (aurora.weekdayEl && aurora.weekdayEl.textContent !== auroraWeekday)
+      aurora.weekdayEl.textContent = auroraWeekday
+    if (aurora.ampmEl) {
+      if (ampm && aurora.ampmEl.textContent !== ampm)
+        aurora.ampmEl.textContent = ampm
+      aurora.ampmEl.style.display = ampm ? "inline-block" : "none"
+    }
+    if (aurora.hourEl && aurora.hourEl.textContent !== hh)
+      aurora.hourEl.textContent = hh
+    if (aurora.minuteEl && aurora.minuteEl.textContent !== mm)
+      aurora.minuteEl.textContent = mm
+    if (aurora.secondEl) {
+      if (ss && aurora.secondEl.textContent !== ss)
+        aurora.secondEl.textContent = ss
+      aurora.secondEl.style.display = ss ? "inline" : "none"
+    }
+    if (aurora.dateEl) {
+      const auroraDate = isTimer
+        ? timerRunningLabel
+        : shouldShowDate
+          ? getCustomDateString(now, langCode, tz, settings)
+          : ""
+      if (aurora.dateEl.getAttribute("data-raw-html") !== auroraDate) {
+        aurora.dateEl.innerHTML = auroraDate
+        aurora.dateEl.setAttribute("data-raw-html", auroraDate)
+      }
+      aurora.dateEl.style.display = auroraDate ? "block" : "none"
+    }
   } else if (dateClockStyle === "bento") {
     const weekday = isTimer
       ? timerShortLabel
