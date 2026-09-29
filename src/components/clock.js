@@ -164,6 +164,20 @@ function init3DClockInteractiveTilt() {
   let isMoving = false
   let idleTimer = null
   let animFrameId = null
+  // Scene rect cache: getBoundingClientRect on every mousemove forces layout;
+  // a stale rect only skews the tilt slightly and is refreshed on scroll/resize
+  let sceneRect = null
+  const refreshSceneRect = () => {
+    const scene = document.querySelector(".clock-3d-scene")
+    if (!scene) {
+      sceneRect = null
+      return
+    }
+    const rect = scene.getBoundingClientRect()
+    sceneRect = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
+  }
+  window.addEventListener("scroll", refreshSceneRect, { passive: true })
+  window.addEventListener("resize", refreshSceneRect, { passive: true })
 
   const updateLoop = () => {
     const stage = document.querySelector(".clock-3d-stage")
@@ -206,9 +220,13 @@ function init3DClockInteractiveTilt() {
         targetRotY = -6
       }, 1500)
 
-      const rect = scene.getBoundingClientRect()
-      const sceneCenterX = rect.left + rect.width / 2
-      const sceneCenterY = rect.top + rect.height / 2
+      if (!sceneRect) refreshSceneRect()
+      const sceneCenterX = sceneRect
+        ? sceneRect.left + sceneRect.width / 2
+        : window.innerWidth / 2
+      const sceneCenterY = sceneRect
+        ? sceneRect.top + sceneRect.height / 2
+        : window.innerHeight / 2
       const deltaX = (e.clientX - sceneCenterX) / (window.innerWidth * 0.5)
       const deltaY = (e.clientY - sceneCenterY) / (window.innerHeight * 0.5)
 
