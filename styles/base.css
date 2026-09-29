@@ -436,3 +436,17 @@ body.perf-reduce-glass *::after {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Low-memory devices (body.perf-low): stop the always-running
+   decorative animations inside the clock/date widgets (~76
+   `animation: ... infinite` rules live in clock-styles.css; the
+   aquarium style alone runs ~20 at once). Time text and JS-driven
+   hands are unaffected; purely decorative loops stop.
+   ───────────────────────────────────────────────────────────── */
+body.perf-low #clock,
+body.perf-low #clock *,
+body.perf-low #date,
+body.perf-low #date * {
+  animation: none !important;
+}
