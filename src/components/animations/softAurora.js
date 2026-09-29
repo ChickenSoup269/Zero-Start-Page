@@ -141,7 +141,7 @@ export class SoftAuroraEffect {
   constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId);
     if (!this.canvas) return;
-    this.gl = this.canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: 'high-performance' });
+    this.gl = this.canvas.getContext("webgl2", { alpha: true, antialias: false, powerPreference: 'low-power' });
     if (!this.gl) {
       console.warn("WebGL 2 not supported for Soft Aurora");
       return;
@@ -280,7 +280,7 @@ export class SoftAuroraEffect {
     this.speedScale = profile.speedScale ?? 1.0;
     this.targetFps = profile.targetFps ?? 60;
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null;
-    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "medium" ? 0.8 : 1.0;
+    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "battery" ? 0.8 : 1.0;
     if (this.active) {
       this.handleResize();
     }

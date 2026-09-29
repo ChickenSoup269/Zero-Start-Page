@@ -16,8 +16,16 @@ export class SilkEffect {
     this.canvasWrapper.appendChild(this.canvas)
 
     this.gl =
-      this.canvas.getContext("webgl") ||
-      this.canvas.getContext("experimental-webgl")
+      this.canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      }) ||
+      this.canvas.getContext("experimental-webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      })
 
     if (!this.gl) {
       console.warn("SilkEffect: WebGL not supported")
@@ -213,7 +221,7 @@ export class SilkEffect {
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
     if (profile.level) {
-      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
       if (this.gl) this.resize()
     }
   }

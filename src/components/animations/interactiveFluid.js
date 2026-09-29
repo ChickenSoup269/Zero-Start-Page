@@ -204,7 +204,7 @@ export class InteractiveFluidBackground {
     this.speedScale = profile.speedScale ?? 1.0
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
-    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "medium" ? 0.8 : 1.0
+    this.dprScale = profile.level === "low" ? 0.6 : profile.level === "battery" ? 0.8 : 1.0
     if (this.active) {
       this._handleResize()
     }

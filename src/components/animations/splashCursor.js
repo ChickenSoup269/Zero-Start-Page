@@ -99,12 +99,12 @@ export class SplashCursor {
     this.speedScale = profile.speedScale ?? 1.0
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
-    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
     if (this._sim?.config) {
       if (profile.level === "low") {
         this._sim.config.PRESSURE_ITERATIONS = 8
         this._sim.config.CURL = 1.5
-      } else if (profile.level === "medium") {
+      } else if (profile.level === "battery") {
         this._sim.config.PRESSURE_ITERATIONS = 14
         this._sim.config.CURL = 2.5
       } else {
@@ -132,7 +132,9 @@ export class SplashCursor {
 
   _fitCanvas() {
     if (!this.canvas) return
-    const dpr = window.devicePixelRatio || 1
+    // Cap DPR: full retina resolution on a multi-pass fluid sim multiplies
+    // the fragment work with no visible gain
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
     const w = window.innerWidth
     const h = window.innerHeight
     const width = Math.max(1, Math.floor(w * dpr))
@@ -261,6 +263,7 @@ export class SplashCursor {
         stencil: false,
         antialias: false,
         preserveDrawingBuffer: false,
+        powerPreference: "low-power",
       }
       let context = targetCanvas.getContext("webgl2", params)
       const isWebGL2 = !!context
@@ -1050,7 +1053,7 @@ export class SplashCursor {
     let colorUpdateTimer = 0.0
 
     function scaleByPixelRatio(input) {
-      const pixelRatio = window.devicePixelRatio || 1
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5)
       return Math.floor(input * pixelRatio)
     }
 

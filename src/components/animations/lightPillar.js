@@ -135,7 +135,7 @@ export class LightPillarEffect {
 
     window.addEventListener("resize", this._resizeHandler)
     if (this.interactive) {
-      document.addEventListener("mousemove", this._mouseMoveHandler)
+      document.addEventListener("mousemove", this._mouseMoveHandler, { passive: true })
     }
 
     this._initWebGL()
@@ -143,7 +143,7 @@ export class LightPillarEffect {
   }
 
   _handleMouseMove(e) {
-    const rect = this.canvas.getBoundingClientRect()
+    const rect = this._rect || this.canvas.getBoundingClientRect()
     this.mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1
     this.mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1
   }
@@ -394,6 +394,9 @@ export class LightPillarEffect {
     this.canvas.width = window.innerWidth * dpr
     this.canvas.height = window.innerHeight * dpr
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+    // Cache the rect: the canvas is full-screen fixed, so reading it in the
+    // mousemove handler would force a layout on every mouse move
+    this._rect = this.canvas.getBoundingClientRect()
     if (this.uniforms) {
       this.gl.uniform2f(
         this.uniforms.uResolution,
@@ -409,7 +412,7 @@ export class LightPillarEffect {
     this.speedScale = profile.speedScale ?? 1.0
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
-    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
     if (this.active) {
       this.resize()
     }
@@ -464,7 +467,10 @@ export class LightPillarEffect {
       this._lastFrameTime = now - ((now - this._lastFrameTime) % this.fpsInterval)
     }
 
-    const deltaTime = ((now - this.lastFrameTime) / 1000) * (this.speedScale || 1.0)
+    // Clamp so a hidden-tab pause (rAF stops firing) doesn't produce a huge
+    // time jump on the first frame back
+    const rawDt = (now - this.lastFrameTime) / 1000
+    const deltaTime = Math.min(rawDt, 0.1) * (this.speedScale || 1.0)
     this.lastFrameTime = now
 
     this.time += deltaTime * this.rotationSpeed

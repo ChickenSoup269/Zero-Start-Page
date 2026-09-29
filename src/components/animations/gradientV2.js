@@ -266,7 +266,7 @@ export class GradientV2Effect {
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
     if (profile.level) {
-      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+      this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
       if (this.gl) this.handleResize()
     }
   }

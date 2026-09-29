@@ -25,8 +25,16 @@ export class LiquidEther {
     this.canvasWrapper.appendChild(this.canvas)
 
     this.gl =
-      this.canvas.getContext("webgl") ||
-      this.canvas.getContext("experimental-webgl")
+      this.canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      }) ||
+      this.canvas.getContext("experimental-webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      })
     this.animationId = null
     this.mouse = { x: 0.5, y: 0.5 }
     this.targetMouse = { x: 0.5, y: 0.5 }
@@ -221,7 +229,7 @@ export class LiquidEther {
     this.speedScale = profile.speedScale ?? 1.0
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
-    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
     if (this.active) {
       this._handleResize()
     }
@@ -248,7 +256,7 @@ export class LiquidEther {
 
     this._handleResize()
     window.addEventListener("resize", this._handleResize)
-    window.addEventListener("mousemove", this._handleMouseMove)
+    window.addEventListener("mousemove", this._handleMouseMove, { passive: true })
 
     let lastTime = 0
     this._lastFrameTime = performance.now()

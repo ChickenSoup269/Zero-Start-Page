@@ -20,8 +20,16 @@ export class SunbeamEffect {
     this.canvasWrapper.appendChild(this.canvas)
 
     this.gl =
-      this.canvas.getContext("webgl") ||
-      this.canvas.getContext("experimental-webgl")
+      this.canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      }) ||
+      this.canvas.getContext("experimental-webgl", {
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+      })
     this.active = false
 
     if (typeof options === "string") {
@@ -293,7 +301,7 @@ export class SunbeamEffect {
     this.speedScale = profile.speedScale ?? 1.0
     this.targetFps = profile.targetFps ?? 60
     this.fpsInterval = this.targetFps < 60 ? 1000 / this.targetFps : null
-    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "medium" ? 0.85 : 1.0
+    this.dprScale = profile.level === "low" ? 0.65 : profile.level === "battery" ? 0.85 : 1.0
     if (this.active) {
       this.resize()
     }
