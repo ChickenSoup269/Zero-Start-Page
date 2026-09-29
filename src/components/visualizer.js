@@ -2743,17 +2743,6 @@ class MusicVisualizer {
         }
       }
     } catch (e) {}
-
-    this._runtimeMessageListener = (message) => {
-      if (message?.type === "AUDIO_BANDS" && Array.isArray(message.bands)) {
-        this.feedFrequencyData(message.bands)
-      } else if (message?.type === "AUDIO_BANDS_STOP") {
-        this.feedFrequencyData(null)
-      }
-    }
-    try {
-      chrome.runtime?.onMessage?.addListener(this._runtimeMessageListener)
-    } catch (e) {}
   }
 
   feedFrequencyData(bands) {

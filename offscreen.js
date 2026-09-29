@@ -98,19 +98,14 @@ async function startCapture(streamId) {
         Math.round(b5 * 1000) / 1000,
       ]
 
+      // BroadcastChannel only: sending this via chrome.runtime.sendMessage as
+      // well would wake the service worker ~45x/sec and keep it alive forever
       try {
         channel.postMessage({
           type: "AUDIO_BANDS",
           bands,
           timestamp: ts,
         })
-      } catch (e) {}
-
-      try {
-        chrome.runtime?.sendMessage({
-          type: "AUDIO_BANDS",
-          bands,
-        })?.catch?.(() => {})
       } catch (e) {}
     }
 
@@ -150,11 +145,6 @@ function stopCapture() {
     getBroadcastChannel().postMessage({
       type: "AUDIO_BANDS_STOP",
     })
-  } catch (e) {}
-  try {
-    chrome.runtime?.sendMessage({
-      type: "AUDIO_BANDS_STOP",
-    })?.catch?.(() => {})
   } catch (e) {}
 }
 

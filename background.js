@@ -344,6 +344,9 @@ function queryAudibleAndCapture() {
 
 async function startTabAudioCapture(tabId) {
   if (!chrome.tabCapture || !tabId) return
+  // Already capturing this tab: re-entering would tear down and rebuild the
+  // stream + AudioContext every call (mediaStateUpdated arrives ~1x/sec)
+  if (activeCapturingTabId === tabId) return
   try {
     const tab = await new Promise((resolve) => {
       chrome.tabs.get(tabId, (t) => {
@@ -482,7 +485,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
 
       if (request.state?.isPlaying) {
-        maybeStartTabAudioCapture(sender.tab.id)
+        if (activeCapturingTabId !== sender.tab.id) {
+          maybeStartTabAudioCapture(sender.tab.id)
+        }
       } else {
         maybeStopTabAudioCapture(sender.tab.id)
       }
