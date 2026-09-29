@@ -325,6 +325,7 @@ export class BubblesEffect {
     if (!newColor) return
     this.color = newColor
     this._rgb = this.hexToRgb(this.color)
+    this._spriteCache = null
   }
 
   start() {
@@ -473,9 +474,74 @@ export class BubblesEffect {
     }
   }
 
+  // Bake the whole bubble (glow + glass body + rim + highlights) into one
+  // offscreen sprite per palette color. Every gradient stop in the original
+  // drawing was linear in `opacity`, so drawing the sprite with
+  // globalAlpha = opacity reproduces the exact same look. This replaces
+  // 4 createRadialGradient + 4 fills + 1 stroke per bubble per frame with a
+  // single drawImage.
+  _getBubbleSprite(rgb) {
+    const key = `${rgb.r},${rgb.g},${rgb.b}`
+    if (!this._spriteCache) this._spriteCache = new Map()
+    let sprite = this._spriteCache.get(key)
+    if (sprite) return sprite
+
+    const px = 256
+    sprite = document.createElement("canvas")
+    sprite.width = px
+    sprite.height = px
+    const sctx = sprite.getContext("2d")
+    // 1 bubble-size unit = px/4 so the outer glow (radius 2u) fills the sprite
+    const u = px / 4
+    sctx.translate(px / 2, px / 2)
+
+    // 1. Soft Outer Caustic Water Glow
+    const glowGrad = sctx.createRadialGradient(0, 0, u * 0.4, 0, 0, u * 2.0)
+    glowGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.22)`)
+    glowGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+    sctx.fillStyle = glowGrad
+    sctx.beginPath()
+    sctx.arc(0, 0, u * 2.0, 0, Math.PI * 2)
+    sctx.fill()
+
+    // 2. Translucent Glass Sphere Body
+    const bodyGrad = sctx.createRadialGradient(-u * 0.22, -u * 0.22, u * 0.05, 0, 0, u)
+    bodyGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.26)`)
+    bodyGrad.addColorStop(0.65, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12)`)
+    bodyGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.65)`)
+    sctx.fillStyle = bodyGrad
+    sctx.beginPath()
+    sctx.arc(0, 0, u, 0, Math.PI * 2)
+    sctx.fill()
+
+    // 3. Crisp Glass Rim with Iridescent Sheen
+    sctx.strokeStyle = `rgba(${Math.min(255, rgb.r + 40)}, ${Math.min(255, rgb.g + 40)}, ${Math.min(255, rgb.b + 40)}, 0.88)`
+    sctx.lineWidth = u * 0.065
+    sctx.stroke()
+
+    // 4. Primary Specular Highlight (Top-left crescent/oval reflection)
+    const drawHighlight = (hx, hy, hr, inner, mid) => {
+      const g = sctx.createRadialGradient(hx, hy, 0, hx, hy, hr)
+      g.addColorStop(0, `rgba(255, 255, 255, ${inner})`)
+      if (mid !== null) g.addColorStop(0.45, `rgba(255, 255, 255, ${mid})`)
+      g.addColorStop(1, "rgba(255, 255, 255, 0)")
+      sctx.fillStyle = g
+      sctx.beginPath()
+      sctx.arc(hx, hy, hr, 0, Math.PI * 2)
+      sctx.fill()
+    }
+    drawHighlight(-u * 0.32, -u * 0.32, u * 0.34, 1.0, 0.75)
+    // 5. Secondary Counter-Reflection (Bottom-right soft glint)
+    drawHighlight(u * 0.32, u * 0.3, u * 0.16, 0.85, null)
+
+    this._spriteCache.set(key, sprite)
+    return sprite
+  }
+
   drawBubble(bubble, rgb) {
     const ctx = this.ctx
     const { x, y, size, opacity, wobblePhase } = bubble
+    const sprite = this._getBubbleSprite(rgb)
 
     ctx.save()
     ctx.translate(x, y)
@@ -484,66 +550,8 @@ export class BubblesEffect {
     const stretch = Math.sin(wobblePhase) * 0.07
     ctx.scale(1 + stretch, 1 - stretch)
 
-    // 1. Soft Outer Caustic Water Glow
-    const glowGrad = ctx.createRadialGradient(0, 0, size * 0.4, 0, 0, size * 2.0)
-    glowGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.22).toFixed(3)})`)
-    glowGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-    ctx.fillStyle = glowGrad
-    ctx.beginPath()
-    ctx.arc(0, 0, size * 2.0, 0, Math.PI * 2)
-    ctx.fill()
-
-    // 2. Translucent Glass Sphere Body
-    const bodyGrad = ctx.createRadialGradient(
-      -size * 0.22,
-      -size * 0.22,
-      size * 0.05,
-      0,
-      0,
-      size,
-    )
-    bodyGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.26).toFixed(3)})`)
-    bodyGrad.addColorStop(0.65, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.12).toFixed(3)})`)
-    bodyGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.65).toFixed(3)})`)
-
-    ctx.fillStyle = bodyGrad
-    ctx.beginPath()
-    ctx.arc(0, 0, size, 0, Math.PI * 2)
-    ctx.fill()
-
-    // 3. Crisp Glass Rim with Iridescent Sheen
-    ctx.strokeStyle = `rgba(${Math.min(255, rgb.r + 40)}, ${Math.min(255, rgb.g + 40)}, ${Math.min(255, rgb.b + 40)}, ${(opacity * 0.88).toFixed(3)})`
-    ctx.lineWidth = Math.max(0.6, size * 0.065)
-    ctx.stroke()
-
-    // 4. Primary Specular Highlight (Top-left crescent/oval reflection)
-    const hlX = -size * 0.32
-    const hlY = -size * 0.32
-    const hlSize = size * 0.34
-
-    const hlGrad = ctx.createRadialGradient(hlX, hlY, 0, hlX, hlY, hlSize)
-    hlGrad.addColorStop(0, `rgba(255, 255, 255, ${(Math.min(1.0, opacity * 1.8 + 0.3)).toFixed(3)})`)
-    hlGrad.addColorStop(0.45, `rgba(255, 255, 255, ${(opacity * 0.75).toFixed(3)})`)
-    hlGrad.addColorStop(1, "rgba(255, 255, 255, 0)")
-
-    ctx.fillStyle = hlGrad
-    ctx.beginPath()
-    ctx.arc(hlX, hlY, hlSize, 0, Math.PI * 2)
-    ctx.fill()
-
-    // 5. Secondary Counter-Reflection (Bottom-right soft glint)
-    const hl2X = size * 0.32
-    const hl2Y = size * 0.3
-    const hl2Size = size * 0.16
-
-    const hlGrad2 = ctx.createRadialGradient(hl2X, hl2Y, 0, hl2X, hl2Y, hl2Size)
-    hlGrad2.addColorStop(0, `rgba(255, 255, 255, ${(opacity * 0.85).toFixed(3)})`)
-    hlGrad2.addColorStop(1, "rgba(255, 255, 255, 0)")
-
-    ctx.fillStyle = hlGrad2
-    ctx.beginPath()
-    ctx.arc(hl2X, hl2Y, hl2Size, 0, Math.PI * 2)
-    ctx.fill()
+    ctx.globalAlpha = Math.max(0, Math.min(1, opacity))
+    ctx.drawImage(sprite, -size * 2, -size * 2, size * 4, size * 4)
 
     ctx.restore()
   }

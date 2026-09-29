@@ -245,18 +245,40 @@ class SnowflakeParticle3D {
     ctx.fill()
   }
 
+  // Pre-baked graupel orb sprite per palette color (stops were linear in
+  // alpha, so globalAlpha reproduces the original look) — replaces a
+  // createRadialGradient + fill per flake per frame with one drawImage
+  static getFluffSprite(rgb) {
+    if (!SnowflakeParticle3D._fluffCache) SnowflakeParticle3D._fluffCache = new Map()
+    const key = `${rgb.r},${rgb.g},${rgb.b}`
+    let sprite = SnowflakeParticle3D._fluffCache.get(key)
+    if (sprite) return sprite
+
+    const px = 128
+    sprite = document.createElement("canvas")
+    sprite.width = px
+    sprite.height = px
+    const sctx = sprite.getContext("2d")
+    sctx.translate(px / 2, px / 2)
+    const g = sctx.createRadialGradient(0, 0, 0, 0, 0, px / 2)
+    g.addColorStop(0, "rgba(255, 255, 255, 0.95)")
+    g.addColorStop(0.45, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.75)`)
+    g.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+    sctx.fillStyle = g
+    sctx.beginPath()
+    sctx.arc(0, 0, px / 2, 0, Math.PI * 2)
+    sctx.fill()
+
+    SnowflakeParticle3D._fluffCache.set(key, sprite)
+    return sprite
+  }
+
   _drawFluff(ctx, rgb, alpha) {
     const r = this.size * 0.85
-    // Frosted soft graupel orb with radial halo
-    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.6)
-    grad.addColorStop(0, `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`)
-    grad.addColorStop(0.45, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(alpha * 0.75).toFixed(3)})`)
-    grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-
-    ctx.fillStyle = grad
-    ctx.beginPath()
-    ctx.arc(0, 0, r * 1.6, 0, Math.PI * 2)
-    ctx.fill()
+    const sprite = SnowflakeParticle3D.getFluffSprite(rgb)
+    ctx.globalAlpha = Math.max(0, Math.min(1, alpha))
+    ctx.drawImage(sprite, -r * 1.6, -r * 1.6, r * 3.2, r * 3.2)
+    ctx.globalAlpha = 1
   }
 
   _drawNeedle(ctx, rgb, alpha) {

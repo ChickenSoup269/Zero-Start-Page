@@ -184,30 +184,21 @@ class BioluminescentFly {
     }
 
     // 2. Bioluminescent Lantern (Triple-pass optical bloom adapted to custom color)
+    // Bloom + halo come from pre-baked sprites (all stops were linear in
+    // opacity, so globalAlpha = opacity reproduces the same look) — replaces
+    // 2 createRadialGradient + 2 fills per fly per frame with 2 drawImage.
     if (isVisible) {
       // 2A. Wide Atmospheric Bloom (Ambient night mist illumination)
       const bloomR = size * (18 + z * 20)
-      const bloomGrad = ctx.createRadialGradient(size * 0.2, 0, 0, size * 0.2, 0, bloomR)
-      bloomGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.16).toFixed(3)})`)
-      bloomGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.045).toFixed(3)})`)
-      bloomGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-
-      ctx.fillStyle = bloomGrad
-      ctx.beginPath()
-      ctx.arc(size * 0.2, 0, bloomR, 0, Math.PI * 2)
-      ctx.fill()
+      const bloomSprite = BioluminescentFly.getGlowSprite(rgb, "bloom")
+      ctx.globalAlpha = opacity
+      ctx.drawImage(bloomSprite, size * 0.2 - bloomR, -bloomR, bloomR * 2, bloomR * 2)
 
       // 2B. Bioluminescent Halo (Vibrant colored aura)
       const haloR = size * (5.8 + z * 6.2)
-      const haloGrad = ctx.createRadialGradient(size * 0.2, 0, 0, size * 0.2, 0, haloR)
-      haloGrad.addColorStop(0, `rgba(255, 255, 250, ${(opacity * 0.95).toFixed(3)})`)
-      haloGrad.addColorStop(0.35, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(opacity * 0.85).toFixed(3)})`)
-      haloGrad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-
-      ctx.fillStyle = haloGrad
-      ctx.beginPath()
-      ctx.arc(size * 0.2, 0, haloR, 0, Math.PI * 2)
-      ctx.fill()
+      const haloSprite = BioluminescentFly.getGlowSprite(rgb, "halo")
+      ctx.drawImage(haloSprite, size * 0.2 - haloR, -haloR, haloR * 2, haloR * 2)
+      ctx.globalAlpha = 1
 
       // 2C. White-Hot Photon Core (Central luminescent organelle)
       const coreR = Math.max(1.1, size * (0.85 + z * 0.45) * (0.85 + opacity * 0.25))
@@ -218,6 +209,43 @@ class BioluminescentFly {
     }
 
     ctx.restore()
+  }
+
+  // Pre-baked radial-glow sprites, one per (kind, palette color). Baked at
+  // opacity 1 and tinted at draw time via globalAlpha.
+  static getGlowSprite(rgb, kind) {
+    if (!BioluminescentFly._spriteCache) BioluminescentFly._spriteCache = new Map()
+    const key = `${kind}:${rgb.r},${rgb.g},${rgb.b}`
+    let sprite = BioluminescentFly._spriteCache.get(key)
+    if (sprite) return sprite
+
+    const px = kind === "bloom" ? 256 : 128
+    sprite = document.createElement("canvas")
+    sprite.width = px
+    sprite.height = px
+    const sctx = sprite.getContext("2d")
+    const r = px / 2
+    sctx.translate(r, r)
+
+    let g
+    if (kind === "bloom") {
+      g = sctx.createRadialGradient(0, 0, 0, 0, 0, r)
+      g.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`)
+      g.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.045)`)
+      g.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+    } else {
+      g = sctx.createRadialGradient(0, 0, 0, 0, 0, r)
+      g.addColorStop(0, "rgba(255, 255, 250, 0.95)")
+      g.addColorStop(0.35, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.85)`)
+      g.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+    }
+    sctx.fillStyle = g
+    sctx.beginPath()
+    sctx.arc(0, 0, r, 0, Math.PI * 2)
+    sctx.fill()
+
+    BioluminescentFly._spriteCache.set(key, sprite)
+    return sprite
   }
 }
 

@@ -86,6 +86,8 @@ export class MatrixRain {
     if (!hex) return
     this._color = hex
     this._palette = this._computePalette(hex)
+    // Cached rgba strings are palette-specific
+    this._strCache = null
   }
 
   _computePalette(hex) {
@@ -173,6 +175,7 @@ export class MatrixRain {
 
   initStreams() {
     this.streams = []
+    this._streamsDirty = true
     const W = this.canvas.width
     const H = this.canvas.height
 
@@ -363,8 +366,58 @@ export class MatrixRain {
 
     const p = this._palette
 
-    // Sort Streams by Depth Z for correct optical layering
-    this.streams.sort((a, b) => a.z - b.z)
+    // Sort Streams by Depth Z for correct optical layering — only needed when
+    // a stream was recycled (z never changes otherwise)
+    if (this._streamsDirty) {
+      this.streams.sort((a, b) => a.z - b.z)
+      this._streamsDirty = false
+    }
+
+    // Cache rgba strings: building thousands of unique `rgba(...)` strings per
+    // frame churned the GC. Quantize alpha and reuse.
+    if (!this._strCache) {
+      this._strCache = {
+        head: new Map(),
+        glow: new Map(),
+        tail: new Map(),
+      }
+      this._lastFont = ""
+    }
+    const cache = this._strCache
+    const q = (v, steps) =>
+      Math.min(steps, Math.max(0, Math.round(v * steps)))
+    const headStr = (a) => {
+      const key = q(a, 64)
+      let s = cache.head.get(key)
+      if (s === undefined) {
+        s = `rgba(${p.head.r}, ${p.head.g}, ${p.head.b}, ${key / 64})`
+        cache.head.set(key, s)
+      }
+      return s
+    }
+    const glowStr = (a) => {
+      const key = q(a, 64)
+      let s = cache.glow.get(key)
+      if (s === undefined) {
+        s = `rgba(${p.glow.r}, ${p.glow.g}, ${p.glow.b}, ${key / 64})`
+        cache.glow.set(key, s)
+      }
+      return s
+    }
+    const tailStr = (fade, alpha) => {
+      const key = q(fade, 32) * 64 + q(alpha, 64)
+      let s = cache.tail.get(key)
+      if (s === undefined) {
+        const f = Math.floor(key / 64) / 32
+        const a = (key % 64) / 64
+        const r = Math.round(p.primary.r * f + p.tail.r * (1 - f))
+        const g = Math.round(p.primary.g * f + p.tail.g * (1 - f))
+        const b = Math.round(p.primary.b * f + p.tail.b * (1 - f))
+        s = `rgba(${r}, ${g}, ${b}, ${a})`
+        cache.tail.set(key, s)
+      }
+      return s
+    }
 
     // Render Matrix Code Streams
     this.ctx.textAlign = "center"
@@ -401,7 +454,11 @@ export class MatrixRain {
         }
       }
 
-      this.ctx.font = `bold ${s.fontSize}px "Courier New", monospace`
+      const font = `bold ${s.fontSize}px "Courier New", monospace`
+      if (font !== this._lastFont) {
+        this.ctx.font = font
+        this._lastFont = font
+      }
 
       // Render Glyphs from Head to Tail
       const len = s.chars.length
@@ -417,16 +474,16 @@ export class MatrixRain {
           const headAlpha = Math.min(1.0, s.alphaMultiplier + 0.2 + mouseDistFactor * 0.3)
 
           if (s.z > 0.4) {
-            this.ctx.fillStyle = `rgba(${p.glow.r}, ${p.glow.g}, ${p.glow.b}, ${headAlpha * 0.4})`
+            this.ctx.fillStyle = glowStr(headAlpha * 0.4)
             this.ctx.fillText(glyph, s.x, charY)
           }
 
-          this.ctx.fillStyle = `rgba(${p.head.r}, ${p.head.g}, ${p.head.b}, ${headAlpha})`
+          this.ctx.fillStyle = headStr(headAlpha)
           this.ctx.fillText(glyph, s.x, charY)
         } else if (j <= 2) {
           // Radiant Sub-Head Glyphs
           const subAlpha = Math.min(1.0, (1 - tailRatio * 0.3) * s.alphaMultiplier + mouseDistFactor * 0.3)
-          this.ctx.fillStyle = `rgba(${p.glow.r}, ${p.glow.g}, ${p.glow.b}, ${subAlpha})`
+          this.ctx.fillStyle = glowStr(subAlpha)
           this.ctx.fillText(glyph, s.x, charY)
         } else {
           // Trailing Decay Glyphs
@@ -434,11 +491,7 @@ export class MatrixRain {
           const charAlpha = Math.min(1.0, (fade * s.alphaMultiplier + mouseDistFactor * 0.5))
 
           if (charAlpha > 0.02) {
-            const r = Math.round(p.primary.r * fade + p.tail.r * (1 - fade))
-            const g = Math.round(p.primary.g * fade + p.tail.g * (1 - fade))
-            const b = Math.round(p.primary.b * fade + p.tail.b * (1 - fade))
-
-            this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${charAlpha})`
+            this.ctx.fillStyle = tailStr(fade, charAlpha)
             this.ctx.fillText(glyph, s.x, charY)
           }
         }
@@ -448,6 +501,7 @@ export class MatrixRain {
       if (s.y - s.length * s.fontSize > H + 50) {
         const fresh = this.createStream(s.x, s.z, false)
         Object.assign(s, fresh)
+        this._streamsDirty = true
       }
     }
   }
