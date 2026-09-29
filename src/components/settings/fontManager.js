@@ -226,6 +226,12 @@ export function updateActiveTypographyHero() {
 }
 
 function updateHeroClockTime() {
+  // The 1s timer lives as long as the settings module, but the preview only
+  // needs updating while its sidebar is actually open and visible
+  const sidebar = document.getElementById("settings-sidebar")
+  const sidebarOpen = sidebar?.classList?.contains("open")
+  if (document.hidden || !sidebarOpen) return
+
   const clockSampleEl = document.getElementById("font-preview-clock-sample")
   if (!clockSampleEl) return
   const clockTimeEl = clockSampleEl.querySelector(".preview-clock-time")

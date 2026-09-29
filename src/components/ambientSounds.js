@@ -784,6 +784,14 @@ export class AmbientSounds {
       this.activeNodes.delete(trackId)
     }
     this.playingTracks.delete(trackId)
+    // Idle the audio render thread when nothing is playing; ensureAudioContext()
+    // resumes it on the next play. Keeps the context (and its noise buffer)
+    // alive so restarting is instant.
+    if (this.playingTracks.size === 0 && this.audioCtx?.state === "running") {
+      try {
+        this.audioCtx.suspend()
+      } catch {}
+    }
     this.updateTrackUI(trackId, false)
     this.updateActiveBadge()
     this.updatePresetActiveStates()

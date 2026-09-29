@@ -4,6 +4,7 @@
  */
 
 import { showAlert, showConfirm } from "../../utils/dialog.js"
+import { syncPerfGlassClass } from "../../boot/bootClasses.js"
 import {
   saveImage,
   saveVideo,
@@ -1127,6 +1128,7 @@ export async function initSettings() {
   // even if a later optional manager is unavailable in the current runtime.
   window.appApplySettings = () => {
     applySettings()
+    syncPerfGlassClass(getSettings())
     if (settingsGalleriesRendered) refreshBackgroundGalleries()
   }
 

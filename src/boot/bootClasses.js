@@ -95,6 +95,8 @@ export function applyBootBodyClasses(settings) {
     body.classList.add("perf-low")
   }
 
+  syncPerfGlassClass(settings)
+
   const clockStyleBackground = settings.clockStyleTransparentBackground
     ? "transparent"
     : settings.clockStyleBackground || "default"
@@ -189,4 +191,21 @@ export function applyBootBodyClasses(settings) {
     bookmarkGroupsContainer.style.display =
       settings.showBookmarkGroups !== false ? "" : "none"
   }
+}
+
+/**
+ * Performance: glass-blur reduction (B3 perf-mode).
+ * Toggles body.perf-reduce-glass which CSS uses to strip the ~600
+ * backdrop-filter declarations (a major GPU/battery cost on weak hardware).
+ * Applied when the user picks performanceMode "low"/"battery", or in "auto"
+ * on low-memory devices. Safe to call repeatedly (e.g. on settings change).
+ */
+export function syncPerfGlassClass(settings) {
+  if (!document.body) return
+  const mode = settings?.performanceMode || "auto"
+  const reduce =
+    mode === "low" ||
+    mode === "battery" ||
+    (mode === "auto" && navigator.deviceMemory && navigator.deviceMemory <= 4)
+  document.body.classList.toggle("perf-reduce-glass", !!reduce)
 }

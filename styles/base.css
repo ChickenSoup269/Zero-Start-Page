@@ -423,3 +423,16 @@ body[data-layout-preset="right"] .custom-title-display {
 
 
 
+
+/* ─────────────────────────────────────────────────────────────
+   B3 performance mode (body.perf-reduce-glass, set by bootClasses.js /
+   appApplySettings): strips the ~600 backdrop-filter glass blurs, the
+   single biggest GPU/battery cost on the page. Elements keep their
+   rgba background fallback so text stays readable, just without blur.
+   ───────────────────────────────────────────────────────────── */
+body.perf-reduce-glass *,
+body.perf-reduce-glass *::before,
+body.perf-reduce-glass *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
