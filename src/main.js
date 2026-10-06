@@ -142,6 +142,58 @@ window.addEventListener(
 // ── Expose ensureSettingsInitialized globally (used by other modules) ─────────
 window.ensureSettingsInitialized = ensureSettingsInitialized
 
+/**
+ * Persist a tiny data-URL snapshot of the applied IDB wallpaper so the next
+ * boot can paint it synchronously from preload.js instead of flashing a flat
+ * #0a0a0a while the full blob loads from IndexedDB. Runs once per open, after
+ * the real background has been applied to #bg-layer.
+ */
+function persistIdbBackgroundPreview(backgroundId) {
+  try {
+    const settings = getSettings()
+    if (settings.background !== backgroundId) return
+    // Skip video IDs: preload.js never shows a frame preview for those.
+    if (typeof backgroundId === "string" && backgroundId.startsWith("idb-video-"))
+      return
+    const existing = settings.lastUserBackgroundPreview
+    const previewUsable =
+      settings.lastUserBackground === backgroundId &&
+      typeof existing === "string" &&
+      existing.startsWith("data:image")
+    if (previewUsable) return
+
+    const bgLayer = document.getElementById("bg-layer")
+    const applied = /^url\(["']?(.+?)["']?\)$/.exec(
+      bgLayer?.style?.backgroundImage || "",
+    )
+    const url = applied?.[1]
+    // blob: URLs die with the session, so only a data-URL snapshot is useful
+    if (!url || !url.startsWith("blob:")) return
+
+    const img = new Image()
+    img.onload = () => {
+      try {
+        if (getSettings().background !== backgroundId) return
+        const MAX_EDGE = 160
+        const scale = Math.min(
+          1,
+          MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight, 1),
+        )
+        const canvas = document.createElement("canvas")
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale))
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale))
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height)
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.6)
+        if (getSettings().background !== backgroundId) return
+        updateSetting("lastUserBackground", backgroundId)
+        updateSetting("lastUserBackgroundPreview", dataUrl)
+        saveSettings()
+      } catch {}
+    }
+    img.src = url
+  } catch {}
+}
+
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function bootstrap() {
   const skipStartupLoader = document.body.classList.contains(
@@ -372,8 +424,10 @@ async function bootstrap() {
       }),
     ]).then(() => {
       if (getSettings().background !== currentSettings.background) return
-      if (typeof window.appApplySettings === "function")
+      if (typeof window.appApplySettings === "function") {
         window.appApplySettings()
+        persistIdbBackgroundPreview(currentSettings.background)
+      }
     })
   } else if (currentSettings.background?.match(/^https?:\/\//)) {
     const bgLayer = document.getElementById("bg-layer")
