@@ -3745,6 +3745,7 @@ function initGlobalStackDragListeners() {
 export function initBookmarks() {
   initGlobalStackDragListeners()
   renderBookmarks()
+  initBookmarkAutoHide()
 
   bookmarkGroupsContainer.addEventListener(
     "wheel",
@@ -3937,6 +3938,63 @@ export function initBookmarks() {
 
 // MacOS Hover Effect
 let macosHoverEnabled = false
+
+/**
+ * Auto-hide (macOS Dock style) behavior: the hidden/revealed visuals are
+ * CSS-only (body.bookmark-auto-hide + :hover). JS adds what CSS can't do:
+ * keeping the bar revealed during bookmark drags, and a tap-to-pin reveal
+ * with a 4s auto-hide on touch devices where there is no hover.
+ */
+function initBookmarkAutoHide() {
+  const widget = document.getElementById("bookmark-widget")
+  if (!widget || widget.dataset.autoHideBound === "1") return
+  widget.dataset.autoHideBound = "1"
+
+  const isTouch = () => window.matchMedia("(hover: none)").matches
+  const reveal = () => document.body.classList.add("bookmark-auto-hide-revealed")
+  const release = () =>
+    document.body.classList.remove("bookmark-auto-hide-revealed")
+
+  let touchPinTimer = null
+  const armTouchAutoHide = () => {
+    if (touchPinTimer) clearTimeout(touchPinTimer)
+    touchPinTimer = setTimeout(() => {
+      release()
+      touchPinTimer = null
+    }, 4000)
+  }
+
+  // Don't let the bar slide away while a bookmark is being dragged over it
+  widget.addEventListener(
+    "dragstart",
+    () => {
+      if (!isTouch()) reveal()
+    },
+    true,
+  )
+  widget.addEventListener(
+    "dragend",
+    () => {
+      if (!isTouch()) release()
+    },
+    true,
+  )
+
+  // Touch: tap toggles a pinned reveal that auto-hides after 4s idle
+  widget.addEventListener("click", () => {
+    if (!isTouch() || !document.body.classList.contains("bookmark-auto-hide"))
+      return
+    const nowRevealed = !document.body.classList.contains(
+      "bookmark-auto-hide-revealed",
+    )
+    document.body.classList.toggle("bookmark-auto-hide-revealed", nowRevealed)
+    if (nowRevealed) armTouchAutoHide()
+    else if (touchPinTimer) {
+      clearTimeout(touchPinTimer)
+      touchPinTimer = null
+    }
+  })
+}
 
 export function initMacosHoverForBookmarks(isEnabled) {
   macosHoverEnabled = isEnabled

@@ -19970,3 +19970,162 @@ body.quick-access-white .quick-access-bar .quick-btn:hover:not(.active) i {
 body.quick-access-white .quick-access-bar .quick-access-divider {
   background: rgba(0, 0, 0, 0.14) !important;
 }
+
+/* ============================================================
+   BOOKMARK AUTO-HIDE (MacOS Dock style, setting bookmarkAutoHide)
+   Hidden state keeps a visible hint: edge layouts slide mostly out
+   of the viewport leaving a 14px peek + a glowing pill, while the
+   default grid fades to a ghost in place. Hover / tap reveals.
+   ============================================================ */
+
+/* Springy reveal transition (suppressed at boot by is-booting rules) */
+body.bookmark-auto-hide #bookmark-widget {
+  transition:
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease !important;
+}
+
+/* --- Hidden state (per layout; :not(:hover) keeps CSS-first reveal) --- */
+
+/* Default grid + draggable grid: ghost in place, no transform
+   (draggable.js manages inline transforms during free-move sessions) */
+body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  opacity: 0.18;
+}
+
+/* Sidebar (right edge) — keep the vertical centering of the base rule */
+body.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateY(-50%) translateX(calc(100% - 14px)) !important;
+}
+
+/* Taskbar bottom (dock) — keep the horizontal centering of the base rule */
+body.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateX(-50%) translateY(calc(100% - 14px)) !important;
+}
+
+/* Taskbar top */
+body.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateX(-50%) translateY(calc(-100% + 14px)) !important;
+}
+
+/* Taskbar left (taskbar-right renders from the same bottom-left anchor,
+   so it peeks from the same edge until that block is split) */
+body.bookmark-taskbar-left-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover),
+body.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateX(calc(-100% + 14px)) !important;
+}
+
+/* --- Glowing edge pill shown while hidden --- */
+body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after,
+body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::after,
+body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::after,
+body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::after,
+body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+/* Pill sits on the widget edge that stays inside the viewport while the
+   rest slides out: sidebar slides right → its LEFT edge remains visible;
+   taskbar slides down → its TOP edge; taskbar-top slides up → its BOTTOM
+   edge; taskbar-left/right slide left → their RIGHT edge. */
+body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after {
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::after {
+  top: 4px;
+  left: 50%;
+  width: 34px;
+  height: 5px;
+  transform: translateX(-50%);
+}
+
+body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::after {
+  bottom: 4px;
+  left: 50%;
+  width: 34px;
+  height: 5px;
+  transform: translateX(-50%);
+}
+
+body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::after,
+body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::after {
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* --- Edge hot zones (hysteresis) ---
+   When revealed, the bar's anchor edge sits near the viewport edge and the
+   mouse may rest in the gap between the revealed bar and that edge — outside
+   the bar's own box, which would instantly re-hide it (flicker loop). A
+   ::before strip extending past the anchor edge keeps :hover alive there.
+   It belongs to the widget, so hovering it counts as hovering the widget. */
+body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::before,
+body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::before,
+body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::before,
+body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::before,
+body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::before {
+  content: "";
+  position: absolute;
+  pointer-events: auto;
+}
+
+body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::before {
+  top: -16px;
+  bottom: -16px;
+  right: -28px;
+  width: 28px;
+}
+
+body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::before {
+  left: -16px;
+  right: -16px;
+  bottom: -28px;
+  height: 28px;
+}
+
+body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::before {
+  left: -16px;
+  right: -16px;
+  top: -28px;
+  height: 28px;
+}
+
+body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::before,
+body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::before {
+  top: -16px;
+  bottom: -16px;
+  left: -28px;
+  width: 28px;
+}
+
+/* Pill fades out once the bar is revealed */
+body.bookmark-auto-hide #bookmark-widget:hover::after,
+body.bookmark-auto-hide.bookmark-auto-hide-revealed #bookmark-widget::after {
+  opacity: 0;
+}
+
+/* --- Touch: no hover, so hints stay a bit more visible --- */
+@media (hover: none) {
+  body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+    opacity: 0.3;
+  }
+
+  body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after,
+  body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::after,
+  body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::after {
+    background: rgba(255, 255, 255, 0.45);
+  }
+}
