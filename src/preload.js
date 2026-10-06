@@ -1,4 +1,9 @@
 ;(function () {
+  // Boot timeline milestone (reported by src/boot/timeline.js with ?perf)
+  try {
+    performance.mark("boot:preload-start")
+  } catch (e) {}
+
   // ── Single synchronous parse of pageSettings ──────────────────────────────
   // Published on window so state.js and bootstrap.js reuse it instead of
   // re-reading and re-parsing localStorage during boot.
@@ -768,4 +773,8 @@
   } catch (e) {
     console.error("Preload execution error:", e)
   }
+
+  try {
+    performance.mark("boot:preload-done")
+  } catch (e) {}
 })()

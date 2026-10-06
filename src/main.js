@@ -12,6 +12,7 @@
 
 // ── Imports: Services & Utils ─────────────────────────────────────────────────
 import { initI18n, geti18n, isSessionCachedLanguage } from "./services/i18n.js"
+import { bootMark, reportBootTimeline } from "./boot/timeline.js"
 import { initClock } from "./components/clock.js"
 import { startClockStyleScheduler } from "./components/clock/clockStyleScheduler.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
@@ -135,6 +136,17 @@ window.addEventListener(
   "bookmarksReady",
   () => {
     bookmarksLoaded = true
+    bootMark("bookmarks-ready")
+  },
+  { once: true },
+)
+
+// Report the boot timeline once the app is revealed (only with ?perf)
+window.addEventListener(
+  "startpage:appRevealed",
+  () => {
+    bootMark("revealed")
+    reportBootTimeline()
   },
   { once: true },
 )
@@ -196,6 +208,7 @@ function persistIdbBackgroundPreview(backgroundId) {
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function bootstrap() {
+  bootMark("main-start")
   const skipStartupLoader = document.body.classList.contains(
     "skip-startup-loader",
   )
@@ -226,6 +239,7 @@ async function bootstrap() {
     initI18n()
   }
   syncUninstallSurveyLanguage(currentSettings.language)
+  bootMark("i18n-done")
 
   // ── 2. Version label in startup overlay ───────────────────────────────────
   try {
@@ -428,6 +442,7 @@ async function bootstrap() {
         window.appApplySettings()
         persistIdbBackgroundPreview(currentSettings.background)
       }
+      bootMark("bg-ready")
     })
   } else if (currentSettings.background?.match(/^https?:\/\//)) {
     const bgLayer = document.getElementById("bg-layer")
@@ -441,6 +456,7 @@ async function bootstrap() {
         bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
         bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
         document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+        bootMark("bg-ready")
       }
       if (typeof img.decode === "function") {
         img.decode().then(apply).catch(apply)

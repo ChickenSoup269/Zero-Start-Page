@@ -1,3 +1,8 @@
+// Boot timeline milestone (reported by ./boot/timeline.js with ?perf)
+try {
+  performance.mark("boot:bootstrap-start")
+} catch (e) {}
+
 async function hydrateSettingsPartials() {
   const placeholders = Array.from(
     document.querySelectorAll("[data-settings-partial][data-src]"),
