@@ -81,9 +81,9 @@ function needsSettingsAtBoot() {
       localStorage.getItem("startpageFirstRunOnboardingDoneV1") !== "1"
     if (isFirstRun || isFirstRunOnboardingPending) return false
 
-    const settingsStr = localStorage.getItem("pageSettings")
-    if (!settingsStr) return false
-    const settings = JSON.parse(settingsStr)
+    // Reuse the parse preload.js already did (window.__pageSettingsCache)
+    const settings = window.__pageSettingsCache
+    if (!settings) return false
     const bg = settings.background
     const isVideo =
       typeof bg === "string" &&

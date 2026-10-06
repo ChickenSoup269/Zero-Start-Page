@@ -46,8 +46,15 @@ let bookmarksState = storedBookmarks || {
 }
 
 // Parse once and reuse to avoid double JSON.parse + double localStorage.getItem
+// preload.js has usually already parsed pageSettings and cached it on window
+// (window.__pageSettingsCache) — reuse that instead of a second parse.
 const storedSettingsRaw = localStorage.getItem("pageSettings")
-const storedSettings = storedSettingsRaw ? JSON.parse(storedSettingsRaw) : {}
+const storedSettings =
+  window.__pageSettingsCache !== undefined
+    ? window.__pageSettingsCache || {}
+    : storedSettingsRaw
+      ? JSON.parse(storedSettingsRaw)
+      : {}
 
 let settingsState = {
   ...defaultSettings,

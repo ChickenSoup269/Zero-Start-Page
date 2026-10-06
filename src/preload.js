@@ -1,17 +1,22 @@
 ;(function () {
+  // ── Single synchronous parse of pageSettings ──────────────────────────────
+  // Published on window so state.js and bootstrap.js reuse it instead of
+  // re-reading and re-parsing localStorage during boot.
+  let settings = null
+  try {
+    settings = JSON.parse(localStorage.getItem("pageSettings") || "null")
+  } catch (e) {
+    settings = null
+  }
+  window.__pageSettingsCache = settings
+
   // ── Deferred stylesheet promotion ─────────────────────────────────────────
   // Sheets tagged data-defer-css load with media="print" so they never block
   // first paint. Promote them to media="all" here — synchronously when a boot
   // setting actually needs them, otherwise as soon as the file finishes
   // loading (with a hard fallback timer for reliability).
   try {
-    let rawSettings = null
-    try {
-      rawSettings = JSON.parse(localStorage.getItem("pageSettings") || "null")
-    } catch (e) {
-      rawSettings = null
-    }
-    const s = rawSettings || {}
+    const s = settings || {}
     const neededAtBoot = {
       settings: false, // settings sidebar is always closed at first paint
       music: s.musicPlayerEnabled === true,
@@ -130,16 +135,7 @@
       }
     }
 
-    // Parse settings once for all boot-time logic below
-    let settings = null
-    const raw = localStorage.getItem("pageSettings")
-    if (raw) {
-      try {
-        settings = JSON.parse(raw)
-      } catch {
-        settings = null
-      }
-    }
+    // Reuse the single parse from the top of this IIFE
 
     // Warm the locale JSON fetches so the first i18n load of a session is
     // already in flight while the page parses, instead of starting after
