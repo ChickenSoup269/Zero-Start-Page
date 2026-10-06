@@ -3521,6 +3521,12 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkAutoHide) {
+      DOM.bookmarkAutoHide.addEventListener("change", () => {
+        throttleSettingUpdate("bookmarkAutoHide", DOM.bookmarkAutoHide.checked)
+      })
+    }
+
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkLayout")
@@ -3797,6 +3803,10 @@ export function setupGeneralEventHandlers(
       if (DOM.bookmarkMacosHover) {
         DOM.bookmarkMacosHover.checked = false
         throttleSettingUpdate("bookmarkMacosHover", false)
+      }
+      if (DOM.bookmarkAutoHide) {
+        DOM.bookmarkAutoHide.checked = false
+        throttleSettingUpdate("bookmarkAutoHide", false)
       }
       if (DOM.bookmarkLimit20) {
         DOM.bookmarkLimit20.checked = true

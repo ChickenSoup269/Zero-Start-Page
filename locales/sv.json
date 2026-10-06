@@ -1548,6 +1548,7 @@
   "settings_bookmark_hide_text": "Dölj titeln",
   "settings_bookmark_hide_bg": "Dölj bokmärkesbakgrund",
   "settings_bookmark_macos_hover": "Aktivera macOS-hovring",
+  "settings_bookmark_auto_hide": "Dölj bokmärken automatiskt (macOS-dock-stil)",
   "settings_bookmark_layout": "Bokmärkeslayout",
   "settings_bookmark_layout_show_groups": "Visa bokmärkesmappar",
   "settings_bookmark_groups_toggle_autohide": "Dölj automatiskt grupknapp (Visa vid hovring)",

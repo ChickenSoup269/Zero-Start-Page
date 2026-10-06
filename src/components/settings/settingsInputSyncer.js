@@ -1404,6 +1404,9 @@ export function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkMacosHover) {
         DOM.bookmarkMacosHover.checked = settings.bookmarkMacosHover === true
       }
+      if (DOM.bookmarkAutoHide) {
+        DOM.bookmarkAutoHide.checked = settings.bookmarkAutoHide === true
+      }
       if (DOM.bookmarkLayout) {
         let val = settings.bookmarkLayout || "default"
         if (settings.bookmarkSidebarMode === true && val === "default")

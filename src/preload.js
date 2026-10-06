@@ -219,6 +219,8 @@
       if (settings.bookmarkGroupMaxRows && settings.bookmarkGroupMaxRows !== "auto")
         body.classList.add(`bookmark-group-rows-${settings.bookmarkGroupMaxRows}`)
       body.classList.add("auto-hide-groups-toggle")
+      if (settings.bookmarkAutoHide === true)
+        body.classList.add("bookmark-auto-hide")
       if (settings.showTopRightControls !== false)
         body.classList.add("has-top-right-controls")
       else body.classList.add("hide-top-right-controls")

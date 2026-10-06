@@ -1908,6 +1908,13 @@ function createApplySettings(effectInstances) {
       initMacosHoverForBookmarks(false)
     }
 
+    if (settings.bookmarkAutoHide) {
+      document.body.classList.add("bookmark-auto-hide")
+    } else {
+      document.body.classList.remove("bookmark-auto-hide")
+      document.body.classList.remove("bookmark-auto-hide-revealed")
+    }
+
     let layout = settings.bookmarkLayout || "default"
     // Handle legacy boolean setting, or removed "sidebar-left" setting
     if (settings.bookmarkSidebarMode === true && layout === "default") {
