@@ -27,7 +27,7 @@ import {
   invalidateBookmarkIconCache,
   renderBookmarks,
   showBookmarkUndo,
-} from "./bookmarks.js"
+} from "./bookmarks.js?v=autohide-v2"
 
 let editingIndex = null
 let editingTarget = null

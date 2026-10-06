@@ -20111,9 +20111,35 @@ body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::before {
   width: 28px;
 }
 
+/* --- Deep interaction: settings sidebar open ---
+   While the user is configuring settings (incl. every bookmark select and
+   toggle), keep the dock revealed — with each layout's base transform
+   restored — so changes are applied in full view instead of on a hidden bar. */
+body.sidebar-open.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  opacity: 1;
+}
+
+body.sidebar-open.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateY(-50%) !important;
+}
+
+body.sidebar-open.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateX(-50%) !important;
+}
+
+body.sidebar-open.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: translateX(-50%) !important;
+}
+
+body.sidebar-open.bookmark-taskbar-left-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover),
+body.sidebar-open.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  transform: none !important;
+}
+
 /* Pill fades out once the bar is revealed */
 body.bookmark-auto-hide #bookmark-widget:hover::after,
-body.bookmark-auto-hide.bookmark-auto-hide-revealed #bookmark-widget::after {
+body.bookmark-auto-hide.bookmark-auto-hide-revealed #bookmark-widget::after,
+body.sidebar-open.bookmark-auto-hide #bookmark-widget::after {
   opacity: 0;
 }
 

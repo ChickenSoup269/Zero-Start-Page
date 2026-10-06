@@ -171,7 +171,7 @@ const hydrateSettingsPartialsWhenVisible = () => {
 }
 
 // Start both in parallel — main.js will bootstrap while partials hydrate
-// Version bumped to boot-split-v1 to invalidate old module cache after refactor
-const mainModulePromise = import("./main.js?v=boot-split-v1")
+// Version bumped to boot-split-v2 to invalidate old module cache after refactor
+const mainModulePromise = import("./main.js?v=boot-split-v3")
 hydrateSettingsPartialsWhenVisible()
 await mainModulePromise

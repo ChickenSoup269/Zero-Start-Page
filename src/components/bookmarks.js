@@ -3942,8 +3942,10 @@ let macosHoverEnabled = false
 /**
  * Auto-hide (macOS Dock style) behavior: the hidden/revealed visuals are
  * CSS-only (body.bookmark-auto-hide + :hover). JS adds what CSS can't do:
- * keeping the bar revealed during bookmark drags, and a tap-to-pin reveal
- * with a 4s auto-hide on touch devices where there is no hover.
+ * a "hold" system that keeps the bar revealed during deep interactions
+ * (drag, context menu, focus editing, settings changes) — the bar only
+ * hides again once every hold is released — plus a tap-to-pin reveal with
+ * a 4s auto-hide on touch devices where there is no hover.
  */
 function initBookmarkAutoHide() {
   const widget = document.getElementById("bookmark-widget")
@@ -3951,47 +3953,97 @@ function initBookmarkAutoHide() {
   widget.dataset.autoHideBound = "1"
 
   const isTouch = () => window.matchMedia("(hover: none)").matches
-  const reveal = () => document.body.classList.add("bookmark-auto-hide-revealed")
-  const release = () =>
-    document.body.classList.remove("bookmark-auto-hide-revealed")
+  const holds = new Set()
+  const syncReveal = () => {
+    document.body.classList.toggle(
+      "bookmark-auto-hide-revealed",
+      holds.size > 0,
+    )
+  }
+  const hold = (name) => {
+    holds.add(name)
+    syncReveal()
+  }
+  const release = (name) => {
+    holds.delete(name)
+    syncReveal()
+  }
 
   let touchPinTimer = null
   const armTouchAutoHide = () => {
     if (touchPinTimer) clearTimeout(touchPinTimer)
     touchPinTimer = setTimeout(() => {
-      release()
+      release("pin")
       touchPinTimer = null
     }, 4000)
   }
 
-  // Don't let the bar slide away while a bookmark is being dragged over it
+  // ── Drag: don't slide away while a bookmark is being dragged ──────────────
   widget.addEventListener(
     "dragstart",
     () => {
-      if (!isTouch()) reveal()
+      if (!isTouch()) hold("drag")
     },
     true,
   )
-  widget.addEventListener(
-    "dragend",
-    () => {
-      if (!isTouch()) release()
-    },
-    true,
-  )
+  widget.addEventListener("dragenter", () => {
+    if (!isTouch()) hold("drag")
+  })
+  widget.addEventListener("drop", () => release("drag"))
+  widget.addEventListener("dragend", () => release("drag"), true)
+  widget.addEventListener("dragleave", (e) => {
+    if (!e.relatedTarget || !widget.contains(e.relatedTarget)) release("drag")
+  })
 
-  // Touch: tap toggles a pinned reveal that auto-hides after 4s idle
+  // ── Context menu: stay revealed until the menu is dismissed ───────────────
+  widget.addEventListener(
+    "contextmenu",
+    () => {
+      if (!isTouch()) hold("menu")
+    },
+    true,
+  )
+  document.addEventListener("click", () => release("menu"), true)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") release("menu")
+  })
+
+  // ── Focus (rename inputs, add-group field…): keep visible while editing ───
+  widget.addEventListener("focusin", () => hold("focus"))
+  widget.addEventListener("focusout", (e) => {
+    if (!e.relatedTarget || !widget.contains(e.relatedTarget))
+      release("focus")
+  })
+
+  // ── Settings changes: flash the dock so the result is visible ─────────────
+  // Changing any bookmark setting (select/toggle/slider, incl. the LCP popup)
+  // pins the bar for a moment instead of applying changes to a hidden dock.
+  window.addEventListener("settingsUpdated", (e) => {
+    const key = e.detail?.key
+    if (typeof key !== "string" || !key.startsWith("bookmark")) return
+    if (!document.body.classList.contains("bookmark-auto-hide")) return
+    hold("preview")
+    if (initBookmarkAutoHide._previewTimer)
+      clearTimeout(initBookmarkAutoHide._previewTimer)
+    initBookmarkAutoHide._previewTimer = setTimeout(() => {
+      release("preview")
+      initBookmarkAutoHide._previewTimer = null
+    }, 2500)
+  })
+
+  // ── Touch: tap toggles a pinned reveal that auto-hides after 4s idle ──────
   widget.addEventListener("click", () => {
     if (!isTouch() || !document.body.classList.contains("bookmark-auto-hide"))
       return
-    const nowRevealed = !document.body.classList.contains(
-      "bookmark-auto-hide-revealed",
-    )
-    document.body.classList.toggle("bookmark-auto-hide-revealed", nowRevealed)
-    if (nowRevealed) armTouchAutoHide()
-    else if (touchPinTimer) {
-      clearTimeout(touchPinTimer)
-      touchPinTimer = null
+    if (document.body.classList.contains("bookmark-auto-hide-revealed")) {
+      release("pin")
+      if (touchPinTimer) {
+        clearTimeout(touchPinTimer)
+        touchPinTimer = null
+      }
+    } else {
+      hold("pin")
+      armTouchAutoHide()
     }
   })
 }
