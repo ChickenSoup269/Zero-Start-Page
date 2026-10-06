@@ -1,8 +1,3 @@
-@import url("./widgets/search-bar.css");
-@import url("./widgets/google-apps.css");
-@import url("./widgets/context-menu.css");
-@import url("./widgets/habit-tracker.css");
-
 /* Top Right Controls */
 .top-right-controls {
   position: fixed;
