@@ -141,6 +141,34 @@
       }
     }
 
+    // Warm the locale JSON fetches so the first i18n load of a session is
+    // already in flight while the page parses, instead of starting after
+    // bootstrap. Skipped when sessionStorage already holds this session's
+    // parsed copies.
+    try {
+      const warmLocale = (code) => {
+        if (sessionStorage.getItem(`startpageCachedI18n_v6_${code}`)) return
+        const link = document.createElement("link")
+        link.rel = "preload"
+        link.as = "fetch"
+        link.href = `./locales/${code}.json?v=6`
+        document.head.appendChild(link)
+      }
+      let language = (settings && settings.language) || ""
+      if (!language) {
+        const nav = (navigator.language || "").toLowerCase()
+        language = nav.startsWith("vi")
+          ? "vi"
+          : nav.startsWith("de")
+            ? "de"
+            : nav.startsWith("sv")
+              ? "sv"
+              : "en"
+      }
+      warmLocale("en")
+      if (language !== "en") warmLocale(language)
+    } catch (e) {}
+
     if (settings) {
       body.setAttribute(
         "data-layout-preset",

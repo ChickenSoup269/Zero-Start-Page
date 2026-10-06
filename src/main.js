@@ -11,7 +11,7 @@
  */
 
 // ── Imports: Services & Utils ─────────────────────────────────────────────────
-import { initI18n, geti18n } from "./services/i18n.js"
+import { initI18n, geti18n, isSessionCachedLanguage } from "./services/i18n.js"
 import { initClock } from "./components/clock.js"
 import { startClockStyleScheduler } from "./components/clock/clockStyleScheduler.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
@@ -164,8 +164,15 @@ async function bootstrap() {
 
   const minimumStartupLoaderMs = 350
 
-  // ── 1. Language (blocks everything else) ──────────────────────────────────
-  await initI18n()
+  // ── 1. Language (awaited only when it cannot hit the network) ─────────────
+  if (isSessionCachedLanguage(currentSettings.language)) {
+    await initI18n()
+  } else {
+    // First open of the session: don't block reveal on the locale fetch.
+    // initI18n applies translations as soon as the fetch resolves; preload.js
+    // has already warmed the request during HTML parse.
+    initI18n()
+  }
   syncUninstallSurveyLanguage(currentSettings.language)
 
   // ── 2. Version label in startup overlay ───────────────────────────────────

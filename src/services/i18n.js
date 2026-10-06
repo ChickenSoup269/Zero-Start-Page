@@ -299,3 +299,23 @@ export async function initI18n() {
   await loadLanguage(settings.language)
   applyTranslations()
 }
+
+/**
+ * True when loadLanguage() for this language can complete without any
+ * network request: the target locale (or its bundled translations in
+ * settings) plus the English fallback are all already in sessionStorage.
+ * Used by the boot path to decide whether awaiting initI18n() is cheap.
+ */
+export function isSessionCachedLanguage(lang) {
+  try {
+    const settings = getSettings()
+    const language = lang || settings.language || getInitialLanguageFallback()
+    if (!sessionStorage.getItem("startpageCachedI18n_v6_en")) return false
+    if (settings.customLanguages?.[language]?.translations) return true
+    return Boolean(
+      sessionStorage.getItem(`startpageCachedI18n_v6_${language}`),
+    )
+  } catch {
+    return false
+  }
+}
