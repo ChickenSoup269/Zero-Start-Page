@@ -30,7 +30,7 @@ import {
 import {
   renderBookmarks,
   toggleSelectionMode,
-} from "./bookmarks.js?v=autohide-v2"
+} from "./bookmarks.js?v=autohide-v3"
 
 let contextMenuTargetIndex = -1
 let contextMenuTargetType = "bookmark" // 'bookmark', 'group', 'widget', 'localBg', etc.

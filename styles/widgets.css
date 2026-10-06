@@ -19989,29 +19989,29 @@ body.bookmark-auto-hide #bookmark-widget {
 
 /* Default grid + draggable grid: ghost in place, no transform
    (draggable.js manages inline transforms during free-move sessions) */
-body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   opacity: 0.18;
 }
 
 /* Sidebar (right edge) — keep the vertical centering of the base rule */
-body.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateY(-50%) translateX(calc(100% - 14px)) !important;
 }
 
 /* Taskbar bottom (dock) — keep the horizontal centering of the base rule */
-body.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateX(-50%) translateY(calc(100% - 14px)) !important;
 }
 
 /* Taskbar top */
-body.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateX(-50%) translateY(calc(-100% + 14px)) !important;
 }
 
 /* Taskbar left (taskbar-right renders from the same bottom-left anchor,
    so it peeks from the same edge until that block is split) */
 body.bookmark-taskbar-left-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover),
-body.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateX(calc(-100% + 14px)) !important;
 }
 
@@ -20115,24 +20115,24 @@ body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::before {
    While the user is configuring settings (incl. every bookmark select and
    toggle), keep the dock revealed — with each layout's base transform
    restored — so changes are applied in full view instead of on a hidden bar. */
-body.sidebar-open.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.sidebar-open.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   opacity: 1;
 }
 
-body.sidebar-open.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.sidebar-open.bookmark-sidebar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateY(-50%) !important;
 }
 
-body.sidebar-open.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.sidebar-open.bookmark-taskbar-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateX(-50%) !important;
 }
 
-body.sidebar-open.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.sidebar-open.bookmark-taskbar-top-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: translateX(-50%) !important;
 }
 
 body.sidebar-open.bookmark-taskbar-left-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover),
-body.sidebar-open.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+body.sidebar-open.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
   transform: none !important;
 }
 
@@ -20145,7 +20145,7 @@ body.sidebar-open.bookmark-auto-hide #bookmark-widget::after {
 
 /* --- Touch: no hover, so hints stay a bit more visible --- */
 @media (hover: none) {
-  body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover) {
+  body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
     opacity: 0.3;
   }
 

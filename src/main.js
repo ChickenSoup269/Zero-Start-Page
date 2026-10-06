@@ -15,7 +15,7 @@ import { initI18n, geti18n, isSessionCachedLanguage } from "./services/i18n.js"
 import { bootMark, reportBootTimeline } from "./boot/timeline.js"
 import { initClock } from "./components/clock.js"
 import { startClockStyleScheduler } from "./components/clock/clockStyleScheduler.js"
-import { initBookmarks, renderBookmarks } from "./components/bookmarks.js?v=autohide-v2"
+import { initBookmarks, renderBookmarks } from "./components/bookmarks.js?v=autohide-v3"
 import { initModal } from "./components/modal.js"
 import {
   initContextMenu,

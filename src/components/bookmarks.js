@@ -4009,10 +4009,40 @@ function initBookmarkAutoHide() {
   })
 
   // ── Focus (rename inputs, add-group field…): keep visible while editing ───
-  widget.addEventListener("focusin", () => hold("focus"))
+  // Only editable targets hold the reveal — plain links/buttons must not pin
+  // the bar after a click. The focused element can also be REMOVED from the
+  // DOM (the add-group input right after creating the group) without any
+  // focusout firing, which would leave the hold stuck forever — a watchdog
+  // re-checks containment while the hold is active.
+  const isEditable = (el) =>
+    el &&
+    (el.tagName === "INPUT" ||
+      el.tagName === "TEXTAREA" ||
+      el.isContentEditable)
+  let focusWatchdog = null
+  const stopFocusWatchdog = () => {
+    if (focusWatchdog) {
+      clearInterval(focusWatchdog)
+      focusWatchdog = null
+    }
+  }
+  widget.addEventListener("focusin", (e) => {
+    if (!isEditable(e.target)) return
+    hold("focus")
+    if (!focusWatchdog) {
+      focusWatchdog = setInterval(() => {
+        if (!widget.contains(document.activeElement)) {
+          release("focus")
+          stopFocusWatchdog()
+        }
+      }, 300)
+    }
+  })
   widget.addEventListener("focusout", (e) => {
-    if (!e.relatedTarget || !widget.contains(e.relatedTarget))
+    if (!e.relatedTarget || !widget.contains(e.relatedTarget)) {
       release("focus")
+      stopFocusWatchdog()
+    }
   })
 
   // ── Settings changes: flash the dock so the result is visible ─────────────
