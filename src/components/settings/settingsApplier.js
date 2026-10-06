@@ -33,7 +33,7 @@ import {
   buildGradientCss,
 } from "./gradientManager.js"
 import { buildMultiColorCss } from "./multiColorManager.js"
-import { applyAccentTokens } from "../../boot/styles.js"
+import { applyAccentTokens } from "../../boot/styles.js?v=hint-v2"
 import { setClockStyleAccentVars } from "./clockAccent.js"
 import {
   cssUrl,
@@ -1913,6 +1913,17 @@ function createApplySettings(effectInstances) {
     } else {
       document.body.classList.remove("bookmark-auto-hide")
       document.body.classList.remove("bookmark-auto-hide-revealed")
+    }
+
+    if (settings.bookmarkAutoHideHintColor) {
+      document.documentElement.style.setProperty(
+        "--bookmark-auto-hint-color",
+        settings.bookmarkAutoHideHintColor,
+      )
+    } else {
+      document.documentElement.style.removeProperty(
+        "--bookmark-auto-hint-color",
+      )
     }
 
     let layout = settings.bookmarkLayout || "default"

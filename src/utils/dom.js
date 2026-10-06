@@ -1701,6 +1701,8 @@ export let bookmarkFullText = document.getElementById("bookmark-full-text")
 export let hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export let bookmarkMacosHover = document.getElementById("bookmark-macos-hover")
 export let bookmarkAutoHide = document.getElementById("bookmark-auto-hide")
+export let bookmarkAutoHideColorRow = document.getElementById("bookmark-auto-hide-color-row")
+export let bookmarkAutoHideColor = document.getElementById("bookmark-auto-hide-color")
 export let bookmarkLayout = document.getElementById("bookmark-layout")
 export let bookmarkSidebarWidthInput = document.getElementById(
   "bookmark-sidebar-width-input",
@@ -3897,6 +3899,8 @@ export function refreshDOMReferences() {
   hideBookmarkBg = document.getElementById("hide-bookmark-bg")
   bookmarkMacosHover = document.getElementById("bookmark-macos-hover")
   bookmarkAutoHide = document.getElementById("bookmark-auto-hide")
+  bookmarkAutoHideColorRow = document.getElementById("bookmark-auto-hide-color-row")
+  bookmarkAutoHideColor = document.getElementById("bookmark-auto-hide-color")
   bookmarkLayout = document.getElementById("bookmark-layout")
   bookmarkSidebarWidthInput = document.getElementById(
     "bookmark-sidebar-width-input",

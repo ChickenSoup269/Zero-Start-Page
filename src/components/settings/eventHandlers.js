@@ -3524,6 +3524,17 @@ export function setupGeneralEventHandlers(
     if (DOM.bookmarkAutoHide) {
       DOM.bookmarkAutoHide.addEventListener("change", () => {
         throttleSettingUpdate("bookmarkAutoHide", DOM.bookmarkAutoHide.checked)
+        if (DOM.bookmarkAutoHideColorRow)
+          DOM.bookmarkAutoHideColorRow.hidden = !DOM.bookmarkAutoHide.checked
+      })
+    }
+
+    if (DOM.bookmarkAutoHideColor) {
+      DOM.bookmarkAutoHideColor.addEventListener("input", () => {
+        throttleSettingUpdate(
+          "bookmarkAutoHideHintColor",
+          DOM.bookmarkAutoHideColor.value,
+        )
       })
     }
 
@@ -3808,6 +3819,11 @@ export function setupGeneralEventHandlers(
         DOM.bookmarkAutoHide.checked = false
         throttleSettingUpdate("bookmarkAutoHide", false)
       }
+      if (DOM.bookmarkAutoHideColor) {
+        DOM.bookmarkAutoHideColor.value = "#ffffff"
+        throttleSettingUpdate("bookmarkAutoHideHintColor", "")
+      }
+      if (DOM.bookmarkAutoHideColorRow) DOM.bookmarkAutoHideColorRow.hidden = true
       if (DOM.bookmarkLimit20) {
         DOM.bookmarkLimit20.checked = true
         throttleSettingUpdate("bookmarkLimit20", true)

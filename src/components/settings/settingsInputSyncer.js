@@ -1407,6 +1407,13 @@ export function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkAutoHide) {
         DOM.bookmarkAutoHide.checked = settings.bookmarkAutoHide === true
       }
+      if (DOM.bookmarkAutoHideColorRow) {
+        DOM.bookmarkAutoHideColorRow.hidden = settings.bookmarkAutoHide !== true
+      }
+      if (DOM.bookmarkAutoHideColor) {
+        DOM.bookmarkAutoHideColor.value =
+          settings.bookmarkAutoHideHintColor || "#ffffff"
+      }
       if (DOM.bookmarkLayout) {
         let val = settings.bookmarkLayout || "default"
         if (settings.bookmarkSidebarMode === true && val === "default")

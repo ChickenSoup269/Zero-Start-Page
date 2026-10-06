@@ -20015,7 +20015,9 @@ body.bookmark-taskbar-right-mode.bookmark-auto-hide:not(.bookmark-auto-hide-reve
   transform: translateX(calc(-100% + 14px)) !important;
 }
 
-/* --- Glowing edge pill shown while hidden --- */
+/* --- Glowing edge pill shown while hidden ---
+   Color is user-configurable via --bookmark-auto-hint-color (setting
+   bookmarkAutoHideHintColor, set on :root by boot/styles + settingsApplier). */
 body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after,
 body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::after,
 body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::after,
@@ -20023,11 +20025,12 @@ body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::after,
 body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::after {
   content: "";
   position: absolute;
-  width: 5px;
-  height: 34px;
+  width: 6px;
+  height: 52px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+  background: var(--bookmark-auto-hint-color, rgba(255, 255, 255, 0.3));
+  box-shadow: 0 0 10px
+    color-mix(in srgb, var(--bookmark-auto-hint-color, #ffffff) 40%, transparent);
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 2;
@@ -20046,16 +20049,16 @@ body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after {
 body.bookmark-taskbar-mode.bookmark-auto-hide #bookmark-widget::after {
   top: 4px;
   left: 50%;
-  width: 34px;
-  height: 5px;
+  width: 52px;
+  height: 6px;
   transform: translateX(-50%);
 }
 
 body.bookmark-taskbar-top-mode.bookmark-auto-hide #bookmark-widget::after {
   bottom: 4px;
   left: 50%;
-  width: 34px;
-  height: 5px;
+  width: 52px;
+  height: 6px;
   transform: translateX(-50%);
 }
 
@@ -20143,15 +20146,11 @@ body.sidebar-open.bookmark-auto-hide #bookmark-widget::after {
   opacity: 0;
 }
 
-/* --- Touch: no hover, so hints stay a bit more visible --- */
+/* --- Touch: no hover, so the ghost stays a bit more visible ---
+   Pill color is fully user-controlled (--bookmark-auto-hint-color), so no
+   per-mode background override here. */
 @media (hover: none) {
   body.bookmark-auto-hide:not(.bookmark-auto-hide-revealed) #bookmark-widget:not(:hover):not(:focus-within) {
     opacity: 0.3;
-  }
-
-  body.bookmark-sidebar-mode.bookmark-auto-hide #bookmark-widget::after,
-  body.bookmark-taskbar-left-mode.bookmark-auto-hide #bookmark-widget::after,
-  body.bookmark-taskbar-right-mode.bookmark-auto-hide #bookmark-widget::after {
-    background: rgba(255, 255, 255, 0.45);
   }
 }

@@ -200,6 +200,13 @@ export function applyBasicStyles(settings) {
   root.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
   root.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
 
+  if (settings.bookmarkAutoHideHintColor) {
+    root.style.setProperty(
+      "--bookmark-auto-hint-color",
+      settings.bookmarkAutoHideHintColor,
+    )
+  }
+
   root.style.setProperty(
     "--clock-font-size",
     `${settings.clockFontSize ?? 11}rem`,

@@ -1640,6 +1640,7 @@
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
   "settings_bookmark_macos_hover": "Enable MacOS Hover Effect",
   "settings_bookmark_auto_hide": "Auto-hide Bookmarks (MacOS Dock Style)",
+  "settings_bookmark_auto_hide_color": "Auto-hide Hint Color",
   "settings_bookmark_layout": "Bookmark Layout",
   "settings_bookmark_layout_show_groups": "Show bookmark folders",
   "settings_bookmark_groups_toggle_autohide": "Auto-hide Group Button (Show on Hover)",

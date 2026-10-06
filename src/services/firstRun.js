@@ -9,7 +9,7 @@ import {
   saveBookmarks,
   saveSettings,
 } from "./state.js"
-import { applyMaterialAccentTokens } from "../boot/styles.js"
+import { applyMaterialAccentTokens } from "../boot/styles.js?v=hint-v2"
 import { applyAccentFromCurrentBackground } from "../components/settings/dynamicAccent.js"
 import {
   showAlert,

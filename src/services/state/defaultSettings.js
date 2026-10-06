@@ -258,6 +258,7 @@ export const defaultSettings = {
   bookmarkHideScrollbar: false,
   bookmarkMacosHover: false,
   bookmarkAutoHide: false,
+  bookmarkAutoHideHintColor: "",
   bookmarkLayout: "default",
   bookmarkDraggableGridLocked: false,
   bookmarkLayoutBgStyle: "default",

@@ -3979,18 +3979,51 @@ function initBookmarkAutoHide() {
   }
 
   // ── Drag: don't slide away while a bookmark is being dragged ──────────────
-  widget.addEventListener(
-    "dragstart",
-    () => {
-      if (!isTouch()) hold("drag")
-    },
-    true,
-  )
-  widget.addEventListener("dragenter", () => {
-    if (!isTouch()) hold("drag")
-  })
-  widget.addEventListener("drop", () => release("drag"))
-  widget.addEventListener("dragend", () => release("drag"), true)
+  // dragend never fires when the dragged element is detached mid-drag
+  // (dropping a bookmark onto a group tab re-renders the bar synchronously),
+  // which left the drag hold stuck until reload — a window-level dragover
+  // heartbeat watchdog ends the hold once no drag activity is seen.
+  let dragWatchdog = null
+  let lastDragActivity = 0
+  const markDragActivity = () => {
+    lastDragActivity = Date.now()
+  }
+  const stopDragWatchdog = () => {
+    window.removeEventListener("dragover", markDragActivity, true)
+    if (dragWatchdog) {
+      clearInterval(dragWatchdog)
+      dragWatchdog = null
+    }
+  }
+  const startDragWatchdog = () => {
+    lastDragActivity = Date.now()
+    window.addEventListener("dragover", markDragActivity, true)
+    if (!dragWatchdog) {
+      dragWatchdog = setInterval(() => {
+        if (Date.now() - lastDragActivity > 600) {
+          release("drag")
+          stopDragWatchdog()
+        }
+      }, 300)
+    }
+  }
+  const holdDrag = () => {
+    if (isTouch()) return
+    hold("drag")
+    startDragWatchdog()
+  }
+  const endDrag = () => {
+    release("drag")
+    stopDragWatchdog()
+  }
+  widget.addEventListener("dragstart", holdDrag, true)
+  widget.addEventListener("dragenter", holdDrag)
+  widget.addEventListener("drop", endDrag)
+  widget.addEventListener("dragend", endDrag, true)
+  // Window-level: drop/dragend still bubble here for live sources; the
+  // watchdog covers detached sources that emit no further events
+  window.addEventListener("drop", endDrag, true)
+  window.addEventListener("dragend", endDrag, true)
   widget.addEventListener("dragleave", (e) => {
     if (!e.relatedTarget || !widget.contains(e.relatedTarget)) release("drag")
   })

@@ -57,7 +57,7 @@ import {
   applyBasicStyles,
   applyBootVisualPreview,
   loadFontOnBoot,
-} from "./boot/styles.js"
+} from "./boot/styles.js?v=hint-v2"
 import { applyBootBodyClasses } from "./boot/bootClasses.js"
 import {
   ensureSettingsInitialized,

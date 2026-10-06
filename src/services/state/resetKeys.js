@@ -317,6 +317,7 @@ export const MODULE_RESET_KEYS = {
     "bookmarkHideScrollbar",
     "bookmarkMacosHover",
     "bookmarkAutoHide",
+    "bookmarkAutoHideHintColor",
     "bookmarkLayout",
     "bookmarkLayoutBgStyle",
     "bookmarkLayoutBgColor",

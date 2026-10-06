@@ -1476,6 +1476,7 @@
   "settings_bookmark_hide_bg": "Lesezeichenhintergrund ausblenden",
   "settings_bookmark_macos_hover": "macOS-Hover-Effekt aktivieren",
   "settings_bookmark_auto_hide": "Lesezeichen automatisch ausblenden (macOS-Dock-Stil)",
+  "settings_bookmark_auto_hide_color": "Hinweisfarbe beim Ausblenden",
   "settings_bookmark_layout": "Lesezeichen-Layout",
   "settings_bookmark_layout_show_groups": "Lesezeichenordner anzeigen",
   "settings_browser_zoom": "Browser-Zoom",
