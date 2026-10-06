@@ -355,6 +355,15 @@ Sự riêng tư của bạn là ưu tiên cao nhất:
 4. Nhấn nút **Tải tiện ích đã giải nén (Load unpacked)** và chọn thư mục của dự án.
 5. Mở một tab mới để bắt đầu trải nghiệm Startpage tuyệt đẹp của bạn!
 
+### Trình duyệt Zen
+
+Để sử dụng Zero Startpage làm trang tab mới trên Zen Browser:
+
+1. Trên thanh địa chỉ của Zen Browser, nhập `about:config` rồi nhấn **Enter**. Nếu trình duyệt hiển thị trang cảnh báo, hãy xác nhận rằng bạn muốn tiếp tục.
+2. Tại thanh tìm kiếm ở đầu trang, nhập `zen.urlbar.replace-newtab`.
+3. Nếu giá trị của tùy chọn đang là `true`, hãy chuyển thành `false`.
+4. Tải về và cài đặt tiện ích từ [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/).
+
 ---
 
 ## Ngăn xếp công nghệ (Tech Stack)

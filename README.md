@@ -356,6 +356,15 @@ Your privacy and security are our highest priorities:
 4. Click **Load unpacked** and select the project folder.
 5. Open a new tab — enjoy your Startpage!
 
+### Zen Browser
+
+To use Zero Startpage as the new tab page in Zen Browser:
+
+1. In Zen Browser's address bar, enter `about:config` and press **Enter**. If the browser displays a warning page, confirm that you want to continue.
+2. In the search bar at the top of the page, enter `zen.urlbar.replace-newtab`.
+3. If the setting's value is `true`, change it to `false`.
+4. Download and install the extension from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/).
+
 ---
 
 ## Tech Stack
