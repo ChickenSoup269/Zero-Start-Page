@@ -7,7 +7,7 @@ import {
 } from "../../services/state.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { showToast } from "../../utils/toast.js"
-import { renderBookmarks } from "../bookmarks.js"
+import { renderBookmarks } from "../bookmarks.js?v=autohide-v5"
 import { geti18n } from "../../services/i18n.js"
 
 export const INTERFACE_STYLE_KEYS = [

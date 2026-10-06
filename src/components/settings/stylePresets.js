@@ -8,7 +8,7 @@ import {
   updateSetting,
   saveSettings,
 } from "../../services/state.js"
-import { renderBookmarks } from "../bookmarks.js"
+import { renderBookmarks } from "../bookmarks.js?v=autohide-v5"
 
 export const STYLE_PRESETS = {
   clean: {

@@ -41,7 +41,7 @@ import {
   setupFontMultiSelect,
   setupLocalFonts,
 } from "./fontManager.js"
-import { initThemeManager, THEMEABLE_KEYS } from "./themeManager.js"
+import { initThemeManager, THEMEABLE_KEYS } from "./themeManager.js?v=b5"
 import {
   initGradientV2Manager,
   renderUserGradientV2s,
@@ -54,7 +54,7 @@ import {
 import {
   createApplySettings,
   createUpdateSettingsInputs,
-} from "./settingsApplier.js"
+} from "./settingsApplier.js?v=b5"
 import {
   applyAccentFromCurrentBackground,
   applyAccentFromMusicThumbnail,
@@ -86,7 +86,7 @@ import {
   setupMultiColorManager,
   renderSavedMultiColors,
 } from "./multiColorManager.js"
-import { setupGeneralEventHandlers } from "./eventHandlers.js"
+import { setupGeneralEventHandlers } from "./eventHandlers.js?v=b5"
 import { initSidebarNavigation } from "./sidebarNavigation.js"
 import { BACKGROUND_ANIMATION_KEYS } from "./visualPresetConfig.js"
 

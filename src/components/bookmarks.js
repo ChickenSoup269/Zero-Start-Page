@@ -4094,6 +4094,50 @@ function initBookmarkAutoHide() {
     }, 2500)
   })
 
+  // ── Press compensation for the spring reveal ──────────────────────────────
+  // Hovering the peek makes the bar spring out, so a control sitting in the
+  // sliver (the groups toggle, group tabs) moves away between mousedown and
+  // mouseup — the browser then fires click on their common ancestor and the
+  // press is silently swallowed. Record the pressed element and, if the
+  // pointer is no longer over it on mouseup, deliver the click to it anyway.
+  let pressTarget = null
+  widget.addEventListener(
+    "mousedown",
+    (e) => {
+      if (isTouch() || e.button !== 0) return
+      if (!document.body.classList.contains("bookmark-auto-hide")) return
+      if (e.target.closest("input, textarea, [contenteditable]")) return
+      pressTarget = e.target
+    },
+    true,
+  )
+  window.addEventListener(
+    "mouseup",
+    (e) => {
+      if (!pressTarget || isTouch() || e.button !== 0) {
+        pressTarget = null
+        return
+      }
+      const target = pressTarget
+      pressTarget = null
+      if (!target.isConnected) return
+      const under = document.elementFromPoint(e.clientX, e.clientY)
+      if (under && (under === target || target.contains(under) || under.contains(target)))
+        return // click landed where it pressed — nothing to compensate
+      if (!target.closest(".bookmark-groups-toggle, .bookmark-group-tab, .bookmark, button, a"))
+        return
+      target.dispatchEvent(
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          clientX: e.clientX,
+          clientY: e.clientY,
+        }),
+      )
+    },
+    true,
+  )
+
   // ── Touch: tap toggles a pinned reveal that auto-hides after 4s idle ──────
   widget.addEventListener("click", () => {
     if (!isTouch() || !document.body.classList.contains("bookmark-auto-hide"))

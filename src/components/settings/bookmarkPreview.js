@@ -1,5 +1,5 @@
 import { getBookmarkGroups, getActiveGroupId } from "../../services/state.js"
-import { createStoredIconElement, getGroupIcon } from "../bookmarks.js"
+import { createStoredIconElement, getGroupIcon } from "../bookmarks.js?v=autohide-v5"
 
 // Rendered synchronously on purpose: bookmarkGroupsChanged fires only on
 // explicit user actions, and rAF is throttled in some embedding contexts.

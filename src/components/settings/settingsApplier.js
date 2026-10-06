@@ -12,7 +12,7 @@ import {
   initMacosHoverForBookmarks,
   updateBookmarkGroupsToggleIcon,
   renderBookmarks,
-} from "../bookmarks.js"
+} from "../bookmarks.js?v=autohide-v5"
 import {
   getContrastYIQ,
   hexToRgb,
@@ -52,7 +52,7 @@ import {
   applyEffectPerformanceBudget,
 } from "./performanceManager.js"
 import { getCreatedEffect, EFFECT_KEY_MAP } from "./effectBadges.js"
-import { createUpdateSettingsInputs } from "./settingsInputSyncer.js"
+import { createUpdateSettingsInputs } from "./settingsInputSyncer.js?v=b5"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart

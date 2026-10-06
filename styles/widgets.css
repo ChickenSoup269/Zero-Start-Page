@@ -19985,6 +19985,16 @@ body.bookmark-auto-hide #bookmark-widget {
     opacity 0.3s ease !important;
 }
 
+/* Hover intent: the spring toward the revealed state waits 250ms, so a
+   control sitting in the peek sliver (groups toggle, group tabs) can be
+   clicked where the user saw it instead of being flung away mid-click.
+   The hide direction keeps delay 0 so the bar tucks away immediately.
+   A glancing hover that ends within the delay produces no motion at all. */
+body.bookmark-auto-hide #bookmark-widget:hover,
+body.bookmark-auto-hide.bookmark-auto-hide-revealed #bookmark-widget {
+  transition-delay: 0.25s, 0.25s !important;
+}
+
 /* --- Hidden state (per layout; :not(:hover) keeps CSS-first reveal) --- */
 
 /* Default grid + draggable grid: ghost in place, no transform

@@ -4,4 +4,4 @@
  * This maintains backward compatibility with main.js
  */
 
-export { initSettings } from "./settings/index.js"
+export { initSettings } from "./settings/index.js?v=b5"

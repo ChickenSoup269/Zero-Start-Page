@@ -20,7 +20,7 @@ import {
   isLanguageDownloaded,
   BUNDLED_LANGUAGES,
 } from "../../services/i18n.js"
-import { renderBookmarkPreviewData } from "./bookmarkPreview.js"
+import { renderBookmarkPreviewData } from "./bookmarkPreview.js?v=b5"
 import {
   getLanguageGuideOption,
   languageGuideOptions,
@@ -106,7 +106,7 @@ import {
   updateActiveTypographyHero,
 } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
-import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js"
+import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js?v=autohide-v5"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
 import { showToast } from "../../utils/toast.js"
 import {
@@ -131,7 +131,7 @@ import {
   markInterfaceStyleCustom,
   dispatchSettingsUpdated,
   applyInterfaceStylePreset as applyInterfaceStylePresetCore,
-} from "./stylePresets.js"
+} from "./stylePresets.js?v=b5"
 import {
   blobToDataUrl,
   dataUrlToBlob,
