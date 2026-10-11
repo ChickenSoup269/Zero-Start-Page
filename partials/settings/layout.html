@@ -345,11 +345,6 @@
                     <input type="checkbox" id="todo-show-checkboxes" checked>
                 </div>
                 <div class="setting-item-row">
-                    <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show
-                        Notepad</label>
-                    <input type="checkbox" id="show-notepad-checkbox">
-                </div>
-                <div class="setting-item-row">
                     <label for="show-habits-checkbox" data-i18n="settings_show_habits">Show Habit
                         Tracker</label>
                     <input type="checkbox" id="show-habits-checkbox" checked>
@@ -487,6 +482,45 @@
                     <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show
                         Bookmark Folders</label>
                     <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notepad -->
+        <div class="setting-group collapsible-group" id="layout-group-notepad">
+            <div class="group-header">
+                <i class="fa-solid fa-note-sticky group-icon"></i>
+                <span data-i18n="settings_group_notepad">Notepad</span>
+                <i class="fa-solid fa-chevron-down group-chevron"></i>
+            </div>
+            <div class="group-body">
+                <div class="setting-item-row">
+                    <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show
+                        Notepad</label>
+                    <input type="checkbox" id="show-notepad-checkbox">
+                </div>
+                <div class="setting-item-row">
+                    <label for="notepad-default-skin-select" data-i18n="settings_notepad_default_skin">New
+                        note background</label>
+                    <select id="notepad-default-skin-select" class="settings-select">
+                        <option value="default" data-i18n="skin_default">Default</option>
+                        <option value="transparent" data-i18n="skin_transparent">Transparent</option>
+                        <option value="light-transparent" data-i18n="skin_light_transparent">Light Transparent</option>
+                        <option value="glass" data-i18n="skin_glass">Frosted Glass</option>
+                        <option value="dim" data-i18n="skin_dim">Dim</option>
+                        <option value="m3-accent" data-i18n="skin_m3_accent">M3 Accent</option>
+                        <option value="white-blur" data-i18n="skin_white_blur">White Blur</option>
+                    </select>
+                </div>
+                <div class="setting-item-row">
+                    <label for="notepad-default-header-checkbox" data-i18n="settings_notepad_default_header">Show
+                        header on new notes</label>
+                    <input type="checkbox" id="notepad-default-header-checkbox" checked>
+                </div>
+                <div class="setting-item-row">
+                    <label for="notepad-spellcheck-checkbox" data-i18n="settings_notepad_spellcheck">Enable
+                        spellcheck</label>
+                    <input type="checkbox" id="notepad-spellcheck-checkbox" checked>
                 </div>
             </div>
         </div>

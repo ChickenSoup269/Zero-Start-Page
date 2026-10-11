@@ -165,6 +165,9 @@ const TARGET_MAP = {
 
   "notepad-settings": "#notepad-container",
   "show-notepad-checkbox": "#notepad-container",
+  "notepad-default-skin-select": "#notepad-container",
+  "notepad-default-header-checkbox": "#notepad-container",
+  "notepad-spellcheck-checkbox": "#notepad-container",
   "notepad-container": "#notepad-container",
 
   "quotes-settings": "#daily-quotes",

@@ -17,6 +17,17 @@ export class Notepad {
     "#85C1E2", // Light Blue
   ]
 
+  // Per-note skins extend the widget container skins with note-only glass/dim.
+  static NOTE_SKINS = [
+    "default",
+    "transparent",
+    "light-transparent",
+    "glass",
+    "dim",
+    "m3-accent",
+    "white-blur",
+  ]
+
   constructor() {
     this.notes = JSON.parse(localStorage.getItem("notepadNotes")) || []
     this.detachedNotes = JSON.parse(localStorage.getItem("detachedNotes")) || {} // { noteId: true }
@@ -129,6 +140,9 @@ export class Notepad {
       ) {
         this.applySkin()
       }
+      if (e.detail.key === "notepadSpellcheckEnabled") {
+        this.applySpellcheckToOpenNotes()
+      }
     })
   }
 
@@ -157,12 +171,20 @@ export class Notepad {
   }
 
   addNote() {
+    const settings = getSettings()
+    const defaultSkin = Notepad.NOTE_SKINS.includes(
+      settings.notepadDefaultNoteSkin,
+    )
+      ? settings.notepadDefaultNoteSkin
+      : "default"
     const note = {
       id: Date.now(),
       title: "Untitled Note",
       content: "",
       color: "#F7DC6F", // Default yellow
       contentBg: "#FFFFFF", // Default white background
+      skin: defaultSkin,
+      headerHidden: settings.notepadDefaultHeaderHidden === true,
       createdAt: new Date().toISOString(),
     }
     this.notes.unshift(note)
@@ -371,7 +393,7 @@ export class Notepad {
           </div>
           <div class="floating-note-title-wrap" data-no-drag="true" title="${i18n.notepad_edit_title || "Click to rename"}">
             <i class="fa-solid fa-pen floating-note-title-pen" aria-hidden="true"></i>
-            <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="${i18n.notepad_title_placeholder || "Note Title"}" spellcheck="false" data-no-drag="true">
+            <input type="text" class="floating-note-title-input" value="${this.escapeHtml(note.title)}" placeholder="${i18n.notepad_title_placeholder || "Note Title"}" spellcheck="${this.isSpellcheckEnabled() ? "true" : "false"}" data-no-drag="true">
           </div>
         </div>
         <div class="floating-note-actions" data-no-drag="true">
@@ -416,7 +438,7 @@ export class Notepad {
         <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
         <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
       </div>
-      <div class="floating-note-content" contenteditable="true">${note.content}</div>
+      <div class="floating-note-content" contenteditable="true" spellcheck="${this.isSpellcheckEnabled() ? "true" : "false"}">${note.content}</div>
       ${this.getResizeHandlesHtml()}
     `
 
@@ -471,21 +493,26 @@ export class Notepad {
     })
     observer.observe(floatingContainer)
 
-    // Apply color to floating header
-    const floatingHeader = floatingContainer.querySelector(
-      ".floating-note-header",
-    )
-    if (floatingHeader) {
-      this.applyNoteHeaderTheme(floatingHeader, note.color)
-    }
+    // Apply per-note skin (paints header + toolbar + content together)
+    this.applyNoteSkin(floatingContainer, note)
+    this.applyNoteHeaderVisibility(floatingContainer, note)
+    this.setupNoteContextMenu(floatingContainer, noteId)
 
-    // Make draggable
+    // Make draggable (toolbar is the fallback handle when header is hidden: Q6)
     makeDraggable(
       floatingContainer,
       `floating-note-${noteId}`,
       null,
-      ".floating-note-header",
+      ".floating-note-header, .floating-note-toolbar",
     )
+    // Floating notes are not free-move widgets: drop the generic widget
+    // right-click menu so the per-note skin menu owns contextmenu.
+    if (floatingContainer._draggableContextMenu) {
+      floatingContainer.removeEventListener(
+        "contextmenu",
+        floatingContainer._draggableContextMenu,
+      )
+    }
     this.setupManualResize(floatingContainer, noteId, true)
 
     // Setup event listeners
@@ -542,8 +569,11 @@ export class Notepad {
 
     if (bgToggleBtn) {
       bgToggleBtn.addEventListener("click", () => {
+        // Glass skins override the black/white toggle (Q7).
+        const current = this.notes.find((n) => n.id === noteId) || note
+        if (this.getNoteSkin(current) !== "default") return
         // Get the latest note data from storage
-        const latestNote = this.notes.find((n) => n.id === noteId)
+        const latestNote = current
         const currentBg =
           latestNote.contentBg ||
           (this.getContrastColor(latestNote.color) === "#000000"
@@ -589,7 +619,13 @@ export class Notepad {
           ".floating-note-header",
         )
         if (floatingHeader) {
-          this.applyNoteHeaderTheme(floatingHeader, newColor)
+          const latestForHeader =
+            this.notes.find((n) => n.id === noteId) || note
+          this.applyNoteHeaderTheme(
+            floatingHeader,
+            newColor,
+            this.getNoteSkin(latestForHeader),
+          )
         }
 
         // Update floating note content background
@@ -674,7 +710,7 @@ export class Notepad {
         <button class="icon-btn note-action-btn note-pin-btn ${isPinned ? "is-pinned" : ""}" data-action="toggle-pin" title="${isPinned ? i18n.notepad_unpin_note || "Unpin note" : i18n.notepad_pin_note || "Pin note to top"}">
           <i class="fa-solid fa-thumbtack"></i>
         </button>
-        <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
+        <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title" spellcheck="${this.isSpellcheckEnabled() ? "true" : "false"}">
         <div class="note-actions">
           <div class="note-color-dropdown">
             <button class="icon-btn note-action-btn note-color-trigger" title="${i18n.notepad_change_color || "Change color"}">
@@ -740,17 +776,16 @@ export class Notepad {
             <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
             <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
           </div>
-          <div class="note-content" contenteditable="true">${note.content}</div>
+          <div class="note-content" contenteditable="true" spellcheck="${this.isSpellcheckEnabled() ? "true" : "false"}">${note.content}</div>
           `
       }
       ${this.getResizeHandlesHtml()}
     `
 
-    // Apply color to header
-    const headerDiv = noteDiv.querySelector(".note-header")
-    if (headerDiv) {
-      this.applyNoteHeaderTheme(headerDiv, note.color)
-    }
+    // Apply per-note skin (paints header + toolbar + content together)
+    this.applyNoteSkin(noteDiv, note)
+    this.applyNoteHeaderVisibility(noteDiv, note)
+    this.setupNoteContextMenu(noteDiv, note.id)
 
     // Event listeners
     const titleInput = noteDiv.querySelector(".note-title-input")
@@ -758,7 +793,6 @@ export class Notepad {
       this.updateNote(note.id, { title: titleInput.value })
     })
 
-    this.applyNoteContentTheme(note, noteDiv)
     this.setupNoteResizeObserver(noteDiv, note.id)
     this.setupManualResize(noteDiv, note.id, false)
     this.setupEditToolbarToggle(noteDiv, note.id)
@@ -789,8 +823,11 @@ export class Notepad {
     const bgToggleBtn = noteDiv.querySelector('[data-action="toggle-bg"]')
     if (bgToggleBtn) {
       bgToggleBtn.addEventListener("click", () => {
+        // Glass skins override the black/white toggle (Q7).
+        const current = this.notes.find((n) => n.id === note.id) || note
+        if (this.getNoteSkin(current) !== "default") return
         // Get the latest note data from storage
-        const latestNote = this.notes.find((n) => n.id === note.id)
+        const latestNote = current
         const currentBg =
           latestNote.contentBg ||
           (this.getContrastColor(latestNote.color) === "#000000"
@@ -839,7 +876,13 @@ export class Notepad {
         // Update header color and icon colors
         const headerDiv = noteDiv.querySelector(".note-header")
         if (headerDiv) {
-          this.applyNoteHeaderTheme(headerDiv, newColor)
+          const latestForHeader =
+            this.notes.find((n) => n.id === note.id) || note
+          this.applyNoteHeaderTheme(
+            headerDiv,
+            newColor,
+            this.getNoteSkin(latestForHeader),
+          )
         }
 
         // Update note-content background and text
@@ -958,6 +1001,147 @@ export class Notepad {
     return this.getContrastColor(note.color) === "#000000"
       ? "#FFFFFF"
       : "#000000"
+  }
+
+  getNoteSkin(note) {
+    const skin = note?.skin || "default"
+    return Notepad.NOTE_SKINS.includes(skin) ? skin : "default"
+  }
+
+  setNoteSkin(id, skin) {
+    const nextSkin = Notepad.NOTE_SKINS.includes(skin) ? skin : "default"
+    const note = this.notes.find((n) => n.id === id)
+    if (!note) return
+    this.updateNote(id, { skin: nextSkin })
+    const updated = this.notes.find((n) => n.id === id) || {
+      ...note,
+      skin: nextSkin,
+    }
+
+    const dockedEl = this.container?.querySelector(`[data-note-id="${id}"]`)
+    if (dockedEl) this.applyNoteSkin(dockedEl, updated)
+
+    const floatingEl = this.floatingNotes[id]
+    if (floatingEl) this.applyNoteSkin(floatingEl, updated)
+  }
+
+  isNoteHeaderHidden(note) {
+    return note?.headerHidden === true
+  }
+
+  isSpellcheckEnabled() {
+    return getSettings().notepadSpellcheckEnabled !== false
+  }
+
+  applySpellcheckToOpenNotes() {
+    const enabled = this.isSpellcheckEnabled()
+    const applyToRoot = (root) => {
+      if (!root) return
+      root
+        .querySelectorAll(
+          ".note-title-input, .floating-note-title-input, .note-content, .floating-note-content",
+        )
+        .forEach((el) => {
+          el.setAttribute("spellcheck", enabled ? "true" : "false")
+        })
+    }
+    if (this.container) {
+      this.container
+        .querySelectorAll("[data-note-id]")
+        .forEach((noteEl) => applyToRoot(noteEl))
+    }
+    Object.values(this.floatingNotes).forEach((floatingEl) =>
+      applyToRoot(floatingEl),
+    )
+  }
+
+  setNoteHeaderHidden(id, hidden) {
+    const note = this.notes.find((n) => n.id === id)
+    if (!note) return
+    this.updateNote(id, { headerHidden: hidden === true })
+    const updated = this.notes.find((n) => n.id === id) || {
+      ...note,
+      headerHidden: hidden === true,
+    }
+
+    const dockedEl = this.container?.querySelector(`[data-note-id="${id}"]`)
+    if (dockedEl) this.applyNoteHeaderVisibility(dockedEl, updated)
+
+    const floatingEl = this.floatingNotes[id]
+    if (floatingEl) this.applyNoteHeaderVisibility(floatingEl, updated)
+  }
+
+  applyNoteHeaderVisibility(root, note) {
+    if (!root || !note) return
+    root.classList.toggle("header-hidden", this.isNoteHeaderHidden(note))
+  }
+
+  applyNoteSkin(root, note) {
+    if (!root || !note) return
+    const skin = this.getNoteSkin(note)
+    root.classList.toggle("skin-transparent", skin === "transparent")
+    root.classList.toggle(
+      "skin-light-transparent",
+      skin === "light-transparent",
+    )
+    root.classList.toggle("skin-glass", skin === "glass")
+    root.classList.toggle("skin-dim", skin === "dim")
+    root.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    root.classList.toggle("skin-white-blur", skin === "white-blur")
+
+    const header = root.querySelector(
+      ".note-header, .floating-note-header",
+    )
+    if (header) this.applyNoteHeaderTheme(header, note.color, skin)
+
+    this.applyNoteContentTheme(note, root)
+
+    const bgToggleBtn = root.querySelector('[data-action="toggle-bg"]')
+    if (bgToggleBtn) {
+      const isOverridden = skin !== "default"
+      bgToggleBtn.classList.toggle("is-disabled", isOverridden)
+      bgToggleBtn.style.setProperty(
+        "opacity",
+        isOverridden ? "0.45" : "",
+      )
+      if (isOverridden) {
+        bgToggleBtn.setAttribute(
+          "title",
+          `${geti18n().notepad_toggle_bg || "Toggle background theme"} (${geti18n().skin_default || "Default"} skin only)`,
+        )
+      }
+    }
+  }
+
+  async setupNoteContextMenu(root, noteId) {
+    if (!root || root._noteSkinMenuBound) return
+    root._noteSkinMenuBound = true
+    root.addEventListener("contextmenu", async (e) => {
+      const note = this.notes.find((n) => n.id === noteId)
+      if (!note) return
+      const headerHidden = this.isNoteHeaderHidden(note)
+      // Visible state keeps the native text menu inside the editable area (Q5).
+      // Hidden state opens the note menu anywhere so Show header is reachable.
+      if (!headerHidden && e.target.closest?.(".note-content, .floating-note-content"))
+        return
+      e.preventDefault()
+      e.stopPropagation()
+      if (typeof e.stopImmediatePropagation === "function")
+        e.stopImmediatePropagation()
+      const { showContextMenu } = await import("./contextMenu.js")
+      showContextMenu(e.clientX, e.clientY, -1, "notepad-note", String(noteId), {
+        currentSkin: this.getNoteSkin(note),
+        onSelectSkin: (newSkin) => this.setNoteSkin(noteId, newSkin),
+        isHeaderHidden: headerHidden,
+        onToggleHeaderHidden: () => {
+          const current = this.notes.find((n) => n.id === noteId) || note
+          this.setNoteHeaderHidden(
+            noteId,
+            !this.isNoteHeaderHidden(current),
+          )
+        },
+      })
+    })
   }
 
   getContentTextColor(contentBg) {
@@ -1367,7 +1551,37 @@ export class Notepad {
     refreshToolbarState()
   }
 
-  applyNoteHeaderTheme(header, noteColor) {
+  applyNoteHeaderTheme(header, noteColor, skin = "default") {
+    if (skin && skin !== "default") {
+      // Glass skins own the header via CSS; drop the solid color inline styles.
+      header.style.removeProperty("background-color")
+      header.style.removeProperty("color")
+      header.style.removeProperty("--note-header-text")
+      header
+        .querySelectorAll(".icon-btn, .note-action-btn")
+        .forEach((btn) => btn.style.removeProperty("color"))
+      header
+        .querySelectorAll(
+          ".note-title-input, .floating-note-title-input, .floating-note-title, i, svg",
+        )
+        .forEach((el) => {
+          el.style.removeProperty("color")
+          el.style.removeProperty("fill")
+        })
+      const titleInput = header.querySelector(
+        ".note-title-input, .floating-note-title-input",
+      )
+      if (titleInput) {
+        titleInput.style.removeProperty("background-color")
+        titleInput.style.removeProperty("border-color")
+      }
+      const titleWrap = header.querySelector(".floating-note-title-wrap")
+      if (titleWrap) {
+        titleWrap.style.removeProperty("border-color")
+        titleWrap.style.removeProperty("background-color")
+      }
+      return
+    }
     const contrastColor = this.getContrastColor(noteColor)
     header.style.setProperty("--note-header-text", contrastColor)
     header.style.setProperty("background-color", noteColor, "important")
@@ -1475,6 +1689,61 @@ export class Notepad {
   }
 
   applyNoteContentTheme(note, root) {
+    const skin = this.getNoteSkin(note)
+    if (skin && skin !== "default") {
+      // Glass skins are painted by CSS classes; clear legacy solid inlines.
+      const isWhiteSkin = skin === "white-blur" || skin === "m3-accent"
+      const contentTextColor = isWhiteSkin ? "#0f172a" : "#ffffff"
+      const placeholderColor = isWhiteSkin
+        ? "rgba(0, 0, 0, 0.45)"
+        : "rgba(255, 255, 255, 0.65)"
+      const subtleSurface = isWhiteSkin
+        ? "rgba(0, 0, 0, 0.06)"
+        : "rgba(255, 255, 255, 0.12)"
+      const subtleBorder = isWhiteSkin
+        ? "rgba(0, 0, 0, 0.14)"
+        : "rgba(255, 255, 255, 0.22)"
+      root.style.setProperty("--note-content-text", contentTextColor)
+      root.style.setProperty("--note-placeholder-text", placeholderColor)
+      root.style.setProperty("--note-toolbar-surface", subtleSurface)
+      root.style.setProperty("--note-toolbar-border", subtleBorder)
+      root.style.setProperty(
+        "--note-toolbar-active-surface",
+        contentTextColor,
+      )
+      root.style.removeProperty("background-color")
+      root.style.setProperty("--note-content-bg", "transparent")
+
+      const content = root.querySelector(
+        ".note-content, .floating-note-content",
+      )
+      if (content) {
+        content.style.removeProperty("background-color")
+        content.style.setProperty("color", contentTextColor, "important")
+        this.normalizeEditorImages(content)
+      }
+      const toolbar = root.querySelector(
+        ".note-toolbar, .floating-note-toolbar",
+      )
+      if (toolbar) {
+        toolbar.style.removeProperty("background-color")
+        toolbar.style.setProperty("border-color", subtleBorder, "important")
+        toolbar.style.setProperty("color", contentTextColor, "important")
+      }
+      root.querySelectorAll(".toolbar-btn").forEach((btn) => {
+        btn.style.removeProperty("background-color")
+        btn.style.setProperty("color", contentTextColor, "important")
+        btn.style.setProperty("border-color", subtleBorder, "important")
+        btn.querySelectorAll("i, svg").forEach((icon) => {
+          icon.style.setProperty("color", contentTextColor, "important")
+          icon.style.setProperty("fill", "currentColor", "important")
+        })
+      })
+      root.querySelectorAll(".toolbar-divider").forEach((divider) => {
+        divider.style.setProperty("background", subtleBorder, "important")
+      })
+      return
+    }
     const contentBg = this.getContentBg(note)
     const contentTextColor = this.getContentTextColor(contentBg)
     const isLightContent = contentBg === "#FFFFFF"

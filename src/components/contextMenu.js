@@ -1447,6 +1447,16 @@ function getContextMenuTargetName(type, id, index, i18n) {
       return i18n.context_header_saved_font || "Saved Font"
     case "effect":
       return i18n.context_header_effect || "Effect Settings"
+    case "notepad-note": {
+      try {
+        const notes = JSON.parse(localStorage.getItem("notepadNotes")) || []
+        const note = notes.find((n) => String(n.id) === String(id))
+        if (note?.title) return note.title
+      } catch (e) {
+        /* fall through to default header */
+      }
+      return i18n.context_header_widget_notepad || "Notepad"
+    }
     default:
       return type
   }
@@ -3293,6 +3303,84 @@ export function showContextMenu(
     }
 
     addEffectContextMenuItems(effectId, i18n)
+  } else if (type === "notepad-note") {
+    menuEdit.style.display = "none"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "none"
+    menuFavorite.style.display = "none"
+    menuSelect.style.display = "none"
+    if (menuMove) menuMove.style.display = "none"
+    if (menuManagerDivider) menuManagerDivider.style.display = "none"
+    if (menuBookmarkManager) menuBookmarkManager.style.display = "none"
+
+    const currentSkin = callbacks?.currentSkin || "default"
+    const onSelectSkin = callbacks?.onSelectSkin
+    const isHeaderHidden = callbacks?.isHeaderHidden === true
+    const onToggleHeaderHidden = callbacks?.onToggleHeaderHidden
+    const headerBtn = createToggleMenuItem({
+      label: i18n.notepad_show_header || "Show header",
+      isActive: !isHeaderHidden,
+      iconClass: "fa-solid fa-heading",
+      activeText: i18n.status_shown || "Shown",
+      inactiveText: i18n.status_hidden || "Hidden",
+      handler: () => {
+        if (typeof onToggleHeaderHidden === "function") onToggleHeaderHidden()
+        hideContextMenu()
+      },
+    })
+    contextMenu.insertBefore(headerBtn, menuLock)
+    const headerSeparator = document.createElement("div")
+    headerSeparator.className = "context-menu-divider custom-music-item"
+    contextMenu.insertBefore(headerSeparator, menuLock)
+    const skinOptions = [
+      {
+        value: "white-blur",
+        label: i18n.skin_white_blur || "White Blur",
+        iconClass: "fa-solid fa-circle-half-stroke",
+      },
+      {
+        value: "m3-accent",
+        label: i18n.skin_m3_accent || "M3 Accent",
+        iconClass: "fa-solid fa-palette",
+      },
+      {
+        value: "light-transparent",
+        label: i18n.skin_light_transparent || "Light Transparent",
+        iconClass: "fa-solid fa-droplet",
+      },
+      {
+        value: "glass",
+        label: i18n.skin_glass || "Frosted Glass",
+        iconClass: "fa-solid fa-glass-water",
+      },
+      {
+        value: "dim",
+        label: i18n.skin_dim || "Dim",
+        iconClass: "fa-solid fa-moon",
+      },
+      {
+        value: "transparent",
+        label: i18n.skin_transparent || "Transparent",
+        iconClass: "fa-solid fa-ghost",
+      },
+    ]
+    skinOptions.forEach(({ value, label, iconClass }) => {
+      const isSelected = currentSkin === value
+      const skinBtn = createRadioMenuItem({
+        label,
+        isSelected,
+        iconClass,
+        handler: () => {
+          const newVal = isSelected ? "default" : value
+          if (typeof onSelectSkin === "function") onSelectSkin(newVal)
+          hideContextMenu()
+        },
+      })
+      contextMenu.insertBefore(skinBtn, menuLock)
+    })
+    const separator = document.createElement("div")
+    separator.className = "context-menu-divider custom-music-item"
+    contextMenu.insertBefore(separator, menuLock)
   } else {
     // Regular bookmarks/groups
     const editText = menuEdit.querySelector("span")
