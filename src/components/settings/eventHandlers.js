@@ -7708,6 +7708,40 @@ export function setupGeneralEventHandlers(
     setupLayoutCheckbox(DOM.todoShowCheckboxesToggle, "todoShowCheckboxes", {})
   }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
+  setupLayoutCheckbox(
+    DOM.notepadSpellcheckCheckbox,
+    "notepadSpellcheckEnabled",
+    {},
+  )
+  const notepadDefaultSkinSelect = document.getElementById(
+    "notepad-default-skin-select",
+  )
+  notepadDefaultSkinSelect?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "notepadDefaultNoteSkin",
+      notepadDefaultSkinSelect.value,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "notepadDefaultNoteSkin",
+          value: notepadDefaultSkinSelect.value,
+        },
+      }),
+    )
+  })
+  const notepadDefaultHeaderCheckbox = document.getElementById(
+    "notepad-default-header-checkbox",
+  )
+  notepadDefaultHeaderCheckbox?.addEventListener("change", () => {
+    const headerHidden = !notepadDefaultHeaderCheckbox.checked
+    handleSettingUpdate("notepadDefaultHeaderHidden", headerHidden)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "notepadDefaultHeaderHidden", value: headerHidden },
+      }),
+    )
+  })
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showWeatherCheckbox, "showWeather", {})
   setupLayoutCheckbox(DOM.showHabitsCheckbox, "showHabits", {})

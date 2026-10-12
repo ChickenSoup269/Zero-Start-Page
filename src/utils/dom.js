@@ -1806,6 +1806,15 @@ export let ghostControlsCheckbox = document.getElementById(
 export let showNotepadCheckbox = document.getElementById(
   "show-notepad-checkbox",
 )
+export let notepadDefaultSkinSelect = document.getElementById(
+  "notepad-default-skin-select",
+)
+export let notepadDefaultHeaderCheckbox = document.getElementById(
+  "notepad-default-header-checkbox",
+)
+export let notepadSpellcheckCheckbox = document.getElementById(
+  "notepad-spellcheck-checkbox",
+)
 export let showSearchBarCheckbox = document.getElementById(
   "show-search-bar-checkbox",
 )
@@ -3976,6 +3985,15 @@ export function refreshDOMReferences() {
   )
   ghostControlsCheckbox = document.getElementById("ghost-controls-checkbox")
   showNotepadCheckbox = document.getElementById("show-notepad-checkbox")
+  notepadDefaultSkinSelect = document.getElementById(
+    "notepad-default-skin-select",
+  )
+  notepadDefaultHeaderCheckbox = document.getElementById(
+    "notepad-default-header-checkbox",
+  )
+  notepadSpellcheckCheckbox = document.getElementById(
+    "notepad-spellcheck-checkbox",
+  )
   showSearchBarCheckbox = document.getElementById("show-search-bar-checkbox")
   searchBarHoverScaleCheckbox = document.getElementById(
     "search-bar-hover-scale-checkbox",

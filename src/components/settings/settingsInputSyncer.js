@@ -3132,6 +3132,31 @@ export function createUpdateSettingsInputs(effectInstances) {
         settings.todoShowCheckboxes !== false
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
+    const notepadDefaultSkinSelect = document.getElementById(
+      "notepad-default-skin-select",
+    )
+    if (notepadDefaultSkinSelect) {
+      notepadDefaultSkinSelect.value = settings.notepadDefaultNoteSkin || "default"
+    }
+    const notepadDefaultHeaderCheckbox = document.getElementById(
+      "notepad-default-header-checkbox",
+    )
+    if (notepadDefaultHeaderCheckbox) {
+      notepadDefaultHeaderCheckbox.checked =
+        settings.notepadDefaultHeaderHidden !== true
+    }
+    if (DOM.notepadSpellcheckCheckbox) {
+      DOM.notepadSpellcheckCheckbox.checked =
+        settings.notepadSpellcheckEnabled !== false
+    } else {
+      const notepadSpellcheckFallback = document.getElementById(
+        "notepad-spellcheck-checkbox",
+      )
+      if (notepadSpellcheckFallback) {
+        notepadSpellcheckFallback.checked =
+          settings.notepadSpellcheckEnabled !== false
+      }
+    }
     DOM.showTimerCheckbox.checked = settings.showTimer === true
     if (DOM.showHabitsCheckbox)
       DOM.showHabitsCheckbox.checked = settings.showHabits === true

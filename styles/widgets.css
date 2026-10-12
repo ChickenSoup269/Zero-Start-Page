@@ -11631,6 +11631,208 @@ body.is-dragging-widget .dragging * {
   color: #ffffff !important;
 }
 
+/* === PER-NOTE HEADER VISIBILITY (single note, docked + detached) === */
+.note-item.header-hidden .note-header,
+.floating-note-window.header-hidden .floating-note-header {
+  display: none !important;
+}
+
+/* Floating fallback drag handle when the header is hidden (Q6). */
+.floating-note-window.header-hidden .floating-note-toolbar {
+  cursor: move;
+}
+
+/* === PER-NOTE SKINS (docked .note-item + detached .floating-note-window) === */
+/* Mirrors the widget container skins so a single note can opt out of black/white. */
+.note-item.skin-transparent,
+.floating-note-window.skin-transparent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-transparent .note-header,
+.note-item.skin-transparent .note-toolbar,
+.note-item.skin-transparent .note-content,
+.floating-note-window.skin-transparent .floating-note-header,
+.floating-note-window.skin-transparent .floating-note-toolbar,
+.floating-note-window.skin-transparent .floating-note-content {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-transparent .note-title-input,
+.note-item.skin-transparent .note-content,
+.note-item.skin-transparent .note-content *,
+.floating-note-window.skin-transparent .floating-note-title-input,
+.floating-note-window.skin-transparent .floating-note-content,
+.floating-note-window.skin-transparent .floating-note-content * {
+  color: #ffffff !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.65) !important;
+}
+
+.note-item.skin-light-transparent,
+.floating-note-window.skin-light-transparent {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+  color: var(--text-color) !important;
+}
+
+.note-item.skin-light-transparent .note-header,
+.note-item.skin-light-transparent .note-toolbar,
+.note-item.skin-light-transparent .note-content,
+.floating-note-window.skin-light-transparent .floating-note-header,
+.floating-note-window.skin-light-transparent .floating-note-toolbar,
+.floating-note-window.skin-light-transparent .floating-note-content {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: var(--text-color) !important;
+}
+
+.note-item.skin-glass,
+.floating-note-window.skin-glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-glass .note-header,
+.note-item.skin-glass .note-toolbar,
+.note-item.skin-glass .note-content,
+.floating-note-window.skin-glass .floating-note-header,
+.floating-note-window.skin-glass .floating-note-toolbar,
+.floating-note-window.skin-glass .floating-note-content {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-glass .note-title-input,
+.note-item.skin-glass .note-content,
+.note-item.skin-glass .note-content *,
+.floating-note-window.skin-glass .floating-note-title-input,
+.floating-note-window.skin-glass .floating-note-content,
+.floating-note-window.skin-glass .floating-note-content * {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.note-item.skin-dim,
+.floating-note-window.skin-dim {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-dim .note-header,
+.note-item.skin-dim .note-toolbar,
+.note-item.skin-dim .note-content,
+.floating-note-window.skin-dim .floating-note-header,
+.floating-note-window.skin-dim .floating-note-toolbar,
+.floating-note-window.skin-dim .floating-note-content {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+
+.note-item.skin-dim .note-title-input,
+.note-item.skin-dim .note-content,
+.note-item.skin-dim .note-content *,
+.floating-note-window.skin-dim .floating-note-title-input,
+.floating-note-window.skin-dim .floating-note-content,
+.floating-note-window.skin-dim .floating-note-content * {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.note-item.skin-white-blur,
+.floating-note-window.skin-white-blur {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+}
+
+.note-item.skin-white-blur .note-header,
+.note-item.skin-white-blur .note-toolbar,
+.note-item.skin-white-blur .note-content,
+.floating-note-window.skin-white-blur .floating-note-header,
+.floating-note-window.skin-white-blur .floating-note-toolbar,
+.floating-note-window.skin-white-blur .floating-note-content {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+}
+
+.note-item.skin-white-blur .note-title-input,
+.note-item.skin-white-blur .note-content,
+.floating-note-window.skin-white-blur .floating-note-title-input,
+.floating-note-window.skin-white-blur .floating-note-content {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.note-item.skin-m3-accent,
+.floating-note-window.skin-m3-accent {
+  background: linear-gradient(
+    135deg,
+    color-mix(
+      in srgb,
+      var(--m3-primary-container, var(--safe-accent)) 76%,
+      transparent
+    ),
+    color-mix(
+      in srgb,
+      var(--m3-secondary-container, var(--safe-accent)) 58%,
+      transparent
+    )
+  ) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
+.note-item.skin-m3-accent .note-header,
+.note-item.skin-m3-accent .note-toolbar,
+.note-item.skin-m3-accent .note-content,
+.floating-note-window.skin-m3-accent .floating-note-header,
+.floating-note-window.skin-m3-accent .floating-note-toolbar,
+.floating-note-window.skin-m3-accent .floating-note-content {
+  background: transparent !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 24%,
+    transparent
+  ) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
+.note-item .note-action-btn.is-disabled,
+.floating-note-window .note-action-btn.is-disabled {
+  cursor: not-allowed !important;
+}
+
 /* === M3 ACCENT SKIN FOR WIDGETS === */
 body.widgets-m3-accent .todo-container,
 body.widgets-m3-accent .timer-container,
