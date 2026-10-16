@@ -36,7 +36,7 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
       <a href="./README.md">English</a> | <strong>Tiếng Việt</strong>
     </td>
     <td align="right">
-      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">Xem nhật ký thay đổi (Changelog v2.0.0)</a>
+      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">Xem nhật ký thay đổi (Changelog v2.1.0)</a>
     </td>
   </tr>
 </table>

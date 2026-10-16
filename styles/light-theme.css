@@ -291,7 +291,8 @@ body.scard-bg-light .settings-sidebar .pt-field-label {
 }
 
 body.scard-bg-light .settings-sidebar .pt-field-hint,
-body.scard-bg-light .settings-sidebar .pt-sublabel {
+body.scard-bg-light .settings-sidebar .pt-sublabel,
+body.scard-bg-light .settings-sidebar .pt-section-chevron {
   color: var(--lt-muted);
 }
 

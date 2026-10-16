@@ -7160,9 +7160,6 @@ export function setupGeneralEventHandlers(
     if (DOM.pageTitleCounterBadge) {
       DOM.pageTitleCounterBadge.classList.toggle("warning", val.length > 40)
     }
-    if (DOM.pageTitleLengthWarning) {
-      DOM.pageTitleLengthWarning.classList.toggle("hidden", val.length <= 40)
-    }
     const resolved = resolveDynamicTokens(val || "Start Page", getSettings(), {
       isPreview: true,
     })
@@ -7206,10 +7203,61 @@ export function setupGeneralEventHandlers(
     }
   }
 
+  const PT_SECTION_COLLAPSE_KEY = "startpage-pt-sections-collapsed"
+
+  const readPtSectionCollapsed = () => {
+    try {
+      const raw = localStorage.getItem(PT_SECTION_COLLAPSE_KEY)
+      return raw ? JSON.parse(raw) : {}
+    } catch {
+      return {}
+    }
+  }
+
+  const applyPtSectionCollapsed = () => {
+    const collapsedMap = readPtSectionCollapsed()
+    document.querySelectorAll("[data-pt-section]").forEach((section) => {
+      const id = section.getAttribute("data-pt-section")
+      const isCollapsed =
+        collapsedMap[id] === undefined ? true : Boolean(collapsedMap[id])
+      section.classList.toggle("is-collapsed", isCollapsed)
+      section
+        .querySelector(".pt-section-toggle")
+        ?.setAttribute("aria-expanded", String(!isCollapsed))
+    })
+  }
+
+  applyPtSectionCollapsed()
+  window.addEventListener(
+    "startpage:settingsPartialsReady",
+    applyPtSectionCollapsed,
+  )
+
   // Delegated handler for quick token chips, title presets, & custom title presets
   document
     .getElementById("settings-sidebar")
     ?.addEventListener("click", (e) => {
+      const sectionToggle = e.target.closest(".pt-section-toggle")
+      if (sectionToggle) {
+        const section = sectionToggle.closest("[data-pt-section]")
+        if (section) {
+          const id = section.getAttribute("data-pt-section")
+          const isCollapsed = section.classList.toggle("is-collapsed")
+          sectionToggle.setAttribute("aria-expanded", String(!isCollapsed))
+          const collapsedMap = readPtSectionCollapsed()
+          collapsedMap[id] = isCollapsed
+          try {
+            localStorage.setItem(
+              PT_SECTION_COLLAPSE_KEY,
+              JSON.stringify(collapsedMap),
+            )
+          } catch {
+            /* ignore quota / private mode */
+          }
+        }
+        return
+      }
+
       // 1. Page Title Presets
       const titlePresetBtn = e.target.closest(".pt-preset-pill")
       if (titlePresetBtn && DOM.pageTitleInput) {

@@ -1103,9 +1103,6 @@ export function createUpdateSettingsInputs(effectInstances) {
       if (DOM.pageTitleCounterBadge) {
         DOM.pageTitleCounterBadge.classList.toggle("warning", titleVal.length > 40)
       }
-      if (DOM.pageTitleLengthWarning) {
-        DOM.pageTitleLengthWarning.classList.toggle("hidden", titleVal.length <= 40)
-      }
       if (DOM.ptTabTitlePreview) {
         DOM.ptTabTitlePreview.textContent = resolveDynamicTokens(titleVal, settings, { isPreview: true })
       }
