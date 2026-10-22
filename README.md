@@ -36,7 +36,7 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
       <strong>English</strong> | <a href="./README_VN.MD">Tiếng Việt</a>
     </td>
     <td align="right">
-      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">View Changelog (v2.0.0)</a>
+      <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank">View Changelog (v2.1.0)</a>
     </td>
   </tr>
 </table>

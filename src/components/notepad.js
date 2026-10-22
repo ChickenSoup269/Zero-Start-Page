@@ -438,6 +438,7 @@ export class Notepad {
         <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
         <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
       </div>
+      <div class="floating-note-drag-hitbox" title="${i18n.notepad_drag_grip || "Drag to move"}" aria-hidden="true"></div>
       <div class="floating-note-content" contenteditable="true" spellcheck="${this.isSpellcheckEnabled() ? "true" : "false"}">${note.content}</div>
       ${this.getResizeHandlesHtml()}
     `
@@ -503,7 +504,7 @@ export class Notepad {
       floatingContainer,
       `floating-note-${noteId}`,
       null,
-      ".floating-note-header, .floating-note-toolbar",
+      ".floating-note-header, .floating-note-toolbar, .floating-note-drag-hitbox",
     )
     // Floating notes are not free-move widgets: drop the generic widget
     // right-click menu so the per-note skin menu owns contextmenu.

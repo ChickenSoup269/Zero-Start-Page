@@ -11642,6 +11642,23 @@ body.is-dragging-widget .dragging * {
   cursor: move;
 }
 
+.floating-note-drag-hitbox {
+  display: none;
+}
+
+.floating-note-window.header-hidden .floating-note-drag-hitbox {
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  height: 20px;
+  cursor: move;
+  z-index: 2;
+}
+
+.floating-note-window.header-hidden .floating-note-content {
+  padding-top: 32px;
+}
+
 /* === PER-NOTE SKINS (docked .note-item + detached .floating-note-window) === */
 /* Mirrors the widget container skins so a single note can opt out of black/white. */
 .note-item.skin-transparent,
