@@ -5,8 +5,8 @@
 Startpage is a highly customizable browser extension (Manifest V3) that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
 <p align="center">
-  <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.0.0" target="_blank">
-    <img src="https://img.shields.io/badge/Release-v2.0.0-6366f1?style=for-the-badge&logo=github" alt="Version 2.0.0" height="32" />
+  <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.1.0" target="_blank">
+    <img src="https://img.shields.io/badge/Release-v2.1.0-6366f1?style=for-the-badge&logo=github" alt="Version 2.1.0" height="32" />
   </a>
   &nbsp;
   <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=en" target="_blank">
@@ -40,29 +40,6 @@ Startpage is a highly customizable browser extension (Manifest V3) that replaces
     </td>
   </tr>
 </table>
-
----
-
-## What's New in Version 2.0.0
-
-- **Settings Modernization & Micro-Steppers**: Tactile `(- / +)` step buttons and smooth mouse wheel scrolling across all range sliders for pixel-perfect adjustments.
-- **Live Interactive Previews**: Instant visual feedback for Bookmark Cards, Folder Group Tabs, and Custom Title Studio directly inside the settings panel.
-- **Dedicated Reset-to-Default Buttons**: Individual reset buttons for each settings group (Sizes, Appearance, Tabs, Layout, Typography, Effects) for easy recovery.
-- **Ambient Sounds Generator**: 12 high-definition background sounds (Rain, Waves, Cafe, White Noise, Campfire, Forest, etc.) with multi-track volume mixer, ambient presets, equalizer visualizer, and sleep timer.
-- **Habit Tracker Widget**: Daily habit tracker with streak counts and multiple color themes (Custom per habit, Red-to-Green Gradient, Material 3 Accent).
-- **RSS Reader Widget**: Built-in news feed reader supporting custom RSS feeds with quick refresh and clean modal preview.
-- **Smart Weather Widget**: Real-time forecast via Open-Meteo with customizable endpoints, geocoding search, and live connection test.
-- **Daily Quotes Widget**: Curated motivational & philosophical quotes with customizable update frequency (New tab, Hourly, Daily).
-- **Real-time Audio Reactive (Beta)**: Capture tab audio stream (`tabCapture`) so visualizer waves react dynamically to live music beats and bass.
-- **3D Floating Glass Cubes Clock**: Futuristic 3D clock style with voxel pedestals, volumetric extrusion, and interactive tilt response.
-- **Next-Gen WebGL Shaders**: Interactive Fluid simulation, Frosted Glass Orbs, Black Hole singularity, and Neon Grid 3D live background shaders.
-- **Bookmark Multi-Select & Smart Import**: Batch select bookmarks to delete, move between folders, or create new groups in one click. Browser bookmark import now supports folder-to-group auto generation and Shift/Ctrl range selection.
-- **Transparent Skin & Borderless Mode**: Toggle transparent background styling and hide borders across all widgets via right-click context menus.
-- **LoremFlickr & Free Photos Gallery**: High-resolution curated wallpapers with category filtering and instant save to local gallery (IndexedDB).
-- **Snap to Grid (Drag & Drop)**: Configurable grid snapping (20px to 100px) when positioning widgets.
-- **Vector SVG Country Flags**: Native language selector and date language options feature crisp vector SVG flags for English, Vietnamese, German, and Swedish.
-
----
 
 ## Features
 

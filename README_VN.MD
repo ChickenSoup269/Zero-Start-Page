@@ -5,8 +5,8 @@
 Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho phép tùy biến sâu, thay thế trang tab mới bằng một giao diện gọn gàng, đa dạng tính năng và đẹp mắt. Toàn bộ dữ liệu được lưu cục bộ — không tài khoản, không theo dõi.
 
 <p align="center">
-  <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.0.0" target="_blank">
-    <img src="https://img.shields.io/badge/B%E1%BA%A3n_ph%C3%A1t_h%C3%A0nh-v2.0.0-6366f1?style=for-the-badge&logo=github" alt="Phiên bản 2.0.0" height="32" />
+  <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases/tag/v2.1.0" target="_blank">
+    <img src="https://img.shields.io/badge/B%E1%BA%A3n_ph%C3%A1t_h%C3%A0nh-v2.1.0-6366f1?style=for-the-badge&logo=github" alt="Phiên bản 2.1.0" height="32" />
   </a>
   &nbsp;
   <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=vi" target="_blank">
@@ -40,29 +40,6 @@ Startpage là một tiện ích mở rộng trình duyệt (Manifest V3) cho ph�
     </td>
   </tr>
 </table>
-
----
-
-## Bản cập nhật 2.0.0 có gì mới?
-
-- **Nâng cấp Settings & Nút Vi Bước (Micro-Steppers)**: Bổ sung các nút bấm vi bước `(- / +)` và hỗ trợ cuộn con lăn chuột (Mouse Wheel) cho tất cả thanh trượt cài đặt, giúp tùy chỉnh chính xác từng pixel.
-- **Khung xem trước trực tiếp (Live Previews)**: Xem trước tức thì giao diện Dấu trang (Bookmark Item), Thẻ thư mục (Group Tab) và Custom Title Studio ngay trong bảng cài đặt.
-- **Nút Khôi phục Mặc định (Reset to Defaults)**: Bổ sung các nút Reset riêng biệt cho từng phân mục (Kích thước, Giao diện, Thẻ tab, Bố cục, Kiểu chữ, Hiệu ứng).
-- **Bộ phát âm thanh thư giãn (Ambient Sounds)**: 12 âm thanh môi trường độ nét cao (Mưa, Sóng biển, Cà phê, Tiếng ồn trắng, Lửa trại, Rừng cây...) kèm bàn trộn âm lượng đa kênh, các preset mẫu, visualizer equalizer và hẹn giờ tắt.
-- **Widget Theo dõi Thói quen (Habit Tracker)**: Theo dõi tiến độ thói quen hàng ngày, đếm chuỗi ngày liên tiếp (streaks) với 3 chế độ màu (Màu riêng từng thói quen, Gradient Đỏ-Xanh, M3 Accent).
-- **Widget Đọc tin tức RSS (RSS Reader)**: Tích hợp trình đọc RSS feed tùy chỉnh, cập nhật tin tức trực tiếp từ các nguồn bạn yêu thích kèm popup đọc gọn gàng.
-- **Widget Thời tiết Thông minh**: Dự báo thời tiết thời gian thực qua Open-Meteo, hỗ trợ tùy chỉnh Endpoint & Geocoding và nút kiểm tra kết nối API trực tiếp.
-- **Widget Danh ngôn Mỗi ngày (Daily Quotes)**: Tuyển tập các câu danh ngôn ý nghĩa với tùy chọn tần suất đổi (mỗi tab mới, theo giờ, hoặc theo ngày).
-- **Âm thanh Tương tác Thời gian thực (Real-time Audio Reactive - Beta)**: Bắt luồng âm thanh tab (`tabCapture`) để sóng nhạc visualizer đập chuẩn xác theo điệu bass và nhịp beat bài hát.
-- **Đồng hồ 3D Floating Glass Cubes**: Phong cách đồng hồ số 3D khối kính trong suốt với bệ Voxel, Volumetric Extrusion và hiệu ứng nghiêng tương tác theo góc nhìn.
-- **Bộ hiệu ứng Shaders WebGL Đỉnh cao**: Mô phỏng Chất lỏng tương tác (Interactive Fluid), Quả cầu sương mờ (Frosted Glass Orbs), Hố đen vũ trụ (Black Hole) và Lưới Neon 3D (Neon Grid 3D).
-- **Thanh công cụ Dấu trang Hàng loạt (Multi-Select)**: Chọn nhiều bookmark cùng lúc để xóa hàng loạt, gom nhóm vào thư mục mới hoặc di chuyển nhanh. Nhập bookmark từ trình duyệt hỗ trợ tạo nhóm theo thư mục và chọn dải bằng Shift/Ctrl.
-- **Giao diện Trong suốt & Ẩn viền (Transparent Skin & Borderless)**: Hỗ trợ chuyển đổi skin trong suốt và ẩn viền trên toàn bộ các widget thông qua menu chuột phải.
-- **Kho ảnh miễn phí LoremFlickr & Thư viện Cục bộ**: Thưởng thức kho hình nền sắc nét tuyển chọn từ LoremFlickr & Lorem Picsum kèm lưu trữ tức thì về máy tính (IndexedDB).
-- **Bắt dính lưới khi kéo thả (Snap to Grid)**: Căn chỉnh widget thẳng hàng hoàn hảo với bước lưới tùy chọn từ 20px đến 100px.
-- **Cờ quốc gia Vector SVG**: Bộ chọn ngôn ngữ và tùy chọn ngôn ngữ ngày tháng tích hợp cờ vector SVG sắc nét cho Tiếng Việt, Tiếng Anh, Tiếng Đức và Tiếng Thụy Điển.
-
----
 
 ## Tính năng
 
