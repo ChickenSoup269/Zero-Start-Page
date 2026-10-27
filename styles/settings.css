@@ -856,6 +856,28 @@
   contain: paint;
 }
 
+/* Avoid repainting the glass surfaces for every scroll frame. */
+.settings-sidebar.is-scrolling .sidebar-header,
+.settings-sidebar.is-scrolling .sidebar-toc-menu,
+.settings-sidebar.is-scrolling .settings-nav-container {
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+.settings-sidebar.is-scrolling .settings-section,
+.settings-sidebar.is-scrolling .setting-group,
+.settings-sidebar.is-scrolling .settings-card,
+.settings-sidebar.is-scrolling .setting-item-row {
+  box-shadow: none;
+  transition: none;
+}
+
+.settings-sidebar.is-scrolling .settings-section *,
+.settings-sidebar.is-scrolling .setting-group *,
+.settings-sidebar.is-scrolling .settings-card * {
+  animation-play-state: paused;
+}
+
 body.sidebar-m3-accent .settings-sidebar {
   background: color-mix(in srgb, var(--sidebar-bg) 88%, var(--accent-color));
 }
@@ -871,6 +893,9 @@ body.sidebar-m3-accent .settings-sidebar {
   transform: translateZ(0);
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable;
+  will-change: scroll-position;
 }
 
 @container settings-sidebar (min-width: 520px) {

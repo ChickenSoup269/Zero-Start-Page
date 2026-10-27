@@ -1119,6 +1119,7 @@ export function setupGeneralEventHandlers(
   }
 
   let scrollSaveTimer = null
+  let scrollEndTimer = null
   let btnRafId = null
 
   sidebarContent.addEventListener(
@@ -1126,6 +1127,14 @@ export function setupGeneralEventHandlers(
     () => {
       const top = sidebarContent.scrollTop
       clearTimeout(scrollSaveTimer)
+      clearTimeout(scrollEndTimer)
+
+      if (!DOM.settingsSidebar.classList.contains("is-scrolling")) {
+        DOM.settingsSidebar.classList.add("is-scrolling")
+      }
+      scrollEndTimer = setTimeout(() => {
+        DOM.settingsSidebar.classList.remove("is-scrolling")
+      }, 120)
 
       scrollSaveTimer = setTimeout(() => {
         sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
