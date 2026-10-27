@@ -1,14 +1,14 @@
 <div class="settings-section" data-section-id="themes" data-settings-tab="appearance">
     <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
-    <div class="section-content">
-        <!-- Card 1: Style Presets -->
+    <div class="section-content themes-section-content">
+        <!-- Quick presets -->
         <div class="settings-card style-preset-card">
             <div class="settings-card-header">
                 <span class="settings-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
                 <span class="settings-card-title" data-i18n="style_presets_title">Style Presets</span>
                 <span class="settings-card-actions">
-                    <button id="save-current-style-btn" class="secondary-btn style-save-btn" style="padding: 4px 10px; font-size: 0.75rem; height: 26px; border-radius: 6px;">
-                        <i class="fa-solid fa-bookmark" style="font-size: 0.7rem;"></i> <span data-i18n="save_current_style">Save Custom Style</span>
+                    <button id="save-current-style-btn" class="secondary-btn style-save-btn">
+                        <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom Style</span>
                     </button>
                 </span>
             </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <!-- Card 2: Themes -->
+        <!-- Themes library -->
         <div class="settings-card themes-card">
             <div class="settings-card-header">
                 <span class="settings-card-icon"><i class="fa-solid fa-palette"></i></span>
@@ -96,19 +96,19 @@
             <!-- Create / Store actions (own row so long translations never overflow the header) -->
             <div class="theme-actions-grid">
                 <button id="save-current-theme-btn" class="secondary-btn theme-create-btn">
-                    <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> <span
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span
                         data-i18n="save_current_theme">Create Theme</span>
                 </button>
                 <a class="secondary-btn theme-store-link" href="https://zero-theme.vercel.app/" target="_blank"
                     rel="noopener noreferrer">
-                    <i class="fa-solid fa-store" style="opacity: 0.85;"></i> <span
+                    <i class="fa-solid fa-store"></i> <span
                         data-i18n="theme_web_beta_link">Theme Store</span>
                 </a>
             </div>
 
-            <!-- Collapsible Theme Application Scope Accordion -->
-        <details class="theme-scope-accordion" id="theme-scope-accordion">
-            <summary class="theme-scope-summary">
+            <!-- Advanced application scope -->
+            <details class="theme-scope-accordion" id="theme-scope-accordion">
+                <summary class="theme-scope-summary">
                 <div class="theme-scope-summary-left">
                     <i class="fa-solid fa-sliders"></i>
                     <span data-i18n="theme_scope_title">Theme Application Scope</span>
@@ -118,8 +118,8 @@
                     <small data-i18n="theme_scope_subtitle">Choose what changes</small>
                     <i class="fa-solid fa-chevron-down theme-scope-chevron"></i>
                 </div>
-            </summary>
-            <div class="setting-group theme-scope-panel" id="theme-scope-panel">
+                </summary>
+                <div class="setting-group theme-scope-panel" id="theme-scope-panel">
                 <div class="theme-scope-chips">
                     <label class="theme-scope-chip" title="Accent colors, sidebar & glass transparency">
                         <input type="checkbox" id="theme-scope-colors" checked>
@@ -142,8 +142,8 @@
                         <span class="chip-label"><i class="fa-solid fa-image"></i> <span data-i18n="theme_scope_background">Background</span></span>
                     </label>
                 </div>
-            </div>
-        </details>
+                </div>
+            </details>
 
         <!-- Theme Category Filter Pills -->
         <div class="theme-category-filter-bar" id="theme-category-filter-bar">

@@ -605,6 +605,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  contain: layout paint;
 }
 
 @media (max-width: 380px) {
@@ -654,6 +655,9 @@
   position: relative;
   user-select: none;
   overflow: hidden;
+  contain: layout paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 86px;
 }
 
 .font-item:hover {
@@ -661,6 +665,16 @@
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.settings-sidebar.is-scrolling .font-item {
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+
+.settings-sidebar.is-scrolling .font-item-preview {
+  font-variant-ligatures: none;
 }
 
 .font-item.active {
@@ -9885,6 +9899,149 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
     animation: none !important;
     transform: none !important;
   }
+}
+
+/* Themes section: a quieter, task-oriented hierarchy. */
+.themes-section-content {
+  padding-top: 10px;
+}
+
+.themes-section-content > .settings-card {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 0 16px;
+  margin-bottom: 16px;
+}
+
+.themes-section-content > .settings-card:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.themes-section-content .settings-card-header {
+  margin-bottom: 6px;
+}
+
+.themes-section-content .settings-card-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  font-size: 0.7rem;
+}
+
+.themes-section-content .settings-card-title {
+  font-size: 0.86rem;
+}
+
+.themes-section-content .settings-card-hint {
+  margin: 0 0 10px 30px;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.themes-section-content .style-save-btn {
+  min-height: 28px;
+  height: 28px;
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  border-radius: 6px;
+}
+
+.themes-section-content .style-save-btn i {
+  font-size: 0.68rem;
+}
+
+.themes-section-content .style-preset-grid {
+  gap: 6px;
+}
+
+.themes-section-content .style-preset-btn {
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: none;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.themes-section-content .style-preset-btn:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.themes-section-content .style-preset-btn.active {
+  box-shadow: inset 3px 0 0 var(--accent-color, #4a80f0);
+}
+
+.themes-section-content .style-preset-icon,
+.themes-section-content .theme-preview {
+  box-shadow: none;
+}
+
+.themes-section-content .theme-actions-grid {
+  margin: 10px 0 12px;
+}
+
+.themes-section-content .theme-actions-grid .theme-create-btn,
+.themes-section-content .theme-actions-grid .theme-store-link {
+  min-height: 34px;
+  box-shadow: none;
+}
+
+.themes-section-content .theme-scope-accordion {
+  margin-bottom: 12px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: none;
+}
+
+.themes-section-content .theme-scope-summary {
+  padding: 8px 10px;
+}
+
+.themes-section-content .theme-scope-summary-right small {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.themes-section-content .theme-category-filter-bar {
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  scroll-behavior: auto;
+}
+
+.themes-section-content .theme-filter-pill {
+  height: 26px;
+  border-radius: 6px;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.themes-section-content .theme-filter-pill.active {
+  box-shadow: none;
+}
+
+.themes-section-content .themes-grid {
+  margin-top: 0;
+  gap: 6px;
+}
+
+.themes-section-content .theme-item {
+  border-radius: 7px;
+  padding: 8px 4px 6px;
+  box-shadow: none;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.themes-section-content .theme-item:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.themes-section-content .theme-item.active {
+  box-shadow: inset 3px 0 0 var(--theme-card-accent, var(--accent-color, #4a80f0));
 }
 
 /* Bookmark Live Preview Card (uses .settings-card for theme-aware chrome) */

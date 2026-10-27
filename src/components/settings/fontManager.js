@@ -65,6 +65,7 @@ let fontSelectMode = false
 let fontSelectedLabels = new Set()
 let activeFontCategory = "all"
 let previewFontsLoaded = false
+let previewFontsObserver = null
 let heroClockTimer = null
 let fontPreviewMode = localStorage.getItem("fontPreviewMode") || "auto"
 
@@ -117,6 +118,30 @@ export function ensureGoogleFontsPreviewLoaded() {
     link.href = url
     document.head.appendChild(link)
   })
+}
+
+function lazyLoadGoogleFontsPreview(grid) {
+  if (previewFontsLoaded || !grid) return
+  if (!("IntersectionObserver" in window)) {
+    ensureGoogleFontsPreviewLoaded()
+    return
+  }
+  if (previewFontsObserver) return
+
+  const scrollRoot =
+    grid.closest(".sidebar-content") ||
+    document.getElementById("settings-sidebar") ||
+    null
+  previewFontsObserver = new IntersectionObserver(
+    (entries, observer) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      observer.disconnect()
+      previewFontsObserver = null
+      ensureGoogleFontsPreviewLoaded()
+    },
+    { root: scrollRoot, rootMargin: "160px" },
+  )
+  previewFontsObserver.observe(grid)
 }
 
 function loadGoogleFont(fontName, target = "general") {
@@ -191,8 +216,7 @@ async function initFont() {
     }
   })
 
-  // 3. Preload preview sheet & start hero clock
-  ensureGoogleFontsPreviewLoaded()
+  // 3. Start the lightweight hero clock. Preview fonts load when the grid is visible.
   updateActiveTypographyHero()
   startHeroClock()
 }
@@ -394,6 +418,7 @@ function setupPreviewModeToggle(fontGrid, updateSettingCallback) {
 
 function renderFontGrid(fontGrid, updateSettingCallback) {
   if (!fontGrid) return
+  lazyLoadGoogleFontsPreview(fontGrid)
 
   setupCategoryFilters(fontGrid, updateSettingCallback)
   setupSearchAndClear(fontGrid, updateSettingCallback)
